@@ -1,0 +1,7 @@
+[user]
+  name = Biggie Emmanuel
+  email = bigolu96@gmail.com
+[core]
+  editor = vim
+[push]
+  default = current
