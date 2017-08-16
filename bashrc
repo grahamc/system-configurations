@@ -38,8 +38,8 @@ eval `gdircolors ~/.solarized-dark-dircolors` # color ls output
     alias rm='trash-put'
     # git
     alias gp="git pull"
-    alias gs="git status --short"
-    alias gss="git status"
+    alias gs="git status"
+    alias gss="git status --short"
     alias gc="git commit"
     alias gitall="git add -A"
     alias ga="git add"
