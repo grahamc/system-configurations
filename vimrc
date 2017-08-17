@@ -115,8 +115,6 @@
         let g:vsc_tab_complete = 1
         " supress newline when enter is pressed
         inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
-    Plugin 'junegunn/fzf'
-        nnoremap <silent> <C-t> :FZF<CR>
 
     call vundle#end() " required
     filetype plugin indent on " auto-indentation based on filetype
