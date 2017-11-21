@@ -31,7 +31,7 @@
     set clipboard=unnamed
 
     " # of spaces to use for indentation
-    let tab_width = 4
+    let tab_width = 2
     " when tab is used insert spaces instead
     set expandtab
     " width of an actual tab character
@@ -69,7 +69,7 @@
     inoremap jk <Esc>
     nnoremap <Leader><Leader> v
     nnoremap <Leader>\ :nohl<CR>
-    nnoremap <Leader>w :w<CR>
+    nnoremap <Leader>w :wa<CR>
     nnoremap <Leader>q :q<CR>
     nnoremap <Leader>x :x<CR>
     nnoremap <Leader>q :q<CR>
@@ -110,6 +110,9 @@
         set statusline+=%{ALEGetStatusLine()}
         highlight clear ALEErrorSign
         highlight clear ALEWarningSign
+        let g:ale_linters = {
+        \   'html': [],
+        \}
     Plugin 'maxboisvert/vim-simple-complete' " autocomplete
         " Enable tab key completion mapping
         let g:vsc_tab_complete = 1
