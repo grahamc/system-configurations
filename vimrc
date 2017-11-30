@@ -104,6 +104,24 @@
             nnoremap <Leader>nt :NERDTreeTabsToggle<CR>
     Plugin 'vim-airline/vim-airline' " cool status-line
         let g:airline_section_c = "%F" " include full file path
+        let g:airline_mode_map = {
+            \ '__' : '--',
+            \ 'n'  : 'N',
+            \ 'i'  : 'I',
+            \ 'R'  : 'R',
+            \ 'c'  : 'C',
+            \ 'v'  : 'V',
+            \ 'V'  : 'V-L',
+            \ '' : 'V-B',
+            \ 's'  : 'S',
+            \ 'S'  : 'S-L',
+            \ 't'  : 'T',
+            \ }
+        let g:airline#extensions#default#layout = [
+            \ [ 'a', 'c'  ],
+            \ [ 'x', 'y', 'z', 'error', 'warning'  ]
+            \ ]
+
         Plugin 'vim-airline/vim-airline-themes' " status line colorschemes
     Plugin 'w0rp/ale'
         let g:ale_sign_error = '>>'
