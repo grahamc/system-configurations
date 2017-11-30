@@ -7,9 +7,7 @@ function line () {
     LINE=`printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -`
 	echo "${LINE}"
 }
-PS1="\`line\`
-╭─\`parse_git_branch\`\[\e[31m\]|\[\e[m\]\u@\h\[\e[31m\]|\[\e[m\]\w
-╰🎸 "
+PS1="\`line\`\n╭─\`parse_git_branch\`\[\e[31m\]|\[\e[m\]\u@\h\[\e[31m\]|\[\e[m\]\w\n╰"
 
 # set PATH
 export GOPATH="/usr/local/go/bin"
@@ -27,7 +25,6 @@ export MANPATH="$MACPORTS_PATH:$COREUTILS_MANPATH:$MANPATH"
 export GEOS_DIR="/opt/local"
 
 # colors
-export TERM="screen-256color" # let tmux know shell supports 256 colors
 eval `gdircolors ~/.solarized-dark-dircolors` # color ls output
 
 # aliases

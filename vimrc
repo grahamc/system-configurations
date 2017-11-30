@@ -28,7 +28,9 @@
     " if you are on OSX or Windows use 'unnamed'
     " explanation here: http://vi.stackexchange.com/questions/84/how-can-i-copy-text-to-the-system-clipboard-from-vim
     " make sure vim is compiled with clipboard
-    set clipboard=unnamed
+    if $TMUX == '' " dont do it if in TMUX
+        set clipboard+=unnamed
+    endif
 
     " # of spaces to use for indentation
     let tab_width = 2
