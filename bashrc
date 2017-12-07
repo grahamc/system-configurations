@@ -3,11 +3,7 @@ function parse_git_branch() {
 	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 	echo "${BRANCH}"
 }
-function line () {
-    LINE=`printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -`
-	echo "${LINE}"
-}
-PS1="\`line\`\n╭─\`parse_git_branch\`\[\e[31m\]|\[\e[m\]\u@\h\[\e[31m\]|\[\e[m\]\w\n╰"
+PS1="\n\[\e[34m\]╭─\[\e[m\]\`parse_git_branch\`\[\e[34m\]|\[\e[m\]\u@\h\[\e[34m\]|\[\e[m\]\w\n\[\e[34m\]╰\[\e[m\]"
 
 # set PATH
 export GOPATH="/usr/local/go/bin"
@@ -16,7 +12,8 @@ export MYSQL_PATH="/usr/local/mysql/bin"
 export PORT_PATH="/opt/local/bin"
 export SUMO_HOME="/opt/local/share/sumo"
 export RUST_PATH="$HOME/.cargo/bin"
-export PATH="$RUST_PATH:$SUMO_HOME:$COREUTILS_PATH:$GOPATH:$MYSQL_PATH:$PORT_PATH:$PATH"
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/opt/X11/bin"
+export PATH="$COREUTILS_PATH:$PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH"
 
 # set other env vars
 export COREUTILS_MANPATH="/usr/local/opt/coreutils/libexec/gnuman"
