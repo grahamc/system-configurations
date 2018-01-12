@@ -96,7 +96,7 @@
     Plugin 'alvan/vim-closetag' " Auto-insert closing html tag
         let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.xml,*.jinja,*.html.mustache"
     Plugin 'airblade/vim-gitgutter' " show git diff in column bar
-        set updatetime=1000 " wait time after typing stops before a plugin is triggered
+        set updatetime=250 " wait time after typing stops before a plugin is triggered
     Plugin 'Valloric/MatchTagAlways' " html tag higlighting
         let g:mta_filetypes = {'html' : 1, 'xhtml' : 1, 'xml' : 1, 'jinja' : 1, 'html.mustache' : 1}
     Plugin 'scrooloose/nerdtree' " file explorer
@@ -121,7 +121,6 @@
             \ [ 'a', 'c'  ],
             \ [ 'x', 'y', 'z', 'error', 'warning'  ]
             \ ]
-
         Plugin 'vim-airline/vim-airline-themes' " status line colorschemes
     Plugin 'w0rp/ale'
         let g:ale_sign_error = '>>'

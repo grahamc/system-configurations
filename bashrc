@@ -19,7 +19,6 @@ export PATH="$COREUTILS_PATH:$PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PO
 export COREUTILS_MANPATH="/usr/local/opt/coreutils/libexec/gnuman"
 export MACPORTS_PATH="/opt/local/share/man"
 export MANPATH="$MACPORTS_PATH:$COREUTILS_MANPATH:$MANPATH"
-export GEOS_DIR="/opt/local"
 
 # colors
 eval `gdircolors ~/.solarized-dark-dircolors` # color ls output
@@ -34,7 +33,6 @@ alias egrep='egrep --color=auto'
 alias la="ls -A"
 alias rm='trash-put'
 alias c='clear'
-alias python='python3'
 # git
 alias gp="git pull"
 alias gs="git status"
