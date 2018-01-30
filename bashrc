@@ -12,16 +12,16 @@ export MYSQL_PATH="/usr/local/mysql/bin"
 export PORT_PATH="/opt/local/bin"
 export SUMO_HOME="/opt/local/share/sumo"
 export RUST_PATH="$HOME/.cargo/bin"
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/opt/X11/bin"
-export PATH="$COREUTILS_PATH:$PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH"
+export BASE_PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/opt/X11/bin"
+export PATH="$COREUTILS_PATH:$BASE_PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH"
 
 # set other env vars
 export COREUTILS_MANPATH="/usr/local/opt/coreutils/libexec/gnuman"
 export MACPORTS_PATH="/opt/local/share/man"
 export MANPATH="$MACPORTS_PATH:$COREUTILS_MANPATH:$MANPATH"
 
-# colors
-eval `gdircolors ~/.solarized-dark-dircolors` # color ls output
+# autocomplete
+eval "`gpip completion --bash`"
 
 # aliases
 # dircolors
@@ -56,3 +56,11 @@ alias cd='cdls'
 # disk space/usage
 alias df='df -h'
 alias du='du -h'
+# python version
+alias python='python3'
+alias pip='pip3'
+# global pip install
+_gpip() {
+    PIP_REQUIRE_VIRTUALENV="" pip "$@"
+}
+alias gpip='_gpip'
