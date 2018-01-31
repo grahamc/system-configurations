@@ -3,7 +3,7 @@ function parse_git_branch() {
 	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 	echo "${BRANCH}"
 }
-PS1="\n\[\e[34m\]╭─\[\e[m\]\`parse_git_branch\`\[\e[34m\]|\[\e[m\]\u@\h\[\e[34m\]|\[\e[m\]\w\n\[\e[34m\]╰\[\e[m\]"
+PS1="\[\e[35m\]╭─\`parse_git_branch\`|\u@\h|\w\n╰\[\e[m\]"
 
 # set PATH
 export GOPATH="/usr/local/go/bin"
@@ -21,7 +21,7 @@ export MACPORTS_PATH="/opt/local/share/man"
 export MANPATH="$MACPORTS_PATH:$COREUTILS_MANPATH:$MANPATH"
 
 # autocomplete
-eval "`gpip completion --bash`"
+eval "`PIP_REQUIRE_VIRTUALENV="" pip3 completion --bash`"
 
 # aliases
 # dircolors
@@ -61,6 +61,6 @@ alias python='python3'
 alias pip='pip3'
 # global pip install
 _gpip() {
-    PIP_REQUIRE_VIRTUALENV="" pip "$@"
+    PIP_REQUIRE_VIRTUALENV="" pip3 "$@"
 }
 alias gpip='_gpip'
