@@ -5,3 +5,11 @@
   editor = vim
 [push]
   default = current
+[alias]
+  all = add -A
+  p = pull
+  s = status
+  ss = status --short
+  c = commit
+  a = add
+  d = diff

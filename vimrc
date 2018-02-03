@@ -33,6 +33,13 @@
     " open new panes to the right and bottom respectively
     set splitright
     set splitbelow
+    
+    " mouse mode while in tmux
+    if has("mouse_sgr")
+      set ttymouse=sgr
+    else
+      set ttymouse=xterm2
+    end
 
 " Section: Mappings
 " -----------------
@@ -63,6 +70,7 @@
     Plugin 'arcticicestudio/nord-vim' " colorscheme
     Plugin 'w0rp/ale' " linter
     Plugin 'airblade/vim-gitgutter' " show git diff in column bar
+    Plugin 'bigolu/vim-tmux-navigator'
     Plugin 'maxboisvert/vim-simple-complete' " autocomplete
         " Enable tab key completion mapping
         let g:vsc_tab_complete = 1
