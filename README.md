@@ -12,7 +12,7 @@ my shell setup
   - folder for vim undo history (set to `~/.vim/undodir/`)
   - vim 8 or greater compiled with python 2 or 3 support - for YouCompleteMe and Ale
   - setup [YouCompleteMe][YouCompleteMe]
-  - * terminal with [truecolor support][truecolor-support] - allows for a light gray comment color in vim. defaults to yellow.
+  - \* terminal with [truecolor support][truecolor-support] - allows for a light gray comment color in vim. defaults to yellow.
   - [nord colorscheme][nord-colorscheme] for terminal
 
 - bashrc
