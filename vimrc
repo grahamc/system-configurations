@@ -3,43 +3,37 @@
     " stops vim from behaving in a strongly vi-compatible way
     set nocompatible
 
-    syntax enable " syntax highlighting
-    set ruler " display line and column number on status bar
-    set mouse=a " enable mouse
-    set backspace=indent,eol,start " deal with backspace nonsense
-    set linebreak " wrap lines by word instead of character
-    set cursorline " highlight current line
+    syntax enable
+    set ruler
+    set mouse=a
+    set backspace=indent,eol,start
+    set linebreak
+    set cursorline
     set pastetoggle=<F2>
     set encoding=utf8
 
     " tab setup
-    let tab_width = 2
+    let tab_width = 4
     set expandtab
-    execute "silent set tabstop=" . tab_width
-    execute "silent set shiftwidth=" . tab_width
-    execute "silent set softtabstop=" . tab_width
+    let &tabstop = tab_width
+    let &shiftwidth = tab_width
+    let &softtabstop = tab_width
 
     " when used together, searching is only case sensitive when
     " the query contains an uppercase letter
     set ignorecase
     set smartcase
 
-    " have vim save the undo history for files
-    let undo_dir = "~/.vim/undodir"
-    execute "silent ! mkdir -p " . undo_dir
-    execute " silent set undodir=" . undo_dir
+    " persist undo history to disk
+    let &undodir = "~/.vim/undodir"
     set undofile
 
     " open new panes to the right and bottom respectively
     set splitright
     set splitbelow
     
-    " mouse mode while in tmux
-    if has("mouse_sgr")
-      set ttymouse=sgr
-    else
-      set ttymouse=xterm2
-    end
+    " enable mouse mode while in tmux
+    let &ttymouse = has("mouse_sgr") ? "sgr" : "xterm2"
 
 " Section: Mappings
 " -----------------
@@ -64,34 +58,40 @@
     set rtp+=~/.vim/bundle/Vundle.vim
     call vundle#begin()
 
-    Plugin 'VundleVim/Vundle.vim' " let Vundle manage Vundle, required
-    Plugin 'jiangmiao/auto-pairs' " automplete for bracket, parens, etc...
-    Plugin 'sheerun/vim-polyglot' " language pack
-    Plugin 'arcticicestudio/nord-vim' " colorscheme
-    Plugin 'w0rp/ale' " linter
-    Plugin 'airblade/vim-gitgutter' " show git diff in column bar
+    Plugin 'VundleVim/Vundle.vim'
+    Plugin 'jiangmiao/auto-pairs'
+    Plugin 'sheerun/vim-polyglot'
+    Plugin 'arcticicestudio/nord-vim'
+    Plugin 'w0rp/ale'
+    Plugin 'airblade/vim-gitgutter'
     Plugin 'bigolu/vim-tmux-navigator'
-    Plugin 'maxboisvert/vim-simple-complete' " autocomplete
-        " Enable tab key completion mapping
-        let g:vsc_tab_complete = 1
-        " supress newline when enter is pressed
-        inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
-		Plugin 'scrooloose/nerdtree' " file explorer
-        nnoremap <Leader>nt :NERDTreeTabsToggle<CR>
-        Plugin 'jistr/vim-nerdtree-tabs' " sync nerdtree across tabs
+    Plugin 'bigolu/nerdtree'
+        let NERDTreeMouseMode=3
+        Plugin 'jistr/vim-nerdtree-tabs'
+            nnoremap <Leader>nt :NERDTreeTabsToggle<CR>
+    Plugin 'Valloric/YouCompleteMe'
+        let g:ycm_python_binary_path = 'python3'
+        let g:ycm_rust_src_path = '~/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/src/rust/src'
 
     call vundle#end()
     filetype plugin indent on
 
 " Section: Aesthetics
 " -------------------
-    " quality colorscheme
-    colorscheme nord
-    highlight Comment ctermfg=3
+    
+    " comment color
+    if $COLORTERM =~ "truecolor" || $COLORTERM =~ "24bit"
+      set termguicolors
+      let g:nord_comment_brightness=20
+      colorscheme nord
+    else
+      colorscheme nord
+      hi Comment ctermfg=3
+    endif
 
     " set vertical split bar to '|'
     set fillchars=vert:│
-    autocmd ColorScheme * highlight VertSplit cterm=NONE ctermfg=Green ctermbg=NONE
+    hi VertSplit ctermbg=NONE guibg=NONE
 
 " Section: Autocommands
 " ---------------------
