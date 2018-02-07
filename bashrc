@@ -24,6 +24,7 @@ export MANPATH="$MACPORTS_PATH:$COREUTILS_MANPATH"
 for f in /usr/local/etc/bash_completion.d/*; do source $f; done
 
 # aliases
+#shopt -s expand_aliases
 alias ls="ls --color=auto "
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
@@ -43,3 +44,28 @@ cdls() {
   fi
 }
 alias cd='cdls'
+
+# change colorscheme based on time of day
+colorUpdate() {
+    hour=`date +%H`
+    lightTheme=''
+    darkTheme=''
+
+    # modify escape sequences if in a tmux session
+    if [ -n "$TMUX" ]; then
+        lightTheme='\033Ptmux;\033\033]50;SetColors=preset=Solarized Light\a\033\\'
+        darkTheme='\033Ptmux;\033\033]50;SetColors=preset=Nord\a\033\\'
+    else
+        lightTheme='\033]50;SetColors=preset=Solarized Light\a'
+        darkTheme='\033]50;SetColors=preset=Nord\a'
+    fi
+    
+    if [ $hour -lt 18 ]; then
+        echo -e "$lightTheme"
+    else
+        echo -e "$darkTheme"
+    fi
+}
+alias color='colorUpdate'
+colorUpdate
+

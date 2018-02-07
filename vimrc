@@ -11,6 +11,7 @@
     set cursorline
     set pastetoggle=<F2>
     set encoding=utf8
+    let $BASH_ENV = "~/.bashrc"
 
     " tab setup
     let tab_width = 4
@@ -25,7 +26,7 @@
     set smartcase
 
     " persist undo history to disk
-    let &undodir = "~/.vim/undodir"
+    let &undodir = "/Users/bigolu/.vim/undodir/"
     set undofile
 
     " open new panes to the right and bottom respectively
@@ -62,6 +63,7 @@
     Plugin 'jiangmiao/auto-pairs'
     Plugin 'sheerun/vim-polyglot'
     Plugin 'arcticicestudio/nord-vim'
+    Plugin 'altercation/vim-colors-solarized'
     Plugin 'w0rp/ale'
     Plugin 'airblade/vim-gitgutter'
     Plugin 'bigolu/vim-tmux-navigator'
@@ -72,22 +74,29 @@
     Plugin 'Valloric/YouCompleteMe'
         let g:ycm_python_binary_path = 'python3'
         let g:ycm_rust_src_path = '~/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/src/rust/src'
+        let g:ycm_autoclose_preview_window_after_completion = 1
 
     call vundle#end()
     filetype plugin indent on
 
 " Section: Aesthetics
 " -------------------
-    
-    " comment color
-    if $COLORTERM =~ "truecolor" || $COLORTERM =~ "24bit"
-      set termguicolors
-      let g:nord_comment_brightness=20
-      colorscheme nord
+
+    if strftime("%H") < 18
+        set background=light
+        colorscheme solarized
     else
-      colorscheme nord
-      hi Comment ctermfg=3
+        " comment color
+        if $COLORTERM =~ "truecolor" || $COLORTERM =~ "24bit"
+            set termguicolors
+            let g:nord_comment_brightness=20
+            colorscheme nord
+        else
+            colorscheme nord
+            hi Comment ctermfg=3
+        endif
     endif
+    
 
     " set vertical split bar to '|'
     set fillchars=vert:│
