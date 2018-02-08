@@ -45,6 +45,7 @@
     nnoremap <Leader>w :wa<CR>
     nnoremap <Leader>q :q<CR>
     nnoremap <Leader>x :x<CR>
+    nnoremap <Leader>r :source $MYVIMRC<CR>
 
     " remove all trailing whitespace
     nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
@@ -82,7 +83,7 @@
 " Section: Aesthetics
 " -------------------
 
-    if strftime("%H") < 18
+    if strftime("%H") < $NIGHTTIME
         set background=light
         colorscheme solarized
     else
@@ -96,7 +97,15 @@
             hi Comment ctermfg=3
         endif
     endif
+
+    " transparent status line
+    hi StatusLine ctermbg=NONE guibg=NONE cterm=NONE
     
+    " transparent gutter
+    hi LineNR ctermbg=NONE
+
+    " underline current line as opposed to highlighting
+    hi CursorLine gui=underline cterm=underline ctermfg=NONE guifg=NONE ctermbg=NONE guibg=NONE
 
     " set vertical split bar to '|'
     set fillchars=vert:│

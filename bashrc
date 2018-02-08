@@ -20,20 +20,29 @@ export COREUTILS_MANPATH="/usr/local/opt/coreutils/libexec/gnuman"
 export MACPORTS_PATH="/opt/local/share/man"
 export MANPATH="$MACPORTS_PATH:$COREUTILS_MANPATH"
 
+# other env vars
+export NIGHTTIME=17
+
 # autocomplete
 for f in /usr/local/etc/bash_completion.d/*; do source $f; done
 
 # aliases
-#shopt -s expand_aliases
-alias ls="ls --color=auto "
+shopt -s expand_aliases
+alias la='ls -A'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-alias la="ls -A"
 alias rm='trash-put'
 alias df='df -h'
 alias du='du -h'
 alias gpip3='PIP_REQUIRE_VIRTUALENV="" pip3'
+alias r='. ~/.bashrc'
+
+# sort ls output alphabetically (ignore case)
+sortls() {
+    ls "$@" | sort -f | column
+}
+alias ls='sortls'
 
 # perform 'ls' after 'cd' if successful
 cdls() {
@@ -51,7 +60,7 @@ colorUpdate() {
     lightTheme=''
     darkTheme=''
 
-    # modify escape sequences if in a tmux session
+    # adjust escape sequences if in a tmux session
     if [ -n "$TMUX" ]; then
         lightTheme='\033Ptmux;\033\033]50;SetColors=preset=Solarized Light\a\033\\'
         darkTheme='\033Ptmux;\033\033]50;SetColors=preset=Nord\a\033\\'
@@ -60,12 +69,11 @@ colorUpdate() {
         darkTheme='\033]50;SetColors=preset=Nord\a'
     fi
     
-    if [ $hour -lt 18 ]; then
+    if [ $hour -lt $NIGHTTIME ]; then
         echo -e "$lightTheme"
     else
         echo -e "$darkTheme"
     fi
 }
-alias color='colorUpdate'
 colorUpdate
 
