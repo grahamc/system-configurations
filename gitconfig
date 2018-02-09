@@ -5,10 +5,6 @@
     editor = vim
 [push]
     default = current
-[diff]
-	tool = vimdiff
-[difftool]
-	prompt = false
 [alias]
     all = add -A
     p = pull

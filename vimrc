@@ -61,7 +61,6 @@
     call vundle#begin()
 
     Plugin 'VundleVim/Vundle.vim'
-    Plugin 'jiangmiao/auto-pairs'
     Plugin 'sheerun/vim-polyglot'
     Plugin 'arcticicestudio/nord-vim'
     Plugin 'altercation/vim-colors-solarized'
@@ -82,6 +81,7 @@
 
 " Section: Aesthetics
 " -------------------
+    " set colorscheme based on time of day
     let hour = 0 + strftime("%H")
     if (hour < $NIGHT_START) && (hour > $DAY_START)
         set background=light

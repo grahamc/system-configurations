@@ -18,12 +18,13 @@ export PATH="$COREUTILS_PATH:$BASE_PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PAT
 # MANPATH
 export COREUTILS_MANPATH="/usr/local/opt/coreutils/libexec/gnuman"
 export MACPORTS_PATH="/opt/local/share/man"
-export MANPATH="$MACPORTS_PATH:$COREUTILS_MANPATH"
+export BASE_MANPATH="/usr/share/man:/usr/local/share/man:/usr/X11/share/man"
+export MANPATH="$BASE_MANPATH:$MACPORTS_PATH:$COREUTILS_MANPATH"
 
 # other env vars
 export NIGHT_START=17
 export DAY_START=6
-export LESS=-i
+export LESS="-Ri"
 
 # autocomplete
 for f in /usr/local/etc/bash_completion.d/*; do source $f; done
@@ -32,8 +33,6 @@ for f in /usr/local/etc/bash_completion.d/*; do source $f; done
 shopt -s expand_aliases
 alias la='ls -A'
 alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
 alias rm='trash-put'
 alias df='df -h'
 alias du='du -h'
