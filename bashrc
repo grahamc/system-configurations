@@ -21,7 +21,9 @@ export MACPORTS_PATH="/opt/local/share/man"
 export MANPATH="$MACPORTS_PATH:$COREUTILS_MANPATH"
 
 # other env vars
-export NIGHTTIME=17
+export NIGHT_START=17
+export DAY_START=6
+export LESS=-i
 
 # autocomplete
 for f in /usr/local/etc/bash_completion.d/*; do source $f; done
@@ -40,7 +42,7 @@ alias r='. ~/.bashrc'
 
 # sort ls output alphabetically (ignore case)
 sortls() {
-    ls "$@" | sort -f | column
+    command ls "$@" | sort -f | column
 }
 alias ls='sortls'
 
@@ -69,7 +71,7 @@ colorUpdate() {
         darkTheme='\033]50;SetColors=preset=Nord\a'
     fi
     
-    if [ $hour -lt $NIGHTTIME ]; then
+    if [ $hour -lt $NIGHT_START ] && [ $hour -gt $DAY_START ]; then
         echo -e "$lightTheme"
     else
         echo -e "$darkTheme"

@@ -1,15 +1,21 @@
 [user]
-  name = Biggie Emmanuel
-  email = bigolu96@gmail.com
+    name = Biggie Emmanuel
+    email = bigolu96@gmail.com
 [core]
-  editor = vim
+    editor = vim
 [push]
-  default = current
+    default = current
+[diff]
+	tool = vimdiff
+[difftool]
+	prompt = false
 [alias]
-  all = add -A
-  p = pull
-  s = status
-  ss = status --short
-  c = commit
-  a = add
-  d = diff
+    all = add -A
+    p = pull
+    s = status
+    ss = status --short
+    c = commit
+    a = add
+    d = diff
+    undo = checkout --
+

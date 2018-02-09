@@ -82,8 +82,8 @@
 
 " Section: Aesthetics
 " -------------------
-
-    if strftime("%H") < $NIGHTTIME
+    let hour = 0 + strftime("%H")
+    if (hour < $NIGHT_START) && (hour > $DAY_START)
         set background=light
         colorscheme solarized
     else
@@ -98,8 +98,9 @@
         endif
     endif
 
-    " transparent status line
+    " transparent active/inactive status lines
     hi StatusLine ctermbg=NONE guibg=NONE cterm=NONE
+    hi StatusLineNC ctermbg=NONE guibg=NONE cterm=NONE
     
     " transparent gutter
     hi LineNR ctermbg=NONE
