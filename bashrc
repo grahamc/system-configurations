@@ -12,8 +12,9 @@ export MYSQL_PATH="/usr/local/mysql/bin"
 export PORT_PATH="/opt/local/bin"
 export SUMO_HOME="/opt/local/share/sumo"
 export RUST_PATH="$HOME/.cargo/bin"
+export FZF_PATH="/usr/local/opt/fzf/bin"
 export BASE_PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/opt/X11/bin"
-export PATH="$COREUTILS_PATH:$BASE_PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH"
+export PATH="$COREUTILS_PATH:$BASE_PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH:$FZF_PATH"
 
 # MANPATH
 export COREUTILS_MANPATH="/usr/local/opt/coreutils/libexec/gnuman"
@@ -25,9 +26,15 @@ export MANPATH="$BASE_MANPATH:$MACPORTS_PATH:$COREUTILS_MANPATH"
 export NIGHT_START=17
 export DAY_START=6
 export LESS="-Ri"
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
+export FZF_CTRL_T_OPTS='--preview "head -100 {}"'
 
 # autocomplete
 for f in /usr/local/etc/bash_completion.d/*; do source $f; done
+[[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.bash" 2> /dev/null
+
+# keybindings
+source "/usr/local/opt/fzf/shell/key-bindings.bash"
 
 # aliases
 shopt -s expand_aliases
@@ -38,12 +45,10 @@ alias df='df -h'
 alias du='du -h'
 alias gpip3='PIP_REQUIRE_VIRTUALENV="" pip3'
 alias r='. ~/.bashrc'
+alias ls='ls --color=auto -h -p'
+alias rg='rg --smart-case'
+alias c='clear'
 
-# sort ls output alphabetically (ignore case)
-sortls() {
-    command ls "$@" | sort -f | column
-}
-alias ls='sortls'
 
 # perform 'ls' after 'cd' if successful
 cdls() {

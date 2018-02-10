@@ -12,6 +12,7 @@
     set pastetoggle=<F2>
     set encoding=utf8
     let $BASH_ENV = "~/.bashrc"
+    set grepprg=rg\ --vimgrep
 
     " tab setup
     let tab_width = 4
@@ -46,6 +47,7 @@
     nnoremap <Leader>q :q<CR>
     nnoremap <Leader>x :x<CR>
     nnoremap <Leader>r :source $MYVIMRC<CR>
+    nnoremap <Leader>f :Find<CR>
 
     " remove all trailing whitespace
     nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
@@ -66,6 +68,12 @@
     Plugin 'altercation/vim-colors-solarized'
     Plugin 'w0rp/ale'
     Plugin 'airblade/vim-gitgutter'
+    Plugin 'junegunn/fzf.vim'
+        set rtp+=/usr/local/opt/fzf
+        command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading
+            \ --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*"
+            \ --color "always" '
+            \.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
     Plugin 'bigolu/vim-tmux-navigator'
     Plugin 'bigolu/nerdtree'
         let NERDTreeMouseMode=3
