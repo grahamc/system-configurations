@@ -26,8 +26,10 @@ export MANPATH="$BASE_MANPATH:$MACPORTS_PATH:$COREUTILS_MANPATH"
 export NIGHT_START=17
 export DAY_START=6
 export LESS="-Ri"
-export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
-export FZF_CTRL_T_OPTS='--preview "head -100 {}"'
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --glob "!.git/*"\
+    --glob "!venv/*" --glob "!node_modules/*"'
+export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --margin=5%,2%,5%,2%'
+export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 
 # autocomplete
 for f in /usr/local/etc/bash_completion.d/*; do source $f; done
@@ -35,6 +37,20 @@ for f in /usr/local/etc/bash_completion.d/*; do source $f; done
 
 # keybindings
 source "/usr/local/opt/fzf/shell/key-bindings.bash"
+bind '"\C-f":" \C-u \C-a\C-k`__fzf_select__`\e\C-e\C-y\C-a\C-y\ey\C-h\C-e\ef \C-h"'
+
+# pyenv init. use env var to prevent infinite loop
+# see: https://github.com/pyenv/pyenv/issues/264#issuecomment-358490657
+if [ -n "$PYENV_LOADING" ]; then
+    true
+else
+    if which pyenv > /dev/null 2>&1; then
+        export PYENV_LOADING="true"
+        eval "$(pyenv init -)"
+        eval "$(pyenv virtualenv-init -)"
+        unset PYENV_LOADING
+    fi
+fi
 
 # aliases
 shopt -s expand_aliases
@@ -43,12 +59,24 @@ alias grep='grep --color=auto'
 alias rm='trash-put'
 alias df='df -h'
 alias du='du -h'
-alias gpip3='PIP_REQUIRE_VIRTUALENV="" pip3'
+alias gpip='PIP_REQUIRE_VIRTUALENV="" pip'
 alias r='. ~/.bashrc'
 alias ls='ls --color=auto -h -p'
 alias rg='rg --smart-case'
 alias c='clear'
 
+# move file(s) to a trash directory
+trash() {
+    mv "$@" ~/.mytrash
+}
+alias trash='trash'
+
+# empty trash
+emptyTrash() {
+    "rm" -rf ~/.mytrash/
+    mkdir ~/.mytrash/
+}
+alias trash-empty='emptyTrash'
 
 # perform 'ls' after 'cd' if successful
 cdls() {
@@ -60,26 +88,31 @@ cdls() {
 }
 alias cd='cdls'
 
-# change colorscheme based on time of day
-colorUpdate() {
+# export env var signifying if it is currently daytime
+daytimeUpdate() {
     hour=`date +%H`
-    lightTheme=''
-    darkTheme=''
-
-    # adjust escape sequences if in a tmux session
-    if [ -n "$TMUX" ]; then
-        lightTheme='\033Ptmux;\033\033]50;SetColors=preset=Solarized Light\a\033\\'
-        darkTheme='\033Ptmux;\033\033]50;SetColors=preset=Nord\a\033\\'
-    else
-        lightTheme='\033]50;SetColors=preset=Solarized Light\a'
-        darkTheme='\033]50;SetColors=preset=Nord\a'
-    fi
     
     if [ $hour -lt $NIGHT_START ] && [ $hour -gt $DAY_START ]; then
-        echo -e "$lightTheme"
+        export IS_DAYTIME=1
     else
-        echo -e "$darkTheme"
+        export IS_DAYTIME=0
     fi
 }
-colorUpdate
+daytimeUpdate
+
+# change colorscheme based on time of day
+lightTheme=''
+darkTheme=''
+if [ -n "$TMUX" ]; then
+    lightTheme='\033Ptmux;\033\033]50;SetColors=preset=Solarized Light\a\033\\'
+    darkTheme='\033Ptmux;\033\033]50;SetColors=preset=Nord\a\033\\'
+else
+    lightTheme='\033]50;SetColors=preset=Solarized Light\a'
+    darkTheme='\033]50;SetColors=preset=Nord\a'
+fi
+if [ "$IS_DAYTIME" -eq "1" ]; then
+   echo -e "$lightTheme"
+else
+   echo -e "$darkTheme"
+fi 
 

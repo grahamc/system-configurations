@@ -13,6 +13,7 @@
     set encoding=utf8
     let $BASH_ENV = "~/.bashrc"
     set grepprg=rg\ --vimgrep
+    set colorcolumn=80
 
     " tab setup
     let tab_width = 4
@@ -47,7 +48,6 @@
     nnoremap <Leader>q :q<CR>
     nnoremap <Leader>x :x<CR>
     nnoremap <Leader>r :source $MYVIMRC<CR>
-    nnoremap <Leader>f :Find<CR>
 
     " remove all trailing whitespace
     nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
@@ -70,10 +70,21 @@
     Plugin 'airblade/vim-gitgutter'
     Plugin 'junegunn/fzf.vim'
         set rtp+=/usr/local/opt/fzf
-        command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading
-            \ --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!.git/*"
-            \ --color "always" '
-            \.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
+        function! FindLineResultHandler(result)
+            let filename = split(a:result, ':')[0]
+            execute "silent tabedit ".filename
+        endfunction
+        command! -bang -nargs=* FindLine call
+            \ fzf#vim#grep('rg --column --line-number --no-heading
+            \ --fixed-strings --ignore-case --no-ignore --hidden --follow
+            \ --glob "!.git/*" '.shellescape(<q-args>).'| tr -d "\017"', 1,
+            \ {'sink': function('FindLineResultHandler')}, <bang>0)
+        nnoremap <Leader>g :FindLine<CR>
+        command! -bang -nargs=* FindFile call
+            \ fzf#run(fzf#wrap({'source': 'rg --files --hidden --no-ignore
+            \ --follow --ignore-case --glob "!.git/*" | tr -d "\017"',
+            \ 'sink': 'tabedit'}))
+        nnoremap <Leader>f :FindFile<CR>
     Plugin 'bigolu/vim-tmux-navigator'
     Plugin 'bigolu/nerdtree'
         let NERDTreeMouseMode=3
@@ -81,7 +92,8 @@
             nnoremap <Leader>nt :NERDTreeTabsToggle<CR>
     Plugin 'Valloric/YouCompleteMe'
         let g:ycm_python_binary_path = 'python3'
-        let g:ycm_rust_src_path = '~/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/src/rust/src'
+        let g:ycm_rust_src_path = '~/.rustup/toolchains/
+            \stable-x86_64-apple-darwin/lib/rustlib/src/rust/src'
         let g:ycm_autoclose_preview_window_after_completion = 1
 
     call vundle#end()
@@ -90,8 +102,7 @@
 " Section: Aesthetics
 " -------------------
     " set colorscheme based on time of day
-    let hour = 0 + strftime("%H")
-    if (hour < $NIGHT_START) && (hour > $DAY_START)
+    if $IS_DAYTIME ==# "1"
         set background=light
         colorscheme solarized
     else
@@ -107,18 +118,18 @@
     endif
 
     " transparent active/inactive status lines
-    hi StatusLine ctermbg=NONE guibg=NONE cterm=NONE
-    hi StatusLineNC ctermbg=NONE guibg=NONE cterm=NONE
+    hi StatusLine ctermbg=NONE cterm=NONE
+    hi StatusLineNC ctermbg=NONE cterm=NONE
     
     " transparent gutter
     hi LineNR ctermbg=NONE
 
     " underline current line as opposed to highlighting
-    hi CursorLine gui=underline cterm=underline ctermfg=NONE guifg=NONE ctermbg=NONE guibg=NONE
+    hi CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
 
     " set vertical split bar to '|'
     set fillchars=vert:│
-    hi VertSplit ctermbg=NONE guibg=NONE
+    hi VertSplit ctermbg=NONE
 
 " Section: Autocommands
 " ---------------------
