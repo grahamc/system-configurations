@@ -56,7 +56,6 @@ fi
 shopt -s expand_aliases
 alias la='ls -A'
 alias grep='grep --color=auto'
-alias rm='trash-put'
 alias df='df -h'
 alias du='du -h'
 alias gpip='PIP_REQUIRE_VIRTUALENV="" pip'

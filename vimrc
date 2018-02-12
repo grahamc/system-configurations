@@ -118,18 +118,18 @@
     endif
 
     " transparent active/inactive status lines
-    hi StatusLine ctermbg=NONE cterm=NONE
-    hi StatusLineNC ctermbg=NONE cterm=NONE
+    hi StatusLine ctermbg=NONE cterm=NONE guibg=NONE
+    hi StatusLineNC ctermbg=NONE cterm=NONE guibg=NONE
     
     " transparent gutter
-    hi LineNR ctermbg=NONE
+    hi LineNR ctermbg=NONE guibg=NONE
 
     " underline current line as opposed to highlighting
-    hi CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
+    hi CursorLine cterm=underline ctermfg=NONE ctermbg=NONE guibg=NONE
 
     " set vertical split bar to '|'
     set fillchars=vert:│
-    hi VertSplit ctermbg=NONE
+    hi VertSplit ctermbg=NONE guibg=NONE
 
 " Section: Autocommands
 " ---------------------
