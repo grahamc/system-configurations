@@ -1,7 +1,7 @@
 # prompt (ezprompt.net)
 function parse_git_branch() {
 	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
-	echo "${BRANCH}"
+    echo "${BRANCH}"
 }
 PS1="\[\e[32m\]╭─\[\e[m\]\`parse_git_branch\`\[\e[35m\]|\[\e[m\]\u@\h\[\e[34m\]|\[\e[m\]\w\n\[\e[32m\]╰\[\e[m\]"
 

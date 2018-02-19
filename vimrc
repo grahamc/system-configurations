@@ -66,6 +66,8 @@
     Plugin 'VundleVim/Vundle.vim'
     Plugin 'sheerun/vim-polyglot'
     Plugin 'arcticicestudio/nord-vim'
+        let g:nord_italic = 1
+        let g:nord_italic_comments = 1
     Plugin 'altercation/vim-colors-solarized'
     Plugin 'airblade/vim-gitgutter'
     Plugin 'bigolu/vim-tmux-navigator'
@@ -112,6 +114,7 @@
             let g:nord_comment_brightness=20
             colorscheme nord
         else
+            set background=dark
             colorscheme nord
             hi Comment ctermfg=3
         endif
