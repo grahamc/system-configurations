@@ -3,7 +3,7 @@ function parse_git_branch() {
 	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 	echo "${BRANCH}"
 }
-PS1="\[\e[35m\]╭─\`parse_git_branch\`|\u@\h|\w\n╰\[\e[m\]"
+PS1="\[\e[32m\]╭─\[\e[m\]\`parse_git_branch\`\[\e[35m\]|\[\e[m\]\u@\h\[\e[34m\]|\[\e[m\]\w\n\[\e[32m\]╰\[\e[m\]"
 
 # PATH
 export GOPATH="/usr/local/go/bin"
@@ -24,12 +24,16 @@ export MANPATH="$BASE_MANPATH:$MACPORTS_PATH:$COREUTILS_MANPATH"
 
 # other env vars
 export NIGHT_START=17
-export DAY_START=6
+export DAY_START=7
 export LESS="-Ri"
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --glob "!.git/*"\
     --glob "!venv/*" --glob "!node_modules/*"'
 export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --margin=5%,2%,5%,2%'
 export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+# dircolors
+eval `dircolors -b ~/.nord-dir-colors`
 
 # autocomplete
 for f in /usr/local/etc/bash_completion.d/*; do source $f; done
@@ -58,7 +62,6 @@ alias la='ls -A'
 alias grep='grep --color=auto'
 alias df='df -h'
 alias du='du -h'
-alias gpip='PIP_REQUIRE_VIRTUALENV="" pip'
 alias r='. ~/.bashrc'
 alias ls='ls --color=auto -h -p'
 alias rg='rg --smart-case'
@@ -92,7 +95,7 @@ daytimeUpdate() {
     hour=`date +%H`
     
     if [ $hour -lt $NIGHT_START ] && [ $hour -gt $DAY_START ]; then
-        export IS_DAYTIME=1
+        export IS_DAYTIME=0
     else
         export IS_DAYTIME=0
     fi

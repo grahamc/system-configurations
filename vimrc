@@ -46,6 +46,7 @@
     nnoremap <Leader>\ :nohl<CR>
     nnoremap <Leader>w :wa<CR>
     nnoremap <Leader>q :q<CR>
+    nnoremap <Leader>qa :qa<CR>
     nnoremap <Leader>x :x<CR>
     nnoremap <Leader>r :source $MYVIMRC<CR>
 
@@ -66,8 +67,17 @@
     Plugin 'sheerun/vim-polyglot'
     Plugin 'arcticicestudio/nord-vim'
     Plugin 'altercation/vim-colors-solarized'
-    Plugin 'w0rp/ale'
     Plugin 'airblade/vim-gitgutter'
+    Plugin 'bigolu/vim-tmux-navigator'
+    Plugin 'bigolu/nerdtree'
+        let NERDTreeMouseMode=3
+        Plugin 'jistr/vim-nerdtree-tabs'
+            nnoremap <Leader>nt :NERDTreeTabsToggle<CR>
+    Plugin 'Valloric/YouCompleteMe'
+        let g:ycm_python_binary_path = 'python3'
+        let g:ycm_rust_src_path = '~/.rustup/toolchains/
+            \stable-x86_64-apple-darwin/lib/rustlib/src/rust/src'
+        let g:ycm_autoclose_preview_window_after_completion = 1
     Plugin 'junegunn/fzf.vim'
         set rtp+=/usr/local/opt/fzf
         function! FindLineResultHandler(result)
@@ -85,16 +95,6 @@
             \ --follow --ignore-case --glob "!.git/*" | tr -d "\017"',
             \ 'sink': 'tabedit'}))
         nnoremap <Leader>f :FindFile<CR>
-    Plugin 'bigolu/vim-tmux-navigator'
-    Plugin 'bigolu/nerdtree'
-        let NERDTreeMouseMode=3
-        Plugin 'jistr/vim-nerdtree-tabs'
-            nnoremap <Leader>nt :NERDTreeTabsToggle<CR>
-    Plugin 'Valloric/YouCompleteMe'
-        let g:ycm_python_binary_path = 'python3'
-        let g:ycm_rust_src_path = '~/.rustup/toolchains/
-            \stable-x86_64-apple-darwin/lib/rustlib/src/rust/src'
-        let g:ycm_autoclose_preview_window_after_completion = 1
 
     call vundle#end()
     filetype plugin indent on
