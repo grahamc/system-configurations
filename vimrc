@@ -65,14 +65,14 @@
 
     Plugin 'VundleVim/Vundle.vim'
     Plugin 'sheerun/vim-polyglot'
+    Plugin 'airblade/vim-gitgutter'
+    Plugin 'bigolu/vim-tmux-navigator'
+    Plugin 'altercation/vim-colors-solarized'
     Plugin 'arcticicestudio/nord-vim'
         let g:nord_italic = 1
         let g:nord_italic_comments = 1
-    Plugin 'altercation/vim-colors-solarized'
-    Plugin 'airblade/vim-gitgutter'
-    Plugin 'bigolu/vim-tmux-navigator'
     Plugin 'bigolu/nerdtree'
-        let NERDTreeMouseMode=3
+        let NERDTreeMouseMode=2
         Plugin 'jistr/vim-nerdtree-tabs'
             nnoremap <Leader>nt :NERDTreeTabsToggle<CR>
     Plugin 'Valloric/YouCompleteMe'

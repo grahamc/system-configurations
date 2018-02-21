@@ -69,7 +69,7 @@ alias c='clear'
 
 # move file(s) to a trash directory
 trash() {
-    mv "$@" ~/.mytrash
+    mv -f "$@" ~/.mytrash
 }
 alias trash='trash'
 
@@ -117,4 +117,9 @@ if [ "$IS_DAYTIME" -eq "1" ]; then
 else
    echo -e "$darkTheme"
 fi 
+
+# start in tmux
+if [[ -z "$TMUX" ]]; then
+    tmux attach -t random
+fi
 
