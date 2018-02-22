@@ -5,6 +5,8 @@ function parse_git_branch() {
 }
 PS1="\[\e[32m\]╭─\[\e[m\]\`parse_git_branch\`\[\e[35m\]|\[\e[m\]\u@\h\[\e[34m\]|\[\e[m\]\W\n\[\e[32m\]╰\[\e[m\]"
 
+export PROMPT_COMMAND=". automount.sh;"
+
 # PATH
 export GOPATH="/usr/local/go/bin"
 export COREUTILS_PATH="/usr/local/opt/coreutils/libexec/gnubin"
