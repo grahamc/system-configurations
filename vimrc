@@ -14,6 +14,7 @@
     let $BASH_ENV = "~/.bashrc"
     set grepprg=rg\ --vimgrep
     set colorcolumn=80
+    set ls=2
 
     " tab setup
     let tab_width = 4
@@ -56,6 +57,11 @@
     " Shift line up or down
     noremap <C-u> ddp
     noremap <C-i> ddkkp
+
+    " open :help in a new tab
+    cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab h' : 'tab h'
+    cnoreabbrev <expr> help getcmdtype() == ":" && getcmdline() == 'help' ? 'tab h' : 'tab h'
+
 
 " Section: Plugins
 " ------------------------------------
@@ -119,10 +125,6 @@
             hi Comment ctermfg=3
         endif
     endif
-
-    " transparent active/inactive status lines
-    hi StatusLine ctermbg=NONE cterm=NONE guibg=NONE
-    hi StatusLineNC ctermbg=NONE cterm=NONE guibg=NONE
     
     " transparent gutter
     hi LineNR ctermbg=NONE guibg=NONE
@@ -133,6 +135,44 @@
     " set vertical split bar to '|'
     set fillchars=vert:│
     hi VertSplit ctermbg=NONE guibg=NONE
+
+    " status line (mostly stolen)
+    " https://www.linux.com/news/more-informative-status-line-vim
+    set statusline=%{&ff}\ \ \ %Y\ \ \ %F%m%r%h%w%=%04l,%04v\ \ \ %L
+    hi StatusLine guibg=#3B4252
+
+    " tabline (mostly stolen): https://github.com/mkitt/tabline.vim
+    function! Tabline()
+      let s = ''
+      for i in range(tabpagenr('$'))
+        let tab = i + 1
+        let winnr = tabpagewinnr(tab)
+        let buflist = tabpagebuflist(tab)
+        let bufnr = buflist[winnr - 1]
+        let bufname = bufname(bufnr)
+        let bufmodified = getbufvar(bufnr, "&mod")
+
+        let s .= '%' . tab . 'T'
+        let s .= tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#'
+        let s .= bufname != '' ? fnamemodify(bufname, ':t') . ' '
+            \ : '[No Name] '
+
+        if bufmodified
+          let s .= '[+] '
+        endif
+
+        if i < (tabpagenr('$') - 1)
+            let s .= '%#TabLine#│ '
+        endif
+      endfor
+
+      let s .= '%#TabLineFill#%=%999XX'
+      return s
+    endfunction
+    set tabline=%!Tabline()
+    hi TabLine ctermfg=NONE ctermbg=NONE
+    hi TabLineFill ctermfg=NONE ctermbg=NONE
+    hi TabLineSel ctermfg=NONE ctermbg=NONE guibg=#3B4252
 
 " Section: Autocommands
 " ---------------------

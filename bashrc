@@ -120,8 +120,3 @@ else
    echo -e "$darkTheme"
 fi 
 
-# start in tmux
-if [[ -z "$TMUX" ]]; then
-    tmux attach -t random
-fi
-
