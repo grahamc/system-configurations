@@ -5,7 +5,7 @@ function parse_git_branch() {
 }
 PS1="\[\e[32m\]╭─\[\e[m\]\`parse_git_branch\`\[\e[35m\]|\[\e[m\]\u@\h\[\e[34m\]|\[\e[m\]\W\n\[\e[32m\]╰\[\e[m\]"
 
-export PROMPT_COMMAND=". automount.sh;"
+export PROMPT_COMMAND=". automount.sh"
 
 # PATH
 export GOPATH="/usr/local/go/bin"
@@ -15,8 +15,9 @@ export PORT_PATH="/opt/local/bin"
 export SUMO_HOME="/opt/local/share/sumo"
 export RUST_PATH="$HOME/.cargo/bin"
 export FZF_PATH="/usr/local/opt/fzf/bin"
+export PYENV_ROOT="$HOME/.pyenv"
 export BASE_PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/opt/X11/bin"
-export PATH="$COREUTILS_PATH:$BASE_PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH:$FZF_PATH"
+export PATH="$PYENV_ROOT/bin:$COREUTILS_PATH:$BASE_PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH:$FZF_PATH"
 
 # MANPATH
 export COREUTILS_MANPATH="/usr/local/opt/coreutils/libexec/gnuman"
@@ -59,7 +60,6 @@ else
 fi
 
 # aliases
-shopt -s expand_aliases
 alias la='ls -A'
 alias grep='grep --color=auto'
 alias df='df -h'
@@ -68,6 +68,7 @@ alias r='. ~/.bashrc'
 alias ls='ls --color=auto -h -p'
 alias rg='rg --smart-case'
 alias c='clear'
+alias wp='pyenv which python'
 
 # move file(s) to a trash directory
 trash() {
@@ -92,19 +93,11 @@ cdls() {
 }
 alias cd='cdls'
 
-# export env var signifying if it is currently daytime
-daytimeUpdate() {
-    hour=`date +%H`
-    
-    if [ $hour -lt $NIGHT_START ] && [ $hour -gt $DAY_START ]; then
-        export IS_DAYTIME=0
-    else
-        export IS_DAYTIME=0
-    fi
-}
-daytimeUpdate
+# export env var signifying whether to use a light or dark theme
+# 0 = dark, 1 = light
+export THEME_TYPE=0
 
-# change colorscheme based on time of day
+# change colorscheme based on env var above
 lightTheme=''
 darkTheme=''
 if [ -n "$TMUX" ]; then
@@ -114,7 +107,7 @@ else
     lightTheme='\033]50;SetColors=preset=Solarized Light\a'
     darkTheme='\033]50;SetColors=preset=Nord\a'
 fi
-if [ "$IS_DAYTIME" -eq "1" ]; then
+if [ "$THEME_TYPE" -eq "1" ]; then
    echo -e "$lightTheme"
 else
    echo -e "$darkTheme"

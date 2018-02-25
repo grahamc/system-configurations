@@ -1,8 +1,9 @@
-" Section: General Settings
-" ----------------------
-    " stops vim from behaving in a strongly vi-compatible way
-    set nocompatible
+" stops vim from behaving in a strongly vi-compatible way
+set nocompatible
 
+" Section: Settings
+" ----------------------
+    " misc.
     syntax enable
     set ruler
     set mouse=a
@@ -11,10 +12,10 @@
     set cursorline
     set pastetoggle=<F2>
     set encoding=utf8
-    let $BASH_ENV = "~/.bashrc"
     set grepprg=rg\ --vimgrep
     set colorcolumn=80
     set ls=2
+    set showtabline=2
 
     " tab setup
     let tab_width = 4
@@ -42,7 +43,6 @@
 " Section: Mappings
 " -----------------
     let mapleader = "\<Space>"
-
     inoremap jk <Esc>
     nnoremap <Leader>\ :nohl<CR>
     nnoremap <Leader>w :wa<CR>
@@ -50,6 +50,7 @@
     nnoremap <Leader>qa :qa<CR>
     nnoremap <Leader>x :x<CR>
     nnoremap <Leader>r :source $MYVIMRC<CR>
+    nnoremap <Leader>t :set list!<CR>
 
     " remove all trailing whitespace
     nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
@@ -59,9 +60,23 @@
     noremap <C-i> ddkkp
 
     " open :help in a new tab
-    cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab h' : 'tab h'
-    cnoreabbrev <expr> help getcmdtype() == ":" && getcmdline() == 'help' ? 'tab h' : 'tab h'
+    cnoreabbrev <expr> h
+        \ getcmdtype() == ":" && getcmdline() == 'h' ? 'tab h' : 'tab h'
+    cnoreabbrev <expr> help
+        \ getcmdtype() == ":" && getcmdline() == 'help' ? 'tab h' : 'tab h'
 
+" Section: Autocommands
+" ---------------------
+    " Always restore last cursor position
+    if has("autocmd")
+        augroup restoreCursor
+            autocmd!
+            autocmd BufReadPost *
+                        \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+                        \   exe "normal! g'\"" |
+                        \ endif
+        augroup END
+    endif
 
 " Section: Plugins
 " ------------------------------------
@@ -72,17 +87,19 @@
     Plugin 'VundleVim/Vundle.vim'
     Plugin 'sheerun/vim-polyglot'
     Plugin 'airblade/vim-gitgutter'
-    Plugin 'bigolu/vim-tmux-navigator'
     Plugin 'altercation/vim-colors-solarized'
-    Plugin 'arcticicestudio/nord-vim'
-        let g:nord_italic = 1
-        let g:nord_italic_comments = 1
+    Plugin 'w0rp/ale'
+    Plugin 'bigolu/vim-tmux-navigator'
+    Plugin 'bigolu/tabline.vim'
     Plugin 'bigolu/nerdtree'
         let NERDTreeMouseMode=2
         Plugin 'jistr/vim-nerdtree-tabs'
             nnoremap <Leader>nt :NERDTreeTabsToggle<CR>
+    Plugin 'bigolu/nord-vim'
+        let g:nord_italic = 1
+        let g:nord_italic_comments = 1
     Plugin 'Valloric/YouCompleteMe'
-        let g:ycm_python_binary_path = 'python3'
+        let g:ycm_python_binary_path = 'python'
         let g:ycm_rust_src_path = '~/.rustup/toolchains/
             \stable-x86_64-apple-darwin/lib/rustlib/src/rust/src'
         let g:ycm_autoclose_preview_window_after_completion = 1
@@ -108,13 +125,14 @@
     filetype plugin indent on
 
 " Section: Aesthetics
-" -------------------
-    " set colorscheme based on time of day
-    if $IS_DAYTIME ==# "1"
+" ----------------------
+    " set colorscheme based on env var exported from ~/.bashrc
+    if $THEME_TYPE ==# "1"
         set background=light
         colorscheme solarized
     else
-        " comment color
+        " use bright grey comment color if `truecolor` is availible
+        " else, use yellow
         if $COLORTERM =~ "truecolor" || $COLORTERM =~ "24bit"
             set termguicolors
             let g:nord_comment_brightness=20
@@ -125,65 +143,14 @@
             hi Comment ctermfg=3
         endif
     endif
-    
-    " transparent gutter
-    hi LineNR ctermbg=NONE guibg=NONE
-
-    " underline current line as opposed to highlighting
-    hi CursorLine cterm=underline ctermfg=NONE ctermbg=NONE guibg=NONE
-
-    " set vertical split bar to '|'
-    set fillchars=vert:│
-    hi VertSplit ctermbg=NONE guibg=NONE
 
     " status line (mostly stolen)
     " https://www.linux.com/news/more-informative-status-line-vim
     set statusline=%{&ff}\ \ \ %Y\ \ \ %F%m%r%h%w%=%04l,%04v\ \ \ %L
-    hi StatusLine guibg=#3B4252
 
-    " tabline (mostly stolen): https://github.com/mkitt/tabline.vim
-    function! Tabline()
-      let s = ''
-      for i in range(tabpagenr('$'))
-        let tab = i + 1
-        let winnr = tabpagewinnr(tab)
-        let buflist = tabpagebuflist(tab)
-        let bufnr = buflist[winnr - 1]
-        let bufname = bufname(bufnr)
-        let bufmodified = getbufvar(bufnr, "&mod")
+    " a nice, thin vertical split line
+    set fillchars=vert:│
 
-        let s .= '%' . tab . 'T'
-        let s .= tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#'
-        let s .= bufname != '' ? fnamemodify(bufname, ':t') . ' '
-            \ : '[No Name] '
-
-        if bufmodified
-          let s .= '[+] '
-        endif
-
-        if i < (tabpagenr('$') - 1)
-            let s .= '%#TabLine#│ '
-        endif
-      endfor
-
-      let s .= '%#TabLineFill#%=%999XX'
-      return s
-    endfunction
-    set tabline=%!Tabline()
-    hi TabLine ctermfg=NONE ctermbg=NONE
-    hi TabLineFill ctermfg=NONE ctermbg=NONE
-    hi TabLineSel ctermfg=NONE ctermbg=NONE guibg=#3B4252
-
-" Section: Autocommands
-" ---------------------
-    " Always restore last cursor position
-    if has("autocmd")
-        augroup restoreCursor
-            autocmd!
-            autocmd BufReadPost *
-                        \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-                        \   exe "normal! g'\"" |
-                        \ endif
-        augroup END
-    endif
+    " characters to substitute for unprintable characters
+    set listchars=tab:¬-,space:·
 
