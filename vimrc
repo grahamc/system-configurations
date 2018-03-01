@@ -13,9 +13,7 @@ set nocompatible
     set pastetoggle=<F2>
     set encoding=utf8
     set grepprg=rg\ --vimgrep
-    set colorcolumn=80
     set ls=2
-    set showtabline=2
 
     " tab setup
     let tab_width = 4
@@ -67,14 +65,20 @@ set nocompatible
 
 " Section: Autocommands
 " ---------------------
-    " Always restore last cursor position
     if has("autocmd")
+        " Always restore last cursor position
         augroup restoreCursor
             autocmd!
             autocmd BufReadPost *
                         \ if line("'\"") > 0 && line ("'\"") <= line("$") |
                         \   exe "normal! g'\"" |
                         \ endif
+        augroup END
+
+        " Highlight lines longer than 80 chars
+        augroup vimrc_autocmds
+            autocmd BufEnter * highlight OverLength ctermbg=darkgrey guibg=#4C566A
+            autocmd BufEnter * match OverLength /\%80v.*/
         augroup END
     endif
 
