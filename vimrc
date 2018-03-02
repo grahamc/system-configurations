@@ -76,9 +76,9 @@ set nocompatible
         augroup END
 
         " Highlight lines longer than 80 chars
-        augroup vimrc_autocmds
-            autocmd BufEnter * highlight OverLength ctermbg=darkgrey guibg=#4C566A
-            autocmd BufEnter * match OverLength /\%80v.*/
+        augroup highlightLongLines
+            autocmd BufEnter * highlight Long ctermbg=darkgrey guibg=#4C566A
+            autocmd BufEnter * match Long /\%81v.*/
         augroup END
     endif
 
@@ -109,19 +109,24 @@ set nocompatible
         let g:ycm_autoclose_preview_window_after_completion = 1
     Plugin 'junegunn/fzf.vim'
         set rtp+=/usr/local/opt/fzf
+        let fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
+        let fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
+        " recursive grep
         function! FindLineResultHandler(result)
             let filename = split(a:result, ':')[0]
             execute "silent tabedit ".filename
         endfunction
         command! -bang -nargs=* FindLine call
-            \ fzf#vim#grep('rg --column --line-number --no-heading
-            \ --fixed-strings --ignore-case --no-ignore --hidden --follow
-            \ --glob "!.git/*" '.shellescape(<q-args>).'| tr -d "\017"', 1,
-            \ {'sink': function('FindLineResultHandler')}, <bang>0)
+            \ fzf#vim#grep(
+            \ fzfFindLineCommand.' '.shellescape(<q-args>).' | tr -d "\017"',
+            \ 1,
+            \ {'sink': function('FindLineResultHandler')},
+            \ <bang>0)
         nnoremap <Leader>g :FindLine<CR>
+        " recursive file search
         command! -bang -nargs=* FindFile call
-            \ fzf#run(fzf#wrap({'source': 'rg --files --hidden --no-ignore
-            \ --follow --ignore-case --glob "!.git/*" | tr -d "\017"',
+            \ fzf#run(fzf#wrap({
+            \ 'source': fzfFindFileCommand.' | tr -d "\017"',
             \ 'sink': 'tabedit'}))
         nnoremap <Leader>f :FindFile<CR>
 
@@ -148,8 +153,7 @@ set nocompatible
         endif
     endif
 
-    " status line (mostly stolen)
-    " https://www.linux.com/news/more-informative-status-line-vim
+    " status line
     set statusline=%{&ff}\ \ \ %Y\ \ \ %F%m%r%h%w%=%04l,%04v\ \ \ %L
 
     " a nice, thin vertical split line

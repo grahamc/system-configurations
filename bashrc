@@ -3,7 +3,13 @@ function parse_git_branch() {
 	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
     echo "${BRANCH}"
 }
-PS1="\[\e[32m\]╭─\[\e[m\]\`parse_git_branch\`\[\e[35m\]|\[\e[m\]\u@\h\[\e[34m\]|\[\e[m\]\W\n\[\e[32m\]╰\[\e[m\]"
+PS1="\[\e[32m\]╭─\[\e[m\]\
+\`parse_git_branch\`\[\e[35m\]\
+|\
+\[\e[m\]\u@\h\[\e[34m\]\
+|\
+\[\e[m\]\W\n\
+\[\e[32m\]╰\[\e[m\]"
 
 export PROMPT_COMMAND=". automount.sh"
 
@@ -26,11 +32,12 @@ export BASE_MANPATH="/usr/share/man:/usr/local/share/man:/usr/X11/share/man"
 export MANPATH="$BASE_MANPATH:$MACPORTS_PATH:$COREUTILS_MANPATH"
 
 # other env vars
-export NIGHT_START=17
-export DAY_START=7
 export LESS="-Ri"
-export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --glob "!.git/*"\
-    --glob "!venv/*" --glob "!node_modules/*"'
+export FZF_RG_OPTIONS='--column --line-number --no-heading --fixed-strings \
+    --ignore-case --no-ignore --hidden --glob "!.git/*" \
+    --glob "!mozilla-unified/*" --glob "!.mozbuild/*" --glob "!venv/*" \
+    --glob "!.pyenv/*"'
+export FZF_DEFAULT_COMMAND="rg $FZF_RG_OPTIONS --files"
 export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --margin=5%,2%,5%,2%'
 export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export VIRTUAL_ENV_DISABLE_PROMPT=1
