@@ -1,9 +1,10 @@
-" stops vim from behaving in a strongly vi-compatible way
-set nocompatible
-
 " Section: Settings
 " ----------------------
+    " stops vim from behaving in a strongly vi-compatible way
+    set nocompatible
+
     " misc.
+    set encoding=utf8
     syntax enable
     set ruler
     set mouse=a
@@ -11,13 +12,11 @@ set nocompatible
     set linebreak
     set cursorline
     set pastetoggle=<F2>
-    set encoding=utf8
-    set grepprg=rg\ --vimgrep
     set ls=2
 
     " tab setup
-    let tab_width = 4
     set expandtab
+    let tab_width = 4
     let &tabstop = tab_width
     let &shiftwidth = tab_width
     let &softtabstop = tab_width
@@ -49,6 +48,7 @@ set nocompatible
     nnoremap <Leader>x :x<CR>
     nnoremap <Leader>r :source $MYVIMRC<CR>
     nnoremap <Leader>t :set list!<CR>
+    nnoremap <Leader>go :Goyo<CR>
 
     " remove all trailing whitespace
     nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
@@ -93,6 +93,7 @@ set nocompatible
     Plugin 'airblade/vim-gitgutter'
     Plugin 'altercation/vim-colors-solarized'
     Plugin 'w0rp/ale'
+    Plugin 'junegunn/goyo.vim'
     Plugin 'bigolu/vim-tmux-navigator'
     Plugin 'bigolu/tabline.vim'
     Plugin 'bigolu/nerdtree'

@@ -36,11 +36,15 @@ export LESS="-Ri"
 export FZF_RG_OPTIONS='--column --line-number --no-heading --fixed-strings \
     --ignore-case --no-ignore --hidden --glob "!.git/*" \
     --glob "!mozilla-unified/*" --glob "!.mozbuild/*" --glob "!venv/*" \
-    --glob "!.pyenv/*"'
+    --glob "!.pyenv/*" --glob "!Library/*" --glob "!.vim/*" --glob "!.tmux/*" \
+    --glob "!.zeppelin/*" --glob "!.mytrash/*" --glob "!.npm/*" \
+    --glob "!.vscode/*" --glob "!.cargo/*" --glob "!.rustup/*" \
+    --glob "!Downloads/*" --glob "!node_modules/*" --glob "!doc/*"'
 export FZF_DEFAULT_COMMAND="rg $FZF_RG_OPTIONS --files"
 export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --margin=5%,2%,5%,2%'
 export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export VIRTUAL_ENV_DISABLE_PROMPT=1
+export PYTHON_CONFIGURE_OPTS="--enable-framework"
 
 # dircolors
 eval `dircolors -b ~/.nord-dir-colors`
