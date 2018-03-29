@@ -11,8 +11,6 @@ PS1="\[\e[32m\]╭─\[\e[m\]\
 \[\e[m\]\W\n\
 \[\e[32m\]╰\[\e[m\]"
 
-export PROMPT_COMMAND=". automount.sh"
-
 # PATH
 export GOPATH="/usr/local/go/bin"
 export COREUTILS_PATH="/usr/local/opt/coreutils/libexec/gnubin"
@@ -22,8 +20,9 @@ export SUMO_HOME="/opt/local/share/sumo"
 export RUST_PATH="$HOME/.cargo/bin"
 export FZF_PATH="/usr/local/opt/fzf/bin"
 export PYENV_ROOT="$HOME/.pyenv"
+export GLOBAL_NPM_PACKAGES="$HOME/node_modules/.bin"
 export BASE_PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/opt/X11/bin"
-export PATH="$PYENV_ROOT/bin:$COREUTILS_PATH:$BASE_PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH:$FZF_PATH"
+export PATH="$PYENV_ROOT/bin:$COREUTILS_PATH:$BASE_PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH:$FZF_PATH:$GLOBAL_NPM_PACKAGES"
 
 # MANPATH
 export COREUTILS_MANPATH="/usr/local/opt/coreutils/libexec/gnuman"
@@ -45,6 +44,7 @@ export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --m
 export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export PYTHON_CONFIGURE_OPTS="--enable-framework"
+export NVM_DIR="$HOME/.nvm"
 
 # dircolors
 eval `dircolors -b ~/.nord-dir-colors`
@@ -52,6 +52,7 @@ eval `dircolors -b ~/.nord-dir-colors`
 # autocomplete
 for f in /usr/local/etc/bash_completion.d/*; do source $f; done
 [[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.bash" 2> /dev/null
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # keybindings
 source "/usr/local/opt/fzf/shell/key-bindings.bash"
@@ -69,6 +70,9 @@ else
         unset PYENV_LOADING
     fi
 fi
+
+# nvm init
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
 # aliases
 alias la='ls -A'
@@ -123,4 +127,15 @@ if [ "$THEME_TYPE" -eq "1" ]; then
 else
    echo -e "$darkTheme"
 fi 
+
+# autostart vim with Obsession
+function vim() {
+    if test $# -gt 0; then
+        env vim "$@"
+    elif test -f Session.vim; then
+        env vim -S
+    else
+        env vim -c Obsession
+    fi
+}
 

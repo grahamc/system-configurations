@@ -6,13 +6,14 @@
     " misc.
     set encoding=utf8
     syntax enable
-    set ruler
     set mouse=a
     set backspace=indent,eol,start
     set linebreak
     set cursorline
     set pastetoggle=<F2>
     set ls=2
+    set nu
+    set relativenumber
 
     " tab setup
     set expandtab
@@ -33,7 +34,7 @@
     " open new panes to the right and bottom respectively
     set splitright
     set splitbelow
-    
+
     " enable mouse mode while in tmux
     let &ttymouse = has("mouse_sgr") ? "sgr" : "xterm2"
 
@@ -59,9 +60,9 @@
 
     " open :help in a new tab
     cnoreabbrev <expr> h
-        \ getcmdtype() == ":" && getcmdline() == 'h' ? 'tab h' : 'tab h'
+        \ getcmdtype() == ":" && getcmdline() == 'h' ? 'tab h' : 'h'
     cnoreabbrev <expr> help
-        \ getcmdtype() == ":" && getcmdline() == 'help' ? 'tab h' : 'tab h'
+        \ getcmdtype() == ":" && getcmdline() == 'help' ? 'tab h' : 'help'
 
 " Section: Autocommands
 " ---------------------
@@ -94,8 +95,19 @@
     Plugin 'altercation/vim-colors-solarized'
     Plugin 'w0rp/ale'
     Plugin 'junegunn/goyo.vim'
+    Plugin 'tpope/vim-surround'
+    Plugin 'tpope/vim-commentary'
     Plugin 'bigolu/vim-tmux-navigator'
+    Plugin 'tpope/vim-obsession'
     Plugin 'bigolu/tabline.vim'
+    Plugin 'valloric/MatchTagAlways'
+    let g:mta_filetypes = {
+        \ 'html' : 1,
+        \ 'xml' : 1,
+        \ 'xhtml' : 1,
+        \ 'jinja' : 1,
+        \ 'javascript.jsx' : 1
+    \}
     Plugin 'bigolu/nerdtree'
         let NERDTreeMouseMode=2
         Plugin 'jistr/vim-nerdtree-tabs'
