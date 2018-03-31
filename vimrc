@@ -78,8 +78,20 @@
 
         " Highlight lines longer than 80 chars
         augroup highlightLongLines
-            autocmd BufEnter * highlight Long ctermbg=darkgrey guibg=#4C566A
-            autocmd BufEnter * match Long /\%81v.*/
+            autocmd BufEnter * match TabLineSel /\%81v.*/
+        augroup END
+
+        " Auto load/create Session when no cmdline args are specified
+        augroup sessionManager
+            autocmd VimEnter *
+                \ let vimCommand = system("ps -o command= -p ".getpid()) |
+                \ let vimArgs = split(vimCommand)[1:] |
+                \ if len(vimArgs) == 0 |
+                \   let sessionDir = "~/.vim/sessions/" |
+                \   let sessionFile = expand(sessionDir.join(split(getcwd(), "/"), ".").".vim") |
+                \   let sessionCmd = filereadable(sessionFile) ? "source " : "Obsession " |
+                \   execute sessionCmd . sessionFile |
+                \ fi
         augroup END
     endif
 
@@ -92,7 +104,7 @@
     Plugin 'VundleVim/Vundle.vim'
     Plugin 'sheerun/vim-polyglot'
     Plugin 'airblade/vim-gitgutter'
-    Plugin 'altercation/vim-colors-solarized'
+    Plugin 'bigolu/vim-colors-solarized'
     Plugin 'w0rp/ale'
     Plugin 'junegunn/goyo.vim'
     Plugin 'tpope/vim-surround'
@@ -126,8 +138,11 @@
         let fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
         " recursive grep
         function! FindLineResultHandler(result)
-            let filename = split(a:result, ':')[0]
+            let resultTokens = split(a:result, ':')
+            let filename = resultTokens[0]
+            let lineNumber = str2nr(resultTokens[1], 10)
             execute "silent tabedit ".filename
+            execute "".lineNumber
         endfunction
         command! -bang -nargs=* FindLine call
             \ fzf#vim#grep(

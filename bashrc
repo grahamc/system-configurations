@@ -51,28 +51,33 @@ eval `dircolors -b ~/.nord-dir-colors`
 
 # autocomplete
 for f in /usr/local/etc/bash_completion.d/*; do source $f; done
-[[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.bash" 2> /dev/null
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-# keybindings
-source "/usr/local/opt/fzf/shell/key-bindings.bash"
-bind '"\C-f":" \C-u \C-a\C-k`__fzf_select__`\e\C-e\C-y\C-a\C-y\ey\C-h\C-e\ef \C-h"'
+#fzf
+    # keybindings
+    source "/usr/local/opt/fzf/shell/key-bindings.bash"
+    bind '"\C-f":" \C-u \C-a\C-k`__fzf_select__`\e\C-e\C-y\C-a\C-y\ey\C-h\C-e\ef \C-h"'
+    # completion
+    [[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.bash" 2> /dev/null
 
-# pyenv init. use env var to prevent infinite loop
-# see: https://github.com/pyenv/pyenv/issues/264#issuecomment-358490657
-if [ -n "$PYENV_LOADING" ]; then
-    true
-else
-    if which pyenv > /dev/null 2>&1; then
-        export PYENV_LOADING="true"
-        eval "$(pyenv init -)"
-        eval "$(pyenv virtualenv-init -)"
-        unset PYENV_LOADING
+# pyenv
+    # use env var to prevent infinite loop on init
+    # see: https://github.com/pyenv/pyenv/issues/264#issuecomment-358490657
+    if [ -n "$PYENV_LOADING" ]; then
+        true
+    else
+        if which pyenv > /dev/null 2>&1; then
+            export PYENV_LOADING="true"
+            eval "$(pyenv init -)"
+            eval "$(pyenv virtualenv-init -)"
+            unset PYENV_LOADING
+        fi
     fi
-fi
 
-# nvm init
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+# nvm
+    # init
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    # completion
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # aliases
 alias la='ls -A'
@@ -84,19 +89,6 @@ alias ls='ls --color=auto -h -p'
 alias rg='rg --smart-case'
 alias c='clear'
 alias wp='pyenv which python'
-
-# move file(s) to a trash directory
-trash() {
-    mv -f "$@" ~/.mytrash
-}
-alias trash='trash'
-
-# empty trash
-emptyTrash() {
-    "rm" -rf ~/.mytrash/
-    mkdir ~/.mytrash/
-}
-alias trash-empty='emptyTrash'
 
 # perform 'ls' after 'cd' if successful
 cdls() {
@@ -110,7 +102,7 @@ alias cd='cdls'
 
 # export env var signifying whether to use a light or dark theme
 # 0 = dark, 1 = light
-export THEME_TYPE=0
+export THEME_TYPE=1
 
 # change colorscheme based on env var above
 lightTheme=''
@@ -127,15 +119,4 @@ if [ "$THEME_TYPE" -eq "1" ]; then
 else
    echo -e "$darkTheme"
 fi 
-
-# autostart vim with Obsession
-function vim() {
-    if test $# -gt 0; then
-        env vim "$@"
-    elif test -f Session.vim; then
-        env vim -S
-    else
-        env vim -c Obsession
-    fi
-}
 
