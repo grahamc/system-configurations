@@ -100,6 +100,28 @@ cdls() {
 }
 alias cd='cdls'
 
+# auto load/create vim session
+function vim() {
+    VIM_SESSION_DIR="~/.vim/sessions/"
+    VIM_SESSION_FILE=""
+
+    # use the full path as a unique name for the session
+    # replace '/' with '.' and append '.vim'
+    IFS='/' read -ra ADDR <<< "$PWD"
+    for i in "${ADDR[@]}"; do
+        VIM_SESSION_FILE="$VIM_SESSION_FILE$i."
+    done
+    VIM_SESSION_FILE=$VIM_SESSION_FILE"vim"
+
+    if test $# -gt 0; then
+        env vim "$@"
+    elif test -f $VIM_SESSION_FILE; then
+        env vim -c "source $VIM_SESSION_FILE"
+    else
+        env vim -c "Obsession $VIM_SESSION_FILE"
+    fi
+}
+
 # export env var signifying whether to use a light or dark theme
 # 0 = dark, 1 = light
 export THEME_TYPE=1

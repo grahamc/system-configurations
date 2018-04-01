@@ -64,37 +64,6 @@
     cnoreabbrev <expr> help
         \ getcmdtype() == ":" && getcmdline() == 'help' ? 'tab h' : 'help'
 
-" Section: Autocommands
-" ---------------------
-    if has("autocmd")
-        " Always restore last cursor position
-        augroup restoreCursor
-            autocmd!
-            autocmd BufReadPost *
-                        \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-                        \   exe "normal! g'\"" |
-                        \ endif
-        augroup END
-
-        " Highlight lines longer than 80 chars
-        augroup highlightLongLines
-            autocmd BufEnter * match TabLineSel /\%81v.*/
-        augroup END
-
-        " Auto load/create Session when no cmdline args are specified
-        augroup sessionManager
-            autocmd VimEnter *
-                \ let vimCommand = system("ps -o command= -p ".getpid()) |
-                \ let vimArgs = split(vimCommand)[1:] |
-                \ if len(vimArgs) == 0 |
-                \   let sessionDir = "~/.vim/sessions/" |
-                \   let sessionFile = expand(sessionDir.join(split(getcwd(), "/"), ".").".vim") |
-                \   let sessionCmd = filereadable(sessionFile) ? "source " : "Obsession " |
-                \   execute sessionCmd . sessionFile |
-                \ fi
-        augroup END
-    endif
-
 " Section: Plugins
 " ------------------------------------
     filetype off
@@ -160,6 +129,24 @@
 
     call vundle#end()
     filetype plugin indent on
+
+" Section: Autocommands
+" ---------------------
+    if has("autocmd")
+        " Always restore last cursor position
+        augroup restoreCursor
+            autocmd!
+            autocmd BufReadPost *
+                        \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+                        \   exe "normal! g'\"" |
+                        \ endif
+        augroup END
+
+        " Highlight lines longer than 80 chars
+        augroup highlightLongLines
+            autocmd BufEnter * match TabLineSel /\%81v.*/
+        augroup END
+    endif
 
 " Section: Aesthetics
 " ----------------------
