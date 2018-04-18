@@ -31,6 +31,9 @@
     let &undodir = "/Users/bigolu/.vim/undodir/"
     set undofile
 
+    " set dir for swp files
+    set directory=$HOME/.vim/swapfiles//
+
     " open new panes to the right and bottom respectively
     set splitright
     set splitbelow
@@ -46,8 +49,8 @@
     nnoremap <Leader>w :wa<CR>
     nnoremap <Leader>q :q<CR>
     nnoremap <Leader>qa :qa<CR>
-    nnoremap <Leader>x :x<CR>
     nnoremap <Leader>r :source $MYVIMRC<CR>
+    nnoremap <Leader>x :wqa<CR>
     nnoremap <Leader>t :set list!<CR>
     nnoremap <Leader>go :Goyo<CR>
 
@@ -55,8 +58,8 @@
     nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 
     " Shift line up or down
-    noremap <C-u> ddp
-    noremap <C-i> ddkkp
+    noremap <C-o> ddkkp
+    noremap <C-i> ddp
 
     " open :help in a new tab
     cnoreabbrev <expr> h
@@ -74,21 +77,23 @@
     Plugin 'sheerun/vim-polyglot'
     Plugin 'airblade/vim-gitgutter'
     Plugin 'bigolu/vim-colors-solarized'
-    Plugin 'w0rp/ale'
     Plugin 'junegunn/goyo.vim'
     Plugin 'tpope/vim-surround'
     Plugin 'tpope/vim-commentary'
     Plugin 'bigolu/vim-tmux-navigator'
     Plugin 'tpope/vim-obsession'
     Plugin 'bigolu/tabline.vim'
+    Plugin 'w0rp/ale'
+        let g:ale_sign_error = '│'
+        let g:ale_sign_warning = '│'
     Plugin 'valloric/MatchTagAlways'
-    let g:mta_filetypes = {
-        \ 'html' : 1,
-        \ 'xml' : 1,
-        \ 'xhtml' : 1,
-        \ 'jinja' : 1,
-        \ 'javascript.jsx' : 1
-    \}
+        let g:mta_filetypes = {
+            \ 'html' : 1,
+            \ 'xml' : 1,
+            \ 'xhtml' : 1,
+            \ 'jinja' : 1,
+            \ 'javascript.jsx' : 1
+        \}
     Plugin 'bigolu/nerdtree'
         let NERDTreeMouseMode=2
         Plugin 'jistr/vim-nerdtree-tabs'
@@ -144,7 +149,7 @@
 
         " Highlight lines longer than 80 chars
         augroup highlightLongLines
-            autocmd BufEnter * match TabLineSel /\%81v.*/
+            autocmd BufEnter * match TabLineSel /\%82v.*/
         augroup END
     endif
 
@@ -168,12 +173,7 @@
         endif
     endif
 
-    " status line
-    set statusline=%{&ff}\ \ \ %Y\ \ \ %F%m%r%h%w%=%04l,%04v\ \ \ %L
-
-    " a nice, thin vertical split line
+    let &statusline = "%{&ff}   %Y   %F%m%r%h%w%=%04l,%04v   %L"
     set fillchars=vert:│
-
-    " characters to substitute for unprintable characters
     set listchars=tab:¬-,space:·
 

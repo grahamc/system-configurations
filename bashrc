@@ -45,9 +45,7 @@ export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export PYTHON_CONFIGURE_OPTS="--enable-framework"
 export NVM_DIR="$HOME/.nvm"
-
-# dircolors
-eval `dircolors -b ~/.nord-dir-colors`
+export THEME_TYPE=0 # 0 = dark, 1 = light
 
 # autocomplete
 for f in /usr/local/etc/bash_completion.d/*; do source $f; done
@@ -91,19 +89,24 @@ alias c='clear'
 alias wp='pyenv which python'
 
 # perform 'ls' after 'cd' if successful
-cdls() {
+cd() {
   builtin cd "$*"
-  RESULT=$?
-  if [ "$RESULT" -eq 0 ]; then
-    ls
-  fi
+  [ "$?" -eq 0 ] && ls
 }
-alias cd='cdls'
+
+function trash() {
+    TRASH_DIR="/tmp"
+
+    for file in "$@"
+    do
+        rm -rf "$TRASH_DIR/$file" && mv $file $TRASH_DIR
+    done
+}
 
 # auto load/create vim session
 function vim() {
-    VIM_SESSION_DIR="~/.vim/sessions/"
-    VIM_SESSION_FILE=""
+    VIM_SESSION_DIR="/Users/bigolu/.vim/sessions/"
+    VIM_SESSION_FILE="$VIM_SESSION_DIR"
 
     # use the full path as a unique name for the session
     # replace '/' with '.' and append '.vim'
@@ -122,11 +125,7 @@ function vim() {
     fi
 }
 
-# export env var signifying whether to use a light or dark theme
-# 0 = dark, 1 = light
-export THEME_TYPE=1
-
-# change colorscheme based on env var above
+# change colorscheme based on env var
 lightTheme=''
 darkTheme=''
 if [ -n "$TMUX" ]; then
@@ -136,9 +135,7 @@ else
     lightTheme='\033]50;SetColors=preset=Solarized Light\a'
     darkTheme='\033]50;SetColors=preset=Nord\a'
 fi
-if [ "$THEME_TYPE" -eq "1" ]; then
-   echo -e "$lightTheme"
-else
-   echo -e "$darkTheme"
-fi 
+[ "$THEME_TYPE" -eq "1" ]\
+&& (echo -e "$lightTheme"; eval `dircolors -b ~/.solarized-light-dir-colors`;)\
+|| (echo -e "$darkTheme"; eval `dircolors -b ~/.nord-dir-colors`;)
 
