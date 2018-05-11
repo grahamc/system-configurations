@@ -45,7 +45,7 @@ export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export PYTHON_CONFIGURE_OPTS="--enable-framework"
 export NVM_DIR="$HOME/.nvm"
-export THEME_TYPE=0 # 0 = dark, 1 = light
+export THEME_TYPE=0 vim # 0 = dark, 1 = light
 
 # autocomplete
 for f in /usr/local/etc/bash_completion.d/*; do source $f; done

@@ -1,7 +1,7 @@
 " Section: Settings
 " ----------------------
-    " stops vim from behaving in a strongly vi-compatible way
-    set nocompatible
+    " IGB
+    set nocompatible    
 
     " misc.
     set encoding=utf8
@@ -149,6 +149,7 @@
 
         " Highlight lines longer than 80 chars
         augroup highlightLongLines
+            autocmd!
             autocmd BufEnter * match TabLineSel /\%82v.*/
         augroup END
     endif
@@ -160,20 +161,12 @@
         set background=light
         colorscheme solarized
     else
-        " use bright grey comment color if `truecolor` is availible
-        " else, use yellow
-        if $COLORTERM =~ "truecolor" || $COLORTERM =~ "24bit"
-            set termguicolors
-            let g:nord_comment_brightness=20
-            colorscheme nord
-        else
-            set background=dark
-            colorscheme nord
-            hi Comment ctermfg=3
-        endif
+        set termguicolors
+        let g:nord_comment_brightness=20
+        colorscheme nord
     endif
 
-    let &statusline = "%{&ff}   %Y   %F%m%r%h%w%=%04l,%04v   %L"
+    let &statusline = " %{&ff}  [%Y]  %F%m%r%h%w%=%04l,%04v of %L "
     set fillchars=vert:│
     set listchars=tab:¬-,space:·
 
