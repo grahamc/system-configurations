@@ -63,7 +63,7 @@ for f in /usr/local/etc/bash_completion.d/*; do source $f; done
     if [ -n "$PYENV_LOADING" ]; then
         true
     else
-        if which pyenv > /dev/null 2>&1; then
+        if command -v pyenv > /dev/null 2>&1; then
             export PYENV_LOADING="true"
             eval "$(pyenv init -)"
             eval "$(pyenv virtualenv-init -)"
@@ -99,7 +99,7 @@ function trash() {
 
     for file in "$@"
     do
-        rm -rf "$TRASH_DIR/$file" && mv $file $TRASH_DIR
+        rm -rf "$TRASH_DIR/$file:?" && mv "$file" "$TRASH_DIR"
     done
 }
 
@@ -118,7 +118,7 @@ function vim() {
 
     if test $# -gt 0; then
         env vim "$@"
-    elif test -f $VIM_SESSION_FILE; then
+    elif test -f "$VIM_SESSION_FILE"; then
         env vim -c "source $VIM_SESSION_FILE"
     else
         env vim -c "Obsession $VIM_SESSION_FILE"
@@ -135,7 +135,11 @@ else
     lightTheme='\033]50;SetColors=preset=Solarized Light\a'
     darkTheme='\033]50;SetColors=preset=Nord\a'
 fi
-[ "$THEME_TYPE" -eq "1" ]\
-&& (echo -e "$lightTheme"; eval `dircolors -b ~/.solarized-light-dir-colors`;)\
-|| (echo -e "$darkTheme"; eval `dircolors -b ~/.nord-dir-colors`;)
 
+if [ "$THEME_TYPE" -eq "1" ]; then
+    echo -e "$lightTheme"
+    eval "$(dircolors -b ~/.solarized-light-dir-colors)"
+else
+    echo -e "$darkTheme"
+    eval "$(dircolors -b ~/.nord-dir-colors)"
+fi

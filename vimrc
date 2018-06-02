@@ -1,26 +1,24 @@
 " Section: Settings
 " ----------------------
-    " IGB
-    set nocompatible    
-
     " misc.
     set encoding=utf8
+    scriptencoding utf-8
     syntax enable
     set mouse=a
     set backspace=indent,eol,start
     set linebreak
     set cursorline
     set pastetoggle=<F2>
-    set ls=2
-    set nu
+    set laststatus=2
+    set number
     set relativenumber
 
     " tab setup
     set expandtab
-    let tab_width = 4
-    let &tabstop = tab_width
-    let &shiftwidth = tab_width
-    let &softtabstop = tab_width
+    let g:tab_width = 4
+    let &tabstop = g:tab_width
+    let &shiftwidth = g:tab_width
+    let &softtabstop = g:tab_width
 
     " when used together, searching is only case sensitive when
     " the query contains an uppercase letter
@@ -28,7 +26,7 @@
     set smartcase
 
     " persist undo history to disk
-    let &undodir = "/Users/bigolu/.vim/undodir/"
+    let &undodir = '/Users/bigolu/.vim/undodir/'
     set undofile
 
     " set dir for swp files
@@ -39,11 +37,11 @@
     set splitbelow
 
     " enable mouse mode while in tmux
-    let &ttymouse = has("mouse_sgr") ? "sgr" : "xterm2"
+    let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
 
 " Section: Mappings
 " -----------------
-    let mapleader = "\<Space>"
+    let g:mapleader = "\<Space>"
     inoremap jk <Esc>
     nnoremap <Leader>\ :nohl<CR>
     nnoremap <Leader>w :wa<CR>
@@ -70,7 +68,7 @@
 " Section: Plugins
 " ------------------------------------
     filetype off
-    set rtp+=~/.vim/bundle/Vundle.vim
+    set runtimepath+=~/.vim/bundle/Vundle.vim
     call vundle#begin()
 
     Plugin 'VundleVim/Vundle.vim'
@@ -95,7 +93,7 @@
             \ 'javascript.jsx' : 1
         \}
     Plugin 'bigolu/nerdtree'
-        let NERDTreeMouseMode=2
+        let g:NERDTreeMouseMode=2
         Plugin 'jistr/vim-nerdtree-tabs'
             nnoremap <Leader>nt :NERDTreeTabsToggle<CR>
     Plugin 'bigolu/nord-vim'
@@ -107,7 +105,7 @@
             \stable-x86_64-apple-darwin/lib/rustlib/src/rust/src'
         let g:ycm_autoclose_preview_window_after_completion = 1
     Plugin 'junegunn/fzf.vim'
-        set rtp+=/usr/local/opt/fzf
+        set runtimepath+=/usr/local/opt/fzf
         let fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
         let fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
         " recursive grep
@@ -137,7 +135,7 @@
 
 " Section: Autocommands
 " ---------------------
-    if has("autocmd")
+    if has('autocmd')
         " Always restore last cursor position
         augroup restoreCursor
             autocmd!
@@ -157,7 +155,7 @@
 " Section: Aesthetics
 " ----------------------
     " set colorscheme based on env var exported from ~/.bashrc
-    if $THEME_TYPE ==# "1"
+    if $THEME_TYPE ==# '1'
         set background=light
         colorscheme solarized
     else
@@ -166,7 +164,7 @@
         colorscheme nord
     endif
 
-    let &statusline = " %{&ff}  [%Y]  %F%m%r%h%w%=%04l,%04v of %L "
+    let &statusline = ' %{&ff}  [%Y]  %F%m%r%h%w%=%04l,%04v of %L '
     set fillchars=vert:│
     set listchars=tab:¬-,space:·
 
