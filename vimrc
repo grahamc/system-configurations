@@ -106,19 +106,19 @@
         let g:ycm_autoclose_preview_window_after_completion = 1
     Plugin 'junegunn/fzf.vim'
         set runtimepath+=/usr/local/opt/fzf
-        let fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
-        let fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
+        let g:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
+        let g:fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
         " recursive grep
         function! FindLineResultHandler(result)
-            let resultTokens = split(a:result, ':')
-            let filename = resultTokens[0]
-            let lineNumber = str2nr(resultTokens[1], 10)
-            execute "silent tabedit ".filename
-            execute "".lineNumber
+            let l:resultTokens = split(a:result, ':')
+            let l:filename = l:resultTokens[0]
+            let l:lineNumber = str2nr(l:resultTokens[1], 10)
+            execute 'silent tabedit '.l:filename
+            execute ''.l:lineNumber
         endfunction
         command! -bang -nargs=* FindLine call
             \ fzf#vim#grep(
-            \ fzfFindLineCommand.' '.shellescape(<q-args>).' | tr -d "\017"',
+            \ g:fzfFindLineCommand.' '.shellescape(<q-args>).' | tr -d "\017"',
             \ 1,
             \ {'sink': function('FindLineResultHandler')},
             \ <bang>0)
@@ -126,7 +126,7 @@
         " recursive file search
         command! -bang -nargs=* FindFile call
             \ fzf#run(fzf#wrap({
-            \ 'source': fzfFindFileCommand.' | tr -d "\017"',
+            \ 'source': g:fzfFindFileCommand.' | tr -d "\017"',
             \ 'sink': 'tabedit'}))
         nnoremap <Leader>f :FindFile<CR>
 
@@ -164,7 +164,21 @@
         colorscheme nord
     endif
 
-    let &statusline = ' %{&ff}  [%Y]  %F%m%r%h%w%=%04l,%04v of %L '
+    " statusline
+    function! LinterStatus() abort
+        let l:counts = ale#statusline#Count(bufnr(''))
+
+        let l:all_errors = l:counts.error + l:counts.style_error
+        let l:all_non_errors = l:counts.total - l:all_errors
+
+        return l:counts.total == 0 ? 'OK' : printf(
+        \   '%dW,%dE',
+        \   l:all_non_errors,
+        \   l:all_errors
+        \)
+    endfunction
+    let &statusline = ' %{&ff}  [%Y]  %F%m%r%h%w%=%{LinterStatus()}   %04l,%04v   %L '
+
     set fillchars=vert:│
     set listchars=tab:¬-,space:·
 
