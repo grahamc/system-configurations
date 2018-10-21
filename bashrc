@@ -94,37 +94,6 @@ cd() {
   [ "$?" -eq 0 ] && ls
 }
 
-function trash() {
-    TRASH_DIR="/tmp"
-
-    for file in "$@"
-    do
-        rm -rf "$TRASH_DIR/$file:?" && mv "$file" "$TRASH_DIR"
-    done
-}
-
-# auto load/create vim session
-function vim() {
-    VIM_SESSION_DIR="/Users/bigolu/.vim/sessions/"
-    VIM_SESSION_FILE="$VIM_SESSION_DIR"
-
-    # use the full path as a unique name for the session
-    # replace '/' with '.' and append '.vim'
-    IFS='/' read -ra ADDR <<< "$PWD"
-    for i in "${ADDR[@]}"; do
-        VIM_SESSION_FILE="$VIM_SESSION_FILE$i."
-    done
-    VIM_SESSION_FILE=$VIM_SESSION_FILE"vim"
-
-    if test $# -gt 0; then
-        env vim "$@"
-    elif test -f "$VIM_SESSION_FILE"; then
-        env vim -c "source $VIM_SESSION_FILE"
-    else
-        env vim -c "Obsession $VIM_SESSION_FILE"
-    fi
-}
-
 # change colorscheme based on env var
 lightTheme=''
 darkTheme=''
@@ -143,3 +112,4 @@ else
     echo -e "$darkTheme"
     eval "$(dircolors -b ~/.nord-dir-colors)"
 fi
+
