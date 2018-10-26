@@ -66,7 +66,6 @@ for f in /usr/local/etc/bash_completion.d/*; do source $f; done
         if command -v pyenv > /dev/null 2>&1; then
             export PYENV_LOADING="true"
             eval "$(pyenv init -)"
-            eval "$(pyenv virtualenv-init -)"
             unset PYENV_LOADING
         fi
     fi
@@ -94,22 +93,29 @@ cd() {
   [ "$?" -eq 0 ] && ls
 }
 
+# auto load/create vim session
+function vim() {
+    # use the full path as a unique name for the session
+    # replace '/' with '.' and append '.vim'
+    VIM_SESSION_FILE="/Users/bigolu/.vim/sessions/$(echo $PWD | tr "/" .).vim"
+
+    if test $# -gt 0; then
+        env vim "$@"
+    elif test -f "$VIM_SESSION_FILE"; then
+        env vim -c "source $VIM_SESSION_FILE"
+    else
+        env vim -c "Obsession $VIM_SESSION_FILE"
+    fi
+}
+
+eval "$(dircolors -b ~/.dotfiles/dircolors.ansi-universal)"
 # change colorscheme based on env var
-lightTheme=''
-darkTheme=''
+lightTheme='\033]50;SetColors=preset=Solarized Light\a'
+darkTheme='\033]50;SetColors=preset=Solarized Dark\a'
 if [ -n "$TMUX" ]; then
-    lightTheme='\033Ptmux;\033\033]50;SetColors=preset=Solarized Light\a\033\\'
-    darkTheme='\033Ptmux;\033\033]50;SetColors=preset=Nord\a\033\\'
-else
-    lightTheme='\033]50;SetColors=preset=Solarized Light\a'
-    darkTheme='\033]50;SetColors=preset=Nord\a'
+    tmuxPrefix="\033Ptmux;\033"
+    tmuxSuffix="\033\\"
+    lightTheme="$tmuxPrefix$lightTheme$tmuxSuffix"
+    darkTheme="$tmuxPrefix$darkTheme$tmuxSuffix"
 fi
-
-if [ "$THEME_TYPE" -eq "1" ]; then
-    echo -e "$lightTheme"
-    eval "$(dircolors -b ~/.solarized-light-dir-colors)"
-else
-    echo -e "$darkTheme"
-    eval "$(dircolors -b ~/.nord-dir-colors)"
-fi
-
+[[ "$THEME_TYPE" -eq "1" ]] && echo -e "$lightTheme" || echo -e "$darkTheme"

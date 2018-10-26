@@ -71,9 +71,10 @@
     call vundle#begin()
     Plugin 'VundleVim/Vundle.vim'
     Plugin 'sheerun/vim-polyglot'
+    Plugin 'tpope/vim-obsession'
+    Plugin 'maxboisvert/vim-simple-complete'
     Plugin 'bigolu/vim-tmux-navigator'
     Plugin 'bigolu/vim-colors-solarized'
-    Plugin 'bigolu/nord-vim'
     Plugin 'bigolu/nerdtree'
         let g:NERDTreeMouseMode=2
         Plugin 'jistr/vim-nerdtree-tabs'
@@ -92,12 +93,6 @@
                         \   exe "normal! g'\"" |
                         \ endif
         augroup END
-
-        " Highlight lines longer than 80 chars
-        augroup highlightLongLines
-            autocmd!
-            autocmd BufEnter * match TabLineSel /\%82v.*/
-        augroup END
     endif
 
 " Section: Aesthetics
@@ -105,12 +100,5 @@
     set fillchars=vert:│
     set listchars=tab:¬-,space:·
     let &statusline = ' %{&ff}  [%Y]  %F%m%r%h%w%=%04l,%04v   %L '
-
-    if $THEME_TYPE ==# '1'
-        set background=light
-        colorscheme solarized
-    else
-        set background=dark
-        colorscheme nord
-    endif
-
+    let &background = $THEME_TYPE ==# '1' ? 'light' : 'dark'
+    colorscheme solarized
