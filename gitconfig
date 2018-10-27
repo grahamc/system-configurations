@@ -15,7 +15,3 @@
     d = diff
     undo = checkout --
     some = add -u
-	ctags = !.git/hooks/ctags
-
-[init]
-	templatedir = ~/.git_template
