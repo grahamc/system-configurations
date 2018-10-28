@@ -1,15 +1,10 @@
 # prompt (ezprompt.net)
 function parse_git_branch() {
 	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
-    echo "${BRANCH}"
+    echo "[${BRANCH}]"
 }
-PS1="\[\e[32m\]╭─\[\e[m\]\
-\`parse_git_branch\`\[\e[35m\]\
-|\
-\[\e[m\]\u@\h\[\e[34m\]\
-|\
-\[\e[m\]\W\n\
-\[\e[32m\]╰\[\e[m\]"
+PS1="\[\e[33m\]╭─\[\e[m\]\`parse_git_branch\`\w
+\[\e[33m\]╰\[\e[m\]"
 
 # PATH
 export GOPATH="/usr/local/go/bin"
@@ -108,7 +103,7 @@ function vim() {
     fi
 }
 
-eval "$(dircolors -b ~/.dotfiles/dircolors.ansi-universal)"
+eval "$(dircolors -b ~/.dircolors)"
 # change colorscheme based on env var
 lightTheme='\033]50;SetColors=preset=Solarized Light\a'
 darkTheme='\033]50;SetColors=preset=Solarized Dark\a'
