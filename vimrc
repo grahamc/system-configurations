@@ -26,7 +26,7 @@
     set smartcase
 
     " persist undo history to disk
-    let &undodir = '/Users/bigolu/.vim/undodir/'
+    let &undodir = '/Users/bigmac/.vim/undodir/'
     set undofile
 
     " set dir for swp files

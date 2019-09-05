@@ -77,7 +77,6 @@ alias grep='grep --color=auto'
 alias df='df -h'
 alias du='du -h'
 alias r='. ~/.bashrc'
-alias ls='ls --color=auto -h -p'
 alias rg='rg --smart-case'
 alias c='clear'
 alias wp='pyenv which python'
@@ -92,7 +91,7 @@ cd() {
 function vim() {
     # use the full path as a unique name for the session
     # replace '/' with '.' and append '.vim'
-    VIM_SESSION_FILE="/Users/bigolu/.vim/sessions/$(echo $PWD | tr "/" .).vim"
+    VIM_SESSION_FILE="/Users/bigmac/.vim/sessions/$(echo $PWD | tr "/" .).vim"
 
     if test $# -gt 0; then
         env vim "$@"
