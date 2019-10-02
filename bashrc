@@ -40,7 +40,7 @@ export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export PYTHON_CONFIGURE_OPTS="--enable-framework"
 export NVM_DIR="$HOME/.nvm"
-export THEME_TYPE=0 vim # 0 = dark, 1 = light
+export THEME_TYPE=1 vim # 0 = dark, 1 = light
 
 # autocomplete
 for f in /usr/local/etc/bash_completion.d/*; do source $f; done
@@ -74,6 +74,7 @@ for f in /usr/local/etc/bash_completion.d/*; do source $f; done
 # aliases
 alias la='ls -A'
 alias grep='grep --color=auto'
+alias ls='ls --color=auto'
 alias df='df -h'
 alias du='du -h'
 alias r='. ~/.bashrc'
@@ -85,6 +86,11 @@ alias wp='pyenv which python'
 cd() {
   builtin cd "$*"
   [ "$?" -eq 0 ] && ls
+}
+
+function rust() {
+    name=$(basename $1 .rs)
+    rustc $@ && ./$name && rm $name
 }
 
 # auto load/create vim session

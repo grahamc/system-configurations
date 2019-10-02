@@ -1,3 +1,28 @@
+" Section: Helpers
+" ------------------
+    let $VIMHOME = $HOME . '/.vim/'
+
+    function! MakeDirectory(path)
+        execute 'silent !mkdir -p ' . a:path . ' > /dev/null 2>&1'
+    endfunction
+
+    function! FileExists(path)
+        return !empty(glob(a:path))
+    endfunction
+
+    function! PeriodicPluginUpdate()
+        let l:last_update_path = $VIMHOME . 'lastupdate'
+        let l:week_in_seconds = 604800
+        let l:last_update = FileExists(l:last_update_path) ? system('date +%s -r ' . l:last_update_path) : 0
+        let l:current_time = system('date +%s')
+        let l:time_passed = l:current_time - l:last_update
+
+        if l:time_passed > l:week_in_seconds
+            autocmd VimEnter * PlugUpdate
+            execute 'silent !touch ' . l:last_update_path
+        endif
+    endfunction
+
 " Section: Settings
 " ----------------------
     " misc.
@@ -10,9 +35,25 @@
     set cursorline
     set pastetoggle=<F2>
     set laststatus=2
-    set number
-    set relativenumber
+    set number relativenumber
+    set incsearch
 
+    " set swapfile directory
+    let g:swapfile_dir = $VIMHOME . 'swapfile_dir/'
+    call MakeDirectory(g:swapfile_dir)
+    let &directory = g:swapfile_dir
+
+    " persist undo history to disk
+    let g:undo_dir = $VIMHOME . 'undo_dir/'
+    call MakeDirectory(g:undo_dir)
+    let &undodir = g:undo_dir
+    set undofile
+
+    " set backup directory
+    let g:backup_dir = $VIMHOME . 'backup_dir/'
+    call MakeDirectory(g:backup_dir)
+    let &backupdir = g:backup_dir
+    
     " tab setup
     set expandtab
     let g:tab_width = 4
@@ -20,21 +61,11 @@
     let &shiftwidth = g:tab_width
     let &softtabstop = g:tab_width
 
-    " when used together, searching is only case sensitive when
-    " the query contains an uppercase letter
-    set ignorecase
-    set smartcase
+    " searching is only case sensitive when the query contains an uppercase letter
+    set ignorecase smartcase
 
-    " persist undo history to disk
-    let &undodir = '/Users/bigmac/.vim/undodir/'
-    set undofile
-
-    " set dir for swp files
-    set directory=$HOME/.vim/swapfiles//
-
-    " open new panes to the right and bottom respectively
-    set splitright
-    set splitbelow
+    " open new horizontal and vertical panes to the right and bottom respectively
+    set splitright splitbelow
 
     " enable mouse mode while in tmux
     let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
@@ -66,21 +97,24 @@
 
 " Section: Plugins
 " ------------------------------------
-    filetype off
-    set runtimepath+=~/.vim/bundle/Vundle.vim
-    call vundle#begin()
-    Plugin 'VundleVim/Vundle.vim'
-    Plugin 'sheerun/vim-polyglot'
-    Plugin 'tpope/vim-obsession'
-    Plugin 'maxboisvert/vim-simple-complete'
-    Plugin 'bigolu/vim-tmux-navigator'
-    Plugin 'bigolu/vim-colors-solarized'
-    Plugin 'bigolu/nerdtree'
-        let g:NERDTreeMouseMode=2
-        Plugin 'jistr/vim-nerdtree-tabs'
+    if !FileExists('~/.vim/autoload/plug.vim')
+        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+            \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    endif
+
+    call plug#begin()
+        Plug 'sheerun/vim-polyglot'
+        Plug 'tpope/vim-obsession'
+        Plug 'maxboisvert/vim-simple-complete'
+        Plug 'bigolu/vim-tmux-navigator'
+        Plug 'bigolu/vim-colors-solarized'
+        Plug 'bigolu/nerdtree', { 'on': 'NERDTreeTabsToggle' } | Plug 'jistr/vim-nerdtree-tabs'
+            let g:NERDTreeMouseMode=2
             nnoremap <Leader>nt :NERDTreeTabsToggle<CR>
-    call vundle#end()
-    filetype plugin indent on
+    call plug#end()
+
+    call PeriodicPluginUpdate()
 
 " Section: Autocommands
 " ---------------------
