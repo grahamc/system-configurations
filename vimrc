@@ -13,7 +13,9 @@
     function! PeriodicPluginUpdate()
         let l:last_update_path = $VIMHOME . 'lastupdate'
         let l:week_in_seconds = 604800
-        let l:last_update = FileExists(l:last_update_path) ? system('date +%s -r ' . l:last_update_path) : 0
+        let l:last_update = FileExists(l:last_update_path)
+            \ ? system('date +%s -r ' . l:last_update_path)
+            \ : 0
         let l:current_time = system('date +%s')
         let l:time_passed = l:current_time - l:last_update
 
@@ -53,7 +55,7 @@
     let g:backup_dir = $VIMHOME . 'backup_dir/'
     call MakeDirectory(g:backup_dir)
     let &backupdir = g:backup_dir
-    
+
     " tab setup
     set expandtab
     let g:tab_width = 4
