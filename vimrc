@@ -19,7 +19,7 @@
         let l:current_time = system('date +%s')
         let l:time_passed = l:current_time - l:last_update
 
-        if l:time_passed > l:week_in_seconds
+       if l:time_passed > l:week_in_seconds
             autocmd VimEnter * PlugUpdate
             execute 'silent !touch ' . l:last_update_path
         endif
@@ -110,10 +110,37 @@
         Plug 'tpope/vim-obsession'
         Plug 'maxboisvert/vim-simple-complete'
         Plug 'bigolu/vim-tmux-navigator'
+        Plug 'bigolu/nord-vim'
         Plug 'bigolu/vim-colors-solarized'
+        Plug 'bigolu/tabline.vim'
         Plug 'bigolu/nerdtree', { 'on': 'NERDTreeTabsToggle' } | Plug 'jistr/vim-nerdtree-tabs'
             let g:NERDTreeMouseMode=2
             nnoremap <Leader>nt :NERDTreeTabsToggle<CR>
+        Plug 'junegunn/fzf.vim'
+            set runtimepath+=/usr/local/opt/fzf
+            let g:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
+            let g:fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
+            " recursive grep
+            function! FindLineResultHandler(result)
+                let l:resultTokens = split(a:result, ':')
+                let l:filename = l:resultTokens[0]
+                let l:lineNumber = str2nr(l:resultTokens[1], 10)
+                execute 'silent tabedit '.l:filename
+                execute ''.l:lineNumber
+            endfunction
+            command! -bang -nargs=* FindLine call
+                \ fzf#vim#grep(
+                \ g:fzfFindLineCommand.' '.shellescape(<q-args>).' | tr -d "\017"',
+                \ 1,
+                \ {'sink': function('FindLineResultHandler')},
+                \ <bang>0)
+            nnoremap <Leader>g :FindLine<CR>
+            " recursive file search
+            command! -bang -nargs=* FindFile call
+                \ fzf#run(fzf#wrap({
+                \ 'source': g:fzfFindFileCommand.' | tr -d "\017"',
+                \ 'sink': 'tabedit'}))
+            nnoremap <Leader>f :FindFile<CR>
     call plug#end()
 
     call PeriodicPluginUpdate()
@@ -135,6 +162,16 @@
 " ----------------------
     set fillchars=vert:│
     set listchars=tab:¬-,space:·
-    let &statusline = ' %{&ff}  [%Y]  %F%m%r%h%w%=%04l,%04v   %L '
-    let &background = $THEME_TYPE ==# '1' ? 'light' : 'dark'
-    colorscheme solarized
+    let &statusline = ' %Y %F%m%r%h%w%=%04l,%04v %L '
+
+    function! SetColorscheme(...)
+        let s:new_bg = system('cat ~/.darkmode') ==? "0\n" ? "light" : "dark"
+
+        if &background !=? s:new_bg || ! exists('g:colors_name')
+            let s:new_color = s:new_bg ==? "light" ? "solarized" : "nord"
+            silent! execute "normal! :color " . s:new_color . "\<cr>"
+            let &background = s:new_bg
+        endif
+    endfunction
+    call SetColorscheme()
+    call timer_start(2000, "SetColorscheme", {"repeat": -1})

@@ -33,43 +33,42 @@ export FZF_RG_OPTIONS='--column --line-number --no-heading --fixed-strings \
     --glob "!.pyenv/*" --glob "!Library/*" --glob "!.vim/*" --glob "!.tmux/*" \
     --glob "!.zeppelin/*" --glob "!.mytrash/*" --glob "!.npm/*" \
     --glob "!.vscode/*" --glob "!.cargo/*" --glob "!.rustup/*" \
-    --glob "!Downloads/*" --glob "!node_modules/*" --glob "!doc/*"'
+    --glob "!Downloads/*" --glob "!node_modules/*" --glob "!doc/*" --glob "!Dropbox/*"'
 export FZF_DEFAULT_COMMAND="rg $FZF_RG_OPTIONS --files"
 export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --margin=5%,2%,5%,2%'
 export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export PYTHON_CONFIGURE_OPTS="--enable-framework"
 export NVM_DIR="$HOME/.nvm"
-export THEME_TYPE=0 vim # 0 = dark, 1 = light
 
 # autocomplete
-for f in /usr/local/etc/bash_completion.d/*; do source $f; done
+# for f in /usr/local/etc/bash_competion.d/*; do source $f; done
 
 #fzf
-    # keybindings
-    source "/usr/local/opt/fzf/shell/key-bindings.bash"
-    bind '"\C-f":" \C-u \C-a\C-k`__fzf_select__`\e\C-e\C-y\C-a\C-y\ey\C-h\C-e\ef \C-h"'
-    # completion
-    [[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.bash" 2> /dev/null
+# keybindings
+source "/usr/local/opt/fzf/shell/key-bindings.bash"
+bind '"\C-f":" \C-u \C-a\C-k`__fzf_select__`\e\C-e\C-y\C-a\C-y\ey\C-h\C-e\ef \C-h"'
+# completion
+[[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.bash" 2> /dev/null
 
 # pyenv
-    # use env var to prevent infinite loop on init
-    # see: https://github.com/pyenv/pyenv/issues/264#issuecomment-358490657
-    if [ -n "$PYENV_LOADING" ]; then
-        true
-    else
-        if command -v pyenv > /dev/null 2>&1; then
-            export PYENV_LOADING="true"
-            eval "$(pyenv init -)"
-            unset PYENV_LOADING
-        fi
+# use env var to prevent infinite loop on init
+# see: https://github.com/pyenv/pyenv/issues/264#issuecomment-358490657
+if [ -n "$PYENV_LOADING" ]; then
+    true
+else
+    if command -v pyenv > /dev/null 2>&1; then
+        export PYENV_LOADING="true"
+        eval "$(pyenv init -)"
+        unset PYENV_LOADING
     fi
+fi
 
 # nvm
-    # init
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    # completion
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+# init
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+# completion
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # aliases
 alias la='ls -A'
@@ -78,9 +77,11 @@ alias ls='ls --color=auto'
 alias df='df -h'
 alias du='du -h'
 alias r='. ~/.bashrc'
-alias rg='rg --smart-case'
 alias c='clear'
 alias wp='pyenv which python'
+alias dark='sed -i "" "s/^export\ THEME_TYPE=1/export\ THEME_TYPE=0/" ~/.bashrc && source ~/.bashrc'
+alias light='sed -i "" "s/^export\ THEME_TYPE=0/export\ THEME_TYPE=1/" ~/.bashrc && source ~/.bashrc'
+alias youtube-mp3='youtube-dl -x --audio-format mp3 '
 
 # perform 'ls' after 'cd' if successful
 cd() {
@@ -98,6 +99,7 @@ function rust() {
 function vim() {
     # use the full path as a unique name for the session
     # replace '/' with '.' and append '.vim'
+    # e.g. /my/dir => .my.dir.vim
     VIM_SESSION_FILE="/Users/bigmac/.vim/sessions/$(echo $PWD | tr "/" .).vim"
 
     if test $# -gt 0; then
@@ -109,14 +111,41 @@ function vim() {
     fi
 }
 
+lockfile="$HOME/.bashrc-themetoggle-daemon-lock"
+set_theme() {
+    if ( set -o noclobber; echo "$$" > "$lockfile") 2> /dev/null ; then
+      trap 'rm -f "$lockfile"; exit $?' INT TERM EXIT SIGHUP
+      echo "bootin up!"
+      while :; do
+          SYSTEM_THEME="$(defaults read -g AppleInterfaceStyle 2>/dev/null)"
+          NEW_MODE=1
+          if [ "$SYSTEM_THEME" = "Dark" ]; then
+              NEW_MODE=1
+          else
+              NEW_MODE=0
+          fi
+
+          if [ "$NEW_MODE" != "$DARK_MODE" ]; then
+              export DARK_MODE="$NEW_MODE"
+              echo "$DARK_MODE" > ~/.darkmode
+
+              lightTheme='\033]50;SetColors=preset=Solarized Light\a'
+              darkTheme='\033]50;SetColors=preset=Nord\a'
+              if [ -n "$TMUX" ]; then
+                  tmuxPrefix="\033Ptmux;\033"
+                  tmuxSuffix="\033\\"
+                  lightTheme="$tmuxPrefix$lightTheme$tmuxSuffix"
+                  darkTheme="$tmuxPrefix$darkTheme$tmuxSuffix"
+              fi
+              [[ "$DARK_MODE" -eq "0" ]] && echo -ne "$lightTheme" || echo -ne "$darkTheme"
+         fi
+
+          sleep 5
+      done
+    fi
+}
+trap 'rm -f "$lockfile"; exit $?' INT TERM EXIT SIGHUP && ( set_theme  & )
+
+[ ! -f ~/.dircolors ] && wget https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors -O ~/.dircolors
 eval "$(dircolors -b ~/.dircolors)"
-# change colorscheme based on env var
-lightTheme='\033]50;SetColors=preset=Solarized Light\a'
-darkTheme='\033]50;SetColors=preset=Solarized Dark\a'
-if [ -n "$TMUX" ]; then
-    tmuxPrefix="\033Ptmux;\033"
-    tmuxSuffix="\033\\"
-    lightTheme="$tmuxPrefix$lightTheme$tmuxSuffix"
-    darkTheme="$tmuxPrefix$darkTheme$tmuxSuffix"
-fi
-[[ "$THEME_TYPE" -eq "1" ]] && echo -e "$lightTheme" || echo -e "$darkTheme"
+
