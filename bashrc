@@ -1,10 +1,10 @@
 # prompt (ezprompt.net)
 function parse_git_branch() {
 	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
-    echo "[${BRANCH}]"
+    [ -n "$BRANCH" ] && echo "${BRANCH}"
 }
-PS1="\[\e[33m\]╭─\[\e[m\]\`parse_git_branch\`\w
-\[\e[33m\]╰\[\e[m\]"
+PS1="\[\e[33m\]╭─\[\e[m\]\[\e[37;41m\]\`parse_git_branch\`\[\e[m\]\[\e[37;44m\]\w\[\e[m\]
+\[\e[33m\]╰\[\e[m\]🎸"
 
 # PATH
 export GOPATH="/usr/local/go/bin"
@@ -16,8 +16,8 @@ export RUST_PATH="$HOME/.cargo/bin"
 export FZF_PATH="/usr/local/opt/fzf/bin"
 export PYENV_ROOT="$HOME/.pyenv"
 export GLOBAL_NPM_PACKAGES="$HOME/node_modules/.bin"
-export BASE_PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/opt/X11/bin"
-export PATH="$PYENV_ROOT/bin:$COREUTILS_PATH:$BASE_PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH:$FZF_PATH:$GLOBAL_NPM_PACKAGES"
+export NEOVIM_PATH="$HOME/.nvim-osx64/bin"
+export PATH="$PYENV_ROOT/bin:$COREUTILS_PATH:$PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH:$FZF_PATH:$GLOBAL_NPM_PACKAGES:$NEOVIM_PATH"
 
 # MANPATH
 export COREUTILS_MANPATH="/usr/local/opt/coreutils/libexec/gnuman"
@@ -27,22 +27,56 @@ export MANPATH="$BASE_MANPATH:$MACPORTS_PATH:$COREUTILS_MANPATH"
 
 # other env vars
 export LESS="-Ri"
-export FZF_RG_OPTIONS='--column --line-number --no-heading --fixed-strings \
-    --ignore-case --no-ignore --hidden --glob "!.git/*" \
-    --glob "!mozilla-unified/*" --glob "!.mozbuild/*" --glob "!venv/*" \
-    --glob "!.pyenv/*" --glob "!Library/*" --glob "!.vim/*" --glob "!.tmux/*" \
-    --glob "!.zeppelin/*" --glob "!.mytrash/*" --glob "!.npm/*" \
-    --glob "!.vscode/*" --glob "!.cargo/*" --glob "!.rustup/*" \
-    --glob "!Downloads/*" --glob "!node_modules/*" --glob "!doc/*" --glob "!Dropbox/*"'
+export FZF_RG_OPTIONS='--hidden --column --line-number --no-heading --fixed-strings \
+    --ignore-case --no-ignore \
+    --glob "!mozilla-unified" --glob "!venv" \
+    --glob "!Library" \
+    --glob "!.git" \
+    --glob "!.cache" \
+    --glob "!.redhat" \
+    --glob "!.sdkman" \
+    --glob "!.vim" \
+    --glob "!.nvm" \
+    --glob "!.viminfo" \
+    --glob "!.node-gyp" \
+    --glob "!.pyenv" \
+    --glob "!.Trash" \
+    --glob "!.wdm" \
+    --glob "!*.log" \
+    --glob "!*.plist" \
+    --glob "!*.jpg" \
+    --glob "!*.lock-info" \
+    --glob "!*.xml" \
+    --glob "!imovielibrary" \
+    --glob "!.local" \
+    --glob "!.ngrok2" \
+    --glob "!.python_history" \
+    --glob "!.bash_history" \
+    --glob "!.m2" \
+    --glob "!Brewfile" \
+    --glob "!.vscode" \
+    --glob "!.tmux" \
+    --glob "!.tldrc" \
+    --glob "!.npm" \
+    --glob "!.rustup" \
+    --glob "!.dropbox" \
+    --glob "!.lemminx" \
+    --glob "!.bash_sessions" \
+    --glob "!.vscode-global" \
+    --glob "!iMovie" \
+    --glob "!.ssh" \
+    --glob "!Audio\ " \
+    --glob "!dist" \
+    --glob "!package-lock.json" \
+    --glob "!Downloads" --glob "!node_modules" --glob "!doc" --glob "!Dropbox" --glob "!Documents"'
 export FZF_DEFAULT_COMMAND="rg $FZF_RG_OPTIONS --files"
 export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --margin=5%,2%,5%,2%'
 export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
+export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up'
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export PYTHON_CONFIGURE_OPTS="--enable-framework"
 export NVM_DIR="$HOME/.nvm"
-
-# autocomplete
-# for f in /usr/local/etc/bash_competion.d/*; do source $f; done
+export BASH_SILENCE_DEPRECATION_WARNING=1
 
 #fzf
 # keybindings
@@ -70,17 +104,19 @@ fi
 # completion
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-# aliases
-alias la='ls -A'
+#sdkman
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# aliases alias la='ls -A'
 alias grep='grep --color=auto'
 alias ls='ls --color=auto'
+alias la='ls -A'
 alias df='df -h'
 alias du='du -h'
-alias r='. ~/.bashrc'
+alias r="source ~/.bashrc"
 alias c='clear'
 alias wp='pyenv which python'
-alias dark='sed -i "" "s/^export\ THEME_TYPE=1/export\ THEME_TYPE=0/" ~/.bashrc && source ~/.bashrc'
-alias light='sed -i "" "s/^export\ THEME_TYPE=0/export\ THEME_TYPE=1/" ~/.bashrc && source ~/.bashrc'
 alias youtube-mp3='youtube-dl -x --audio-format mp3 '
 
 # perform 'ls' after 'cd' if successful
@@ -96,11 +132,12 @@ function rust() {
 }
 
 # auto load/create vim session
+# TODO: this should go in vimrc
 function vim() {
     # use the full path as a unique name for the session
     # replace '/' with '.' and append '.vim'
     # e.g. /my/dir => .my.dir.vim
-    VIM_SESSION_FILE="/Users/bigmac/.vim/sessions/$(echo $PWD | tr "/" .).vim"
+    VIM_SESSION_FILE="$HOME/.vim/sessions/$(echo $PWD | tr "/" .).vim"
 
     if test $# -gt 0; then
         env vim "$@"
@@ -114,38 +151,35 @@ function vim() {
 lockfile="$HOME/.bashrc-themetoggle-daemon-lock"
 set_theme() {
     if ( set -o noclobber; echo "$$" > "$lockfile") 2> /dev/null ; then
-      trap 'rm -f "$lockfile"; exit $?' INT TERM EXIT SIGHUP
-      echo "bootin up!"
+      CURRENT_MODE=''
       while :; do
           SYSTEM_THEME="$(defaults read -g AppleInterfaceStyle 2>/dev/null)"
-          NEW_MODE=1
-          if [ "$SYSTEM_THEME" = "Dark" ]; then
-              NEW_MODE=1
-          else
-              NEW_MODE=0
-          fi
+          [ "$SYSTEM_THEME" = "Dark" ] && NEW_MODE='1' || NEW_MODE='0'
 
-          if [ "$NEW_MODE" != "$DARK_MODE" ]; then
-              export DARK_MODE="$NEW_MODE"
-              echo "$DARK_MODE" > ~/.darkmode
+          #if [ "$NEW_MODE" != "$CURRENT_MODE" ]; then
+              CURRENT_MODE="$NEW_MODE" && echo -n "$NEW_MODE" > ~/.darkmode
+              [[ "$NEW_MODE" -eq '0' ]] && newTheme='Solarized Light' || newTheme='Nord'
 
-              lightTheme='\033]50;SetColors=preset=Solarized Light\a'
-              darkTheme='\033]50;SetColors=preset=Nord\a'
-              if [ -n "$TMUX" ]; then
-                  tmuxPrefix="\033Ptmux;\033"
-                  tmuxSuffix="\033\\"
-                  lightTheme="$tmuxPrefix$lightTheme$tmuxSuffix"
-                  darkTheme="$tmuxPrefix$darkTheme$tmuxSuffix"
-              fi
-              [[ "$DARK_MODE" -eq "0" ]] && echo -ne "$lightTheme" || echo -ne "$darkTheme"
-         fi
+              setThemeEscapeSequence="\033]50;SetColors=preset=$newTheme\a"
+              [ -n "$TMUX" ] && setThemeEscapeSequence="\033Ptmux;\033$setThemeEscapeSequence\033\a"
+              echo -ne "$setThemeEscapeSequence"
+          #fi
 
-          sleep 5
+         sleep 1
       done
+    else
+        # when you open a new tab in iterm, it resets the colorscheme to whatever is in the profile
+        [[ "$(cat ~/.darkmode)" -eq "0" ]] && newTheme='Solarized Light' || newTheme='Nord'
+
+        setThemeEscapeSequence="\033]50;SetColors=preset=$newTheme\a"
+        [ -n "$TMUX" ] && setThemeEscapeSequence="\033Ptmux;\033$setThemeEscapeSequence\033\a"
+        echo -ne "$setThemeEscapeSequence"
     fi
 }
-trap 'rm -f "$lockfile"; exit $?' INT TERM EXIT SIGHUP && ( set_theme  & )
+[ "$TERM_PROGRAM" == "iTerm.app" ] && trap 'rm -f "$lockfile"; exit $?' INT TERM EXIT SIGHUP && ( set_theme  & )
 
-[ ! -f ~/.dircolors ] && wget https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors -O ~/.dircolors
+wget -nc -O ~/.dircolors https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors 2>/dev/null
 eval "$(dircolors -b ~/.dircolors)"
 
+# autocomplete
+for f in /usr/local/etc/bash_completion.d/*; do source $f; done
