@@ -371,32 +371,3 @@ call timer_start(1000, "SetColorscheme", {"repeat": -1})
 " nnoremap <C-D> :call SmoothScroll(2,1)<cr>
 " nnoremap <C-B> :call SmoothScroll(1,2)<cr>
 " nnoremap <C-F> :call SmoothScroll(2,2)<cr>
-
-
-" Might need this later:
-" function! TestCompletionFunc(findstart, base) abort
-"     let l:emmetresult = emmet#completeTag(a:findstart, a:base)
-"     let l:aleresult = ale#completion#OmniFunc(a:findstart, a:base) 
-"     if a:findstart
-"         echo l:emmetresult . "----" . "ale: " . l:aleresult
-"         return 0
-"     endif
-"     return []
-"     "return l:result
-"     "let l:result = ale#completion#OmniFunc(a:findstart, a:base)
-"     if (a:findstart && l:result is -3) || (!a:findstart && empty(l:result))
-"         echo "nothing"
-"         " return csscomplete#CompleteCSS(a:findstart, a:base)
-"     endif
-"     " if ale#completion#CanProvideCompletions()
-"     "     return ale#completion#OmniFunc(a:findstart, a:base)
-"     " else
-"     "     return csscomplete#CompleteCSS(a:findstart, a:base)
-"     " endif
-"   " Check if ALE couldn't find anything.
-"   " if (a:findstart && l:result is -3) || (!a:findstart && empty(l:result))
-"   "   return csscomplete#CompleteCSS(a:findstart, a:base)
-"   " endif
-"   " return l:result
-" endfunction
-" set omnifunc=TestCompletionFunc
