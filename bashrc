@@ -131,23 +131,6 @@ function rust() {
     rustc $@ && ./$name && rm $name
 }
 
-# auto load/create vim session
-# TODO: this should go in vimrc
-function vim() {
-    # use the full path as a unique name for the session
-    # replace '/' with '.' and append '.vim'
-    # e.g. /my/dir => .my.dir.vim
-    VIM_SESSION_FILE="$HOME/.vim/sessions/$(echo $PWD | tr "/" .).vim"
-
-    if test $# -gt 0; then
-        env vim "$@"
-    elif test -f "$VIM_SESSION_FILE"; then
-        env vim -c "source $VIM_SESSION_FILE"
-    else
-        env vim -c "Obsession $VIM_SESSION_FILE"
-    fi
-}
-
 lockfile="$HOME/.bashrc-themetoggle-daemon-lock"
 set_theme() {
     if ( set -o noclobber; echo "$$" > "$lockfile") 2> /dev/null ; then
@@ -165,7 +148,7 @@ set_theme() {
               echo -ne "$setThemeEscapeSequence"
           #fi
 
-         sleep 1
+         sleep 10
       done
     else
         # when you open a new tab in iterm, it resets the colorscheme to whatever is in the profile

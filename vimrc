@@ -1,28 +1,10 @@
 " Section: Helpers
 " ------------------
 let $VIMHOME = $HOME . '/.vim/'
+let g:session_dir = $VIMHOME . 'sessions/'
 
 function! MakeDirectory(path)
     execute 'silent !mkdir -p ' . a:path . ' > /dev/null 2>&1'
-endfunction
-
-function! FileExists(path)
-    return !empty(glob(a:path))
-endfunction
-
-function! WeeklyPluginUpdate()
-    let l:last_update_path = $VIMHOME . 'lastupdate'
-    let l:week_in_seconds = 604800
-    let l:last_update = FileExists(l:last_update_path)
-        \ ? system('date +%s -r ' . l:last_update_path)
-        \ : 0
-    let l:current_time = system('date +%s')
-    let l:time_passed = l:current_time - l:last_update
-
-   if l:time_passed > l:week_in_seconds
-        autocmd VimEnter * PlugUpdate
-        execute 'silent !touch ' . l:last_update_path
-    endif
 endfunction
 
 " Section: Settings
@@ -49,6 +31,23 @@ set ttimeout
 set ttimeoutlen=100
 set display=lastline
 set clipboard=unnamed
+set nocompatible " needed for Vundle
+filetype off " needed for Vundle 
+set cmdheight=2
+set wildmenu
+set nojoinspaces " Prevents inserting two spaces after punctuation on a join (J)
+set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
+set autoread " Re-read file if it is changed by an external program
+
+" turn off bell sound for completion
+set belloff+=ctrlg
+
+" show the completion [menu] even if there is only [one] suggestion
+" by default, [no] suggestion is [select]ed
+set completeopt+=menuone,noselect
+
+" don't display messages related to completion
+set shortmess+=c
 
 " Delete comment character when joining commented lines
 set formatoptions+=j
@@ -83,9 +82,7 @@ set ignorecase smartcase
 set splitright splitbelow
 
 " enable mouse mode while in tmux
-if !exists('g:vscode')
-    let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
-endif
+let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
 
 " Section: Mappings
 " -----------------
@@ -97,7 +94,7 @@ nnoremap <Leader>q :q<CR>
 nnoremap <Leader>qa :qa<CR>
 nnoremap <Leader>r :source $MYVIMRC<CR>
 nnoremap <Leader>x :wqa<CR>
-nnoremap <Leader>t :set list!<CR>
+nnoremap <Leader>t :IndentLinesToggle<CR>
 nnoremap <C-p> :Commands<CR>
 
 " wrap a function call in another function call.
@@ -110,10 +107,10 @@ let @w='vicS)i'
 nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 
 " Shift line up or down
-nnoremap <C-u> :m .+1<CR>==
-nnoremap <C-i> :m .-2<CR>==
-vnoremap <C-u> :m '>+1<CR>gv=gv
-vnoremap <C-i> :m '<-2<CR>gv=gv
+" nnoremap ∆ :m .+1<CR>==
+" nnoremap ˚ :m .-2<CR>==
+" vnoremap ∆ :m '>+1<CR>gv=gv
+" vnoremap ˚ :m '<-2<CR>gv=gv
 
 " move ten lines at a time by holding ctrl and a directional key
 nnoremap <C-h> 10h
@@ -140,44 +137,88 @@ cnoreabbrev <expr> help
 
 " Section: Plugins
 " ------------------------------------
-if !FileExists('~/.vim/autoload/plug.vim')
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+call vundle#begin()
 
-call plug#begin()
-Plug 'jiangmiao/auto-pairs'
-Plug 'unkiwii/vim-nerdtree-sync'
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+Plugin 'Yggdroot/indentLine'
+    let g:indentLine_char = '│'
+    let g:indentLine_setColors = 0
+Plugin 'tpope/vim-endwise'
+Plugin 'mattn/emmet-vim'
+    let g:user_emmet_leader_key='<C-e>'
+    let g:user_emmet_mode='in'
+Plugin 'alvan/vim-closetag'
+Plugin 'Raimondi/delimitMate'
+Plugin 'unkiwii/vim-nerdtree-sync'
     let g:nerdtree_sync_cursorline = 1
-Plug 'michaeljsmith/vim-indent-object'
-Plug 'ap/vim-css-color'
-Plug 'KabbAmine/vCoolor.vim'
-Plug 'tpope/vim-surround'
-Plug 'machakann/vim-textobj-functioncall'
+Plugin 'michaeljsmith/vim-indent-object'
+Plugin 'ap/vim-css-color'
+Plugin 'KabbAmine/vCoolor.vim'
+Plugin 'tpope/vim-surround'
+Plugin 'machakann/vim-textobj-functioncall'
     let g:textobj_functioncall_no_default_key_mappings = 1
     xmap ic <Plug>(textobj-functioncall-i)
     omap ic <Plug>(textobj-functioncall-i)
     xmap ac <Plug>(textobj-functioncall-a)
     omap ac <Plug>(textobj-functioncall-a)
-" some of the settings for ale need to be enabled before the plugin is loaded so
-" I'm just putting all the settings first
-let g:ale_fixers = {'*': ['prettier']}
-let g:ale_fix_on_save = 1
-let g:ale_completion_enabled = 1
-let g:ale_completion_autoimport = 1
-let g:ale_set_balloons = 1
-inoremap <silent><expr> <Tab>
-            \ pumvisible() ? "\<C-n>" : "\<TAB>"
-inoremap <silent><expr> <S-Tab>
-            \ pumvisible() ? "\<C-p>" : "\<S-TAB>"
-    Plug 'dense-analysis/ale'
-Plug 'tpope/vim-dispatch'
-Plug 'sheerun/vim-polyglot'
-Plug 'tpope/vim-obsession'
-Plug 'bigolu/tabline.vim'
-Plug 'lifepillar/vim-solarized8'
-Plug 'arcticicestudio/nord-vim'
+Plugin 'lifepillar/vim-mucomplete'
+    let g:mucomplete#enable_auto_at_startup = 1
+    let g:mucomplete#chains = {
+	    \ 'typescriptreact': ['user', 'c-n', 'file'],
+	    \ 'html': ['user', 'c-n', 'file']
+	    \ }
+Plugin 'dense-analysis/ale'
+    let g:ale_fixers = {'*': ['prettier']}
+    let g:ale_fix_on_save = 1
+    let g:ale_completion_autoimport = 1
+    let g:ale_set_balloons = 1
+    " TODO: this could probably be its own plugin
+    let g:multicomplete_completers = [function('ale#completion#OmniFunc'), function('emmet#completeTag')]
+    function! MultiComplete(findstart, base)
+        " TODO: what if the findstarts are different?
+        if a:findstart
+            let g:findstarts = []
+            let l:result = -3
+            for l:Completer in g:multicomplete_completers
+                let l:completer_result = l:Completer(a:findstart, a:base)
+                call add(g:findstarts, l:completer_result)
+                " Don't care if result is -3 since that is our default return
+                " value. Don't care about -2 either since I don't want the
+                " completion menu to stay open if there are no results.
+                if l:completer_result >= 0
+                    let l:result = max([l:result, l:completer_result])
+                endif
+            endfor
+            return l:result
+        endif
+
+        " TODO: maybe interlaeve the results so top answer from all completers
+        " are at the top
+        let l:results = []
+        let l:i = 0
+        for l:Completer in g:multicomplete_completers
+            if g:findstarts->get(l:i) >= 0
+                call extend(l:results, l:Completer(a:findstart, a:base))
+            endif
+            let l:i = l:i + 1
+        endfor
+        return l:results
+    endfunction
+    set completefunc=MultiComplete
+Plugin 'tpope/vim-dispatch'
+Plugin 'sheerun/vim-polyglot'
+" TODO: should just use native session api
+Plugin 'tpope/vim-obsession'
+" TODO: extract into vimrc
+Plugin 'bigolu/tabline.vim'
+Plugin 'lifepillar/vim-solarized8'
+Plugin 'arcticicestudio/nord-vim'
 " Plug 'christoomey/vim-tmux-navigator'
 "     " If there's more than one tab open,
 "     " change tabs instead of windows
@@ -201,7 +242,7 @@ Plug 'arcticicestudio/nord-vim'
 "     nnoremap <silent> <c-j> :TmuxNavigateDown<cr>
 "     nnoremap <silent> <c-k> :TmuxNavigateUp<cr>
 "     nnoremap <silent> <c-\> :TmuxNavigatePrevious<cr>
-Plug 'junegunn/fzf.vim'
+Plugin 'junegunn/fzf.vim'
     set runtimepath+=/usr/local/opt/fzf
     let g:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
     let g:fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
@@ -226,12 +267,13 @@ Plug 'junegunn/fzf.vim'
         \ 'source': g:fzfFindFileCommand.' | tr -d "\017"',
         \ 'sink': 'tabedit'}))
     nnoremap <Leader>f :FindFile<CR>
-Plug 'bigolu/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
-    nnoremap <Leader>n :NERDTreeTabsToggle<CR>
+Plugin 'bigolu/nerdtree'
     let g:NERDTreeMouseMode=2
-call plug#end()
+    Plugin 'jistr/vim-nerdtree-tabs'
+        nnoremap <Leader>n :NERDTreeTabsToggle<CR>
 
-call WeeklyPluginUpdate()
+call vundle#end()            " required for Vundle 
+filetype plugin indent on    " required for Vundle 
 
 " Section: Autocommands
 " ---------------------
@@ -243,12 +285,20 @@ function! CleanNoNameEmptyBuffers()
 endfunction
 nnoremap <silent> <Leader>c :call CleanNoNameEmptyBuffers()<CR>
 
+function! StartWorkspace()
+    if argc() == 0
+        let l:session_name =  substitute($PWD, "/", ".", "g") . ".vim"
+        let l:session_full_path = g:session_dir . l:session_name
+        silent! execute "source " . l:session_full_path
+    endif
+endfunction
+
 if has('autocmd')
     augroup restoreLastCursorPosition
         autocmd!
         autocmd BufReadPost *
                     \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-                    \   exe "normal! g'\"" |
+                    \   exe "normal! g'\"" | exe "normal! zz" |
                     \ endif
     augroup END
     augroup nordOverrides
@@ -258,9 +308,15 @@ if has('autocmd')
     augroup solarizedOverrides
       autocmd!
     augroup END
-    augroup cleanEmpryBuffers
+    " for some reason there is an ftplugin that is bundled with vim that
+    " sets the textwidth to 78 if it is currently 0. This sets it back to 0
+    augroup resetTextWidth
       autocmd!
-      " autocmd BufEnter * call CleanNoNameEmptyBuffers()
+      autocmd FileType * :set tw=0
+    augroup END
+    augroup RestoreOrCreateNewWorkspace
+      autocmd!
+      autocmd VimEnter * call StartWorkspace()
     augroup END
 endif
 
@@ -272,14 +328,12 @@ let &statusline = ' %Y %F%m%r%h%w%=%04l,%04v %L '
 set signcolumn=yes
 
 " Block cursor in normal mode and thin line in insert mode
-if !exists('g:vscode')
-    if exists('$TMUX')
-      let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-      let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-    else
-      let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-      let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-    endif
+if exists('$TMUX')
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+else
+  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
 
 function! SetColorscheme(...)
@@ -294,3 +348,55 @@ endfunction
 call SetColorscheme()
 call timer_start(1000, "SetColorscheme", {"repeat": -1})
 
+" function SmoothScroll(scroll_direction, n_scroll)
+"     let n_scroll = a:n_scroll
+"     if a:scroll_direction == 1
+"         let scrollaction="\<C-y>"
+"     else 
+"         let scrollaction="\<C-e>"
+"     endif
+"     exec "normal " . scrollaction
+"     redraw
+"     let counter=1
+"     while counter<&scroll*n_scroll
+"         let counter+=1
+"         sleep 10m " ms per line
+"         redraw
+"         exec "normal " . scrollaction
+"     endwhile
+" endfunction
+" 
+" " smoothly scroll the screen for some scrolling operations
+" nnoremap <C-U> :call SmoothScroll(1,1)<cr>
+" nnoremap <C-D> :call SmoothScroll(2,1)<cr>
+" nnoremap <C-B> :call SmoothScroll(1,2)<cr>
+" nnoremap <C-F> :call SmoothScroll(2,2)<cr>
+
+
+" Might need this later:
+" function! TestCompletionFunc(findstart, base) abort
+"     let l:emmetresult = emmet#completeTag(a:findstart, a:base)
+"     let l:aleresult = ale#completion#OmniFunc(a:findstart, a:base) 
+"     if a:findstart
+"         echo l:emmetresult . "----" . "ale: " . l:aleresult
+"         return 0
+"     endif
+"     return []
+"     "return l:result
+"     "let l:result = ale#completion#OmniFunc(a:findstart, a:base)
+"     if (a:findstart && l:result is -3) || (!a:findstart && empty(l:result))
+"         echo "nothing"
+"         " return csscomplete#CompleteCSS(a:findstart, a:base)
+"     endif
+"     " if ale#completion#CanProvideCompletions()
+"     "     return ale#completion#OmniFunc(a:findstart, a:base)
+"     " else
+"     "     return csscomplete#CompleteCSS(a:findstart, a:base)
+"     " endif
+"   " Check if ALE couldn't find anything.
+"   " if (a:findstart && l:result is -3) || (!a:findstart && empty(l:result))
+"   "   return csscomplete#CompleteCSS(a:findstart, a:base)
+"   " endif
+"   " return l:result
+" endfunction
+" set omnifunc=TestCompletionFunc
