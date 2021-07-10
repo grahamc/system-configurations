@@ -1,15 +1,10 @@
-" Section: Helpers
-" ------------------
-    let $VIMHOME = $HOME . '/.vim/'
-    let g:session_dir = $VIMHOME . 'sessions/'
-
-    function! MakeDirectory(path)
-        execute 'silent !mkdir -p ' . a:path . ' > /dev/null 2>&1'
-    endfunction
-
 " Section: Settings
 " ----------------------
+    " env variables
+    let $VIMHOME = $HOME . '/.vim/'
+    
     " misc.
+    set confirm
     set encoding=utf8
     scriptencoding utf-8
     syntax enable
@@ -25,7 +20,7 @@
     set hidden
     set autoindent
     set smartindent
-    set complete=.,w,b,i
+    set complete=.,w,b,i,u,U
     set smarttab
     set nrformats-=octal
     set ttimeout
@@ -40,19 +35,14 @@
     set nojoinspaces " Prevents inserting two spaces after punctuation on a join (J)
     set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
     set autoread " Re-read file if it is changed by an external program
-    set pumwidth=30 " increase autocompletion menu width
-    set lazyredraw " don't redraw the page during the execution of a macro, only redraw once at the end of execution
+    set lazyredraw " don't redraw the page during the execution of a compound command (e.g. :bufdo), only redraw once at the end of execution
     set foldmethod=syntax
     set foldopen=all
     set dictionary+=/usr/share/dict/words
     set foldlevel=20
-    set breakindent
     set scrolloff=10
     set wrap
-    set updatetime=1000
-
-    " add "-" to keyword character set to get autocompletion of css class names
-    set iskeyword+=-
+    set updatetime=500
 
     " autocomplete
     let g:Emmet_completer_with_menu =
@@ -63,8 +53,8 @@
                     \ "{'word': v:val, 'menu': repeat(' ', &l:pumwidth - 13) . '[emmet]'}"
                 \ )
             \ }
-    let g:multicomplete_completers = [function('ale#completion#OmniFunc')]
-    set completefunc=ale#completion#OmniFunc
+    let g:multicomplete_completers = [g:Emmet_completer_with_menu]
+    set completefunc=lsp#complete
 
     " turn off bell sounds
     set belloff+=all
@@ -81,20 +71,18 @@
     set formatoptions+=j
 
     " set swapfile directory
-    let g:swapfile_dir = $VIMHOME . 'swapfile_dir/'
-    call MakeDirectory(g:swapfile_dir)
-    let &directory = g:swapfile_dir
+    let &directory = $VIMHOME . 'swapfile_dir/'
+    call mkdir(expand(&directory), "p")
 
     " persist undo history to disk
-    let g:undo_dir = $VIMHOME . 'undo_dir/'
-    call MakeDirectory(g:undo_dir)
-    let &undodir = g:undo_dir
+    let &undodir = $VIMHOME . 'undo_dir/'
+    call mkdir(expand(&undodir), "p")
     set undofile
 
-    " set backup director
-    let g:backup_dir = $VIMHOME . 'backup_dir/'
-    call MakeDirectory(g:backup_dir)
-    let &backupdir = g:backup_dir
+    " set backup directory
+    let &backupdir = $VIMHOME . 'backup_dir/'
+    call mkdir(expand(&backupdir), "p")
+    set backup
 
     " tab setup
     set expandtab
@@ -116,22 +104,31 @@
 " -----------------
     let g:mapleader = "\<Space>"
     inoremap jk <Esc>
-    nnoremap <Leader>\ :nohl<CR>
-    nnoremap <Leader>w :wa<CR>
-    " nnoremap <Leader>qa :qa<CR>
+    nnoremap <silent> <Leader>\ :nohl<CR>
+    nnoremap <silent> <Leader>w :wa<CR>
     nnoremap <Leader>r :source $MYVIMRC<CR>
     nnoremap <Leader>x :wqa<CR>
-    nnoremap <Leader>i :IndentLinesToggle<CR>
+    nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
+
+    " LSP
+    nnoremap <Leader>ld :ALEDocumentation<CR>
+    nnoremap <Leader>lis :LspInstallServer<CR>
+    nnoremap <Leader>ls :LspStatus<CR>
+    nnoremap <Leader>lh :LspHover<CR>
 
     " Map the output of these key combinations to their actual names
-    " since it is obvious what keys produced these symbols/escape-sequences
+    " to make mappings that use these key combinations easier to understand
     " WARNING: When doing this you should turn off any plugin that
     " automatically adds closing braces since it might accidentally
     " add a closing brace to an escape sequence
-    nmap ¬ <a-l>
-    nmap ˙ <a-h>
-    nmap ∆ <a-j>
-    nmap ˚ <a-k>
+    nmap ¬ <A-l>
+    nmap ˙ <A-h>
+    nmap ∆ <A-j>
+    nmap ˚ <A-k>
+    vmap ¬ <A-l>
+    vmap ˙ <A-h>
+    vmap ∆ <A-j>
+    vmap ˚ <A-k>
     nmap [1;2D <S-Left>
     nmap [1;2C <S-Right>
     nmap [1;2B <S-Down>
@@ -142,12 +139,12 @@
     nmap [1;5A <C-Up>
 
     " buffer navigation
-    noremap <S-Left> :bp<CR>
-    noremap <S-Right> :bn<CR>
+    noremap <silent> <S-h> :bp<CR>
+    noremap <silent> <S-l> :bn<CR>
 
     " tab navigation
-    nnoremap <S-Down> :tabprevious<CR>
-    nnoremap <S-Up> :tabnext<CR>
+    nnoremap <silent> <S-Down> :tabprevious<CR>
+    nnoremap <silent> <S-Up> :tabnext<CR>
     
     " wrap a function call in another function call.
     " this is done by looking for a function call under the cursor and if found,
@@ -159,26 +156,20 @@
     nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 
     " Shift line up or down
-    " nnoremap ∆ :m .+1<CR>==
-    " nnoremap ˚ :m .-2<CR>==
-    " vnoremap ∆ :m '>+1<CR>gv=gv
-    " vnoremap ˚ :m '<-2<CR>gv=gv
+    nnoremap <C-Down> :m .+1<CR>==
+    nnoremap <C-Up> :m .-2<CR>==
+    vnoremap <C-Down> :m '>+1<CR>gv=gv
+    vnoremap <C-Up> :m '<-2<CR>gv=gv
 
     " move ten lines at a time by holding ctrl and a directional key
-    nnoremap <C-h> 10h
-    nnoremap <C-j> 10j
-    nnoremap <C-k> 10k
-    vnoremap <C-j> 10j
-    nnoremap <C-l> 10l
-    vnoremap <C-h> 10h
-    vnoremap <C-k> 10k
-    vnoremap <C-l> 10l
-
-    " scroll ten lines at a time by holding ctrl and a directional key
-    " nnoremap <a-j> 10<C-e>
-    " nnoremap <a-k> 10<C-y>
-    " vnoremap <a-j> 10<C-e>
-    " vnoremap <a-k> 10<C-y>
+    nnoremap <A-h> 10h
+    nnoremap <A-j> 10j
+    nnoremap <A-k> 10k
+    nnoremap <A-l> 10l
+    vnoremap <A-j> 10j
+    vnoremap <A-h> 10h
+    vnoremap <A-k> 10k
+    vnoremap <A-l> 10l
 
     " toggle folds
     let $unrol=1
@@ -191,10 +182,28 @@
         let $unrol=0
     endif
     endfunction
-    nnoremap <Leader>z :call UnrolMe()<CR>
+    nnoremap <silent> <Leader>z :call UnrolMe()<CR>
 
     nnoremap \| :vsplit<CR>
     nnoremap _ :split<CR>
+
+    function! CloseBufferAndPossiblyWindow()
+        " If the current buffer is a help or preview page or there is only one window and one buffer
+        " left, then close the window and buffer.
+        " Otherwise close the buffer and preserve the window
+        if &l:filetype ==? "help"
+                \ || (len(getbufinfo({'buflisted':1})) == 1 && winnr('$') == 1)
+                \ || getwinvar('.', '&previewwindow') == 1
+            execute "silent Sayonara"
+        else
+            execute "silent Sayonara!"
+        endif
+    endfunction
+
+    nnoremap <silent> <leader>q :call CloseBufferAndPossiblyWindow()<CR>
+    " close window
+    nnoremap <silent> <leader>Q :q<CR>
+
 
 " Section: Plugins
 " ------------------------------------
@@ -207,9 +216,9 @@
     " let Vundle manage Vundle, required
     Plugin 'VundleVim/Vundle.vim'
 
+    Plugin 'dominikduda/vim_current_word'
+    Plugin 'tweekmonster/startuptime.vim'
     Plugin 'mhinz/vim-sayonara'
-        nnoremap <leader>Q :Sayonara<cr>
-        nnoremap <leader>q :Sayonara!<cr>
     Plugin 'bagrat/vim-buffet'
     Plugin 'AndrewRadev/splitjoin.vim'
         let g:splitjoin_split_mapping = ''
@@ -229,50 +238,102 @@
     Plugin 'mattn/emmet-vim'
         inoremap <C-e> <Esc>:call emmet#expandAbbr(0, "")<CR>
         nnoremap <C-e> :call emmet#expandAbbr(0, "")<CR>
+    " Automatically close html tags
     Plugin 'alvan/vim-closetag'
-    "Plugin 'Raimondi/delimitMate'
+    " Automatically insert closing braces/quotes
+    Plugin 'Raimondi/delimitMate'
+    " Select all lines on the same indentation level as the cursor
     Plugin 'michaeljsmith/vim-indent-object'
     Plugin 'ap/vim-css-color'
     Plugin 'KabbAmine/vCoolor.vim'
     Plugin 'tpope/vim-surround'
+    " Select a function call in visual mode.
+    " This can be used to wrap a function quickly, for example.
     Plugin 'machakann/vim-textobj-functioncall'
         let g:textobj_functioncall_no_default_key_mappings = 1
         xmap ic <Plug>(textobj-functioncall-i)
         omap ic <Plug>(textobj-functioncall-i)
         xmap ac <Plug>(textobj-functioncall-a)
         omap ac <Plug>(textobj-functioncall-a)
+    " An autocompleter that allows for the chaining
+    " of various built-in and custom completion sources. If one source does not
+    " return any results, mucomplete will automatically try the next
+    " source in the chain. This way:
+    " - You can put the faster completion sources in the front of the chain
+    " and automatically defer to the slower ones if necessary. (e.g. search
+    " keywords in the current buffer first before searching tags)
+    " - You don't have to remember all the various keybinds for the built-in
+    " and custom completion sources.
     Plugin 'lifepillar/vim-mucomplete'
         let g:mucomplete#completion_delay = 300
         let g:mucomplete#always_use_completeopt = 1
         let g:mucomplete#enable_auto_at_startup = 1
+        " minimum chars before autocompletion starts
+        let g:mucomplete#minimum_prefix_length = 3
+        " specify different completion sources to chain together per filetype
+        " NOTE: 'user' is whatever is assigned to the setting 'completefunc'
         let g:mucomplete#chains = {
                     \ 'default': ['path', 'user', 'c-n', 'omni', 'dict'],
                     \ 'vim': ['path', 'user', 'c-n', 'omni', 'dict']
                     \ }
+        " disable default mappings
         let g:mucomplete#no_mappings = 1
+        " selecting completion matches
         imap <tab> <plug>(MUcompleteFwd)
 	      imap <s-tab> <plug>(MUcompleteBwd)
+        " manually selecting completion sources
         inoremap <silent> <plug>(MUcompleteFwdKey) <C-j>
         imap <C-j> <plug>(MUcompleteCycFwd)
         inoremap <silent> <plug>(MUcompleteBwdKey) <C-h>
         imap <C-h> <plug>(MUcompleteCycBwd)
+    " Language Server Protocol client that provides IDE like features
+    " e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
+    Plugin 'prabirshrestha/vim-lsp'
+        let g:lsp_fold_enabled = 0
+    " An easy way to install/manage language servers for vim-lsp.
+    Plugin 'mattn/vim-lsp-settings'
+        " where the language servers are stored
+        let g:lsp_settings_servers_dir = $VIMHOME . "vim-lsp-servers"
+        call mkdir(g:lsp_settings_servers_dir, "p")
+    " A bridge between vim-lsp and ale. This works by
+    " sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
+    " This gives a nice separation of concerns: vim-lsp will only
+    " provide LSP features and Ale will only provide realtime diagnostics.
+    " Plus, ale's diagnostics are more robust than vim-lsp's
+    " and vim-lsp's LSP features are more robust than ale's.
+    Plugin 'rhysd/vim-lsp-ale'
+        " Only report diagnostics with a warning level or above
+        " i.e. warning,error
+        let g:lsp_ale_diagnostics_severity = "warning"
+    " Asynchronous linting
     Plugin 'dense-analysis/ale'
+        let g:ale_cache_executable_check_failures = 1
+        let g:ale_set_balloons = 0
+        let g:ale_hover_cursor = 0
+        let g:ale_lsp_show_message_severity = "warning"
         let g:ale_lint_on_enter = 0
         let g:ale_lint_on_text_changed = "always"
-        let g:ale_lint_delay = 500
-        let g:ale_rename_tsserver_find_in_comments = 1
-        let g:ale_lsp_suggestions = 1
-        let g:ale_lsp_show_message_severity = "warning"
+        let g:ale_lint_delay = 1000
         let g:ale_lint_on_insert_leave = 0
         let g:ale_lint_on_filetype_changed = 0
         let g:ale_lint_on_save = 0
-        let g:ale_default_navigation = "buffer"
-        let g:ale_completion_max_suggestions = 5
-        let g:ale_completion_tsserver_remove_warnings = 1
         let g:ale_fix_on_save = 1
-        let g:ale_completion_autoimport = 1
-        let g:ale_set_balloons = 1
-        let g:ale_fixers = {'*': ['prettier']}
+        let g:ale_fixers = {
+            \ 'javascript': ['prettier'],
+            \ 'javascriptreact': ['prettier'],
+            \ 'typescript': ['prettier'],
+            \ 'typescriptreact': ['prettier'],
+            \ 'json': ['prettier'],
+            \ 'html': ['prettier'],
+            \ 'css': ['prettier']
+            \ }
+        let g:ale_linters = {
+            \ 'vim': [],
+            \ 'javascript': ['eslint'],
+            \ 'javascriptreact': ['eslint'],
+            \ 'typescript': ['eslint'],
+            \ 'typescriptreact': ['eslint']
+            \ }
     Plugin 'tpope/vim-dispatch'
     Plugin 'sheerun/vim-polyglot'
     Plugin 'tpope/vim-obsession'
@@ -280,10 +341,10 @@
     Plugin 'arcticicestudio/nord-vim'
     Plugin 'christoomey/vim-tmux-navigator'
         let g:tmux_navigator_no_mappings = 1
-        nnoremap <C-Left> :TmuxNavigateLeft<cr>
-        nnoremap <C-Right> :TmuxNavigateRight<cr>
-        nnoremap <C-Down> :TmuxNavigateDown<cr>
-        nnoremap <C-Up> :TmuxNavigateUp<cr>
+        nnoremap <C-h> :TmuxNavigateLeft<cr>
+        nnoremap <C-l> :TmuxNavigateRight<cr>
+        nnoremap <C-j> :TmuxNavigateDown<cr>
+        nnoremap <C-k> :TmuxNavigateUp<cr>
     Plugin 'junegunn/fzf.vim'
         set runtimepath+=/usr/local/opt/fzf
         let g:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
@@ -316,7 +377,7 @@
         let g:NERDTreeWinPos="right"
         let g:NERDTreeShowHidden=1
         Plugin 'jistr/vim-nerdtree-tabs'
-            nnoremap <Leader>n :NERDTreeTabsToggle<CR>
+            nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
         Plugin 'unkiwii/vim-nerdtree-sync'
             let g:nerdtree_sync_cursorline = 1
 
@@ -336,7 +397,7 @@
     function! StartWorkspace()
         if argc() == 0
             let l:session_name =  substitute($PWD, "/", ".", "g") . ".vim"
-            let l:session_full_path = g:session_dir . l:session_name
+            let l:session_full_path = $VIMHOME . 'sessions/' . l:session_name
             let l:session_cmd = empty(glob(l:session_full_path)) ? "Obsess " : "source "
             execute l:session_cmd . l:session_full_path
         endif
@@ -408,6 +469,21 @@
             autocmd!
             autocmd FileType typescriptreact,typescript let b:textobj_function_select = function('textobj#function#javascript#select')
         augroup END
+        augroup ExtendIskeyword
+            autocmd!
+            autocmd FileType css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss setlocal iskeyword+=-,?,!
+            autocmd FileType vim setlocal iskeyword+=:,#
+        augroup END
+        augroup CursorLineNormalModeOnly
+            au!
+            au WinLeave * set nocursorline
+            au WinEnter * set cursorline
+        augroup END
+        augroup OpenHelpOrPreviewWindowAcrossBottom
+            " Open help/preview window across the bottom of the editor
+            autocmd!
+            autocmd FileType * if &filetype ==? "help" || getwinvar('.', '&previewwindow') == 1 | wincmd J | endif
+        augroup END
     endif
 
 " Section: Aesthetics
@@ -441,30 +517,6 @@
     endfunction
     call SetColorscheme()
     call timer_start(10000, "SetColorscheme", {"repeat": -1})
-
-    " function SmoothScroll(scroll_direction, n_scroll)
-    "     let n_scroll = a:n_scroll
-    "     if a:scroll_direction == 1
-    "         let scrollaction="\<C-y>"
-    "     else 
-    "         let scrollaction="\<C-e>"
-    "     endif
-    "     exec "normal " . scrollaction
-    "     redraw
-    "     let counter=1
-    "     while counter<&scroll*n_scroll
-    "         let counter+=1
-    "         sleep 10m " ms per line
-    "         redraw
-    "         exec "normal " . scrollaction
-    "     endwhile
-    " endfunction
-    " 
-    " " smoothly scroll the screen for some scrolling operations
-    " nnoremap <C-U> :call SmoothScroll(1,1)<cr>
-    " nnoremap <C-D> :call SmoothScroll(2,1)<cr>
-    " nnoremap <C-B> :call SmoothScroll(1,2)<cr>
-    " nnoremap <C-F> :call SmoothScroll(2,2)<cr>
 
 " Section: Utilities
 " ----------------------
@@ -512,7 +564,6 @@
                     if typename(l:completer_results) ==? "list<string>"
                         call map(l:completer_results, "{'word': v:val}")
                     endif
-
                     for l:dict in l:completer_results
                         let l:val = dict['word']
                         let dict.word = l:replaceable_chars[0:(l:findstart - g:findstart) - 1]->join("") . l:val
