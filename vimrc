@@ -203,6 +203,13 @@
     " close window
     nnoremap <silent> <leader>Q :q<CR>
 
+    function! CleanNoNameEmptyBuffers()
+        let buffers = filter(range(1, bufnr('$')), 'buflisted(v:val) && empty(bufname(v:val)) && bufwinnr(v:val) < 0 && (getbufline(v:val, 1, "$") == [""])')
+        if !empty(buffers)
+            exe 'bd '.join(buffers, ' ')
+        endif
+    endfunction
+    nnoremap <silent> <Leader>c :call CleanNoNameEmptyBuffers()<CR>
 
 " Section: Plugins
 " ------------------------------------
@@ -444,105 +451,78 @@
 
 " Section: Autocommands
 " ---------------------
-    function! CleanNoNameEmptyBuffers()
-        let buffers = filter(range(1, bufnr('$')), 'buflisted(v:val) && empty(bufname(v:val)) && bufwinnr(v:val) < 0 && (getbufline(v:val, 1, "$") == [""])')
-        if !empty(buffers)
-            exe 'bd '.join(buffers, ' ')
-        endif
-    endfunction
-    nnoremap <silent> <Leader>c :call CleanNoNameEmptyBuffers()<CR>
-
-    function! StartWorkspace()
-        if argc() == 0
-            let l:session_name =  substitute($PWD, "/", ".", "g") . ".vim"
-            let l:session_full_path = $VIMHOME . 'sessions/' . l:session_name
-            let l:session_cmd = empty(glob(l:session_full_path)) ? "Obsess " : "source "
-            execute l:session_cmd . l:session_full_path
-        endif
-    endfunction
-
-    if has('autocmd')
-        augroup restoreLastCursorPosition
-            autocmd!
-            autocmd BufReadPost *
-                        \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-                        \   exe "normal! g'\"" | exe "normal! zz" |
-                        \ endif
-        augroup END
-        augroup nordOverrides
-            autocmd!
-            autocmd ColorScheme nord highlight Comment guifg=#6d7a96
-        augroup END
-        augroup solarizedOverrides
-            autocmd!
-        augroup END
-        " for some reason there is an ftplugin that is bundled with vim that
-        " sets the textwidth to 78 if it is currently 0. This sets it back to 0
-        augroup resetTextWidth
-            autocmd!
-            autocmd FileType * :set tw=0
-        augroup END
-        augroup RestoreOrCreateNewWorkspace
-            autocmd!
-            autocmd VimEnter * nested call StartWorkspace()
-        augroup END
-        augroup SetDefaultOmniFunc
-            autocmd!
-            autocmd Filetype *
-                \	if &omnifunc == "" |
-                \		setlocal omnifunc=syntaxcomplete#Complete |
-                \	endif
-        augroup END
-        augroup MUCompleteConfig
-            autocmd!
-            " allow the use of mucomplete_current_method which returns a short
-            " string denoting the currently active completion method, to be
-            " used in a statusline
-            autocmd Filetype * execute "MUcompleteNotify 3"
-        augroup END
-        augroup SetVimFoldMethod
-            autocmd!
-            autocmd Filetype vim execute "setlocal foldmethod=indent"
-        augroup END
-        augroup UnderlineCurrentLine
-            autocmd!
-            autocmd Filetype * execute "hi clear CursorLine"
-            autocmd Filetype * execute "hi CursorLine gui=underline cterm=underline"
-        augroup END
-        augroup StyleMatchParen
-            autocmd!
-            autocmd VimEnter * execute "hi MatchParen ctermbg=blue guibg=lightblue"
-        augroup END
-        augroup OpenPrevTabAfterTabClose
-            autocmd!
-            autocmd TabEnter * let g:last_tab_number = tabpagenr()
-            autocmd TabClosed * 
-                \	if g:last_tab_number < tabpagenr('$') + 1 |
-                \		execute "tabprev" |
-                \	endif
-        augroup END
-        augroup TypescriptFunctionObject
-            " "vim-textobj-function-javascript works pretty
-            " well for typescript so this will enable it
-            autocmd!
-            autocmd FileType typescriptreact,typescript let b:textobj_function_select = function('textobj#function#javascript#select')
-        augroup END
-        augroup ExtendIskeyword
-            autocmd!
-            autocmd FileType css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss setlocal iskeyword+=-,?,!
-            autocmd FileType vim setlocal iskeyword+=:,#
-        augroup END
-        augroup CursorLineNormalModeOnly
-            au!
-            au WinLeave * set nocursorline
-            au WinEnter * set cursorline
-        augroup END
-        augroup OpenHelpOrPreviewWindowAcrossBottom
-            " Open help/preview window across the bottom of the editor
-            autocmd!
-            autocmd FileType * if &filetype ==? "help" || getwinvar('.', '&previewwindow') == 1 | wincmd J | endif
-        augroup END
-    endif
+    augroup RestoreSettings
+        autocmd!
+        " restore session
+        autocmd VimEnter * nested
+                    \ if argc() == 0 |
+                        \ let l:session_name =  substitute($PWD, "/", ".", "g") . ".vim" |
+                        \ let l:session_full_path = $VIMHOME . 'sessions/' . l:session_name |
+                        \ let l:session_cmd = empty(glob(l:session_full_path)) ? "Obsess " : "source " |
+                        \ execute l:session_cmd . l:session_full_path |
+                    \ endif
+        " restore last cursor position
+        autocmd BufReadPost *
+                    \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+                        \ exe "normal! g'\"" | exe "normal! zz" |
+                    \ endif
+    augroup END
+    augroup Styles
+        autocmd!
+        " Increase brightness of comments in nord
+        autocmd ColorScheme nord highlight Comment guifg=#6d7a96
+        " Make CursorLine look like an underline
+        autocmd VimEnter * execute "hi clear CursorLine"
+        autocmd VimEnter * execute "hi CursorLine gui=underline cterm=underline"
+        " MatchParen
+        autocmd VimEnter * execute "hi MatchParen ctermbg=blue guibg=lightblue"
+        " Only highlight the current line on the active window
+        au WinLeave * set nocursorline
+        au WinEnter * set cursorline
+    augroup END
+    " for some reason there is an ftplugin that is bundled with vim that
+    " sets the textwidth to 78 if it is currently 0. This sets it back to 0
+    augroup resetTextWidth
+        autocmd!
+        autocmd VimEnter * :set tw=0
+    augroup END
+    augroup SetDefaultOmniFunc
+        autocmd!
+        autocmd Filetype *
+            \	if &omnifunc == "" |
+                \ setlocal omnifunc=syntaxcomplete#Complete |
+            \	endif
+    augroup END
+    augroup MUCompleteConfig
+        autocmd!
+        " allow the use of mucomplete_current_method which returns a short
+        " string denoting the currently active completion method, to be
+        " used in a statusline
+        autocmd VimEnter * execute "MUcompleteNotify 3"
+    augroup END
+    augroup SetFoldMethod
+        autocmd!
+        autocmd Filetype vim execute "setlocal foldmethod=indent"
+    augroup END
+    augroup TypescriptFunctionObject
+        " "vim-textobj-function-javascript works pretty
+        " well for typescript so this will enable it
+        autocmd!
+        autocmd FileType typescriptreact,typescript
+            \ let b:textobj_function_select = function('textobj#function#javascript#select')
+    augroup END
+    augroup ExtendIskeyword
+        autocmd!
+        autocmd FileType css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss setlocal iskeyword+=-,?,!
+        autocmd FileType vim setlocal iskeyword+=:,#
+    augroup END
+    augroup OpenHelpOrPreviewWindowAcrossBottom
+        autocmd!
+        autocmd FileType *
+            \ if &filetype ==? "help" || getwinvar('.', '&previewwindow') == 1 |
+                \ wincmd J |
+            \ endif
+    augroup END
 
 " Section: Aesthetics
 " ----------------------
@@ -551,6 +531,7 @@
         return get(g:mucomplete#msg#short_methods,
         \        get(g:, 'mucomplete_current_method', ''), '')
     endf
+
     let &statusline = ' %Y %F %{MU()}%m%r%h%w%=%04l,%04v %L '
     set listchars=tab:¬-,space:·
     " always show the sign column
