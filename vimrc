@@ -53,7 +53,7 @@
                     \ "{'word': v:val, 'menu': repeat(' ', &l:pumwidth - 13) . '[emmet]'}"
                 \ )
             \ }
-    let g:multicomplete_completers = [g:Emmet_completer_with_menu]
+    let g:multicomplete_completers = [function('lsp#complete'), g:Emmet_completer_with_menu]
     set completefunc=lsp#complete
 
     " turn off bell sounds
@@ -111,7 +111,6 @@
     nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
 
     " LSP
-    nnoremap <Leader>ld :ALEDocumentation<CR>
     nnoremap <Leader>lis :LspInstallServer<CR>
     nnoremap <Leader>ls :LspStatus<CR>
     nnoremap <Leader>lh :LspHover<CR>
@@ -216,51 +215,140 @@
     " let Vundle manage Vundle, required
     Plugin 'VundleVim/Vundle.vim'
 
-    Plugin 'dominikduda/vim_current_word'
-    Plugin 'tweekmonster/startuptime.vim'
-    Plugin 'mhinz/vim-sayonara'
-    Plugin 'bagrat/vim-buffet'
-    Plugin 'AndrewRadev/splitjoin.vim'
-        let g:splitjoin_split_mapping = ''
-        let g:splitjoin_join_mapping = ''
-        nnoremap sj :SplitjoinSplit<cr>
-        nnoremap sk :SplitjoinJoin<cr>
-    Plugin 'mhinz/vim-signify'
+    " Colorschemes
+    """"""""""""""""""""""""""""""""""""
+    Plugin 'lifepillar/vim-solarized8'
+    Plugin 'arcticicestudio/nord-vim'
+
+    " Text objects (:h text-objects)
+    """"""""""""""""""""""""""""""""""""
+    " Makes it easier to create custom text objects.
+    " Most of the plugins below depend on this.
     Plugin 'kana/vim-textobj-user'
+    " Select a function
     Plugin 'kana/vim-textobj-function'
-    Plugin 'thinca/vim-textobj-function-javascript'
-    Plugin 'haya14busa/vim-textobj-function-syntax'
-    Plugin 'Yggdroot/indentLine'
-        let g:indentLine_char = '▏'
-        let g:indentLine_setColors = 0
-        let g:indentLine_enabled = 0
-    Plugin 'tpope/vim-endwise'
-    Plugin 'mattn/emmet-vim'
-        inoremap <C-e> <Esc>:call emmet#expandAbbr(0, "")<CR>
-        nnoremap <C-e> :call emmet#expandAbbr(0, "")<CR>
-    " Automatically close html tags
-    Plugin 'alvan/vim-closetag'
-    " Automatically insert closing braces/quotes
-    Plugin 'Raimondi/delimitMate'
-    " Select all lines on the same indentation level as the cursor
+    " Select all lines on the same indentation level as the cursor.
+    " Useful for indentation bases languages like python.
     Plugin 'michaeljsmith/vim-indent-object'
-    Plugin 'ap/vim-css-color'
-    Plugin 'KabbAmine/vCoolor.vim'
-    Plugin 'tpope/vim-surround'
-    " Select a function call in visual mode.
-    " This can be used to wrap a function quickly, for example.
+    " Select a function call. This can be used to wrap a function call in another call, for example.
     Plugin 'machakann/vim-textobj-functioncall'
         let g:textobj_functioncall_no_default_key_mappings = 1
         xmap ic <Plug>(textobj-functioncall-i)
         omap ic <Plug>(textobj-functioncall-i)
         xmap ac <Plug>(textobj-functioncall-a)
         omap ac <Plug>(textobj-functioncall-a)
+    " Selecting functions, specifically in javascript.
+    Plugin 'thinca/vim-textobj-function-javascript'
+
+    " Manipulating Surroundings (e.g. braces, brackets, quotes)
+    """"""""""""""""""""""""""""""""""""
+    " Automatically add closing keyowrds (e.g. function/endfunction in vimscript)
+    Plugin 'tpope/vim-endwise'
+    " Automatically close html tags
+    Plugin 'alvan/vim-closetag'
+    " Automatically insert closing braces/quotes
+    Plugin 'Raimondi/delimitMate'
+    " Makes it easier to manipulate surroundings by providing commands to do common
+    " operations (e.g. change surrounding, remove surrounding, add surrounding)
+    Plugin 'tpope/vim-surround'
+
+    " File explorer
+    Plugin 'preservim/nerdtree'
+        let g:NERDTreeMouseMode=2
+        let g:NERDTreeWinPos="right"
+        let g:NERDTreeShowHidden=1
+        Plugin 'jistr/vim-nerdtree-tabs'
+            nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
+        Plugin 'unkiwii/vim-nerdtree-sync'
+            let g:nerdtree_sync_cursorline = 1
+
+    " Color stuff
+    """"""""""""""""""""""""""""""""""""
+    " Detects color strings (e.g. hex, rgba) and changes the background of the characters
+    " in that string to match the color. For example, in the following sample  line of CSS:
+    "   p {color: red}
+    " The background color of the string "red" would be the color red.
+    Plugin 'ap/vim-css-color'
+    " Opens the OS color picker and inserts the chosen color in the buffer.
+    Plugin 'KabbAmine/vCoolor.vim'
+
+    " Buffer/tab/window management
+    """"""""""""""""""""""""""""""""""""
+    " Commands for closing buffers while keeping/destroying the window it was displayed in.
+    Plugin 'mhinz/vim-sayonara'
+    " Easy movement between vim windows and tmux panes.
+    Plugin 'christoomey/vim-tmux-navigator'
+        let g:tmux_navigator_no_mappings = 1
+        nnoremap <C-h> :TmuxNavigateLeft<cr>
+        nnoremap <C-l> :TmuxNavigateRight<cr>
+        nnoremap <C-j> :TmuxNavigateDown<cr>
+        nnoremap <C-k> :TmuxNavigateUp<cr>
+    " Displays a bar at the top of the editor to see buffers and tabs.
+    Plugin 'bagrat/vim-buffet'
+
+    " Misc.
+    """"""""""""""""""""""""""""""""""""
+    " Highlight the current word and other occurences of it.
+    Plugin 'dominikduda/vim_current_word'
+    " A tool for profiling vim's startup time.
+    " Useful for finding slow plugins.
+    Plugin 'tweekmonster/startuptime.vim'
+    Plugin 'AndrewRadev/splitjoin.vim'
+        let g:splitjoin_split_mapping = ''
+        let g:splitjoin_join_mapping = ''
+        nnoremap sj :SplitjoinSplit<cr>
+        nnoremap sk :SplitjoinJoin<cr>
+    " Visualizes indentation in the buffer. Useful for fixing incorrectly indented lines.
+    Plugin 'Yggdroot/indentLine'
+        let g:indentLine_char = '▏'
+        let g:indentLine_setColors = 0
+        let g:indentLine_enabled = 0
+    " Run a shell command asynchronously and put the results in the quickfix window.
+    " Useful for running test suites.
+    Plugin 'tpope/vim-dispatch'
+    " Provides a collection of language packs, which provide syntax highlighting,
+    " and selects the correct one for the current buffer. Also detects indentation.
+    Plugin 'sheerun/vim-polyglot'
+    " Easier management of vim sessions
+    Plugin 'tpope/vim-obsession'
+    " Fuzzy finder
+    " TODO: Find a more portable replacement like quickpick.vim
+    Plugin 'junegunn/fzf.vim'
+        set runtimepath+=/usr/local/opt/fzf
+        let g:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
+        let g:fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
+        " recursive grep
+        function! FindLineResultHandler(result)
+            let l:resultTokens = split(a:result, ':')
+            let l:filename = l:resultTokens[0]
+            let l:lineNumber = l:resultTokens[1]
+            execute 'silent edit '.l:filename
+            execute l:lineNumber
+        endfunction
+        command! -bang -nargs=* FindLine call
+            \ fzf#vim#grep(
+            \ g:fzfFindLineCommand.' '.shellescape(<q-args>).' | tr -d "\017"',
+            \ 1,
+            \ {'sink': function('FindLineResultHandler'), 'options': '--delimiter : --nth 4..'},
+            \ <bang>0)
+        nnoremap <Leader>g :FindLine<CR>
+        " recursive file search
+        command! -bang -nargs=* FindFile call
+            \ fzf#run(fzf#wrap({
+            \ 'source': g:fzfFindFileCommand.' | tr -d "\017"',
+            \ 'sink': 'edit'}))
+        nnoremap <Leader>f :FindFile<CR>
+        nnoremap <C-@> :Commands<CR>
+        inoremap <C-@> <Esc>:Commands<CR>
+
+    " IDE features (e.g. autocomplete, smart refactoring, goto definition, etc.)
+    """"""""""""""""""""""""""""""""""""
     " An autocompleter that allows for the chaining
     " of various built-in and custom completion sources. If one source does not
     " return any results, mucomplete will automatically try the next
     " source in the chain. This way:
-    " - You can put the faster completion sources in the front of the chain
-    " and automatically defer to the slower ones if necessary. (e.g. search
+    " - You can put the faster completion sources in the front of the chain,
+    " deferring to the slower ones only if necessary. (e.g. search
     " keywords in the current buffer first before searching tags)
     " - You don't have to remember all the various keybinds for the built-in
     " and custom completion sources.
@@ -273,8 +361,8 @@
         " specify different completion sources to chain together per filetype
         " NOTE: 'user' is whatever is assigned to the setting 'completefunc'
         let g:mucomplete#chains = {
-                    \ 'default': ['path', 'user', 'c-n', 'omni', 'dict'],
-                    \ 'vim': ['path', 'user', 'c-n', 'omni', 'dict']
+                    \ 'default': ['path', 'user', 'c-n', 'omni'],
+                    \ 'vim': ['path', 'user', 'c-n', 'omni']
                     \ }
         " disable default mappings
         let g:mucomplete#no_mappings = 1
@@ -307,10 +395,19 @@
         let g:lsp_ale_diagnostics_severity = "warning"
     " Asynchronous linting
     Plugin 'dense-analysis/ale'
+        " If you check for the existence of a linter and it isn't there,
+        " don't continue to check on subsequent linting operations.
         let g:ale_cache_executable_check_failures = 1
+        " Don't show popup when the mouse if over a symbol, vim-lsp
+        " should be responsible for that.
         let g:ale_set_balloons = 0
+        " Don't show variable information in the status line,
+        " vim-lsp should be responsible for that.
         let g:ale_hover_cursor = 0
+        " Only report diagnostics with a warning level or above
+        " i.e. warning,error
         let g:ale_lsp_show_message_severity = "warning"
+        " Don't lint when opening the file.
         let g:ale_lint_on_enter = 0
         let g:ale_lint_on_text_changed = "always"
         let g:ale_lint_delay = 1000
@@ -318,6 +415,7 @@
         let g:ale_lint_on_filetype_changed = 0
         let g:ale_lint_on_save = 0
         let g:ale_fix_on_save = 1
+        " These are not so much fixers as formatters
         let g:ale_fixers = {
             \ 'javascript': ['prettier'],
             \ 'javascriptreact': ['prettier'],
@@ -334,52 +432,12 @@
             \ 'typescript': ['eslint'],
             \ 'typescriptreact': ['eslint']
             \ }
-    Plugin 'tpope/vim-dispatch'
-    Plugin 'sheerun/vim-polyglot'
-    Plugin 'tpope/vim-obsession'
-    Plugin 'lifepillar/vim-solarized8'
-    Plugin 'arcticicestudio/nord-vim'
-    Plugin 'christoomey/vim-tmux-navigator'
-        let g:tmux_navigator_no_mappings = 1
-        nnoremap <C-h> :TmuxNavigateLeft<cr>
-        nnoremap <C-l> :TmuxNavigateRight<cr>
-        nnoremap <C-j> :TmuxNavigateDown<cr>
-        nnoremap <C-k> :TmuxNavigateUp<cr>
-    Plugin 'junegunn/fzf.vim'
-        set runtimepath+=/usr/local/opt/fzf
-        let g:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
-        let g:fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
-        " recursive grep
-        function! FindLineResultHandler(result)
-            let l:resultTokens = split(a:result, ':')
-            let l:filename = l:resultTokens[0]
-            let l:lineNumber = l:resultTokens[1]
-            execute 'silent edit '.l:filename
-            execute l:lineNumber
-        endfunction
-        command! -bang -nargs=* FindLine call
-            \ fzf#vim#grep(
-            \ g:fzfFindLineCommand.' '.shellescape(<q-args>).' | tr -d "\017"',
-            \ 1,
-            \ {'sink': function('FindLineResultHandler'), 'options': '--delimiter : --nth 4..'},
-            \ <bang>0)
-        nnoremap <Leader>g :FindLine<CR>
-        " recursive file search
-        command! -bang -nargs=* FindFile call
-            \ fzf#run(fzf#wrap({
-            \ 'source': g:fzfFindFileCommand.' | tr -d "\017"',
-            \ 'sink': 'edit'}))
-        nnoremap <Leader>f :FindFile<CR>
-        nnoremap <C-@> :Commands<CR>
-        inoremap <C-@> :Commands<CR>
-    Plugin 'preservim/nerdtree'
-        let g:NERDTreeMouseMode=2
-        let g:NERDTreeWinPos="right"
-        let g:NERDTreeShowHidden=1
-        Plugin 'jistr/vim-nerdtree-tabs'
-            nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
-        Plugin 'unkiwii/vim-nerdtree-sync'
-            let g:nerdtree_sync_cursorline = 1
+    " Expand emmet abbreviations
+    Plugin 'mattn/emmet-vim'
+        inoremap <C-e> <Esc>:call emmet#expandAbbr(0, "")<CR>
+        nnoremap <C-e> :call emmet#expandAbbr(0, "")<CR>
+    " Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
+    Plugin 'mhinz/vim-signify'
 
     call vundle#end()            " required for Vundle 
     filetype plugin indent on    " required for Vundle 
@@ -488,27 +546,29 @@
 
 " Section: Aesthetics
 " ----------------------
+    " Get the completion source currently being used by mucomplete
     fun! MU()
         return get(g:mucomplete#msg#short_methods,
         \        get(g:, 'mucomplete_current_method', ''), '')
     endf
-    set fillchars=vert:│
-    set listchars=tab:¬-,space:·
     let &statusline = ' %Y %F %{MU()}%m%r%h%w%=%04l,%04v %L '
+    set listchars=tab:¬-,space:·
+    " always show the sign column
     set signcolumn=yes
+    " For a nice continuous line
+    set fillchars=vert:│
 
     " Block cursor in normal mode and thin line in insert mode
     if exists('$TMUX')
-    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+        let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+        let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
     else
-    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+        let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+        let &t_EI = "\<Esc>]50;CursorShape=0\x7"
     endif
 
     function! SetColorscheme(...)
         let s:new_bg = system('cat ~/.darkmode') ==? "0" ? "light" : "dark"
-
         if &background !=? s:new_bg || ! exists('g:colors_name')
             let &background = s:new_bg
             let s:new_color = s:new_bg ==? "light" ? "solarized8" : "nord"
