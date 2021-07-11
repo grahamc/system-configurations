@@ -72,16 +72,16 @@
 
     " set swapfile directory
     let &directory = $VIMHOME . 'swapfile_dir/'
-    call mkdir(expand(&directory), "p")
+    call mkdir(&directory, "p")
 
     " persist undo history to disk
     let &undodir = $VIMHOME . 'undo_dir/'
-    call mkdir(expand(&undodir), "p")
+    call mkdir(&undodir, "p")
     set undofile
 
     " set backup directory
     let &backupdir = $VIMHOME . 'backup_dir/'
-    call mkdir(expand(&backupdir), "p")
+    call mkdir(&backupdir, "p")
     set backup
 
     " tab setup
@@ -102,19 +102,6 @@
 
 " Section: Mappings
 " -----------------
-    let g:mapleader = "\<Space>"
-    inoremap jk <Esc>
-    nnoremap <silent> <Leader>\ :nohl<CR>
-    nnoremap <silent> <Leader>w :wa<CR>
-    nnoremap <Leader>r :source $MYVIMRC<CR>
-    nnoremap <Leader>x :wqa<CR>
-    nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
-
-    " LSP
-    nnoremap <Leader>lis :LspInstallServer<CR>
-    nnoremap <Leader>ls :LspStatus<CR>
-    nnoremap <Leader>lh :LspHover<CR>
-
     " Map the output of these key combinations to their actual names
     " to make mappings that use these key combinations easier to understand
     " WARNING: When doing this you should turn off any plugin that
@@ -136,6 +123,20 @@
     nmap [1;5C <C-Right>
     nmap [1;5B <C-Down>
     nmap [1;5A <C-Up>
+
+    let g:mapleader = "\<Space>"
+    inoremap jk <Esc>
+    nnoremap <silent> <Leader>\ :nohl<CR>
+    nnoremap <silent> <Leader>w :wa<CR>
+    nnoremap <Leader>r :source $MYVIMRC<CR>
+    nnoremap <Leader>x :wqa<CR>
+    nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
+
+    " LSP
+    nnoremap <Leader>lis :LspInstallServer<CR>
+    nnoremap <Leader>ls :LspStatus<CR>
+    nnoremap <Leader>lh :LspHover<CR>
+
 
     " buffer navigation
     noremap <silent> <S-h> :bp<CR>
@@ -244,7 +245,7 @@
         omap ic <Plug>(textobj-functioncall-i)
         xmap ac <Plug>(textobj-functioncall-a)
         omap ac <Plug>(textobj-functioncall-a)
-    " Selecting functions, specifically in javascript.
+    " Selecting functions in javascript.
     Plugin 'thinca/vim-textobj-function-javascript'
 
     " Manipulating Surroundings (e.g. braces, brackets, quotes)
@@ -258,16 +259,6 @@
     " Makes it easier to manipulate surroundings by providing commands to do common
     " operations (e.g. change surrounding, remove surrounding, add surrounding)
     Plugin 'tpope/vim-surround'
-
-    " File explorer
-    Plugin 'preservim/nerdtree'
-        let g:NERDTreeMouseMode=2
-        let g:NERDTreeWinPos="right"
-        let g:NERDTreeShowHidden=1
-        Plugin 'jistr/vim-nerdtree-tabs'
-            nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
-        Plugin 'unkiwii/vim-nerdtree-sync'
-            let g:nerdtree_sync_cursorline = 1
 
     " Color stuff
     """"""""""""""""""""""""""""""""""""
@@ -295,10 +286,18 @@
 
     " Misc.
     """"""""""""""""""""""""""""""""""""
+    " File explorer
+    Plugin 'preservim/nerdtree'
+        let g:NERDTreeMouseMode=2
+        let g:NERDTreeWinPos="right"
+        let g:NERDTreeShowHidden=1
+        Plugin 'jistr/vim-nerdtree-tabs'
+            nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
+        Plugin 'unkiwii/vim-nerdtree-sync'
+            let g:nerdtree_sync_cursorline = 1
     " Highlight the current word and other occurences of it.
     Plugin 'dominikduda/vim_current_word'
-    " A tool for profiling vim's startup time.
-    " Useful for finding slow plugins.
+    " A tool for profiling vim's startup time. Useful for finding slow plugins.
     Plugin 'tweekmonster/startuptime.vim'
     Plugin 'AndrewRadev/splitjoin.vim'
         let g:splitjoin_split_mapping = ''
@@ -319,7 +318,7 @@
     " Easier management of vim sessions
     Plugin 'tpope/vim-obsession'
     " Fuzzy finder
-    " TODO: Find a more portable replacement like quickpick.vim
+    " TODO: Find a more portable replacement
     Plugin 'junegunn/fzf.vim'
         set runtimepath+=/usr/local/opt/fzf
         let g:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
@@ -385,6 +384,8 @@
     " e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
     Plugin 'prabirshrestha/vim-lsp'
         let g:lsp_fold_enabled = 0
+        let g:lsp_document_code_action_signs_enabled = 0
+        let g:lsp_document_highlight_enabled = 0
     " An easy way to install/manage language servers for vim-lsp.
     Plugin 'mattn/vim-lsp-settings'
         " where the language servers are stored
@@ -392,7 +393,7 @@
         call mkdir(g:lsp_settings_servers_dir, "p")
     " A bridge between vim-lsp and ale. This works by
     " sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
-    " This gives a nice separation of concerns: vim-lsp will only
+    " This allows a nice separation of concerns: vim-lsp will only
     " provide LSP features and Ale will only provide realtime diagnostics.
     " Plus, ale's diagnostics are more robust than vim-lsp's
     " and vim-lsp's LSP features are more robust than ale's.
@@ -439,12 +440,17 @@
             \ 'typescript': ['eslint'],
             \ 'typescriptreact': ['eslint']
             \ }
-    " Expand emmet abbreviations
+    " Expand Emmet abbreviations. Helps write HTML more quickly
     Plugin 'mattn/emmet-vim'
+        " NOTE: I don't believe 'emmet#expandAbbr()' is a part of the public API
+        " so this could break at anytime. I'm only doing this because I didn't
+        " want to use their keybinding.
         inoremap <C-e> <Esc>:call emmet#expandAbbr(0, "")<CR>
         nnoremap <C-e> :call emmet#expandAbbr(0, "")<CR>
     " Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
     Plugin 'mhinz/vim-signify'
+    " Run Git commands from vim
+    Plugin 'tpope/vim-fugitive'
 
     call vundle#end()            " required for Vundle 
     filetype plugin indent on    " required for Vundle 

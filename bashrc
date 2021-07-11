@@ -118,6 +118,7 @@ alias r="source ~/.bashrc"
 alias c='clear'
 alias wp='pyenv which python'
 alias youtube-mp3='youtube-dl -x --audio-format mp3 '
+alias trash='trash -F '
 
 # perform 'ls' after 'cd' if successful
 cd() {
