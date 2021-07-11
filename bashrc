@@ -131,35 +131,25 @@ function rust() {
     rustc $@ && ./$name && rm $name
 }
 
-lockfile="$HOME/.bashrc-themetoggle-daemon-lock"
 set_theme() {
-    if ( set -o noclobber; echo "$$" > "$lockfile") 2> /dev/null ; then
-      CURRENT_MODE=''
-      while :; do
-          SYSTEM_THEME="$(defaults read -g AppleInterfaceStyle 2>/dev/null)"
-          [ "$SYSTEM_THEME" = "Dark" ] && NEW_MODE='1' || NEW_MODE='0'
+    CURRENT_MODE=''
+    while :; do
+        SYSTEM_THEME="$(defaults read -g AppleInterfaceStyle 2>/dev/null)"
+        [ "$SYSTEM_THEME" = "Dark" ] && NEW_MODE='1' || NEW_MODE='0'
 
-          #if [ "$NEW_MODE" != "$CURRENT_MODE" ]; then
-              CURRENT_MODE="$NEW_MODE" && echo -n "$NEW_MODE" > ~/.darkmode
-              [[ "$NEW_MODE" -eq '0' ]] && newTheme='Solarized Light' || newTheme='Nord'
+        if [ "$NEW_MODE" != "$CURRENT_MODE" ]; then
+            CURRENT_MODE="$NEW_MODE" && echo -n "$NEW_MODE" > ~/.darkmode
+            [[ "$NEW_MODE" -eq '0' ]] && newTheme='Solarized Light' || newTheme='Nord'
 
-              setThemeEscapeSequence="\033]50;SetColors=preset=$newTheme\a"
-              [ -n "$TMUX" ] && setThemeEscapeSequence="\033Ptmux;\033$setThemeEscapeSequence\033\a"
-              echo -ne "$setThemeEscapeSequence"
-          #fi
+            setThemeEscapeSequence="\033]50;SetColors=preset=$newTheme\a"
+            [ -n "$TMUX" ] && setThemeEscapeSequence="\033Ptmux;\033$setThemeEscapeSequence\033\a"
+            echo -ne "$setThemeEscapeSequence"
+        fi
 
-         sleep 10
-      done
-    else
-        # when you open a new tab in iterm, it resets the colorscheme to whatever is in the profile
-        [[ "$(cat ~/.darkmode)" -eq "0" ]] && newTheme='Solarized Light' || newTheme='Nord'
-
-        setThemeEscapeSequence="\033]50;SetColors=preset=$newTheme\a"
-        [ -n "$TMUX" ] && setThemeEscapeSequence="\033Ptmux;\033$setThemeEscapeSequence\033\a"
-        echo -ne "$setThemeEscapeSequence"
-    fi
+        sleep 60
+    done
 }
-[ "$TERM_PROGRAM" == "iTerm.app" ] && trap 'rm -f "$lockfile"; exit $?' INT TERM EXIT SIGHUP && ( set_theme  & )
+[ "$TERM_PROGRAM" == "iTerm.app" ] && trap 'kill $(jobs -p); exit $?' INT TERM EXIT SIGHUP && set_theme &
 
 wget -nc -O ~/.dircolors https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors 2>/dev/null
 eval "$(dircolors -b ~/.dircolors)"
