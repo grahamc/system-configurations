@@ -3,7 +3,11 @@ function parse_git_branch() {
 	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
     [ -n "$BRANCH" ] && echo "${BRANCH}"
 }
-PS1="\[\e[33m\]╭─\[\e[m\]\[\e[37;41m\]\`parse_git_branch\`\[\e[m\]\[\e[37;44m\]\w\[\e[m\]
+function parse_git_branch_dash() {
+	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+    [ -n "$BRANCH" ] && echo "⏤⏤ "
+}
+PS1="\[\e[33m\]╭─\[\e[m\]\[\e[1;33m\]\`parse_git_branch\`\[\e[m\]\[\e[33m\]\`parse_git_branch_dash\`\[\e[m\]\[\e[1;33m\]\w\[\e[m\]
 \[\e[33m\]╰\[\e[m\]🎸"
 
 # PATH

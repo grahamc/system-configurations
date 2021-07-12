@@ -2,7 +2,7 @@
 " ----------------------
     " env variables
     let $VIMHOME = $HOME . '/.vim/'
-    
+
     " misc.
     set confirm
     set encoding=utf8
@@ -28,7 +28,7 @@
     set display=lastline
     set clipboard=unnamed
     set nocompatible " needed for Vundle
-    filetype off " needed for Vundle 
+    filetype off " needed for Vundle
     set cmdheight=2
     set wildmenu
     set wildmode=list:longest
@@ -105,6 +105,7 @@
     " WARNING: When doing this you should turn off any plugin that
     " automatically adds closing braces since it might accidentally
     " add a closing brace to an escape sequence
+    " TODO: map function row
     nmap ¬ <A-l>
     nmap ˙ <A-h>
     nmap ∆ <A-j>
@@ -147,7 +148,7 @@
     " tab navigation
     nnoremap <silent> <S-Down> :tabprevious<CR>
     nnoremap <silent> <S-Up> :tabnext<CR>
-    
+
     " wrap a function call in another function call.
     " this is done by looking for a function call under the cursor and if found,
     " wrapping it with parentheses and then going into
@@ -220,7 +221,7 @@
     " Keybind cheatsheet
     let g:command_list = [
                 \ "Show references [<Leader>lrf]",
-                \ "Rename symbol [<Space>lrn]",
+                \ "Rename symbol [<Leader>lrn]",
                 \ "Next buffer [<S-l>]",
                 \ "Previous buffer [<S-h>]",
                 \ "Next tab [<S-Up>]",
@@ -231,7 +232,7 @@
                 \ "Toggle folds [<Leader>z]",
                 \ "Vertical split [|]",
                 \ "Horizontal split [_]",
-                \ "Close buffer [<space>q]",
+                \ "Close buffer [<Leader>q]",
                 \ "Close window [<Leader>Q]",
                 \ ]
     function! CheatsheetSink(result)
@@ -326,13 +327,15 @@
         nnoremap <C-l> :TmuxNavigateRight<cr>
         nnoremap <C-j> :TmuxNavigateDown<cr>
         nnoremap <C-k> :TmuxNavigateUp<cr>
-    " Displays a bar at the top of the editor to see buffers and tabs.
-    Plugin 'bagrat/vim-buffet'
 
     " Misc.
     """"""""""""""""""""""""""""""""""""
-    " File explorer
-    Plugin 'preservim/nerdtree'
+    " Statusbar and tabline
+    Plugin 'vim-airline/vim-airline'
+        let g:airline#extensions#tabline#enabled = 1
+        let g:airline#extensions#tabline#formatter = 'unique_tail'
+        Plugin 'vim-airline/vim-airline-themes'
+    Plugin 'preservim/nerdtree' " File explorer
         let g:NERDTreeMouseMode=2
         let g:NERDTreeWinPos="right"
         let g:NERDTreeShowHidden=1
@@ -491,7 +494,7 @@
     Plugin 'mhinz/vim-signify'
     Plugin 'tpope/vim-fugitive' " Run Git commands from vim
 
-    " required for Vundle 
+    " required for Vundle
     call vundle#end()
     filetype plugin indent on
 
@@ -521,6 +524,7 @@
         autocmd!
         " Increase brightness of comments in nord
         autocmd ColorScheme nord highlight Comment guifg=#6d7a96
+
         " Make CursorLine look like an underline
         autocmd VimEnter * execute "hi clear CursorLine"
         autocmd VimEnter * execute "hi CursorLine gui=underline cterm=underline"
@@ -529,6 +533,17 @@
         " Only highlight the current line on the active window
         au WinLeave * set nocursorline
         au WinEnter * set cursorline
+
+        autocmd Colorscheme solarized8 execute "hi clear SignColumn"
+        autocmd Colorscheme solarized8 execute "hi DiffAdd ctermbg=NONE guibg=NONE"
+        autocmd Colorscheme solarized8 execute "hi DiffChange ctermbg=NONE guibg=NONE"
+        autocmd Colorscheme solarized8 execute "hi DiffDelete ctermbg=NONE guibg=NONE"
+        autocmd Colorscheme solarized8 execute "hi SignifyLineChange ctermbg=NONE guibg=NONE"
+        autocmd Colorscheme solarized8 execute "hi SignifyLineDelete ctermbg=NONE guibg=NONE"
+        
+        " Transparent number column in solarized
+        autocmd Colorscheme solarized8 execute "hi clear CursorLineNR"
+        autocmd Colorscheme solarized8 execute "hi clear LineNR"
     augroup END
 
     augroup Miscellaneous
@@ -565,7 +580,7 @@
         \        get(g:, 'mucomplete_current_method', ''), '')
     endf
 
-    let &statusline = ' %Y %F %{MU()}%m%r%h%w%=%04l,%04v %L '
+    " let &statusline = ' %Y %F %{MU()}%m%r%h%w%=%04l,%04v %L '
     set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
     set signcolumn=yes " always show the sign column
     set fillchars=vert:│ " For a nice continuous line
@@ -586,8 +601,12 @@
         let s:new_bg = system('cat ~/.darkmode') ==? "0" ? "light" : "dark"
         if &background !=? s:new_bg || ! exists('g:colors_name')
             let &background = s:new_bg
+
             let s:new_color = s:new_bg ==? "light" ? "solarized8" : "nord"
             silent! execute "normal! :color " . s:new_color . "\<cr>"
+
+            let s:new_airline_theme = s:new_bg ==? "light" ? "solarized" : "base16_nord"
+            silent! execute "normal! :AirlineTheme " . s:new_color . "\<cr>"
         endif
     endfunction
     call SetColorscheme()
@@ -637,7 +656,7 @@
                     for l:dict in l:completer_results
                         let l:val = dict['word']
                         let dict.word = l:replaceable_chars[0:(l:findstart - g:findstart) - 1]->join("") . l:val
-                        
+
                         " make sure that the padded string doesn't show
                         " up in the completion menu by adding an "abbr"
                         " key if one isn't already present
