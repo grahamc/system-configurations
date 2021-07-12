@@ -339,9 +339,8 @@ let g:NERDTreeMouseMode=2
 let g:NERDTreeWinPos="right"
 let g:NERDTreeShowHidden=1
 Plugin 'jistr/vim-nerdtree-tabs'
+let g:nerdtree_tabs_autofind = 1
 nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
-Plugin 'unkiwii/vim-nerdtree-sync'
-let g:nerdtree_sync_cursorline = 1
 " Highlight the current word and other occurences of it.
 Plugin 'dominikduda/vim_current_word'
 " A tool for profiling vim's startup time. Useful for finding slow plugins.
