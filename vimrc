@@ -413,15 +413,6 @@ let g:mucomplete#chains = {
             \ 'default': ['path', 'user', 'c-n', 'omni'],
             \ 'vim': ['path', 'user', 'c-n', 'omni']
             \ }
-let g:mucomplete#no_mappings = 1 " disable default mappings
-" selecting completion matches
-imap <tab> <plug>(MUcompleteFwd)
-imap <s-tab> <plug>(MUcompleteBwd)
-" manually selecting completion sources
-inoremap <silent> <plug>(MUcompleteFwdKey) <C-j>
-imap <C-j> <plug>(MUcompleteCycFwd)
-inoremap <silent> <plug>(MUcompleteBwdKey) <C-h>
-imap <C-h> <plug>(MUcompleteCycBwd)
 " Language Server Protocol client that provides IDE like features
 " e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
 Plugin 'prabirshrestha/vim-lsp'
