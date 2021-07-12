@@ -403,9 +403,9 @@ nnoremap <Leader>f :FindFile<CR>
 " - You don't have to remember all the various keybinds for the built-in
 " and custom completion sources.
 Plugin 'lifepillar/vim-mucomplete'
-let g:mucomplete#completion_delay = 300
+let g:mucomplete#completion_delay = 500
+let g:mucomplete#reopen_immediately = 0
 let g:mucomplete#always_use_completeopt = 1
-let g:mucomplete#enable_auto_at_startup = 1
 let g:mucomplete#minimum_prefix_length = 3 " minimum chars before autocompletion starts
 " specify different completion sources to chain together per filetype
 " NOTE: 'user' is whatever is assigned to the setting 'completefunc'
