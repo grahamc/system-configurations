@@ -244,7 +244,7 @@ function! CheatsheetSink(result)
         let l:keybind = 1 . l:keybind
     endif
     " Escape angle bracket sequences, like <C-h>, by prepending a '\'
-    let l:keybind = substitute(l:keybind, '<[a-z,-]*>', '\="\\" . submatch(0)', 'g')
+    let l:keybind = substitute(l:keybind, '<[a-z,0-9,-]*>', '\="\\" . submatch(0)', 'g')
     " Escape sequences will only be parsed by vim if the string is in
     " double quotes so this line will make it a double quoted string,
     " see: https://vi.stackexchange.com/questions/10916/execute-normal-command-doesnt-work
