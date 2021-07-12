@@ -1,10 +1,10 @@
 # prompt (ezprompt.net)
 function parse_git_branch() {
-	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+    BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
     [ -n "$BRANCH" ] && echo "${BRANCH}"
 }
 function parse_git_branch_dash() {
-	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+    BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
     [ -n "$BRANCH" ] && echo "⏤⏤ "
 }
 PS1="\[\e[33m\]╭─\[\e[m\]\[\e[1;33m\]\`parse_git_branch\`\[\e[m\]\[\e[33m\]\`parse_git_branch_dash\`\[\e[m\]\[\e[1;33m\]\w\[\e[m\]
@@ -43,14 +43,14 @@ export FZF_RG_OPTIONS='--hidden --column --line-number --no-heading --fixed-stri
     --glob "!dist" \
     --glob "!package-lock.json" \
     --glob "!node_modules"'
-export FZF_DEFAULT_COMMAND="rg $FZF_RG_OPTIONS --files"
-export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --margin=5%,2%,5%,2%'
-export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
-export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up'
-export VIRTUAL_ENV_DISABLE_PROMPT=1
-export PYTHON_CONFIGURE_OPTS="--enable-framework"
-export NVM_DIR="$HOME/.nvm"
-export BASH_SILENCE_DEPRECATION_WARNING=1
+    export FZF_DEFAULT_COMMAND="rg $FZF_RG_OPTIONS --files"
+    export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --margin=5%,2%,5%,2%'
+    export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
+    export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up'
+    export VIRTUAL_ENV_DISABLE_PROMPT=1
+    export PYTHON_CONFIGURE_OPTS="--enable-framework"
+    export NVM_DIR="$HOME/.nvm"
+    export BASH_SILENCE_DEPRECATION_WARNING=1
 
 #fzf
 # keybindings
@@ -94,8 +94,8 @@ alias trash='trash -F '
 
 # perform 'ls' after 'cd' if successful
 cd() {
-  builtin cd "$*"
-  [ "$?" -eq 0 ] && ls
+    builtin cd "$*"
+    [ "$?" -eq 0 ] && ls
 }
 
 # compile, run, and remove the binary
@@ -122,15 +122,18 @@ set_theme() {
             echo -ne "$setThemeEscapeSequence"
         fi
 
-        sleep 60
+        sleep 5
     done
 }
-# The last command on this line runs the theme checking function in the background. The prior commands
+# The last command on this line runs the theme checking function as a background job. The prior commands
 # are to verify that the os is macos, the terminal is iTerm, and that we have a mechanism in place to
-# cleanup the background function once the session ends (via 'trap')
-[[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && trap 'kill $(jobs -p); exit $?' INT TERM EXIT SIGHUP && set_theme &
+# cleanup the background job once the session ends (via 'trap').
+# The 'set [+|-]m' commands are to supress the message the background job
+# outputs when it exits, which it will do everytime the bashrc is sourced.
+# see: https://unix.stackexchange.com/questions/225201/how-to-suppress-exit-code-of-finished-background-jobs
+[[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && trap 'set +m; kill $(jobs -p); set -m; exit $?' INT TERM EXIT SIGHUP && set_theme &
 
-# Fetch colors 
+# Fetch dircolors to highlight the output of ls
 wget -nc -O ~/.dircolors 'https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors' 2>/dev/null
 eval "$(dircolors -b ~/.dircolors)"
 
