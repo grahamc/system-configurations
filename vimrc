@@ -529,6 +529,8 @@ augroup Styles
     autocmd Colorscheme solarized8 execute "hi DiffDelete ctermbg=NONE guibg=NONE"
     autocmd Colorscheme solarized8 execute "hi SignifyLineChange ctermbg=NONE guibg=NONE"
     autocmd Colorscheme solarized8 execute "hi SignifyLineDelete ctermbg=NONE guibg=NONE"
+    autocmd Colorscheme solarized8 execute "hi ALEErrorSign ctermbg=NONE guibg=NONE ctermfg=red guifg=red"
+    autocmd Colorscheme solarized8 execute "hi ALEWarningSign ctermbg=NONE guibg=NONE ctermfg=yellow guifg=yellow"
 
     " Transparent number column in solarized
     autocmd Colorscheme solarized8 execute "hi clear CursorLineNR"
