@@ -15,9 +15,9 @@ export SUMO_HOME="/opt/local/share/sumo"
 export RUST_PATH="$HOME/.cargo/bin"
 export FZF_PATH="/usr/local/opt/fzf/bin"
 export PYENV_ROOT="$HOME/.pyenv"
+export PYENV_BINARIES="$PYENV_ROOT/bin"
 export GLOBAL_NPM_PACKAGES="$HOME/node_modules/.bin"
-export NEOVIM_PATH="$HOME/.nvim-osx64/bin"
-export PATH="$PYENV_ROOT/bin:$COREUTILS_PATH:$PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH:$FZF_PATH:$GLOBAL_NPM_PACKAGES:$NEOVIM_PATH"
+export PATH="$PYENV_BINARIES:$COREUTILS_PATH:$PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH:$FZF_PATH:$GLOBAL_NPM_PACKAGES"
 
 # MANPATH
 export COREUTILS_MANPATH="/usr/local/opt/coreutils/libexec/gnuman"
@@ -29,46 +29,16 @@ export MANPATH="$BASE_MANPATH:$MACPORTS_PATH:$COREUTILS_MANPATH"
 export LESS="-Ri"
 export FZF_RG_OPTIONS='--hidden --column --line-number --no-heading --fixed-strings \
     --ignore-case --no-ignore \
-    --glob "!mozilla-unified" --glob "!venv" \
-    --glob "!Library" \
     --glob "!.git" \
     --glob "!.cache" \
-    --glob "!.redhat" \
-    --glob "!.sdkman" \
-    --glob "!.vim" \
-    --glob "!.nvm" \
-    --glob "!.viminfo" \
-    --glob "!.node-gyp" \
-    --glob "!.pyenv" \
-    --glob "!.Trash" \
-    --glob "!.wdm" \
     --glob "!*.log" \
     --glob "!*.plist" \
     --glob "!*.jpg" \
     --glob "!*.lock-info" \
-    --glob "!*.xml" \
-    --glob "!imovielibrary" \
-    --glob "!.local" \
-    --glob "!.ngrok2" \
-    --glob "!.python_history" \
-    --glob "!.bash_history" \
-    --glob "!.m2" \
-    --glob "!Brewfile" \
     --glob "!.vscode" \
-    --glob "!.tmux" \
-    --glob "!.tldrc" \
-    --glob "!.npm" \
-    --glob "!.rustup" \
-    --glob "!.dropbox" \
-    --glob "!.lemminx" \
-    --glob "!.bash_sessions" \
-    --glob "!.vscode-global" \
-    --glob "!iMovie" \
-    --glob "!.ssh" \
-    --glob "!Audio\ " \
     --glob "!dist" \
     --glob "!package-lock.json" \
-    --glob "!Downloads" --glob "!node_modules" --glob "!doc" --glob "!Dropbox" --glob "!Documents"'
+    --glob "!node_modules"'
 export FZF_DEFAULT_COMMAND="rg $FZF_RG_OPTIONS --files"
 export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --margin=5%,2%,5%,2%'
 export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
@@ -99,16 +69,14 @@ else
 fi
 
 # nvm
-# init
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-# completion
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # init
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # completion
 
 #sdkman
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
-# aliases alias la='ls -A'
+# aliases
 alias grep='grep --color=auto'
 alias ls='ls --color=auto'
 alias la='ls -A'
@@ -132,6 +100,9 @@ function rust() {
     rustc $@ && ./$name && rm $name
 }
 
+# Check every minute if macos is in darkmode and update the iTerm theme accordingly.
+# Also store an integer in '~/.darkmode' to signify the current mode. (1=darkmode, 0=lightmode)
+# This way other programs, like vim, can easily check if darkmode is active and update their theme too.
 set_theme() {
     CURRENT_MODE=''
     while :; do
@@ -150,9 +121,13 @@ set_theme() {
         sleep 60
     done
 }
-[ "$TERM_PROGRAM" == "iTerm.app" ] && trap 'kill $(jobs -p); exit $?' INT TERM EXIT SIGHUP && set_theme &
+# The last command on this line runs the theme checking function in the background. The prior commands
+# are to verify that the os is macos, the terminal is iTerm, and that we have a mechanism in place to
+# cleanup the background function once the session ends (via 'trap')
+[[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && trap 'kill $(jobs -p); exit $?' INT TERM EXIT SIGHUP && set_theme &
 
-wget -nc -O ~/.dircolors https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors 2>/dev/null
+# Fetch colors 
+wget -nc -O ~/.dircolors 'https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors' 2>/dev/null
 eval "$(dircolors -b ~/.dircolors)"
 
 # autocomplete

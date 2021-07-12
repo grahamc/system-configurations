@@ -54,21 +54,18 @@
                 \ )
             \ }
     let g:multicomplete_completers = [function('lsp#complete'), g:Emmet_completer_with_menu]
-    set completefunc=lsp#complete
+    set completefunc=MultiComplete
 
-    " turn off bell sounds
-    set belloff+=all
+    set belloff+=all " turn off bell sounds
 
     " show the completion [menu] even if there is only [one] suggestion
     " by default, [no] suggestion is [select]ed
     set completeopt+=menuone,noselect,popup
     set completeopt-=preview
 
-    " don't display messages related to completion
-    set shortmess+=Icm
+    set shortmess+=Icm " don't display messages related to completion
 
-    " Delete comment character when joining commented lines
-    set formatoptions+=j
+    set formatoptions+=j " Delete comment character when joining commented lines
 
     " set swapfile directory
     let &directory = $VIMHOME . 'swapfile_dir/'
@@ -91,16 +88,17 @@
     let &shiftwidth = g:tab_width
     let &softtabstop = g:tab_width
 
-    " searching is only case sensitive when the query contains an uppercase letter
-    set ignorecase smartcase
+    set ignorecase smartcase " searching is only case sensitive when the query contains an uppercase letter
 
-    " open new horizontal and vertical panes to the right and bottom respectively
-    set splitright splitbelow
+    set splitright splitbelow " open new horizontal and vertical panes to the right and bottom respectively
 
-    " enable mouse mode while in tmux
-    let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
+    let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2' " enable mouse mode while in tmux
 
 " Section: Mappings
+" NOTE: "<C-U>" is added to a lot of mappings to clear the visual selection
+" that is being added automatically. Without it, trying to run a command
+" through :Cheatsheet won't work.
+" see: https://stackoverflow.com/questions/13830874/why-do-some-vim-mappings-include-c-u-after-a-colon
 " -----------------
     " Map the output of these key combinations to their actual names
     " to make mappings that use these key combinations easier to understand
@@ -133,10 +131,14 @@
     nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
 
     " LSP
-    nnoremap <Leader>lis :LspInstallServer<CR>
-    nnoremap <Leader>ls :LspStatus<CR>
-    nnoremap <Leader>lh :LspHover<CR>
-
+    nnoremap <Leader>lis :<C-U>LspInstallServer<CR>
+    nnoremap <Leader>ls :<C-U>LspStatus<CR>
+    nnoremap <Leader>lh :<C-U>LspHover<CR>
+    nnoremap <Leader>ld :<C-U>LspDefinition<CR>
+    nnoremap <Leader>lrn :<C-U>LspRename<CR>
+    nnoremap <Leader>lrf :<C-U>LspReferences<CR>
+    nnoremap <Leader>lca :<C-U>LspCodeActionSync<CR>
+    nnoremap <Leader>lo :<C-U>LspCodeActionSync source.organizeImports<CR>
 
     " buffer navigation
     noremap <silent> <S-h> :bp<CR>
@@ -205,12 +207,57 @@
     nnoremap <silent> <leader>Q :q<CR>
 
     function! CleanNoNameEmptyBuffers()
-        let buffers = filter(range(1, bufnr('$')), 'buflisted(v:val) && empty(bufname(v:val)) && bufwinnr(v:val) < 0 && (getbufline(v:val, 1, "$") == [""])')
+        let buffers = filter(
+                    \ range(1, bufnr('$')),
+                    \ 'buflisted(v:val) && empty(bufname(v:val)) && bufwinnr(v:val) < 0 && (getbufline(v:val, 1, "$") == [""])'
+                    \ )
         if !empty(buffers)
             exe 'bd '.join(buffers, ' ')
         endif
     endfunction
     nnoremap <silent> <Leader>c :call CleanNoNameEmptyBuffers()<CR>
+
+    " Keybind cheatsheet
+    let g:command_list = [
+                \ "Show references [<Leader>lrf]",
+                \ "Rename symbol [<Space>lrn]",
+                \ "Next buffer [<S-l>]",
+                \ "Previous buffer [<S-h>]",
+                \ "Next tab [<S-Up>]",
+                \ "Previous tab [<S-Down>]",
+                \ "Remove trailing whitespace [<F5>]",
+                \ "Shift line(s) up [<C-Up>]",
+                \ "Shift line(s) down [<C-Down>]",
+                \ "Toggle folds [<Leader>z]",
+                \ "Vertical split [|]",
+                \ "Horizontal split [_]",
+                \ "Close buffer [<space>q]",
+                \ "Close window [<Leader>Q]",
+                \ ]
+    function! CheatsheetSink(result)
+        " Extract the keybinding which is always between brackets at the end
+        let l:keybind = a:result[ match(a:result, '\[.*\]$') + 1 : -2 ]
+        " Replace '<leader>' with mapleader
+        let l:keybind = substitute(l:keybind, '<leader>', '\<Space>', 'g')
+        " If the command starts with space, put a 1 before it (:h normal)
+        if l:keybind =~? '^<space>'
+            let l:keybind = 1 . l:keybind
+        endif
+        " Escape angle bracket sequences, like <C-h>, by prepending a '\'
+        let l:keybind = substitute(l:keybind, '<[a-z,-]*>', '\="\\" . submatch(0)', 'g')
+        " Escape sequences will only be parsed by vim if the string is in
+        " double quotes so this line will make it a double quoted string,
+        " see: https://vi.stackexchange.com/questions/10916/execute-normal-command-doesnt-work
+        let l:keybind = eval('"' . l:keybind . '"')
+
+        exe "normal " . l:keybind
+    endfunction
+    command! -bang -nargs=* Cheatsheet call
+        \ fzf#run(fzf#wrap({
+        \ 'source': g:command_list,
+        \ 'sink': function('CheatsheetSink')}))
+    nnoremap <C-@> :Cheatsheet<CR>
+    inoremap <C-@> <Esc>:Cheatsheet<CR>
 
 " Section: Plugins
 " ------------------------------------
@@ -245,8 +292,6 @@
         omap ic <Plug>(textobj-functioncall-i)
         xmap ac <Plug>(textobj-functioncall-a)
         omap ac <Plug>(textobj-functioncall-a)
-    " Selecting functions in javascript.
-    Plugin 'thinca/vim-textobj-function-javascript'
 
     " Manipulating Surroundings (e.g. braces, brackets, quotes)
     """"""""""""""""""""""""""""""""""""
@@ -257,7 +302,7 @@
     " Automatically insert closing braces/quotes
     Plugin 'Raimondi/delimitMate'
     " Makes it easier to manipulate surroundings by providing commands to do common
-    " operations (e.g. change surrounding, remove surrounding, add surrounding)
+    " operations like change surrounding, remove surrounding, etc.
     Plugin 'tpope/vim-surround'
 
     " Color stuff
@@ -344,8 +389,6 @@
             \ 'source': g:fzfFindFileCommand.' | tr -d "\017"',
             \ 'sink': 'edit'}))
         nnoremap <Leader>f :FindFile<CR>
-        nnoremap <C-@> :Commands<CR>
-        inoremap <C-@> <Esc>:Commands<CR>
 
     " IDE features (e.g. autocomplete, smart refactoring, goto definition, etc.)
     """"""""""""""""""""""""""""""""""""
@@ -362,16 +405,14 @@
         let g:mucomplete#completion_delay = 300
         let g:mucomplete#always_use_completeopt = 1
         let g:mucomplete#enable_auto_at_startup = 1
-        " minimum chars before autocompletion starts
-        let g:mucomplete#minimum_prefix_length = 3
+        let g:mucomplete#minimum_prefix_length = 3 " minimum chars before autocompletion starts
         " specify different completion sources to chain together per filetype
         " NOTE: 'user' is whatever is assigned to the setting 'completefunc'
         let g:mucomplete#chains = {
                     \ 'default': ['path', 'user', 'c-n', 'omni'],
                     \ 'vim': ['path', 'user', 'c-n', 'omni']
                     \ }
-        " disable default mappings
-        let g:mucomplete#no_mappings = 1
+        let g:mucomplete#no_mappings = 1 " disable default mappings
         " selecting completion matches
         imap <tab> <plug>(MUcompleteFwd)
 	      imap <s-tab> <plug>(MUcompleteBwd)
@@ -415,8 +456,7 @@
         " Only report diagnostics with a warning level or above
         " i.e. warning,error
         let g:ale_lsp_show_message_severity = "warning"
-        " Don't lint when opening the file.
-        let g:ale_lint_on_enter = 0
+        let g:ale_lint_on_enter = 0 " Don't lint when a buffer opens
         let g:ale_lint_on_text_changed = "always"
         let g:ale_lint_delay = 1000
         let g:ale_lint_on_insert_leave = 0
@@ -449,11 +489,11 @@
         nnoremap <C-e> :call emmet#expandAbbr(0, "")<CR>
     " Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
     Plugin 'mhinz/vim-signify'
-    " Run Git commands from vim
-    Plugin 'tpope/vim-fugitive'
+    Plugin 'tpope/vim-fugitive' " Run Git commands from vim
 
-    call vundle#end()            " required for Vundle 
-    filetype plugin indent on    " required for Vundle 
+    " required for Vundle 
+    call vundle#end()
+    filetype plugin indent on
 
 " Section: Autocommands
 " ---------------------
@@ -476,6 +516,7 @@
                         \ exe "normal! g'\"" | exe "normal! zz" |
                     \ endif
     augroup END
+
     augroup Styles
         autocmd!
         " Increase brightness of comments in nord
@@ -489,46 +530,29 @@
         au WinLeave * set nocursorline
         au WinEnter * set cursorline
     augroup END
-    " for some reason there is an ftplugin that is bundled with vim that
-    " sets the textwidth to 78 if it is currently 0. This sets it back to 0
-    augroup resetTextWidth
+
+    augroup Miscellaneous
         autocmd!
+        " for some reason there is an ftplugin that is bundled with vim that
+        " sets the textwidth to 78 if it is currently 0. This sets it back to 0
         autocmd VimEnter * :set tw=0
-    augroup END
-    augroup SetDefaultOmniFunc
-        autocmd!
+        " Set a default omnifunc
         autocmd Filetype *
             \	if &omnifunc == "" |
                 \ setlocal omnifunc=syntaxcomplete#Complete |
             \	endif
-    augroup END
-    augroup MUCompleteConfig
-        autocmd!
         " allow the use of mucomplete_current_method which returns a short
         " string denoting the currently active completion method, to be
         " used in a statusline
         autocmd VimEnter * execute "MUcompleteNotify 3"
-    augroup END
-    augroup SetFoldMethod
-        autocmd!
+        " Set fold method for vim
         autocmd Filetype vim execute "setlocal foldmethod=indent"
-    augroup END
-    augroup TypescriptFunctionObject
-        " "vim-textobj-function-javascript works pretty
-        " well for typescript so this will enable it
-        autocmd!
-        autocmd FileType typescriptreact,typescript
-            \ let b:textobj_function_select = function('textobj#function#javascript#select')
-    augroup END
-    augroup ExtendIskeyword
-        autocmd!
+        " Extend iskeyowrd for fieltypes that can reference CSS classes
         autocmd FileType css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss setlocal iskeyword+=-,?,!
         autocmd FileType vim setlocal iskeyword+=:,#
-    augroup END
-    augroup OpenHelpOrPreviewWindowAcrossBottom
-        autocmd!
+        " Open help/preview windows across the bottom of the editor
         autocmd FileType *
-            \ if &filetype ==? "help" || getwinvar('.', '&previewwindow') == 1 |
+            \ if &filetype ==? "help" || &filetype ==? "qf" || getwinvar('.', '&previewwindow') == 1 |
                 \ wincmd J |
             \ endif
     augroup END
@@ -542,11 +566,9 @@
     endf
 
     let &statusline = ' %Y %F %{MU()}%m%r%h%w%=%04l,%04v %L '
-    set listchars=tab:¬-,space:·
-    " always show the sign column
-    set signcolumn=yes
-    " For a nice continuous line
-    set fillchars=vert:│
+    set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
+    set signcolumn=yes " always show the sign column
+    set fillchars=vert:│ " For a nice continuous line
 
     " Block cursor in normal mode and thin line in insert mode
     if exists('$TMUX')
@@ -557,6 +579,9 @@
         let &t_EI = "\<Esc>]50;CursorShape=0\x7"
     endif
 
+    " Check periodically to see if darkmode is toggled on the OS. There is a bash script
+    " running in the background of my shell that puts the current mode
+    " in ~/.darkmode (1=dark, 0=light)
     function! SetColorscheme(...)
         let s:new_bg = system('cat ~/.darkmode') ==? "0" ? "light" : "dark"
         if &background !=? s:new_bg || ! exists('g:colors_name')
@@ -597,18 +622,13 @@
             return l:result
         endif
 
-        " TODO: not sure why I get different values for getline()/virtcol() in this block versus the
-        " block above for findstart. In any case, calling it in the block above gives the expected
-        " value so that should be ok for now.
-        " TODO: maybe interlaeve the results so top answer from all completers
-        " are at the top
         let l:results = []
         let l:i = 0
         let l:replaceable_chars = split(g:line, '\zs')[g:findstart:g:col - 2]
         for l:Completer in g:multicomplete_completers
             let l:findstart = g:findstarts->get(l:i)
             if l:findstart >= 0
-                let l:completer_results = l:Completer(a:findstart, a:base)[0:4] " 5 results should be fine
+                let l:completer_results = l:Completer(a:findstart, a:base)
                 if l:findstart > g:findstart " we need to pad
                     " coerce to dictionary
                     if typename(l:completer_results) ==? "list<string>"
