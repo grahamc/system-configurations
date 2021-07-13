@@ -551,6 +551,9 @@ augroup Miscellaneous
                 \ if &filetype ==? "help" || &filetype ==? "qf" || getwinvar('.', '&previewwindow') == 1 |
                 \ wincmd J |
                 \ endif
+    " In vim files 'K' opens the help page for the wor dunder the cursor,
+    " instead of a man page
+    autocmd FileType vim setlocal keywordprg=:help
 augroup END
 
 " Section: Aesthetics
