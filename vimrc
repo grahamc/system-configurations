@@ -386,9 +386,8 @@ nnoremap <Leader>f :FindFile<CR>
 
 " IDE features (e.g. autocomplete, smart refactoring, goto definition, etc.)
 """"""""""""""""""""""""""""""""""""
-" An autocompleter that allows for the chaining
-" of various built-in and custom completion sources. If one source does not
-" return any results, mucomplete will automatically try the next
+" An autocompleter that can chain various built-in and custom completion sources.
+" If one source does not return any results, mucomplete will automatically try the next
 " source in the chain. This way:
 " - You can put the faster completion sources in the front of the chain,
 " deferring to the slower ones only if necessary. (e.g. search
@@ -502,7 +501,6 @@ augroup Styles
     autocmd!
     " Increase brightness of comments in nord
     autocmd ColorScheme nord highlight Comment guifg=#6d7a96
-
     " Make CursorLine look like an underline
     autocmd VimEnter * execute "hi clear CursorLine"
     autocmd VimEnter * execute "hi CursorLine gui=underline cterm=underline"
@@ -511,7 +509,7 @@ augroup Styles
     " Only highlight the current line on the active window
     au WinLeave * set nocursorline
     au WinEnter * set cursorline
-
+    " Transparent SignColumn
     autocmd Colorscheme solarized8 execute "hi clear SignColumn"
     autocmd Colorscheme solarized8 execute "hi DiffAdd ctermbg=NONE guibg=NONE"
     autocmd Colorscheme solarized8 execute "hi DiffChange ctermbg=NONE guibg=NONE"
@@ -520,8 +518,7 @@ augroup Styles
     autocmd Colorscheme solarized8 execute "hi SignifyLineDelete ctermbg=NONE guibg=NONE"
     autocmd Colorscheme solarized8 execute "hi ALEErrorSign ctermbg=NONE guibg=NONE ctermfg=red guifg=red"
     autocmd Colorscheme solarized8 execute "hi ALEWarningSign ctermbg=NONE guibg=NONE ctermfg=yellow guifg=yellow"
-
-    " Transparent number column in solarized
+    " Transparent number column
     autocmd Colorscheme solarized8 execute "hi clear CursorLineNR"
     autocmd Colorscheme solarized8 execute "hi clear LineNR"
 augroup END
@@ -577,8 +574,8 @@ else
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
 
-" Check periodically to see if darkmode is toggled on the OS. There is a bash script
-" running in the background of my shell that puts the current mode
+" Check periodically to see if darkmode is toggled on the OS and update the vim/airline theme accordingly.
+" There is a bash script running in the background of my shell that puts the current mode
 " in ~/.darkmode (1=dark, 0=light)
 function! SetColorscheme()
     let s:new_bg = system('cat ~/.darkmode') ==? "0" ? "light" : "dark"
@@ -632,7 +629,7 @@ function! MultiComplete(findstart, base)
         if l:findstart >= 0
             let l:completer_results = l:Completer(a:findstart, a:base)
 
-            " If the dictionary form of results is returned, we'll just take the 
+            " If the dictionary form of results is returned, we'll just take the
             " words and ignore the 'refresh' key
             if type(l:completer_results) == type({})
                 let l:completer_results = l:completer_results.words
