@@ -401,6 +401,7 @@ let g:mucomplete#minimum_prefix_length = 3 " minimum chars before autocompletion
 " NOTE: 'user' is whatever is assigned to the setting 'completefunc'
 let g:mucomplete#chains = {
             \ 'default': ['path', 'user', 'c-n', 'omni'],
+            \ 'vim': ['path', 'c-n', 'cmd', 'omni'],
             \ }
 " Language Server Protocol client that provides IDE like features
 " e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
