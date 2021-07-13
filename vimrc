@@ -256,6 +256,7 @@ command! -bang -nargs=* Cheatsheet call
             \ 'source': g:command_list,
             \ 'sink': function('CheatsheetSink')}))
 nnoremap <C-@> :Cheatsheet<CR>
+vnoremap <C-@> :<C-U>Cheatsheet<CR>
 inoremap <C-@> <Esc>:Cheatsheet<CR>
 
 " Section: Plugins
