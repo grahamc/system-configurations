@@ -27,8 +27,7 @@ set ttimeout
 set ttimeoutlen=100
 set display=lastline
 set clipboard=unnamed
-set nocompatible " needed for Vundle
-filetype off " needed for Vundle
+set nocompatible
 set wildmenu
 set wildmode=list:longest
 set nojoinspaces " Prevents inserting two spaces after punctuation on a join (J)
@@ -261,32 +260,25 @@ inoremap <C-@> <Esc>:Cheatsheet<CR>
 
 " Section: Plugins
 " ------------------------------------
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
-call vundle#begin()
-
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
+call plug#begin('~/.vim/plugged')
 
 " Colorschemes
 """"""""""""""""""""""""""""""""""""
-Plugin 'lifepillar/vim-solarized8'
-Plugin 'arcticicestudio/nord-vim'
+" light and dark
+Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
 
 " Text objects (:h text-objects)
 """"""""""""""""""""""""""""""""""""
 " Makes it easier to create custom text objects.
 " Most of the plugins below depend on this.
-Plugin 'kana/vim-textobj-user'
+Plug 'kana/vim-textobj-user'
 " Select a function
-Plugin 'kana/vim-textobj-function'
+Plug 'kana/vim-textobj-function'
 " Select all lines on the same indentation level as the cursor.
 " Useful for indentation bases languages like python.
-Plugin 'michaeljsmith/vim-indent-object'
+Plug 'michaeljsmith/vim-indent-object'
 " Select a function call. This can be used to wrap a function call in another call, for example.
-Plugin 'machakann/vim-textobj-functioncall'
+Plug 'machakann/vim-textobj-functioncall'
 let g:textobj_functioncall_no_default_key_mappings = 1
 xmap ic <Plug>(textobj-functioncall-i)
 omap ic <Plug>(textobj-functioncall-i)
@@ -296,14 +288,14 @@ omap ac <Plug>(textobj-functioncall-a)
 " Manipulating Surroundings (e.g. braces, brackets, quotes)
 """"""""""""""""""""""""""""""""""""
 " Automatically add closing keyowrds (e.g. function/endfunction in vimscript)
-Plugin 'tpope/vim-endwise'
+Plug 'tpope/vim-endwise'
 " Automatically close html tags
-Plugin 'alvan/vim-closetag'
+Plug 'alvan/vim-closetag'
 " Automatically insert closing braces/quotes
-Plugin 'Raimondi/delimitMate'
+Plug 'Raimondi/delimitMate'
 " Makes it easier to manipulate surroundings by providing commands to do common
 " operations like change surrounding, remove surrounding, etc.
-Plugin 'tpope/vim-surround'
+Plug 'tpope/vim-surround'
 
 " Color stuff
 """"""""""""""""""""""""""""""""""""
@@ -311,16 +303,16 @@ Plugin 'tpope/vim-surround'
 " in that string to match the color. For example, in the following sample  line of CSS:
 "   p {color: red}
 " The background color of the string "red" would be the color red.
-Plugin 'ap/vim-css-color'
+Plug 'ap/vim-css-color'
 " Opens the OS color picker and inserts the chosen color in the buffer.
-Plugin 'KabbAmine/vCoolor.vim'
+Plug 'KabbAmine/vCoolor.vim'
 
 " Buffer/tab/window management
 """"""""""""""""""""""""""""""""""""
 " Commands for closing buffers while keeping/destroying the window it was displayed in.
-Plugin 'mhinz/vim-sayonara'
+Plug 'mhinz/vim-sayonara'
 " Easy movement between vim windows and tmux panes.
-Plugin 'christoomey/vim-tmux-navigator'
+Plug 'christoomey/vim-tmux-navigator'
 let g:tmux_navigator_no_mappings = 1
 nnoremap <C-h> :TmuxNavigateLeft<cr>
 nnoremap <C-l> :TmuxNavigateRight<cr>
@@ -330,42 +322,42 @@ nnoremap <C-k> :TmuxNavigateUp<cr>
 " Misc.
 """"""""""""""""""""""""""""""""""""
 " Statusbar and tabline
-Plugin 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'preservim/nerdtree' " File explorer
+" File explorer
+Plug 'preservim/nerdtree', {'on': ['NERDTreeTabsToggle']}
 let g:NERDTreeMouseMode=2
 let g:NERDTreeWinPos="right"
 let g:NERDTreeShowHidden=1
-Plugin 'jistr/vim-nerdtree-tabs'
+Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
 let g:nerdtree_tabs_autofind = 1
 nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
 " Highlight the current word and other occurences of it.
-Plugin 'dominikduda/vim_current_word'
+Plug 'dominikduda/vim_current_word'
 " A tool for profiling vim's startup time. Useful for finding slow plugins.
-Plugin 'tweekmonster/startuptime.vim'
-Plugin 'AndrewRadev/splitjoin.vim'
+Plug 'tweekmonster/startuptime.vim'
+Plug 'AndrewRadev/splitjoin.vim'
 let g:splitjoin_split_mapping = ''
 let g:splitjoin_join_mapping = ''
 nnoremap sj :SplitjoinSplit<cr>
 nnoremap sk :SplitjoinJoin<cr>
 " Visualizes indentation in the buffer. Useful for fixing incorrectly indented lines.
-Plugin 'Yggdroot/indentLine'
+Plug 'Yggdroot/indentLine'
 let g:indentLine_char = '▏'
 let g:indentLine_setColors = 0
 let g:indentLine_enabled = 0
 " Run a shell command asynchronously and put the results in the quickfix window.
 " Useful for running test suites.
-Plugin 'tpope/vim-dispatch'
+Plug 'tpope/vim-dispatch'
 " Provides a collection of language packs, which provide syntax highlighting,
 " and selects the correct one for the current buffer. Also detects indentation.
-Plugin 'sheerun/vim-polyglot'
+Plug 'sheerun/vim-polyglot'
 " Easier management of vim sessions
-Plugin 'tpope/vim-obsession'
+Plug 'tpope/vim-obsession'
 " Fuzzy finder
 " TODO: Find a more portable replacement
-Plugin 'junegunn/fzf.vim'
+Plug 'junegunn/fzf.vim'
 set runtimepath+=/usr/local/opt/fzf
 let g:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
 let g:fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
@@ -402,7 +394,7 @@ nnoremap <Leader>f :FindFile<CR>
 " keywords in the current buffer first before searching tags)
 " - You don't have to remember all the various keybinds for the built-in
 " and custom completion sources.
-Plugin 'lifepillar/vim-mucomplete'
+Plug 'lifepillar/vim-mucomplete'
 let g:mucomplete#completion_delay = 500
 let g:mucomplete#reopen_immediately = 0
 let g:mucomplete#always_use_completeopt = 1
@@ -415,12 +407,12 @@ let g:mucomplete#chains = {
             \ }
 " Language Server Protocol client that provides IDE like features
 " e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
-Plugin 'prabirshrestha/vim-lsp'
+Plug 'prabirshrestha/vim-lsp'
 let g:lsp_fold_enabled = 0
 let g:lsp_document_code_action_signs_enabled = 0
 let g:lsp_document_highlight_enabled = 0
 " An easy way to install/manage language servers for vim-lsp.
-Plugin 'mattn/vim-lsp-settings'
+Plug 'mattn/vim-lsp-settings'
 " where the language servers are stored
 let g:lsp_settings_servers_dir = $VIMHOME . "vim-lsp-servers"
 call mkdir(g:lsp_settings_servers_dir, "p")
@@ -430,12 +422,12 @@ call mkdir(g:lsp_settings_servers_dir, "p")
 " provide LSP features and Ale will only provide realtime diagnostics.
 " Plus, ale's diagnostics are more robust than vim-lsp's
 " and vim-lsp's LSP features are more robust than ale's.
-Plugin 'rhysd/vim-lsp-ale'
+Plug 'rhysd/vim-lsp-ale'
 " Only report diagnostics with a warning level or above
 " i.e. warning,error
 let g:lsp_ale_diagnostics_severity = "warning"
 " Asynchronous linting
-Plugin 'dense-analysis/ale'
+Plug 'dense-analysis/ale'
 " If you check for the existence of a linter and it isn't there,
 " don't continue to check on subsequent linting operations.
 let g:ale_cache_executable_check_failures = 1
@@ -473,19 +465,17 @@ let g:ale_linters = {
             \ 'typescriptreact': ['eslint']
             \ }
 " Expand Emmet abbreviations. Helps write HTML more quickly
-Plugin 'mattn/emmet-vim'
+Plug 'mattn/emmet-vim'
 " NOTE: I don't believe 'emmet#expandAbbr()' is a part of the public API
 " so this could break at anytime. I'm only doing this because I didn't
 " want to use their keybinding.
 inoremap <C-e> <Esc>:call emmet#expandAbbr(0, "")<CR>
 nnoremap <C-e> :call emmet#expandAbbr(0, "")<CR>
 " Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
-Plugin 'mhinz/vim-signify'
-Plugin 'tpope/vim-fugitive' " Run Git commands from vim
+Plug 'mhinz/vim-signify'
+Plug 'tpope/vim-fugitive' " Run Git commands from vim
 
-" required for Vundle
-call vundle#end()
-filetype plugin indent on
+call plug#end()
 
 " Section: Autocommands
 " ---------------------
@@ -663,4 +653,3 @@ function! MultiComplete(findstart, base)
 
     return l:results
 endfunction
-
