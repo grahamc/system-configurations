@@ -632,6 +632,13 @@ function! MultiComplete(findstart, base)
         let l:findstart = g:findstarts->get(l:i)
         if l:findstart >= 0
             let l:completer_results = l:Completer(a:findstart, a:base)
+
+            " If the dictionary form of results is returned, we'll just take the 
+            " words and ignore the 'refresh' key
+            if type(l:completer_results) == type({})
+                let l:completer_results = l:completer_results.words
+            endif
+
             if l:findstart > g:findstart " we need to pad
                 " coerce to dictionary
                 if typename(l:completer_results) ==? "list<string>"
