@@ -495,7 +495,7 @@ augroup RestoreSettings
     " restore last cursor position
     autocmd BufReadPost *
                 \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-                \ exe "normal! g'\"" | exe "normal! zz" |
+                \ exe "normal! g'\"" |
                 \ endif
 augroup END
 
