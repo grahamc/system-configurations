@@ -399,15 +399,13 @@ let g:mucomplete#completion_delay = 500
 let g:mucomplete#reopen_immediately = 0
 let g:mucomplete#always_use_completeopt = 1
 let g:mucomplete#minimum_prefix_length = 3 " minimum chars before autocompletion starts
-" specify different completion sources to chain together per filetype
 " NOTE: 'user' is whatever is assigned to the setting 'completefunc'
 let g:mucomplete#chains = {
             \ 'default': ['path', 'user', 'c-n', 'omni'],
-            \ 'vim': ['path', 'user', 'c-n', 'omni']
             \ }
 " Language Server Protocol client that provides IDE like features
 " e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
-Plug 'prabirshrestha/vim-lsp'
+Plug 'bigolu/vim-lsp'
 let g:lsp_fold_enabled = 0
 let g:lsp_document_code_action_signs_enabled = 0
 let g:lsp_document_highlight_enabled = 0
