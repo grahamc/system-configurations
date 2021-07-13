@@ -132,7 +132,6 @@ nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
 " LSP
 nnoremap <Leader>lis :<C-U>LspInstallServer<CR>
 nnoremap <Leader>ls :<C-U>LspStatus<CR>
-nnoremap <Leader>lh :<C-U>LspHover<CR>
 nnoremap <Leader>ld :<C-U>LspDefinition<CR>
 nnoremap <Leader>lrn :<C-U>LspRename<CR>
 nnoremap <Leader>lrf :<C-U>LspReferences<CR>
@@ -550,6 +549,11 @@ augroup Miscellaneous
     " In vim files 'K' opens the help page for the wor dunder the cursor,
     " instead of a man page
     autocmd FileType vim setlocal keywordprg=:help
+augroup END
+
+augroup SetupLsp
+    autocmd!
+    autocmd User lsp_buffer_enabled if &filetype !=? "vim" && &filetype !=? "sh" | setlocal keywordprg=:LspHover | endif
 augroup END
 
 " Section: Aesthetics
