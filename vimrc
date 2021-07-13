@@ -33,7 +33,7 @@ set wildmode=list:longest
 set nojoinspaces " Prevents inserting two spaces after punctuation on a join (J)
 set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
 set autoread " Re-read file if it is changed by an external program
-set lazyredraw " don't redraw the page during the execution of a compound command (e.g. :bufdo), only redraw once at the end of execution
+set nolazyredraw
 set foldmethod=syntax
 set foldopen=all
 set dictionary+=/usr/share/dict/words
