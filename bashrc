@@ -106,9 +106,8 @@ function rust() {
 
 # Check every minute if macos is in darkmode and update the iTerm theme accordingly.
 # Also store an integer in '~/.darkmode' to signify the current mode. (1=darkmode, 0=lightmode)
-# This way other programs, like vim, can easily check if darkmode is active and update their theme too.
+# This way other programs, like vim, can check if darkmode is active and update their theme too.
 set_theme() {
-    CURRENT_MODE=''
     while :; do
         SYSTEM_THEME="$(defaults read -g AppleInterfaceStyle 2>/dev/null)"
         [ "$SYSTEM_THEME" = "Dark" ] && NEW_MODE='1' || NEW_MODE='0'
@@ -125,13 +124,9 @@ set_theme() {
         sleep 5
     done
 }
-# The last command on this line runs the theme checking function as a background job. The prior commands
-# are to verify that the os is macos, the terminal is iTerm, and that we have a mechanism in place to
-# cleanup the background job once the session ends (via 'trap').
-# The 'set [+|-]m' commands are to supress the message the background job
-# outputs when it exits, which it will do everytime the bashrc is sourced.
-# see: https://unix.stackexchange.com/questions/225201/how-to-suppress-exit-code-of-finished-background-jobs
-[[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && trap 'set +m; kill $(jobs -p); set -m; exit $?' INT TERM EXIT SIGHUP && set_theme &
+[[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && [ -z "$STARTED_BG" ] && set_theme & disown
+[ -z "$STARTED_BG" ] && THEME_PID="$!" && STARTED_BG="true"
+trap "kill -9 $THEME_PID" EXIT
 
 # Fetch dircolors to highlight the output of ls
 wget -nc -O ~/.dircolors 'https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors' 2>/dev/null
