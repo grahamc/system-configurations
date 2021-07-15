@@ -42,6 +42,7 @@ set scrolloff=10
 set wrap
 set updatetime=500
 set cmdheight=3
+set sessionoptions-=blank,options sessionoptions+=tabpages
 
 " autocomplete
 let g:Emmet_completer_with_menu =
@@ -361,8 +362,6 @@ Plug 'tpope/vim-dispatch'
 " Provides a collection of language packs, which provide syntax highlighting,
 " and selects the correct one for the current buffer. Also detects indentation.
 Plug 'sheerun/vim-polyglot'
-" Easier management of vim sessions
-Plug 'tpope/vim-obsession'
 " Fuzzy finder
 " TODO: Find a more portable replacement
 Plug 'junegunn/fzf.vim'
@@ -490,19 +489,24 @@ function! RestoreOrCreateSession()
     if argc() == 0
         let l:session_name =  substitute($PWD, "/", ".", "g") . ".vim"
         let l:session_full_path = $VIMHOME . 'sessions/' . l:session_name
-        let l:session_cmd = empty(glob(l:session_full_path)) ? "Obsess " : "source "
+        let l:session_cmd = filereadable(l:session_full_path) ? "source " : "mksession! "
         silent! execute l:session_cmd . l:session_full_path
     endif
 endfunction
 
 augroup RestoreSettings
     autocmd!
-    " restore session
+    " restore session after vim starts
     autocmd VimEnter * nested call RestoreOrCreateSession()
-    " restore last cursor position
+    " restore last cursor position after opening a file
     autocmd BufReadPost *
                 \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-                \ exe "normal! g'\"" |
+                    \ exe "normal! g'\"" |
+                \ endif
+    " save session before vim exits
+    autocmd VimLeavePre *
+                \ if !empty(v:this_session) |
+                    \ exe 'mksession! ' . fnameescape(v:this_session) |
                 \ endif
 augroup END
 
