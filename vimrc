@@ -20,7 +20,7 @@ set termguicolors
 set hidden
 set autoindent
 set smartindent
-set complete=.,w,b,i,u,U
+set complete=.,w,b,u
 set smarttab
 set nrformats-=octal
 set ttimeout
@@ -41,23 +41,27 @@ set foldlevel=20
 set scrolloff=10
 set wrap
 set updatetime=500
+set cmdheight=3
 
 " autocomplete
 let g:Emmet_completer_with_menu =
             \ { findstart, base -> findstart ?
             \ emmet#completeTag(findstart, base) :
             \ map(
-            \ emmet#completeTag(findstart, base),
-            \ "{'word': v:val, 'menu': repeat(' ', &l:pumwidth - 13) . '[emmet]'}"
-            \ )
-            \ }
-let g:multicomplete_completers = [function('lsp#complete'), g:Emmet_completer_with_menu]
+                \ emmet#completeTag(findstart, base),
+                \ "{'word': v:val, 'menu': repeat(' ', &l:pumwidth - 13) . '[emmet]'}"
+            \ )}
+let g:multicomplete_completers = [function('lsp#complete')]
+if exists('$TMUX')
+    call add(g:multicomplete_completers, function('tmuxcomplete#complete'))
+endif
 set completefunc=MultiComplete
 
 set belloff+=all " turn off bell sounds
 
 " show the completion [menu] even if there is only [one] suggestion
 " by default, [no] suggestion is [select]ed
+" Use [popup] instead of [preview] window
 set completeopt+=menuone,noselect,popup
 set completeopt-=preview
 
@@ -120,6 +124,9 @@ nmap [1;5D <C-Left>
 nmap [1;5C <C-Right>
 nmap [1;5B <C-Down>
 nmap [1;5A <C-Up>
+nmap <C-@> <C-Space>
+vmap <C-@> <C-Space>
+imap <C-@> <C-Space>
 
 let g:mapleader = "\<Space>"
 inoremap jk <Esc>
@@ -131,6 +138,7 @@ nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
 
 " LSP
 nnoremap <Leader>lis :<C-U>LspInstallServer<CR>
+nnoremap <Leader>lh :<C-U>LspHover<CR>
 nnoremap <Leader>ls :<C-U>LspStatus<CR>
 nnoremap <Leader>ld :<C-U>LspDefinition<CR>
 nnoremap <Leader>lrn :<C-U>LspRename<CR>
@@ -254,9 +262,9 @@ command! -bang -nargs=* Cheatsheet call
             \ fzf#run(fzf#wrap({
             \ 'source': g:command_list,
             \ 'sink': function('CheatsheetSink')}))
-nnoremap <C-@> :Cheatsheet<CR>
-vnoremap <C-@> :<C-U>Cheatsheet<CR>
-inoremap <C-@> <Esc>:Cheatsheet<CR>
+nnoremap <C-Space> :Cheatsheet<CR>
+vnoremap <C-Space> :<C-U>Cheatsheet<CR>
+inoremap <C-Space> <Esc>:Cheatsheet<CR>
 
 " Section: Plugins
 " ------------------------------------
@@ -269,30 +277,23 @@ Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
 
 " Text objects (:h text-objects)
 """"""""""""""""""""""""""""""""""""
-" Makes it easier to create custom text objects.
-" Most of the plugins below depend on this.
-Plug 'kana/vim-textobj-user'
-" Select a function
-Plug 'kana/vim-textobj-function'
-" Select all lines on the same indentation level as the cursor.
-" Useful for indentation bases languages like python.
-Plug 'michaeljsmith/vim-indent-object'
 " Select a function call. This can be used to wrap a function call in another call, for example.
 Plug 'machakann/vim-textobj-functioncall'
-let g:textobj_functioncall_no_default_key_mappings = 1
-xmap ic <Plug>(textobj-functioncall-i)
-omap ic <Plug>(textobj-functioncall-i)
-xmap ac <Plug>(textobj-functioncall-a)
-omap ac <Plug>(textobj-functioncall-a)
+    let g:textobj_functioncall_no_default_key_mappings = 1
+    xmap ic <Plug>(textobj-functioncall-i)
+    omap ic <Plug>(textobj-functioncall-i)
+    xmap ac <Plug>(textobj-functioncall-a)
+    omap ac <Plug>(textobj-functioncall-a)
 
 " Manipulating Surroundings (e.g. braces, brackets, quotes)
 """"""""""""""""""""""""""""""""""""
 " Automatically add closing keyowrds (e.g. function/endfunction in vimscript)
-Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-endwise', {'for': ['vim', 'ruby']}
 " Automatically close html tags
 Plug 'alvan/vim-closetag'
 " Automatically insert closing braces/quotes
 Plug 'Raimondi/delimitMate'
+    let g:delimitMate_expand_cr = 1
 " Makes it easier to manipulate surroundings by providing commands to do common
 " operations like change surrounding, remove surrounding, etc.
 Plug 'tpope/vim-surround'
@@ -300,11 +301,11 @@ Plug 'tpope/vim-surround'
 " Color stuff
 """"""""""""""""""""""""""""""""""""
 " Detects color strings (e.g. hex, rgba) and changes the background of the characters
-" in that string to match the color. For example, in the following sample  line of CSS:
+" in that string to match the color. For example, in the following sample line of CSS:
 "   p {color: red}
 " The background color of the string "red" would be the color red.
 Plug 'ap/vim-css-color'
-" Opens the OS color picker and inserts the chosen color in the buffer.
+" Opens the OS color picker and inserts the chosen color into the buffer.
 Plug 'KabbAmine/vCoolor.vim'
 
 " Buffer/tab/window management
@@ -313,40 +314,47 @@ Plug 'KabbAmine/vCoolor.vim'
 Plug 'mhinz/vim-sayonara'
 " Easy movement between vim windows and tmux panes.
 Plug 'christoomey/vim-tmux-navigator'
-let g:tmux_navigator_no_mappings = 1
-nnoremap <C-h> :TmuxNavigateLeft<cr>
-nnoremap <C-l> :TmuxNavigateRight<cr>
-nnoremap <C-j> :TmuxNavigateDown<cr>
-nnoremap <C-k> :TmuxNavigateUp<cr>
+    let g:tmux_navigator_no_mappings = 1
+    nnoremap <C-h> :TmuxNavigateLeft<cr>
+    nnoremap <C-l> :TmuxNavigateRight<cr>
+    nnoremap <C-j> :TmuxNavigateDown<cr>
+    nnoremap <C-k> :TmuxNavigateUp<cr>
+
+" Version control
+""""""""""""""""""""""""""""""""""""
+" Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
+Plug 'mhinz/vim-signify'
+" Run Git commands from vim
+Plug 'tpope/vim-fugitive'
 
 " Misc.
 """"""""""""""""""""""""""""""""""""
 " Statusbar and tabline
 Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#formatter = 'unique_tail'
+    let g:airline#extensions#tabline#enabled = 1
+    let g:airline#extensions#tabline#formatter = 'unique_tail'
 " File explorer
 Plug 'preservim/nerdtree', {'on': ['NERDTreeTabsToggle']}
-let g:NERDTreeMouseMode=2
-let g:NERDTreeWinPos="right"
-let g:NERDTreeShowHidden=1
+    let g:NERDTreeMouseMode=2
+    let g:NERDTreeWinPos="right"
+    let g:NERDTreeShowHidden=1
 Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
-let g:nerdtree_tabs_autofind = 1
-nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
+    let g:nerdtree_tabs_autofind = 1
+    nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
 " Highlight the current word and other occurences of it.
 Plug 'dominikduda/vim_current_word'
 " A tool for profiling vim's startup time. Useful for finding slow plugins.
 Plug 'tweekmonster/startuptime.vim'
 Plug 'AndrewRadev/splitjoin.vim'
-let g:splitjoin_split_mapping = ''
-let g:splitjoin_join_mapping = ''
-nnoremap sj :SplitjoinSplit<cr>
-nnoremap sk :SplitjoinJoin<cr>
+    let g:splitjoin_split_mapping = ''
+    let g:splitjoin_join_mapping = ''
+    nnoremap sj :SplitjoinSplit<cr>
+    nnoremap sk :SplitjoinJoin<cr>
 " Visualizes indentation in the buffer. Useful for fixing incorrectly indented lines.
 Plug 'Yggdroot/indentLine'
-let g:indentLine_char = '▏'
-let g:indentLine_setColors = 0
-let g:indentLine_enabled = 0
+    let g:indentLine_char = '▏'
+    let g:indentLine_setColors = 0
+    let g:indentLine_enabled = 0
 " Run a shell command asynchronously and put the results in the quickfix window.
 " Useful for running test suites.
 Plug 'tpope/vim-dispatch'
@@ -358,9 +366,9 @@ Plug 'tpope/vim-obsession'
 " Fuzzy finder
 " TODO: Find a more portable replacement
 Plug 'junegunn/fzf.vim'
-set runtimepath+=/usr/local/opt/fzf
-let g:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
-let g:fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
+    set runtimepath+=/usr/local/opt/fzf
+    let g:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
+    let g:fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
 " recursive grep
 function! FindLineResultHandler(result)
     let l:resultTokens = split(a:result, ':')
@@ -394,102 +402,110 @@ nnoremap <Leader>f :FindFile<CR>
 " - You don't have to remember all the various keybinds for the built-in
 " and custom completion sources.
 Plug 'lifepillar/vim-mucomplete'
-let g:mucomplete#completion_delay = 500
-let g:mucomplete#reopen_immediately = 0
-let g:mucomplete#always_use_completeopt = 1
-let g:mucomplete#minimum_prefix_length = 3 " minimum chars before autocompletion starts
-" NOTE: 'user' is whatever is assigned to the setting 'completefunc'
-let g:mucomplete#chains = {
-            \ 'default': ['path', 'user', 'c-n', 'omni'],
-            \ 'vim': ['path', 'c-n', 'cmd', 'omni'],
-            \ }
+    let g:mucomplete#completion_delay = 500
+    let g:mucomplete#reopen_immediately = 0
+    let g:mucomplete#always_use_completeopt = 1
+    " minimum chars before autocompletion starts
+    let g:mucomplete#minimum_prefix_length = 3
+    " NOTE: 'user' is whatever is assigned to the setting 'completefunc'
+    let g:mucomplete#chains = {
+                \ 'default': ['path', 'user', 'c-n', 'incl', 'omni', 'line'],
+                \ 'vim': ['path', 'c-n', 'incl', 'cmd', 'user', 'omni', 'line'],
+                \ }
+    inoremap <silent> <plug>(MUcompleteFwdKey) <right>
+    imap <right> <plug>(MUcompleteCycFwd)
+    inoremap <silent> <plug>(MUcompleteBwdKey) <left>
+    imap <left> <plug>(MUcompleteCycBwd)
 " Language Server Protocol client that provides IDE like features
 " e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
 Plug 'bigolu/vim-lsp'
-let g:lsp_fold_enabled = 0
-let g:lsp_document_code_action_signs_enabled = 0
-let g:lsp_document_highlight_enabled = 0
+    " for debugging
+    " let g:lsp_log_file = expand('~/vim-lsp.log')
+    let g:lsp_fold_enabled = 0
+    let g:lsp_document_code_action_signs_enabled = 0
+    let g:lsp_document_highlight_enabled = 0
 " An easy way to install/manage language servers for vim-lsp.
 Plug 'mattn/vim-lsp-settings'
-" where the language servers are stored
-let g:lsp_settings_servers_dir = $VIMHOME . "vim-lsp-servers"
-call mkdir(g:lsp_settings_servers_dir, "p")
+    " where the language servers are stored
+    let g:lsp_settings_servers_dir = $VIMHOME . "vim-lsp-servers"
+    call mkdir(g:lsp_settings_servers_dir, "p")
 " A bridge between vim-lsp and ale. This works by
 " sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
-" This allows a nice separation of concerns: vim-lsp will only
+" This establishes a separation of concerns: vim-lsp will only
 " provide LSP features and Ale will only provide realtime diagnostics.
-" Plus, ale's diagnostics are more robust than vim-lsp's
-" and vim-lsp's LSP features are more robust than ale's.
+" Now if something goes wrong its simpler to determine which plugin
+" has the issue. Plus it allows ale and vim-lsp to focus on their
+" strengths: linting and LSP resprectively.
 Plug 'rhysd/vim-lsp-ale'
-" Only report diagnostics with a warning level or above
-" i.e. warning,error
-let g:lsp_ale_diagnostics_severity = "warning"
+    " Only report diagnostics with a warning level or above
+    " i.e. warning,error
+    let g:lsp_ale_diagnostics_severity = "warning"
 " Asynchronous linting
 Plug 'dense-analysis/ale'
-" If you check for the existence of a linter and it isn't there,
-" don't continue to check on subsequent linting operations.
-let g:ale_cache_executable_check_failures = 1
-" Don't show popup when the mouse if over a symbol, vim-lsp
-" should be responsible for that.
-let g:ale_set_balloons = 0
-" Don't show variable information in the status line,
-" vim-lsp should be responsible for that.
-let g:ale_hover_cursor = 0
-" Only report diagnostics with a warning level or above
-" i.e. warning,error
-let g:ale_lsp_show_message_severity = "warning"
-let g:ale_lint_on_enter = 0 " Don't lint when a buffer opens
-let g:ale_lint_on_text_changed = "always"
-let g:ale_lint_delay = 1000
-let g:ale_lint_on_insert_leave = 0
-let g:ale_lint_on_filetype_changed = 0
-let g:ale_lint_on_save = 0
-let g:ale_fix_on_save = 1
-" These are not so much fixers as formatters
-let g:ale_fixers = {
-            \ 'javascript': ['prettier'],
-            \ 'javascriptreact': ['prettier'],
-            \ 'typescript': ['prettier'],
-            \ 'typescriptreact': ['prettier'],
-            \ 'json': ['prettier'],
-            \ 'html': ['prettier'],
-            \ 'css': ['prettier']
-            \ }
-let g:ale_linters = {
-            \ 'vim': [],
-            \ 'javascript': ['eslint'],
-            \ 'javascriptreact': ['eslint'],
-            \ 'typescript': ['eslint'],
-            \ 'typescriptreact': ['eslint']
-            \ }
-" Expand Emmet abbreviations. Helps write HTML more quickly
+    " If you check for the existence of a linter and it isn't there,
+    " don't continue to check on subsequent linting operations.
+    let g:ale_cache_executable_check_failures = 1
+    " Don't show popup when the mouse if over a symbol, vim-lsp
+    " should be responsible for that.
+    let g:ale_set_balloons = 0
+    " Don't show variable information in the status line,
+    " vim-lsp should be responsible for that.
+    let g:ale_hover_cursor = 0
+    " Only report diagnostics with a warning level or above
+    " i.e. warning,error
+    let g:ale_lsp_show_message_severity = "warning"
+    let g:ale_lint_on_enter = 0 " Don't lint when a buffer opens
+    let g:ale_lint_on_text_changed = "always"
+    let g:ale_lint_delay = 1000
+    let g:ale_lint_on_insert_leave = 0
+    let g:ale_lint_on_filetype_changed = 0
+    let g:ale_lint_on_save = 0
+    let g:ale_fix_on_save = 1
+    " These are not so much fixers as formatters
+    let g:ale_fixers = {
+                \ 'javascript': ['prettier'],
+                \ 'javascriptreact': ['prettier'],
+                \ 'typescript': ['prettier'],
+                \ 'typescriptreact': ['prettier'],
+                \ 'json': ['prettier'],
+                \ 'html': ['prettier'],
+                \ 'css': ['prettier']
+                \ }
+    let g:ale_linters = {
+                \ 'vim': [],
+                \ 'javascript': ['eslint'],
+                \ 'javascriptreact': ['eslint'],
+                \ 'typescript': ['eslint'],
+                \ 'typescriptreact': ['eslint']
+                \ }
+" Expands Emmet abbreviations to write HTML more quickly
 Plug 'mattn/emmet-vim'
-" NOTE: I don't believe 'emmet#expandAbbr()' is a part of the public API
-" so this could break at anytime. I'm only doing this because I didn't
-" want to use their keybinding.
-inoremap <C-e> <Esc>:call emmet#expandAbbr(0, "")<CR>
-nnoremap <C-e> :call emmet#expandAbbr(0, "")<CR>
-" Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
-Plug 'mhinz/vim-signify'
-Plug 'tpope/vim-fugitive' " Run Git commands from vim
+    " NOTE: I don't think 'emmet#expandAbbr()' is a part of the public API
+    " so this could break at anytime. I'm only doing this because I didn't
+    " want to use their keybinding.
+    inoremap <C-e> <Esc>:call emmet#expandAbbr(0, "")<CR>
+    nnoremap <C-e> :call emmet#expandAbbr(0, "")<CR>
+" autocomplete from other tmux panes
+Plug 'wellle/tmux-complete.vim'
+    let g:tmuxcomplete#trigger = ''
 
 call plug#end()
 
 " Section: Autocommands
 " ---------------------
-function! StartWorkspace()
+function! RestoreOrCreateSession()
     if argc() == 0
         let l:session_name =  substitute($PWD, "/", ".", "g") . ".vim"
         let l:session_full_path = $VIMHOME . 'sessions/' . l:session_name
         let l:session_cmd = empty(glob(l:session_full_path)) ? "Obsess " : "source "
-        execute l:session_cmd . l:session_full_path
+        silent! execute l:session_cmd . l:session_full_path
     endif
 endfunction
 
 augroup RestoreSettings
     autocmd!
     " restore session
-    autocmd VimEnter * nested call StartWorkspace()
+    autocmd VimEnter * nested call RestoreOrCreateSession()
     " restore last cursor position
     autocmd BufReadPost *
                 \ if line("'\"") > 0 && line ("'\"") <= line("$") |
@@ -516,8 +532,8 @@ augroup Styles
     autocmd Colorscheme solarized8 execute "hi DiffDelete ctermbg=NONE guibg=NONE"
     autocmd Colorscheme solarized8 execute "hi SignifyLineChange ctermbg=NONE guibg=NONE"
     autocmd Colorscheme solarized8 execute "hi SignifyLineDelete ctermbg=NONE guibg=NONE"
-    autocmd Colorscheme solarized8 execute "hi ALEErrorSign ctermbg=NONE guibg=NONE ctermfg=red guifg=red"
-    autocmd Colorscheme solarized8 execute "hi ALEWarningSign ctermbg=NONE guibg=NONE ctermfg=yellow guifg=yellow"
+    autocmd Colorscheme solarized8 execute "hi ALEErrorSign ctermbg=NONE guibg=NONE"
+    autocmd Colorscheme solarized8 execute "hi ALEWarningSign ctermbg=NONE guibg=NONE"
     " Transparent number column
     autocmd Colorscheme solarized8 execute "hi clear CursorLineNR"
     autocmd Colorscheme solarized8 execute "hi clear LineNR"
@@ -542,19 +558,19 @@ augroup Miscellaneous
     " Extend iskeyowrd for fieltypes that can reference CSS classes
     autocmd FileType css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss setlocal iskeyword+=-,?,!
     autocmd FileType vim setlocal iskeyword+=:,#
-    " Open help/preview windows across the bottom of the editor
+    " Open help/preview/quickfix windows across the bottom of the editor
     autocmd FileType *
                 \ if &filetype ==? "help" || &filetype ==? "qf" || getwinvar('.', '&previewwindow') == 1 |
                 \ wincmd J |
                 \ endif
-    " In vim files 'K' opens the help page for the wor dunder the cursor,
-    " instead of a man page
+    " Use vim help pages for keywordprg in vim files
     autocmd FileType vim setlocal keywordprg=:help
-augroup END
-
-augroup SetupLsp
-    autocmd!
+    " Is LSP is enabled, assign keywordprg to its hover feature. Unless it's bash or vim
+    " in which case they'll use man pages and vim help pages respectively.
     autocmd User lsp_buffer_enabled if &filetype !=? "vim" && &filetype !=? "sh" | setlocal keywordprg=:LspHover | endif
+    " Add emmet snippet autocomplete for filetypes that use HTML
+    autocmd Filetype html,javascriptreact,typescriptreact,javascript,typescript
+                \ let b:multicomplete_completers = get(b:, 'multicomplete_completers', [])->add(g:Emmet_completer_with_menu)
 augroup END
 
 " Section: Aesthetics
@@ -599,14 +615,17 @@ call timer_start(5000, {timer_id -> SetColorscheme()}, {"repeat": -1})
 
 " Section: Utilities
 " ----------------------
-" TODO: have the completers be parameters and return a complete function
-" that uses "closure" to capture them instead. this way you can define multiple aggregates
-" maybe parameterize # completions per completer and interleave
 function! MultiComplete(findstart, base)
+    let l:completers = extendnew(
+                \ get(g:, 'multicomplete_completers', []),
+                \ get(b:, 'multicomplete_completers', []))
+
+    echo l:completers
+
     if a:findstart
         let g:findstarts = []
         let l:result = -3
-        for l:Completer in g:multicomplete_completers
+        for l:Completer in l:completers
             let l:completer_result = l:Completer(a:findstart, a:base)
             call add(g:findstarts, l:completer_result)
             " Don't care if result is -3 since that is our default return
@@ -629,7 +648,7 @@ function! MultiComplete(findstart, base)
     let l:results = []
     let l:i = 0
     let l:replaceable_chars = split(g:line, '\zs')[g:findstart:g:col - 2]
-    for l:Completer in g:multicomplete_completers
+    for l:Completer in l:completers
         let l:findstart = g:findstarts->get(l:i)
         if l:findstart >= 0
             let l:completer_results = l:Completer(a:findstart, a:base)
