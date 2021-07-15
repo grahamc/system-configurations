@@ -402,8 +402,7 @@ nnoremap <Leader>f :FindFile<CR>
 " - You don't have to remember all the various keybinds for the built-in
 " and custom completion sources.
 Plug 'lifepillar/vim-mucomplete'
-    let g:mucomplete#completion_delay = 500
-    let g:mucomplete#reopen_immediately = 0
+    let g:mucomplete#reopen_immediately = 1
     let g:mucomplete#always_use_completeopt = 1
     " minimum chars before autocompletion starts
     let g:mucomplete#minimum_prefix_length = 3
@@ -431,19 +430,18 @@ Plug 'mattn/vim-lsp-settings'
     call mkdir(g:lsp_settings_servers_dir, "p")
 " A bridge between vim-lsp and ale. This works by
 " sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
-" This establishes a separation of concerns: vim-lsp will only
-" provide LSP features and Ale will only provide realtime diagnostics.
-" Now if something goes wrong its simpler to determine which plugin
-" has the issue. Plus it allows ale and vim-lsp to focus on their
-" strengths: linting and LSP resprectively.
+" This way, vim-lsp will only provide LSP features
+" and ALE will only provide realtime diagnostics.
+" Now if something goes wrong its easier to determine which plugin
+" has the issue. Plus it allows ALE and vim-lsp to focus on their
+" strengths: linting and LSP respectively.
 Plug 'rhysd/vim-lsp-ale'
-    " Only report diagnostics with a warning level or above
+    " Only report diagnostics with a level of 'warning' or above
     " i.e. warning,error
     let g:lsp_ale_diagnostics_severity = "warning"
 " Asynchronous linting
 Plug 'dense-analysis/ale'
-    " If you check for the existence of a linter and it isn't there,
-    " don't continue to check on subsequent linting operations.
+    " If a linter is not found don't continue to check on subsequent linting operations.
     let g:ale_cache_executable_check_failures = 1
     " Don't show popup when the mouse if over a symbol, vim-lsp
     " should be responsible for that.
@@ -451,7 +449,7 @@ Plug 'dense-analysis/ale'
     " Don't show variable information in the status line,
     " vim-lsp should be responsible for that.
     let g:ale_hover_cursor = 0
-    " Only report diagnostics with a warning level or above
+    " Only display diagnostics with a warning level or above
     " i.e. warning,error
     let g:ale_lsp_show_message_severity = "warning"
     let g:ale_lint_on_enter = 0 " Don't lint when a buffer opens
@@ -461,7 +459,6 @@ Plug 'dense-analysis/ale'
     let g:ale_lint_on_filetype_changed = 0
     let g:ale_lint_on_save = 0
     let g:ale_fix_on_save = 1
-    " These are not so much fixers as formatters
     let g:ale_fixers = {
                 \ 'javascript': ['prettier'],
                 \ 'javascriptreact': ['prettier'],
@@ -480,11 +477,7 @@ Plug 'dense-analysis/ale'
                 \ }
 " Expands Emmet abbreviations to write HTML more quickly
 Plug 'mattn/emmet-vim'
-    " NOTE: I don't think 'emmet#expandAbbr()' is a part of the public API
-    " so this could break at anytime. I'm only doing this because I didn't
-    " want to use their keybinding.
-    inoremap <C-e> <Esc>:call emmet#expandAbbr(0, "")<CR>
-    nnoremap <C-e> :call emmet#expandAbbr(0, "")<CR>
+    let g:user_emmet_leader_key='<C-e>'
 " autocomplete from other tmux panes
 Plug 'wellle/tmux-complete.vim'
     let g:tmuxcomplete#trigger = ''
@@ -537,6 +530,8 @@ augroup Styles
     " Transparent number column
     autocmd Colorscheme solarized8 execute "hi clear CursorLineNR"
     autocmd Colorscheme solarized8 execute "hi clear LineNR"
+    " Transparent vertical split (line that divides NERDTree and editor)
+    autocmd Colorscheme solarized8 execute "highlight VertSplit ctermbg=NONE guibg=NONE"
 augroup END
 
 augroup Miscellaneous
@@ -555,20 +550,20 @@ augroup Miscellaneous
     autocmd VimEnter * execute "MUcompleteNotify 3"
     " Set fold method for vim
     autocmd Filetype vim execute "setlocal foldmethod=indent"
-    " Extend iskeyowrd for fieltypes that can reference CSS classes
+    " Extend iskeyword for filetypes that can reference CSS classes
     autocmd FileType css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss setlocal iskeyword+=-,?,!
     autocmd FileType vim setlocal iskeyword+=:,#
     " Open help/preview/quickfix windows across the bottom of the editor
     autocmd FileType *
                 \ if &filetype ==? "help" || &filetype ==? "qf" || getwinvar('.', '&previewwindow') == 1 |
-                \ wincmd J |
+                    \ wincmd J |
                 \ endif
     " Use vim help pages for keywordprg in vim files
     autocmd FileType vim setlocal keywordprg=:help
     " Is LSP is enabled, assign keywordprg to its hover feature. Unless it's bash or vim
     " in which case they'll use man pages and vim help pages respectively.
     autocmd User lsp_buffer_enabled if &filetype !=? "vim" && &filetype !=? "sh" | setlocal keywordprg=:LspHover | endif
-    " Add emmet snippet autocomplete for filetypes that use HTML
+    " Add emmet snippet autocomplete for filetypes that can contain HTML
     autocmd Filetype html,javascriptreact,typescriptreact,javascript,typescript
                 \ let b:multicomplete_completers = get(b:, 'multicomplete_completers', [])->add(g:Emmet_completer_with_menu)
 augroup END
@@ -595,23 +590,36 @@ else
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
 
+function! SetColorscheme(mode)
+        let &background = a:mode
+
+        let s:new_color = a:mode ==? "light" ? "solarized8" : "nord"
+        silent! execute "normal! :color " . s:new_color . "\<cr>"
+
+        let s:new_airline_theme = a:mode ==? "light" ? "solarized" : "base16_nord"
+        silent! execute "normal! :AirlineTheme " . s:new_airline_theme . "\<cr>"
+endfunction
 " Check periodically to see if darkmode is toggled on the OS and update the vim/airline theme accordingly.
 " There is a bash script running in the background of my shell that puts the current mode
 " in ~/.darkmode (1=dark, 0=light)
-function! SetColorscheme()
-    let s:new_bg = system('cat ~/.darkmode') ==? "0" ? "light" : "dark"
-    if &background !=? s:new_bg || ! exists('g:colors_name')
-        let &background = s:new_bg
+function! SyncColorscheme(timer_id)
+    if !filereadable(expand('~/.darkmode'))
+        " If the file to sync with can't be read then default to dark mode and stop the sync job
+        call SetColorscheme('dark')
+        if a:timer_id
+            call timer_stop(a:timer_id)
+        endif
+        return
+    endif
 
-        let s:new_color = s:new_bg ==? "light" ? "solarized8" : "nord"
-        silent! execute "normal! :color " . s:new_color . "\<cr>"
-
-        let s:new_airline_theme = s:new_bg ==? "light" ? "solarized" : "base16_nord"
-        silent! execute "normal! :AirlineTheme " . s:new_color . "\<cr>"
+    let l:mode = system('cat ~/.darkmode') ==? "0" ? "light" : "dark"
+    let l:bg_changed_or_is_not_set = &background !=? l:mode || !exists('g:colors_name')
+    if l:bg_changed_or_is_not_set
+        call SetColorscheme(l:mode)
     endif
 endfunction
-call SetColorscheme()
-call timer_start(5000, {timer_id -> SetColorscheme()}, {"repeat": -1})
+call SyncColorscheme(v:none)
+call timer_start(5000, function('SyncColorscheme'), {"repeat": -1})
 
 " Section: Utilities
 " ----------------------
@@ -619,8 +627,6 @@ function! MultiComplete(findstart, base)
     let l:completers = extendnew(
                 \ get(g:, 'multicomplete_completers', []),
                 \ get(b:, 'multicomplete_completers', []))
-
-    echo l:completers
 
     if a:findstart
         let g:findstarts = []
