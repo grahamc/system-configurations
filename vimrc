@@ -42,6 +42,8 @@ set wrap
 set updatetime=500
 set cmdheight=3
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
+" Don't show the current mode in the command line, it's already in my status line
+set noshowmode
 
 " autocomplete
 let s:Emmet_completer_with_menus =
@@ -51,9 +53,8 @@ let s:Emmet_completer_with_menus =
                 \ emmet#completeTag(findstart, base),
                 \ "{'word': v:val, 'menu': repeat(' ', &l:pumwidth - 13) . '[emmet]'}"
             \ )}
-let g:multicomplete_completers = [function('lsp#complete')]
 if exists('$TMUX')
-    call add(g:multicomplete_completers, function('tmuxcomplete#complete'))
+    let g:multicomplete_completers = add(get(g:, 'multicomplete_completers', []), function('tmuxcomplete#complete'))
 endif
 set completefunc=MultiComplete
 
@@ -153,10 +154,7 @@ nnoremap <silent> <S-Down> :tabprevious<CR>
 nnoremap <silent> <S-Up> :tabnext<CR>
 
 " wrap a function call in another function call.
-" this is done by looking for a function call under the cursor and if found,
-" wrapping it with parentheses and then going into
-" insert mode so the wrapper function name can be typed
-let @w='vicS)i'
+let @w='hf)%bvf)S)i'
 
 " remove all trailing whitespace
 nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
@@ -272,16 +270,6 @@ call plug#begin('~/.vim/plugged')
 """"""""""""""""""""""""""""""""""""
 " light and dark
 Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
-
-" Text objects (:h text-objects)
-""""""""""""""""""""""""""""""""""""
-" Select a function call. This can be used to wrap a function call in another call, for example.
-Plug 'machakann/vim-textobj-functioncall'
-    let g:textobj_functioncall_no_default_key_mappings = 1
-    xmap ic <Plug>(textobj-functioncall-i)
-    omap ic <Plug>(textobj-functioncall-i)
-    xmap ac <Plug>(textobj-functioncall-a)
-    omap ac <Plug>(textobj-functioncall-a)
 
 " Manipulating Surroundings (e.g. braces, brackets, quotes)
 """"""""""""""""""""""""""""""""""""
@@ -564,6 +552,9 @@ augroup Miscellaneous
     " Is LSP is enabled, assign keywordprg to its hover feature. Unless it's bash or vim
     " in which case they'll use man pages and vim help pages respectively.
     autocmd User lsp_buffer_enabled if &filetype !=? "vim" && &filetype !=? "sh" | setlocal keywordprg=:LspHover | endif
+    " If there's a language server running:
+    " - Add to LSP completion to list of completion functions
+    autocmd User lsp_server_init let s:lsp_status = execute("LspStatus") | if s:lsp_status =~? 'running' | let b:multicomplete_completers = get(b:, 'multicomplete_completers', [])->add(function('lsp#complete')) | endif
     " Add emmet snippet autocomplete for filetypes that can contain HTML
     autocmd Filetype html,javascriptreact,typescriptreact,javascript,typescript
                 \ let b:multicomplete_completers = get(b:, 'multicomplete_completers', [])->add(s:Emmet_completer_with_menu)
