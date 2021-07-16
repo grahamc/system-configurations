@@ -35,17 +35,16 @@ set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
 set autoread " Re-read file if it is changed by an external program
 set nolazyredraw
 set foldmethod=syntax
-set foldopen=all
 set dictionary+=/usr/share/dict/words
 set foldlevel=20
 set scrolloff=10
 set wrap
 set updatetime=500
 set cmdheight=3
-set sessionoptions-=blank,options sessionoptions+=tabpages
+set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
 
 " autocomplete
-let g:Emmet_completer_with_menu =
+let s:Emmet_completer_with_menus =
             \ { findstart, base -> findstart ?
             \ emmet#completeTag(findstart, base) :
             \ map(
@@ -63,8 +62,7 @@ set belloff+=all " turn off bell sounds
 " show the completion [menu] even if there is only [one] suggestion
 " by default, [no] suggestion is [select]ed
 " Use [popup] instead of [preview] window
-set completeopt+=menuone,noselect,popup
-set completeopt-=preview
+set completeopt+=menuone,noselect,popup completeopt-=preview
 
 set shortmess+=Icm " don't display messages related to completion
 
@@ -86,10 +84,10 @@ set backup
 
 " tab setup
 set expandtab
-let g:tab_width = 2
-let &tabstop = g:tab_width
-let &shiftwidth = g:tab_width
-let &softtabstop = g:tab_width
+let s:tab_width = 2
+let &tabstop = s:tab_width
+let &shiftwidth = s:tab_width
+let &softtabstop = s:tab_width
 
 set ignorecase smartcase " searching is only case sensitive when the query contains an uppercase letter
 
@@ -108,7 +106,6 @@ let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2' " enable mouse mode while in
 " WARNING: When doing this you should turn off any plugin that
 " automatically adds closing braces since it might accidentally
 " add a closing brace to an escape sequence
-" TODO: map function row
 nmap ¬ <A-l>
 nmap ˙ <A-h>
 nmap ∆ <A-j>
@@ -225,7 +222,7 @@ endfunction
 nnoremap <silent> <Leader>c :call CleanNoNameEmptyBuffers()<CR>
 
 " Keybind cheatsheet
-let g:command_list = [
+let s:command_list = [
             \ "Show references [<Leader>lrf]",
             \ "Rename symbol [<Leader>lrn]",
             \ "Next buffer [<S-l>]",
@@ -261,7 +258,7 @@ function! CheatsheetSink(result)
 endfunction
 command! -bang -nargs=* Cheatsheet call
             \ fzf#run(fzf#wrap({
-            \ 'source': g:command_list,
+            \ 'source': s:command_list,
             \ 'sink': function('CheatsheetSink')}))
 nnoremap <C-Space> :Cheatsheet<CR>
 vnoremap <C-Space> :<C-U>Cheatsheet<CR>
@@ -288,7 +285,7 @@ Plug 'machakann/vim-textobj-functioncall'
 
 " Manipulating Surroundings (e.g. braces, brackets, quotes)
 """"""""""""""""""""""""""""""""""""
-" Automatically add closing keyowrds (e.g. function/endfunction in vimscript)
+" Automatically add closing keywords (e.g. function/endfunction in vimscript)
 Plug 'tpope/vim-endwise', {'for': ['vim', 'ruby']}
 " Automatically close html tags
 Plug 'alvan/vim-closetag'
@@ -299,7 +296,7 @@ Plug 'Raimondi/delimitMate'
 " operations like change surrounding, remove surrounding, etc.
 Plug 'tpope/vim-surround'
 
-" Color stuff
+" Colors
 """"""""""""""""""""""""""""""""""""
 " Detects color strings (e.g. hex, rgba) and changes the background of the characters
 " in that string to match the color. For example, in the following sample line of CSS:
@@ -330,7 +327,7 @@ Plug 'tpope/vim-fugitive'
 
 " Misc.
 """"""""""""""""""""""""""""""""""""
-" Statusbar and tabline
+" Status line and tab line
 Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
     let g:airline#extensions#tabline#enabled = 1
     let g:airline#extensions#tabline#formatter = 'unique_tail'
@@ -346,6 +343,7 @@ Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
 Plug 'dominikduda/vim_current_word'
 " A tool for profiling vim's startup time. Useful for finding slow plugins.
 Plug 'tweekmonster/startuptime.vim'
+" Split or join lines, adding the necessary continuation character for that language
 Plug 'AndrewRadev/splitjoin.vim'
     let g:splitjoin_split_mapping = ''
     let g:splitjoin_join_mapping = ''
@@ -366,8 +364,8 @@ Plug 'sheerun/vim-polyglot'
 " TODO: Find a more portable replacement
 Plug 'junegunn/fzf.vim'
     set runtimepath+=/usr/local/opt/fzf
-    let g:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
-    let g:fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
+    let s:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
+    let s:fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
 " recursive grep
 function! FindLineResultHandler(result)
     let l:resultTokens = split(a:result, ':')
@@ -378,7 +376,7 @@ function! FindLineResultHandler(result)
 endfunction
 command! -bang -nargs=* FindLine call
             \ fzf#vim#grep(
-            \ g:fzfFindLineCommand.' '.shellescape(<q-args>).' | tr -d "\017"',
+            \ s:fzfFindLineCommand.' '.shellescape(<q-args>).' | tr -d "\017"',
             \ 1,
             \ {'sink': function('FindLineResultHandler'), 'options': '--delimiter : --nth 4..'},
             \ <bang>0)
@@ -386,7 +384,7 @@ nnoremap <Leader>g :FindLine<CR>
 " recursive file search
 command! -bang -nargs=* FindFile call
             \ fzf#run(fzf#wrap({
-            \ 'source': g:fzfFindFileCommand.' | tr -d "\017"',
+            \ 'source': s:fzfFindFileCommand.' | tr -d "\017"',
             \ 'sink': 'edit'}))
 nnoremap <Leader>f :FindFile<CR>
 
@@ -418,7 +416,7 @@ Plug 'lifepillar/vim-mucomplete'
 " e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
 Plug 'bigolu/vim-lsp'
     " for debugging
-    " let g:lsp_log_file = expand('~/vim-lsp.log')
+    " let g:lsp_log_file = $VIMHOME . 'vim-lsp-log'
     let g:lsp_fold_enabled = 0
     let g:lsp_document_code_action_signs_enabled = 0
     let g:lsp_document_highlight_enabled = 0
@@ -485,19 +483,18 @@ call plug#end()
 
 " Section: Autocommands
 " ---------------------
-function! RestoreOrCreateSession()
-    if argc() == 0
-        let l:session_name =  substitute($PWD, "/", ".", "g") . ".vim"
-        let l:session_full_path = $VIMHOME . 'sessions/' . l:session_name
-        let l:session_cmd = filereadable(l:session_full_path) ? "source " : "mksession! "
-        silent! execute l:session_cmd . l:session_full_path
-    endif
-endfunction
-
 augroup RestoreSettings
     autocmd!
-    " restore session after vim starts
-    autocmd VimEnter * nested call RestoreOrCreateSession()
+    " Restore session after vim starts. The 'nested' keyword tells vim to fire events
+    " normally while this autocmd is executing. By default, no events are fired
+    " during the execution of an autocmd to prevent infinite loops.
+    autocmd VimEnter * nested
+                \ if argc() == 0 |
+                    \ let s:session_name =  substitute($PWD, "/", ".", "g") . ".vim" |
+                    \ let s:session_full_path = $VIMHOME . 'sessions/' . s:session_name |
+                    \ let s:session_cmd = filereadable(s:session_full_path) ? "source " : "mksession! " |
+                    \ silent! execute s:session_cmd . s:session_full_path |
+                \ endif
     " restore last cursor position after opening a file
     autocmd BufReadPost *
                 \ if line("'\"") > 0 && line ("'\"") <= line("$") |
@@ -569,7 +566,7 @@ augroup Miscellaneous
     autocmd User lsp_buffer_enabled if &filetype !=? "vim" && &filetype !=? "sh" | setlocal keywordprg=:LspHover | endif
     " Add emmet snippet autocomplete for filetypes that can contain HTML
     autocmd Filetype html,javascriptreact,typescriptreact,javascript,typescript
-                \ let b:multicomplete_completers = get(b:, 'multicomplete_completers', [])->add(g:Emmet_completer_with_menu)
+                \ let b:multicomplete_completers = get(b:, 'multicomplete_completers', [])->add(s:Emmet_completer_with_menu)
 augroup END
 
 " Section: Aesthetics
@@ -580,7 +577,6 @@ fun! MU()
                 \        get(g:, 'mucomplete_current_method', ''), '')
 endf
 
-" let &statusline = ' %Y %F %{MU()}%m%r%h%w%=%04l,%04v %L '
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
 set fillchars=vert:│ " For a nice continuous line
@@ -633,11 +629,11 @@ function! MultiComplete(findstart, base)
                 \ get(b:, 'multicomplete_completers', []))
 
     if a:findstart
-        let g:findstarts = []
+        let s:findstarts = []
         let l:result = -3
         for l:Completer in l:completers
             let l:completer_result = l:Completer(a:findstart, a:base)
-            call add(g:findstarts, l:completer_result)
+            call add(s:findstarts, l:completer_result)
             " Don't care if result is -3 since that is our default return
             " value. Don't care about -2 either since I don't want the
             " completion menu to stay open if there are no results.
@@ -649,17 +645,17 @@ function! MultiComplete(findstart, base)
                 endif
             endif
         endfor
-        let g:findstart = l:result " 0 indexed
-        let g:col = virtcol(".") " 1 indexed
-        let g:line = getline('.')
+        let s:findstart = l:result " 0 indexed
+        let s:col = virtcol(".") " 1 indexed
+        let s:line = getline('.')
         return l:result
     endif
 
     let l:results = []
     let l:i = 0
-    let l:replaceable_chars = split(g:line, '\zs')[g:findstart:g:col - 2]
+    let l:chars_typed_by_user = split(s:line, '\zs')[s:findstart : s:col - 2]
     for l:Completer in l:completers
-        let l:findstart = g:findstarts->get(l:i)
+        let l:findstart = s:findstarts->get(l:i)
         if l:findstart >= 0
             let l:completer_results = l:Completer(a:findstart, a:base)
 
@@ -669,14 +665,14 @@ function! MultiComplete(findstart, base)
                 let l:completer_results = l:completer_results.words
             endif
 
-            if l:findstart > g:findstart " we need to pad
+            if l:findstart > s:findstart " we need to pad
                 " coerce to dictionary
                 if typename(l:completer_results) ==? "list<string>"
                     call map(l:completer_results, "{'word': v:val}")
                 endif
                 for l:dict in l:completer_results
                     let l:val = dict['word']
-                    let dict.word = l:replaceable_chars[0:(l:findstart - g:findstart) - 1]->join("") . l:val
+                    let dict.word = l:chars_typed_by_user[0 : (l:findstart - s:findstart) - 1]->join("") . l:val
 
                     " make sure that the padded string doesn't show
                     " up in the completion menu by adding an "abbr"
