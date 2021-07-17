@@ -1,5 +1,5 @@
 " Section: Settings
-" ----------------------
+" -------------------------------------
 " env variables
 let $VIMHOME = $HOME . '/.vim/'
 
@@ -46,7 +46,7 @@ set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
 set noshowmode
 
 " autocomplete
-let s:Emmet_completer_with_menus =
+let s:Emmet_completer_with_menu =
             \ { findstart, base -> findstart ?
             \ emmet#completeTag(findstart, base) :
             \ map(
@@ -101,7 +101,7 @@ let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2' " enable mouse mode while in
 " that is being added automatically. Without it, trying to run a command
 " through :Cheatsheet won't work.
 " see: https://stackoverflow.com/questions/13830874/why-do-some-vim-mappings-include-c-u-after-a-colon
-" -----------------
+" -------------------------------------
 " Map the output of these key combinations to their actual names
 " to make mappings that use these key combinations easier to understand
 " WARNING: When doing this you should turn off any plugin that
@@ -159,7 +159,7 @@ let @w='hf)%bvf)S)i'
 " remove all trailing whitespace
 nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 
-" Shift line up or down
+" Shift line(s) up or down
 nnoremap <C-Down> :m .+1<CR>==
 nnoremap <C-Up> :m .-2<CR>==
 vnoremap <C-Down> :m '>+1<CR>gv=gv
@@ -263,7 +263,7 @@ vnoremap <C-Space> :<C-U>Cheatsheet<CR>
 inoremap <C-Space> <Esc>:Cheatsheet<CR>
 
 " Section: Plugins
-" ------------------------------------
+" -------------------------------------
 call plug#begin('~/.vim/plugged')
 
 " Colorschemes
@@ -279,6 +279,12 @@ Plug 'tpope/vim-endwise', {'for': ['vim', 'ruby']}
 Plug 'alvan/vim-closetag'
 " Automatically insert closing braces/quotes
 Plug 'Raimondi/delimitMate'
+    " Given the following line (where | represents the cursor):
+    "   function foo(bar) {|}
+    " Pressing enter will result in :
+    " function foo(bar) {
+    "   |
+    " }
     let g:delimitMate_expand_cr = 1
 " Makes it easier to manipulate surroundings by providing commands to do common
 " operations like change surrounding, remove surrounding, etc.
@@ -347,7 +353,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-dispatch'
 " Provides a collection of language packs, which provide syntax highlighting,
 " and selects the correct one for the current buffer. Also detects indentation.
-Plug 'sheerun/vim-polyglot'
+" Plug 'sheerun/vim-polyglot'
 " Fuzzy finder
 " TODO: Find a more portable replacement
 Plug 'junegunn/fzf.vim'
@@ -391,7 +397,7 @@ Plug 'lifepillar/vim-mucomplete'
     let g:mucomplete#always_use_completeopt = 1
     " minimum chars before autocompletion starts
     let g:mucomplete#minimum_prefix_length = 3
-    " NOTE: 'user' is whatever is assigned to the setting 'completefunc'
+    " 'user' is whatever is assigned to the setting 'completefunc'
     let g:mucomplete#chains = {
                 \ 'default': ['path', 'user', 'c-n', 'incl', 'omni', 'line'],
                 \ 'vim': ['path', 'c-n', 'incl', 'cmd', 'user', 'omni', 'line'],
@@ -468,9 +474,10 @@ Plug 'wellle/tmux-complete.vim'
     let g:tmuxcomplete#trigger = ''
 
 call plug#end()
+syntax off
 
 " Section: Autocommands
-" ---------------------
+" -------------------------------------
 augroup RestoreSettings
     autocmd!
     " Restore session after vim starts. The 'nested' keyword tells vim to fire events
@@ -531,7 +538,7 @@ augroup Miscellaneous
     " Set a default omnifunc
     autocmd Filetype *
                 \	if &omnifunc == "" |
-                \ setlocal omnifunc=syntaxcomplete#Complete |
+                  \ setlocal omnifunc=syntaxcomplete#Complete |
                 \	endif
     " allow the use of mucomplete_current_method which returns a short
     " string denoting the currently active completion method, to be
@@ -549,23 +556,28 @@ augroup Miscellaneous
                 \ endif
     " Use vim help pages for keywordprg in vim files
     autocmd FileType vim setlocal keywordprg=:help
-    " Is LSP is enabled, assign keywordprg to its hover feature. Unless it's bash or vim
-    " in which case they'll use man pages and vim help pages respectively.
-    autocmd User lsp_buffer_enabled if &filetype !=? "vim" && &filetype !=? "sh" | setlocal keywordprg=:LspHover | endif
     " If there's a language server running:
-    " - Add to LSP completion to list of completion functions
-    autocmd User lsp_server_init let s:lsp_status = execute("LspStatus") | if s:lsp_status =~? 'running' | let b:multicomplete_completers = get(b:, 'multicomplete_completers', [])->add(function('lsp#complete')) | endif
+    " - Add LSP completion to list of completion functions
+    " - assign keywordprg to its hover feature. Unless it's bash or vim in which case
+    " they'll use man pages and vim help pages respectively.
+    autocmd User lsp_server_init
+                \ if execute("LspStatus") =~? 'running' |
+                    \ let b:multicomplete_completers = get(b:, 'multicomplete_completers', [])->add(function('lsp#complete')) |
+                    \ if &filetype !=? "vim" && &filetype !=? "sh" |
+                        \ setlocal keywordprg=:LspHover |
+                    \ endif
+                \ endif
     " Add emmet snippet autocomplete for filetypes that can contain HTML
     autocmd Filetype html,javascriptreact,typescriptreact,javascript,typescript
                 \ let b:multicomplete_completers = get(b:, 'multicomplete_completers', [])->add(s:Emmet_completer_with_menu)
 augroup END
 
 " Section: Aesthetics
-" ----------------------
+" -------------------------------------
 " Get the completion source currently being used by mucomplete
 fun! MU()
     return get(g:mucomplete#msg#short_methods,
-                \        get(g:, 'mucomplete_current_method', ''), '')
+                \ get(g:, 'mucomplete_current_method', ''), '')
 endf
 
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
@@ -613,7 +625,7 @@ call SyncColorscheme(v:none)
 call timer_start(5000, function('SyncColorscheme'), {"repeat": -1})
 
 " Section: Utilities
-" ----------------------
+" -------------------------------------
 function! MultiComplete(findstart, base)
     let l:completers = extendnew(
                 \ get(g:, 'multicomplete_completers', []),
