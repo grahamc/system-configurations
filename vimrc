@@ -351,9 +351,6 @@ Plug 'Yggdroot/indentLine'
 " Run a shell command asynchronously and put the results in the quickfix window.
 " Useful for running test suites.
 Plug 'tpope/vim-dispatch'
-" Provides a collection of language packs, which provide syntax highlighting,
-" and selects the correct one for the current buffer. Also detects indentation.
-" Plug 'sheerun/vim-polyglot'
 " Fuzzy finder
 " TODO: Find a more portable replacement
 Plug 'junegunn/fzf.vim'
