@@ -48,14 +48,14 @@ set grepprg=internal
 
 " autocomplete
 let s:Emmet_completer_with_menu =
-            \ { findstart, base -> findstart ?
-            \ emmet#completeTag(findstart, base) :
-            \ map(
-                \ emmet#completeTag(findstart, base),
-                \ "{'word': v:val, 'menu': repeat(' ', &l:pumwidth - 13) . '[emmet]'}"
-            \ )}
+      \ { findstart, base -> findstart ?
+      \ emmet#completeTag(findstart, base) :
+      \ map(
+        \ emmet#completeTag(findstart, base),
+        \ "{'word': v:val, 'menu': repeat(' ', &l:pumwidth - 13) . '[emmet]'}"
+      \ )}
 if exists('$TMUX')
-    let g:multicomplete_completers = add(get(g:, 'multicomplete_completers', []), function('tmuxcomplete#complete'))
+  let g:multicomplete_completers = add(get(g:, 'multicomplete_completers', []), function('tmuxcomplete#complete'))
 endif
 set completefunc=MultiComplete
 
@@ -179,13 +179,13 @@ vnoremap <A-l> 10l
 " toggle folds
 let $unrol=1
 function UnrolMe()
-    if $unrol==0
-        :exe "normal zR"
-        let $unrol=1
-    else
-        :exe "normal zM"
-        let $unrol=0
-    endif
+  if $unrol==0
+    :exe "normal zR"
+    let $unrol=1
+  else
+    :exe "normal zM"
+    let $unrol=0
+  endif
 endfunction
 nnoremap <silent> <Leader>z :call UnrolMe()<CR>
 
@@ -193,20 +193,20 @@ nnoremap \| :vsplit<CR>
 nnoremap _ :split<CR>
 
 function! CloseBufferAndPossiblyWindow()
-    " If the current buffer is a help or preview page or there is only one window and one buffer
-    " left, then close the window and buffer.
-    " Otherwise close the buffer and preserve the window
-    if &l:filetype ==? "help"
-                \ || (len(getbufinfo({'buflisted':1})) == 1 && winnr('$') == 1)
-                \ || getwinvar('.', '&previewwindow') == 1
-        execute "silent Sayonara"
-    elseif &l:filetype ==? "qf"
-        " Close preview window when the qf window is closed (quickr-preview.vim)
-        execute "silent Sayonara"
-        exe "pclose"
-    else
-        execute "silent Sayonara!"
-    endif
+  " If the current buffer is a help or preview page or there is only one window and one buffer
+  " left, then close the window and buffer.
+  " Otherwise close the buffer and preserve the window
+  if &l:filetype ==? "help"
+        \ || (len(getbufinfo({'buflisted':1})) == 1 && winnr('$') == 1)
+        \ || getwinvar('.', '&previewwindow') == 1
+    execute "silent Sayonara"
+  elseif &l:filetype ==? "qf"
+    " Close preview window when the qf window is closed (quickr-preview.vim)
+    execute "silent Sayonara"
+    exe "pclose"
+  else
+    execute "silent Sayonara!"
+  endif
 endfunction
 
 nnoremap <silent> <leader>q :call CloseBufferAndPossiblyWindow()<CR>
@@ -214,44 +214,44 @@ nnoremap <silent> <leader>q :call CloseBufferAndPossiblyWindow()<CR>
 nnoremap <silent> <leader>Q :q<CR>
 
 function! CleanNoNameEmptyBuffers()
-    let buffers = filter(
-                \ range(1, bufnr('$')),
-                \ 'buflisted(v:val) && empty(bufname(v:val)) && bufwinnr(v:val) < 0 && (getbufline(v:val, 1, "$") == [""])'
-                \ )
-    if !empty(buffers)
-        exe 'bd '.join(buffers, ' ')
-    endif
+  let buffers = filter(
+        \ range(1, bufnr('$')),
+        \ 'buflisted(v:val) && empty(bufname(v:val)) && bufwinnr(v:val) < 0 && (getbufline(v:val, 1, "$") == [""])'
+        \ )
+  if !empty(buffers)
+    exe 'bd '.join(buffers, ' ')
+  endif
 endfunction
 nnoremap <silent> <Leader>c :call CleanNoNameEmptyBuffers()<CR>
 
 " Keybind cheatsheet
 let s:command_list = [
-            \ "Show references [<Leader>lrf]", "Rename symbol [<Leader>lrn]",
-            \ "Next buffer [<S-l>]", "Previous buffer [<S-h>]",
-            \ "Next tab [<S-Up>]", "Previous tab [<S-Down>]",
-            \ "Remove trailing whitespace [<F5>]", "Shift line(s) up [<C-Up>]",
-            \ "Shift line(s) down [<C-Down>]", "Toggle folds [<Leader>z]",
-            \ "Vertical split [|]", "Horizontal split [_]",
-            \ "Close buffer [<Leader>q]", "Close window [<Leader>Q]",
-            \ ]
+      \ "Show references [<Leader>lrf]", "Rename symbol [<Leader>lrn]",
+      \ "Next buffer [<S-l>]", "Previous buffer [<S-h>]",
+      \ "Next tab [<S-Up>]", "Previous tab [<S-Down>]",
+      \ "Remove trailing whitespace [<F5>]", "Shift line(s) up [<C-Up>]",
+      \ "Shift line(s) down [<C-Down>]", "Toggle folds [<Leader>z]",
+      \ "Vertical split [|]", "Horizontal split [_]",
+      \ "Close buffer [<Leader>q]", "Close window [<Leader>Q]",
+      \ ]
 function! CheatsheetSink(command)
-    " Extract the keybinding which is always between brackets at the end
-    let l:keybind = a:command[ match(a:command, '\[.*\]$') + 1 : -2 ]
-    " Replace '<leader>' with mapleader
-    let l:keybind = substitute(l:keybind, '<leader>', '\<Space>', 'g')
-    " If the command starts with space, put a 1 before it (:h normal)
-    " TODO: handle multiple spaces
-    if l:keybind =~? '^<space>'
-        let l:keybind = 1 . l:keybind
-    endif
-    " Escape angle bracket sequences, like <C-h>, by prepending a '\'
-    let l:keybind = substitute(l:keybind, '<[a-z,0-9,-]*>', '\="\\" . submatch(0)', 'g')
-    " Escape sequences will only be parsed by vim if the string is in
-    " double quotes so this line will make it a double quoted string,
-    " see: https://vi.stackexchange.com/questions/10916/execute-normal-command-doesnt-work
-    let l:keybind = eval('"' . l:keybind . '"')
+  " Extract the keybinding which is always between brackets at the end
+  let l:keybind = a:command[ match(a:command, '\[.*\]$') + 1 : -2 ]
+  " Replace '<leader>' with mapleader
+  let l:keybind = substitute(l:keybind, '<leader>', '\<Space>', 'g')
+  " If the command starts with space, put a 1 before it (:h normal)
+  " TODO: handle multiple spaces
+  if l:keybind =~? '^<space>'
+    let l:keybind = 1 . l:keybind
+  endif
+  " Escape angle bracket sequences, like <C-h>, by prepending a '\'
+  let l:keybind = substitute(l:keybind, '<[a-z,0-9,-]*>', '\="\\" . submatch(0)', 'g')
+  " Escape sequences will only be parsed by vim if the string is in
+  " double quotes so this line will make it a double quoted string,
+  " see: https://vi.stackexchange.com/questions/10916/execute-normal-command-doesnt-work
+  let l:keybind = eval('"' . l:keybind . '"')
 
-    exe "normal " . l:keybind
+  exe "normal " . l:keybind
 endfunction
 
 " Section: Plugins
@@ -259,7 +259,7 @@ endfunction
 " Install vim-plug if not found
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 endif
 " Run PlugInstall if there are missing plugins
 autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
@@ -280,13 +280,13 @@ Plug 'tpope/vim-endwise', {'for': ['vim', 'ruby']}
 Plug 'alvan/vim-closetag'
 " Automatically insert closing braces/quotes
 Plug 'Raimondi/delimitMate'
-    " Given the following line (where | represents the cursor):
-    "   function foo(bar) {|}
-    " Pressing enter will result in :
-    " function foo(bar) {
-    "   |
-    " }
-    let g:delimitMate_expand_cr = 1
+  " Given the following line (where | represents the cursor):
+  "   function foo(bar) {|}
+  " Pressing enter will result in :
+  " function foo(bar) {
+  "   |
+  " }
+  let g:delimitMate_expand_cr = 1
 " Makes it easier to manipulate surroundings by providing commands to do common
 " operations like change surrounding, remove surrounding, etc.
 Plug 'tpope/vim-surround'
@@ -307,11 +307,11 @@ Plug 'KabbAmine/vCoolor.vim'
 Plug 'mhinz/vim-sayonara'
 " Easy movement between vim windows and tmux panes.
 Plug 'christoomey/vim-tmux-navigator'
-    let g:tmux_navigator_no_mappings = 1
-    nnoremap <C-h> :TmuxNavigateLeft<cr>
-    nnoremap <C-l> :TmuxNavigateRight<cr>
-    nnoremap <C-j> :TmuxNavigateDown<cr>
-    nnoremap <C-k> :TmuxNavigateUp<cr>
+  let g:tmux_navigator_no_mappings = 1
+  nnoremap <C-h> :TmuxNavigateLeft<cr>
+  nnoremap <C-l> :TmuxNavigateRight<cr>
+  nnoremap <C-j> :TmuxNavigateDown<cr>
+  nnoremap <C-k> :TmuxNavigateUp<cr>
 
 " Version control
 """"""""""""""""""""""""""""""""""""
@@ -324,100 +324,100 @@ Plug 'tpope/vim-fugitive'
 """"""""""""""""""""""""""""""""""""
 " Status line and tab line
 Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
-    let g:airline#extensions#tabline#enabled = 1
-    let g:airline#extensions#tabline#formatter = 'unique_tail'
+  let g:airline#extensions#tabline#enabled = 1
+  let g:airline#extensions#tabline#formatter = 'unique_tail'
 " File explorer
 Plug 'preservim/nerdtree', {'on': ['NERDTreeTabsToggle']}
-    let g:NERDTreeMouseMode=2
-    let g:NERDTreeWinPos="right"
-    let g:NERDTreeShowHidden=1
+  let g:NERDTreeMouseMode=2
+  let g:NERDTreeWinPos="right"
+  let g:NERDTreeShowHidden=1
 Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
-    let g:nerdtree_tabs_autofind = 1
-    nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
+  let g:nerdtree_tabs_autofind = 1
+  nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
 " Highlight the current word and other occurences of it.
 Plug 'dominikduda/vim_current_word'
 " A tool for profiling vim's startup time. Useful for finding slow plugins.
 Plug 'tweekmonster/startuptime.vim'
 " Split or join lines, adding the necessary continuation character for that language
 Plug 'AndrewRadev/splitjoin.vim'
-    let g:splitjoin_split_mapping = ''
-    let g:splitjoin_join_mapping = ''
-    nnoremap sj :SplitjoinSplit<cr>
-    nnoremap sk :SplitjoinJoin<cr>
+  let g:splitjoin_split_mapping = ''
+  let g:splitjoin_join_mapping = ''
+  nnoremap sj :SplitjoinSplit<cr>
+  nnoremap sk :SplitjoinJoin<cr>
 " Visualizes indentation in the buffer. Useful for fixing incorrectly indented lines.
 Plug 'Yggdroot/indentLine'
-    let g:indentLine_char = '▏'
-    let g:indentLine_setColors = 0
-    let g:indentLine_enabled = 0
+  let g:indentLine_char = '▏'
+  let g:indentLine_setColors = 0
+  let g:indentLine_enabled = 0
 " Run a shell command asynchronously and put the results in the quickfix window.
 " Useful for running test suites.
 Plug 'tpope/vim-dispatch'
 " Fuzzy finder
 if executable('fzf')
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    let &runtimepath .= ',' . system("which fzf | tr -d '\n'")
-    Plug 'junegunn/fzf.vim'
+  let &runtimepath .= ',' . system("which fzf | tr -d '\n'")
+  Plug 'junegunn/fzf.vim'
   " Cheatsheet
   command! -bang -nargs=* Cheatsheet call
-              \ fzf#run(fzf#wrap({
-              \ 'source': s:command_list,
-              \ 'sink': function('CheatsheetSink')}))
+        \ fzf#run(fzf#wrap({
+        \ 'source': s:command_list,
+        \ 'sink': function('CheatsheetSink')}))
   nnoremap <Leader>? :Cheatsheet<CR>
   " Buffer
   nnoremap <Leader>b :Buffers<CR>
   if executable('rg')
-    let s:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS.' --color=always'
-    let s:fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
+  let s:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS.' --color=always'
+  let s:fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
   else
-    " TODO
+  " TODO
   endif
   " recursive grep
   function! FindLineResultHandler(result)
-      let l:resultTokens = split(a:result, ':')
-      let l:filename = l:resultTokens[0]
-      let l:lineNumber = l:resultTokens[1]
-      execute 'silent edit '.l:filename
-      execute l:lineNumber
+    let l:resultTokens = split(a:result, ':')
+    let l:filename = l:resultTokens[0]
+    let l:lineNumber = l:resultTokens[1]
+    execute 'silent edit '.l:filename
+    execute l:lineNumber
   endfunction
   command! -bang -nargs=* FindLine call
-              \ fzf#vim#grep(
-              \ s:fzfFindLineCommand.' '.shellescape(<q-args>).' | tr -d "\017"',
-              \ 1,
-              \ fzf#vim#with_preview({'sink': function('FindLineResultHandler'), 'options': '--delimiter : --nth 4..'}),
-              \ <bang>0)
+        \ fzf#vim#grep(
+        \ s:fzfFindLineCommand.' '.shellescape(<q-args>).' | tr -d "\017"',
+        \ 1,
+        \ fzf#vim#with_preview({'sink': function('FindLineResultHandler'), 'options': '--delimiter : --nth 4..'}),
+        \ <bang>0)
   nnoremap <Leader>g :FindLine<CR>
   " recursive file search
   command! -bang -nargs=* FindFile call
-              \ fzf#run(fzf#wrap({
-              \ 'source': s:fzfFindFileCommand.' | tr -d "\017"',
-              \ 'sink': 'edit'}))
+        \ fzf#run(fzf#wrap({
+        \ 'source': s:fzfFindFileCommand.' | tr -d "\017"',
+        \ 'sink': 'edit'}))
   nnoremap <Leader>f :FindFile<CR>
 else
   Plug 'ctrlpvim/ctrlp.vim'
-      let g:ctrlp_prompt_mappings = {
-                  \ 'PrtSelectMove("j")':   ['<c-j>', '<down>', '<tab>'],
-                  \ 'PrtSelectMove("k")':   ['<c-k>', '<up>', '<s-tab>'],
-                  \ 'ToggleFocus()': [], 'PrtExpandDir()': [],
-                  \ }
-      nnoremap <Leader>f :CtrlP<CR>
-      nnoremap <Leader>b :CtrlPBuffer<CR>
-      " TODO render cheatsheet through ctrlp
+    let g:ctrlp_prompt_mappings = {
+          \ 'PrtSelectMove("j")':   ['<c-j>', '<down>', '<tab>'],
+          \ 'PrtSelectMove("k")':   ['<c-k>', '<up>', '<s-tab>'],
+          \ 'ToggleFocus()': [], 'PrtExpandDir()': [],
+          \ }
+    nnoremap <Leader>f :CtrlP<CR>
+    nnoremap <Leader>b :CtrlPBuffer<CR>
+    " TODO render cheatsheet through ctrlp
   command! -nargs=+ -complete=file Grep
-      \ execute 'silent grep! "<args>"' | redraw! | copen
+    \ execute 'silent grep! "<args>"' | redraw! | copen
   nnoremap <Leader>g :Grep 
   Plug 'ronakg/quickr-preview.vim'
-    let g:quickr_preview_on_cursor = 1
-    let g:quickr_preview_exit_on_enter = 1
-    let g:quickr_preview_size = '0'
-    let g:quickr_preview_keymaps = 0
-    let g:quickr_preview_position = 'below'
+  let g:quickr_preview_on_cursor = 1
+  let g:quickr_preview_exit_on_enter = 1
+  let g:quickr_preview_size = '0'
+  let g:quickr_preview_keymaps = 0
+  let g:quickr_preview_position = 'below'
   if executable('rg')
-      let g:ctrlp_user_command = 'rg ' . $FZF_RG_OPTIONS . ' --files --vimgrep'
-      let g:ctrlp_use_caching = 0
+    let g:ctrlp_user_command = 'rg ' . $FZF_RG_OPTIONS . ' --files --vimgrep'
+    let g:ctrlp_use_caching = 0
 
-      set grepprg=rg\ --vimgrep\ --smart-case\ --follow
+    set grepprg=rg\ --vimgrep\ --smart-case\ --follow
   else
-      let g:ctrlp_clear_cache_on_exit = 0
+    let g:ctrlp_clear_cache_on_exit = 0
   endif
 endif
 
@@ -432,32 +432,32 @@ endif
 " - You don't have to remember all the various keybinds for the built-in
 " and custom completion sources.
 Plug 'lifepillar/vim-mucomplete'
-    let g:mucomplete#reopen_immediately = 1
-    let g:mucomplete#always_use_completeopt = 1
-    " minimum chars before autocompletion starts
-    let g:mucomplete#minimum_prefix_length = 3
-    " 'user' is whatever is assigned to the setting 'completefunc'
-    let g:mucomplete#chains = {
-                \ 'default': ['path', 'user', 'c-n', 'incl', 'omni', 'line'],
-                \ 'vim': ['path', 'c-n', 'incl', 'cmd', 'user', 'omni', 'line'],
-                \ }
-    inoremap <silent> <plug>(MUcompleteFwdKey) <right>
-    imap <right> <plug>(MUcompleteCycFwd)
-    inoremap <silent> <plug>(MUcompleteBwdKey) <left>
-    imap <left> <plug>(MUcompleteCycBwd)
+  let g:mucomplete#reopen_immediately = 1
+  let g:mucomplete#always_use_completeopt = 1
+  " minimum chars before autocompletion starts
+  let g:mucomplete#minimum_prefix_length = 3
+  " 'user' is whatever is assigned to the setting 'completefunc'
+  let g:mucomplete#chains = {
+        \ 'default': ['path', 'user', 'c-n', 'incl', 'omni', 'line'],
+        \ 'vim': ['path', 'c-n', 'incl', 'cmd', 'user', 'omni', 'line'],
+        \ }
+  inoremap <silent> <plug>(MUcompleteFwdKey) <right>
+  imap <right> <plug>(MUcompleteCycFwd)
+  inoremap <silent> <plug>(MUcompleteBwdKey) <left>
+  imap <left> <plug>(MUcompleteCycBwd)
 " Language Server Protocol client that provides IDE like features
 " e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
 Plug 'bigolu/vim-lsp'
-    " for debugging
-    " let g:lsp_log_file = $VIMHOME . 'vim-lsp-log'
-    let g:lsp_fold_enabled = 0
-    let g:lsp_document_code_action_signs_enabled = 0
-    let g:lsp_document_highlight_enabled = 0
+  " for debugging
+  " let g:lsp_log_file = $VIMHOME . 'vim-lsp-log'
+  let g:lsp_fold_enabled = 0
+  let g:lsp_document_code_action_signs_enabled = 0
+  let g:lsp_document_highlight_enabled = 0
 " An easy way to install/manage language servers for vim-lsp.
 Plug 'mattn/vim-lsp-settings'
-    " where the language servers are stored
-    let g:lsp_settings_servers_dir = $VIMHOME . "vim-lsp-servers"
-    call mkdir(g:lsp_settings_servers_dir, "p")
+  " where the language servers are stored
+  let g:lsp_settings_servers_dir = $VIMHOME . "vim-lsp-servers"
+  call mkdir(g:lsp_settings_servers_dir, "p")
 " A bridge between vim-lsp and ale. This works by
 " sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
 " This way, vim-lsp will only provide LSP features
@@ -466,156 +466,156 @@ Plug 'mattn/vim-lsp-settings'
 " has the issue. Plus it allows ALE and vim-lsp to focus on their
 " strengths: linting and LSP respectively.
 Plug 'rhysd/vim-lsp-ale'
-    " Only report diagnostics with a level of 'warning' or above
-    " i.e. warning,error
-    let g:lsp_ale_diagnostics_severity = "warning"
+  " Only report diagnostics with a level of 'warning' or above
+  " i.e. warning,error
+  let g:lsp_ale_diagnostics_severity = "warning"
 " Asynchronous linting
 Plug 'dense-analysis/ale'
-    " If a linter is not found don't continue to check on subsequent linting operations.
-    let g:ale_cache_executable_check_failures = 1
-    " Don't show popup when the mouse if over a symbol, vim-lsp
-    " should be responsible for that.
-    let g:ale_set_balloons = 0
-    " Don't show variable information in the status line,
-    " vim-lsp should be responsible for that.
-    let g:ale_hover_cursor = 0
-    " Only display diagnostics with a warning level or above
-    " i.e. warning,error
-    let g:ale_lsp_show_message_severity = "warning"
-    let g:ale_lint_on_enter = 0 " Don't lint when a buffer opens
-    let g:ale_lint_on_text_changed = "always"
-    let g:ale_lint_delay = 1000
-    let g:ale_lint_on_insert_leave = 0
-    let g:ale_lint_on_filetype_changed = 0
-    let g:ale_lint_on_save = 0
-    let g:ale_fix_on_save = 1
-    let g:ale_fixers = {
-                \ 'javascript': ['prettier'],
-                \ 'javascriptreact': ['prettier'],
-                \ 'typescript': ['prettier'],
-                \ 'typescriptreact': ['prettier'],
-                \ 'json': ['prettier'],
-                \ 'html': ['prettier'],
-                \ 'css': ['prettier']
-                \ }
-    let g:ale_linters = {
-                \ 'vim': [],
-                \ 'javascript': ['eslint'],
-                \ 'javascriptreact': ['eslint'],
-                \ 'typescript': ['eslint'],
-                \ 'typescriptreact': ['eslint']
-                \ }
+  " If a linter is not found don't continue to check on subsequent linting operations.
+  let g:ale_cache_executable_check_failures = 1
+  " Don't show popup when the mouse if over a symbol, vim-lsp
+  " should be responsible for that.
+  let g:ale_set_balloons = 0
+  " Don't show variable information in the status line,
+  " vim-lsp should be responsible for that.
+  let g:ale_hover_cursor = 0
+  " Only display diagnostics with a warning level or above
+  " i.e. warning,error
+  let g:ale_lsp_show_message_severity = "warning"
+  let g:ale_lint_on_enter = 0 " Don't lint when a buffer opens
+  let g:ale_lint_on_text_changed = "always"
+  let g:ale_lint_delay = 1000
+  let g:ale_lint_on_insert_leave = 0
+  let g:ale_lint_on_filetype_changed = 0
+  let g:ale_lint_on_save = 0
+  let g:ale_fix_on_save = 1
+  let g:ale_fixers = {
+        \ 'javascript': ['prettier'],
+        \ 'javascriptreact': ['prettier'],
+        \ 'typescript': ['prettier'],
+        \ 'typescriptreact': ['prettier'],
+        \ 'json': ['prettier'],
+        \ 'html': ['prettier'],
+        \ 'css': ['prettier']
+        \ }
+  let g:ale_linters = {
+        \ 'vim': [],
+        \ 'javascript': ['eslint'],
+        \ 'javascriptreact': ['eslint'],
+        \ 'typescript': ['eslint'],
+        \ 'typescriptreact': ['eslint']
+        \ }
 " Expands Emmet abbreviations to write HTML more quickly
 Plug 'mattn/emmet-vim'
-    let g:user_emmet_leader_key='<C-e>'
+  let g:user_emmet_leader_key='<C-e>'
 " autocomplete from other tmux panes
 Plug 'wellle/tmux-complete.vim'
-    let g:tmuxcomplete#trigger = ''
+  let g:tmuxcomplete#trigger = ''
 
 call plug#end()
 
 " Section: Autocommands
 " -------------------------------------
 augroup RestoreSettings
-    autocmd!
-    " Restore session after vim starts. The 'nested' keyword tells vim to fire events
-    " normally while this autocmd is executing. By default, no events are fired
-    " during the execution of an autocmd to prevent infinite loops.
-    autocmd VimEnter * nested
-                \ if argc() == 0 |
-                    \ let s:session_name =  substitute($PWD, "/", ".", "g") . ".vim" |
-                    \ let s:session_full_path = $VIMHOME . 'sessions/' . s:session_name |
-                    \ let s:session_cmd = filereadable(s:session_full_path) ? "source " : "mksession! " |
-                    \ silent! execute s:session_cmd . s:session_full_path |
-                \ endif
-    " restore last cursor position after opening a file
-    autocmd BufReadPost *
-                \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-                    \ exe "normal! g'\"" |
-                \ endif
-    " save session before vim exits
-    autocmd VimLeavePre *
-                \ if !empty(v:this_session) |
-                    \ exe 'mksession! ' . fnameescape(v:this_session) |
-                \ endif
+  autocmd!
+  " Restore session after vim starts. The 'nested' keyword tells vim to fire events
+  " normally while this autocmd is executing. By default, no events are fired
+  " during the execution of an autocmd to prevent infinite loops.
+  autocmd VimEnter * nested
+        \ if argc() == 0 |
+          \ let s:session_name =  substitute($PWD, "/", ".", "g") . ".vim" |
+          \ let s:session_full_path = $VIMHOME . 'sessions/' . s:session_name |
+          \ let s:session_cmd = filereadable(s:session_full_path) ? "source " : "mksession! " |
+          \ silent! execute s:session_cmd . s:session_full_path |
+        \ endif
+  " restore last cursor position after opening a file
+  autocmd BufReadPost *
+        \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+          \ exe "normal! g'\"" |
+        \ endif
+  " save session before vim exits
+  autocmd VimLeavePre *
+        \ if !empty(v:this_session) |
+          \ exe 'mksession! ' . fnameescape(v:this_session) |
+        \ endif
 augroup END
 
 augroup Styles
-    autocmd!
-    " Increase brightness of comments in nord
-    autocmd ColorScheme nord highlight Comment guifg=#6d7a96
-    " Make CursorLine look like an underline
-    autocmd VimEnter * execute "hi clear CursorLine"
-    autocmd VimEnter * execute "hi CursorLine gui=underline cterm=underline"
-    " MatchParen
-    autocmd VimEnter * execute "hi MatchParen ctermbg=blue guibg=lightblue"
-    " Only highlight the current line on the active window
-    au WinLeave * set nocursorline
-    au WinEnter * set cursorline
-    " Transparent SignColumn
-    autocmd Colorscheme solarized8 execute "hi clear SignColumn"
-    autocmd Colorscheme solarized8 execute "hi DiffAdd ctermbg=NONE guibg=NONE"
-    autocmd Colorscheme solarized8 execute "hi DiffChange ctermbg=NONE guibg=NONE"
-    autocmd Colorscheme solarized8 execute "hi DiffDelete ctermbg=NONE guibg=NONE"
-    autocmd Colorscheme solarized8 execute "hi SignifyLineChange ctermbg=NONE guibg=NONE"
-    autocmd Colorscheme solarized8 execute "hi SignifyLineDelete ctermbg=NONE guibg=NONE"
-    autocmd Colorscheme solarized8 execute "hi ALEErrorSign ctermbg=NONE guibg=NONE"
-    autocmd Colorscheme solarized8 execute "hi ALEWarningSign ctermbg=NONE guibg=NONE"
-    " Transparent number column
-    autocmd Colorscheme solarized8 execute "hi clear CursorLineNR"
-    autocmd Colorscheme solarized8 execute "hi clear LineNR"
-    " Transparent vertical split (line that divides NERDTree and editor)
-    autocmd Colorscheme solarized8 execute "highlight VertSplit ctermbg=NONE guibg=NONE"
+  autocmd!
+  " Increase brightness of comments in nord
+  autocmd ColorScheme nord highlight Comment guifg=#6d7a96
+  " Make CursorLine look like an underline
+  autocmd VimEnter * execute "hi clear CursorLine"
+  autocmd VimEnter * execute "hi CursorLine gui=underline cterm=underline"
+  " MatchParen
+  autocmd VimEnter * execute "hi MatchParen ctermbg=blue guibg=lightblue"
+  " Only highlight the current line on the active window
+  au WinLeave * set nocursorline
+  au WinEnter * set cursorline
+  " Transparent SignColumn
+  autocmd Colorscheme solarized8 execute "hi clear SignColumn"
+  autocmd Colorscheme solarized8 execute "hi DiffAdd ctermbg=NONE guibg=NONE"
+  autocmd Colorscheme solarized8 execute "hi DiffChange ctermbg=NONE guibg=NONE"
+  autocmd Colorscheme solarized8 execute "hi DiffDelete ctermbg=NONE guibg=NONE"
+  autocmd Colorscheme solarized8 execute "hi SignifyLineChange ctermbg=NONE guibg=NONE"
+  autocmd Colorscheme solarized8 execute "hi SignifyLineDelete ctermbg=NONE guibg=NONE"
+  autocmd Colorscheme solarized8 execute "hi ALEErrorSign ctermbg=NONE guibg=NONE"
+  autocmd Colorscheme solarized8 execute "hi ALEWarningSign ctermbg=NONE guibg=NONE"
+  " Transparent number column
+  autocmd Colorscheme solarized8 execute "hi clear CursorLineNR"
+  autocmd Colorscheme solarized8 execute "hi clear LineNR"
+  " Transparent vertical split (line that divides NERDTree and editor)
+  autocmd Colorscheme solarized8 execute "highlight VertSplit ctermbg=NONE guibg=NONE"
 augroup END
 
 augroup Miscellaneous
-    autocmd!
-    " for some reason there is an ftplugin that is bundled with vim that
-    " sets the textwidth to 78 if it is currently 0. This sets it back to 0
-    autocmd VimEnter * :set tw=0
-    " Set a default omnifunc
-    autocmd Filetype *
-                \	if &omnifunc == "" |
-                  \ setlocal omnifunc=syntaxcomplete#Complete |
-                \	endif
-    " allow the use of mucomplete_current_method which returns a short
-    " string denoting the currently active completion method, to be
-    " used in a statusline
-    autocmd VimEnter * execute "MUcompleteNotify 3"
-    " Set fold method for vim
-    autocmd Filetype vim execute "setlocal foldmethod=indent"
-    " Extend iskeyword for filetypes that can reference CSS classes
-    autocmd FileType css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss setlocal iskeyword+=-,?,!
-    autocmd FileType vim setlocal iskeyword+=:,#
-    " Open help/preview/quickfix windows across the bottom of the editor
-    autocmd FileType *
-                \ if &filetype ==? "help" || &filetype ==? "qf" || getwinvar('.', '&previewwindow') == 1 |
-                    \ wincmd J |
-                \ endif
-    " Use vim help pages for keywordprg in vim files
-    autocmd FileType vim setlocal keywordprg=:help
-    " If there's a language server running:
-    " - Add LSP completion to list of completion functions
-    " - assign keywordprg to its hover feature. Unless it's bash or vim in which case
-    " they'll use man pages and vim help pages respectively.
-    autocmd User lsp_server_init
-                \ if execute("LspStatus") =~? 'running' |
-                    \ let b:multicomplete_completers = get(b:, 'multicomplete_completers', [])->add(function('lsp#complete')) |
-                    \ if &filetype !=? "vim" && &filetype !=? "sh" |
-                        \ setlocal keywordprg=:LspHover |
-                    \ endif
-                \ endif
-    " Add emmet snippet autocomplete for filetypes that can contain HTML
-    autocmd Filetype html,javascriptreact,typescriptreact,javascript,typescript
-                \ let b:multicomplete_completers = get(b:, 'multicomplete_completers', [])->add(s:Emmet_completer_with_menu)
+  autocmd!
+  " for some reason there is an ftplugin that is bundled with vim that
+  " sets the textwidth to 78 if it is currently 0. This sets it back to 0
+  autocmd VimEnter * :set tw=0
+  " Set a default omnifunc
+  autocmd Filetype *
+        \	if &omnifunc == "" |
+          \ setlocal omnifunc=syntaxcomplete#Complete |
+        \	endif
+  " allow the use of mucomplete_current_method which returns a short
+  " string denoting the currently active completion method, to be
+  " used in a statusline
+  autocmd VimEnter * execute "MUcompleteNotify 3"
+  " Set fold method for vim
+  autocmd Filetype vim execute "setlocal foldmethod=indent"
+  " Extend iskeyword for filetypes that can reference CSS classes
+  autocmd FileType css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss setlocal iskeyword+=-,?,!
+  autocmd FileType vim setlocal iskeyword+=:,#
+  " Open help/preview/quickfix windows across the bottom of the editor
+  autocmd FileType *
+        \ if &filetype ==? "help" || &filetype ==? "qf" || getwinvar('.', '&previewwindow') == 1 |
+          \ wincmd J |
+        \ endif
+  " Use vim help pages for keywordprg in vim files
+  autocmd FileType vim setlocal keywordprg=:help
+  " If there's a language server running:
+  " - Add LSP completion to list of completion functions
+  " - assign keywordprg to its hover feature. Unless it's bash or vim in which case
+  " they'll use man pages and vim help pages respectively.
+  autocmd User lsp_server_init
+        \ if execute("LspStatus") =~? 'running' |
+          \ let b:multicomplete_completers = get(b:, 'multicomplete_completers', [])->add(function('lsp#complete')) |
+          \ if &filetype !=? "vim" && &filetype !=? "sh" |
+            \ setlocal keywordprg=:LspHover |
+          \ endif
+        \ endif
+  " Add emmet snippet autocomplete for filetypes that can contain HTML
+  autocmd Filetype html,javascriptreact,typescriptreact,javascript,typescript
+        \ let b:multicomplete_completers = get(b:, 'multicomplete_completers', [])->add(s:Emmet_completer_with_menu)
 augroup END
 
 " Section: Aesthetics
 " -------------------------------------
 " Get the completion source currently being used by mucomplete
 fun! MU()
-    return get(g:mucomplete#msg#short_methods,
-                \ get(g:, 'mucomplete_current_method', ''), '')
+  return get(g:mucomplete#msg#short_methods,
+        \ get(g:, 'mucomplete_current_method', ''), '')
 endf
 
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
@@ -624,40 +624,40 @@ set fillchars=vert:│ " For a nice continuous line
 
 " Block cursor in normal mode and thin line in insert mode
 if exists('$TMUX')
-    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
 else
-    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
 
 function! SetColorscheme(mode)
-        let &background = a:mode
+    let &background = a:mode
 
-        let s:new_color = a:mode ==? "light" ? "solarized8" : "nord"
-        silent! execute "normal! :color " . s:new_color . "\<cr>"
+    let s:new_color = a:mode ==? "light" ? "solarized8" : "nord"
+    silent! execute "normal! :color " . s:new_color . "\<cr>"
 
-        let s:new_airline_theme = a:mode ==? "light" ? "solarized" : "base16_nord"
-        silent! execute "normal! :AirlineTheme " . s:new_airline_theme . "\<cr>"
+    let s:new_airline_theme = a:mode ==? "light" ? "solarized" : "base16_nord"
+    silent! execute "normal! :AirlineTheme " . s:new_airline_theme . "\<cr>"
 endfunction
 " Check periodically to see if darkmode is toggled on the OS and update the vim/airline theme accordingly.
 " There is a bash script running in the background of my shell that puts the current mode
 " in ~/.darkmode (1=dark, 0=light)
 function! SyncColorscheme(timer_id)
-    if !filereadable(expand('~/.darkmode'))
-        " If the file to sync with can't be read then default to dark mode and stop the sync job
-        call SetColorscheme('dark')
-        if a:timer_id
-            call timer_stop(a:timer_id)
-        endif
-        return
+  if !filereadable(expand('~/.darkmode'))
+    " If the file to sync with can't be read then default to dark mode and stop the sync job
+    call SetColorscheme('dark')
+    if a:timer_id
+      call timer_stop(a:timer_id)
     endif
+    return
+  endif
 
-    let l:mode = system('cat ~/.darkmode') ==? "0" ? "light" : "dark"
-    let l:bg_changed_or_is_not_set = &background !=? l:mode || !exists('g:colors_name')
-    if l:bg_changed_or_is_not_set
-        call SetColorscheme(l:mode)
-    endif
+  let l:mode = system('cat ~/.darkmode') ==? "0" ? "light" : "dark"
+  let l:bg_changed_or_is_not_set = &background !=? l:mode || !exists('g:colors_name')
+  if l:bg_changed_or_is_not_set
+    call SetColorscheme(l:mode)
+  endif
 endfunction
 call SyncColorscheme(v:none)
 call timer_start(1000, function('SyncColorscheme'), {"repeat": -1})
@@ -665,68 +665,68 @@ call timer_start(1000, function('SyncColorscheme'), {"repeat": -1})
 " Section: Utilities
 " -------------------------------------
 function! MultiComplete(findstart, base)
-    let l:completers = extendnew(
-                \ get(g:, 'multicomplete_completers', []),
-                \ get(b:, 'multicomplete_completers', []))
+  let l:completers = extendnew(
+        \ get(g:, 'multicomplete_completers', []),
+        \ get(b:, 'multicomplete_completers', []))
 
-    if a:findstart
-        let s:findstarts = []
-        let l:result = -3
-        for l:Completer in l:completers
-            let l:completer_result = l:Completer(a:findstart, a:base)
-            call add(s:findstarts, l:completer_result)
-            " Don't care if result is -3 since that is our default return
-            " value. Don't care about -2 either since I don't want the
-            " completion menu to stay open if there are no results.
-            if l:completer_result >= 0
-                if l:result < 0
-                    let l:result = l:completer_result
-                else
-                    let l:result = min([l:result, l:completer_result])
-                endif
-            endif
-        endfor
-        let s:findstart = l:result " 0 indexed
-        let s:col = virtcol(".") " 1 indexed
-        let s:line = getline('.')
-        return l:result
-    endif
-
-    let l:results = []
-    let l:i = 0
-    let l:chars_typed_by_user = split(s:line, '\zs')[s:findstart : s:col - 2]
+  if a:findstart
+    let s:findstarts = []
+    let l:result = -3
     for l:Completer in l:completers
-        let l:findstart = s:findstarts->get(l:i)
-        if l:findstart >= 0
-            let l:completer_results = l:Completer(a:findstart, a:base)
-
-            " If the dictionary form of results is returned, we'll just take the
-            " words and ignore the 'refresh' key
-            if type(l:completer_results) == type({})
-                let l:completer_results = l:completer_results.words
-            endif
-
-            if l:findstart > s:findstart " we need to pad
-                " coerce to dictionary
-                if typename(l:completer_results) ==? "list<string>"
-                    call map(l:completer_results, "{'word': v:val}")
-                endif
-                for l:dict in l:completer_results
-                    let l:val = dict['word']
-                    let dict.word = l:chars_typed_by_user[0 : (l:findstart - s:findstart) - 1]->join("") . l:val
-
-                    " make sure that the padded string doesn't show
-                    " up in the completion menu by adding an "abbr"
-                    " key if one isn't already present
-                    if !l:dict->has_key("abbr")
-                        let l:dict.abbr = l:val
-                    endif
-                endfor
-            endif
-            call extend(l:results, l:completer_results)
+      let l:completer_result = l:Completer(a:findstart, a:base)
+      call add(s:findstarts, l:completer_result)
+      " Don't care if result is -3 since that is our default return
+      " value. Don't care about -2 either since I don't want the
+      " completion menu to stay open if there are no results.
+      if l:completer_result >= 0
+        if l:result < 0
+          let l:result = l:completer_result
+        else
+          let l:result = min([l:result, l:completer_result])
         endif
-        let l:i = l:i + 1
+      endif
     endfor
+    let s:findstart = l:result " 0 indexed
+    let s:col = virtcol(".") " 1 indexed
+    let s:line = getline('.')
+    return l:result
+  endif
 
-    return l:results
+  let l:results = []
+  let l:i = 0
+  let l:chars_typed_by_user = split(s:line, '\zs')[s:findstart : s:col - 2]
+  for l:Completer in l:completers
+    let l:findstart = s:findstarts->get(l:i)
+    if l:findstart >= 0
+      let l:completer_results = l:Completer(a:findstart, a:base)
+
+      " If the dictionary form of results is returned, we'll just take the
+      " words and ignore the 'refresh' key
+      if type(l:completer_results) == type({})
+        let l:completer_results = l:completer_results.words
+      endif
+
+      if l:findstart > s:findstart " we need to pad
+        " coerce to dictionary
+        if typename(l:completer_results) ==? "list<string>"
+          call map(l:completer_results, "{'word': v:val}")
+        endif
+        for l:dict in l:completer_results
+          let l:val = dict['word']
+          let dict.word = l:chars_typed_by_user[0 : (l:findstart - s:findstart) - 1]->join("") . l:val
+
+          " make sure that the padded string doesn't show
+          " up in the completion menu by adding an "abbr"
+          " key if one isn't already present
+          if !l:dict->has_key("abbr")
+            let l:dict.abbr = l:val
+          endif
+        endfor
+      endif
+      call extend(l:results, l:completer_results)
+    endif
+    let l:i = l:i + 1
+  endfor
+
+  return l:results
 endfunction
