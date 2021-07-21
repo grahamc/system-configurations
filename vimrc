@@ -44,6 +44,7 @@ set cmdheight=3
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
 " Don't show the current mode in the command line, it's already in my status line
 set noshowmode
+set grepprg=internal
 
 " autocomplete
 let s:Emmet_completer_with_menu =
@@ -199,6 +200,10 @@ function! CloseBufferAndPossiblyWindow()
                 \ || (len(getbufinfo({'buflisted':1})) == 1 && winnr('$') == 1)
                 \ || getwinvar('.', '&previewwindow') == 1
         execute "silent Sayonara"
+    elseif &l:filetype ==? "qf"
+        " Close preview window when the qf window is closed (quickr-preview.vim)
+        execute "silent Sayonara"
+        exe "pclose"
     else
         execute "silent Sayonara!"
     endif
@@ -221,27 +226,21 @@ nnoremap <silent> <Leader>c :call CleanNoNameEmptyBuffers()<CR>
 
 " Keybind cheatsheet
 let s:command_list = [
-            \ "Show references [<Leader>lrf]",
-            \ "Rename symbol [<Leader>lrn]",
-            \ "Next buffer [<S-l>]",
-            \ "Previous buffer [<S-h>]",
-            \ "Next tab [<S-Up>]",
-            \ "Previous tab [<S-Down>]",
-            \ "Remove trailing whitespace [<F5>]",
-            \ "Shift line(s) up [<C-Up>]",
-            \ "Shift line(s) down [<C-Down>]",
-            \ "Toggle folds [<Leader>z]",
-            \ "Vertical split [|]",
-            \ "Horizontal split [_]",
-            \ "Close buffer [<Leader>q]",
-            \ "Close window [<Leader>Q]",
+            \ "Show references [<Leader>lrf]", "Rename symbol [<Leader>lrn]",
+            \ "Next buffer [<S-l>]", "Previous buffer [<S-h>]",
+            \ "Next tab [<S-Up>]", "Previous tab [<S-Down>]",
+            \ "Remove trailing whitespace [<F5>]", "Shift line(s) up [<C-Up>]",
+            \ "Shift line(s) down [<C-Down>]", "Toggle folds [<Leader>z]",
+            \ "Vertical split [|]", "Horizontal split [_]",
+            \ "Close buffer [<Leader>q]", "Close window [<Leader>Q]",
             \ ]
-function! CheatsheetSink(result)
+function! CheatsheetSink(command)
     " Extract the keybinding which is always between brackets at the end
-    let l:keybind = a:result[ match(a:result, '\[.*\]$') + 1 : -2 ]
+    let l:keybind = a:command[ match(a:command, '\[.*\]$') + 1 : -2 ]
     " Replace '<leader>' with mapleader
     let l:keybind = substitute(l:keybind, '<leader>', '\<Space>', 'g')
     " If the command starts with space, put a 1 before it (:h normal)
+    " TODO: handle multiple spaces
     if l:keybind =~? '^<space>'
         let l:keybind = 1 . l:keybind
     endif
@@ -254,16 +253,18 @@ function! CheatsheetSink(result)
 
     exe "normal " . l:keybind
 endfunction
-command! -bang -nargs=* Cheatsheet call
-            \ fzf#run(fzf#wrap({
-            \ 'source': s:command_list,
-            \ 'sink': function('CheatsheetSink')}))
-nnoremap <C-Space> :Cheatsheet<CR>
-vnoremap <C-Space> :<C-U>Cheatsheet<CR>
-inoremap <C-Space> <Esc>:Cheatsheet<CR>
 
 " Section: Plugins
 " -------------------------------------
+" Install vim-plug if not found
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+endif
+" Run PlugInstall if there are missing plugins
+autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \| PlugInstall --sync | source $MYVIMRC
+\| endif
 call plug#begin('~/.vim/plugged')
 
 " Colorschemes
@@ -352,32 +353,73 @@ Plug 'Yggdroot/indentLine'
 " Useful for running test suites.
 Plug 'tpope/vim-dispatch'
 " Fuzzy finder
-" TODO: Find a more portable replacement
-Plug 'junegunn/fzf.vim'
-    set runtimepath+=/usr/local/opt/fzf
-    let s:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
+if executable('fzf')
+  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    let &runtimepath .= ',' . system("which fzf | tr -d '\n'")
+    Plug 'junegunn/fzf.vim'
+  " Cheatsheet
+  command! -bang -nargs=* Cheatsheet call
+              \ fzf#run(fzf#wrap({
+              \ 'source': s:command_list,
+              \ 'sink': function('CheatsheetSink')}))
+  nnoremap <Leader>? :Cheatsheet<CR>
+  " Buffer
+  nnoremap <Leader>b :Buffers<CR>
+  if executable('rg')
+    let s:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS.' --color=always'
     let s:fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
-" recursive grep
-function! FindLineResultHandler(result)
-    let l:resultTokens = split(a:result, ':')
-    let l:filename = l:resultTokens[0]
-    let l:lineNumber = l:resultTokens[1]
-    execute 'silent edit '.l:filename
-    execute l:lineNumber
-endfunction
-command! -bang -nargs=* FindLine call
-            \ fzf#vim#grep(
-            \ s:fzfFindLineCommand.' '.shellescape(<q-args>).' | tr -d "\017"',
-            \ 1,
-            \ {'sink': function('FindLineResultHandler'), 'options': '--delimiter : --nth 4..'},
-            \ <bang>0)
-nnoremap <Leader>g :FindLine<CR>
-" recursive file search
-command! -bang -nargs=* FindFile call
-            \ fzf#run(fzf#wrap({
-            \ 'source': s:fzfFindFileCommand.' | tr -d "\017"',
-            \ 'sink': 'edit'}))
-nnoremap <Leader>f :FindFile<CR>
+  else
+    " TODO
+  endif
+  " recursive grep
+  function! FindLineResultHandler(result)
+      let l:resultTokens = split(a:result, ':')
+      let l:filename = l:resultTokens[0]
+      let l:lineNumber = l:resultTokens[1]
+      execute 'silent edit '.l:filename
+      execute l:lineNumber
+  endfunction
+  command! -bang -nargs=* FindLine call
+              \ fzf#vim#grep(
+              \ s:fzfFindLineCommand.' '.shellescape(<q-args>).' | tr -d "\017"',
+              \ 1,
+              \ fzf#vim#with_preview({'sink': function('FindLineResultHandler'), 'options': '--delimiter : --nth 4..'}),
+              \ <bang>0)
+  nnoremap <Leader>g :FindLine<CR>
+  " recursive file search
+  command! -bang -nargs=* FindFile call
+              \ fzf#run(fzf#wrap({
+              \ 'source': s:fzfFindFileCommand.' | tr -d "\017"',
+              \ 'sink': 'edit'}))
+  nnoremap <Leader>f :FindFile<CR>
+else
+  Plug 'ctrlpvim/ctrlp.vim'
+      let g:ctrlp_prompt_mappings = {
+                  \ 'PrtSelectMove("j")':   ['<c-j>', '<down>', '<tab>'],
+                  \ 'PrtSelectMove("k")':   ['<c-k>', '<up>', '<s-tab>'],
+                  \ 'ToggleFocus()': [], 'PrtExpandDir()': [],
+                  \ }
+      nnoremap <Leader>f :CtrlP<CR>
+      nnoremap <Leader>b :CtrlPBuffer<CR>
+      " TODO render cheatsheet through ctrlp
+  command! -nargs=+ -complete=file Grep
+      \ execute 'silent grep! "<args>"' | redraw! | copen
+  nnoremap <Leader>g :Grep 
+  Plug 'ronakg/quickr-preview.vim'
+    let g:quickr_preview_on_cursor = 1
+    let g:quickr_preview_exit_on_enter = 1
+    let g:quickr_preview_size = '0'
+    let g:quickr_preview_keymaps = 0
+    let g:quickr_preview_position = 'below'
+  if executable('rg')
+      let g:ctrlp_user_command = 'rg ' . $FZF_RG_OPTIONS . ' --files --vimgrep'
+      let g:ctrlp_use_caching = 0
+
+      set grepprg=rg\ --vimgrep\ --smart-case\ --follow
+  else
+      let g:ctrlp_clear_cache_on_exit = 0
+  endif
+endif
 
 " IDE features (e.g. autocomplete, smart refactoring, goto definition, etc.)
 """"""""""""""""""""""""""""""""""""
@@ -471,7 +513,6 @@ Plug 'wellle/tmux-complete.vim'
     let g:tmuxcomplete#trigger = ''
 
 call plug#end()
-syntax off
 
 " Section: Autocommands
 " -------------------------------------
@@ -619,7 +660,7 @@ function! SyncColorscheme(timer_id)
     endif
 endfunction
 call SyncColorscheme(v:none)
-call timer_start(5000, function('SyncColorscheme'), {"repeat": -1})
+call timer_start(1000, function('SyncColorscheme'), {"repeat": -1})
 
 " Section: Utilities
 " -------------------------------------

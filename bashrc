@@ -94,7 +94,7 @@ alias trash='trash -F '
 
 # perform 'ls' after 'cd' if successful
 cd() {
-    builtin cd "$*"
+    builtin pushd "$*" > /dev/null
     [ "$?" -eq 0 ] && ls
 }
 
@@ -104,7 +104,7 @@ function rust() {
     rustc $@ && ./$name && rm $name
 }
 
-# Check every minute if macos is in darkmode and update the iTerm theme accordingly.
+# Check periodically if macos is in darkmode and update the iTerm theme accordingly.
 # Also store an integer in '~/.darkmode' to signify the current mode. (1=darkmode, 0=lightmode)
 # This way other programs, like vim, can check if darkmode is active and update their theme too.
 set_theme() {
@@ -121,7 +121,7 @@ set_theme() {
             echo -ne "$setThemeEscapeSequence"
         fi
 
-        sleep 5
+        sleep 1
     done
 }
 [[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && [ -z "$STARTED_BG" ] && set_theme & disown && THEME_PID="$!" && STARTED_BG="true" && trap "kill -9 $THEME_PID" EXIT
