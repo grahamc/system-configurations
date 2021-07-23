@@ -46,19 +46,6 @@ set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
 set noshowmode
 set grepprg=internal
 
-" autocomplete
-let s:Emmet_completer_with_menu =
-      \ { findstart, base -> findstart ?
-      \ emmet#completeTag(findstart, base) :
-      \ map(
-        \ emmet#completeTag(findstart, base),
-        \ "{'word': v:val, 'menu': repeat(' ', &l:pumwidth - 13) . '[emmet]'}"
-      \ )}
-if exists('$TMUX')
-  let g:multicomplete_completers = add(get(g:, 'multicomplete_completers', []), function('tmuxcomplete#complete'))
-endif
-set completefunc=MultiComplete
-
 set belloff+=all " turn off bell sounds
 
 " show the completion [menu] even if there is only [one] suggestion
@@ -353,45 +340,58 @@ Plug 'Yggdroot/indentLine'
 " Useful for running test suites.
 Plug 'tpope/vim-dispatch'
 " Fuzzy finder
+" TODO load all plugins outside conditional so they don't get cleaned up by PlugClean
+""""""""""""""""""""""""""""""""""""
 if executable('fzf')
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-  let &runtimepath .= ',' . system("which fzf | tr -d '\n'")
-  Plug 'junegunn/fzf.vim'
+    let &runtimepath .= ',' . system("which fzf | tr -d '\n'")
+    " Customize fzf colors to match color scheme
+    " - fzf#wrap translates this to a set of `--color` options
+    let g:fzf_colors =
+    \ { 'fg': ['fg', 'Normal'], 'bg': ['bg', 'Normal'], 'hl': ['fg', 'Comment'],
+      \ 'fg+': ['fg', 'CursorLine', 'CursorColumn', 'Normal'], 'bg+': ['bg', 'CursorLine', 'CursorColumn'],
+      \ 'hl+': ['fg', 'Statement'], 'info': ['fg', 'PreProc'], 'border': ['fg', 'Ignore'],
+      \ 'prompt': ['fg', 'Conditional'], 'pointer': ['fg', 'Exception'], 'marker': ['fg', 'Keyword'],
+      \ 'spinner': ['fg', 'Label'], 'header': ['fg', 'Comment'] }
+    Plug 'junegunn/fzf.vim'
   " Cheatsheet
   command! -bang -nargs=* Cheatsheet call
         \ fzf#run(fzf#wrap({
         \ 'source': s:command_list,
         \ 'sink': function('CheatsheetSink')}))
-  nnoremap <Leader>? :Cheatsheet<CR>
+  nnoremap <Leader><Leader> :Cheatsheet<CR>
   " Buffer
   nnoremap <Leader>b :Buffers<CR>
+  " Marks
+  nnoremap <Leader>m :Marks<CR>
   if executable('rg')
-  let s:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS.' --color=always'
-  let s:fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
+    let s:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
+    let s:fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
+    " recursive grep
+    function! FindLineResultHandler(result)
+      let l:resultTokens = split(a:result, ':')
+      let l:filename = l:resultTokens[0]
+      let l:lineNumber = l:resultTokens[1]
+      execute 'silent edit '.l:filename
+      execute l:lineNumber
+    endfunction
+    command! -bang -nargs=* FindLine call
+          \ fzf#vim#grep(
+          \ s:fzfFindLineCommand.' '.shellescape(<q-args>).' | tr -d "\017"',
+          \ 1,
+          \ fzf#vim#with_preview({'sink': function('FindLineResultHandler'), 'options': '--delimiter : --nth 4..'}),
+          \ <bang>0)
+    nnoremap <Leader>g :FindLine<CR>
+    " recursive file search
+    command! -bang -nargs=* FindFile call
+          \ fzf#run(fzf#wrap({
+          \ 'source': s:fzfFindFileCommand.' | tr -d "\017"',
+          \ 'sink': 'edit'}))
+    nnoremap <Leader>f :FindFile<CR>
   else
-  " TODO
+    nnoremap <Leader>f :Files<CR>
+    nnoremap <Leader>g :Lines<CR>
   endif
-  " recursive grep
-  function! FindLineResultHandler(result)
-    let l:resultTokens = split(a:result, ':')
-    let l:filename = l:resultTokens[0]
-    let l:lineNumber = l:resultTokens[1]
-    execute 'silent edit '.l:filename
-    execute l:lineNumber
-  endfunction
-  command! -bang -nargs=* FindLine call
-        \ fzf#vim#grep(
-        \ s:fzfFindLineCommand.' '.shellescape(<q-args>).' | tr -d "\017"',
-        \ 1,
-        \ fzf#vim#with_preview({'sink': function('FindLineResultHandler'), 'options': '--delimiter : --nth 4..'}),
-        \ <bang>0)
-  nnoremap <Leader>g :FindLine<CR>
-  " recursive file search
-  command! -bang -nargs=* FindFile call
-        \ fzf#run(fzf#wrap({
-        \ 'source': s:fzfFindFileCommand.' | tr -d "\017"',
-        \ 'sink': 'edit'}))
-  nnoremap <Leader>f :FindFile<CR>
 else
   Plug 'ctrlpvim/ctrlp.vim'
     let g:ctrlp_prompt_mappings = {
@@ -423,52 +423,100 @@ endif
 
 " IDE features (e.g. autocomplete, smart refactoring, goto definition, etc.)
 """"""""""""""""""""""""""""""""""""
-" An autocompleter that can chain various built-in and custom completion sources.
-" If one source does not return any results, mucomplete will automatically try the next
-" source in the chain. This way:
-" - You can put the faster completion sources in the front of the chain,
-" deferring to the slower ones only if necessary. (e.g. search
-" keywords in the current buffer first before searching tags)
-" - You don't have to remember all the various keybinds for the built-in
-" and custom completion sources.
-Plug 'lifepillar/vim-mucomplete'
-  let g:mucomplete#reopen_immediately = 1
-  let g:mucomplete#always_use_completeopt = 1
-  " minimum chars before autocompletion starts
-  let g:mucomplete#minimum_prefix_length = 3
-  " 'user' is whatever is assigned to the setting 'completefunc'
-  let g:mucomplete#chains = {
-        \ 'default': ['path', 'user', 'c-n', 'incl', 'omni', 'line'],
-        \ 'vim': ['path', 'c-n', 'incl', 'cmd', 'user', 'omni', 'line'],
-        \ }
-  inoremap <silent> <plug>(MUcompleteFwdKey) <right>
-  imap <right> <plug>(MUcompleteCycFwd)
-  inoremap <silent> <plug>(MUcompleteBwdKey) <left>
-  imap <left> <plug>(MUcompleteCycBwd)
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/asyncomplete.vim'
+  let g:asyncomplete_auto_completeopt = 0
+  let g:asyncomplete_auto_popup = 1
+  let g:asyncomplete_min_chars = 4
+  let g:asyncomplete_matchfuzzy = 0
+  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+  function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+  endfunction
+  inoremap <silent><expr> <TAB>
+    \ pumvisible() ? "\<C-n>" :
+    \ <SID>check_back_space() ? "\<TAB>" :
+    \ asyncomplete#force_refresh()
 " Language Server Protocol client that provides IDE like features
 " e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
-Plug 'bigolu/vim-lsp'
+Plug 'prabirshrestha/vim-lsp'
   " for debugging
   " let g:lsp_log_file = $VIMHOME . 'vim-lsp-log'
   let g:lsp_fold_enabled = 0
   let g:lsp_document_code_action_signs_enabled = 0
   let g:lsp_document_highlight_enabled = 0
-" An easy way to install/manage language servers for vim-lsp.
-Plug 'mattn/vim-lsp-settings'
-  " where the language servers are stored
-  let g:lsp_settings_servers_dir = $VIMHOME . "vim-lsp-servers"
-  call mkdir(g:lsp_settings_servers_dir, "p")
-" A bridge between vim-lsp and ale. This works by
-" sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
-" This way, vim-lsp will only provide LSP features
-" and ALE will only provide realtime diagnostics.
-" Now if something goes wrong its easier to determine which plugin
-" has the issue. Plus it allows ALE and vim-lsp to focus on their
-" strengths: linting and LSP respectively.
-Plug 'rhysd/vim-lsp-ale'
-  " Only report diagnostics with a level of 'warning' or above
-  " i.e. warning,error
-  let g:lsp_ale_diagnostics_severity = "warning"
+  Plug 'prabirshrestha/asyncomplete-lsp.vim'
+  " An easy way to install/manage language servers for vim-lsp.
+  Plug 'mattn/vim-lsp-settings'
+    " where the language servers are stored
+    let g:lsp_settings_servers_dir = $VIMHOME . "vim-lsp-servers"
+    call mkdir(g:lsp_settings_servers_dir, "p")
+  " A bridge between vim-lsp and ale. This works by
+  " sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
+  " This way, vim-lsp will only provide LSP features
+  " and ALE will only provide realtime diagnostics.
+  " Now if something goes wrong its easier to determine which plugin
+  " has the issue. Plus it allows ALE and vim-lsp to focus on their
+  " strengths: linting and LSP respectively.
+  Plug 'rhysd/vim-lsp-ale'
+    " Only report diagnostics with a level of 'warning' or above
+    " i.e. warning,error
+    let g:lsp_ale_diagnostics_severity = "warning"
+Plug 'prabirshrestha/asyncomplete-buffer.vim'
+  au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+    \ 'name': 'buffer',
+    \ 'allowlist': ['*'],
+    \ 'completor': function('asyncomplete#sources#buffer#completor'),
+    \ }))
+Plug 'prabirshrestha/asyncomplete-file.vim'
+  au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+    \ 'name': 'file',
+    \ 'allowlist': ['*'],
+    \ 'priority': 10,
+    \ 'completor': function('asyncomplete#sources#file#completor')
+    \ }))
+Plug 'yami-beta/asyncomplete-omni.vim'
+  autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+    \ 'name': 'omni',
+    \ 'allowlist': ['*'],
+    \ 'completor': function('asyncomplete#sources#omni#completor'),
+    \ 'config': {
+    \   'show_source_kind': 1,
+    \ },
+    \ }))
+Plug 'jsit/asyncomplete-user.vim'
+  autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#user#get_source_options({
+    \ 'name': 'user',
+    \ 'whitelist': ['*'],
+    \ 'completor': function('asyncomplete#sources#user#completor')
+    \  }))
+Plug 'Shougo/neco-vim'
+  Plug 'prabirshrestha/asyncomplete-necovim.vim'
+    au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
+      \ 'name': 'necovim',
+      \ 'allowlist': ['vim'],
+      \ 'completor': function('asyncomplete#sources#necovim#completor'),
+      \ }))
+Plug 'Shougo/neco-syntax'
+  Plug 'prabirshrestha/asyncomplete-necosyntax.vim'
+    au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
+    \ 'name': 'necosyntax',
+    \ 'allowlist': ['*'],
+    \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
+    \ }))
+" Expands Emmet abbreviations to write HTML more quickly
+Plug 'mattn/emmet-vim'
+  let g:user_emmet_expandabbr_key = '<C-e>'
+  Plug 'prabirshrestha/asyncomplete-emmet.vim'
+    au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#emmet#get_source_options({
+      \ 'name': 'emmet',
+      \ 'whitelist': ['html', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
+      \ 'completor': function('asyncomplete#sources#emmet#completor'),
+      \ }))
+" autocomplete from other tmux panes
+Plug 'wellle/tmux-complete.vim'
+  let g:tmuxcomplete#trigger = ''
 " Asynchronous linting
 Plug 'dense-analysis/ale'
   " If a linter is not found don't continue to check on subsequent linting operations.
@@ -505,13 +553,6 @@ Plug 'dense-analysis/ale'
         \ 'typescript': ['eslint'],
         \ 'typescriptreact': ['eslint']
         \ }
-" Expands Emmet abbreviations to write HTML more quickly
-Plug 'mattn/emmet-vim'
-  let g:user_emmet_leader_key='<C-e>'
-" autocomplete from other tmux panes
-Plug 'wellle/tmux-complete.vim'
-  let g:tmuxcomplete#trigger = ''
-
 call plug#end()
 
 " Section: Autocommands
@@ -575,54 +616,47 @@ augroup Miscellaneous
   autocmd VimEnter * :set tw=0
   " Set a default omnifunc
   autocmd Filetype *
-        \	if &omnifunc == "" |
+        \	if index(asyncomplete#get_source_names(), 'necosyntax', 0, 1) < 0 && &omnifunc == "" |
           \ setlocal omnifunc=syntaxcomplete#Complete |
         \	endif
-  " allow the use of mucomplete_current_method which returns a short
-  " string denoting the currently active completion method, to be
-  " used in a statusline
-  autocmd VimEnter * execute "MUcompleteNotify 3"
   " Set fold method for vim
   autocmd Filetype vim execute "setlocal foldmethod=indent"
   " Extend iskeyword for filetypes that can reference CSS classes
   autocmd FileType css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss setlocal iskeyword+=-,?,!
   autocmd FileType vim setlocal iskeyword+=:,#
-  " Open help/preview/quickfix windows across the bottom of the editor
+  " Open help/preview/quickfix windows across the bottom of the editor  helpcalc prevcalc qf bottom
   autocmd FileType *
-        \ if &filetype ==? "help" || &filetype ==? "qf" || getwinvar('.', '&previewwindow') == 1 |
+        \ if &filetype ==? "qf" || getwinvar('.', '&previewwindow') == 1 |
           \ wincmd J |
+        \ endif
+  autocmd FileType *
+        \ if &filetype ==? "help"|
+          \ if &columns > 150 |
+            \ wincmd L |
+          \ else |
+            \ wincmd J |
+          \ endif |
         \ endif
   " Use vim help pages for keywordprg in vim files
   autocmd FileType vim setlocal keywordprg=:help
-  " If there's a language server running:
-  " - Add LSP completion to list of completion functions
-  " - assign keywordprg to its hover feature. Unless it's bash or vim in which case
-  " they'll use man pages and vim help pages respectively.
+  " If there's a language server running, assign keywordprg to its hover feature.
+  " Unless it's bash or vim in which case they'll use man pages and vim help pages respectively.
   autocmd User lsp_server_init
         \ if execute("LspStatus") =~? 'running' |
-          \ let b:multicomplete_completers = get(b:, 'multicomplete_completers', [])->add(function('lsp#complete')) |
           \ if &filetype !=? "vim" && &filetype !=? "sh" |
             \ setlocal keywordprg=:LspHover |
-          \ endif
+          \ endif |
         \ endif
-  " Add emmet snippet autocomplete for filetypes that can contain HTML
-  autocmd Filetype html,javascriptreact,typescriptreact,javascript,typescript
-        \ let b:multicomplete_completers = get(b:, 'multicomplete_completers', [])->add(s:Emmet_completer_with_menu)
 augroup END
 
 " Section: Aesthetics
 " -------------------------------------
-" Get the completion source currently being used by mucomplete
-fun! MU()
-  return get(g:mucomplete#msg#short_methods,
-        \ get(g:, 'mucomplete_current_method', ''), '')
-endf
-
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
 set fillchars=vert:│ " For a nice continuous line
 
 " Block cursor in normal mode and thin line in insert mode
+" TODO refactor to make it DRY
 if exists('$TMUX')
   let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
   let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
@@ -660,73 +694,4 @@ function! SyncColorscheme(timer_id)
   endif
 endfunction
 call SyncColorscheme(v:none)
-call timer_start(1000, function('SyncColorscheme'), {"repeat": -1})
-
-" Section: Utilities
-" -------------------------------------
-function! MultiComplete(findstart, base)
-  let l:completers = extendnew(
-        \ get(g:, 'multicomplete_completers', []),
-        \ get(b:, 'multicomplete_completers', []))
-
-  if a:findstart
-    let s:findstarts = []
-    let l:result = -3
-    for l:Completer in l:completers
-      let l:completer_result = l:Completer(a:findstart, a:base)
-      call add(s:findstarts, l:completer_result)
-      " Don't care if result is -3 since that is our default return
-      " value. Don't care about -2 either since I don't want the
-      " completion menu to stay open if there are no results.
-      if l:completer_result >= 0
-        if l:result < 0
-          let l:result = l:completer_result
-        else
-          let l:result = min([l:result, l:completer_result])
-        endif
-      endif
-    endfor
-    let s:findstart = l:result " 0 indexed
-    let s:col = virtcol(".") " 1 indexed
-    let s:line = getline('.')
-    return l:result
-  endif
-
-  let l:results = []
-  let l:i = 0
-  let l:chars_typed_by_user = split(s:line, '\zs')[s:findstart : s:col - 2]
-  for l:Completer in l:completers
-    let l:findstart = s:findstarts->get(l:i)
-    if l:findstart >= 0
-      let l:completer_results = l:Completer(a:findstart, a:base)
-
-      " If the dictionary form of results is returned, we'll just take the
-      " words and ignore the 'refresh' key
-      if type(l:completer_results) == type({})
-        let l:completer_results = l:completer_results.words
-      endif
-
-      if l:findstart > s:findstart " we need to pad
-        " coerce to dictionary
-        if typename(l:completer_results) ==? "list<string>"
-          call map(l:completer_results, "{'word': v:val}")
-        endif
-        for l:dict in l:completer_results
-          let l:val = dict['word']
-          let dict.word = l:chars_typed_by_user[0 : (l:findstart - s:findstart) - 1]->join("") . l:val
-
-          " make sure that the padded string doesn't show
-          " up in the completion menu by adding an "abbr"
-          " key if one isn't already present
-          if !l:dict->has_key("abbr")
-            let l:dict.abbr = l:val
-          endif
-        endfor
-      endif
-      call extend(l:results, l:completer_results)
-    endif
-    let l:i = l:i + 1
-  endfor
-
-  return l:results
-endfunction
+call timer_start(5000, function('SyncColorscheme'), {"repeat": -1})
