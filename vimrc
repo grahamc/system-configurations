@@ -122,10 +122,10 @@ nnoremap <silent> <Leader>w :wa<CR>
 nnoremap <Leader>r :source $MYVIMRC<CR>
 nnoremap <Leader>x :wqa<CR>
 nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
+nnoremap <silent> <Leader>t :vimgrep /TODO/j **/*<CR>
 
 " LSP
 nnoremap <Leader>lis :<C-U>LspInstallServer<CR>
-nnoremap <Leader>lh :<C-U>LspHover<CR>
 nnoremap <Leader>ls :<C-U>LspStatus<CR>
 nnoremap <Leader>ld :<C-U>LspDefinition<CR>
 nnoremap <Leader>lrn :<C-U>LspRename<CR>
@@ -308,8 +308,6 @@ Plug 'christoomey/vim-tmux-navigator'
 """"""""""""""""""""""""""""""""""""
 " Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
 Plug 'mhinz/vim-signify'
-" Run Git commands from vim
-Plug 'tpope/vim-fugitive'
 
 " Misc.
 """"""""""""""""""""""""""""""""""""
@@ -322,11 +320,9 @@ Plug 'preservim/nerdtree', {'on': ['NERDTreeTabsToggle']}
   let g:NERDTreeMouseMode=2
   let g:NERDTreeWinPos="right"
   let g:NERDTreeShowHidden=1
-Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
-  let g:nerdtree_tabs_autofind = 1
-  nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
-" Highlight the current word and other occurences of it.
-Plug 'dominikduda/vim_current_word'
+  Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
+    let g:nerdtree_tabs_autofind = 1
+    nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
 " A tool for profiling vim's startup time. Useful for finding slow plugins.
 Plug 'tweekmonster/startuptime.vim'
 " Split or join lines, adding the necessary continuation character for that language
@@ -343,6 +339,9 @@ Plug 'Yggdroot/indentLine'
 " Run a shell command asynchronously and put the results in the quickfix window.
 " Useful for running test suites.
 Plug 'tpope/vim-dispatch'
+" For swapping two pieces of text
+Plug 'tommcdo/vim-exchange'
+
 " Fuzzy finder
 """"""""""""""""""""""""""""""""""""
 if executable('fzf')
@@ -465,7 +464,7 @@ Plug 'prabirshrestha/vim-lsp'
   " let g:lsp_log_file = $VIMHOME . 'vim-lsp-log'
   let g:lsp_fold_enabled = 0
   let g:lsp_document_code_action_signs_enabled = 0
-  let g:lsp_document_highlight_enabled = 0
+  let g:lsp_document_highlight_enabled = 1
   Plug 'prabirshrestha/asyncomplete-lsp.vim'
   " An easy way to install/manage language servers for vim-lsp.
   Plug 'mattn/vim-lsp-settings'
@@ -488,6 +487,7 @@ Plug 'prabirshrestha/async.vim'
   Plug 'wellle/tmux-complete.vim'
     let g:tmuxcomplete#trigger = ''
 Plug 'prabirshrestha/asyncomplete-buffer.vim'
+  let g:asyncomplete_buffer_clear_cache = 0
   au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
     \ 'name': 'buffer',
     \ 'allowlist': ['*'],
@@ -538,6 +538,10 @@ Plug 'mattn/emmet-vim'
       \ 'whitelist': ['html', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
       \ 'completor': function('asyncomplete#sources#emmet#completor'),
       \ }))
+Plug 'hrsh7th/vim-vsnip'
+  Plug 'hrsh7th/vim-vsnip-integ'
+  Plug 'rafamadriz/friendly-snippets'
+
 " Asynchronous linting
 Plug 'dense-analysis/ale'
   " If a linter is not found don't continue to check on subsequent linting operations.
@@ -630,6 +634,12 @@ augroup Styles
   autocmd Colorscheme solarized8 execute "highlight VertSplit ctermbg=NONE guibg=NONE"
 augroup END
 
+" Highlight the word under the cursor and other occurences of it.
+augroup HighlightWordUnderCursor
+  autocmd!
+  autocmd CursorMoved * exe printf('match DiffText /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+augroup END
+
 augroup Miscellaneous
   autocmd!
   " for some reason there is an ftplugin that is bundled with vim that
@@ -662,12 +672,22 @@ augroup Miscellaneous
   autocmd FileType vim setlocal keywordprg=:help
   " If there's a language server running, assign keywordprg to its hover feature.
   " Unless it's bash or vim in which case they'll use man pages and vim help pages respectively.
+  " Also turn off whatever I'm using to highlight the current symbol
+  " since vim-lsp has a built-in semantic highlighter
   autocmd User lsp_server_init
+        \ autocmd! HighlightWordUnderCursor
         \ if execute("LspStatus") =~? 'running' |
           \ if &filetype !=? "vim" && &filetype !=? "sh" |
             \ setlocal keywordprg=:LspHover |
           \ endif |
         \ endif
+augroup END
+
+" After a quickfix command is run, open the quickfix window , if there are results
+augroup myvimrc
+    autocmd!
+    autocmd QuickFixCmdPost [^l]* cwindow
+    autocmd QuickFixCmdPost l*    lwindow
 augroup END
 
 " Section: Aesthetics
