@@ -211,6 +211,9 @@ function! CleanNoNameEmptyBuffers()
 endfunction
 nnoremap <silent> <Leader>c :call CleanNoNameEmptyBuffers()<CR>
 
+" Reconcile the various enter key (<CR>) mappings from my plugins
+imap <expr> <CR> (pumvisible() ? asyncomplete#close_popup() : (delimitMate#WithinEmptyPair() ? "\<C-R>=delimitMate#ExpandReturn()\<CR>" :  "\<CR>\<Plug>DiscretionaryEnd"))
+
 " Keybind cheatsheet
 let s:command_list = [
       \ "Show references [<Leader>lrf]", "Rename symbol [<Leader>lrn]",
@@ -262,7 +265,8 @@ Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
 " Manipulating Surroundings (e.g. braces, brackets, quotes)
 """"""""""""""""""""""""""""""""""""
 " Automatically add closing keywords (e.g. function/endfunction in vimscript)
-Plug 'tpope/vim-endwise', {'for': ['vim', 'ruby']}
+Plug 'tpope/vim-endwise'
+  let g:endwise_no_mappings = 1
 " Automatically close html tags
 Plug 'alvan/vim-closetag'
 " Automatically insert closing braces/quotes
@@ -273,7 +277,7 @@ Plug 'Raimondi/delimitMate'
   " function foo(bar) {
   "   |
   " }
-  let g:delimitMate_expand_cr = 1
+  let g:delimitMate_expand_cr = 0
 " Makes it easier to manipulate surroundings by providing commands to do common
 " operations like change surrounding, remove surrounding, etc.
 Plug 'tpope/vim-surround'
@@ -340,7 +344,6 @@ Plug 'Yggdroot/indentLine'
 " Useful for running test suites.
 Plug 'tpope/vim-dispatch'
 " Fuzzy finder
-" TODO load all plugins outside conditional so they don't get cleaned up by PlugClean
 """"""""""""""""""""""""""""""""""""
 if executable('fzf')
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -401,7 +404,25 @@ else
           \ }
     nnoremap <Leader>f :CtrlP<CR>
     nnoremap <Leader>b :CtrlPBuffer<CR>
-    " TODO render cheatsheet through ctrlp
+    function! RegisterCheatsheet()
+      let g:CheatsheetInit = {-> s:command_list}
+      function! CheatsheetAccept(mode, str)
+        call ctrlp#exit()
+        call CheatsheetSink(a:str)
+      endfunction
+      call add(g:ctrlp_ext_vars, {
+            \ 'init': 'g:CheatsheetInit()',
+            \ 'accept': 'CheatsheetAccept',
+            \ 'lname': 'cheatsheet',
+            \ 'sname': 'csheet',
+            \ 'type': 'line',
+            \ 'sort': 0,
+            \ })
+      let s:cheatsheet_id = g:ctrlp_builtins + len(g:ctrlp_ext_vars)
+      command! CtrlPCheatsheet call ctrlp#init(s:cheatsheet_id)
+    endfunction
+    " Have to do this after ctrlp loads since we need reference to g:ctrlp_ext_vars
+    autocmd VimEnter * call RegisterCheatsheet()
   command! -nargs=+ -complete=file Grep
     \ execute 'silent grep! "<args>"' | redraw! | copen
   nnoremap <Leader>g :Grep 
@@ -423,7 +444,6 @@ endif
 
 " IDE features (e.g. autocomplete, smart refactoring, goto definition, etc.)
 """"""""""""""""""""""""""""""""""""
-Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/asyncomplete.vim'
   let g:asyncomplete_auto_completeopt = 0
   let g:asyncomplete_auto_popup = 1
@@ -463,6 +483,10 @@ Plug 'prabirshrestha/vim-lsp'
     " Only report diagnostics with a level of 'warning' or above
     " i.e. warning,error
     let g:lsp_ale_diagnostics_severity = "warning"
+Plug 'prabirshrestha/async.vim'
+  " autocomplete from other tmux panes
+  Plug 'wellle/tmux-complete.vim'
+    let g:tmuxcomplete#trigger = ''
 Plug 'prabirshrestha/asyncomplete-buffer.vim'
   au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
     \ 'name': 'buffer',
@@ -514,9 +538,6 @@ Plug 'mattn/emmet-vim'
       \ 'whitelist': ['html', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
       \ 'completor': function('asyncomplete#sources#emmet#completor'),
       \ }))
-" autocomplete from other tmux panes
-Plug 'wellle/tmux-complete.vim'
-  let g:tmuxcomplete#trigger = ''
 " Asynchronous linting
 Plug 'dense-analysis/ale'
   " If a linter is not found don't continue to check on subsequent linting operations.
@@ -656,7 +677,6 @@ set signcolumn=yes " always show the sign column
 set fillchars=vert:│ " For a nice continuous line
 
 " Block cursor in normal mode and thin line in insert mode
-" TODO refactor to make it DRY
 if exists('$TMUX')
   let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
   let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
@@ -665,33 +685,29 @@ else
   let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
 
-function! SetColorscheme(mode)
-    let &background = a:mode
+" Colorscheme
+""""""""""""""""""""""""""""""""""""
+function! SetColorscheme(bg)
+    let &background = a:bg
 
-    let s:new_color = a:mode ==? "light" ? "solarized8" : "nord"
+    let s:new_color = a:bg ==? "light" ? "solarized8" : "nord"
     silent! execute "normal! :color " . s:new_color . "\<cr>"
 
-    let s:new_airline_theme = a:mode ==? "light" ? "solarized" : "base16_nord"
+    let s:new_airline_theme = a:bg ==? "light" ? "solarized" : "base16_nord"
     silent! execute "normal! :AirlineTheme " . s:new_airline_theme . "\<cr>"
 endfunction
 " Check periodically to see if darkmode is toggled on the OS and update the vim/airline theme accordingly.
-" There is a bash script running in the background of my shell that puts the current mode
-" in ~/.darkmode (1=dark, 0=light)
-function! SyncColorscheme(timer_id)
-  if !filereadable(expand('~/.darkmode'))
-    " If the file to sync with can't be read then default to dark mode and stop the sync job
-    call SetColorscheme('dark')
-    if a:timer_id
-      call timer_stop(a:timer_id)
-    endif
-    return
-  endif
-
-  let l:mode = system('cat ~/.darkmode') ==? "0" ? "light" : "dark"
-  let l:bg_changed_or_is_not_set = &background !=? l:mode || !exists('g:colors_name')
+function! SyncColorscheme(...)
+  let l:is_dark_mode = system("defaults read -g AppleInterfaceStyle 2>/dev/null | tr -d '\n'") ==? 'dark'
+  let l:new_bg = l:is_dark_mode ? "dark" : "light"
+  let l:bg_changed_or_is_not_set = &background !=? l:new_bg || !exists('g:colors_name')
   if l:bg_changed_or_is_not_set
-    call SetColorscheme(l:mode)
+    call SetColorscheme(l:new_bg)
   endif
 endfunction
-call SyncColorscheme(v:none)
-call timer_start(5000, function('SyncColorscheme'), {"repeat": -1})
+if has('macunix')
+  call SyncColorscheme()
+  call timer_start(5000, function('SyncColorscheme'), {"repeat": -1})
+else
+  call SetColorscheme('dark')
+endif
