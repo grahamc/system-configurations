@@ -39,12 +39,12 @@ set dictionary+=/usr/share/dict/words
 set foldlevel=20
 set scrolloff=10
 set wrap
-set updatetime=500
+set updatetime=800
 set cmdheight=3
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
 " Don't show the current mode in the command line, it's already in my status line
 set noshowmode
-set grepprg=internal
+let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
 
 set belloff+=all " turn off bell sounds
 
@@ -127,6 +127,7 @@ nnoremap <silent> <Leader>t :vimgrep /TODO/j **/*<CR>
 " LSP
 nnoremap <Leader>lis :<C-U>LspInstallServer<CR>
 nnoremap <Leader>ls :<C-U>LspStatus<CR>
+nnoremap <Leader>lh :<C-U>LspHover<CR>
 nnoremap <Leader>ld :<C-U>LspDefinition<CR>
 nnoremap <Leader>lrn :<C-U>LspRename<CR>
 nnoremap <Leader>lrf :<C-U>LspReferences<CR>
@@ -211,8 +212,13 @@ function! CleanNoNameEmptyBuffers()
 endfunction
 nnoremap <silent> <Leader>c :call CleanNoNameEmptyBuffers()<CR>
 
-" Reconcile the various enter key (<CR>) mappings from my plugins
-imap <expr> <CR> (pumvisible() ? asyncomplete#close_popup() : (delimitMate#WithinEmptyPair() ? "\<C-R>=delimitMate#ExpandReturn()\<CR>" :  "\<CR>\<Plug>DiscretionaryEnd"))
+" Consolidate enter key (<CR>) mappings from my plugins
+imap <expr> <CR>
+  \ pumvisible() ?
+    \ asyncomplete#close_popup() :
+    \ delimitMate#WithinEmptyPair() ?
+      \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
+      \ "\<CR>\<Plug>DiscretionaryEnd"
 
 " Keybind cheatsheet
 let s:command_list = [
@@ -419,6 +425,7 @@ else
             \ })
       let s:cheatsheet_id = g:ctrlp_builtins + len(g:ctrlp_ext_vars)
       command! CtrlPCheatsheet call ctrlp#init(s:cheatsheet_id)
+      nnoremap <Leader><Leader> :CtrlPCheatsheet<CR>
     endfunction
     " Have to do this after ctrlp loads since we need reference to g:ctrlp_ext_vars
     autocmd VimEnter * call RegisterCheatsheet()
@@ -434,8 +441,6 @@ else
   if executable('rg')
     let g:ctrlp_user_command = 'rg ' . $FZF_RG_OPTIONS . ' --files --vimgrep'
     let g:ctrlp_use_caching = 0
-
-    set grepprg=rg\ --vimgrep\ --smart-case\ --follow
   else
     let g:ctrlp_clear_cache_on_exit = 0
   endif
@@ -445,8 +450,8 @@ endif
 """"""""""""""""""""""""""""""""""""
 Plug 'prabirshrestha/asyncomplete.vim'
   let g:asyncomplete_auto_completeopt = 0
-  let g:asyncomplete_auto_popup = 1
-  let g:asyncomplete_min_chars = 4
+  let g:asyncomplete_auto_popup = 0
+  let g:asyncomplete_min_chars = 3
   let g:asyncomplete_matchfuzzy = 0
   inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
   function! s:check_back_space() abort
@@ -461,7 +466,7 @@ Plug 'prabirshrestha/asyncomplete.vim'
 " e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
 Plug 'prabirshrestha/vim-lsp'
   " for debugging
-  " let g:lsp_log_file = $VIMHOME . 'vim-lsp-log'
+  let g:lsp_log_file = $VIMHOME . 'vim-lsp-log'
   let g:lsp_fold_enabled = 0
   let g:lsp_document_code_action_signs_enabled = 0
   let g:lsp_document_highlight_enabled = 1
@@ -488,60 +493,68 @@ Plug 'prabirshrestha/async.vim'
     let g:tmuxcomplete#trigger = ''
 Plug 'prabirshrestha/asyncomplete-buffer.vim'
   let g:asyncomplete_buffer_clear_cache = 0
-  au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+  autocmd User asyncomplete_setup
+    \ call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
     \ 'name': 'buffer',
     \ 'allowlist': ['*'],
     \ 'completor': function('asyncomplete#sources#buffer#completor'),
     \ }))
 Plug 'prabirshrestha/asyncomplete-file.vim'
-  au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+autocmd User asyncomplete_setup
+    \ call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
     \ 'name': 'file',
     \ 'allowlist': ['*'],
     \ 'priority': 10,
     \ 'completor': function('asyncomplete#sources#file#completor')
     \ }))
-Plug 'yami-beta/asyncomplete-omni.vim'
-  autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
-    \ 'name': 'omni',
-    \ 'allowlist': ['*'],
-    \ 'completor': function('asyncomplete#sources#omni#completor'),
-    \ 'config': {
-    \   'show_source_kind': 1,
-    \ },
-    \ }))
+" TODO this doesn't insert correctly, at least in python, need to fix
+" Plug 'yami-beta/asyncomplete-omni.vim'
+" autocmd User asyncomplete_setup
+"     \ call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+"     \ 'name': 'omni',
+"     \ 'allowlist': ['*'],
+"     \ 'completor': function('asyncomplete#sources#omni#completor'),
+"     \ 'config': {
+"     \   'show_source_kind': 1,
+"     \ },
+"     \ }))
 Plug 'jsit/asyncomplete-user.vim'
-  autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#user#get_source_options({
+autocmd User asyncomplete_setup
+    \ call asyncomplete#register_source(asyncomplete#sources#user#get_source_options({
     \ 'name': 'user',
     \ 'whitelist': ['*'],
     \ 'completor': function('asyncomplete#sources#user#completor')
     \  }))
 Plug 'Shougo/neco-vim'
   Plug 'prabirshrestha/asyncomplete-necovim.vim'
-    au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
+  autocmd User asyncomplete_setup
+      \ call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
       \ 'name': 'necovim',
       \ 'allowlist': ['vim'],
       \ 'completor': function('asyncomplete#sources#necovim#completor'),
       \ }))
 Plug 'Shougo/neco-syntax'
   Plug 'prabirshrestha/asyncomplete-necosyntax.vim'
-    au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
+  autocmd User asyncomplete_setup
+    \ call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
     \ 'name': 'necosyntax',
-    \ 'allowlist': ['*'],
+    \ 'allowlist': ['vim'],
     \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
     \ }))
 " Expands Emmet abbreviations to write HTML more quickly
 Plug 'mattn/emmet-vim'
   let g:user_emmet_expandabbr_key = '<C-e>'
   Plug 'prabirshrestha/asyncomplete-emmet.vim'
-    au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#emmet#get_source_options({
+  autocmd User asyncomplete_setup
+      \ call asyncomplete#register_source(asyncomplete#sources#emmet#get_source_options({
       \ 'name': 'emmet',
       \ 'whitelist': ['html', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
       \ 'completor': function('asyncomplete#sources#emmet#completor'),
       \ }))
+" Snippets
 Plug 'hrsh7th/vim-vsnip'
   Plug 'hrsh7th/vim-vsnip-integ'
   Plug 'rafamadriz/friendly-snippets'
-
 " Asynchronous linting
 Plug 'dense-analysis/ale'
   " If a linter is not found don't continue to check on subsequent linting operations.
@@ -653,20 +666,20 @@ augroup Miscellaneous
   " Set fold method for vim
   autocmd Filetype vim execute "setlocal foldmethod=indent"
   " Extend iskeyword for filetypes that can reference CSS classes
-  autocmd FileType css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss setlocal iskeyword+=-,?,!
+  autocmd FileType
+    \ css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss
+    \ setlocal iskeyword+=-,?,!
   autocmd FileType vim setlocal iskeyword+=:,#
-  " Open help/preview/quickfix windows across the bottom of the editor  helpcalc prevcalc qf bottom
+  " Open help/preview/quickfix windows across the bottom of the editor
   autocmd FileType *
         \ if &filetype ==? "qf" || getwinvar('.', '&previewwindow') == 1 |
           \ wincmd J |
         \ endif
-  autocmd FileType *
-        \ if &filetype ==? "help"|
-          \ if &columns > 150 |
-            \ wincmd L |
-          \ else |
-            \ wincmd J |
-          \ endif |
+  autocmd FileType help
+        \ if &columns > 150 |
+          \ wincmd L |
+        \ else |
+          \ wincmd J |
         \ endif
   " Use vim help pages for keywordprg in vim files
   autocmd FileType vim setlocal keywordprg=:help
@@ -675,7 +688,7 @@ augroup Miscellaneous
   " Also turn off whatever I'm using to highlight the current symbol
   " since vim-lsp has a built-in semantic highlighter
   autocmd User lsp_server_init
-        \ autocmd! HighlightWordUnderCursor
+        \ autocmd! HighlightWordUnderCursor |
         \ if execute("LspStatus") =~? 'running' |
           \ if &filetype !=? "vim" && &filetype !=? "sh" |
             \ setlocal keywordprg=:LspHover |
@@ -707,27 +720,27 @@ endif
 
 " Colorscheme
 """"""""""""""""""""""""""""""""""""
-function! SetColorscheme(bg)
-    let &background = a:bg
+function! SetColorscheme(background)
+    let &background = a:background
 
-    let s:new_color = a:bg ==? "light" ? "solarized8" : "nord"
-    silent! execute "normal! :color " . s:new_color . "\<cr>"
+    let l:vim_colorscheme = a:background ==? "light" ? "solarized8" : "nord"
+    silent! execute "normal! :color " . l:vim_colorscheme . "\<cr>"
 
-    let s:new_airline_theme = a:bg ==? "light" ? "solarized" : "base16_nord"
-    silent! execute "normal! :AirlineTheme " . s:new_airline_theme . "\<cr>"
+    let l:airline_colorscheme = a:background ==? "light" ? "solarized" : "base16_nord"
+    silent! execute "normal! :AirlineTheme " . l:airline_colorscheme . "\<cr>"
 endfunction
-" Check periodically to see if darkmode is toggled on the OS and update the vim/airline theme accordingly.
-function! SyncColorscheme(...)
-  let l:is_dark_mode = system("defaults read -g AppleInterfaceStyle 2>/dev/null | tr -d '\n'") ==? 'dark'
-  let l:new_bg = l:is_dark_mode ? "dark" : "light"
-  let l:bg_changed_or_is_not_set = &background !=? l:new_bg || !exists('g:colors_name')
-  if l:bg_changed_or_is_not_set
-    call SetColorscheme(l:new_bg)
+function! SyncColorschemeWithOs(...)
+  let l:is_os_in_dark_mode = system("defaults read -g AppleInterfaceStyle 2>/dev/null | tr -d '\n'") ==? 'dark'
+  let l:new_vim_background = l:is_os_in_dark_mode ? "dark" : "light"
+  let l:vim_background_changed_or_is_not_set = &background !=? l:new_vim_background || !exists('g:colors_name')
+  if l:vim_background_changed_or_is_not_set
+    call SetColorscheme(l:new_vim_background)
   endif
 endfunction
 if has('macunix')
-  call SyncColorscheme()
-  call timer_start(5000, function('SyncColorscheme'), {"repeat": -1})
+  call SyncColorschemeWithOs()
+  " Check periodically to see if darkmode is toggled on the OS and update the vim/airline theme accordingly.
+  call timer_start(5000, function('SyncColorschemeWithOs'), {"repeat": -1})
 else
   call SetColorscheme('dark')
 endif

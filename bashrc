@@ -91,6 +91,7 @@ alias c='clear'
 alias wp='pyenv which python'
 alias youtube-mp3='youtube-dl -x --audio-format mp3 '
 alias trash='trash -F '
+alias tmux='tmux attach || tmux new'
 
 # perform 'ls' after 'cd' if successful
 cd() {
@@ -113,7 +114,8 @@ set_theme() {
         [ "$SYSTEM_THEME" = "Dark" ] && NEW_MODE='1' || NEW_MODE='0'
 
         if [ "$NEW_MODE" != "$CURRENT_MODE" ]; then
-            CURRENT_MODE="$NEW_MODE" && echo -n "$NEW_MODE" > ~/.darkmode
+            CURRENT_MODE="$NEW_MODE"
+            # echo -n "$NEW_MODE" > ~/.darkmode
             [[ "$NEW_MODE" -eq '0' ]] && newTheme='Solarized Light' || newTheme='Nord'
 
             setThemeEscapeSequence="\033]50;SetColors=preset=$newTheme\a"
@@ -121,10 +123,10 @@ set_theme() {
             echo -ne "$setThemeEscapeSequence"
         fi
 
-        sleep 1
+        sleep 5
     done
 }
-[[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && [ -z "$STARTED_BG" ] && set_theme & disown && THEME_PID="$!" && STARTED_BG="true" && trap "kill -9 $THEME_PID" EXIT
+[[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && [ -z "$STARTED_BG" ] && set_theme & disown && THEME_PID="$!" && STARTED_BG="true" && trap "kill -9 $THEME_PID" EXIT SIGINT TERM
 
 # Fetch dircolors to highlight the output of ls
 wget -nc -O ~/.dircolors 'https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors' 2>/dev/null
