@@ -212,7 +212,7 @@ function! CleanNoNameEmptyBuffers()
 endfunction
 nnoremap <silent> <Leader>c :call CleanNoNameEmptyBuffers()<CR>
 
-" Consolidate enter key (<CR>) mappings from my plugins
+" Combine enter key (<CR>) mappings from my plugins
 imap <expr> <CR>
   \ pumvisible() ?
     \ asyncomplete#close_popup() :
@@ -268,7 +268,7 @@ call plug#begin('~/.vim/plugged')
 " light and dark
 Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
 
-" Manipulating Surroundings (e.g. braces, brackets, quotes)
+" Text Manipulation
 """"""""""""""""""""""""""""""""""""
 " Automatically add closing keywords (e.g. function/endfunction in vimscript)
 Plug 'tpope/vim-endwise'
@@ -284,9 +284,17 @@ Plug 'Raimondi/delimitMate'
   "   |
   " }
   let g:delimitMate_expand_cr = 0
-" Makes it easier to manipulate surroundings by providing commands to do common
-" operations like change surrounding, remove surrounding, etc.
+" Makes it easier to manipulate brace/bracket/quote pairs by providing commands to do common
+" operations like change pair, remove pair, etc.
 Plug 'tpope/vim-surround'
+" Split or join lines, adding the necessary continuation character for that language
+Plug 'AndrewRadev/splitjoin.vim'
+  let g:splitjoin_split_mapping = ''
+  let g:splitjoin_join_mapping = ''
+  nnoremap sj :SplitjoinSplit<cr>
+  nnoremap sk :SplitjoinJoin<cr>
+" For swapping two pieces of text
+Plug 'tommcdo/vim-exchange'
 
 " Colors
 """"""""""""""""""""""""""""""""""""
@@ -331,22 +339,11 @@ Plug 'preservim/nerdtree', {'on': ['NERDTreeTabsToggle']}
     nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
 " A tool for profiling vim's startup time. Useful for finding slow plugins.
 Plug 'tweekmonster/startuptime.vim'
-" Split or join lines, adding the necessary continuation character for that language
-Plug 'AndrewRadev/splitjoin.vim'
-  let g:splitjoin_split_mapping = ''
-  let g:splitjoin_join_mapping = ''
-  nnoremap sj :SplitjoinSplit<cr>
-  nnoremap sk :SplitjoinJoin<cr>
 " Visualizes indentation in the buffer. Useful for fixing incorrectly indented lines.
 Plug 'Yggdroot/indentLine'
   let g:indentLine_char = '▏'
   let g:indentLine_setColors = 0
   let g:indentLine_enabled = 0
-" Run a shell command asynchronously and put the results in the quickfix window.
-" Useful for running test suites.
-Plug 'tpope/vim-dispatch'
-" For swapping two pieces of text
-Plug 'tommcdo/vim-exchange'
 
 " Fuzzy finder
 """"""""""""""""""""""""""""""""""""
@@ -624,10 +621,10 @@ augroup Styles
   " Increase brightness of comments in nord
   autocmd ColorScheme nord highlight Comment guifg=#6d7a96
   " Make CursorLine look like an underline
-  autocmd VimEnter * execute "hi clear CursorLine"
-  autocmd VimEnter * execute "hi CursorLine gui=underline cterm=underline"
+  autocmd ColorScheme * execute "hi clear CursorLine"
+  autocmd ColorScheme * execute "hi CursorLine gui=underline cterm=underline"
   " MatchParen
-  autocmd VimEnter * execute "hi MatchParen ctermbg=blue guibg=lightblue"
+  autocmd Colorscheme * execute "hi MatchParen ctermbg=blue guibg=lightblue"
   " Only highlight the current line on the active window
   au WinLeave * set nocursorline
   au WinEnter * set cursorline
