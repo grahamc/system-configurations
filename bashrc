@@ -91,7 +91,7 @@ alias c='clear'
 alias wp='pyenv which python'
 alias youtube-mp3='youtube-dl -x --audio-format mp3 '
 alias trash='trash -F '
-alias tmux='tmux attach || tmux new'
+alias tmuxa='tmux attach'
 
 # perform 'ls' after 'cd' if successful
 cd() {
@@ -108,7 +108,7 @@ function rust() {
 # Check periodically if macos is in darkmode and update the iTerm theme accordingly.
 # Also store an integer in '~/.darkmode' to signify the current mode. (1=darkmode, 0=lightmode)
 # This way other programs, like vim, can check if darkmode is active and update their theme too.
-set_theme() {
+colorscheme_sync_daemon() {
     while :; do
         SYSTEM_THEME="$(defaults read -g AppleInterfaceStyle 2>/dev/null)"
         [ "$SYSTEM_THEME" = "Dark" ] && NEW_MODE='1' || NEW_MODE='0'
@@ -126,7 +126,7 @@ set_theme() {
         sleep 5
     done
 }
-[[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && [ -z "$STARTED_BG" ] && set_theme & disown && THEME_PID="$!" && STARTED_BG="true" && trap "kill -9 $THEME_PID" EXIT
+[[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && [ -z "$STARTED_BG" ] && colorscheme_sync_daemon & disown && THEME_PID="$!" && STARTED_BG="true" && trap "kill -9 $THEME_PID" EXIT
 
 # Fetch dircolors to highlight the output of ls
 wget -nc -O ~/.dircolors 'https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors' 2>/dev/null

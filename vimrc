@@ -95,14 +95,14 @@ let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2' " enable mouse mode while in
 " WARNING: When doing this you should turn off any plugin that
 " automatically adds closing braces since it might accidentally
 " add a closing brace to an escape sequence
-nmap ¬ <A-l>
-nmap ˙ <A-h>
-nmap ∆ <A-j>
-nmap ˚ <A-k>
-vmap ¬ <A-l>
-vmap ˙ <A-h>
-vmap ∆ <A-j>
-vmap ˚ <A-k>
+nmap l <M-l>
+nmap h <M-h>
+nmap j <M-j>
+nmap k <M-k>
+vmap l <M-l>
+vmap h <M-h>
+vmap j <M-j>
+vmap k <M-k>
 nmap [1;2D <S-Left>
 nmap [1;2C <S-Right>
 nmap [1;2B <S-Down>
@@ -155,14 +155,14 @@ vnoremap <C-Down> :m '>+1<CR>gv=gv
 vnoremap <C-Up> :m '<-2<CR>gv=gv
 
 " move ten lines at a time by holding ctrl and a directional key
-nnoremap <A-h> 10h
-nnoremap <A-j> 10j
-nnoremap <A-k> 10k
-nnoremap <A-l> 10l
-vnoremap <A-j> 10j
-vnoremap <A-h> 10h
-vnoremap <A-k> 10k
-vnoremap <A-l> 10l
+nnoremap <C-h> 10h
+nnoremap <C-j> 10j
+nnoremap <C-k> 10k
+nnoremap <C-l> 10l
+vnoremap <C-j> 10j
+vnoremap <C-h> 10h
+vnoremap <C-k> 10k
+vnoremap <C-l> 10l
 
 " toggle folds
 let $unrol=1
@@ -307,10 +307,10 @@ Plug 'mhinz/vim-sayonara'
 " Easy movement between vim windows and tmux panes.
 Plug 'christoomey/vim-tmux-navigator'
   let g:tmux_navigator_no_mappings = 1
-  nnoremap <C-h> :TmuxNavigateLeft<cr>
-  nnoremap <C-l> :TmuxNavigateRight<cr>
-  nnoremap <C-j> :TmuxNavigateDown<cr>
-  nnoremap <C-k> :TmuxNavigateUp<cr>
+  nnoremap <M-h> :TmuxNavigateLeft<cr>
+  nnoremap <M-l> :TmuxNavigateRight<cr>
+  nnoremap <M-j> :TmuxNavigateDown<cr>
+  nnoremap <M-k> :TmuxNavigateUp<cr>
 
 " Version control
 """"""""""""""""""""""""""""""""""""
