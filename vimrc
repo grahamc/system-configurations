@@ -146,7 +146,7 @@ nnoremap <silent> <S-Up> :tabnext<CR>
 let @w='hf)%bvf)S)i'
 
 " remove all trailing whitespace
-nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
+nnoremap <Leader>cc :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 
 " Shift line(s) up or down
 nnoremap <C-Down> :m .+1<CR>==
@@ -287,12 +287,6 @@ Plug 'Raimondi/delimitMate'
 " Makes it easier to manipulate brace/bracket/quote pairs by providing commands to do common
 " operations like change pair, remove pair, etc.
 Plug 'tpope/vim-surround'
-" Split or join lines, adding the necessary continuation character for that language
-Plug 'AndrewRadev/splitjoin.vim'
-  let g:splitjoin_split_mapping = ''
-  let g:splitjoin_join_mapping = ''
-  nnoremap sj :SplitjoinSplit<cr>
-  nnoremap sk :SplitjoinJoin<cr>
 " For swapping two pieces of text
 Plug 'tommcdo/vim-exchange'
 
@@ -588,6 +582,9 @@ Plug 'dense-analysis/ale'
         \ 'typescript': ['eslint'],
         \ 'typescriptreact': ['eslint']
         \ }
+" Debugger
+Plug 'puremourning/vimspector'
+  let g:vimspector_enable_mappings = 'HUMAN'
 call plug#end()
 
 " Section: Autocommands
@@ -644,12 +641,6 @@ augroup Styles
   autocmd Colorscheme solarized8 execute "highlight VertSplit ctermbg=NONE guibg=NONE"
 augroup END
 
-" Highlight the word under the cursor and other occurences of it.
-augroup HighlightWordUnderCursor
-  autocmd!
-  autocmd CursorMoved * exe printf('match DiffText /\V\<%s\>/', escape(expand('<cword>'), '/\'))
-augroup END
-
 augroup Miscellaneous
   autocmd!
   " for some reason there is an ftplugin that is bundled with vim that
@@ -682,14 +673,20 @@ augroup Miscellaneous
   autocmd FileType vim setlocal keywordprg=:help
   " If there's a language server running, assign keywordprg to its hover feature.
   " Unless it's bash or vim in which case they'll use man pages and vim help pages respectively.
-  " Also turn off whatever I'm using to highlight the current symbol
-  " since vim-lsp has a built-in semantic highlighter
+  function! HighlightWordUnderCursor()
+          augroup HighlightWordUnderCursor
+            autocmd!
+            autocmd CursorMoved * exe printf('match DiffText /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+          augroup END
+  endfunction
+  " TODO the fallback highlighter logic seems out of place
   autocmd User lsp_server_init
-        \ autocmd! HighlightWordUnderCursor |
         \ if execute("LspStatus") =~? 'running' |
           \ if &filetype !=? "vim" && &filetype !=? "sh" |
             \ setlocal keywordprg=:LspHover |
           \ endif |
+        \ else |
+          \ call HighlightWordUnderCursor() |
         \ endif
 augroup END
 

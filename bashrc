@@ -126,7 +126,7 @@ set_theme() {
         sleep 5
     done
 }
-[[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && [ -z "$STARTED_BG" ] && set_theme & disown && THEME_PID="$!" && STARTED_BG="true" && trap "kill -9 $THEME_PID" EXIT SIGINT TERM
+[[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && [ -z "$STARTED_BG" ] && set_theme & disown && THEME_PID="$!" && STARTED_BG="true" && trap "kill -9 $THEME_PID" EXIT
 
 # Fetch dircolors to highlight the output of ls
 wget -nc -O ~/.dircolors 'https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors' 2>/dev/null
