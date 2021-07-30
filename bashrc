@@ -1,13 +1,13 @@
 # prompt (ezprompt.net)
 function parse_git_branch() {
     BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
-    [ -n "$BRANCH" ] && echo "${BRANCH}"
+    [ -n "$BRANCH" ] && echo "[${BRANCH}]"
 }
 function parse_git_branch_dash() {
     BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
     [ -n "$BRANCH" ] && echo "⏤⏤ "
 }
-PS1="\[\e[33m\]╭─\[\e[m\]\[\e[1;33m\]\`parse_git_branch\`\[\e[m\]\[\e[33m\]\`parse_git_branch_dash\`\[\e[m\]\[\e[1;33m\]\w\[\e[m\]
+PS1="\[\e[33m\]╭─\[\e[m\]\[\e[33m\]\`parse_git_branch\`\[\e[m\]\[\e[33m\]\`parse_git_branch_dash\`\[\e[m\]\[\e[33m\][\w]\[\e[m\]
 \[\e[33m\]╰\[\e[m\]🎸"
 
 # PATH
@@ -84,20 +84,12 @@ export SDKMAN_DIR="$HOME/.sdkman"
 alias grep='grep --color=auto'
 alias ls='ls --color=auto'
 alias la='ls -A'
-alias df='df -h'
-alias du='du -h'
+alias dfh='df -h'
+alias duh='du -h'
 alias r="source ~/.bashrc"
-alias c='clear'
 alias wp='pyenv which python'
 alias youtube-mp3='youtube-dl -x --audio-format mp3 '
 alias trash='trash -F '
-alias tmuxa='tmux attach'
-
-# perform 'ls' after 'cd' if successful
-cd() {
-    builtin pushd "$*" > /dev/null
-    [ "$?" -eq 0 ] && ls
-}
 
 # compile, run, and remove the binary
 function rust() {
@@ -129,8 +121,14 @@ colorscheme_sync_daemon() {
 [[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && [ -z "$STARTED_BG" ] && colorscheme_sync_daemon & disown && THEME_PID="$!" && STARTED_BG="true" && trap "kill -9 $THEME_PID" EXIT
 
 # Fetch dircolors to highlight the output of ls
-wget -nc -O ~/.dircolors 'https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors' 2>/dev/null
+[ -f ~/.dircolors ] || curl 'https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors' --output ~/.dircolors
 eval "$(dircolors -b ~/.dircolors)"
 
-# autocomplete
-for f in /usr/local/etc/bash_completion.d/*; do source $f; done
+# bash_completion
+# Tells bash_completion to source all completion sources in this directory
+export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
+[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
+
+# use blinking bar for bash cursor
+# see: https://superuser.com/questions/361335/how-to-change-the-terminal-cursor-from-box-to-line
+echo -ne '\033[5 q'

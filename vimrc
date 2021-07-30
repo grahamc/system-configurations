@@ -29,7 +29,7 @@ set display=lastline
 set clipboard=unnamed
 set nocompatible
 set wildmenu
-set wildmode=list:longest
+set wildmode=list,longest:longest
 set nojoinspaces " Prevents inserting two spaces after punctuation on a join (J)
 set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
 set autoread " Re-read file if it is changed by an external program
@@ -42,11 +42,10 @@ set wrap
 set updatetime=800
 set cmdheight=3
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
-" Don't show the current mode in the command line, it's already in my status line
-set noshowmode
 let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
 
-set belloff+=all " turn off bell sounds
+" turn off bell sounds
+set belloff+=all
 
 " show the completion [menu] even if there is only [one] suggestion
 " by default, [no] suggestion is [select]ed
@@ -124,6 +123,18 @@ nnoremap <Leader>x :wqa<CR>
 nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
 nnoremap <silent> <Leader>t :vimgrep /TODO/j **/*<CR>
 
+" Search for selected text, forwards or backwards.
+vnoremap <silent> * :<C-U>
+  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+  \gvy/<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
+  \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+  \gVzv:call setreg('"', old_reg, old_regtype)<CR>
+vnoremap <silent> # :<C-U>
+  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+  \gvy?<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
+  \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+  \gVzv:call setreg('"', old_reg, old_regtype)<CR>
+
 " LSP
 nnoremap <Leader>lis :<C-U>LspInstallServer<CR>
 nnoremap <Leader>ls :<C-U>LspStatus<CR>
@@ -135,24 +146,18 @@ nnoremap <Leader>lca :<C-U>LspCodeActionSync<CR>
 nnoremap <Leader>lo :<C-U>LspCodeActionSync source.organizeImports<CR>
 
 " buffer navigation
-noremap <silent> <S-h> :bp<CR>
-noremap <silent> <S-l> :bn<CR>
+noremap <silent> <C-Left> :bp<CR>
+noremap <silent> <C-Right> :bn<CR>
 
 " tab navigation
-nnoremap <silent> <S-Down> :tabprevious<CR>
-nnoremap <silent> <S-Up> :tabnext<CR>
+nnoremap <silent> <S-Left> :tabprevious<CR>
+nnoremap <silent> <S-Right> :tabnext<CR>
 
 " wrap a function call in another function call.
 let @w='hf)%bvf)S)i'
 
 " remove all trailing whitespace
 nnoremap <Leader>cc :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
-
-" Shift line(s) up or down
-nnoremap <C-Down> :m .+1<CR>==
-nnoremap <C-Up> :m .-2<CR>==
-vnoremap <C-Down> :m '>+1<CR>gv=gv
-vnoremap <C-Up> :m '<-2<CR>gv=gv
 
 " move ten lines at a time by holding ctrl and a directional key
 nnoremap <C-h> 10h
@@ -177,8 +182,8 @@ function UnrolMe()
 endfunction
 nnoremap <silent> <Leader>z :call UnrolMe()<CR>
 
-nnoremap \| :vsplit<CR>
-nnoremap _ :split<CR>
+nnoremap " :vsplit<CR>
+nnoremap % :split<CR>
 
 function! CloseBufferAndPossiblyWindow()
   " If the current buffer is a help or preview page or there is only one window and one buffer
@@ -210,7 +215,7 @@ function! CleanNoNameEmptyBuffers()
     exe 'bd '.join(buffers, ' ')
   endif
 endfunction
-nnoremap <silent> <Leader>c :call CleanNoNameEmptyBuffers()<CR>
+autocmd BufEnter * call CleanNoNameEmptyBuffers()
 
 " Combine enter key (<CR>) mappings from my plugins
 imap <expr> <CR>
@@ -343,7 +348,7 @@ Plug 'Yggdroot/indentLine'
 """"""""""""""""""""""""""""""""""""
 if executable('fzf')
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    let &runtimepath .= ',' . system("which fzf | tr -d '\n'")
+    let &runtimepath .= ',' . exepath('fzf')
     " Customize fzf colors to match color scheme
     " - fzf#wrap translates this to a set of `--color` options
     let g:fzf_colors =
@@ -585,6 +590,8 @@ Plug 'dense-analysis/ale'
 " Debugger
 Plug 'puremourning/vimspector'
   let g:vimspector_enable_mappings = 'HUMAN'
+" Applies editorconfig settings to vim
+Plug 'editorconfig/editorconfig-vim'
 call plug#end()
 
 " Section: Autocommands
@@ -626,7 +633,7 @@ augroup Styles
   au WinLeave * set nocursorline
   au WinEnter * set cursorline
   " Transparent SignColumn
-  autocmd Colorscheme solarized8 execute "hi clear SignColumn"
+  autocmd Colorscheme solarized8,nord execute "hi clear SignColumn"
   autocmd Colorscheme solarized8 execute "hi DiffAdd ctermbg=NONE guibg=NONE"
   autocmd Colorscheme solarized8 execute "hi DiffChange ctermbg=NONE guibg=NONE"
   autocmd Colorscheme solarized8 execute "hi DiffDelete ctermbg=NONE guibg=NONE"
@@ -639,6 +646,8 @@ augroup Styles
   autocmd Colorscheme solarized8 execute "hi clear LineNR"
   " Transparent vertical split (line that divides NERDTree and editor)
   autocmd Colorscheme solarized8 execute "highlight VertSplit ctermbg=NONE guibg=NONE"
+  " Transparent background
+  autocmd ColorScheme * hi Normal guibg=NONE ctermbg=NONE
 augroup END
 
 augroup Miscellaneous
@@ -679,7 +688,8 @@ augroup Miscellaneous
             autocmd CursorMoved * exe printf('match DiffText /\V\<%s\>/', escape(expand('<cword>'), '/\'))
           augroup END
   endfunction
-  " TODO the fallback highlighter logic seems out of place
+  " TODO the fallback highlighter logic seems out of place. also this won't
+  " work if lsp isn't running since the autcmd won't fire
   autocmd User lsp_server_init
         \ if execute("LspStatus") =~? 'running' |
           \ if &filetype !=? "vim" && &filetype !=? "sh" |
@@ -703,25 +713,21 @@ set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlis
 set signcolumn=yes " always show the sign column
 set fillchars=vert:│ " For a nice continuous line
 
-" Block cursor in normal mode and thin line in insert mode
-if exists('$TMUX')
-  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-else
-  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-endif
+" Block cursor in normal mode, thin line in insert mode, and underline in replace mode.
+" Might not work in all terminals.
+" See: https://vim.fandom.com/wiki/Change_cursor_shape_in_different_modes
+let &t_SI.="\e[5 q" "SI = INSERT mode
+let &t_SR.="\e[3 q" "SR = REPLACE mode
+let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
+" When vim exits, reset terminal cursor to blinking bar
+autocmd VimLeave * silent exe "!echo -ne '\033[5 q'" 
 
 " Colorscheme
 """"""""""""""""""""""""""""""""""""
 function! SetColorscheme(background)
     let &background = a:background
-
     let l:vim_colorscheme = a:background ==? "light" ? "solarized8" : "nord"
-    silent! execute "normal! :color " . l:vim_colorscheme . "\<cr>"
-
-    let l:airline_colorscheme = a:background ==? "light" ? "solarized" : "base16_nord"
-    silent! execute "normal! :AirlineTheme " . l:airline_colorscheme . "\<cr>"
+    exe "color " . l:vim_colorscheme
 endfunction
 function! SyncColorschemeWithOs(...)
   let l:is_os_in_dark_mode = system("defaults read -g AppleInterfaceStyle 2>/dev/null | tr -d '\n'") ==? 'dark'
@@ -731,9 +737,9 @@ function! SyncColorschemeWithOs(...)
     call SetColorscheme(l:new_vim_background)
   endif
 endfunction
-if has('macunix')
+if !has('macunix')
   call SyncColorschemeWithOs()
-  " Check periodically to see if darkmode is toggled on the OS and update the vim/airline theme accordingly.
+  " Check periodically to see if darkmode is toggled on the OS and update the vim theme accordingly.
   call timer_start(5000, function('SyncColorschemeWithOs'), {"repeat": -1})
 else
   call SetColorscheme('dark')
