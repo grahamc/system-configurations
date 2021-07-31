@@ -35,7 +35,6 @@ set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
 set autoread " Re-read file if it is changed by an external program
 set nolazyredraw
 set foldmethod=syntax
-set dictionary+=/usr/share/dict/words
 set foldlevel=20
 set scrolloff=10
 set wrap
@@ -77,11 +76,14 @@ let &tabstop = s:tab_width
 let &shiftwidth = s:tab_width
 let &softtabstop = s:tab_width
 
-set ignorecase smartcase " searching is only case sensitive when the query contains an uppercase letter
+" searching is only case sensitive when the query contains an uppercase letter
+set ignorecase smartcase
 
-set splitright splitbelow " open new horizontal and vertical panes to the right and bottom respectively
+" open new horizontal and vertical panes to the right and bottom respectively
+set splitright splitbelow
 
-let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2' " enable mouse mode while in tmux
+" enable mouse mode while in tmux
+let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
 
 " Section: Mappings
 " NOTE: "<C-U>" is added to a lot of mappings to clear the visual selection
@@ -122,6 +124,7 @@ nnoremap <Leader>r :source $MYVIMRC<CR>
 nnoremap <Leader>x :wqa<CR>
 nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
 nnoremap <silent> <Leader>t :vimgrep /TODO/j **/*<CR>
+nnoremap <Leader>u :UndotreeToggle<CR>
 
 " Search for selected text, forwards or backwards.
 vnoremap <silent> * :<C-U>
@@ -182,8 +185,8 @@ function UnrolMe()
 endfunction
 nnoremap <silent> <Leader>z :call UnrolMe()<CR>
 
-nnoremap " :vsplit<CR>
-nnoremap % :split<CR>
+nnoremap s" :vsplit<CR>
+nnoremap s% :split<CR>
 
 function! CloseBufferAndPossiblyWindow()
   " If the current buffer is a help or preview page or there is only one window and one buffer
@@ -312,10 +315,10 @@ Plug 'mhinz/vim-sayonara'
 " Easy movement between vim windows and tmux panes.
 Plug 'christoomey/vim-tmux-navigator'
   let g:tmux_navigator_no_mappings = 1
-  nnoremap <M-h> :TmuxNavigateLeft<cr>
-  nnoremap <M-l> :TmuxNavigateRight<cr>
-  nnoremap <M-j> :TmuxNavigateDown<cr>
-  nnoremap <M-k> :TmuxNavigateUp<cr>
+  nnoremap <silent> <M-h> :TmuxNavigateLeft<cr>
+  nnoremap <silent> <M-l> :TmuxNavigateRight<cr>
+  nnoremap <silent> <M-j> :TmuxNavigateDown<cr>
+  nnoremap <silent> <M-k> :TmuxNavigateUp<cr>
 
 " Version control
 """"""""""""""""""""""""""""""""""""
@@ -324,10 +327,8 @@ Plug 'mhinz/vim-signify'
 
 " Misc.
 """"""""""""""""""""""""""""""""""""
-" Status line and tab line
-Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
-  let g:airline#extensions#tabline#enabled = 1
-  let g:airline#extensions#tabline#formatter = 'unique_tail'
+" Status line
+Plug 'vim-airline/vim-airline'
 " File explorer
 Plug 'preservim/nerdtree', {'on': ['NERDTreeTabsToggle']}
   let g:NERDTreeMouseMode=2
@@ -343,12 +344,20 @@ Plug 'Yggdroot/indentLine'
   let g:indentLine_char = '▏'
   let g:indentLine_setColors = 0
   let g:indentLine_enabled = 0
+" Creates a preview window for the current entry in the quickfix window
+Plug 'ronakg/quickr-preview.vim'
+  let g:quickr_preview_on_cursor = 1
+  let g:quickr_preview_exit_on_enter = 1
+  let g:quickr_preview_size = '0'
+  let g:quickr_preview_keymaps = 0
+  let g:quickr_preview_position = 'below'
+" Visualizes undo tree
+Plug 'mbbill/undotree'
 
 " Fuzzy finder
 """"""""""""""""""""""""""""""""""""
 if executable('fzf')
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    let &runtimepath .= ',' . exepath('fzf')
     " Customize fzf colors to match color scheme
     " - fzf#wrap translates this to a set of `--color` options
     let g:fzf_colors =
@@ -428,12 +437,6 @@ else
   command! -nargs=+ -complete=file Grep
     \ execute 'silent grep! "<args>"' | redraw! | copen
   nnoremap <Leader>g :Grep 
-  Plug 'ronakg/quickr-preview.vim'
-  let g:quickr_preview_on_cursor = 1
-  let g:quickr_preview_exit_on_enter = 1
-  let g:quickr_preview_size = '0'
-  let g:quickr_preview_keymaps = 0
-  let g:quickr_preview_position = 'below'
   if executable('rg')
     let g:ctrlp_user_command = 'rg ' . $FZF_RG_OPTIONS . ' --files --vimgrep'
     let g:ctrlp_use_caching = 0
@@ -483,10 +486,11 @@ Plug 'prabirshrestha/vim-lsp'
     " Only report diagnostics with a level of 'warning' or above
     " i.e. warning,error
     let g:lsp_ale_diagnostics_severity = "warning"
-Plug 'prabirshrestha/async.vim'
-  " autocomplete from other tmux panes
-  Plug 'wellle/tmux-complete.vim'
-    let g:tmuxcomplete#trigger = ''
+" TODO Do I really need this?
+" Plug 'prabirshrestha/async.vim'
+"   " autocomplete from other tmux panes
+"   Plug 'wellle/tmux-complete.vim'
+"     let g:tmuxcomplete#trigger = ''
 Plug 'prabirshrestha/asyncomplete-buffer.vim'
   let g:asyncomplete_buffer_clear_cache = 0
   autocmd User asyncomplete_setup
@@ -606,7 +610,7 @@ augroup RestoreSettings
           \ let s:session_name =  substitute($PWD, "/", ".", "g") . ".vim" |
           \ let s:session_full_path = $VIMHOME . 'sessions/' . s:session_name |
           \ let s:session_cmd = filereadable(s:session_full_path) ? "source " : "mksession! " |
-          \ silent! execute s:session_cmd . s:session_full_path |
+          \ silent! exe s:session_cmd . s:session_full_path |
         \ endif
   " restore last cursor position after opening a file
   autocmd BufReadPost *
@@ -645,9 +649,9 @@ augroup Styles
   autocmd Colorscheme solarized8 execute "hi clear CursorLineNR"
   autocmd Colorscheme solarized8 execute "hi clear LineNR"
   " Transparent vertical split (line that divides NERDTree and editor)
-  autocmd Colorscheme solarized8 execute "highlight VertSplit ctermbg=NONE guibg=NONE"
+  autocmd Colorscheme solarized8,nord execute "highlight VertSplit ctermbg=NONE guibg=NONE"
   " Transparent background
-  autocmd ColorScheme * hi Normal guibg=NONE ctermbg=NONE
+  " autocmd ColorScheme * hi Normal guibg=NONE ctermbg=NONE
 augroup END
 
 augroup Miscellaneous
@@ -711,7 +715,10 @@ augroup END
 " -------------------------------------
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
-set fillchars=vert:│ " For a nice continuous line
+" set fillchars=vert:│,stl:─,stlnc:─ " saving these unicode chars in case I wanna switch back: │ ─ ―
+" set statusline=\ \ /\ %t\ /\ ☰\ %l\ of\ %L\ %=
+" autocmd ColorScheme * exe "hi StatusLine ctermbg=NONE guibg=NONE"
+" autocmd ColorScheme * exe "hi StatusLineNC ctermbg=NONE guibg=NONE"
 
 " Block cursor in normal mode, thin line in insert mode, and underline in replace mode.
 " Might not work in all terminals.

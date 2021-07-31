@@ -81,8 +81,8 @@ export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # aliases
-alias grep='grep --color=auto'
-alias ls='ls --color=auto'
+# alias grep='grep --color=auto'
+# alias ls='ls --color=auto'
 alias la='ls -A'
 alias dfh='df -h'
 alias duh='du -h'
@@ -121,8 +121,8 @@ colorscheme_sync_daemon() {
 [[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && [ -z "$STARTED_BG" ] && colorscheme_sync_daemon & disown && THEME_PID="$!" && STARTED_BG="true" && trap "kill -9 $THEME_PID" EXIT
 
 # Fetch dircolors to highlight the output of ls
-[ -f ~/.dircolors ] || curl 'https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors' --output ~/.dircolors
-eval "$(dircolors -b ~/.dircolors)"
+# [ -f ~/.dircolors ] || curl 'https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors' --output ~/.dircolors
+# eval "$(dircolors -b ~/.dircolors)"
 
 # bash_completion
 # Tells bash_completion to source all completion sources in this directory
