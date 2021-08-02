@@ -60,17 +60,10 @@ bind '"\C-f":" \C-u \C-a\C-k`__fzf_select__`\e\C-e\C-y\C-a\C-y\ey\C-h\C-e\ef \C-
 [[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.bash" 2> /dev/null
 
 # pyenv
-# use env var to prevent infinite loop on init
+# prevent infinite loop on init
 # see: https://github.com/pyenv/pyenv/issues/264#issuecomment-358490657
-if [ -n "$PYENV_LOADING" ]; then
-    true
-else
-    if command -v pyenv > /dev/null 2>&1; then
-        export PYENV_LOADING="true"
-        eval "$(pyenv init -)"
-        unset PYENV_LOADING
-    fi
-fi
+[ -z "$PS1" ] && return
+eval "$(pyenv init -)"
 
 # nvm
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # init
@@ -81,8 +74,6 @@ export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # aliases
-# alias grep='grep --color=auto'
-# alias ls='ls --color=auto'
 alias la='ls -A'
 alias dfh='df -h'
 alias duh='du -h'
@@ -119,10 +110,6 @@ colorscheme_sync_daemon() {
     done
 }
 [[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && [ -z "$STARTED_BG" ] && colorscheme_sync_daemon & disown && THEME_PID="$!" && STARTED_BG="true" && trap "kill -9 $THEME_PID" EXIT
-
-# Fetch dircolors to highlight the output of ls
-# [ -f ~/.dircolors ] || curl 'https://raw.githubusercontent.com/arcticicestudio/nord-dircolors/develop/src/dir_colors' --output ~/.dircolors
-# eval "$(dircolors -b ~/.dircolors)"
 
 # bash_completion
 # Tells bash_completion to source all completion sources in this directory

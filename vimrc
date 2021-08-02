@@ -16,6 +16,7 @@ set pastetoggle=<F2>
 set laststatus=2
 set number relativenumber
 set incsearch
+set hlsearch
 set termguicolors
 set hidden
 set autoindent
@@ -38,7 +39,7 @@ set foldmethod=syntax
 set foldlevel=20
 set scrolloff=10
 set wrap
-set updatetime=800
+set updatetime=500
 set cmdheight=3
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
 let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
@@ -287,7 +288,7 @@ Plug 'alvan/vim-closetag'
 Plug 'Raimondi/delimitMate'
   " Given the following line (where | represents the cursor):
   "   function foo(bar) {|}
-  " Pressing enter will result in :
+  " Pressing enter will result in:
   " function foo(bar) {
   "   |
   " }
@@ -327,10 +328,8 @@ Plug 'mhinz/vim-signify'
 
 " Misc.
 """"""""""""""""""""""""""""""""""""
-" Status line
-Plug 'vim-airline/vim-airline'
 " File explorer
-Plug 'preservim/nerdtree', {'on': ['NERDTreeTabsToggle']}
+Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
   let g:NERDTreeMouseMode=2
   let g:NERDTreeWinPos="right"
   let g:NERDTreeShowHidden=1
@@ -486,11 +485,10 @@ Plug 'prabirshrestha/vim-lsp'
     " Only report diagnostics with a level of 'warning' or above
     " i.e. warning,error
     let g:lsp_ale_diagnostics_severity = "warning"
-" TODO Do I really need this?
-" Plug 'prabirshrestha/async.vim'
-"   " autocomplete from other tmux panes
-"   Plug 'wellle/tmux-complete.vim'
-"     let g:tmuxcomplete#trigger = ''
+Plug 'prabirshrestha/async.vim'
+  " autocomplete from other tmux panes
+  Plug 'wellle/tmux-complete.vim'
+    let g:tmuxcomplete#trigger = ''
 Plug 'prabirshrestha/asyncomplete-buffer.vim'
   let g:asyncomplete_buffer_clear_cache = 0
   autocmd User asyncomplete_setup
@@ -518,13 +516,6 @@ autocmd User asyncomplete_setup
 "     \   'show_source_kind': 1,
 "     \ },
 "     \ }))
-Plug 'jsit/asyncomplete-user.vim'
-autocmd User asyncomplete_setup
-    \ call asyncomplete#register_source(asyncomplete#sources#user#get_source_options({
-    \ 'name': 'user',
-    \ 'whitelist': ['*'],
-    \ 'completor': function('asyncomplete#sources#user#completor')
-    \  }))
 Plug 'Shougo/neco-vim'
   Plug 'prabirshrestha/asyncomplete-necovim.vim'
   autocmd User asyncomplete_setup
@@ -551,10 +542,6 @@ Plug 'mattn/emmet-vim'
       \ 'whitelist': ['html', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
       \ 'completor': function('asyncomplete#sources#emmet#completor'),
       \ }))
-" Snippets
-Plug 'hrsh7th/vim-vsnip'
-  Plug 'hrsh7th/vim-vsnip-integ'
-  Plug 'rafamadriz/friendly-snippets'
 " Asynchronous linting
 Plug 'dense-analysis/ale'
   " If a linter is not found don't continue to check on subsequent linting operations.
@@ -629,29 +616,29 @@ augroup Styles
   " Increase brightness of comments in nord
   autocmd ColorScheme nord highlight Comment guifg=#6d7a96
   " Make CursorLine look like an underline
-  autocmd ColorScheme * execute "hi clear CursorLine"
-  autocmd ColorScheme * execute "hi CursorLine gui=underline cterm=underline"
+  autocmd ColorScheme * hi clear CursorLine
+  autocmd ColorScheme * hi CursorLine gui=underline cterm=underline
   " MatchParen
-  autocmd Colorscheme * execute "hi MatchParen ctermbg=blue guibg=lightblue"
+  autocmd Colorscheme * hi MatchParen ctermbg=blue guibg=lightblue
   " Only highlight the current line on the active window
   au WinLeave * set nocursorline
   au WinEnter * set cursorline
   " Transparent SignColumn
-  autocmd Colorscheme solarized8,nord execute "hi clear SignColumn"
-  autocmd Colorscheme solarized8 execute "hi DiffAdd ctermbg=NONE guibg=NONE"
-  autocmd Colorscheme solarized8 execute "hi DiffChange ctermbg=NONE guibg=NONE"
-  autocmd Colorscheme solarized8 execute "hi DiffDelete ctermbg=NONE guibg=NONE"
-  autocmd Colorscheme solarized8 execute "hi SignifyLineChange ctermbg=NONE guibg=NONE"
-  autocmd Colorscheme solarized8 execute "hi SignifyLineDelete ctermbg=NONE guibg=NONE"
-  autocmd Colorscheme solarized8 execute "hi ALEErrorSign ctermbg=NONE guibg=NONE"
-  autocmd Colorscheme solarized8 execute "hi ALEWarningSign ctermbg=NONE guibg=NONE"
+  autocmd Colorscheme solarized8,nord hi clear SignColumn
+  autocmd Colorscheme solarized8 hi DiffAdd ctermbg=NONE guibg=NONE
+  autocmd Colorscheme solarized8 hi DiffChange ctermbg=NONE guibg=NONE
+  autocmd Colorscheme solarized8 hi DiffDelete ctermbg=NONE guibg=NONE
+  autocmd Colorscheme solarized8 hi SignifyLineChange ctermbg=NONE guibg=NONE
+  autocmd Colorscheme solarized8 hi SignifyLineDelete ctermbg=NONE guibg=NONE
+  autocmd Colorscheme solarized8 hi ALEErrorSign ctermbg=NONE guibg=NONE
+  autocmd Colorscheme solarized8 hi ALEWarningSign ctermbg=NONE guibg=NONE
   " Transparent number column
-  autocmd Colorscheme solarized8 execute "hi clear CursorLineNR"
-  autocmd Colorscheme solarized8 execute "hi clear LineNR"
+  autocmd Colorscheme solarized8 hi clear CursorLineNR
+  autocmd Colorscheme solarized8 hi clear LineNR
   " Transparent vertical split (line that divides NERDTree and editor)
-  autocmd Colorscheme solarized8,nord execute "highlight VertSplit ctermbg=NONE guibg=NONE"
+  autocmd Colorscheme solarized8,nord highlight VertSplit ctermbg=NONE guibg=NONE
   " Transparent background
-  " autocmd ColorScheme * hi Normal guibg=NONE ctermbg=NONE
+  autocmd ColorScheme * hi Normal guibg=NONE ctermbg=NONE
 augroup END
 
 augroup Miscellaneous
@@ -694,31 +681,25 @@ augroup Miscellaneous
   endfunction
   " TODO the fallback highlighter logic seems out of place. also this won't
   " work if lsp isn't running since the autcmd won't fire
-  autocmd User lsp_server_init
-        \ if execute("LspStatus") =~? 'running' |
-          \ if &filetype !=? "vim" && &filetype !=? "sh" |
-            \ setlocal keywordprg=:LspHover |
-          \ endif |
-        \ else |
-          \ call HighlightWordUnderCursor() |
-        \ endif
-augroup END
-
-" After a quickfix command is run, open the quickfix window , if there are results
-augroup myvimrc
-    autocmd!
-    autocmd QuickFixCmdPost [^l]* cwindow
-    autocmd QuickFixCmdPost l*    lwindow
+  " autocmd User lsp_server_init
+  "       \ if execute("LspStatus") =~? 'running' |
+  "         \ if &filetype !=? "vim" && &filetype !=? "sh" |
+  "           \ setlocal keywordprg=:LspHover |
+  "         \ endif |
+  "       \ else |
+  "         \ call HighlightWordUnderCursor() |
+  "       \ endif
+  " After a quickfix command is run, open the quickfix window , if there are results
+  autocmd QuickFixCmdPost [^l]* cwindow
+  autocmd QuickFixCmdPost l*    lwindow
 augroup END
 
 " Section: Aesthetics
 " -------------------------------------
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
-" set fillchars=vert:│,stl:─,stlnc:─ " saving these unicode chars in case I wanna switch back: │ ─ ―
-" set statusline=\ \ /\ %t\ /\ ☰\ %l\ of\ %L\ %=
-" autocmd ColorScheme * exe "hi StatusLine ctermbg=NONE guibg=NONE"
-" autocmd ColorScheme * exe "hi StatusLineNC ctermbg=NONE guibg=NONE"
+set fillchars=vert:│,stl:\ ,stlnc:\  " saving these unicode chars in case I wanna switch back: │ ─ ―
+set statusline=\ %h%w%q%f%m%r\ │\ ☰\ %l\ of\ %L,\ Col\ %c\ %=
 
 " Block cursor in normal mode, thin line in insert mode, and underline in replace mode.
 " Might not work in all terminals.
@@ -737,7 +718,7 @@ function! SetColorscheme(background)
     exe "color " . l:vim_colorscheme
 endfunction
 function! SyncColorschemeWithOs(...)
-  let l:is_os_in_dark_mode = system("defaults read -g AppleInterfaceStyle 2>/dev/null | tr -d '\n'") ==? 'dark'
+  let l:is_os_in_dark_mode = system("defaults read -g AppleInterfaceStyle 2>/dev/null") =~? 'dark'
   let l:new_vim_background = l:is_os_in_dark_mode ? "dark" : "light"
   let l:vim_background_changed_or_is_not_set = &background !=? l:new_vim_background || !exists('g:colors_name')
   if l:vim_background_changed_or_is_not_set
