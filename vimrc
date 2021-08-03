@@ -16,7 +16,6 @@ set pastetoggle=<F2>
 set laststatus=2
 set number relativenumber
 set incsearch
-set hlsearch
 set termguicolors
 set hidden
 set autoindent
@@ -119,7 +118,9 @@ imap <C-@> <C-Space>
 
 let g:mapleader = "\<Space>"
 inoremap jk <Esc>
-nnoremap <silent> <Leader>\ :nohl<CR>
+" toggle search highlighting
+nnoremap <silent> <expr> <Leader>\
+  \ (execute("set hlsearch?") =~? "nohlsearch") ? ":set hlsearch\<CR>" : ":set nohlsearch\<CR>"
 nnoremap <silent> <Leader>w :wa<CR>
 nnoremap <Leader>r :source $MYVIMRC<CR>
 nnoremap <Leader>x :wqa<CR>
@@ -149,6 +150,9 @@ nnoremap <Leader>lrf :<C-U>LspReferences<CR>
 nnoremap <Leader>lca :<C-U>LspCodeActionSync<CR>
 nnoremap <Leader>lo :<C-U>LspCodeActionSync source.organizeImports<CR>
 
+" Version Control
+nnoremap <Leadervk :SignifyHunkDiff<CR>
+
 " buffer navigation
 noremap <silent> <C-Left> :bp<CR>
 noremap <silent> <C-Right> :bn<CR>
@@ -173,18 +177,16 @@ vnoremap <C-h> 10h
 vnoremap <C-k> 10k
 vnoremap <C-l> 10l
 
-" toggle folds
-let $unrol=1
-function UnrolMe()
-  if $unrol==0
-    :exe "normal zR"
-    let $unrol=1
-  else
-    :exe "normal zM"
-    let $unrol=0
-  endif
+function ToggleFolds()
+  for line_number in range(1, line('$') + 1)
+    if !empty(foldtextresult(line_number))
+      :exe "normal zR"
+      return
+    endif
+  endfor
+  :exe "normal zM"
 endfunction
-nnoremap <silent> <Leader>z :call UnrolMe()<CR>
+nnoremap <silent> <Leader>z :call ToggleFolds()<CR>
 
 nnoremap s" :vsplit<CR>
 nnoremap s% :split<CR>
@@ -197,10 +199,6 @@ function! CloseBufferAndPossiblyWindow()
         \ || (len(getbufinfo({'buflisted':1})) == 1 && winnr('$') == 1)
         \ || getwinvar('.', '&previewwindow') == 1
     execute "silent Sayonara"
-  elseif &l:filetype ==? "qf"
-    " Close preview window when the qf window is closed (quickr-preview.vim)
-    execute "silent Sayonara"
-    exe "pclose"
   else
     execute "silent Sayonara!"
   endif
@@ -343,13 +341,6 @@ Plug 'Yggdroot/indentLine'
   let g:indentLine_char = '▏'
   let g:indentLine_setColors = 0
   let g:indentLine_enabled = 0
-" Creates a preview window for the current entry in the quickfix window
-Plug 'ronakg/quickr-preview.vim'
-  let g:quickr_preview_on_cursor = 1
-  let g:quickr_preview_exit_on_enter = 1
-  let g:quickr_preview_size = '0'
-  let g:quickr_preview_keymaps = 0
-  let g:quickr_preview_position = 'below'
 " Visualizes undo tree
 Plug 'mbbill/undotree'
 
@@ -639,6 +630,9 @@ augroup Styles
   autocmd Colorscheme solarized8,nord highlight VertSplit ctermbg=NONE guibg=NONE
   " Transparent background
   autocmd ColorScheme * hi Normal guibg=NONE ctermbg=NONE
+  " statusline colors
+  autocmd ColorScheme nord hi StatusLine guibg=#6E90B4 guifg=#2E3440 ctermfg=1 ctermbg=3
+  autocmd ColorScheme nord hi StatusLineNC guibg=#3B4252 ctermbg=1 guifg=#ECEFF4 ctermfg=8
 augroup END
 
 augroup Miscellaneous
@@ -652,7 +646,7 @@ augroup Miscellaneous
           \ setlocal omnifunc=syntaxcomplete#Complete |
         \	endif
   " Set fold method for vim
-  autocmd Filetype vim execute "setlocal foldmethod=indent"
+  autocmd BufEnter vim setlocal foldmethod=indent
   " Extend iskeyword for filetypes that can reference CSS classes
   autocmd FileType
     \ css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss
@@ -692,6 +686,8 @@ augroup Miscellaneous
   " After a quickfix command is run, open the quickfix window , if there are results
   autocmd QuickFixCmdPost [^l]* cwindow
   autocmd QuickFixCmdPost l*    lwindow
+  " Put focus back in quickfix window after opening an entry
+  autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p 
 augroup END
 
 " Section: Aesthetics
