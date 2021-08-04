@@ -29,7 +29,7 @@ set display=lastline
 set clipboard=unnamed
 set nocompatible
 set wildmenu
-set wildmode=list,longest:longest
+set wildmode=longest,list:longest
 set nojoinspaces " Prevents inserting two spaces after punctuation on a join (J)
 set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
 set autoread " Re-read file if it is changed by an external program
@@ -46,12 +46,14 @@ let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'intern
 " turn off bell sounds
 set belloff+=all
 
-" show the completion [menu] even if there is only [one] suggestion
-" by default, [no] suggestion is [select]ed
-" Use [popup] instead of [preview] window
+" show the completion menu even if there is only one suggestion
+" by default, no suggestion is selected
+" Use popup instead of preview window
 set completeopt+=menuone,noselect,popup completeopt-=preview
 
 set shortmess+=Icm " don't display messages related to completion
+set shortmess-=S " show match position in command window
+set shortmess+=s
 
 set formatoptions+=j " Delete comment character when joining commented lines
 
@@ -116,6 +118,8 @@ nmap <C-@> <C-Space>
 vmap <C-@> <C-Space>
 imap <C-@> <C-Space>
 
+command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
+
 let g:mapleader = "\<Space>"
 inoremap jk <Esc>
 " toggle search highlighting
@@ -151,7 +155,7 @@ nnoremap <Leader>lca :<C-U>LspCodeActionSync<CR>
 nnoremap <Leader>lo :<C-U>LspCodeActionSync source.organizeImports<CR>
 
 " Version Control
-nnoremap <Leadervk :SignifyHunkDiff<CR>
+nnoremap <Leader>vk :SignifyHunkDiff<CR>
 
 " buffer navigation
 noremap <silent> <C-Left> :bp<CR>
@@ -198,6 +202,7 @@ function! CloseBufferAndPossiblyWindow()
   if &l:filetype ==? "help"
         \ || (len(getbufinfo({'buflisted':1})) == 1 && winnr('$') == 1)
         \ || getwinvar('.', '&previewwindow') == 1
+        \ || empty(&ft)
     execute "silent Sayonara"
   else
     execute "silent Sayonara!"
@@ -628,11 +633,10 @@ augroup Styles
   autocmd Colorscheme solarized8 hi clear LineNR
   " Transparent vertical split (line that divides NERDTree and editor)
   autocmd Colorscheme solarized8,nord highlight VertSplit ctermbg=NONE guibg=NONE
-  " Transparent background
-  autocmd ColorScheme * hi Normal guibg=NONE ctermbg=NONE
   " statusline colors
   autocmd ColorScheme nord hi StatusLine guibg=#6E90B4 guifg=#2E3440 ctermfg=1 ctermbg=3
   autocmd ColorScheme nord hi StatusLineNC guibg=#3B4252 ctermbg=1 guifg=#ECEFF4 ctermfg=8
+  highlight StatusLineFill guibg=NONE ctermbg=NONE
 augroup END
 
 augroup Miscellaneous
@@ -695,7 +699,40 @@ augroup END
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
 set fillchars=vert:│,stl:\ ,stlnc:\  " saving these unicode chars in case I wanna switch back: │ ─ ―
-set statusline=\ %h%w%q%f%m%r\ │\ ☰\ %l\ of\ %L,\ Col\ %c\ %=
+function! LinterInfo()
+  let l:result = ""
+  let l:cur_buffer = bufnr("%")
+
+  let l:linters = get(g:ale_linters, &ft, [])
+  if !empty(l:linters)
+    let l:result .= 'linters[' . l:linters->join(',') . '] '
+  endif
+
+  let l:fixers = get(g:ale_fixers, &ft, [])
+  if !empty(l:fixers)
+    let l:result .= 'fixers[' . l:fixers->join(',') . '] '
+  endif
+
+  let l:count = ale#statusline#Count(l:cur_buffer)
+  let l:error_count = get(l:count, 'error', 0)
+  if l:error_count > 0
+    let l:result .= 'ERR:' . l:error_count . ' '
+  endif
+  let l:warning_count = get(l:count, 'warning', 0)
+  if l:warning_count > 0
+    let l:result .= 'WARN:' . l:warning_count . ' '
+  endif
+
+  if !empty(l:result)
+    let l:result = '│ ' . l:result
+  endif
+
+  return l:result
+endfunction
+function! LspInfo()
+  return ""
+endfunction
+set statusline=\ %h%w%q%f%m%r\ │\ ☰\ %l\ of\ %L,\ Col\ %c\ %#StatusLine#%{LinterInfo()}%{LspInfo()}%#StatusLineFill#%=
 
 " Block cursor in normal mode, thin line in insert mode, and underline in replace mode.
 " Might not work in all terminals.
