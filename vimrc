@@ -42,6 +42,7 @@ set updatetime=500
 set cmdheight=3
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
 let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
+set matchpairs+=<:>
 
 " turn off bell sounds
 set belloff+=all
@@ -615,7 +616,7 @@ augroup Styles
   autocmd ColorScheme * hi clear CursorLine
   autocmd ColorScheme * hi CursorLine gui=underline cterm=underline
   " MatchParen
-  autocmd Colorscheme * hi MatchParen ctermbg=blue guibg=lightblue
+  autocmd Colorscheme * hi MatchParen ctermfg=blue guifg=#5E81AC cterm=underline gui=underline guibg=NONE ctermbg=NONE
   " Only highlight the current line on the active window
   au WinLeave * set nocursorline
   au WinEnter * set cursorline
@@ -636,7 +637,6 @@ augroup Styles
   " statusline colors
   autocmd ColorScheme nord hi StatusLine guibg=#6E90B4 guifg=#2E3440 ctermfg=1 ctermbg=3
   autocmd ColorScheme nord hi StatusLineNC guibg=#3B4252 ctermbg=1 guifg=#ECEFF4 ctermfg=8
-  highlight StatusLineFill guibg=NONE ctermbg=NONE
 augroup END
 
 augroup Miscellaneous
@@ -645,12 +645,12 @@ augroup Miscellaneous
   " sets the textwidth to 78 if it is currently 0. This sets it back to 0
   autocmd VimEnter * :set tw=0
   " Set a default omnifunc
-  autocmd Filetype *
+  autocmd FileType *
         \	if index(asyncomplete#get_source_names(), 'necosyntax', 0, 1) < 0 && &omnifunc == "" |
           \ setlocal omnifunc=syntaxcomplete#Complete |
         \	endif
   " Set fold method for vim
-  autocmd BufEnter vim setlocal foldmethod=indent
+  autocmd FileType vim setlocal foldmethod=indent
   " Extend iskeyword for filetypes that can reference CSS classes
   autocmd FileType
     \ css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss
@@ -692,6 +692,22 @@ augroup Miscellaneous
   autocmd QuickFixCmdPost l*    lwindow
   " Put focus back in quickfix window after opening an entry
   autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p 
+  " Get lsp info for statusline
+  function! GetStatuslineLspInfo()
+    let l:lines = execute("LspStatus")->split("\n")
+    let l:lsp_active_servers = []
+    for l:line in l:lines
+      if l:line =~? 'running'
+        let l:servername = l:line->split(':')[:-2]->join('')
+        call add(l:lsp_active_servers, l:servername)
+      endif
+    endfor
+    let s:lsp_active_servers = l:lsp_active_servers
+    " trigger a rerender of the statusline
+    let &statusline = &statusline
+  endfunction
+  autocmd User lsp_server_init call GetStatuslineLspInfo()
+  autocmd User lsp_server_exit call GetStatuslineLspInfo()
 augroup END
 
 " Section: Aesthetics
@@ -725,14 +741,19 @@ function! LinterInfo()
 
   if !empty(l:result)
     let l:result = '│ ' . l:result
+  else
+    let l:result .= ' '
   endif
 
   return l:result
 endfunction
 function! LspInfo()
+  if !empty(get(s:, 'lsp_active_servers', []))
+    return '│ LSP[' . s:lsp_active_servers->join(',') . '] '
+  endif
   return ""
 endfunction
-set statusline=\ %h%w%q%f%m%r\ │\ ☰\ %l\ of\ %L,\ Col\ %c\ %#StatusLine#%{LinterInfo()}%{LspInfo()}%#StatusLineFill#%=
+set statusline=\ %h%w%q%f%m%r\ │\ Ln\ %l/%L,\ Col\ %c\ %{LinterInfo()}%{LspInfo()}
 
 " Block cursor in normal mode, thin line in insert mode, and underline in replace mode.
 " Might not work in all terminals.
