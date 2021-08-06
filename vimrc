@@ -240,7 +240,7 @@ let s:command_list = [
       \ "Next tab [<S-Up>]", "Previous tab [<S-Down>]",
       \ "Remove trailing whitespace [<F5>]", "Shift line(s) up [<C-Up>]",
       \ "Shift line(s) down [<C-Down>]", "Toggle folds [<Leader>z]",
-      \ "Vertical split [|]", "Horizontal split [_]",
+      \ "Vertical split [s\"]", "Horizontal split [s%]",
       \ "Close buffer [<Leader>q]", "Close window [<Leader>Q]",
       \ ]
 function! CheatsheetSink(command)
@@ -349,6 +349,10 @@ Plug 'Yggdroot/indentLine'
   let g:indentLine_enabled = 0
 " Visualizes undo tree
 Plug 'mbbill/undotree'
+" replacement for matchit since matchit wasn't working for me
+Plug 'andymass/vim-matchup'
+  " Don't display offscreen matches in my statusline or a popup window
+  let g:matchup_matchparen_offscreen = {}
 
 " Fuzzy finder
 """"""""""""""""""""""""""""""""""""
@@ -374,8 +378,8 @@ if executable('fzf')
   " Marks
   nnoremap <Leader>m :Marks<CR>
   if executable('rg')
-    let s:fzfFindLineCommand = 'rg '.$FZF_RG_OPTIONS
-    let s:fzfFindFileCommand = 'rg '.$FZF_RG_OPTIONS.' --files'
+    let s:fzfFindLineCommand = 'rg '.$RG_DEFAULT_OPTIONS
+    let s:fzfFindFileCommand = 'rg '.$RG_DEFAULT_OPTIONS.' --files'
     " recursive grep
     function! FindLineResultHandler(result)
       let l:resultTokens = split(a:result, ':')
@@ -434,7 +438,7 @@ else
     \ execute 'silent grep! "<args>"' | redraw! | copen
   nnoremap <Leader>g :Grep 
   if executable('rg')
-    let g:ctrlp_user_command = 'rg ' . $FZF_RG_OPTIONS . ' --files --vimgrep'
+    let g:ctrlp_user_command = 'rg ' . $RG_DEFAULT_OPTIONS . ' --files --vimgrep'
     let g:ctrlp_use_caching = 0
   else
     let g:ctrlp_clear_cache_on_exit = 0
@@ -589,12 +593,14 @@ augroup RestoreSettings
   " Restore session after vim starts. The 'nested' keyword tells vim to fire events
   " normally while this autocmd is executing. By default, no events are fired
   " during the execution of an autocmd to prevent infinite loops.
+  let s:session_dir = $VIMHOME . 'sessions/'
   autocmd VimEnter * nested
         \ if argc() == 0 |
-          \ let s:session_name =  substitute($PWD, "/", ".", "g") . ".vim" |
-          \ let s:session_full_path = $VIMHOME . 'sessions/' . s:session_name |
+          \ call mkdir(s:session_dir, "p") |
+          \ let s:session_name =  substitute($PWD, '/', '%', 'g') . '%vim' |
+          \ let s:session_full_path = s:session_dir . s:session_name |
           \ let s:session_cmd = filereadable(s:session_full_path) ? "source " : "mksession! " |
-          \ silent! exe s:session_cmd . s:session_full_path |
+          \ exe s:session_cmd . fnameescape(s:session_full_path) |
         \ endif
   " restore last cursor position after opening a file
   autocmd BufReadPost *
@@ -637,6 +643,9 @@ augroup Styles
   " statusline colors
   autocmd ColorScheme nord hi StatusLine guibg=#6E90B4 guifg=#2E3440 ctermfg=1 ctermbg=3
   autocmd ColorScheme nord hi StatusLineNC guibg=#3B4252 ctermbg=1 guifg=#ECEFF4 ctermfg=8
+  " autocomplete popupmenu
+  autocmd ColorScheme * highlight! link PmenuSel StatusLine
+  autocmd ColorScheme * highlight! link Pmenu StatusLineNC
 augroup END
 
 augroup Miscellaneous
@@ -669,24 +678,21 @@ augroup Miscellaneous
         \ endif
   " Use vim help pages for keywordprg in vim files
   autocmd FileType vim setlocal keywordprg=:help
+  augroup HighlightWordUnderCursor
+    autocmd!
+    autocmd CursorMoved * exe printf('match StatusLineNC /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+  augroup END
   " If there's a language server running, assign keywordprg to its hover feature.
   " Unless it's bash or vim in which case they'll use man pages and vim help pages respectively.
-  function! HighlightWordUnderCursor()
-          augroup HighlightWordUnderCursor
-            autocmd!
-            autocmd CursorMoved * exe printf('match DiffText /\V\<%s\>/', escape(expand('<cword>'), '/\'))
-          augroup END
-  endfunction
-  " TODO the fallback highlighter logic seems out of place. also this won't
-  " work if lsp isn't running since the autcmd won't fire
-  " autocmd User lsp_server_init
-  "       \ if execute("LspStatus") =~? 'running' |
-  "         \ if &filetype !=? "vim" && &filetype !=? "sh" |
-  "           \ setlocal keywordprg=:LspHover |
-  "         \ endif |
-  "       \ else |
-  "         \ call HighlightWordUnderCursor() |
-  "       \ endif
+  " Also disable the native highlighter in favor of the LSP semantic one
+  autocmd User lsp_server_init
+        \ if execute("LspStatus") =~? 'running' |
+          \ if &filetype !=? "vim" && &filetype !=? "sh" |
+            \ setlocal keywordprg=:LspHover |
+          \ endif |
+          \ :match none |
+          \ augroup HighlightWordUnderCursor | autocmd! | augroup END |
+        \ endif
   " After a quickfix command is run, open the quickfix window , if there are results
   autocmd QuickFixCmdPost [^l]* cwindow
   autocmd QuickFixCmdPost l*    lwindow

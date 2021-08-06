@@ -7,8 +7,8 @@ function parse_git_branch_dash() {
     BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
     [ -n "$BRANCH" ] && echo "⏤⏤ "
 }
-PS1="\[\e[33m\]╭─\[\e[m\]\[\e[33m\]\`parse_git_branch\`\[\e[m\]\[\e[33m\]\`parse_git_branch_dash\`\[\e[m\]\[\e[33m\][\w]\[\e[m\]
-\[\e[33m\]╰\[\e[m\]🎸"
+PS1="\[\e[34m\]╭─\[\e[m\]\[\e[34m\]\`parse_git_branch\`\[\e[m\]\[\e[34m\]\`parse_git_branch_dash\`\[\e[m\]\[\e[34m\][\w]\[\e[m\]
+\[\e[34m\]╰\[\e[m\]🎸"
 
 # PATH
 export GOPATH="/usr/local/go/bin"
@@ -31,7 +31,13 @@ export MANPATH="$BASE_MANPATH:$MACPORTS_PATH:$COREUTILS_MANPATH"
 
 # other env vars
 export LESS="-Ri"
-export FZF_RG_OPTIONS='--hidden --column --line-number --no-heading --fixed-strings \
+    export VIRTUAL_ENV_DISABLE_PROMPT=1
+    export PYTHON_CONFIGURE_OPTS="--enable-framework"
+    export NVM_DIR="$HOME/.nvm"
+    export BASH_SILENCE_DEPRECATION_WARNING=1
+
+# rg
+export RG_DEFAULT_OPTIONS='--hidden --column --line-number --no-heading --fixed-strings \
     --ignore-case --no-ignore \
     --glob "!.git" \
     --glob "!.cache" \
@@ -43,14 +49,6 @@ export FZF_RG_OPTIONS='--hidden --column --line-number --no-heading --fixed-stri
     --glob "!dist" \
     --glob "!package-lock.json" \
     --glob "!node_modules"'
-    export FZF_DEFAULT_COMMAND="rg $FZF_RG_OPTIONS --files"
-    export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --margin=5%,2%,5%,2%'
-    export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
-    export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up'
-    export VIRTUAL_ENV_DISABLE_PROMPT=1
-    export PYTHON_CONFIGURE_OPTS="--enable-framework"
-    export NVM_DIR="$HOME/.nvm"
-    export BASH_SILENCE_DEPRECATION_WARNING=1
 
 #fzf
 # keybindings
@@ -58,6 +56,10 @@ source "/usr/local/opt/fzf/shell/key-bindings.bash"
 bind '"\C-f":" \C-u \C-a\C-k`__fzf_select__`\e\C-e\C-y\C-a\C-y\ey\C-h\C-e\ef \C-h"'
 # completion
 [[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.bash" 2> /dev/null
+export FZF_DEFAULT_COMMAND="rg $RG_DEFAULT_OPTIONS --files"
+export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --margin=5%,2%,5%,2%'
+export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
+export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up'
 
 # pyenv
 # prevent infinite loop on init
