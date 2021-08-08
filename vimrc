@@ -29,7 +29,9 @@ set display=lastline
 set clipboard=unnamed
 set nocompatible
 set wildmenu
-set wildmode=longest,list:longest
+" on first wildchar press, show all matches and complete the longest common substring among them.
+" on second wildchar press, cycle through matches
+set wildmode=longest:full,full
 set nojoinspaces " Prevents inserting two spaces after punctuation on a join (J)
 set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
 set autoread " Re-read file if it is changed by an external program
@@ -146,13 +148,12 @@ vnoremap <silent> # :<C-U>
   \gVzv:call setreg('"', old_reg, old_regtype)<CR>
 
 " LSP
-nnoremap <Leader>lis :<C-U>LspInstallServer<CR>
+nnoremap <Leader>li :<C-U>LspInstallServer<CR>
 nnoremap <Leader>ls :<C-U>LspStatus<CR>
-nnoremap <Leader>lh :<C-U>LspHover<CR>
 nnoremap <Leader>ld :<C-U>LspDefinition<CR>
 nnoremap <Leader>lrn :<C-U>LspRename<CR>
 nnoremap <Leader>lrf :<C-U>LspReferences<CR>
-nnoremap <Leader>lca :<C-U>LspCodeActionSync<CR>
+nnoremap <Leader>lc :<C-U>LspCodeActionSync<CR>
 nnoremap <Leader>lo :<C-U>LspCodeActionSync source.organizeImports<CR>
 
 " Version Control
@@ -182,6 +183,8 @@ vnoremap <C-h> 10h
 vnoremap <C-k> 10k
 vnoremap <C-l> 10l
 
+" If no lines are folded, fold everything.
+" If any line is folded, unfold everything
 function ToggleFolds()
   for line_number in range(1, line('$') + 1)
     if !empty(foldtextresult(line_number))
@@ -302,6 +305,8 @@ Plug 'Raimondi/delimitMate'
 Plug 'tpope/vim-surround'
 " For swapping two pieces of text
 Plug 'tommcdo/vim-exchange'
+" I use it for more robust substitutions, but it does alot more
+Plug 'tpope/vim-abolish'
 
 " Colors
 """"""""""""""""""""""""""""""""""""
@@ -353,9 +358,25 @@ Plug 'mbbill/undotree'
 Plug 'andymass/vim-matchup'
   " Don't display offscreen matches in my statusline or a popup window
   let g:matchup_matchparen_offscreen = {}
+Plug 'AndrewRadev/splitjoin.vim'
+  function! s:try(cmd, default)
+    if exists(':' . a:cmd) && !v:count
+      let tick = b:changedtick
+      execute a:cmd
+      if tick == b:changedtick
+        execute join(['normal!', a:default])
+      endif
+    else
+      execute join(['normal! ', v:count, a:default], '')
+    endif
+  endfunction
+  nnoremap <silent> J :<C-u>call <SID>try('SplitjoinJoin',  'J')<CR>
+  nnoremap <silent> sj :<C-u>call <SID>try('SplitjoinSplit', "r\015")<CR>
 
 " Fuzzy finder
 """"""""""""""""""""""""""""""""""""
+command! -nargs=+ -complete=file Grep
+  \ execute 'silent grep! "<args>"' | redraw! | copen
 if executable('fzf')
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     " Customize fzf colors to match color scheme
@@ -434,8 +455,6 @@ else
     endfunction
     " Have to do this after ctrlp loads since we need reference to g:ctrlp_ext_vars
     autocmd VimEnter * call RegisterCheatsheet()
-  command! -nargs=+ -complete=file Grep
-    \ execute 'silent grep! "<args>"' | redraw! | copen
   nnoremap <Leader>g :Grep 
   if executable('rg')
     let g:ctrlp_user_command = 'rg ' . $RG_DEFAULT_OPTIONS . ' --files --vimgrep'
@@ -602,15 +621,15 @@ augroup RestoreSettings
           \ let s:session_cmd = filereadable(s:session_full_path) ? "source " : "mksession! " |
           \ exe s:session_cmd . fnameescape(s:session_full_path) |
         \ endif
-  " restore last cursor position after opening a file
-  autocmd BufReadPost *
-        \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-          \ exe "normal! g'\"" |
-        \ endif
   " save session before vim exits
   autocmd VimLeavePre *
         \ if !empty(v:this_session) |
           \ exe 'mksession! ' . fnameescape(v:this_session) |
+        \ endif
+  " restore last cursor position after opening a file
+  autocmd BufReadPost *
+        \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+          \ exe "normal! g'\"" |
         \ endif
 augroup END
 
@@ -682,14 +701,22 @@ augroup Miscellaneous
     autocmd!
     autocmd CursorMoved * exe printf('match StatusLineNC /\V\<%s\>/', escape(expand('<cword>'), '/\'))
   augroup END
+  " keywordprg with fallbacks
+  function! ChainedKeywordprg()
+    if &filetype == 'python' && system('python3 -m pydoc ' . expand("<cword>")) =~? 'no python documentation found' && exists(':LspHover')
+        return ":LspHover\<CR>"
+    endif
+    if &keywordprg == '' && exists(':LspHover')
+        return ":LspHover\<CR>"
+    endif
+    return 'K'
+  endfunction
+  nmap <expr> K ChainedKeywordprg()
   " If there's a language server running, assign keywordprg to its hover feature.
   " Unless it's bash or vim in which case they'll use man pages and vim help pages respectively.
   " Also disable the native highlighter in favor of the LSP semantic one
   autocmd User lsp_server_init
         \ if execute("LspStatus") =~? 'running' |
-          \ if &filetype !=? "vim" && &filetype !=? "sh" |
-            \ setlocal keywordprg=:LspHover |
-          \ endif |
           \ :match none |
           \ augroup HighlightWordUnderCursor | autocmd! | augroup END |
         \ endif
@@ -768,7 +795,7 @@ let &t_SI.="\e[5 q" "SI = INSERT mode
 let &t_SR.="\e[3 q" "SR = REPLACE mode
 let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
 " When vim exits, reset terminal cursor to blinking bar
-autocmd VimLeave * silent exe "!echo -ne '\033[5 q'" 
+autocmd VimLeave * silent exe "!echo -ne '\033[5 q'"
 
 " Colorscheme
 """"""""""""""""""""""""""""""""""""

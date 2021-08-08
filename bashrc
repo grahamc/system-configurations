@@ -10,6 +10,13 @@ function parse_git_branch_dash() {
 PS1="\[\e[34m\]╭─\[\e[m\]\[\e[34m\]\`parse_git_branch\`\[\e[m\]\[\e[34m\]\`parse_git_branch_dash\`\[\e[m\]\[\e[34m\][\w]\[\e[m\]
 \[\e[34m\]╰\[\e[m\]🎸"
 
+# make tab cycle through commands after listing
+bind '"\t":menu-complete'
+bind '"\e[Z": menu-complete-backward'
+bind "set show-all-if-ambiguous on"
+bind "set completion-ignore-case on"
+bind "set menu-complete-display-prefix on"
+
 # PATH
 export GOPATH="/usr/local/go/bin"
 export COREUTILS_PATH="/usr/local/opt/coreutils/libexec/gnubin"
@@ -29,12 +36,15 @@ export MACPORTS_PATH="/opt/local/share/man"
 export BASE_MANPATH="/usr/share/man:/usr/local/share/man:/usr/X11/share/man"
 export MANPATH="$BASE_MANPATH:$MACPORTS_PATH:$COREUTILS_MANPATH"
 
-# other env vars
+# system
 export LESS="-Ri"
-    export VIRTUAL_ENV_DISABLE_PROMPT=1
-    export PYTHON_CONFIGURE_OPTS="--enable-framework"
-    export NVM_DIR="$HOME/.nvm"
-    export BASH_SILENCE_DEPRECATION_WARNING=1
+
+# Get MacOS to stop complaining that I'm not using ZSH
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
+# python
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+export PYTHON_CONFIGURE_OPTS="--enable-framework"
 
 # rg
 export RG_DEFAULT_OPTIONS='--hidden --column --line-number --no-heading --fixed-strings \
@@ -68,6 +78,7 @@ export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up'
 eval "$(pyenv init -)"
 
 # nvm
+export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # init
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # completion
 
