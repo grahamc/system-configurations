@@ -45,6 +45,7 @@ set cmdheight=3
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
 let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
 set matchpairs+=<:>
+set cursorlineopt=number
 
 " turn off bell sounds
 set belloff+=all
@@ -120,6 +121,10 @@ nmap [1;5A <C-Up>
 nmap <C-@> <C-Space>
 vmap <C-@> <C-Space>
 imap <C-@> <C-Space>
+imap OB <Down>
+imap OA <Up>
+imap OD <Left>
+imap OC <Right>
 
 command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
 
@@ -207,15 +212,15 @@ function! CloseBufferAndPossiblyWindow()
         \ || (len(getbufinfo({'buflisted':1})) == 1 && winnr('$') == 1)
         \ || getwinvar('.', '&previewwindow') == 1
         \ || empty(&ft)
-    execute "silent Sayonara"
+    exe "q"
   else
-    execute "silent Sayonara!"
+    execute "silent Bdelete"
   endif
 endfunction
 
 nnoremap <silent> <leader>q :call CloseBufferAndPossiblyWindow()<CR>
 " close window
-nnoremap <silent> <leader>Q :q<CR>
+nnoremap <silent> <leader>Q :close<CR>
 
 function! CleanNoNameEmptyBuffers()
   let buffers = filter(
@@ -307,6 +312,21 @@ Plug 'tpope/vim-surround'
 Plug 'tommcdo/vim-exchange'
 " I use it for more robust substitutions, but it does alot more
 Plug 'tpope/vim-abolish'
+Plug 'AndrewRadev/switch.vim'
+Plug 'AndrewRadev/splitjoin.vim'
+  function! s:try(cmd, default)
+    if exists(':' . a:cmd) && !v:count
+      let tick = b:changedtick
+      execute a:cmd
+      if tick == b:changedtick
+        execute join(['normal!', a:default])
+      endif
+    else
+      execute join(['normal! ', v:count, a:default], '')
+    endif
+  endfunction
+  nnoremap <silent> J :<C-u>call <SID>try('SplitjoinJoin',  'J')<CR>
+  nnoremap <silent> sj :<C-u>call <SID>try('SplitjoinSplit', "r\015")<CR>
 
 " Colors
 """"""""""""""""""""""""""""""""""""
@@ -320,8 +340,8 @@ Plug 'KabbAmine/vCoolor.vim'
 
 " Buffer/tab/window management
 """"""""""""""""""""""""""""""""""""
-" Commands for closing buffers while keeping/destroying the window it was displayed in.
-Plug 'mhinz/vim-sayonara'
+" Commands for closing buffers
+Plug 'moll/vim-bbye'
 " Easy movement between vim windows and tmux panes.
 Plug 'christoomey/vim-tmux-navigator'
   let g:tmux_navigator_no_mappings = 1
@@ -358,111 +378,97 @@ Plug 'mbbill/undotree'
 Plug 'andymass/vim-matchup'
   " Don't display offscreen matches in my statusline or a popup window
   let g:matchup_matchparen_offscreen = {}
-Plug 'AndrewRadev/splitjoin.vim'
-  function! s:try(cmd, default)
-    if exists(':' . a:cmd) && !v:count
-      let tick = b:changedtick
-      execute a:cmd
-      if tick == b:changedtick
-        execute join(['normal!', a:default])
-      endif
-    else
-      execute join(['normal! ', v:count, a:default], '')
-    endif
-  endfunction
-  nnoremap <silent> J :<C-u>call <SID>try('SplitjoinJoin',  'J')<CR>
-  nnoremap <silent> sj :<C-u>call <SID>try('SplitjoinSplit', "r\015")<CR>
+Plug 'junegunn/vim-peekaboo'
+  let g:peekaboo_window = 'vert bo 40new'
 
-" Fuzzy finder
+" Search
 """"""""""""""""""""""""""""""""""""
-command! -nargs=+ -complete=file Grep
-  \ execute 'silent grep! "<args>"' | redraw! | copen
-if executable('fzf')
-  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    " Customize fzf colors to match color scheme
-    " - fzf#wrap translates this to a set of `--color` options
-    let g:fzf_colors =
-    \ { 'fg': ['fg', 'Normal'], 'bg': ['bg', 'Normal'], 'hl': ['fg', 'Comment'],
-      \ 'fg+': ['fg', 'CursorLine', 'CursorColumn', 'Normal'], 'bg+': ['bg', 'CursorLine', 'CursorColumn'],
-      \ 'hl+': ['fg', 'Statement'], 'info': ['fg', 'PreProc'], 'border': ['fg', 'Ignore'],
-      \ 'prompt': ['fg', 'Conditional'], 'pointer': ['fg', 'Exception'], 'marker': ['fg', 'Keyword'],
-      \ 'spinner': ['fg', 'Label'], 'header': ['fg', 'Comment'] }
-    Plug 'junegunn/fzf.vim'
-  " Cheatsheet
-  command! -bang -nargs=* Cheatsheet call
-        \ fzf#run(fzf#wrap({
-        \ 'source': s:command_list,
-        \ 'sink': function('CheatsheetSink')}))
-  nnoremap <Leader><Leader> :Cheatsheet<CR>
-  " Buffer
-  nnoremap <Leader>b :Buffers<CR>
-  " Marks
-  nnoremap <Leader>m :Marks<CR>
-  if executable('rg')
-    let s:fzfFindLineCommand = 'rg '.$RG_DEFAULT_OPTIONS
-    let s:fzfFindFileCommand = 'rg '.$RG_DEFAULT_OPTIONS.' --files'
-    " recursive grep
-    function! FindLineResultHandler(result)
-      let l:resultTokens = split(a:result, ':')
-      let l:filename = l:resultTokens[0]
-      let l:lineNumber = l:resultTokens[1]
-      execute 'silent edit '.l:filename
-      execute l:lineNumber
-    endfunction
-    command! -bang -nargs=* FindLine call
-          \ fzf#vim#grep(
-          \ s:fzfFindLineCommand.' '.shellescape(<q-args>).' | tr -d "\017"',
-          \ 1,
-          \ fzf#vim#with_preview({'sink': function('FindLineResultHandler'), 'options': '--delimiter : --nth 4..'}),
-          \ <bang>0)
-    nnoremap <Leader>g :FindLine<CR>
-    " recursive file search
-    command! -bang -nargs=* FindFile call
-          \ fzf#run(fzf#wrap({
-          \ 'source': s:fzfFindFileCommand.' | tr -d "\017"',
-          \ 'sink': 'edit'}))
-    nnoremap <Leader>f :FindFile<CR>
-  else
-    nnoremap <Leader>f :Files<CR>
-    nnoremap <Leader>g :Lines<CR>
-  endif
-else
-  Plug 'ctrlpvim/ctrlp.vim'
-    let g:ctrlp_prompt_mappings = {
-          \ 'PrtSelectMove("j")':   ['<c-j>', '<down>', '<tab>'],
-          \ 'PrtSelectMove("k")':   ['<c-k>', '<up>', '<s-tab>'],
-          \ 'ToggleFocus()': [], 'PrtExpandDir()': [],
-          \ }
-    nnoremap <Leader>f :CtrlP<CR>
-    nnoremap <Leader>b :CtrlPBuffer<CR>
-    function! RegisterCheatsheet()
-      let g:CheatsheetInit = {-> s:command_list}
-      function! CheatsheetAccept(mode, str)
-        call ctrlp#exit()
-        call CheatsheetSink(a:str)
-      endfunction
-      call add(g:ctrlp_ext_vars, {
-            \ 'init': 'g:CheatsheetInit()',
-            \ 'accept': 'CheatsheetAccept',
-            \ 'lname': 'cheatsheet',
-            \ 'sname': 'csheet',
-            \ 'type': 'line',
-            \ 'sort': 0,
-            \ })
-      let s:cheatsheet_id = g:ctrlp_builtins + len(g:ctrlp_ext_vars)
-      command! CtrlPCheatsheet call ctrlp#init(s:cheatsheet_id)
-      nnoremap <Leader><Leader> :CtrlPCheatsheet<CR>
-    endfunction
-    " Have to do this after ctrlp loads since we need reference to g:ctrlp_ext_vars
-    autocmd VimEnter * call RegisterCheatsheet()
-  nnoremap <Leader>g :Grep 
-  if executable('rg')
-    let g:ctrlp_user_command = 'rg ' . $RG_DEFAULT_OPTIONS . ' --files --vimgrep'
-    let g:ctrlp_use_caching = 0
-  else
-    let g:ctrlp_clear_cache_on_exit = 0
-  endif
-endif
+" The author said this is experimental so I'll pin a commit to avoid breaking changes
+Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b0134aa1e2d9'}
+  Plug 'prabirshrestha/quickpick-colorschemes.vim'
+  function! QuickpickMappings()
+    " move next
+    imap <silent> <buffer> <Down> <Plug>(quickpick-move-next)
+    nmap <silent> <buffer> <Down> <Plug>(quickpick-move-next)
+    imap <silent> <buffer> <C-j> <Plug>(quickpick-move-next)
+    nmap <silent> <buffer> <C-j> <Plug>(quickpick-move-next)
+    " move previous
+    imap <silent> <buffer> <Up> <Plug>(quickpick-move-previous)
+    nmap <silent> <buffer> <Up> <Plug>(quickpick-move-previous)
+    imap <silent> <buffer> <C-k> <Plug>(quickpick-move-previous)
+    nmap <silent> <buffer> <C-k> <Plug>(quickpick-move-previous)
+  endfunction
+  call sign_define("quickpick_cursor", {'text': '> ', 'texthl': 'Normal'})
+  augroup Quickpick
+    autocmd!
+    autocmd ColorScheme *
+          \ highlight QuickpickInvisibleStatusLine guibg=NONE guifg=#2E3440 ctermbg=NONE ctermfg=NONE
+    autocmd FileType quickpick
+          \ setlocal cursorline |
+          \ setlocal cursorlineopt=line |
+          \ setlocal statusline=%#QuickpickInvisibleStatusLine#
+    autocmd FileType quickpick-filter
+          \ call QuickpickMappings() |
+          \ call sign_place(0, '', 'quickpick_cursor', 'quickpick-filter', {'lnum': 1})
+  augroup END
+  " File search
+  function! QuickpickFiles() abort
+    call quickpick#open({
+      \ 'items': [],
+      \ 'on_accept': function('s:quickpick_files_on_accept'),
+      \ 'on_selection': function('s:quickpick_files_on_selection'),
+      \ 'on_change': function('s:quickpick_files_on_change'),
+      \ })
+  endfunction
+  function! s:quickpick_files_on_accept(data, ...) abort
+    call quickpick#close()
+    exe 'edit ' . a:data['items'][0]
+  endfunction
+  function! s:quickpick_files_on_selection(data, ...) abort
+    return
+  endfunction
+  function! s:quickpick_files_on_change(data, ...) abort
+    call quickpick#items(systemlist('rg --vimgrep --files ' . ' --glob "*' . a:data['input'] . '*" ' . $RG_DEFAULT_OPTIONS ))
+  endfunction
+  nnoremap <Leader>f :call QuickpickFiles()<CR>
+  " Line search
+  function! QuickpickLines() abort
+    call quickpick#open({
+      \ 'items': [],
+      \ 'on_accept': function('s:quickpick_lines_on_accept'),
+      \ 'on_selection': function('s:quickpick_lines_on_selection'),
+      \ 'on_change': function('s:quickpick_lines_on_change'),
+      \ })
+  endfunction
+  function! s:quickpick_lines_on_accept(data, ...) abort
+    call quickpick#close()
+  endfunction
+  function! s:quickpick_lines_on_selection(data, ...) abort
+    return
+  endfunction
+  function! s:quickpick_lines_on_change(data, ...) abort
+    call quickpick#items(systemlist('rg '.$RG_DEFAULT_OPTIONS.' ' . shellescape(a:data['input'])))
+  endfunction
+  nnoremap <Leader>g :call QuickpickLines()<CR>
+  " Buffer search
+  function! QuickpickBuffers() abort
+    call quickpick#open({
+      \ 'items': [],
+      \ 'on_accept': function('s:quickpick_buffers_on_accept'),
+      \ 'on_selection': function('s:quickpick_buffers_on_selection'),
+      \ 'on_change': function('s:quickpick_buffers_on_change'),
+      \ })
+  endfunction
+  function! s:quickpick_buffers_on_accept(data, ...) abort
+    call quickpick#close()
+  endfunction
+  function! s:quickpick_buffers_on_selection(data, ...) abort
+    return
+  endfunction
+  function! s:quickpick_buffers_on_change(data, ...) abort
+    call quickpick#items()
+  endfunction
+  nnoremap <Leader>b :call QuickpickBuffers()<CR>
 
 " IDE features (e.g. autocomplete, smart refactoring, goto definition, etc.)
 """"""""""""""""""""""""""""""""""""
@@ -544,17 +550,9 @@ Plug 'Shougo/neco-vim'
       \ 'allowlist': ['vim'],
       \ 'completor': function('asyncomplete#sources#necovim#completor'),
       \ }))
-Plug 'Shougo/neco-syntax'
-  Plug 'prabirshrestha/asyncomplete-necosyntax.vim'
-  autocmd User asyncomplete_setup
-    \ call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
-    \ 'name': 'necosyntax',
-    \ 'allowlist': ['vim'],
-    \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
-    \ }))
 " Expands Emmet abbreviations to write HTML more quickly
 Plug 'mattn/emmet-vim'
-  let g:user_emmet_expandabbr_key = '<C-e>'
+  let g:user_emmet_expandabbr_key = '<C-e>,'
   Plug 'prabirshrestha/asyncomplete-emmet.vim'
   autocmd User asyncomplete_setup
       \ call asyncomplete#register_source(asyncomplete#sources#emmet#get_source_options({
@@ -637,14 +635,8 @@ augroup Styles
   autocmd!
   " Increase brightness of comments in nord
   autocmd ColorScheme nord highlight Comment guifg=#6d7a96
-  " Make CursorLine look like an underline
-  autocmd ColorScheme * hi clear CursorLine
-  autocmd ColorScheme * hi CursorLine gui=underline cterm=underline
   " MatchParen
   autocmd Colorscheme * hi MatchParen ctermfg=blue guifg=#5E81AC cterm=underline gui=underline guibg=NONE ctermbg=NONE
-  " Only highlight the current line on the active window
-  au WinLeave * set nocursorline
-  au WinEnter * set cursorline
   " Transparent SignColumn
   autocmd Colorscheme solarized8,nord hi clear SignColumn
   autocmd Colorscheme solarized8 hi DiffAdd ctermbg=NONE guibg=NONE
@@ -657,14 +649,16 @@ augroup Styles
   " Transparent number column
   autocmd Colorscheme solarized8 hi clear CursorLineNR
   autocmd Colorscheme solarized8 hi clear LineNR
-  " Transparent vertical split (line that divides NERDTree and editor)
+  " Transparent vertical split
   autocmd Colorscheme solarized8,nord highlight VertSplit ctermbg=NONE guibg=NONE
   " statusline colors
-  autocmd ColorScheme nord hi StatusLine guibg=#6E90B4 guifg=#2E3440 ctermfg=1 ctermbg=3
-  autocmd ColorScheme nord hi StatusLineNC guibg=#3B4252 ctermbg=1 guifg=#ECEFF4 ctermfg=8
+  autocmd ColorScheme nord hi StatusLine guibg=#2E3440 guifg=#88C0D0 ctermfg=1 ctermbg=3
+  autocmd ColorScheme nord hi StatusLineNC guibg=#2E3440 guifg=#E5E9F0  ctermfg=1 ctermbg=3
   " autocomplete popupmenu
-  autocmd ColorScheme * highlight! link PmenuSel StatusLine
-  autocmd ColorScheme * highlight! link Pmenu StatusLineNC
+  autocmd ColorScheme * highlight PmenuSel guibg=#6E90B4 guifg=#2E3440 ctermfg=1 ctermbg=3
+  autocmd ColorScheme * highlight Pmenu guibg=#3B4252 ctermbg=12E3440 guifg=#ECEFF4 ctermfg=81 ctermbg=3
+  " transparent background
+  autocmd Colorscheme * hi Normal ctermbg=NONE guibg=NONE
 augroup END
 
 augroup Miscellaneous
@@ -673,10 +667,7 @@ augroup Miscellaneous
   " sets the textwidth to 78 if it is currently 0. This sets it back to 0
   autocmd VimEnter * :set tw=0
   " Set a default omnifunc
-  autocmd FileType *
-        \	if index(asyncomplete#get_source_names(), 'necosyntax', 0, 1) < 0 && &omnifunc == "" |
-          \ setlocal omnifunc=syntaxcomplete#Complete |
-        \	endif
+  autocmd FileType * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
   " Set fold method for vim
   autocmd FileType vim setlocal foldmethod=indent
   " Extend iskeyword for filetypes that can reference CSS classes
@@ -699,7 +690,7 @@ augroup Miscellaneous
   autocmd FileType vim setlocal keywordprg=:help
   augroup HighlightWordUnderCursor
     autocmd!
-    autocmd CursorMoved * exe printf('match StatusLineNC /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+    autocmd CursorMoved * exe printf('match Pmenu /\V\<%s\>/', escape(expand('<cword>'), '/\'))
   augroup END
   " keywordprg with fallbacks
   function! ChainedKeywordprg()
@@ -712,14 +703,6 @@ augroup Miscellaneous
     return 'K'
   endfunction
   nmap <expr> K ChainedKeywordprg()
-  " If there's a language server running, assign keywordprg to its hover feature.
-  " Unless it's bash or vim in which case they'll use man pages and vim help pages respectively.
-  " Also disable the native highlighter in favor of the LSP semantic one
-  autocmd User lsp_server_init
-        \ if execute("LspStatus") =~? 'running' |
-          \ :match none |
-          \ augroup HighlightWordUnderCursor | autocmd! | augroup END |
-        \ endif
   " After a quickfix command is run, open the quickfix window , if there are results
   autocmd QuickFixCmdPost [^l]* cwindow
   autocmd QuickFixCmdPost l*    lwindow
@@ -747,7 +730,7 @@ augroup END
 " -------------------------------------
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
-set fillchars=vert:│,stl:\ ,stlnc:\  " saving these unicode chars in case I wanna switch back: │ ─ ―
+set fillchars=vert:│,stl:─,stlnc:─ " saving these unicode chars in case I wanna switch back: │ ─ ―
 function! LinterInfo()
   let l:result = ""
   let l:cur_buffer = bufnr("%")
@@ -786,7 +769,10 @@ function! LspInfo()
   endif
   return ""
 endfunction
-set statusline=\ %h%w%q%f%m%r\ │\ Ln\ %l/%L,\ Col\ %c\ %{LinterInfo()}%{LspInfo()}
+function! MyStatusLine()
+  return "%=\ %h%w%q%t%m%r,\ Ln:%l/%L,\ Col:%c\ "
+endfunction
+set statusline=%{%MyStatusLine()%}
 
 " Block cursor in normal mode, thin line in insert mode, and underline in replace mode.
 " Might not work in all terminals.
@@ -815,7 +801,7 @@ endfunction
 if !has('macunix')
   call SyncColorschemeWithOs()
   " Check periodically to see if darkmode is toggled on the OS and update the vim theme accordingly.
-  call timer_start(5000, function('SyncColorschemeWithOs'), {"repeat": -1})
+  " call timer_start(5000, function('SyncColorschemeWithOs'), {"repeat": -1})
 else
   call SetColorscheme('dark')
 endif
