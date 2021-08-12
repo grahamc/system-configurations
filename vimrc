@@ -36,7 +36,6 @@ set nojoinspaces " Prevents inserting two spaces after punctuation on a join (J)
 set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
 set autoread " Re-read file if it is changed by an external program
 set nolazyredraw
-set foldmethod=syntax
 set foldlevel=20
 set scrolloff=10
 set wrap
@@ -211,10 +210,9 @@ function! CloseBufferAndPossiblyWindow()
   if &l:filetype ==? "help"
         \ || (len(getbufinfo({'buflisted':1})) == 1 && winnr('$') == 1)
         \ || getwinvar('.', '&previewwindow') == 1
-        \ || empty(&ft)
     exe "q"
   else
-    execute "silent Bdelete"
+    execute "silent bdelete"
   endif
 endfunction
 
@@ -312,7 +310,7 @@ Plug 'tpope/vim-surround'
 Plug 'tommcdo/vim-exchange'
 " I use it for more robust substitutions, but it does alot more
 Plug 'tpope/vim-abolish'
-Plug 'AndrewRadev/switch.vim'
+" Split/join lines, adding/removing language-specific continuation characters as necessary
 Plug 'AndrewRadev/splitjoin.vim'
   function! s:try(cmd, default)
     if exists(':' . a:cmd) && !v:count
@@ -327,6 +325,7 @@ Plug 'AndrewRadev/splitjoin.vim'
   endfunction
   nnoremap <silent> J :<C-u>call <SID>try('SplitjoinJoin',  'J')<CR>
   nnoremap <silent> sj :<C-u>call <SID>try('SplitjoinSplit', "r\015")<CR>
+Plug 'AndrewRadev/switch.vim'
 
 " Colors
 """"""""""""""""""""""""""""""""""""
@@ -340,8 +339,6 @@ Plug 'KabbAmine/vCoolor.vim'
 
 " Buffer/tab/window management
 """"""""""""""""""""""""""""""""""""
-" Commands for closing buffers
-Plug 'moll/vim-bbye'
 " Easy movement between vim windows and tmux panes.
 Plug 'christoomey/vim-tmux-navigator'
   let g:tmux_navigator_no_mappings = 1
@@ -355,16 +352,25 @@ Plug 'christoomey/vim-tmux-navigator'
 " Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
 Plug 'mhinz/vim-signify'
 
-" Misc.
+" Explorers
 """"""""""""""""""""""""""""""""""""
 " File explorer
 Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
   let g:NERDTreeMouseMode=2
   let g:NERDTreeWinPos="right"
   let g:NERDTreeShowHidden=1
+  " Sync nerdtree across tabs
   Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
     let g:nerdtree_tabs_autofind = 1
     nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
+" Visualizes the undo tree
+Plug 'mbbill/undotree'
+" Open a split with the current register values when '"' or '@' is pressed
+Plug 'junegunn/vim-peekaboo'
+  let g:peekaboo_window = 'vert bo 40new'
+
+" Misc.
+""""""""""""""""""""""""""""""""""""
 " A tool for profiling vim's startup time. Useful for finding slow plugins.
 Plug 'tweekmonster/startuptime.vim'
 " Visualizes indentation in the buffer. Useful for fixing incorrectly indented lines.
@@ -372,14 +378,10 @@ Plug 'Yggdroot/indentLine'
   let g:indentLine_char = '▏'
   let g:indentLine_setColors = 0
   let g:indentLine_enabled = 0
-" Visualizes undo tree
-Plug 'mbbill/undotree'
 " replacement for matchit since matchit wasn't working for me
 Plug 'andymass/vim-matchup'
   " Don't display offscreen matches in my statusline or a popup window
   let g:matchup_matchparen_offscreen = {}
-Plug 'junegunn/vim-peekaboo'
-  let g:peekaboo_window = 'vert bo 40new'
 
 " Search
 """"""""""""""""""""""""""""""""""""
@@ -390,13 +392,13 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
     " move next
     imap <silent> <buffer> <Down> <Plug>(quickpick-move-next)
     nmap <silent> <buffer> <Down> <Plug>(quickpick-move-next)
-    imap <silent> <buffer> <C-j> <Plug>(quickpick-move-next)
-    nmap <silent> <buffer> <C-j> <Plug>(quickpick-move-next)
+    imap <silent> <buffer> <Tab> <Plug>(quickpick-move-next)
+    nmap <silent> <buffer> <Tab> <Plug>(quickpick-move-next)
     " move previous
     imap <silent> <buffer> <Up> <Plug>(quickpick-move-previous)
     nmap <silent> <buffer> <Up> <Plug>(quickpick-move-previous)
-    imap <silent> <buffer> <C-k> <Plug>(quickpick-move-previous)
-    nmap <silent> <buffer> <C-k> <Plug>(quickpick-move-previous)
+    imap <silent> <buffer> <S-Tab> <Plug>(quickpick-move-previous)
+    nmap <silent> <buffer> <S-Tab> <Plug>(quickpick-move-previous)
   endfunction
   call sign_define("quickpick_cursor", {'text': '> ', 'texthl': 'Normal'})
   augroup Quickpick
@@ -428,47 +430,82 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
     return
   endfunction
   function! s:quickpick_files_on_change(data, ...) abort
-    call quickpick#items(systemlist('rg --vimgrep --files ' . ' --glob "*' . a:data['input'] . '*" ' . $RG_DEFAULT_OPTIONS ))
+    call quickpick#items(systemlist('rg --vimgrep --files --glob "*' . a:data['input'] . '*" ' . $RG_DEFAULT_OPTIONS ))
   endfunction
-  nnoremap <Leader>f :call QuickpickFiles()<CR>
+  nnoremap <silent> <Leader>f :silent! call QuickpickFiles()<CR>
   " Line search
   function! QuickpickLines() abort
+    let s:quickpick_current_buffer = bufnr()
+    let s:quickpick_current_window = win_getid()
+    let s:quickpick_current_line = line(".")
     call quickpick#open({
       \ 'items': [],
       \ 'on_accept': function('s:quickpick_lines_on_accept'),
       \ 'on_selection': function('s:quickpick_lines_on_selection'),
       \ 'on_change': function('s:quickpick_lines_on_change'),
+      \ 'on_cancel': function('s:quickpick_lines_on_cancel'),
       \ })
   endfunction
   function! s:quickpick_lines_on_accept(data, ...) abort
     call quickpick#close()
+    let [l:file, l:line; rest] = a:data['items'][0]->split(':')
+    exe 'edit +' . l:line . ' ' . l:file
+  endfunction
+  function! s:quickpick_lines_on_cancel(data, ...) abort
+    call quickpick#close()
+    setlocal cursorlineopt=number
+    if bufnr() != s:quickpick_current_buffer
+      exe 'b' . s:quickpick_current_buffer
+    endif
+    if line(".") != s:quickpick_current_line
+      exe s:quickpick_current_line
+      exe "normal! zz"
+    endif
   endfunction
   function! s:quickpick_lines_on_selection(data, ...) abort
-    return
+    if empty(a:data['items'])
+      return
+    endif
+    let [l:file, l:line; rest] = a:data['items'][0]->split(':')
+    call win_execute(s:quickpick_current_window, 'keepjumps edit +' . l:line . ' ' . l:file)
+    call win_execute(s:quickpick_current_window, 'setlocal cursorlineopt=both')
   endfunction
   function! s:quickpick_lines_on_change(data, ...) abort
     call quickpick#items(systemlist('rg '.$RG_DEFAULT_OPTIONS.' ' . shellescape(a:data['input'])))
   endfunction
-  nnoremap <Leader>g :call QuickpickLines()<CR>
+  nnoremap <silent> <Leader>g :silent! call QuickpickLines()<CR>
   " Buffer search
   function! QuickpickBuffers() abort
+    let s:quickpick_current_buffer = bufnr()
     call quickpick#open({
-      \ 'items': [],
+      \ 'items': s:quickpick_buffers_list(),
       \ 'on_accept': function('s:quickpick_buffers_on_accept'),
-      \ 'on_selection': function('s:quickpick_buffers_on_selection'),
-      \ 'on_change': function('s:quickpick_buffers_on_change'),
       \ })
+  endfunction
+  function! s:quickpick_buffers_list() abort
+    let l:buffer_numbers = filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&filetype") != "qf" && v:val != s:quickpick_current_buffer')
+
+    if empty(l:buffer_numbers)
+      return l:buffer_numbers
+    endif
+
+    " previous buffer gets listed first
+    let l:previous_buffer = bufnr('#')
+    let l:previous_buffer_index = index(l:buffer_numbers, l:previous_buffer)
+    if l:previous_buffer_index != -1
+      let [l:buffer_numbers[0], l:buffer_numbers[l:previous_buffer_index]] = [l:buffer_numbers[l:previous_buffer_index], l:buffer_numbers[0]]
+    endif
+
+    let l:formatted_buffer_numbers = mapnew(l:buffer_numbers, { index, buf -> '[' . buf . '] ' . bufname(buf) })
+
+    return l:formatted_buffer_numbers
   endfunction
   function! s:quickpick_buffers_on_accept(data, ...) abort
     call quickpick#close()
+    " go to the buffer specified by the number in between braces
+    exe 'b' . a:data['items'][0]->split('[\[|\]]', 0)[0]
   endfunction
-  function! s:quickpick_buffers_on_selection(data, ...) abort
-    return
-  endfunction
-  function! s:quickpick_buffers_on_change(data, ...) abort
-    call quickpick#items()
-  endfunction
-  nnoremap <Leader>b :call QuickpickBuffers()<CR>
+  nnoremap <silent> <Leader>b :silent! call QuickpickBuffers()<CR>
 
 " IDE features (e.g. autocomplete, smart refactoring, goto definition, etc.)
 """"""""""""""""""""""""""""""""""""
@@ -669,7 +706,7 @@ augroup Miscellaneous
   " Set a default omnifunc
   autocmd FileType * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
   " Set fold method for vim
-  autocmd FileType vim setlocal foldmethod=indent
+  autocmd FileType * if &ft ==# 'vim' | setlocal foldmethod=indent | else | setlocal foldmethod=syntax | endif
   " Extend iskeyword for filetypes that can reference CSS classes
   autocmd FileType
     \ css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss
@@ -798,7 +835,7 @@ function! SyncColorschemeWithOs(...)
     call SetColorscheme(l:new_vim_background)
   endif
 endfunction
-if !has('macunix')
+if has('macunix')
   call SyncColorschemeWithOs()
   " Check periodically to see if darkmode is toggled on the OS and update the vim theme accordingly.
   " call timer_start(5000, function('SyncColorschemeWithOs'), {"repeat": -1})
