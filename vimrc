@@ -430,7 +430,7 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
     return
   endfunction
   function! s:quickpick_files_on_change(data, ...) abort
-    call quickpick#items(systemlist('rg --vimgrep --files --glob "*' . a:data['input'] . '*" ' . $RG_DEFAULT_OPTIONS ))
+    call quickpick#items(systemlist('rg --vimgrep --files ' . $RG_DEFAULT_OPTIONS . ' | fzf --filter ' . shellescape(a:data['input'])))
   endfunction
   nnoremap <silent> <Leader>f :silent! call QuickpickFiles()<CR>
   " Line search
@@ -438,8 +438,8 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
     let s:quickpick_current_buffer = bufnr()
     let s:quickpick_current_window = win_getid()
     let s:quickpick_current_line = line(".")
+    let s:quickpick_popup = v:none
     call quickpick#open({
-      \ 'items': [],
       \ 'on_accept': function('s:quickpick_lines_on_accept'),
       \ 'on_selection': function('s:quickpick_lines_on_selection'),
       \ 'on_change': function('s:quickpick_lines_on_change'),
@@ -448,11 +448,19 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
   endfunction
   function! s:quickpick_lines_on_accept(data, ...) abort
     call quickpick#close()
+    if s:quickpick_popup != v:none
+      call popup_close(s:quickpick_popup)
+      let s:quickpick_popup = v:none
+    endif
     let [l:file, l:line; rest] = a:data['items'][0]->split(':')
     exe 'edit +' . l:line . ' ' . l:file
   endfunction
   function! s:quickpick_lines_on_cancel(data, ...) abort
     call quickpick#close()
+    if s:quickpick_popup != v:none
+      call popup_close(s:quickpick_popup)
+      let s:quickpick_popup = v:none
+    endif
     setlocal cursorlineopt=number
     if bufnr() != s:quickpick_current_buffer
       exe 'b' . s:quickpick_current_buffer
@@ -467,8 +475,31 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
       return
     endif
     let [l:file, l:line; rest] = a:data['items'][0]->split(':')
-    call win_execute(s:quickpick_current_window, 'keepjumps edit +' . l:line . ' ' . l:file)
-    call win_execute(s:quickpick_current_window, 'setlocal cursorlineopt=both')
+    let l:wininfo = getwininfo(bufwinid('quickpick-filter'))[0]
+
+    if s:quickpick_popup != v:none
+      call popup_close(s:quickpick_popup)
+      let s:quickpick_popup = v:none
+    endif
+
+    " open buffer for file if it isn't already open
+    let l:buffer_number = bufadd(l:file)
+
+    let s:quickpick_popup_options = {
+          \ 'pos':    'botleft',
+          \ 'borderchars': ['─', '│', '─', '│', '┌', '┐', '┘', '└'],
+          \ 'border': [1,1,1,1],
+          \ 'title':  "Preview",
+          \ 'maxheight': 7,
+          \ 'minwidth':  l:wininfo.width - 3,
+          \ 'maxwidth':  l:wininfo.width - 3,
+          \ 'col':       l:wininfo.wincol,
+          \ 'line':      l:wininfo.winrow - 15,
+          \ }
+    silent let s:quickpick_popup = popup_create(l:buffer_number, s:quickpick_popup_options)
+    call win_execute(s:quickpick_popup, 'normal! '. l:line .'Gzz')
+    call win_execute(s:quickpick_popup, 'setlocal cursorline')
+    call win_execute(s:quickpick_popup, 'setlocal cursorlineopt=both')
   endfunction
   function! s:quickpick_lines_on_change(data, ...) abort
     call quickpick#items(systemlist('rg '.$RG_DEFAULT_OPTIONS.' ' . shellescape(a:data['input'])))
@@ -477,12 +508,15 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
   " Buffer search
   function! QuickpickBuffers() abort
     let s:quickpick_current_buffer = bufnr()
+    let s:quickpick_buffers = s:quickpick_get_buffers()
+    let s:quickpick_buffers_string = s:quickpick_buffers->join("\n")
     call quickpick#open({
-      \ 'items': s:quickpick_buffers_list(),
+      \ 'items': s:quickpick_buffers,
       \ 'on_accept': function('s:quickpick_buffers_on_accept'),
+      \ 'on_change': function('s:quickpick_buffers_on_change'),
       \ })
   endfunction
-  function! s:quickpick_buffers_list() abort
+  function! s:quickpick_get_buffers() abort
     let l:buffer_numbers = filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&filetype") != "qf" && v:val != s:quickpick_current_buffer')
 
     if empty(l:buffer_numbers)
@@ -504,6 +538,9 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
     call quickpick#close()
     " go to the buffer specified by the number in between braces
     exe 'b' . a:data['items'][0]->split('[\[|\]]', 0)[0]
+  endfunction
+  function! s:quickpick_buffers_on_change(data, ...) abort
+    call quickpick#items(systemlist('fzf --filter ' . shellescape(a:data['input']), s:quickpick_buffers_string))
   endfunction
   nnoremap <silent> <Leader>b :silent! call QuickpickBuffers()<CR>
 
@@ -696,6 +733,8 @@ augroup Styles
   autocmd ColorScheme * highlight Pmenu guibg=#3B4252 ctermbg=12E3440 guifg=#ECEFF4 ctermfg=81 ctermbg=3
   " transparent background
   autocmd Colorscheme * hi Normal ctermbg=NONE guibg=NONE
+  " cursorline for quickpick
+  autocmd Colorscheme * highlight! link CursorLine PmenuSel
 augroup END
 
 augroup Miscellaneous

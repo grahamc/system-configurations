@@ -58,6 +58,7 @@ export RG_DEFAULT_OPTIONS='--hidden --column --line-number --no-heading --fixed-
     --glob "!.vscode" \
     --glob "!dist" \
     --glob "!package-lock.json" \
+    --glob "!.DS_Store" \
     --glob "!node_modules"'
 
 #fzf
