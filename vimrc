@@ -92,8 +92,7 @@ let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
 
 " Section: Mappings
 " NOTE: "<C-U>" is added to a lot of mappings to clear the visual selection
-" that is being added automatically. Without it, trying to run a command
-" through :Cheatsheet won't work.
+" that is being added automatically.
 " see: https://stackoverflow.com/questions/13830874/why-do-some-vim-mappings-include-c-u-after-a-colon
 " -------------------------------------
 " Map the output of these key combinations to their actual names
@@ -137,19 +136,21 @@ nnoremap <Leader>r :source $MYVIMRC<CR>
 nnoremap <Leader>x :wqa<CR>
 nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
 nnoremap <silent> <Leader>t :vimgrep /TODO/j **/*<CR>
-nnoremap <Leader>u :UndotreeToggle<CR>
+
+" move to beginning of line
+cnoremap <C-a> <C-b>
 
 " Search for selected text, forwards or backwards.
 vnoremap <silent> * :<C-U>
-  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-  \gvy/<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
-  \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
-  \gVzv:call setreg('"', old_reg, old_regtype)<CR>
+  \let old_reg=getreg('y')<Bar>let old_regtype=getregtype('y')<CR>
+  \gv"yy/<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
+  \escape(@y, '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+  \gVzv:call setreg('y', old_reg, old_regtype)<CR>
 vnoremap <silent> # :<C-U>
-  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-  \gvy?<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
-  \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
-  \gVzv:call setreg('"', old_reg, old_regtype)<CR>
+  \let old_reg=getreg('y')<Bar>let old_regtype=getregtype('y')<CR>
+  \gv"yy?<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
+  \escape(@y, '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+  \gVzv:call setreg('y', old_reg, old_regtype)<CR>
 
 " LSP
 nnoremap <Leader>li :<C-U>LspInstallServer<CR>
@@ -162,10 +163,6 @@ nnoremap <Leader>lo :<C-U>LspCodeActionSync source.organizeImports<CR>
 
 " Version Control
 nnoremap <Leader>vk :SignifyHunkDiff<CR>
-
-" buffer navigation
-noremap <silent> <C-Left> :bp<CR>
-noremap <silent> <C-Right> :bn<CR>
 
 " tab navigation
 nnoremap <silent> <S-Left> :tabprevious<CR>
@@ -212,24 +209,13 @@ function! CloseBufferAndPossiblyWindow()
         \ || getwinvar('.', '&previewwindow') == 1
     exe "q"
   else
-    execute "silent bdelete"
+    exe "silent bdelete"
   endif
 endfunction
 
 nnoremap <silent> <leader>q :call CloseBufferAndPossiblyWindow()<CR>
 " close window
 nnoremap <silent> <leader>Q :close<CR>
-
-function! CleanNoNameEmptyBuffers()
-  let buffers = filter(
-        \ range(1, bufnr('$')),
-        \ 'buflisted(v:val) && empty(bufname(v:val)) && bufwinnr(v:val) < 0 && (getbufline(v:val, 1, "$") == [""])'
-        \ )
-  if !empty(buffers)
-    exe 'bd '.join(buffers, ' ')
-  endif
-endfunction
-autocmd BufEnter * call CleanNoNameEmptyBuffers()
 
 " Combine enter key (<CR>) mappings from my plugins
 imap <expr> <CR>
@@ -238,36 +224,6 @@ imap <expr> <CR>
     \ delimitMate#WithinEmptyPair() ?
       \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
       \ "\<CR>\<Plug>DiscretionaryEnd"
-
-" Keybind cheatsheet
-let s:command_list = [
-      \ "Show references [<Leader>lrf]", "Rename symbol [<Leader>lrn]",
-      \ "Next buffer [<S-l>]", "Previous buffer [<S-h>]",
-      \ "Next tab [<S-Up>]", "Previous tab [<S-Down>]",
-      \ "Remove trailing whitespace [<F5>]", "Shift line(s) up [<C-Up>]",
-      \ "Shift line(s) down [<C-Down>]", "Toggle folds [<Leader>z]",
-      \ "Vertical split [s\"]", "Horizontal split [s%]",
-      \ "Close buffer [<Leader>q]", "Close window [<Leader>Q]",
-      \ ]
-function! CheatsheetSink(command)
-  " Extract the keybinding which is always between brackets at the end
-  let l:keybind = a:command[ match(a:command, '\[.*\]$') + 1 : -2 ]
-  " Replace '<leader>' with mapleader
-  let l:keybind = substitute(l:keybind, '<leader>', '\<Space>', 'g')
-  " If the command starts with space, put a 1 before it (:h normal)
-  " TODO: handle multiple spaces
-  if l:keybind =~? '^<space>'
-    let l:keybind = 1 . l:keybind
-  endif
-  " Escape angle bracket sequences, like <C-h>, by prepending a '\'
-  let l:keybind = substitute(l:keybind, '<[a-z,0-9,-]*>', '\="\\" . submatch(0)', 'g')
-  " Escape sequences will only be parsed by vim if the string is in
-  " double quotes so this line will make it a double quoted string,
-  " see: https://vi.stackexchange.com/questions/10916/execute-normal-command-doesnt-work
-  let l:keybind = eval('"' . l:keybind . '"')
-
-  exe "normal " . l:keybind
-endfunction
 
 " Section: Plugins
 " -------------------------------------
@@ -363,8 +319,6 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
   Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
     let g:nerdtree_tabs_autofind = 1
     nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
-" Visualizes the undo tree
-Plug 'mbbill/undotree'
 " Open a split with the current register values when '"' or '@' is pressed
 Plug 'junegunn/vim-peekaboo'
   let g:peekaboo_window = 'vert bo 40new'
@@ -420,6 +374,7 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
       \ 'on_accept': function('s:quickpick_files_on_accept'),
       \ 'on_selection': function('s:quickpick_files_on_selection'),
       \ 'on_change': function('s:quickpick_files_on_change'),
+      \ 'maxheight': 5,
       \ })
   endfunction
   function! s:quickpick_files_on_accept(data, ...) abort
@@ -436,7 +391,6 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
   " Line search
   function! QuickpickLines() abort
     let s:quickpick_current_buffer = bufnr()
-    let s:quickpick_current_window = win_getid()
     let s:quickpick_current_line = line(".")
     let s:quickpick_popup = v:none
     call quickpick#open({
@@ -444,6 +398,7 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
       \ 'on_selection': function('s:quickpick_lines_on_selection'),
       \ 'on_change': function('s:quickpick_lines_on_change'),
       \ 'on_cancel': function('s:quickpick_lines_on_cancel'),
+      \ 'maxheight': 5,
       \ })
   endfunction
   function! s:quickpick_lines_on_accept(data, ...) abort
@@ -461,17 +416,13 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
       call popup_close(s:quickpick_popup)
       let s:quickpick_popup = v:none
     endif
-    setlocal cursorlineopt=number
-    if bufnr() != s:quickpick_current_buffer
-      exe 'b' . s:quickpick_current_buffer
-    endif
-    if line(".") != s:quickpick_current_line
-      exe s:quickpick_current_line
-      exe "normal! zz"
-    endif
   endfunction
   function! s:quickpick_lines_on_selection(data, ...) abort
     if empty(a:data['items'])
+      if s:quickpick_popup != v:none
+        call popup_close(s:quickpick_popup)
+        let s:quickpick_popup = v:none
+      endif
       return
     endif
     let [l:file, l:line; rest] = a:data['items'][0]->split(':')
@@ -494,7 +445,7 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
           \ 'minwidth':  l:wininfo.width - 3,
           \ 'maxwidth':  l:wininfo.width - 3,
           \ 'col':       l:wininfo.wincol,
-          \ 'line':      l:wininfo.winrow - 15,
+          \ 'line':      l:wininfo.winrow - 9,
           \ }
     silent let s:quickpick_popup = popup_create(l:buffer_number, s:quickpick_popup_options)
     call win_execute(s:quickpick_popup, 'normal! '. l:line .'Gzz')
@@ -514,6 +465,7 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
       \ 'items': s:quickpick_buffers,
       \ 'on_accept': function('s:quickpick_buffers_on_accept'),
       \ 'on_change': function('s:quickpick_buffers_on_change'),
+      \ 'maxheight': 5,
       \ })
   endfunction
   function! s:quickpick_get_buffers() abort
@@ -731,8 +683,6 @@ augroup Styles
   " autocomplete popupmenu
   autocmd ColorScheme * highlight PmenuSel guibg=#6E90B4 guifg=#2E3440 ctermfg=1 ctermbg=3
   autocmd ColorScheme * highlight Pmenu guibg=#3B4252 ctermbg=12E3440 guifg=#ECEFF4 ctermfg=81 ctermbg=3
-  " transparent background
-  autocmd Colorscheme * hi Normal ctermbg=NONE guibg=NONE
   " cursorline for quickpick
   autocmd Colorscheme * highlight! link CursorLine PmenuSel
 augroup END
