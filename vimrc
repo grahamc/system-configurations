@@ -100,25 +100,10 @@ let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
 " WARNING: When doing this you should turn off any plugin that
 " automatically adds closing braces since it might accidentally
 " add a closing brace to an escape sequence
-nmap l <M-l>
-nmap h <M-h>
-nmap j <M-j>
-nmap k <M-k>
-vmap l <M-l>
-vmap h <M-h>
-vmap j <M-j>
-vmap k <M-k>
-nmap [1;2D <S-Left>
-nmap [1;2C <S-Right>
-nmap [1;2B <S-Down>
-nmap [1;2A <S-Up>
-nmap [1;5D <C-Left>
-nmap [1;5C <C-Right>
-nmap [1;5B <C-Down>
-nmap [1;5A <C-Up>
-nmap <C-@> <C-Space>
-vmap <C-@> <C-Space>
-imap <C-@> <C-Space>
+map l <M-l>
+map h <M-h>
+map j <M-j>
+map k <M-k>
 imap OB <Down>
 imap OA <Up>
 imap OD <Left>
@@ -164,10 +149,6 @@ nnoremap <Leader>lo :<C-U>LspCodeActionSync source.organizeImports<CR>
 " Version Control
 nnoremap <Leader>vk :SignifyHunkDiff<CR>
 
-" tab navigation
-nnoremap <silent> <S-Left> :tabprevious<CR>
-nnoremap <silent> <S-Right> :tabnext<CR>
-
 " wrap a function call in another function call.
 let @w='hf)%bvf)S)i'
 
@@ -175,14 +156,10 @@ let @w='hf)%bvf)S)i'
 nnoremap <Leader>cc :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 
 " move ten lines at a time by holding ctrl and a directional key
-nnoremap <C-h> 10h
-nnoremap <C-j> 10j
-nnoremap <C-k> 10k
-nnoremap <C-l> 10l
-vnoremap <C-j> 10j
-vnoremap <C-h> 10h
-vnoremap <C-k> 10k
-vnoremap <C-l> 10l
+noremap <C-h> 10h
+noremap <C-j> 10j
+noremap <C-k> 10k
+noremap <C-l> 10l
 
 " If no lines are folded, fold everything.
 " If any line is folded, unfold everything
@@ -197,25 +174,9 @@ function ToggleFolds()
 endfunction
 nnoremap <silent> <Leader>z :call ToggleFolds()<CR>
 
-nnoremap s" :vsplit<CR>
-nnoremap s% :split<CR>
-
-function! CloseBufferAndPossiblyWindow()
-  " If the current buffer is a help or preview page or there is only one window and one buffer
-  " left, then close the window and buffer.
-  " Otherwise close the buffer and preserve the window
-  if &l:filetype ==? "help"
-        \ || (len(getbufinfo({'buflisted':1})) == 1 && winnr('$') == 1)
-        \ || getwinvar('.', '&previewwindow') == 1
-    exe "q"
-  else
-    exe "silent bdelete"
-  endif
-endfunction
-
-nnoremap <silent> <leader>q :call CloseBufferAndPossiblyWindow()<CR>
-" close window
-nnoremap <silent> <leader>Q :close<CR>
+nnoremap <Leader>" :vsplit<CR>
+nnoremap <Leader>% :split<CR>
+nnoremap <silent> <leader>q :close<CR>
 
 " Combine enter key (<CR>) mappings from my plugins
 imap <expr> <CR>
@@ -309,10 +270,10 @@ Plug 'KabbAmine/vCoolor.vim'
 " Easy movement between vim windows and tmux panes.
 Plug 'christoomey/vim-tmux-navigator'
   let g:tmux_navigator_no_mappings = 1
-  nnoremap <silent> <M-h> :TmuxNavigateLeft<cr>
-  nnoremap <silent> <M-l> :TmuxNavigateRight<cr>
-  nnoremap <silent> <M-j> :TmuxNavigateDown<cr>
-  nnoremap <silent> <M-k> :TmuxNavigateUp<cr>
+  noremap <silent> <M-h> :TmuxNavigateLeft<cr>
+  noremap <silent> <M-l> :TmuxNavigateRight<cr>
+  noremap <silent> <M-j> :TmuxNavigateDown<cr>
+  noremap <silent> <M-k> :TmuxNavigateUp<cr>
 
 " Version control
 """"""""""""""""""""""""""""""""""""
@@ -492,7 +453,9 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
   function! s:quickpick_buffers_on_accept(data, ...) abort
     call quickpick#close()
     " go to the buffer specified by the number in between braces
-    exe 'b' . a:data['items'][0]->split('[\[|\]]', 0)[0]
+    let l:left_or_right_brace_pattern = '[\[|\]]'
+    let l:keep_empty_strings = 0
+    exe 'b' . a:data['items'][0]->split(l:left_or_right_brace_pattern, l:keep_empty_strings)[0]
   endfunction
   function! s:quickpick_buffers_on_change(data, ...) abort
     call quickpick#items(systemlist('fzf --filter ' . shellescape(a:data['input']), s:quickpick_buffers_string))
@@ -738,67 +701,16 @@ augroup Miscellaneous
   autocmd QuickFixCmdPost l*    lwindow
   " Put focus back in quickfix window after opening an entry
   autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p 
-  " Get lsp info for statusline
-  function! GetStatuslineLspInfo()
-    let l:lines = execute("LspStatus")->split("\n")
-    let l:lsp_active_servers = []
-    for l:line in l:lines
-      if l:line =~? 'running'
-        let l:servername = l:line->split(':')[:-2]->join('')
-        call add(l:lsp_active_servers, l:servername)
-      endif
-    endfor
-    let s:lsp_active_servers = l:lsp_active_servers
-    " trigger a rerender of the statusline
-    let &statusline = &statusline
-  endfunction
-  autocmd User lsp_server_init call GetStatuslineLspInfo()
-  autocmd User lsp_server_exit call GetStatuslineLspInfo()
 augroup END
 
 " Section: Aesthetics
 " -------------------------------------
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
-set fillchars=vert:│,stl:─,stlnc:─ " saving these unicode chars in case I wanna switch back: │ ─ ―
-function! LinterInfo()
-  let l:result = ""
-  let l:cur_buffer = bufnr("%")
+set fillchars+=vert:│
 
-  let l:linters = get(g:ale_linters, &ft, [])
-  if !empty(l:linters)
-    let l:result .= 'linters[' . l:linters->join(',') . '] '
-  endif
-
-  let l:fixers = get(g:ale_fixers, &ft, [])
-  if !empty(l:fixers)
-    let l:result .= 'fixers[' . l:fixers->join(',') . '] '
-  endif
-
-  let l:count = ale#statusline#Count(l:cur_buffer)
-  let l:error_count = get(l:count, 'error', 0)
-  if l:error_count > 0
-    let l:result .= 'ERR:' . l:error_count . ' '
-  endif
-  let l:warning_count = get(l:count, 'warning', 0)
-  if l:warning_count > 0
-    let l:result .= 'WARN:' . l:warning_count . ' '
-  endif
-
-  if !empty(l:result)
-    let l:result = '│ ' . l:result
-  else
-    let l:result .= ' '
-  endif
-
-  return l:result
-endfunction
-function! LspInfo()
-  if !empty(get(s:, 'lsp_active_servers', []))
-    return '│ LSP[' . s:lsp_active_servers->join(',') . '] '
-  endif
-  return ""
-endfunction
+" statusline
+set fillchars+=stl:─,stlnc:─
 function! MyStatusLine()
   if &ft ==# 'help'
     return "%= HELP"
@@ -814,7 +726,10 @@ let &t_SI.="\e[5 q" "SI = INSERT mode
 let &t_SR.="\e[3 q" "SR = REPLACE mode
 let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
 " When vim exits, reset terminal cursor to blinking bar
-autocmd VimLeave * silent exe "!echo -ne '\033[5 q'"
+augroup ResetCursor
+  autocmd!
+  autocmd VimLeave * silent exe "!echo -ne '\033[5 q'"
+augroup END
 
 " Colorscheme
 """"""""""""""""""""""""""""""""""""
