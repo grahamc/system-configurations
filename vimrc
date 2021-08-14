@@ -243,7 +243,7 @@ call plug#begin('~/.vim/plugged')
 " light and dark
 Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
 
-" Text Manipulation
+" Editing
 """"""""""""""""""""""""""""""""""""
 " Automatically add closing keywords (e.g. function/endfunction in vimscript)
 Plug 'tpope/vim-endwise'
@@ -282,6 +282,17 @@ Plug 'AndrewRadev/splitjoin.vim'
   nnoremap <silent> J :<C-u>call <SID>try('SplitjoinJoin',  'J')<CR>
   nnoremap <silent> sj :<C-u>call <SID>try('SplitjoinSplit', "r\015")<CR>
 Plug 'AndrewRadev/switch.vim'
+" Additional text objects and movements
+Plug 'wellle/targets.vim'
+" Visualizes indentation in the buffer. Useful for fixing incorrectly indented lines.
+Plug 'Yggdroot/indentLine'
+  let g:indentLine_char = '▏'
+  let g:indentLine_setColors = 0
+  let g:indentLine_enabled = 0
+" replacement for matchit since matchit wasn't working for me
+Plug 'andymass/vim-matchup'
+  " Don't display offscreen matches in my statusline or a popup window
+  let g:matchup_matchparen_offscreen = {}
 
 " Colors
 """"""""""""""""""""""""""""""""""""
@@ -315,6 +326,7 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
   let g:NERDTreeMouseMode=2
   let g:NERDTreeWinPos="right"
   let g:NERDTreeShowHidden=1
+  let g:NERDTreeStatusline="%= %{exists('b:NERDTree')?'NERDTree':''}"
   " Sync nerdtree across tabs
   Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
     let g:nerdtree_tabs_autofind = 1
@@ -323,19 +335,10 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
 Plug 'junegunn/vim-peekaboo'
   let g:peekaboo_window = 'vert bo 40new'
 
-" Misc.
+" Performance
 """"""""""""""""""""""""""""""""""""
 " A tool for profiling vim's startup time. Useful for finding slow plugins.
 Plug 'tweekmonster/startuptime.vim'
-" Visualizes indentation in the buffer. Useful for fixing incorrectly indented lines.
-Plug 'Yggdroot/indentLine'
-  let g:indentLine_char = '▏'
-  let g:indentLine_setColors = 0
-  let g:indentLine_enabled = 0
-" replacement for matchit since matchit wasn't working for me
-Plug 'andymass/vim-matchup'
-  " Don't display offscreen matches in my statusline or a popup window
-  let g:matchup_matchparen_offscreen = {}
 
 " Search
 """"""""""""""""""""""""""""""""""""
@@ -620,7 +623,8 @@ Plug 'dense-analysis/ale'
         \ 'javascript': ['eslint'],
         \ 'javascriptreact': ['eslint'],
         \ 'typescript': ['eslint'],
-        \ 'typescriptreact': ['eslint']
+        \ 'typescriptreact': ['eslint'],
+        \ 'python': []
         \ }
 " Debugger
 Plug 'puremourning/vimspector'
@@ -796,6 +800,9 @@ function! LspInfo()
   return ""
 endfunction
 function! MyStatusLine()
+  if &ft ==# 'help'
+    return "%= HELP"
+  endif
   return "%=\ %h%w%q%t%m%r,\ Ln:%l/%L,\ Col:%c\ "
 endfunction
 set statusline=%{%MyStatusLine()%}
