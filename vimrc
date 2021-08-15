@@ -1,42 +1,35 @@
 " Section: Settings
 " -------------------------------------
-" env variables
-let $VIMHOME = $HOME . '/.vim/'
-
 " misc.
+let $VIMHOME = $HOME . '/.vim/'
+set nocompatible
 set confirm
 set encoding=utf8
 scriptencoding utf-8
-syntax enable
 set mouse=a
+" enable mouse mode while in tmux
+let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
 set backspace=indent,eol,start
 set linebreak
-set cursorline
-set pastetoggle=<F2>
+set cursorline cursorlineopt=number
 set laststatus=2
 set number relativenumber
 set incsearch
 set termguicolors
 set hidden
-set autoindent
-set smartindent
+set autoindent smartindent
 set complete=.,w,b,u
 set smarttab
 set nrformats-=octal
-set ttimeout
-set ttimeoutlen=100
-set display=lastline
+set ttimeout ttimeoutlen=100
 set clipboard=unnamed
-set nocompatible
-set wildmenu
 " on first wildchar press, show all matches and complete the longest common substring among them.
 " on second wildchar press, cycle through matches
-set wildmode=longest:full,full
+set wildmenu wildmode=longest:full,full
 set nojoinspaces " Prevents inserting two spaces after punctuation on a join (J)
+set formatoptions+=j " Delete comment character when joining commented lines
 set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
 set autoread " Re-read file if it is changed by an external program
-set nolazyredraw
-set foldlevel=20
 set scrolloff=10
 set wrap
 set updatetime=500
@@ -44,21 +37,16 @@ set cmdheight=3
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
 let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
 set matchpairs+=<:>
-set cursorlineopt=number
-
-" turn off bell sounds
-set belloff+=all
-
+" show match position in command window, don't show 'Search hit BOTTOM/TOP'
+set shortmess-=S shortmess+=s
+" searching is only case sensitive when the query contains an uppercase letter
+set ignorecase smartcase
+" open new horizontal and vertical panes to the right and bottom respectively
+set splitright splitbelow
 " show the completion menu even if there is only one suggestion
-" by default, no suggestion is selected
+" when autocomplete gets triggered, no suggestion is selected
 " Use popup instead of preview window
 set completeopt+=menuone,noselect,popup completeopt-=preview
-
-set shortmess+=Icm " don't display messages related to completion
-set shortmess-=S " show match position in command window
-set shortmess+=s
-
-set formatoptions+=j " Delete comment character when joining commented lines
 
 " set swapfile directory
 let &directory = $VIMHOME . 'swapfile_dir/'
@@ -81,15 +69,6 @@ let &tabstop = s:tab_width
 let &shiftwidth = s:tab_width
 let &softtabstop = s:tab_width
 
-" searching is only case sensitive when the query contains an uppercase letter
-set ignorecase smartcase
-
-" open new horizontal and vertical panes to the right and bottom respectively
-set splitright splitbelow
-
-" enable mouse mode while in tmux
-let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
-
 " Section: Mappings
 " NOTE: "<C-U>" is added to a lot of mappings to clear the visual selection
 " that is being added automatically.
@@ -106,8 +85,6 @@ map j <M-j>
 map k <M-k>
 imap OB <Down>
 imap OA <Up>
-imap OD <Left>
-imap OC <Right>
 
 command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
 
@@ -152,9 +129,6 @@ nnoremap <Leader>vk :SignifyHunkDiff<CR>
 " wrap a function call in another function call.
 let @w='hf)%bvf)S)i'
 
-" remove all trailing whitespace
-nnoremap <Leader>cc :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
-
 " move ten lines at a time by holding ctrl and a directional key
 noremap <C-h> 10h
 noremap <C-j> 10j
@@ -176,7 +150,8 @@ nnoremap <silent> <Leader>z :call ToggleFolds()<CR>
 
 nnoremap <Leader>" :vsplit<CR>
 nnoremap <Leader>% :split<CR>
-nnoremap <silent> <leader>q :close<CR>
+" close a window, quit if last window
+nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':q<CR>' : ':close<CR>'
 
 " Combine enter key (<CR>) mappings from my plugins
 imap <expr> <CR>
@@ -305,7 +280,6 @@ Plug 'tweekmonster/startuptime.vim'
 """"""""""""""""""""""""""""""""""""
 " The author said this is experimental so I'll pin a commit to avoid breaking changes
 Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b0134aa1e2d9'}
-  Plug 'prabirshrestha/quickpick-colorschemes.vim'
   function! QuickpickMappings()
     " move next
     imap <silent> <buffer> <Down> <Plug>(quickpick-move-next)
@@ -503,10 +477,6 @@ Plug 'prabirshrestha/vim-lsp'
     " Only report diagnostics with a level of 'warning' or above
     " i.e. warning,error
     let g:lsp_ale_diagnostics_severity = "warning"
-Plug 'prabirshrestha/async.vim'
-  " autocomplete from other tmux panes
-  Plug 'wellle/tmux-complete.vim'
-    let g:tmuxcomplete#trigger = ''
 Plug 'prabirshrestha/asyncomplete-buffer.vim'
   let g:asyncomplete_buffer_clear_cache = 0
   autocmd User asyncomplete_setup
@@ -544,14 +514,7 @@ Plug 'Shougo/neco-vim'
       \ }))
 " Expands Emmet abbreviations to write HTML more quickly
 Plug 'mattn/emmet-vim'
-  let g:user_emmet_expandabbr_key = '<C-e>,'
-  Plug 'prabirshrestha/asyncomplete-emmet.vim'
-  autocmd User asyncomplete_setup
-      \ call asyncomplete#register_source(asyncomplete#sources#emmet#get_source_options({
-      \ 'name': 'emmet',
-      \ 'whitelist': ['html', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
-      \ 'completor': function('asyncomplete#sources#emmet#completor'),
-      \ }))
+  let g:user_emmet_expandabbr_key = '<Leader>e'
 " Asynchronous linting
 Plug 'dense-analysis/ale'
   " If a linter is not found don't continue to check on subsequent linting operations.
@@ -598,32 +561,6 @@ call plug#end()
 
 " Section: Autocommands
 " -------------------------------------
-augroup RestoreSettings
-  autocmd!
-  " Restore session after vim starts. The 'nested' keyword tells vim to fire events
-  " normally while this autocmd is executing. By default, no events are fired
-  " during the execution of an autocmd to prevent infinite loops.
-  let s:session_dir = $VIMHOME . 'sessions/'
-  autocmd VimEnter * nested
-        \ if argc() == 0 |
-          \ call mkdir(s:session_dir, "p") |
-          \ let s:session_name =  substitute($PWD, '/', '%', 'g') . '%vim' |
-          \ let s:session_full_path = s:session_dir . s:session_name |
-          \ let s:session_cmd = filereadable(s:session_full_path) ? "source " : "mksession! " |
-          \ exe s:session_cmd . fnameescape(s:session_full_path) |
-        \ endif
-  " save session before vim exits
-  autocmd VimLeavePre *
-        \ if !empty(v:this_session) |
-          \ exe 'mksession! ' . fnameescape(v:this_session) |
-        \ endif
-  " restore last cursor position after opening a file
-  autocmd BufReadPost *
-        \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-          \ exe "normal! g'\"" |
-        \ endif
-augroup END
-
 augroup Styles
   autocmd!
   " Increase brightness of comments in nord
@@ -652,6 +589,32 @@ augroup Styles
   autocmd ColorScheme * highlight Pmenu guibg=#3B4252 ctermbg=12E3440 guifg=#ECEFF4 ctermfg=81 ctermbg=3
   " cursorline for quickpick
   autocmd Colorscheme * highlight! link CursorLine PmenuSel
+augroup END
+
+augroup RestoreSettings
+  autocmd!
+  " Restore session after vim starts. The 'nested' keyword tells vim to fire events
+  " normally while this autocmd is executing. By default, no events are fired
+  " during the execution of an autocmd to prevent infinite loops.
+  let s:session_dir = $VIMHOME . 'sessions/'
+  autocmd VimEnter * nested
+        \ if argc() == 0 |
+          \ call mkdir(s:session_dir, "p") |
+          \ let s:session_name =  substitute($PWD, '/', '%', 'g') . '%vim' |
+          \ let s:session_full_path = s:session_dir . s:session_name |
+          \ let s:session_cmd = filereadable(s:session_full_path) ? "source " : "mksession! " |
+          \ exe s:session_cmd . fnameescape(s:session_full_path) |
+        \ endif
+  " save session before vim exits
+  autocmd VimLeavePre *
+        \ if !empty(v:this_session) |
+          \ exe 'mksession! ' . fnameescape(v:this_session) |
+        \ endif
+  " restore last cursor position after opening a file
+  autocmd BufReadPost *
+        \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+          \ exe "normal! g'\"" |
+        \ endif
 augroup END
 
 augroup Miscellaneous
@@ -683,7 +646,7 @@ augroup Miscellaneous
   autocmd FileType vim setlocal keywordprg=:help
   augroup HighlightWordUnderCursor
     autocmd!
-    autocmd CursorMoved * exe printf('match Pmenu /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+    autocmd CursorMoved * exe printf('match CursorColumn /\V\<%s\>/', escape(expand('<cword>'), '/\'))
   augroup END
   " keywordprg with fallbacks
   function! ChainedKeywordprg()
@@ -749,7 +712,7 @@ endfunction
 if has('macunix')
   call SyncColorschemeWithOs()
   " Check periodically to see if darkmode is toggled on the OS and update the vim theme accordingly.
-  " call timer_start(5000, function('SyncColorschemeWithOs'), {"repeat": -1})
+  call timer_start(5000, function('SyncColorschemeWithOs'), {"repeat": -1})
 else
   call SetColorscheme('dark')
 endif
