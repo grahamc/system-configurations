@@ -8,11 +8,11 @@ function parse_git_branch_dash() {
     [ -n "$BRANCH" ] && echo "⏤⏤ "
 }
 PS1="\[\e[34m\]╭─\[\e[m\]\[\e[34m\]\`parse_git_branch\`\[\e[m\]\[\e[34m\]\`parse_git_branch_dash\`\[\e[m\]\[\e[34m\][\w]\[\e[m\]
-\[\e[34m\]╰\[\e[m\]🎸"
+\[\e[34m\]╰\[\e[m\]"
 
 # make tab cycle through commands after listing
-bind '"\t":menu-complete'
-bind '"\e[Z": menu-complete-backward'
+bind 'Tab:menu-complete'
+bind '"\e[Z":menu-complete-backward'
 bind "set show-all-if-ambiguous on"
 bind "set completion-ignore-case on"
 bind "set menu-complete-display-prefix on"

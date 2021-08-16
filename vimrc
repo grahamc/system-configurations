@@ -690,7 +690,7 @@ let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
 " When vim exits, reset terminal cursor to blinking bar
 augroup ResetCursor
   autocmd!
-  autocmd VimLeave * silent exe "!echo -ne '\033[5 q'"
+  autocmd VimLeave * silent exe "!echo -ne '\e[5 q'"
 augroup END
 
 " Colorscheme
