@@ -386,7 +386,7 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
           \ 'line':      l:wininfo.winrow - 9,
           \ }
     silent let s:quickpick_popup = popup_create(l:buffer_number, s:quickpick_popup_options)
-    call win_execute(s:quickpick_popup, 'normal! '. l:line .'Gzz | setlocal cursorline cursorlineopt=line')
+    call win_execute(s:quickpick_popup, ['normal! '. l:line .'Gzz', 'setlocal cursorline cursorlineopt=line'])
   endfunction
   function! s:quickpick_lines_on_change(data, ...) abort
     call quickpick#items(systemlist('rg '.$RG_DEFAULT_OPTIONS.' ' . shellescape(a:data['input'])))
