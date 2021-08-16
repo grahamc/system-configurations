@@ -23,8 +23,8 @@ set smarttab
 set nrformats-=octal
 set ttimeout ttimeoutlen=100
 set clipboard=unnamed
-" on first wildchar press, show all matches and complete the longest common substring among them.
-" on second wildchar press, cycle through matches
+" on first wildchar press (<Tab>), show all matches and complete the longest common substring among them.
+" on subsequent wildchar presses, cycle through matches
 set wildmenu wildmode=longest:full,full
 set nojoinspaces " Prevents inserting two spaces after punctuation on a join (J)
 set formatoptions+=j " Delete comment character when joining commented lines
@@ -47,6 +47,8 @@ set splitright splitbelow
 " when autocomplete gets triggered, no suggestion is selected
 " Use popup instead of preview window
 set completeopt+=menuone,noselect,popup completeopt-=preview
+" Don't fold by default
+set foldlevelstart=99
 
 " set swapfile directory
 let &directory = $VIMHOME . 'swapfile_dir/'
@@ -122,9 +124,6 @@ nnoremap <Leader>lrn :<C-U>LspRename<CR>
 nnoremap <Leader>lrf :<C-U>LspReferences<CR>
 nnoremap <Leader>lc :<C-U>LspCodeActionSync<CR>
 nnoremap <Leader>lo :<C-U>LspCodeActionSync source.organizeImports<CR>
-
-" Version Control
-nnoremap <Leader>vk :SignifyHunkDiff<CR>
 
 " wrap a function call in another function call.
 let @w='hf)%bvf)S)i'
@@ -254,6 +253,7 @@ Plug 'christoomey/vim-tmux-navigator'
 """"""""""""""""""""""""""""""""""""
 " Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
 Plug 'mhinz/vim-signify'
+  nnoremap <Leader>vk :SignifyHunkDiff<CR>
 
 " Explorers
 """"""""""""""""""""""""""""""""""""
@@ -386,9 +386,7 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
           \ 'line':      l:wininfo.winrow - 9,
           \ }
     silent let s:quickpick_popup = popup_create(l:buffer_number, s:quickpick_popup_options)
-    call win_execute(s:quickpick_popup, 'normal! '. l:line .'Gzz')
-    call win_execute(s:quickpick_popup, 'setlocal cursorline')
-    call win_execute(s:quickpick_popup, 'setlocal cursorlineopt=both')
+    call win_execute(s:quickpick_popup, 'normal! '. l:line .'Gzz | setlocal cursorline cursorlineopt=line')
   endfunction
   function! s:quickpick_lines_on_change(data, ...) abort
     call quickpick#items(systemlist('rg '.$RG_DEFAULT_OPTIONS.' ' . shellescape(a:data['input'])))
@@ -515,6 +513,7 @@ Plug 'Shougo/neco-vim'
 " Expands Emmet abbreviations to write HTML more quickly
 Plug 'mattn/emmet-vim'
   let g:user_emmet_expandabbr_key = '<Leader>e'
+  let g:user_emmet_mode='n'
 " Asynchronous linting
 Plug 'dense-analysis/ale'
   " If a linter is not found don't continue to check on subsequent linting operations.
@@ -650,7 +649,7 @@ augroup Miscellaneous
   augroup END
   " keywordprg with fallbacks
   function! ChainedKeywordprg()
-    if &filetype == 'python' && system('python3 -m pydoc ' . expand("<cword>")) =~? 'no python documentation found' && exists(':LspHover')
+    if &filetype == 'python' && system('python3 -m pydoc ' . shellescape(expand("<cword>"))) =~? 'no python documentation found' && exists(':LspHover')
         return ":LspHover\<CR>"
     endif
     if &keywordprg == '' && exists(':LspHover')

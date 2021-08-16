@@ -103,8 +103,6 @@ function rust() {
 }
 
 # Check periodically if macos is in darkmode and update the iTerm theme accordingly.
-# Also store an integer in '~/.darkmode' to signify the current mode. (1=darkmode, 0=lightmode)
-# This way other programs, like vim, can check if darkmode is active and update their theme too.
 colorscheme_sync_daemon() {
     while :; do
         SYSTEM_THEME="$(defaults read -g AppleInterfaceStyle 2>/dev/null)"
@@ -112,7 +110,6 @@ colorscheme_sync_daemon() {
 
         if [ "$NEW_MODE" != "$CURRENT_MODE" ]; then
             CURRENT_MODE="$NEW_MODE"
-            # echo -n "$NEW_MODE" > ~/.darkmode
             [[ "$NEW_MODE" -eq '0' ]] && newTheme='Solarized Light' || newTheme='Nord'
 
             setThemeEscapeSequence="\033]50;SetColors=preset=$newTheme\a"
