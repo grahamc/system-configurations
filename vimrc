@@ -219,7 +219,7 @@ Plug 'AndrewRadev/splitjoin.vim'
 Plug 'AndrewRadev/switch.vim'
 " Additional text objects and movements
 Plug 'wellle/targets.vim'
-" Visualizes indentation in the buffer. Useful for fixing incorrectly indented lines.
+" Visualizes indentation. Useful for fixing incorrectly indented lines.
 Plug 'Yggdroot/indentLine'
   let g:indentLine_char = '▏'
   let g:indentLine_setColors = 0
@@ -376,7 +376,7 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
 
     let s:quickpick_popup_options = {
           \ 'pos':    'botleft',
-          \ 'borderchars': ['─', '│', '─', '│', '┌', '┐', '┘', '└'],
+          \ 'borderchars': ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
           \ 'border': [1,1,1,1],
           \ 'title':  "Preview",
           \ 'maxheight': 7,
@@ -623,24 +623,14 @@ augroup Miscellaneous
   autocmd VimEnter * :set tw=0
   " Set a default omnifunc
   autocmd FileType * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
-  " Set fold method for vim
   autocmd FileType * if &ft ==# 'vim' | setlocal foldmethod=indent | else | setlocal foldmethod=syntax | endif
   " Extend iskeyword for filetypes that can reference CSS classes
   autocmd FileType
     \ css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss
     \ setlocal iskeyword+=-,?,!
   autocmd FileType vim setlocal iskeyword+=:,#
-  " Open help/preview/quickfix windows across the bottom of the editor
-  autocmd FileType *
-        \ if &filetype ==? "qf" || getwinvar('.', '&previewwindow') == 1 |
-          \ wincmd J |
-        \ endif
   autocmd FileType help
-        \ if &columns > 150 |
-          \ wincmd L |
-        \ else |
-          \ wincmd J |
-        \ endif
+        \ if &columns > 150 | wincmd L | else | wincmd J | endif
   " Use vim help pages for keywordprg in vim files
   autocmd FileType vim setlocal keywordprg=:help
   augroup HighlightWordUnderCursor
