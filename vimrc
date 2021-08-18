@@ -18,22 +18,15 @@ set incsearch
 set termguicolors
 set hidden
 set autoindent smartindent
-set complete=.,w,b,u
 set smarttab
 set nrformats-=octal
 set ttimeout ttimeoutlen=100
 set clipboard=unnamed
-" on first wildchar press (<Tab>), show all matches and complete the longest common substring among them.
-" on subsequent wildchar presses, cycle through matches
-set wildmenu wildmode=longest:full,full
-set nojoinspaces " Prevents inserting two spaces after punctuation on a join (J)
-set formatoptions+=j " Delete comment character when joining commented lines
 set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
 set autoread " Re-read file if it is changed by an external program
 set scrolloff=10
 set wrap
 set updatetime=500
-set cmdheight=3
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
 let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
 set matchpairs+=<:>
@@ -47,8 +40,35 @@ set splitright splitbelow
 " when autocomplete gets triggered, no suggestion is selected
 " Use popup instead of preview window
 set completeopt+=menuone,noselect,popup completeopt-=preview
-" Don't fold by default
-set foldlevelstart=99
+set complete=.,w,b,u
+
+" Command line settings
+  " on first wildchar press (<Tab>), show all matches and complete the longest common substring among them.
+  " on subsequent wildchar presses, cycle through matches
+  set wildmenu wildmode=longest:full,full
+  " move to beginning of line
+  cnoremap <C-a> <C-b>
+  set cmdheight=3
+
+" Fold settings
+  augroup SetFoldMethod
+    autocmd!
+    autocmd FileType * if &ft ==# 'vim' | setlocal foldmethod=indent | else | setlocal foldmethod=syntax | endif
+  augroup END
+  " Don't fold by default
+  set foldlevelstart=99
+  " If no lines are folded, fold everything.
+  " If any line is folded, unfold everything
+  function ToggleFolds()
+    for line_number in range(1, line('$') + 1)
+      if !empty(foldtextresult(line_number))
+        :exe "normal zR"
+        return
+      endif
+    endfor
+    :exe "normal zM"
+  endfunction
+  nnoremap <silent> <Leader>z :call ToggleFolds()<CR>
 
 " set swapfile directory
 let &directory = $VIMHOME . 'swapfile_dir/'
@@ -72,15 +92,9 @@ let &shiftwidth = s:tab_width
 let &softtabstop = s:tab_width
 
 " Section: Mappings
-" NOTE: "<C-U>" is added to a lot of mappings to clear the visual selection
-" that is being added automatically.
-" see: https://stackoverflow.com/questions/13830874/why-do-some-vim-mappings-include-c-u-after-a-colon
 " -------------------------------------
 " Map the output of these key combinations to their actual names
 " to make mappings that use these key combinations easier to understand
-" WARNING: When doing this you should turn off any plugin that
-" automatically adds closing braces since it might accidentally
-" add a closing brace to an escape sequence
 map l <M-l>
 map h <M-h>
 map j <M-j>
@@ -93,59 +107,34 @@ command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
 let g:mapleader = "\<Space>"
 inoremap jk <Esc>
 " toggle search highlighting
-nnoremap <silent> <expr> <Leader>\
-  \ (execute("set hlsearch?") =~? "nohlsearch") ? ":set hlsearch\<CR>" : ":set nohlsearch\<CR>"
+nnoremap <silent> <Leader>\ :set hlsearch!<CR>
 nnoremap <silent> <Leader>w :wa<CR>
 nnoremap <Leader>r :source $MYVIMRC<CR>
 nnoremap <Leader>x :wqa<CR>
 nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
 nnoremap <silent> <Leader>t :vimgrep /TODO/j **/*<CR>
 
-" move to beginning of line
-cnoremap <C-a> <C-b>
-
-" Search for selected text, forwards or backwards.
-vnoremap <silent> * :<C-U>
-  \let old_reg=getreg('y')<Bar>let old_regtype=getregtype('y')<CR>
-  \gv"yy/<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
-  \escape(@y, '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
-  \gVzv:call setreg('y', old_reg, old_regtype)<CR>
-vnoremap <silent> # :<C-U>
-  \let old_reg=getreg('y')<Bar>let old_regtype=getregtype('y')<CR>
-  \gv"yy?<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
-  \escape(@y, '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
-  \gVzv:call setreg('y', old_reg, old_regtype)<CR>
+command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
+	 	\ | wincmd p | diffthis | wincmd p
+nnoremap <Leader>d :DiffOrig<CR>
 
 " LSP
-nnoremap <Leader>li :<C-U>LspInstallServer<CR>
-nnoremap <Leader>ls :<C-U>LspStatus<CR>
-nnoremap <Leader>ld :<C-U>LspDefinition<CR>
-nnoremap <Leader>lrn :<C-U>LspRename<CR>
-nnoremap <Leader>lrf :<C-U>LspReferences<CR>
-nnoremap <Leader>lc :<C-U>LspCodeActionSync<CR>
-nnoremap <Leader>lo :<C-U>LspCodeActionSync source.organizeImports<CR>
+nnoremap <Leader>li :LspInstallServer<CR>
+nnoremap <Leader>ls :LspStatus<CR>
+nnoremap <Leader>ld :LspDefinition<CR>
+nnoremap <Leader>lrn :LspRename<CR>
+nnoremap <Leader>lrf :LspReferences<CR>
+nnoremap <Leader>lc :LspCodeActionSync<CR>
+nnoremap <Leader>lo :LspCodeActionSync source.organizeImports<CR>
 
 " wrap a function call in another function call.
 let @w='hf)%bvf)S)i'
 
-" move ten lines at a time by holding ctrl and a directional key
+" move ten lines/columns at a time by holding ctrl and a directional key
 noremap <C-h> 10h
 noremap <C-j> 10j
 noremap <C-k> 10k
 noremap <C-l> 10l
-
-" If no lines are folded, fold everything.
-" If any line is folded, unfold everything
-function ToggleFolds()
-  for line_number in range(1, line('$') + 1)
-    if !empty(foldtextresult(line_number))
-      :exe "normal zR"
-      return
-    endif
-  endfor
-  :exe "normal zM"
-endfunction
-nnoremap <silent> <Leader>z :call ToggleFolds()<CR>
 
 nnoremap <Leader>" :vsplit<CR>
 nnoremap <Leader>% :split<CR>
@@ -172,6 +161,28 @@ autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
   \| PlugInstall --sync | source $MYVIMRC
 \| endif
 call plug#begin('~/.vim/plugged')
+
+" Line folding / splitting
+  " Prevents inserting two spaces after punctuation on a join (J)
+  set nojoinspaces
+  " Delete comment character when joining commented lines
+  set formatoptions+=j
+  " Split/join lines, adding/removing language-specific continuation characters as necessary
+  Plug 'AndrewRadev/splitjoin.vim'
+    " Remap the builtin shift-j to try using splitjoin first
+    function! s:try(cmd, default)
+      if exists(':' . a:cmd) && !v:count
+        let tick = b:changedtick
+        execute a:cmd
+        if tick == b:changedtick
+          execute join(['normal!', a:default])
+        endif
+      else
+        execute join(['normal! ', v:count, a:default], '')
+      endif
+    endfunction
+    nnoremap <silent> J :<C-u>call <SID>try('SplitjoinJoin',  'J')<CR>
+    nnoremap <silent> sj :<C-u>call <SID>try('SplitjoinSplit', "r\015")<CR>
 
 " Colorschemes
 """"""""""""""""""""""""""""""""""""
@@ -201,21 +212,6 @@ Plug 'tpope/vim-surround'
 Plug 'tommcdo/vim-exchange'
 " I use it for more robust substitutions, but it does alot more
 Plug 'tpope/vim-abolish'
-" Split/join lines, adding/removing language-specific continuation characters as necessary
-Plug 'AndrewRadev/splitjoin.vim'
-  function! s:try(cmd, default)
-    if exists(':' . a:cmd) && !v:count
-      let tick = b:changedtick
-      execute a:cmd
-      if tick == b:changedtick
-        execute join(['normal!', a:default])
-      endif
-    else
-      execute join(['normal! ', v:count, a:default], '')
-    endif
-  endfunction
-  nnoremap <silent> J :<C-u>call <SID>try('SplitjoinJoin',  'J')<CR>
-  nnoremap <silent> sj :<C-u>call <SID>try('SplitjoinSplit', "r\015")<CR>
 Plug 'AndrewRadev/switch.vim'
 " Additional text objects and movements
 Plug 'wellle/targets.vim'
@@ -278,6 +274,17 @@ Plug 'tweekmonster/startuptime.vim'
 
 " Search
 """"""""""""""""""""""""""""""""""""
+" Search for selected text, forwards or backwards.
+vnoremap <silent> * :<C-U>
+  \let old_reg=getreg('y')<Bar>let old_regtype=getregtype('y')<CR>
+  \gv"yy/<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
+  \escape(@y, '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+  \gVzv:call setreg('y', old_reg, old_regtype)<CR>
+vnoremap <silent> # :<C-U>
+  \let old_reg=getreg('y')<Bar>let old_regtype=getregtype('y')<CR>
+  \gv"yy?<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
+  \escape(@y, '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+  \gVzv:call setreg('y', old_reg, old_regtype)<CR>
 " The author said this is experimental so I'll pin a commit to avoid breaking changes
 Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b0134aa1e2d9'}
   function! QuickpickMappings()
@@ -623,14 +630,13 @@ augroup Miscellaneous
   autocmd VimEnter * :set tw=0
   " Set a default omnifunc
   autocmd FileType * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
-  autocmd FileType * if &ft ==# 'vim' | setlocal foldmethod=indent | else | setlocal foldmethod=syntax | endif
   " Extend iskeyword for filetypes that can reference CSS classes
   autocmd FileType
     \ css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss
     \ setlocal iskeyword+=-,?,!
-  autocmd FileType vim setlocal iskeyword+=:,#
-  autocmd FileType help
-        \ if &columns > 150 | wincmd L | else | wincmd J | endif
+  autocmd FileType vim setlocal iskeyword+=:,#,-
+  autocmd BufEnter *
+        \ if &ft ==# 'help' | if &columns > 150 | wincmd L | else | wincmd J | endif | endif
   " Use vim help pages for keywordprg in vim files
   autocmd FileType vim setlocal keywordprg=:help
   augroup HighlightWordUnderCursor
