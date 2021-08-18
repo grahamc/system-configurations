@@ -2,10 +2,11 @@
 " -------------------------------------
 " misc.
 let $VIMHOME = $HOME . '/.vim/'
+let g:mapleader = "\<Space>"
 set nocompatible
-set confirm
 set encoding=utf8
 scriptencoding utf-8
+set confirm
 set mouse=a
 " enable mouse mode while in tmux
 let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
@@ -105,7 +106,6 @@ imap OA <Up>
 
 command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
 
-let g:mapleader = "\<Space>"
 inoremap jk <Esc>
 " toggle search highlighting
 nnoremap <silent> <Leader>\ :set hlsearch!<CR>
@@ -387,7 +387,7 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
           \ 'borderchars': ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
           \ 'border': [1,1,1,1],
           \ 'title':  "Preview",
-          \ 'maxheight': 7,
+          \ 'maxheight': 9,
           \ 'minwidth':  l:wininfo.width - 3,
           \ 'maxwidth':  l:wininfo.width - 3,
           \ 'col':       l:wininfo.wincol,
