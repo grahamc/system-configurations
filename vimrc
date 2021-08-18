@@ -607,7 +607,7 @@ augroup Miscellaneous
     \ setlocal iskeyword+=-,?,!
   autocmd FileType vim setlocal iskeyword+=:,#,-
   autocmd BufEnter *
-        \ if &ft ==# 'help' | if &columns > 150 | wincmd L | else | wincmd J | endif | endif
+        \ if &ft ==# 'help' && &columns > 150 | wincmd L | endif
   " Use vim help pages for keywordprg in vim files
   autocmd FileType vim setlocal keywordprg=:help
   augroup HighlightWordUnderCursor
