@@ -568,36 +568,6 @@ call plug#end()
 
 " Section: Autocommands
 " -------------------------------------
-augroup Styles
-  autocmd!
-  " Increase brightness of comments in nord
-  autocmd ColorScheme nord highlight Comment guifg=#6d7a96
-  " MatchParen
-  autocmd Colorscheme * hi MatchParen ctermfg=blue guifg=#5E81AC cterm=underline gui=underline guibg=NONE ctermbg=NONE
-  " Transparent SignColumn
-  autocmd Colorscheme solarized8,nord hi clear SignColumn
-  autocmd Colorscheme solarized8 hi DiffAdd ctermbg=NONE guibg=NONE
-  autocmd Colorscheme solarized8 hi DiffChange ctermbg=NONE guibg=NONE
-  autocmd Colorscheme solarized8 hi DiffDelete ctermbg=NONE guibg=NONE
-  autocmd Colorscheme solarized8 hi SignifyLineChange ctermbg=NONE guibg=NONE
-  autocmd Colorscheme solarized8 hi SignifyLineDelete ctermbg=NONE guibg=NONE
-  autocmd Colorscheme solarized8 hi ALEErrorSign ctermbg=NONE guibg=NONE
-  autocmd Colorscheme solarized8 hi ALEWarningSign ctermbg=NONE guibg=NONE
-  " Transparent number column
-  autocmd Colorscheme solarized8 hi clear CursorLineNR
-  autocmd Colorscheme solarized8 hi clear LineNR
-  " Transparent vertical split
-  autocmd Colorscheme solarized8,nord highlight VertSplit ctermbg=NONE guibg=NONE
-  " statusline colors
-  autocmd ColorScheme nord hi StatusLine guibg=#2E3440 guifg=#88C0D0 ctermfg=1 ctermbg=3
-  autocmd ColorScheme nord hi StatusLineNC guibg=#2E3440 guifg=#E5E9F0  ctermfg=1 ctermbg=3
-  " autocomplete popupmenu
-  autocmd ColorScheme * highlight PmenuSel guibg=#6E90B4 guifg=#2E3440 ctermfg=1 ctermbg=3
-  autocmd ColorScheme * highlight Pmenu guibg=#3B4252 ctermbg=12E3440 guifg=#ECEFF4 ctermfg=81 ctermbg=3
-  " cursorline for quickpick
-  autocmd Colorscheme * highlight! link CursorLine PmenuSel
-augroup END
-
 augroup RestoreSettings
   autocmd!
   " Restore session after vim starts. The 'nested' keyword tells vim to fire events
@@ -693,6 +663,36 @@ let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
 augroup ResetCursor
   autocmd!
   autocmd VimLeave * silent exe "!echo -ne '\e[5 q'"
+augroup END
+
+augroup Styles
+  autocmd!
+  " Increase brightness of comments in nord
+  autocmd ColorScheme nord highlight Comment guifg=#6d7a96
+  " MatchParen
+  autocmd Colorscheme * hi MatchParen ctermfg=blue guifg=#5E81AC cterm=underline gui=underline guibg=NONE ctermbg=NONE
+  " Transparent SignColumn
+  autocmd Colorscheme solarized8,nord hi clear SignColumn
+  autocmd Colorscheme solarized8 hi DiffAdd ctermbg=NONE guibg=NONE
+  autocmd Colorscheme solarized8 hi DiffChange ctermbg=NONE guibg=NONE
+  autocmd Colorscheme solarized8 hi DiffDelete ctermbg=NONE guibg=NONE
+  autocmd Colorscheme solarized8 hi SignifyLineChange ctermbg=NONE guibg=NONE
+  autocmd Colorscheme solarized8 hi SignifyLineDelete ctermbg=NONE guibg=NONE
+  autocmd Colorscheme solarized8 hi ALEErrorSign ctermbg=NONE guibg=NONE
+  autocmd Colorscheme solarized8 hi ALEWarningSign ctermbg=NONE guibg=NONE
+  " Transparent number column
+  autocmd Colorscheme solarized8 hi clear CursorLineNR
+  autocmd Colorscheme solarized8 hi clear LineNR
+  " Transparent vertical split
+  autocmd Colorscheme solarized8,nord highlight VertSplit ctermbg=NONE guibg=NONE
+  " statusline colors
+  autocmd ColorScheme nord hi StatusLine guibg=#2E3440 guifg=#88C0D0 ctermfg=1 ctermbg=3
+  autocmd ColorScheme nord hi StatusLineNC guibg=#2E3440 guifg=#E5E9F0  ctermfg=1 ctermbg=3
+  " autocomplete popupmenu
+  autocmd ColorScheme * highlight PmenuSel guibg=#6E90B4 guifg=#2E3440 ctermfg=1 ctermbg=3
+  autocmd ColorScheme * highlight Pmenu guibg=#3B4252 ctermbg=12E3440 guifg=#ECEFF4 ctermfg=81 ctermbg=3
+  " cursorline for quickpick
+  autocmd Colorscheme * highlight! link CursorLine PmenuSel
 augroup END
 
 " Colorscheme
