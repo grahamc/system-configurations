@@ -10,12 +10,6 @@ set mouse=a
 " enable mouse mode while in tmux
 let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
 set backspace=indent,eol,start
-set linebreak
-set cursorline cursorlineopt=number
-set laststatus=2
-set number relativenumber
-set incsearch
-set termguicolors
 set hidden
 set autoindent smartindent
 set smarttab
@@ -25,22 +19,29 @@ set clipboard=unnamed
 set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
 set autoread " Re-read file if it is changed by an external program
 set scrolloff=10
-set wrap
 set updatetime=500
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
-let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
 set matchpairs+=<:>
-" show match position in command window, don't show 'Search hit BOTTOM/TOP'
-set shortmess-=S shortmess+=s
-" searching is only case sensitive when the query contains an uppercase letter
-set ignorecase smartcase
 " open new horizontal and vertical panes to the right and bottom respectively
 set splitright splitbelow
-" show the completion menu even if there is only one suggestion
-" when autocomplete gets triggered, no suggestion is selected
-" Use popup instead of preview window
-set completeopt+=menuone,noselect,popup completeopt-=preview
-set complete=.,w,b,u
+
+" Search
+  " While typing the search query, highlight where the first match would be.
+  set incsearch
+  " searching is only case sensitive when the query contains an uppercase letter
+  set ignorecase smartcase
+  " show match position in command window, don't show 'Search hit BOTTOM/TOP'
+  set shortmess-=S shortmess+=s
+  " use ripgrep as the grep program, if it's available
+  let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
+
+
+" Autocomplete
+  " show the completion menu even if there is only one suggestion
+  " when autocomplete gets triggered, no suggestion is selected
+  " Use popup instead of preview window
+  set completeopt+=menuone,noselect,popup completeopt-=preview
+  set complete=.,w,b,u
 
 " Command line settings
   " on first wildchar press (<Tab>), show all matches and complete the longest common substring among them.
@@ -663,6 +664,12 @@ augroup END
 
 " Section: Aesthetics
 " -------------------------------------
+set linebreak
+set termguicolors
+set number relativenumber
+set cursorline cursorlineopt=number
+set laststatus=2
+set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
 set fillchars+=vert:│
@@ -678,7 +685,6 @@ endfunction
 set statusline=%{%MyStatusLine()%}
 
 " Block cursor in normal mode, thin line in insert mode, and underline in replace mode.
-" Might not work in all terminals.
 " See: https://vim.fandom.com/wiki/Change_cursor_shape_in_different_modes
 let &t_SI.="\e[5 q" "SI = INSERT mode
 let &t_SR.="\e[3 q" "SR = REPLACE mode
@@ -690,7 +696,6 @@ augroup ResetCursor
 augroup END
 
 " Colorscheme
-""""""""""""""""""""""""""""""""""""
 function! SetColorscheme(background)
     let &background = a:background
     let l:vim_colorscheme = a:background ==? "light" ? "solarized8" : "nord"
