@@ -33,7 +33,8 @@ set splitright splitbelow
   set ignorecase smartcase
   " show match position in command window, don't show 'Search hit BOTTOM/TOP'
   set shortmess-=S shortmess+=s
-  " use ripgrep as the grep program, if it's available
+  " Use ripgrep as the grep program, if it's available. Otherwise use the internal
+  " grep implementation since it's cross-platform
   let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
 
 
@@ -110,8 +111,8 @@ inoremap jk <Esc>
 " toggle search highlighting
 nnoremap <silent> <Leader>\ :set hlsearch!<CR>
 nnoremap <silent> <Leader>w :wa<CR>
-nnoremap <Leader>r :source $MYVIMRC<CR>
 nnoremap <Leader>x :wqa<CR>
+nnoremap <Leader>r :source $MYVIMRC<CR>
 nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
 nnoremap <silent> <Leader>t :vimgrep /TODO/j **/*<CR>
 
@@ -185,9 +186,7 @@ call plug#begin('~/.vim/plugged')
     nnoremap <silent> J :<C-u>call <SID>try('SplitjoinJoin',  'J')<CR>
     nnoremap <silent> sj :<C-u>call <SID>try('SplitjoinSplit', "r\015")<CR>
 
-" Colorschemes
-""""""""""""""""""""""""""""""""""""
-" light and dark
+" light and dark colorschemes
 Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
 
 " Editing
@@ -236,8 +235,6 @@ Plug 'ap/vim-css-color'
 " Opens the OS color picker and inserts the chosen color into the buffer.
 Plug 'KabbAmine/vCoolor.vim'
 
-" Buffer/tab/window management
-""""""""""""""""""""""""""""""""""""
 " Easy movement between vim windows and tmux panes.
 Plug 'christoomey/vim-tmux-navigator'
   let g:tmux_navigator_no_mappings = 1
@@ -246,14 +243,10 @@ Plug 'christoomey/vim-tmux-navigator'
   noremap <silent> <M-j> :TmuxNavigateDown<cr>
   noremap <silent> <M-k> :TmuxNavigateUp<cr>
 
-" Version control
-""""""""""""""""""""""""""""""""""""
 " Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
 Plug 'mhinz/vim-signify'
   nnoremap <Leader>vk :SignifyHunkDiff<CR>
 
-" Explorers
-""""""""""""""""""""""""""""""""""""
 " File explorer
 Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
   let g:NERDTreeMouseMode=2
@@ -264,12 +257,11 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
   Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
     let g:nerdtree_tabs_autofind = 1
     nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
+
 " Open a split with the current register values when '"' or '@' is pressed
 Plug 'junegunn/vim-peekaboo'
   let g:peekaboo_window = 'vert bo 40new'
 
-" Performance
-""""""""""""""""""""""""""""""""""""
 " A tool for profiling vim's startup time. Useful for finding slow plugins.
 Plug 'tweekmonster/startuptime.vim'
 
@@ -447,7 +439,7 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
 Plug 'prabirshrestha/asyncomplete.vim'
   let g:asyncomplete_auto_completeopt = 0
   let g:asyncomplete_auto_popup = 0
-  let g:asyncomplete_min_chars = 3
+  let g:asyncomplete_min_chars = 4
   let g:asyncomplete_matchfuzzy = 0
   inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
   function! s:check_back_space() abort
