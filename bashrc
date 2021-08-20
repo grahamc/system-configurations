@@ -1,14 +1,10 @@
 # prompt (ezprompt.net)
 function parse_git_branch() {
     BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
-    [ -n "$BRANCH" ] && echo "[${BRANCH}]"
+    [ -n "$BRANCH" ] && echo -e "[${BRANCH}]⏤⏤ "
 }
-function parse_git_branch_dash() {
-    BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
-    [ -n "$BRANCH" ] && echo "⏤⏤ "
-}
-PS1="\[\e[34m\]╭─\[\e[m\]\[\e[34m\]\`parse_git_branch\`\[\e[m\]\[\e[34m\]\`parse_git_branch_dash\`\[\e[m\]\[\e[34m\][\w]\[\e[m\]
-\[\e[34m\]╰\[\e[m\]"
+PS1="\[\e[34m\]╭─\`parse_git_branch\`[\w]
+╰\[\e[m\]"
 
 # make tab cycle through commands after listing
 bind 'Tab:menu-complete'
@@ -25,10 +21,8 @@ export PORT_PATH="/opt/local/bin"
 export SUMO_HOME="/opt/local/share/sumo"
 export RUST_PATH="$HOME/.cargo/bin"
 export FZF_PATH="/usr/local/opt/fzf/bin"
-export PYENV_ROOT="$HOME/.pyenv"
-export PYENV_BINARIES="$PYENV_ROOT/bin"
 export GLOBAL_NPM_PACKAGES="$HOME/node_modules/.bin"
-export PATH="$PYENV_BINARIES:$COREUTILS_PATH:$PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH:$FZF_PATH:$GLOBAL_NPM_PACKAGES"
+export PATH="$COREUTILS_PATH:$PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH:$FZF_PATH:$GLOBAL_NPM_PACKAGES"
 
 # MANPATH
 export COREUTILS_MANPATH="/usr/local/opt/coreutils/libexec/gnuman"
@@ -38,7 +32,6 @@ export MANPATH="$BASE_MANPATH:$MACPORTS_PATH:$COREUTILS_MANPATH"
 
 # system
 export LESS="-Ri"
-
 # Get MacOS to stop complaining that I'm not using ZSH
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
@@ -65,34 +58,21 @@ export RG_DEFAULT_OPTIONS='--hidden --column --line-number --no-heading --fixed-
 # keybindings
 source "/usr/local/opt/fzf/shell/key-bindings.bash"
 bind '"\C-f":" \C-u \C-a\C-k`__fzf_select__`\e\C-e\C-y\C-a\C-y\ey\C-h\C-e\ef \C-h"'
-# completion
-[[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.bash" 2> /dev/null
 export FZF_DEFAULT_COMMAND="rg $RG_DEFAULT_OPTIONS --files"
 export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --margin=5%,2%,5%,2%'
 export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up'
 
-# pyenv
-# prevent infinite loop on init
-# see: https://github.com/pyenv/pyenv/issues/264#issuecomment-358490657
-[ -z "$PS1" ] && return
-eval "$(pyenv init -)"
-
-# nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # init
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # completion
-
-#sdkman
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+# asdf
+# this needs to be done after the PATH has been set
+# or any frameworks, e.g. oh-my-zsh, have been sourced
+source $(brew --prefix asdf)/libexec/asdf.sh
+# set JAVA_HOME
+source ~/.asdf/plugins/java/set-java-home.bash
 
 # aliases
 alias la='ls -A'
-alias dfh='df -h'
-alias duh='du -h'
 alias r="source ~/.bashrc"
-alias wp='pyenv which python'
 alias youtube-mp3='youtube-dl -x --audio-format mp3 '
 alias trash='trash -F '
 
