@@ -212,18 +212,27 @@ Plug 'tpope/vim-surround'
 Plug 'tommcdo/vim-exchange'
 " I use it for more robust substitutions, but it does alot more
 Plug 'tpope/vim-abolish'
+" Swap a piece of text for one of its specified replacements. For example, calling swap on
+" the logical operator '&&' would change it to '||'.
 Plug 'AndrewRadev/switch.vim'
-" Additional text objects and movements
-Plug 'wellle/targets.vim'
 " Visualizes indentation. Useful for fixing incorrectly indented lines.
 Plug 'Yggdroot/indentLine'
   let g:indentLine_char = '▏'
   let g:indentLine_setColors = 0
   let g:indentLine_enabled = 0
+
+" Motions / Text Objects
+""""""""""""""""""""""""""""""""""""
+" Motions for levels of indentation
+Plug 'jeetsukumaran/vim-indentwise'
+  map [<Tab> <Plug>(IndentWiseBlockScopeBoundaryBegin)
+  map ]<Tab> <Plug>(IndentWiseBlockScopeBoundaryEnd)
 " replacement for matchit since matchit wasn't working for me
 Plug 'andymass/vim-matchup'
   " Don't display offscreen matches in my statusline or a popup window
   let g:matchup_matchparen_offscreen = {}
+" Additional text objects and movements
+Plug 'wellle/targets.vim'
 
 " Colors
 """"""""""""""""""""""""""""""""""""
