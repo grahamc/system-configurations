@@ -3,8 +3,8 @@ function parse_git_branch() {
     BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
     [ -n "$BRANCH" ] && echo -e "[${BRANCH}]⏤⏤ "
 }
-PS1="\[\e[34m\]╭─\`parse_git_branch\`[\w]
-╰\[\e[m\]"
+PS1="\[\e[34m\]╭─\`parse_git_branch\`[\w]\[\e[m\]
+\[\e[34m\]╰\[\e[m\]"
 
 # make tab cycle through commands after listing
 bind 'Tab:menu-complete'
@@ -55,7 +55,6 @@ export RG_DEFAULT_OPTIONS='--hidden --column --line-number --no-heading --fixed-
     --glob "!node_modules"'
 
 #fzf
-# keybindings
 source "/usr/local/opt/fzf/shell/key-bindings.bash"
 bind '"\C-f":" \C-u \C-a\C-k`__fzf_select__`\e\C-e\C-y\C-a\C-y\ey\C-h\C-e\ef \C-h"'
 export FZF_DEFAULT_COMMAND="rg $RG_DEFAULT_OPTIONS --files"
@@ -65,7 +64,7 @@ export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up'
 
 # asdf
 # Init asdf. This needs to be done after the PATH has been set
-# or any frameworks, like oh-my-zsh, have been sourced
+# and any frameworks, like oh-my-zsh, have been sourced
 source $(brew --prefix asdf)/libexec/asdf.sh
 # set JAVA_HOME
 source ~/.asdf/plugins/java/set-java-home.bash

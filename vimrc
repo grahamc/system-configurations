@@ -51,7 +51,7 @@ set splitright splitbelow
   set wildmenu wildmode=longest:full,full
   " move to beginning of line
   cnoremap <C-a> <C-b>
-  set cmdheight=3
+  set cmdheight=2
 
 " Fold settings
   augroup SetFoldMethod
@@ -105,6 +105,41 @@ map k <M-k>
 imap OB <Down>
 imap OA <Up>
 
+" keywordprg with fallback
+command! -nargs=1 SilentEx
+  \   execute 'silent! !' . <q-args>
+  \ | execute 'redraw!'
+let s:failure_indicators = {
+      \ 'python': 'no python documentation found',
+      \ 'vim': 'Sorry, no help',
+      \ 'sh': 'No manual entry',
+      \ }
+function! ChainedKeywordprg()
+  let l:cword = expand("<cword>")
+
+  if !empty(&keywordprg)
+    let l:failure_indicator = get(s:failure_indicators, &ft, '')
+
+    if &keywordprg[0] == ':'
+      let l:result = execute('silent! ' . &keywordprg[1:] . ' ' . l:cword)
+      if empty(l:failure_indicator) || l:result !~? l:failure_indicator
+        return
+      endif
+    else
+      let l:result = system(&keywordprg . ' ' . l:cword)
+      if empty(l:failure_indicator) || l:result !~? l:failure_indicator
+        exe 'SilentEx ' . &keywordprg . ' ' . l:cword
+        return
+      endif
+    endif
+  endif
+
+  if exists(':LspHover')
+      exe "LspHover"
+  endif
+endfunction
+nnoremap K :call ChainedKeywordprg()<CR>
+
 command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
 
 inoremap jk <Esc>
@@ -116,17 +151,16 @@ nnoremap <Leader>r :source $MYVIMRC<CR>
 nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
 nnoremap <silent> <Leader>t :vimgrep /TODO/j **/*<CR>
 
+" Show diff of unsaved changes in current file
 command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
 	 	\ | wincmd p | diffthis | wincmd p
 nnoremap <Leader>d :DiffOrig<CR>
 
 " LSP
-nnoremap <Leader>li :LspInstallServer<CR>
 nnoremap <Leader>ls :LspStatus<CR>
 nnoremap <Leader>ld :LspDefinition<CR>
 nnoremap <Leader>lrn :LspRename<CR>
 nnoremap <Leader>lrf :LspReferences<CR>
-nnoremap <Leader>lc :LspCodeActionSync<CR>
 nnoremap <Leader>lo :LspCodeActionSync source.organizeImports<CR>
 
 " wrap a function call in another function call.
@@ -215,11 +249,6 @@ Plug 'tpope/vim-abolish'
 " Swap a piece of text for one of its specified replacements. For example, calling swap on
 " the logical operator '&&' would change it to '||'.
 Plug 'AndrewRadev/switch.vim'
-" Visualizes indentation. Useful for fixing incorrectly indented lines.
-Plug 'Yggdroot/indentLine'
-  let g:indentLine_char = '▏'
-  let g:indentLine_setColors = 0
-  let g:indentLine_enabled = 0
 
 " Motions / Text Objects
 """"""""""""""""""""""""""""""""""""
@@ -251,6 +280,11 @@ Plug 'christoomey/vim-tmux-navigator'
   noremap <silent> <M-l> :TmuxNavigateRight<cr>
   noremap <silent> <M-j> :TmuxNavigateDown<cr>
   noremap <silent> <M-k> :TmuxNavigateUp<cr>
+" Visualizes indentation. Useful for fixing incorrectly indented lines.
+Plug 'Yggdroot/indentLine'
+  let g:indentLine_char = '▏'
+  let g:indentLine_setColors = 0
+  let g:indentLine_enabled = 0
 
 " Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
 Plug 'mhinz/vim-signify'
@@ -611,21 +645,11 @@ augroup Miscellaneous
         \ if &ft ==# 'help' && &columns > 150 | wincmd L | endif
   " Use vim help pages for keywordprg in vim files
   autocmd FileType vim setlocal keywordprg=:help
+  autocmd FileType sh setlocal keywordprg=man
   augroup HighlightWordUnderCursor
     autocmd!
     autocmd CursorMoved * exe printf('match CursorColumn /\V\<%s\>/', escape(expand('<cword>'), '/\'))
   augroup END
-  " keywordprg with fallbacks
-  function! ChainedKeywordprg()
-    if &filetype == 'python' && system('python3 -m pydoc ' . shellescape(expand("<cword>"))) =~? 'no python documentation found' && exists(':LspHover')
-        return ":LspHover\<CR>"
-    endif
-    if &keywordprg == '' && exists(':LspHover')
-        return ":LspHover\<CR>"
-    endif
-    return 'K'
-  endfunction
-  nmap <expr> K ChainedKeywordprg()
   " After a quickfix command is run, open the quickfix window , if there are results
   autocmd QuickFixCmdPost [^l]* cwindow
   autocmd QuickFixCmdPost l*    lwindow
