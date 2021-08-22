@@ -1,4 +1,4 @@
-""" General
+""" Section: General
 let $VIMHOME = $HOME . '/.vim/'
 let g:mapleader = "\<Space>"
 set nocompatible
@@ -69,7 +69,7 @@ augroup Miscellaneous
   autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red | exe '2match ErrorMsg /\s\+$/'
 augroup END
 
-""" Search
+""" Section: Search
 " While typing the search query, highlight where the first match would be.
 set incsearch
 " searching is only case sensitive when the query contains an uppercase letter
@@ -81,14 +81,14 @@ set shortmess-=S shortmess+=s
 let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
 nnoremap <silent> <Leader>\ :set hlsearch!<CR>
 
-""" Autocomplete
+""" Section: Autocomplete
 " show the completion menu even if there is only one suggestion
 " when autocomplete gets triggered, no suggestion is selected
 " Use popup instead of preview window
 set completeopt+=menuone,noselect,popup completeopt-=preview
 set complete=.,w,b,u
 
-""" Command line settings
+""" Section: Command line settings
 " on first wildchar press (<Tab>), show all matches and complete the longest common substring among them.
 " on subsequent wildchar presses, cycle through matches
 set wildmenu wildmode=longest:full,full
@@ -96,13 +96,13 @@ set wildmenu wildmode=longest:full,full
 cnoremap <C-a> <C-b>
 set cmdheight=3
 
-""" Fold settings
+""" Section: Fold settings
 augroup SetFoldMethod
   autocmd!
   autocmd FileType * if &ft ==# 'vim' | setlocal fdm=expr fde=getline(v\:lnum)=~'^\"\"'?'>'.(matchend(getline(v\:lnum),'\"\"*')-2)\:'=' | else | setlocal foldmethod=syntax | endif | let &foldlevel = max(map(range(1, line('$')), 'foldlevel(v:val)'))
 augroup END
 
-""" System Mappings
+""" Section: System Mappings
 " Map the output of these key combinations to their actual names
 " to make mappings that use these key combinations easier to understand
 map l <M-l>
@@ -112,7 +112,7 @@ map k <M-k>
 imap OB <Down>
 imap OA <Up>
 
-""" Keywordprg with Fallback
+""" Section: Keywordprg with Fallback
 command! -nargs=1 SilentEx
   \   execute 'silent! !' . <q-args>
   \ | execute 'redraw!'
@@ -182,7 +182,7 @@ imap <expr> <CR>
       \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
       \ "\<CR>\<Plug>DiscretionaryEnd"
 
-""" Plugin Manager (start)
+""" Section: Plugin Manager (start)
 " Install vim-plug if not found
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -196,7 +196,7 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'sheerun/vim-polyglot'
 
-""" Line folding / splitting
+""" Section: Line folding / splitting
 " Prevents inserting two spaces after punctuation on a join (J)
 set nojoinspaces
 " Delete comment character when joining commented lines
@@ -218,10 +218,10 @@ Plug 'AndrewRadev/splitjoin.vim'
   nnoremap <silent> J :<C-u>call <SID>try('SplitjoinJoin',  'J')<CR>
   nnoremap <silent> sj :<C-u>call <SID>try('SplitjoinSplit', "r\015")<CR>
 
-""" light and dark colorschemes
+""" Section: light and dark colorschemes
 Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
 
-""" Editing
+""" Section: Editing
 " Automatically add closing keywords (e.g. function/endfunction in vimscript)
 Plug 'tpope/vim-endwise'
   let g:endwise_no_mappings = 1
@@ -247,7 +247,7 @@ Plug 'tpope/vim-abolish'
 " the logical operator '&&' would change it to '||'.
 Plug 'AndrewRadev/switch.vim'
 
-""" Motions / Text Objects
+""" Section: Motions / Text Objects
 set matchpairs+=<:>
 " Motions for levels of indentation
 Plug 'jeetsukumaran/vim-indentwise'
@@ -274,7 +274,7 @@ noremap <C-j> 10j
 noremap <C-k> 10k
 noremap <C-l> 10l
 
-""" Colors
+""" Section: Colors
 " Detects color strings (e.g. hex, rgba) and changes the background of the characters
 " in that string to match the color. For example, in the following sample line of CSS:
 "   p {color: red}
@@ -300,7 +300,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'mhinz/vim-signify'
   nnoremap <Leader>vk :SignifyHunkDiff<CR>
 
-""" File explorer
+""" Section: File explorer
 Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
   let g:NERDTreeMouseMode=2
   let g:NERDTreeWinPos="right"
@@ -318,7 +318,7 @@ Plug 'junegunn/vim-peekaboo'
 " A tool for profiling vim's startup time. Useful for finding slow plugins.
 Plug 'tweekmonster/startuptime.vim'
 
-""" Search
+""" Section: Search
 " Search for selected text, forwards or backwards.
 vnoremap <silent> * :<C-U>
   \let old_reg=getreg('y')<Bar>let old_regtype=getregtype('y')<CR>
@@ -486,7 +486,7 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
   endfunction
   nnoremap <silent> <Leader>b :silent! call QuickpickBuffers()<CR>
 
-""" IDE features (e.g. autocomplete, smart refactoring, goto definition, etc.)
+""" Section: IDE features (e.g. autocomplete, smart refactoring, goto definition, etc.)
 Plug 'prabirshrestha/asyncomplete.vim'
   let g:asyncomplete_auto_completeopt = 0
   let g:asyncomplete_auto_popup = 0
@@ -608,10 +608,10 @@ Plug 'puremourning/vimspector'
 " Applies editorconfig settings to vim
 Plug 'editorconfig/editorconfig-vim'
 
-""" Plugin Manager (end)
+""" Section: Plugin Manager (end)
 call plug#end()
 
-""" Restore Settings
+""" Section: Restore Settings
 augroup RestoreSettings
   autocmd!
   " Restore session after vim starts. The 'nested' keyword tells vim to fire events
@@ -638,7 +638,7 @@ augroup RestoreSettings
         \ endif
 augroup END
 
-""" Colorscheme Settings
+""" Section: Colorscheme Settings
 set linebreak
 set termguicolors
 set number relativenumber
@@ -647,9 +647,9 @@ set laststatus=2
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
-set fillchars+=vert:│
+set fillchars+=foldopen:\ ,fold:\ ,vert:│
 
-""" Statusline
+""" Section: Statusline
 set fillchars+=stl:─,stlnc:─
 function! MyStatusLine()
   if &ft ==# 'help'
@@ -659,7 +659,7 @@ function! MyStatusLine()
 endfunction
 set statusline=%{%MyStatusLine()%}
 
-""" Block cursor in normal mode, thin line in insert mode, and underline in replace mode.
+""" Section: Block cursor in normal mode, thin line in insert mode, and underline in replace mode.
 let &t_SI.="\e[5 q" "SI = INSERT mode
 let &t_SR.="\e[3 q" "SR = REPLACE mode
 let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
@@ -669,7 +669,7 @@ augroup ResetCursor
   autocmd VimLeave * silent exe "!echo -ne '\e[5 q'"
 augroup END
 
-""" Colorscheme Overrides
+""" Section: Colorscheme Overrides
 augroup ColorschemeOverrides
   autocmd!
   " Increase brightness of comments in nord
@@ -700,7 +700,7 @@ augroup ColorschemeOverrides
   autocmd Colorscheme * highlight! link CursorLine PmenuSel
 augroup END
 
-""" Colorscheme
+""" Section: Colorscheme
 function! SetColorscheme(background)
     let &background = a:background
     let l:vim_colorscheme = a:background ==? "light" ? "solarized8" : "nord"
