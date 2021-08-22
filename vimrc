@@ -1,86 +1,33 @@
-" Section: Settings
-" -------------------------------------
-" Misc.
-  let $VIMHOME = $HOME . '/.vim/'
-  let g:mapleader = "\<Space>"
-  set nocompatible
-  set encoding=utf8
-  scriptencoding utf-8
-  set confirm
-  set mouse=a
-  " enable mouse mode while in tmux
-  let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
-  set backspace=indent,eol,start
-  set hidden
-  set nrformats-=octal
-  set ttimeout ttimeoutlen=100
-  set updatetime=500
-  set clipboard=unnamed
-  set autoread " Re-read file if it is changed by an external program
-  set scrolloff=10
-  set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
-
-" Search
-  " While typing the search query, highlight where the first match would be.
-  set incsearch
-  " searching is only case sensitive when the query contains an uppercase letter
-  set ignorecase smartcase
-  " show match position in command window, don't show 'Search hit BOTTOM/TOP'
-  set shortmess-=S shortmess+=s
-  " Use ripgrep as the grep program, if it's available. Otherwise use the internal
-  " grep implementation since it's cross-platform
-  let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
-
-
-" Autocomplete
-  " show the completion menu even if there is only one suggestion
-  " when autocomplete gets triggered, no suggestion is selected
-  " Use popup instead of preview window
-  set completeopt+=menuone,noselect,popup completeopt-=preview
-  set complete=.,w,b,u
-
-" Command line settings
-  " on first wildchar press (<Tab>), show all matches and complete the longest common substring among them.
-  " on subsequent wildchar presses, cycle through matches
-  set wildmenu wildmode=longest:full,full
-  " move to beginning of line
-  cnoremap <C-a> <C-b>
-  set cmdheight=2
-
-" Fold settings
-  augroup SetFoldMethod
-    autocmd!
-    autocmd FileType * if &ft ==# 'vim' | setlocal foldmethod=indent | else | setlocal foldmethod=syntax | endif
-  augroup END
-  " Don't fold by default
-  set foldlevelstart=99
-  " If no lines are folded, fold everything.
-  " If any line is folded, unfold everything
-  function ToggleFolds()
-    for line_number in range(1, line('$') + 1)
-      if !empty(foldtextresult(line_number))
-        :exe "normal zR"
-        return
-      endif
-    endfor
-    :exe "normal zM"
-  endfunction
-  nnoremap <silent> <Leader>z :call ToggleFolds()<CR>
-
+""" General
+let $VIMHOME = $HOME . '/.vim/'
+let g:mapleader = "\<Space>"
+set nocompatible
+set encoding=utf8
+scriptencoding utf-8
+set confirm
+set mouse=a
+" enable mouse mode while in tmux
+let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
+set backspace=indent,eol,start
+set hidden
+set nrformats-=octal
+set ttimeout ttimeoutlen=100
+set updatetime=500
+set clipboard=unnamed
+set autoread " Re-read file if it is changed by an external program
+set scrolloff=10
+set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages sessionoptions-=folds
 " set swapfile directory
 let &directory = $VIMHOME . 'swapfile_dir/'
 call mkdir(&directory, "p")
-
 " persist undo history to disk
 let &undodir = $VIMHOME . 'undo_dir/'
 call mkdir(&undodir, "p")
 set undofile
-
 " set backup directory
 let &backupdir = $VIMHOME . 'backup_dir/'
 call mkdir(&backupdir, "p")
 set backup
-
 " tab setup
 set expandtab
 set autoindent smartindent
@@ -90,9 +37,72 @@ let s:tab_width = 2
 let &tabstop = s:tab_width
 let &shiftwidth = s:tab_width
 let &softtabstop = s:tab_width
+" Display all highlight groups in a new window
+command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
+augroup Miscellaneous
+  autocmd!
+  " for some reason there is an ftplugin that is bundled with vim that
+  " sets the textwidth to 78 if it is currently 0. This sets it back to 0
+  autocmd VimEnter * :set tw=0
+  " Set a default omnifunc
+  autocmd FileType * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
+  " Extend iskeyword for filetypes that can reference CSS classes
+  autocmd FileType
+    \ css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss
+    \ setlocal iskeyword+=-,?,!
+  autocmd FileType vim setlocal iskeyword+=:,#,-
+  autocmd BufEnter *
+        \ if &ft ==# 'help' && &columns > 150 | wincmd L | endif
+  " Use vim help pages for keywordprg in vim files
+  autocmd FileType vim setlocal keywordprg=:help
+  autocmd FileType sh setlocal keywordprg=man
+  augroup HighlightWordUnderCursor
+    autocmd!
+    autocmd CursorMoved * exe printf('match CursorColumn /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+  augroup END
+  " After a quickfix command is run, open the quickfix window , if there are results
+  autocmd QuickFixCmdPost [^l]* cwindow
+  autocmd QuickFixCmdPost l*    lwindow
+  " Put focus back in quickfix window after opening an entry
+  autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
+  " highlight trailing whitespace
+  autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red | exe '2match ErrorMsg /\s\+$/'
+augroup END
 
-" Section: Mappings
-" -------------------------------------
+""" Search
+" While typing the search query, highlight where the first match would be.
+set incsearch
+" searching is only case sensitive when the query contains an uppercase letter
+set ignorecase smartcase
+" show match position in command window, don't show 'Search hit BOTTOM/TOP'
+set shortmess-=S shortmess+=s
+" Use ripgrep as the grep program, if it's available. Otherwise use the internal
+" grep implementation since it's cross-platform
+let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
+nnoremap <silent> <Leader>\ :set hlsearch!<CR>
+
+""" Autocomplete
+" show the completion menu even if there is only one suggestion
+" when autocomplete gets triggered, no suggestion is selected
+" Use popup instead of preview window
+set completeopt+=menuone,noselect,popup completeopt-=preview
+set complete=.,w,b,u
+
+""" Command line settings
+" on first wildchar press (<Tab>), show all matches and complete the longest common substring among them.
+" on subsequent wildchar presses, cycle through matches
+set wildmenu wildmode=longest:full,full
+" move to beginning of line
+cnoremap <C-a> <C-b>
+set cmdheight=3
+
+""" Fold settings
+augroup SetFoldMethod
+  autocmd!
+  autocmd FileType * if &ft ==# 'vim' | setlocal fdm=expr fde=getline(v\:lnum)=~'^\"\"'?'>'.(matchend(getline(v\:lnum),'\"\"*')-2)\:'=' | else | setlocal foldmethod=syntax | endif | let &foldlevel = max(map(range(1, line('$')), 'foldlevel(v:val)'))
+augroup END
+
+""" System Mappings
 " Map the output of these key combinations to their actual names
 " to make mappings that use these key combinations easier to understand
 map l <M-l>
@@ -102,7 +112,7 @@ map k <M-k>
 imap OB <Down>
 imap OA <Up>
 
-" keywordprg with fallback
+""" Keywordprg with Fallback
 command! -nargs=1 SilentEx
   \   execute 'silent! !' . <q-args>
   \ | execute 'redraw!'
@@ -137,11 +147,8 @@ function! ChainedKeywordprg()
 endfunction
 nnoremap K :call ChainedKeywordprg()<CR>
 
-command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
-
 inoremap jk <Esc>
 " toggle search highlighting
-nnoremap <silent> <Leader>\ :set hlsearch!<CR>
 nnoremap <silent> <Leader>w :wa<CR>
 nnoremap <Leader>x :wqa<CR>
 nnoremap <Leader>r :source $MYVIMRC<CR>
@@ -160,15 +167,6 @@ nnoremap <Leader>lrn :LspRename<CR>
 nnoremap <Leader>lrf :LspReferences<CR>
 nnoremap <Leader>lo :LspCodeActionSync source.organizeImports<CR>
 
-" wrap a function call in another function call.
-let @w='hf)%bvf)S)i'
-
-" move ten lines/columns at a time by holding ctrl and a directional key
-noremap <C-h> 10h
-noremap <C-j> 10j
-noremap <C-k> 10k
-noremap <C-l> 10l
-
 " open new horizontal and vertical panes to the right and bottom respectively
 set splitright splitbelow
 nnoremap <Leader>" :vsplit<CR>
@@ -184,8 +182,7 @@ imap <expr> <CR>
       \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
       \ "\<CR>\<Plug>DiscretionaryEnd"
 
-" Section: Plugins
-" -------------------------------------
+""" Plugin Manager
 " Install vim-plug if not found
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -197,33 +194,34 @@ autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
 \| endif
 call plug#begin('~/.vim/plugged')
 
-" Line folding / splitting
-  " Prevents inserting two spaces after punctuation on a join (J)
-  set nojoinspaces
-  " Delete comment character when joining commented lines
-  set formatoptions+=j
-  " Split/join lines, adding/removing language-specific continuation characters as necessary
-  Plug 'AndrewRadev/splitjoin.vim'
-    " Remap the builtin shift-j to try using splitjoin first
-    function! s:try(cmd, default)
-      if exists(':' . a:cmd) && !v:count
-        let tick = b:changedtick
-        execute a:cmd
-        if tick == b:changedtick
-          execute join(['normal!', a:default])
-        endif
-      else
-        execute join(['normal! ', v:count, a:default], '')
-      endif
-    endfunction
-    nnoremap <silent> J :<C-u>call <SID>try('SplitjoinJoin',  'J')<CR>
-    nnoremap <silent> sj :<C-u>call <SID>try('SplitjoinSplit', "r\015")<CR>
+Plug 'sheerun/vim-polyglot'
 
-" light and dark colorschemes
+""" Line folding / splitting
+" Prevents inserting two spaces after punctuation on a join (J)
+set nojoinspaces
+" Delete comment character when joining commented lines
+set formatoptions+=j
+" Split/join lines, adding/removing language-specific continuation characters as necessary
+Plug 'AndrewRadev/splitjoin.vim'
+  " Remap the builtin shift-j to try using splitjoin first
+  function! s:try(cmd, default)
+    if exists(':' . a:cmd) && !v:count
+      let tick = b:changedtick
+      execute a:cmd
+      if tick == b:changedtick
+        execute join(['normal!', a:default])
+      endif
+    else
+      execute join(['normal! ', v:count, a:default], '')
+    endif
+  endfunction
+  nnoremap <silent> J :<C-u>call <SID>try('SplitjoinJoin',  'J')<CR>
+  nnoremap <silent> sj :<C-u>call <SID>try('SplitjoinSplit', "r\015")<CR>
+
+""" light and dark colorschemes
 Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
 
-" Editing
-""""""""""""""""""""""""""""""""""""
+""" Editing
 " Automatically add closing keywords (e.g. function/endfunction in vimscript)
 Plug 'tpope/vim-endwise'
   let g:endwise_no_mappings = 1
@@ -249,8 +247,7 @@ Plug 'tpope/vim-abolish'
 " the logical operator '&&' would change it to '||'.
 Plug 'AndrewRadev/switch.vim'
 
-" Motions / Text Objects
-""""""""""""""""""""""""""""""""""""
+""" Motions / Text Objects
 set matchpairs+=<:>
 " Motions for levels of indentation
 Plug 'jeetsukumaran/vim-indentwise'
@@ -262,9 +259,22 @@ Plug 'andymass/vim-matchup'
   let g:matchup_matchparen_offscreen = {}
 " Additional text objects and movements
 Plug 'wellle/targets.vim'
+" Go to start/end of text object
+function! GoStart(type) abort
+  normal! `[
+endfunction
+function! GoEnd(type) abort
+  normal! `]
+endfunction
+nnoremap <silent> gb :set opfunc=GoStart<CR>g@
+nnoremap <silent> ge :set opfunc=GoEnd<CR>g@
+" move ten lines/columns at a time by holding ctrl and a directional key
+noremap <C-h> 10h
+noremap <C-j> 10j
+noremap <C-k> 10k
+noremap <C-l> 10l
 
-" Colors
-""""""""""""""""""""""""""""""""""""
+""" Colors
 " Detects color strings (e.g. hex, rgba) and changes the background of the characters
 " in that string to match the color. For example, in the following sample line of CSS:
 "   p {color: red}
@@ -290,7 +300,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'mhinz/vim-signify'
   nnoremap <Leader>vk :SignifyHunkDiff<CR>
 
-" File explorer
+""" File explorer
 Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
   let g:NERDTreeMouseMode=2
   let g:NERDTreeWinPos="right"
@@ -308,8 +318,7 @@ Plug 'junegunn/vim-peekaboo'
 " A tool for profiling vim's startup time. Useful for finding slow plugins.
 Plug 'tweekmonster/startuptime.vim'
 
-" Search
-""""""""""""""""""""""""""""""""""""
+""" Search
 " Search for selected text, forwards or backwards.
 vnoremap <silent> * :<C-U>
   \let old_reg=getreg('y')<Bar>let old_regtype=getregtype('y')<CR>
@@ -477,8 +486,7 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
   endfunction
   nnoremap <silent> <Leader>b :silent! call QuickpickBuffers()<CR>
 
-" IDE features (e.g. autocomplete, smart refactoring, goto definition, etc.)
-""""""""""""""""""""""""""""""""""""
+""" IDE features (e.g. autocomplete, smart refactoring, goto definition, etc.)
 Plug 'prabirshrestha/asyncomplete.vim'
   let g:asyncomplete_auto_completeopt = 0
   let g:asyncomplete_auto_popup = 0
@@ -601,8 +609,7 @@ Plug 'puremourning/vimspector'
 Plug 'editorconfig/editorconfig-vim'
 call plug#end()
 
-" Section: Autocommands
-" -------------------------------------
+""" Restore Settings
 augroup RestoreSettings
   autocmd!
   " Restore session after vim starts. The 'nested' keyword tells vim to fire events
@@ -629,36 +636,7 @@ augroup RestoreSettings
         \ endif
 augroup END
 
-augroup Miscellaneous
-  autocmd!
-  " for some reason there is an ftplugin that is bundled with vim that
-  " sets the textwidth to 78 if it is currently 0. This sets it back to 0
-  autocmd VimEnter * :set tw=0
-  " Set a default omnifunc
-  autocmd FileType * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
-  " Extend iskeyword for filetypes that can reference CSS classes
-  autocmd FileType
-    \ css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss
-    \ setlocal iskeyword+=-,?,!
-  autocmd FileType vim setlocal iskeyword+=:,#,-
-  autocmd BufEnter *
-        \ if &ft ==# 'help' && &columns > 150 | wincmd L | endif
-  " Use vim help pages for keywordprg in vim files
-  autocmd FileType vim setlocal keywordprg=:help
-  autocmd FileType sh setlocal keywordprg=man
-  augroup HighlightWordUnderCursor
-    autocmd!
-    autocmd CursorMoved * exe printf('match CursorColumn /\V\<%s\>/', escape(expand('<cword>'), '/\'))
-  augroup END
-  " After a quickfix command is run, open the quickfix window , if there are results
-  autocmd QuickFixCmdPost [^l]* cwindow
-  autocmd QuickFixCmdPost l*    lwindow
-  " Put focus back in quickfix window after opening an entry
-  autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p 
-augroup END
-
-" Section: Aesthetics
-" -------------------------------------
+""" Colorscheme Settings
 set linebreak
 set termguicolors
 set number relativenumber
@@ -669,7 +647,7 @@ set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlis
 set signcolumn=yes " always show the sign column
 set fillchars+=vert:│
 
-" statusline
+""" Statusline
 set fillchars+=stl:─,stlnc:─
 function! MyStatusLine()
   if &ft ==# 'help'
@@ -679,8 +657,7 @@ function! MyStatusLine()
 endfunction
 set statusline=%{%MyStatusLine()%}
 
-" Block cursor in normal mode, thin line in insert mode, and underline in replace mode.
-" See: https://vim.fandom.com/wiki/Change_cursor_shape_in_different_modes
+""" Block cursor in normal mode, thin line in insert mode, and underline in replace mode.
 let &t_SI.="\e[5 q" "SI = INSERT mode
 let &t_SR.="\e[3 q" "SR = REPLACE mode
 let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
@@ -690,7 +667,8 @@ augroup ResetCursor
   autocmd VimLeave * silent exe "!echo -ne '\e[5 q'"
 augroup END
 
-augroup Styles
+""" Colorscheme Overrides
+augroup ColorschemeOverrides
   autocmd!
   " Increase brightness of comments in nord
   autocmd ColorScheme nord highlight Comment guifg=#6d7a96
@@ -720,7 +698,7 @@ augroup Styles
   autocmd Colorscheme * highlight! link CursorLine PmenuSel
 augroup END
 
-" Colorscheme
+"""" Colorscheme
 function! SetColorscheme(background)
     let &background = a:background
     let l:vim_colorscheme = a:background ==? "light" ? "solarized8" : "nord"

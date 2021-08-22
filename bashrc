@@ -34,6 +34,8 @@ export MANPATH="$BASE_MANPATH:$MACPORTS_PATH:$COREUTILS_MANPATH"
 export LESS="-Ri"
 # Get MacOS to stop complaining that I'm not using ZSH
 export BASH_SILENCE_DEPRECATION_WARNING=1
+export VISUAL=vim
+export EDITOR="$VISUAL"
 
 # python
 export VIRTUAL_ENV_DISABLE_PROMPT=1
