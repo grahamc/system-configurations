@@ -1,30 +1,24 @@
 " Section: Settings
 " -------------------------------------
-" misc.
-let $VIMHOME = $HOME . '/.vim/'
-let g:mapleader = "\<Space>"
-set nocompatible
-set encoding=utf8
-scriptencoding utf-8
-set confirm
-set mouse=a
-" enable mouse mode while in tmux
-let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
-set backspace=indent,eol,start
-set hidden
-set autoindent smartindent
-set smarttab
-set nrformats-=octal
-set ttimeout ttimeoutlen=100
-set clipboard=unnamed
-set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
-set autoread " Re-read file if it is changed by an external program
-set scrolloff=10
-set updatetime=500
-set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
-set matchpairs+=<:>
-" open new horizontal and vertical panes to the right and bottom respectively
-set splitright splitbelow
+" Misc.
+  let $VIMHOME = $HOME . '/.vim/'
+  let g:mapleader = "\<Space>"
+  set nocompatible
+  set encoding=utf8
+  scriptencoding utf-8
+  set confirm
+  set mouse=a
+  " enable mouse mode while in tmux
+  let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
+  set backspace=indent,eol,start
+  set hidden
+  set nrformats-=octal
+  set ttimeout ttimeoutlen=100
+  set updatetime=500
+  set clipboard=unnamed
+  set autoread " Re-read file if it is changed by an external program
+  set scrolloff=10
+  set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
 
 " Search
   " While typing the search query, highlight where the first match would be.
@@ -89,6 +83,9 @@ set backup
 
 " tab setup
 set expandtab
+set autoindent smartindent
+set smarttab
+set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
 let s:tab_width = 2
 let &tabstop = s:tab_width
 let &shiftwidth = s:tab_width
@@ -172,6 +169,8 @@ noremap <C-j> 10j
 noremap <C-k> 10k
 noremap <C-l> 10l
 
+" open new horizontal and vertical panes to the right and bottom respectively
+set splitright splitbelow
 nnoremap <Leader>" :vsplit<CR>
 nnoremap <Leader>% :split<CR>
 " close a window, quit if last window
@@ -252,6 +251,7 @@ Plug 'AndrewRadev/switch.vim'
 
 " Motions / Text Objects
 """"""""""""""""""""""""""""""""""""
+set matchpairs+=<:>
 " Motions for levels of indentation
 Plug 'jeetsukumaran/vim-indentwise'
   map [<Tab> <Plug>(IndentWiseBlockScopeBoundaryBegin)
