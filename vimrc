@@ -182,7 +182,7 @@ imap <expr> <CR>
       \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
       \ "\<CR>\<Plug>DiscretionaryEnd"
 
-""" Plugin Manager
+""" Plugin Manager (start)
 " Install vim-plug if not found
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -607,6 +607,8 @@ Plug 'puremourning/vimspector'
   let g:vimspector_enable_mappings = 'HUMAN'
 " Applies editorconfig settings to vim
 Plug 'editorconfig/editorconfig-vim'
+
+""" Plugin Manager (end)
 call plug#end()
 
 """ Restore Settings
@@ -698,7 +700,7 @@ augroup ColorschemeOverrides
   autocmd Colorscheme * highlight! link CursorLine PmenuSel
 augroup END
 
-"""" Colorscheme
+""" Colorscheme
 function! SetColorscheme(background)
     let &background = a:background
     let l:vim_colorscheme = a:background ==? "light" ? "solarized8" : "nord"
