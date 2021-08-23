@@ -83,6 +83,14 @@ function rust() {
     rustc $@ && ./$name && rm $name
 }
 
+# bash_completion
+# Tells bash_completion to source all completion sources in this directory
+export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
+[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
+
+# use blinking bar for bash cursor
+echo -ne '\033[5 q'
+
 # Check periodically if macos is in darkmode and update the iTerm theme accordingly.
 colorscheme_sync_daemon() {
     while :; do
@@ -102,12 +110,3 @@ colorscheme_sync_daemon() {
     done
 }
 [[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && [ -z "$STARTED_BG" ] && colorscheme_sync_daemon & disown && THEME_PID="$!" && STARTED_BG="true" && trap "kill -9 $THEME_PID" EXIT
-
-# bash_completion
-# Tells bash_completion to source all completion sources in this directory
-export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
-[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
-
-# use blinking bar for bash cursor
-# see: https://superuser.com/questions/361335/how-to-change-the-terminal-cursor-from-box-to-line
-echo -ne '\033[5 q'
