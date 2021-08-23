@@ -69,17 +69,40 @@ augroup Miscellaneous
   autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red | exe '2match ErrorMsg /\s\+$/'
 augroup END
 
-""" Section: Search
-" While typing the search query, highlight where the first match would be.
-set incsearch
-" searching is only case sensitive when the query contains an uppercase letter
-set ignorecase smartcase
-" show match position in command window, don't show 'Search hit BOTTOM/TOP'
-set shortmess-=S shortmess+=s
-" Use ripgrep as the grep program, if it's available. Otherwise use the internal
-" grep implementation since it's cross-platform
-let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
-nnoremap <silent> <Leader>\ :set hlsearch!<CR>
+inoremap jk <Esc>
+" toggle search highlighting
+nnoremap <silent> <Leader>w :wa<CR>
+nnoremap <Leader>x :wqa<CR>
+nnoremap <Leader>r :source $MYVIMRC<CR>
+nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
+nnoremap <silent> <Leader>t :vimgrep /TODO/j **/*<CR>
+
+" Show diff of unsaved changes in current file
+command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
+	 	\ | wincmd p | diffthis | wincmd p
+nnoremap <Leader>d :DiffOrig<CR>
+
+" LSP
+nnoremap <Leader>ls :LspStatus<CR>
+nnoremap <Leader>ld :LspDefinition<CR>
+nnoremap <Leader>lrn :LspRename<CR>
+nnoremap <Leader>lrf :LspReferences<CR>
+nnoremap <Leader>lo :LspCodeActionSync source.organizeImports<CR>
+
+" open new horizontal and vertical panes to the right and bottom respectively
+set splitright splitbelow
+nnoremap <Leader>" :vsplit<CR>
+nnoremap <Leader>% :split<CR>
+" close a window, quit if last window
+nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':q<CR>' : ':close<CR>'
+
+" Combine enter key (<CR>) mappings from my plugins
+imap <expr> <CR>
+  \ pumvisible() ?
+    \ asyncomplete#close_popup() :
+    \ delimitMate#WithinEmptyPair() ?
+      \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
+      \ "\<CR>\<Plug>DiscretionaryEnd"
 
 """ Section: Autocomplete
 " show the completion menu even if there is only one suggestion
@@ -97,10 +120,22 @@ cnoremap <C-a> <C-b>
 set cmdheight=3
 
 """ Section: Fold settings
+set foldlevelstart=999
 augroup SetFoldMethod
   autocmd!
-  autocmd FileType * if &ft ==# 'vim' | setlocal fdm=expr fde=getline(v\:lnum)=~'^\"\"'?'>'.(matchend(getline(v\:lnum),'\"\"*')-2)\:'=' | else | setlocal foldmethod=syntax | endif | let &foldlevel = max(map(range(1, line('$')), 'foldlevel(v:val)'))
+  autocmd FileType * if &ft ==# 'vim' | setlocal fdm=expr fde=getline(v\:lnum)=~'^\"\"'?'>'.(matchend(getline(v\:lnum),'\"\"*')-2)\:'=' | else | setlocal foldmethod=syntax | endif |
 augroup END
+function! FirstFold()
+  let g:first_fold = 1
+  for line_number in range(1, line('$') + 1)
+    if !empty(foldtextresult(line_number))
+      return 'zm'
+    endif
+  endfor
+  let &foldlevel = max(map(range(1, line('$')), 'foldlevel(v:val)')) - 1
+endfunction
+nnoremap <expr> zm !exists('g:first_fold') ? FirstFold() : 'zm'
+nnoremap <Leader>z :let &foldlevel = foldlevel('.') - 1<CR>
 
 """ Section: System Mappings
 " Map the output of these key combinations to their actual names
@@ -147,41 +182,6 @@ function! ChainedKeywordprg()
 endfunction
 nnoremap K :call ChainedKeywordprg()<CR>
 
-inoremap jk <Esc>
-" toggle search highlighting
-nnoremap <silent> <Leader>w :wa<CR>
-nnoremap <Leader>x :wqa<CR>
-nnoremap <Leader>r :source $MYVIMRC<CR>
-nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
-nnoremap <silent> <Leader>t :vimgrep /TODO/j **/*<CR>
-
-" Show diff of unsaved changes in current file
-command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
-	 	\ | wincmd p | diffthis | wincmd p
-nnoremap <Leader>d :DiffOrig<CR>
-
-" LSP
-nnoremap <Leader>ls :LspStatus<CR>
-nnoremap <Leader>ld :LspDefinition<CR>
-nnoremap <Leader>lrn :LspRename<CR>
-nnoremap <Leader>lrf :LspReferences<CR>
-nnoremap <Leader>lo :LspCodeActionSync source.organizeImports<CR>
-
-" open new horizontal and vertical panes to the right and bottom respectively
-set splitright splitbelow
-nnoremap <Leader>" :vsplit<CR>
-nnoremap <Leader>% :split<CR>
-" close a window, quit if last window
-nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':q<CR>' : ':close<CR>'
-
-" Combine enter key (<CR>) mappings from my plugins
-imap <expr> <CR>
-  \ pumvisible() ?
-    \ asyncomplete#close_popup() :
-    \ delimitMate#WithinEmptyPair() ?
-      \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
-      \ "\<CR>\<Plug>DiscretionaryEnd"
-
 """ Section: Plugin Manager (start)
 " Install vim-plug if not found
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -217,9 +217,6 @@ Plug 'AndrewRadev/splitjoin.vim'
   endfunction
   nnoremap <silent> J :<C-u>call <SID>try('SplitjoinJoin',  'J')<CR>
   nnoremap <silent> sj :<C-u>call <SID>try('SplitjoinSplit', "r\015")<CR>
-
-""" Section: light and dark colorschemes
-Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
 
 """ Section: Editing
 " Automatically add closing keywords (e.g. function/endfunction in vimscript)
@@ -319,6 +316,17 @@ Plug 'junegunn/vim-peekaboo'
 Plug 'tweekmonster/startuptime.vim'
 
 """ Section: Search
+" While typing the search query, highlight where the first match would be.
+set incsearch
+" searching is only case sensitive when the query contains an uppercase letter
+set ignorecase smartcase
+" show match position in command window, don't show 'Search hit BOTTOM/TOP'
+set shortmess-=S shortmess+=s
+" Use ripgrep as the grep program, if it's available. Otherwise use the internal
+" grep implementation since it's cross-platform
+let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
+nnoremap <silent> <Leader>\ :set hlsearch!<CR>
+
 " Search for selected text, forwards or backwards.
 vnoremap <silent> * :<C-U>
   \let old_reg=getreg('y')<Bar>let old_regtype=getregtype('y')<CR>
@@ -608,9 +616,6 @@ Plug 'puremourning/vimspector'
 " Applies editorconfig settings to vim
 Plug 'editorconfig/editorconfig-vim'
 
-""" Section: Plugin Manager (end)
-call plug#end()
-
 """ Section: Restore Settings
 augroup RestoreSettings
   autocmd!
@@ -638,7 +643,7 @@ augroup RestoreSettings
         \ endif
 augroup END
 
-""" Section: Colorscheme Settings
+""" Section: Aesthetics
 set linebreak
 set termguicolors
 set number relativenumber
@@ -648,6 +653,15 @@ set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
 set fillchars+=foldopen:\ ,fold:\ ,vert:│
+" Block cursor in normal mode, thin line in insert mode, and underline in replace mode.
+let &t_SI.="\e[5 q" "SI = INSERT mode
+let &t_SR.="\e[3 q" "SR = REPLACE mode
+let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
+" When vim exits, reset terminal cursor to blinking bar
+augroup ResetCursor
+  autocmd!
+  autocmd VimLeave * silent exe "!echo -ne '\e[5 q'"
+augroup END
 
 """ Section: Statusline
 set fillchars+=stl:─,stlnc:─
@@ -659,17 +673,8 @@ function! MyStatusLine()
 endfunction
 set statusline=%{%MyStatusLine()%}
 
-""" Section: Block cursor in normal mode, thin line in insert mode, and underline in replace mode.
-let &t_SI.="\e[5 q" "SI = INSERT mode
-let &t_SR.="\e[3 q" "SR = REPLACE mode
-let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
-" When vim exits, reset terminal cursor to blinking bar
-augroup ResetCursor
-  autocmd!
-  autocmd VimLeave * silent exe "!echo -ne '\e[5 q'"
-augroup END
-
-""" Section: Colorscheme Overrides
+""" Section: Colorscheme
+" Overrides
 augroup ColorschemeOverrides
   autocmd!
   " Increase brightness of comments in nord
@@ -700,7 +705,12 @@ augroup ColorschemeOverrides
   autocmd Colorscheme * highlight! link CursorLine PmenuSel
 augroup END
 
-""" Section: Colorscheme
+" light and dark colorschemes
+Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
+
+""" Section: Plugin Manager (end)
+call plug#end()
+
 function! SetColorscheme(background)
     let &background = a:background
     let l:vim_colorscheme = a:background ==? "light" ? "solarized8" : "nord"
