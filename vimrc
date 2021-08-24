@@ -1,9 +1,292 @@
-""" Section: General
+""" Section: This Stuff Should Stay at the Top
+set nocompatible
 let $VIMHOME = $HOME . '/.vim/'
 let g:mapleader = "\<Space>"
-set nocompatible
-set encoding=utf8
-scriptencoding utf-8
+" if 'encoding' is set, 'scriptencoding' must be set after it
+set encoding=utf8 | scriptencoding utf-8
+
+""" Section: Plugins
+
+"""" Start Plugin Manager
+" Install vim-plug if not found
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+  \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+endif
+" Run PlugInstall if there are missing plugins
+autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \| PlugInstall --sync | source $MYVIMRC
+\| endif
+call plug#begin('~/.vim/plugged')
+
+"""" General
+" Syntax plugins for practically any language
+Plug 'sheerun/vim-polyglot'
+" Split/join lines, adding/removing language-specific continuation characters as necessary
+Plug 'AndrewRadev/splitjoin.vim'
+" Motions for levels of indentation
+Plug 'jeetsukumaran/vim-indentwise'
+  map [<Tab> <Plug>(IndentWiseBlockScopeBoundaryBegin)
+  map ]<Tab> <Plug>(IndentWiseBlockScopeBoundaryEnd)
+" replacement for matchit since matchit wasn't working for me
+Plug 'andymass/vim-matchup'
+  " Don't display offscreen matches in my statusline or a popup window
+  let g:matchup_matchparen_offscreen = {}
+" Additional text objects and movements
+Plug 'wellle/targets.vim'
+" Asynchronous linting
+Plug 'dense-analysis/ale'
+  " If a linter is not found don't continue to check on subsequent linting operations.
+  let g:ale_cache_executable_check_failures = 1
+  " Don't show popup when the mouse if over a symbol, vim-lsp
+  " should be responsible for that.
+  let g:ale_set_balloons = 0
+  " Don't show variable information in the status line,
+  " vim-lsp should be responsible for that.
+  let g:ale_hover_cursor = 0
+  " Only display diagnostics with a warning level or above
+  " i.e. warning,error
+  let g:ale_lsp_show_message_severity = "warning"
+  let g:ale_lint_on_enter = 0 " Don't lint when a buffer opens
+  let g:ale_lint_on_text_changed = "always"
+  let g:ale_lint_delay = 1000
+  let g:ale_lint_on_insert_leave = 0
+  let g:ale_lint_on_filetype_changed = 0
+  let g:ale_lint_on_save = 0
+  let g:ale_fix_on_save = 1
+  let g:ale_fixers = {
+        \ 'javascript': ['prettier'],
+        \ 'javascriptreact': ['prettier'],
+        \ 'typescript': ['prettier'],
+        \ 'typescriptreact': ['prettier'],
+        \ 'json': ['prettier'],
+        \ 'html': ['prettier'],
+        \ 'css': ['prettier']
+        \ }
+  let g:ale_linters = {
+        \ 'vim': [],
+        \ 'javascript': ['eslint'],
+        \ 'javascriptreact': ['eslint'],
+        \ 'typescript': ['eslint'],
+        \ 'typescriptreact': ['eslint'],
+        \ 'python': []
+        \ }
+" Debugger
+Plug 'puremourning/vimspector'
+  let g:vimspector_enable_mappings = 'HUMAN'
+" Applies editorconfig settings to vim
+Plug 'editorconfig/editorconfig-vim'
+
+"""" IDE features (e.g. autocomplete, smart refactoring, goto definition, etc.)
+Plug 'prabirshrestha/asyncomplete.vim'
+  let g:asyncomplete_auto_completeopt = 0
+  let g:asyncomplete_auto_popup = 0
+  let g:asyncomplete_min_chars = 4
+  let g:asyncomplete_matchfuzzy = 0
+  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+  function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+  endfunction
+  inoremap <silent><expr> <TAB>
+    \ pumvisible() ? "\<C-n>" :
+    \ <SID>check_back_space() ? "\<TAB>" :
+    \ asyncomplete#force_refresh()
+" Language Server Protocol client that provides IDE like features
+" e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
+Plug 'prabirshrestha/vim-lsp'
+  " for debugging
+  let g:lsp_log_file = $VIMHOME . 'vim-lsp-log'
+  let g:lsp_fold_enabled = 0
+  let g:lsp_document_code_action_signs_enabled = 0
+  let g:lsp_document_highlight_enabled = 1
+  Plug 'prabirshrestha/asyncomplete-lsp.vim'
+  " An easy way to install/manage language servers for vim-lsp.
+  Plug 'mattn/vim-lsp-settings'
+    " where the language servers are stored
+    let g:lsp_settings_servers_dir = $VIMHOME . "vim-lsp-servers"
+    call mkdir(g:lsp_settings_servers_dir, "p")
+  " A bridge between vim-lsp and ale. This works by
+  " sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
+  " This way, vim-lsp will only provide LSP features
+  " and ALE will only provide realtime diagnostics.
+  " Now if something goes wrong its easier to determine which plugin
+  " has the issue. Plus it allows ALE and vim-lsp to focus on their
+  " strengths: linting and LSP respectively.
+  Plug 'rhysd/vim-lsp-ale'
+    " Only report diagnostics with a level of 'warning' or above
+    " i.e. warning,error
+    let g:lsp_ale_diagnostics_severity = "warning"
+Plug 'prabirshrestha/asyncomplete-buffer.vim'
+  let g:asyncomplete_buffer_clear_cache = 0
+  autocmd User asyncomplete_setup
+    \ call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+    \ 'name': 'buffer',
+    \ 'allowlist': ['*'],
+    \ 'completor': function('asyncomplete#sources#buffer#completor'),
+    \ }))
+Plug 'prabirshrestha/asyncomplete-file.vim'
+autocmd User asyncomplete_setup
+    \ call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+    \ 'name': 'file',
+    \ 'allowlist': ['*'],
+    \ 'priority': 10,
+    \ 'completor': function('asyncomplete#sources#file#completor')
+    \ }))
+" TODO this doesn't insert correctly, at least in python, need to fix
+" Plug 'yami-beta/asyncomplete-omni.vim'
+" autocmd User asyncomplete_setup
+"     \ call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+"     \ 'name': 'omni',
+"     \ 'allowlist': ['*'],
+"     \ 'completor': function('asyncomplete#sources#omni#completor'),
+"     \ 'config': {
+"     \   'show_source_kind': 1,
+"     \ },
+"     \ }))
+Plug 'Shougo/neco-vim'
+  Plug 'prabirshrestha/asyncomplete-necovim.vim'
+  autocmd User asyncomplete_setup
+      \ call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
+      \ 'name': 'necovim',
+      \ 'allowlist': ['vim'],
+      \ 'completor': function('asyncomplete#sources#necovim#completor'),
+      \ }))
+" Expands Emmet abbreviations to write HTML more quickly
+Plug 'mattn/emmet-vim'
+  let g:user_emmet_expandabbr_key = '<Leader>e'
+  let g:user_emmet_mode='n'
+
+"""" Editing
+" Automatically add closing keywords (e.g. function/endfunction in vimscript)
+Plug 'tpope/vim-endwise'
+  let g:endwise_no_mappings = 1
+" Automatically close html tags
+Plug 'alvan/vim-closetag'
+" Automatically insert closing braces/quotes
+Plug 'Raimondi/delimitMate'
+  " Given the following line (where | represents the cursor):
+  "   function foo(bar) {|}
+  " Pressing enter will result in:
+  " function foo(bar) {
+  "   |
+  " }
+  let g:delimitMate_expand_cr = 0
+" Makes it easier to manipulate brace/bracket/quote pairs by providing commands to do common
+" operations like change pair, remove pair, etc.
+Plug 'tpope/vim-surround'
+" For swapping two pieces of text
+Plug 'tommcdo/vim-exchange'
+" I use it for more robust substitutions, but it does alot more
+Plug 'tpope/vim-abolish'
+" Swap a piece of text for one of its specified replacements. For example, calling swap on
+" the logical operator '&&' would change it to '||'.
+Plug 'AndrewRadev/switch.vim'
+" Easy movement between vim windows and tmux panes.
+Plug 'christoomey/vim-tmux-navigator'
+  let g:tmux_navigator_no_mappings = 1
+  noremap <silent> <M-h> :TmuxNavigateLeft<cr>
+  noremap <silent> <M-l> :TmuxNavigateRight<cr>
+  noremap <silent> <M-j> :TmuxNavigateDown<cr>
+  noremap <silent> <M-k> :TmuxNavigateUp<cr>
+" Visualizes indentation. Useful for fixing incorrectly indented lines.
+Plug 'Yggdroot/indentLine'
+  let g:indentLine_char = '▏'
+  let g:indentLine_setColors = 0
+  let g:indentLine_enabled = 0
+" Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
+Plug 'mhinz/vim-signify'
+  nnoremap <Leader>vk :SignifyHunkDiff<CR>
+" Open a split with the current register values when '"' or '@' is pressed
+Plug 'junegunn/vim-peekaboo'
+  let g:peekaboo_window = 'vert bo 40new'
+" A tool for profiling vim's startup time. Useful for finding slow plugins.
+Plug 'tweekmonster/startuptime.vim'
+" The author said this is experimental so I'll pin a commit to avoid breaking changes
+Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b0134aa1e2d9'}
+  function! QuickpickMappings()
+    " move next
+    imap <silent> <buffer> <Down> <Plug>(quickpick-move-next)
+    nmap <silent> <buffer> <Down> <Plug>(quickpick-move-next)
+    imap <silent> <buffer> <Tab> <Plug>(quickpick-move-next)
+    nmap <silent> <buffer> <Tab> <Plug>(quickpick-move-next)
+    " move previous
+    imap <silent> <buffer> <Up> <Plug>(quickpick-move-previous)
+    nmap <silent> <buffer> <Up> <Plug>(quickpick-move-previous)
+    imap <silent> <buffer> <S-Tab> <Plug>(quickpick-move-previous)
+    nmap <silent> <buffer> <S-Tab> <Plug>(quickpick-move-previous)
+  endfunction
+  call sign_define("quickpick_cursor", {'text': '> ', 'texthl': 'Normal'})
+  augroup Quickpick
+    autocmd!
+    autocmd ColorScheme *
+          \ highlight QuickpickInvisibleStatusLine guibg=NONE guifg=#2E3440 ctermbg=NONE ctermfg=NONE
+    autocmd FileType quickpick
+          \ setlocal cursorline |
+          \ setlocal cursorlineopt=line |
+          \ setlocal statusline=%#QuickpickInvisibleStatusLine#
+    autocmd FileType quickpick-filter
+          \ call QuickpickMappings() |
+          \ call sign_place(0, '', 'quickpick_cursor', 'quickpick-filter', {'lnum': 1})
+  augroup END
+
+"""" Colors
+" Detects color strings (e.g. hex, rgba) and changes the background of the characters
+" in that string to match the color. For example, in the following sample line of CSS:
+"   p {color: red}
+" The background color of the string "red" would be the color red.
+Plug 'ap/vim-css-color'
+" Opens the OS color picker and inserts the chosen color into the buffer.
+Plug 'KabbAmine/vCoolor.vim'
+
+"""" File explorer
+Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
+  let g:NERDTreeMouseMode=2
+  let g:NERDTreeWinPos="right"
+  let g:NERDTreeShowHidden=1
+  let g:NERDTreeStatusline="%= %{exists('b:NERDTree')?'NERDTree':''}"
+  " Sync nerdtree across tabs
+  Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
+    let g:nerdtree_tabs_autofind = 1
+    nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
+
+"""" Colorscheme
+Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
+  " Overrides
+  augroup ColorschemeOverrides
+    autocmd!
+    " Increase brightness of comments in nord
+    autocmd ColorScheme nord highlight Comment guifg=#6d7a96
+    " MatchParen
+    autocmd Colorscheme * hi MatchParen ctermfg=blue guifg=#5E81AC cterm=underline gui=underline guibg=NONE ctermbg=NONE
+    " Transparent SignColumn
+    autocmd Colorscheme solarized8,nord hi clear SignColumn
+    autocmd Colorscheme solarized8 hi DiffAdd ctermbg=NONE guibg=NONE
+    autocmd Colorscheme solarized8 hi DiffChange ctermbg=NONE guibg=NONE
+    autocmd Colorscheme solarized8 hi DiffDelete ctermbg=NONE guibg=NONE
+    autocmd Colorscheme solarized8 hi SignifyLineChange ctermbg=NONE guibg=NONE
+    autocmd Colorscheme solarized8 hi SignifyLineDelete ctermbg=NONE guibg=NONE
+    autocmd Colorscheme solarized8 hi ALEErrorSign ctermbg=NONE guibg=NONE
+    autocmd Colorscheme solarized8 hi ALEWarningSign ctermbg=NONE guibg=NONE
+    " Transparent number column
+    autocmd Colorscheme solarized8 hi clear CursorLineNR
+    autocmd Colorscheme solarized8 hi clear LineNR
+    " Transparent vertical split
+    autocmd Colorscheme solarized8,nord highlight VertSplit ctermbg=NONE guibg=NONE
+    " statusline colors
+    autocmd ColorScheme nord hi StatusLine guibg=#2E3440 guifg=#88C0D0 ctermfg=1 ctermbg=3
+    autocmd ColorScheme nord hi StatusLineNC guibg=#2E3440 guifg=#E5E9F0  ctermfg=1 ctermbg=3
+    " autocomplete popupmenu
+    autocmd ColorScheme * highlight PmenuSel guibg=#6E90B4 guifg=#2E3440 ctermfg=1 ctermbg=3
+    autocmd ColorScheme * highlight Pmenu guibg=#3B4252 ctermbg=12E3440 guifg=#ECEFF4 ctermfg=81 ctermbg=3
+    " cursorline for quickpick
+    autocmd Colorscheme * highlight! link CursorLine PmenuSel
+  augroup END
+
+"""" End Plugin Manager
+call plug#end()
+
+""" Section: General
 set confirm
 set mouse=a
 " enable mouse mode while in tmux
@@ -147,7 +430,7 @@ map k <M-k>
 imap OB <Down>
 imap OA <Up>
 
-""" Section: Keywordprg with Fallback
+""" Section: <S-k> settings
 command! -nargs=1 SilentEx
   \   execute 'silent! !' . <q-args>
   \ | execute 'redraw!'
@@ -182,80 +465,28 @@ function! ChainedKeywordprg()
 endfunction
 nnoremap K :call ChainedKeywordprg()<CR>
 
-""" Section: Plugin Manager (start)
-" Install vim-plug if not found
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-  \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-endif
-" Run PlugInstall if there are missing plugins
-autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-  \| PlugInstall --sync | source $MYVIMRC
-\| endif
-call plug#begin('~/.vim/plugged')
-
-Plug 'sheerun/vim-polyglot'
-
 """ Section: Line folding / splitting
 " Prevents inserting two spaces after punctuation on a join (J)
 set nojoinspaces
 " Delete comment character when joining commented lines
 set formatoptions+=j
-" Split/join lines, adding/removing language-specific continuation characters as necessary
-Plug 'AndrewRadev/splitjoin.vim'
-  " Remap the builtin shift-j to try using splitjoin first
-  function! s:try(cmd, default)
-    if exists(':' . a:cmd) && !v:count
-      let tick = b:changedtick
-      execute a:cmd
-      if tick == b:changedtick
-        execute join(['normal!', a:default])
-      endif
-    else
-      execute join(['normal! ', v:count, a:default], '')
+" Remap the builtin shift-j to try using splitjoin first
+function! s:try(cmd, default)
+  if exists(':' . a:cmd) && !v:count
+    let tick = b:changedtick
+    execute a:cmd
+    if tick == b:changedtick
+      execute join(['normal!', a:default])
     endif
-  endfunction
-  nnoremap <silent> J :<C-u>call <SID>try('SplitjoinJoin',  'J')<CR>
-  nnoremap <silent> sj :<C-u>call <SID>try('SplitjoinSplit', "r\015")<CR>
-
-""" Section: Editing
-" Automatically add closing keywords (e.g. function/endfunction in vimscript)
-Plug 'tpope/vim-endwise'
-  let g:endwise_no_mappings = 1
-" Automatically close html tags
-Plug 'alvan/vim-closetag'
-" Automatically insert closing braces/quotes
-Plug 'Raimondi/delimitMate'
-  " Given the following line (where | represents the cursor):
-  "   function foo(bar) {|}
-  " Pressing enter will result in:
-  " function foo(bar) {
-  "   |
-  " }
-  let g:delimitMate_expand_cr = 0
-" Makes it easier to manipulate brace/bracket/quote pairs by providing commands to do common
-" operations like change pair, remove pair, etc.
-Plug 'tpope/vim-surround'
-" For swapping two pieces of text
-Plug 'tommcdo/vim-exchange'
-" I use it for more robust substitutions, but it does alot more
-Plug 'tpope/vim-abolish'
-" Swap a piece of text for one of its specified replacements. For example, calling swap on
-" the logical operator '&&' would change it to '||'.
-Plug 'AndrewRadev/switch.vim'
+  else
+    execute join(['normal! ', v:count, a:default], '')
+  endif
+endfunction
+nnoremap <silent> J :<C-u>call <SID>try('SplitjoinJoin',  'J')<CR>
+nnoremap <silent> sj :<C-u>call <SID>try('SplitjoinSplit', "r\015")<CR>
 
 """ Section: Motions / Text Objects
 set matchpairs+=<:>
-" Motions for levels of indentation
-Plug 'jeetsukumaran/vim-indentwise'
-  map [<Tab> <Plug>(IndentWiseBlockScopeBoundaryBegin)
-  map ]<Tab> <Plug>(IndentWiseBlockScopeBoundaryEnd)
-" replacement for matchit since matchit wasn't working for me
-Plug 'andymass/vim-matchup'
-  " Don't display offscreen matches in my statusline or a popup window
-  let g:matchup_matchparen_offscreen = {}
-" Additional text objects and movements
-Plug 'wellle/targets.vim'
 " Go to start/end of text object
 function! GoStart(type) abort
   normal! `[
@@ -271,50 +502,6 @@ noremap <C-j> 10j
 noremap <C-k> 10k
 noremap <C-l> 10l
 
-""" Section: Colors
-" Detects color strings (e.g. hex, rgba) and changes the background of the characters
-" in that string to match the color. For example, in the following sample line of CSS:
-"   p {color: red}
-" The background color of the string "red" would be the color red.
-Plug 'ap/vim-css-color'
-" Opens the OS color picker and inserts the chosen color into the buffer.
-Plug 'KabbAmine/vCoolor.vim'
-
-" Easy movement between vim windows and tmux panes.
-Plug 'christoomey/vim-tmux-navigator'
-  let g:tmux_navigator_no_mappings = 1
-  noremap <silent> <M-h> :TmuxNavigateLeft<cr>
-  noremap <silent> <M-l> :TmuxNavigateRight<cr>
-  noremap <silent> <M-j> :TmuxNavigateDown<cr>
-  noremap <silent> <M-k> :TmuxNavigateUp<cr>
-" Visualizes indentation. Useful for fixing incorrectly indented lines.
-Plug 'Yggdroot/indentLine'
-  let g:indentLine_char = '▏'
-  let g:indentLine_setColors = 0
-  let g:indentLine_enabled = 0
-
-" Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
-Plug 'mhinz/vim-signify'
-  nnoremap <Leader>vk :SignifyHunkDiff<CR>
-
-""" Section: File explorer
-Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
-  let g:NERDTreeMouseMode=2
-  let g:NERDTreeWinPos="right"
-  let g:NERDTreeShowHidden=1
-  let g:NERDTreeStatusline="%= %{exists('b:NERDTree')?'NERDTree':''}"
-  " Sync nerdtree across tabs
-  Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
-    let g:nerdtree_tabs_autofind = 1
-    nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
-
-" Open a split with the current register values when '"' or '@' is pressed
-Plug 'junegunn/vim-peekaboo'
-  let g:peekaboo_window = 'vert bo 40new'
-
-" A tool for profiling vim's startup time. Useful for finding slow plugins.
-Plug 'tweekmonster/startuptime.vim'
-
 """ Section: Search
 " While typing the search query, highlight where the first match would be.
 set incsearch
@@ -326,7 +513,6 @@ set shortmess-=S shortmess+=s
 " grep implementation since it's cross-platform
 let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
 nnoremap <silent> <Leader>\ :set hlsearch!<CR>
-
 " Search for selected text, forwards or backwards.
 vnoremap <silent> * :<C-U>
   \let old_reg=getreg('y')<Bar>let old_regtype=getregtype('y')<CR>
@@ -338,283 +524,134 @@ vnoremap <silent> # :<C-U>
   \gv"yy?<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
   \escape(@y, '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gVzv:call setreg('y', old_reg, old_regtype)<CR>
-" The author said this is experimental so I'll pin a commit to avoid breaking changes
-Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b0134aa1e2d9'}
-  function! QuickpickMappings()
-    " move next
-    imap <silent> <buffer> <Down> <Plug>(quickpick-move-next)
-    nmap <silent> <buffer> <Down> <Plug>(quickpick-move-next)
-    imap <silent> <buffer> <Tab> <Plug>(quickpick-move-next)
-    nmap <silent> <buffer> <Tab> <Plug>(quickpick-move-next)
-    " move previous
-    imap <silent> <buffer> <Up> <Plug>(quickpick-move-previous)
-    nmap <silent> <buffer> <Up> <Plug>(quickpick-move-previous)
-    imap <silent> <buffer> <S-Tab> <Plug>(quickpick-move-previous)
-    nmap <silent> <buffer> <S-Tab> <Plug>(quickpick-move-previous)
-  endfunction
-  call sign_define("quickpick_cursor", {'text': '> ', 'texthl': 'Normal'})
-  augroup Quickpick
-    autocmd!
-    autocmd ColorScheme *
-          \ highlight QuickpickInvisibleStatusLine guibg=NONE guifg=#2E3440 ctermbg=NONE ctermfg=NONE
-    autocmd FileType quickpick
-          \ setlocal cursorline |
-          \ setlocal cursorlineopt=line |
-          \ setlocal statusline=%#QuickpickInvisibleStatusLine#
-    autocmd FileType quickpick-filter
-          \ call QuickpickMappings() |
-          \ call sign_place(0, '', 'quickpick_cursor', 'quickpick-filter', {'lnum': 1})
-  augroup END
-  " File search
-  function! QuickpickFiles() abort
-    call quickpick#open({
-      \ 'items': [],
-      \ 'on_accept': function('s:quickpick_files_on_accept'),
-      \ 'on_selection': function('s:quickpick_files_on_selection'),
-      \ 'on_change': function('s:quickpick_files_on_change'),
-      \ 'maxheight': 5,
-      \ })
-  endfunction
-  function! s:quickpick_files_on_accept(data, ...) abort
-    call quickpick#close()
-    exe 'edit ' . a:data['items'][0]
-  endfunction
-  function! s:quickpick_files_on_selection(data, ...) abort
-    return
-  endfunction
-  function! s:quickpick_files_on_change(data, ...) abort
-    call quickpick#items(systemlist('rg --vimgrep --files ' . $RG_DEFAULT_OPTIONS . ' | fzf --filter ' . shellescape(a:data['input'])))
-  endfunction
-  nnoremap <silent> <Leader>f :silent! call QuickpickFiles()<CR>
-  " Line search
-  function! QuickpickLines() abort
-    let s:quickpick_current_buffer = bufnr()
-    let s:quickpick_current_line = line(".")
+"""" File search
+function! QuickpickFiles() abort
+  call quickpick#open({
+    \ 'items': [],
+    \ 'on_accept': function('s:quickpick_files_on_accept'),
+    \ 'on_selection': function('s:quickpick_files_on_selection'),
+    \ 'on_change': function('s:quickpick_files_on_change'),
+    \ 'maxheight': 5,
+    \ })
+endfunction
+function! s:quickpick_files_on_accept(data, ...) abort
+  call quickpick#close()
+  exe 'edit ' . a:data['items'][0]
+endfunction
+function! s:quickpick_files_on_selection(data, ...) abort
+  return
+endfunction
+function! s:quickpick_files_on_change(data, ...) abort
+  call quickpick#items(systemlist('rg --vimgrep --files ' . $RG_DEFAULT_OPTIONS . ' | fzf --filter ' . shellescape(a:data['input'])))
+endfunction
+nnoremap <silent> <Leader>f :silent! call QuickpickFiles()<CR>
+"""" Line search
+function! QuickpickLines() abort
+  let s:quickpick_current_buffer = bufnr()
+  let s:quickpick_current_line = line(".")
+  let s:quickpick_popup = v:none
+  call quickpick#open({
+    \ 'on_accept': function('s:quickpick_lines_on_accept'),
+    \ 'on_selection': function('s:quickpick_lines_on_selection'),
+    \ 'on_change': function('s:quickpick_lines_on_change'),
+    \ 'on_cancel': function('s:quickpick_lines_on_cancel'),
+    \ 'maxheight': 5,
+    \ })
+endfunction
+function! s:quickpick_lines_on_accept(data, ...) abort
+  call quickpick#close()
+  if s:quickpick_popup != v:none
+    call popup_close(s:quickpick_popup)
     let s:quickpick_popup = v:none
-    call quickpick#open({
-      \ 'on_accept': function('s:quickpick_lines_on_accept'),
-      \ 'on_selection': function('s:quickpick_lines_on_selection'),
-      \ 'on_change': function('s:quickpick_lines_on_change'),
-      \ 'on_cancel': function('s:quickpick_lines_on_cancel'),
-      \ 'maxheight': 5,
-      \ })
-  endfunction
-  function! s:quickpick_lines_on_accept(data, ...) abort
-    call quickpick#close()
+  endif
+  let [l:file, l:line; rest] = a:data['items'][0]->split(':')
+  exe 'edit +' . l:line . ' ' . l:file
+endfunction
+function! s:quickpick_lines_on_cancel(data, ...) abort
+  call quickpick#close()
+  if s:quickpick_popup != v:none
+    call popup_close(s:quickpick_popup)
+    let s:quickpick_popup = v:none
+  endif
+endfunction
+function! s:quickpick_lines_on_selection(data, ...) abort
+  if empty(a:data['items'])
     if s:quickpick_popup != v:none
       call popup_close(s:quickpick_popup)
       let s:quickpick_popup = v:none
     endif
-    let [l:file, l:line; rest] = a:data['items'][0]->split(':')
-    exe 'edit +' . l:line . ' ' . l:file
-  endfunction
-  function! s:quickpick_lines_on_cancel(data, ...) abort
-    call quickpick#close()
-    if s:quickpick_popup != v:none
-      call popup_close(s:quickpick_popup)
-      let s:quickpick_popup = v:none
-    endif
-  endfunction
-  function! s:quickpick_lines_on_selection(data, ...) abort
-    if empty(a:data['items'])
-      if s:quickpick_popup != v:none
-        call popup_close(s:quickpick_popup)
-        let s:quickpick_popup = v:none
-      endif
-      return
-    endif
-    let [l:file, l:line; rest] = a:data['items'][0]->split(':')
-    let l:wininfo = getwininfo(bufwinid('quickpick-filter'))[0]
+    return
+  endif
+  let [l:file, l:line; rest] = a:data['items'][0]->split(':')
+  let l:wininfo = getwininfo(bufwinid('quickpick-filter'))[0]
 
-    if s:quickpick_popup != v:none
-      call popup_close(s:quickpick_popup)
-      let s:quickpick_popup = v:none
-    endif
+  if s:quickpick_popup != v:none
+    call popup_close(s:quickpick_popup)
+    let s:quickpick_popup = v:none
+  endif
 
-    " open buffer for file if it isn't already open
-    let l:buffer_number = bufadd(l:file)
+  " open buffer for file if it isn't already open
+  let l:buffer_number = bufadd(l:file)
 
-    let s:quickpick_popup_options = {
-          \ 'pos':    'botleft',
-          \ 'borderchars': ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
-          \ 'border': [1,1,1,1],
-          \ 'title':  "Preview",
-          \ 'maxheight': 9,
-          \ 'minwidth':  l:wininfo.width - 3,
-          \ 'maxwidth':  l:wininfo.width - 3,
-          \ 'col':       l:wininfo.wincol,
-          \ 'line':      l:wininfo.winrow - 9,
-          \ }
-    silent let s:quickpick_popup = popup_create(l:buffer_number, s:quickpick_popup_options)
-    call win_execute(s:quickpick_popup, ['normal! '. l:line .'Gzz', 'setlocal cursorline cursorlineopt=line'])
-  endfunction
-  function! s:quickpick_lines_on_change(data, ...) abort
-    call quickpick#items(systemlist('rg '.$RG_DEFAULT_OPTIONS.' ' . shellescape(a:data['input'])))
-  endfunction
-  nnoremap <silent> <Leader>g :silent! call QuickpickLines()<CR>
-  " Buffer search
-  function! QuickpickBuffers() abort
-    let s:quickpick_current_buffer = bufnr()
-    let s:quickpick_buffers = s:quickpick_get_buffers()
-    let s:quickpick_buffers_string = s:quickpick_buffers->join("\n")
-    call quickpick#open({
-      \ 'items': s:quickpick_buffers,
-      \ 'on_accept': function('s:quickpick_buffers_on_accept'),
-      \ 'on_change': function('s:quickpick_buffers_on_change'),
-      \ 'maxheight': 5,
-      \ })
-  endfunction
-  function! s:quickpick_get_buffers() abort
-    let l:buffer_numbers = filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&filetype") != "qf" && v:val != s:quickpick_current_buffer')
-
-    if empty(l:buffer_numbers)
-      return l:buffer_numbers
-    endif
-
-    " previous buffer gets listed first
-    let l:previous_buffer = bufnr('#')
-    let l:previous_buffer_index = index(l:buffer_numbers, l:previous_buffer)
-    if l:previous_buffer_index != -1
-      let [l:buffer_numbers[0], l:buffer_numbers[l:previous_buffer_index]] = [l:buffer_numbers[l:previous_buffer_index], l:buffer_numbers[0]]
-    endif
-
-    let l:formatted_buffer_numbers = mapnew(l:buffer_numbers, { index, buf -> '[' . buf . '] ' . bufname(buf) })
-
-    return l:formatted_buffer_numbers
-  endfunction
-  function! s:quickpick_buffers_on_accept(data, ...) abort
-    call quickpick#close()
-    " go to the buffer specified by the number in between braces
-    let l:left_or_right_brace_pattern = '[\[|\]]'
-    let l:keep_empty_strings = 0
-    exe 'b' . a:data['items'][0]->split(l:left_or_right_brace_pattern, l:keep_empty_strings)[0]
-  endfunction
-  function! s:quickpick_buffers_on_change(data, ...) abort
-    call quickpick#items(systemlist('fzf --filter ' . shellescape(a:data['input']), s:quickpick_buffers_string))
-  endfunction
-  nnoremap <silent> <Leader>b :silent! call QuickpickBuffers()<CR>
-
-""" Section: IDE features (e.g. autocomplete, smart refactoring, goto definition, etc.)
-Plug 'prabirshrestha/asyncomplete.vim'
-  let g:asyncomplete_auto_completeopt = 0
-  let g:asyncomplete_auto_popup = 0
-  let g:asyncomplete_min_chars = 4
-  let g:asyncomplete_matchfuzzy = 0
-  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-  function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-  endfunction
-  inoremap <silent><expr> <TAB>
-    \ pumvisible() ? "\<C-n>" :
-    \ <SID>check_back_space() ? "\<TAB>" :
-    \ asyncomplete#force_refresh()
-" Language Server Protocol client that provides IDE like features
-" e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
-Plug 'prabirshrestha/vim-lsp'
-  " for debugging
-  let g:lsp_log_file = $VIMHOME . 'vim-lsp-log'
-  let g:lsp_fold_enabled = 0
-  let g:lsp_document_code_action_signs_enabled = 0
-  let g:lsp_document_highlight_enabled = 1
-  Plug 'prabirshrestha/asyncomplete-lsp.vim'
-  " An easy way to install/manage language servers for vim-lsp.
-  Plug 'mattn/vim-lsp-settings'
-    " where the language servers are stored
-    let g:lsp_settings_servers_dir = $VIMHOME . "vim-lsp-servers"
-    call mkdir(g:lsp_settings_servers_dir, "p")
-  " A bridge between vim-lsp and ale. This works by
-  " sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
-  " This way, vim-lsp will only provide LSP features
-  " and ALE will only provide realtime diagnostics.
-  " Now if something goes wrong its easier to determine which plugin
-  " has the issue. Plus it allows ALE and vim-lsp to focus on their
-  " strengths: linting and LSP respectively.
-  Plug 'rhysd/vim-lsp-ale'
-    " Only report diagnostics with a level of 'warning' or above
-    " i.e. warning,error
-    let g:lsp_ale_diagnostics_severity = "warning"
-Plug 'prabirshrestha/asyncomplete-buffer.vim'
-  let g:asyncomplete_buffer_clear_cache = 0
-  autocmd User asyncomplete_setup
-    \ call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-    \ 'name': 'buffer',
-    \ 'allowlist': ['*'],
-    \ 'completor': function('asyncomplete#sources#buffer#completor'),
-    \ }))
-Plug 'prabirshrestha/asyncomplete-file.vim'
-autocmd User asyncomplete_setup
-    \ call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-    \ 'name': 'file',
-    \ 'allowlist': ['*'],
-    \ 'priority': 10,
-    \ 'completor': function('asyncomplete#sources#file#completor')
-    \ }))
-" TODO this doesn't insert correctly, at least in python, need to fix
-" Plug 'yami-beta/asyncomplete-omni.vim'
-" autocmd User asyncomplete_setup
-"     \ call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
-"     \ 'name': 'omni',
-"     \ 'allowlist': ['*'],
-"     \ 'completor': function('asyncomplete#sources#omni#completor'),
-"     \ 'config': {
-"     \   'show_source_kind': 1,
-"     \ },
-"     \ }))
-Plug 'Shougo/neco-vim'
-  Plug 'prabirshrestha/asyncomplete-necovim.vim'
-  autocmd User asyncomplete_setup
-      \ call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
-      \ 'name': 'necovim',
-      \ 'allowlist': ['vim'],
-      \ 'completor': function('asyncomplete#sources#necovim#completor'),
-      \ }))
-" Expands Emmet abbreviations to write HTML more quickly
-Plug 'mattn/emmet-vim'
-  let g:user_emmet_expandabbr_key = '<Leader>e'
-  let g:user_emmet_mode='n'
-" Asynchronous linting
-Plug 'dense-analysis/ale'
-  " If a linter is not found don't continue to check on subsequent linting operations.
-  let g:ale_cache_executable_check_failures = 1
-  " Don't show popup when the mouse if over a symbol, vim-lsp
-  " should be responsible for that.
-  let g:ale_set_balloons = 0
-  " Don't show variable information in the status line,
-  " vim-lsp should be responsible for that.
-  let g:ale_hover_cursor = 0
-  " Only display diagnostics with a warning level or above
-  " i.e. warning,error
-  let g:ale_lsp_show_message_severity = "warning"
-  let g:ale_lint_on_enter = 0 " Don't lint when a buffer opens
-  let g:ale_lint_on_text_changed = "always"
-  let g:ale_lint_delay = 1000
-  let g:ale_lint_on_insert_leave = 0
-  let g:ale_lint_on_filetype_changed = 0
-  let g:ale_lint_on_save = 0
-  let g:ale_fix_on_save = 1
-  let g:ale_fixers = {
-        \ 'javascript': ['prettier'],
-        \ 'javascriptreact': ['prettier'],
-        \ 'typescript': ['prettier'],
-        \ 'typescriptreact': ['prettier'],
-        \ 'json': ['prettier'],
-        \ 'html': ['prettier'],
-        \ 'css': ['prettier']
+  let s:quickpick_popup_options = {
+        \ 'pos':    'botleft',
+        \ 'borderchars': ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
+        \ 'border': [1,1,1,1],
+        \ 'title':  "Preview",
+        \ 'maxheight': 9,
+        \ 'minwidth':  l:wininfo.width - 3,
+        \ 'maxwidth':  l:wininfo.width - 3,
+        \ 'col':       l:wininfo.wincol,
+        \ 'line':      l:wininfo.winrow - 9,
         \ }
-  let g:ale_linters = {
-        \ 'vim': [],
-        \ 'javascript': ['eslint'],
-        \ 'javascriptreact': ['eslint'],
-        \ 'typescript': ['eslint'],
-        \ 'typescriptreact': ['eslint'],
-        \ 'python': []
-        \ }
-" Debugger
-Plug 'puremourning/vimspector'
-  let g:vimspector_enable_mappings = 'HUMAN'
-" Applies editorconfig settings to vim
-Plug 'editorconfig/editorconfig-vim'
+  silent let s:quickpick_popup = popup_create(l:buffer_number, s:quickpick_popup_options)
+  call win_execute(s:quickpick_popup, ['normal! '. l:line .'Gzz', 'setlocal cursorline cursorlineopt=line'])
+endfunction
+function! s:quickpick_lines_on_change(data, ...) abort
+  call quickpick#items(systemlist('rg '.$RG_DEFAULT_OPTIONS.' ' . shellescape(a:data['input'])))
+endfunction
+nnoremap <silent> <Leader>g :silent! call QuickpickLines()<CR>
+"""" Buffer search
+function! QuickpickBuffers() abort
+  let s:quickpick_current_buffer = bufnr()
+  let s:quickpick_buffers = s:quickpick_get_buffers()
+  let s:quickpick_buffers_string = s:quickpick_buffers->join("\n")
+  call quickpick#open({
+    \ 'items': s:quickpick_buffers,
+    \ 'on_accept': function('s:quickpick_buffers_on_accept'),
+    \ 'on_change': function('s:quickpick_buffers_on_change'),
+    \ 'maxheight': 5,
+    \ })
+endfunction
+function! s:quickpick_get_buffers() abort
+  let l:buffer_numbers = filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&filetype") != "qf" && v:val != s:quickpick_current_buffer')
+
+  if empty(l:buffer_numbers)
+    return l:buffer_numbers
+  endif
+
+  " previous buffer gets listed first
+  let l:previous_buffer = bufnr('#')
+  let l:previous_buffer_index = index(l:buffer_numbers, l:previous_buffer)
+  if l:previous_buffer_index != -1
+    let [l:buffer_numbers[0], l:buffer_numbers[l:previous_buffer_index]] = [l:buffer_numbers[l:previous_buffer_index], l:buffer_numbers[0]]
+  endif
+
+  let l:formatted_buffer_numbers = mapnew(l:buffer_numbers, { index, buf -> '[' . buf . '] ' . bufname(buf) })
+
+  return l:formatted_buffer_numbers
+endfunction
+function! s:quickpick_buffers_on_accept(data, ...) abort
+  call quickpick#close()
+  " go to the buffer specified by the number in between braces
+  let l:left_or_right_brace_pattern = '[\[|\]]'
+  let l:keep_empty_strings = 0
+  exe 'b' . a:data['items'][0]->split(l:left_or_right_brace_pattern, l:keep_empty_strings)[0]
+endfunction
+function! s:quickpick_buffers_on_change(data, ...) abort
+  call quickpick#items(systemlist('fzf --filter ' . shellescape(a:data['input']), s:quickpick_buffers_string))
+endfunction
+nnoremap <silent> <Leader>b :silent! call QuickpickBuffers()<CR>
 
 """ Section: Restore Settings
 augroup RestoreSettings
@@ -644,6 +681,7 @@ augroup RestoreSettings
 augroup END
 
 """ Section: Aesthetics
+"""" General
 set linebreak
 set termguicolors
 set number relativenumber
@@ -653,7 +691,8 @@ set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
 set fillchars+=foldopen:\ ,fold:\ ,vert:│
-" Block cursor in normal mode, thin line in insert mode, and underline in replace mode.
+
+"""" Block cursor in normal mode, thin line in insert mode, and underline in replace mode
 let &t_SI.="\e[5 q" "SI = INSERT mode
 let &t_SR.="\e[3 q" "SR = REPLACE mode
 let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
@@ -663,7 +702,7 @@ augroup ResetCursor
   autocmd VimLeave * silent exe "!echo -ne '\e[5 q'"
 augroup END
 
-""" Section: Statusline
+"""" Statusline
 set fillchars+=stl:─,stlnc:─
 function! MyStatusLine()
   if &ft ==# 'help'
@@ -673,44 +712,7 @@ function! MyStatusLine()
 endfunction
 set statusline=%{%MyStatusLine()%}
 
-""" Section: Colorscheme
-" Overrides
-augroup ColorschemeOverrides
-  autocmd!
-  " Increase brightness of comments in nord
-  autocmd ColorScheme nord highlight Comment guifg=#6d7a96
-  " MatchParen
-  autocmd Colorscheme * hi MatchParen ctermfg=blue guifg=#5E81AC cterm=underline gui=underline guibg=NONE ctermbg=NONE
-  " Transparent SignColumn
-  autocmd Colorscheme solarized8,nord hi clear SignColumn
-  autocmd Colorscheme solarized8 hi DiffAdd ctermbg=NONE guibg=NONE
-  autocmd Colorscheme solarized8 hi DiffChange ctermbg=NONE guibg=NONE
-  autocmd Colorscheme solarized8 hi DiffDelete ctermbg=NONE guibg=NONE
-  autocmd Colorscheme solarized8 hi SignifyLineChange ctermbg=NONE guibg=NONE
-  autocmd Colorscheme solarized8 hi SignifyLineDelete ctermbg=NONE guibg=NONE
-  autocmd Colorscheme solarized8 hi ALEErrorSign ctermbg=NONE guibg=NONE
-  autocmd Colorscheme solarized8 hi ALEWarningSign ctermbg=NONE guibg=NONE
-  " Transparent number column
-  autocmd Colorscheme solarized8 hi clear CursorLineNR
-  autocmd Colorscheme solarized8 hi clear LineNR
-  " Transparent vertical split
-  autocmd Colorscheme solarized8,nord highlight VertSplit ctermbg=NONE guibg=NONE
-  " statusline colors
-  autocmd ColorScheme nord hi StatusLine guibg=#2E3440 guifg=#88C0D0 ctermfg=1 ctermbg=3
-  autocmd ColorScheme nord hi StatusLineNC guibg=#2E3440 guifg=#E5E9F0  ctermfg=1 ctermbg=3
-  " autocomplete popupmenu
-  autocmd ColorScheme * highlight PmenuSel guibg=#6E90B4 guifg=#2E3440 ctermfg=1 ctermbg=3
-  autocmd ColorScheme * highlight Pmenu guibg=#3B4252 ctermbg=12E3440 guifg=#ECEFF4 ctermfg=81 ctermbg=3
-  " cursorline for quickpick
-  autocmd Colorscheme * highlight! link CursorLine PmenuSel
-augroup END
-
-" light and dark colorschemes
-Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
-
-""" Section: Plugin Manager (end)
-call plug#end()
-
+"""" Colorscheme
 function! SetColorscheme(background)
     let &background = a:background
     let l:vim_colorscheme = a:background ==? "light" ? "solarized8" : "nord"
