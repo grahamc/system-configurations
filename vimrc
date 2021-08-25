@@ -6,7 +6,7 @@ let g:mapleader = "\<Space>"
 set encoding=utf8 | scriptencoding utf-8
 
 """ Section: Plugins
-"""" Start Plugin Manager
+"""" Plugin Manager Settings
 " Install vim-plug if not found
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -16,6 +16,8 @@ endif
 autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
   \| PlugInstall --sync | source $MYVIMRC
 \| endif
+
+"""" Start Plugin Manager
 call plug#begin('~/.vim/plugged')
 
 """" General
