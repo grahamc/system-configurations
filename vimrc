@@ -6,7 +6,6 @@ let g:mapleader = "\<Space>"
 set encoding=utf8 | scriptencoding utf-8
 
 """ Section: Plugins
-
 """" Start Plugin Manager
 " Install vim-plug if not found
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -34,6 +33,13 @@ Plug 'andymass/vim-matchup'
   let g:matchup_matchparen_offscreen = {}
 " Additional text objects and movements
 Plug 'wellle/targets.vim'
+" Debugger
+Plug 'puremourning/vimspector'
+  let g:vimspector_enable_mappings = 'HUMAN'
+" Applies editorconfig settings to vim
+Plug 'editorconfig/editorconfig-vim'
+
+"""" Linting
 " Asynchronous linting
 Plug 'dense-analysis/ale'
   " If a linter is not found don't continue to check on subsequent linting operations.
@@ -71,27 +77,8 @@ Plug 'dense-analysis/ale'
         \ 'typescriptreact': ['eslint'],
         \ 'python': []
         \ }
-" Debugger
-Plug 'puremourning/vimspector'
-  let g:vimspector_enable_mappings = 'HUMAN'
-" Applies editorconfig settings to vim
-Plug 'editorconfig/editorconfig-vim'
 
-"""" IDE features (e.g. autocomplete, smart refactoring, goto definition, etc.)
-Plug 'prabirshrestha/asyncomplete.vim'
-  let g:asyncomplete_auto_completeopt = 0
-  let g:asyncomplete_auto_popup = 0
-  let g:asyncomplete_min_chars = 4
-  let g:asyncomplete_matchfuzzy = 0
-  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-  function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-  endfunction
-  inoremap <silent><expr> <TAB>
-    \ pumvisible() ? "\<C-n>" :
-    \ <SID>check_back_space() ? "\<TAB>" :
-    \ asyncomplete#force_refresh()
+"""" LSP
 " Language Server Protocol client that provides IDE like features
 " e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
 Plug 'prabirshrestha/vim-lsp'
@@ -100,7 +87,6 @@ Plug 'prabirshrestha/vim-lsp'
   let g:lsp_fold_enabled = 0
   let g:lsp_document_code_action_signs_enabled = 0
   let g:lsp_document_highlight_enabled = 1
-  Plug 'prabirshrestha/asyncomplete-lsp.vim'
   " An easy way to install/manage language servers for vim-lsp.
   Plug 'mattn/vim-lsp-settings'
     " where the language servers are stored
@@ -117,45 +103,58 @@ Plug 'prabirshrestha/vim-lsp'
     " Only report diagnostics with a level of 'warning' or above
     " i.e. warning,error
     let g:lsp_ale_diagnostics_severity = "warning"
-Plug 'prabirshrestha/asyncomplete-buffer.vim'
-  let g:asyncomplete_buffer_clear_cache = 0
-  autocmd User asyncomplete_setup
-    \ call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-    \ 'name': 'buffer',
-    \ 'allowlist': ['*'],
-    \ 'completor': function('asyncomplete#sources#buffer#completor'),
-    \ }))
-Plug 'prabirshrestha/asyncomplete-file.vim'
-autocmd User asyncomplete_setup
-    \ call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-    \ 'name': 'file',
-    \ 'allowlist': ['*'],
-    \ 'priority': 10,
-    \ 'completor': function('asyncomplete#sources#file#completor')
-    \ }))
-" TODO this doesn't insert correctly, at least in python, need to fix
-" Plug 'yami-beta/asyncomplete-omni.vim'
-" autocmd User asyncomplete_setup
-"     \ call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
-"     \ 'name': 'omni',
-"     \ 'allowlist': ['*'],
-"     \ 'completor': function('asyncomplete#sources#omni#completor'),
-"     \ 'config': {
-"     \   'show_source_kind': 1,
-"     \ },
-"     \ }))
-Plug 'Shougo/neco-vim'
-  Plug 'prabirshrestha/asyncomplete-necovim.vim'
-  autocmd User asyncomplete_setup
-      \ call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
-      \ 'name': 'necovim',
-      \ 'allowlist': ['vim'],
-      \ 'completor': function('asyncomplete#sources#necovim#completor'),
+
+"""" Autocomplete
+Plug 'prabirshrestha/asyncomplete.vim'
+  let g:asyncomplete_auto_completeopt = 0
+  let g:asyncomplete_auto_popup = 0
+  let g:asyncomplete_min_chars = 4
+  let g:asyncomplete_matchfuzzy = 0
+  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+  function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+  endfunction
+  inoremap <silent><expr> <TAB>
+    \ pumvisible() ? "\<C-n>" :
+    \ <SID>check_back_space() ? "\<TAB>" :
+    \ asyncomplete#force_refresh()
+  Plug 'prabirshrestha/asyncomplete-lsp.vim'
+  Plug 'prabirshrestha/asyncomplete-buffer.vim'
+    let g:asyncomplete_buffer_clear_cache = 0
+    autocmd User asyncomplete_setup
+      \ call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+      \ 'name': 'buffer',
+      \ 'allowlist': ['*'],
+      \ 'completor': function('asyncomplete#sources#buffer#completor'),
       \ }))
-" Expands Emmet abbreviations to write HTML more quickly
-Plug 'mattn/emmet-vim'
-  let g:user_emmet_expandabbr_key = '<Leader>e'
-  let g:user_emmet_mode='n'
+  Plug 'prabirshrestha/asyncomplete-file.vim'
+  autocmd User asyncomplete_setup
+      \ call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+      \ 'name': 'file',
+      \ 'allowlist': ['*'],
+      \ 'priority': 10,
+      \ 'completor': function('asyncomplete#sources#file#completor')
+      \ }))
+  " TODO this doesn't insert correctly, at least in python, need to fix
+  " Plug 'yami-beta/asyncomplete-omni.vim'
+  " autocmd User asyncomplete_setup
+  "     \ call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+  "     \ 'name': 'omni',
+  "     \ 'allowlist': ['*'],
+  "     \ 'completor': function('asyncomplete#sources#omni#completor'),
+  "     \ 'config': {
+  "     \   'show_source_kind': 1,
+  "     \ },
+  "     \ }))
+  Plug 'Shougo/neco-vim'
+    Plug 'prabirshrestha/asyncomplete-necovim.vim'
+    autocmd User asyncomplete_setup
+        \ call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
+        \ 'name': 'necovim',
+        \ 'allowlist': ['vim'],
+        \ 'completor': function('asyncomplete#sources#necovim#completor'),
+        \ }))
 
 """" Editing
 " Automatically add closing keywords (e.g. function/endfunction in vimscript)
@@ -182,6 +181,10 @@ Plug 'tpope/vim-abolish'
 " Swap a piece of text for one of its specified replacements. For example, calling swap on
 " the logical operator '&&' would change it to '||'.
 Plug 'AndrewRadev/switch.vim'
+" Expands Emmet abbreviations to write HTML more quickly
+Plug 'mattn/emmet-vim'
+  let g:user_emmet_expandabbr_key = '<Leader>e'
+  let g:user_emmet_mode='n'
 " Easy movement between vim windows and tmux panes.
 Plug 'christoomey/vim-tmux-navigator'
   let g:tmux_navigator_no_mappings = 1
