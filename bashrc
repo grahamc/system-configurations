@@ -91,22 +91,17 @@ export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
 # use blinking bar for bash cursor
 echo -ne '\033[5 q'
 
-# Check periodically if macos is in darkmode and update the iTerm theme accordingly.
-colorscheme_sync_daemon() {
-    while :; do
-        SYSTEM_THEME="$(defaults read -g AppleInterfaceStyle 2>/dev/null)"
-        [ "$SYSTEM_THEME" = "Dark" ] && NEW_MODE='1' || NEW_MODE='0'
+# sync colorscheme with macos
+colorsync() {
+    SYSTEM_THEME="$(defaults read -g AppleInterfaceStyle 2>/dev/null)"
+    [ "$SYSTEM_THEME" = "Dark" ] && NEW_MODE='1' || NEW_MODE='0'
 
-        if [ "$NEW_MODE" != "$CURRENT_MODE" ]; then
-            CURRENT_MODE="$NEW_MODE"
-            [[ "$NEW_MODE" -eq '0' ]] && newTheme='Solarized Light' || newTheme='Nord'
+    if [ "$NEW_MODE" != "$CURRENT_MODE" ]; then
+        CURRENT_MODE="$NEW_MODE"
+        [[ "$NEW_MODE" -eq '0' ]] && newTheme='Solarized Light' || newTheme='Nord'
 
-            setThemeEscapeSequence="\033]50;SetColors=preset=$newTheme\a"
-            [ -n "$TMUX" ] && setThemeEscapeSequence="\033Ptmux;\033$setThemeEscapeSequence\033\a"
-            echo -ne "$setThemeEscapeSequence"
-        fi
-
-        sleep 5
-    done
+        setThemeEscapeSequence="\033]50;SetColors=preset=$newTheme\a"
+        [ -n "$TMUX" ] && setThemeEscapeSequence="\033Ptmux;\033$setThemeEscapeSequence\033\a"
+        echo -ne "$setThemeEscapeSequence"
+    fi
 }
-[[ "$OSTYPE" == "darwin"* ]] && [ "$TERM_PROGRAM" == "iTerm.app" ] && [ -z "$STARTED_BG" ] && colorscheme_sync_daemon & disown && THEME_PID="$!" && STARTED_BG="true" && trap "kill -9 $THEME_PID" EXIT

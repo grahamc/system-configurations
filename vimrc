@@ -33,7 +33,7 @@ Plug 'jeetsukumaran/vim-indentwise'
 Plug 'andymass/vim-matchup'
   " Don't display offscreen matches in my statusline or a popup window
   let g:matchup_matchparen_offscreen = {}
-" Additional text objects and movements
+" Additional text objects and motions
 Plug 'wellle/targets.vim'
 " Debugger
 Plug 'puremourning/vimspector'
@@ -101,9 +101,6 @@ Plug 'prabirshrestha/vim-lsp'
 " sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
 " This way, vim-lsp will only provide LSP features
 " and ALE will only provide realtime diagnostics.
-" Now if something goes wrong its easier to determine which plugin
-" has the issue. Plus it allows ALE and vim-lsp to focus on their
-" strengths: linting and LSP respectively.
 Plug 'rhysd/vim-lsp-ale'
   " Only report diagnostics with a level of 'warning' or above
   " i.e. warning,error
@@ -736,8 +733,7 @@ function! SyncColorschemeWithOs(...)
 endfunction
 if has('macunix')
   call SyncColorschemeWithOs()
-  " Check periodically to see if darkmode is toggled on the OS and update the vim theme accordingly.
-  call timer_start(5000, function('SyncColorschemeWithOs'), {"repeat": -1})
+  nnoremap <Leader>l :call SyncColorschemeWithOs()<CR>:call system('colorsync')<CR>
 else
   call SetColorscheme('dark')
 endif
