@@ -94,17 +94,28 @@ Plug 'prabirshrestha/vim-lsp'
     " where the language servers are stored
     let g:lsp_settings_servers_dir = $VIMHOME . "vim-lsp-servers"
     call mkdir(g:lsp_settings_servers_dir, "p")
-  " A bridge between vim-lsp and ale. This works by
-  " sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
-  " This way, vim-lsp will only provide LSP features
-  " and ALE will only provide realtime diagnostics.
-  " Now if something goes wrong its easier to determine which plugin
-  " has the issue. Plus it allows ALE and vim-lsp to focus on their
-  " strengths: linting and LSP respectively.
-  Plug 'rhysd/vim-lsp-ale'
-    " Only report diagnostics with a level of 'warning' or above
-    " i.e. warning,error
-    let g:lsp_ale_diagnostics_severity = "warning"
+
+"""" Coordination between plugins
+""""" vim-lsp, ale
+" A bridge between vim-lsp and ale. This works by
+" sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
+" This way, vim-lsp will only provide LSP features
+" and ALE will only provide realtime diagnostics.
+" Now if something goes wrong its easier to determine which plugin
+" has the issue. Plus it allows ALE and vim-lsp to focus on their
+" strengths: linting and LSP respectively.
+Plug 'rhysd/vim-lsp-ale'
+  " Only report diagnostics with a level of 'warning' or above
+  " i.e. warning,error
+  let g:lsp_ale_diagnostics_severity = "warning"
+""""" asyncomplete, delimitmate, vim-endwise
+" Combine enter key (<CR>) mappings from my plugins
+imap <expr> <CR>
+  \ pumvisible() ?
+    \ asyncomplete#close_popup() :
+    \ delimitMate#WithinEmptyPair() ?
+      \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
+      \ "\<CR>\<Plug>DiscretionaryEnd"
 
 """" Autocomplete
 Plug 'prabirshrestha/asyncomplete.vim'
@@ -383,14 +394,6 @@ nnoremap <Leader>" :vsplit<CR>
 nnoremap <Leader>% :split<CR>
 " close a window, quit if last window
 nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':q<CR>' : ':close<CR>'
-
-" Combine enter key (<CR>) mappings from my plugins
-imap <expr> <CR>
-  \ pumvisible() ?
-    \ asyncomplete#close_popup() :
-    \ delimitMate#WithinEmptyPair() ?
-      \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
-      \ "\<CR>\<Plug>DiscretionaryEnd"
 
 """ Section: Autocomplete
 " show the completion menu even if there is only one suggestion
