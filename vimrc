@@ -689,7 +689,7 @@ augroup RestoreSettings
 augroup END
 
 """ Section: Aesthetics
-"""" General
+"""" Misc.
 set linebreak
 set termguicolors
 set number relativenumber
