@@ -508,6 +508,7 @@ noremap <C-k> 10k
 noremap <C-l> 10l
 
 """ Section: Search
+"""" Misc.
 " While typing the search query, highlight where the first match would be.
 set incsearch
 " searching is only case sensitive when the query contains an uppercase letter
@@ -518,7 +519,8 @@ set shortmess-=S shortmess+=s
 " grep implementation since it's cross-platform
 let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
 nnoremap <silent> <Leader>\ :set hlsearch!<CR>
-" Search for selected text, forwards or backwards.
+
+"""" Use '/' and '?' search in visual mode
 vnoremap <silent> * :<C-U>
   \let old_reg=getreg('y')<Bar>let old_regtype=getregtype('y')<CR>
   \gv"yy/<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
@@ -529,6 +531,7 @@ vnoremap <silent> # :<C-U>
   \gv"yy?<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
   \escape(@y, '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gVzv:call setreg('y', old_reg, old_regtype)<CR>
+
 """" File search
 function! QuickpickFiles() abort
   call quickpick#open({

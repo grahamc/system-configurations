@@ -16,9 +16,6 @@ bind "set menu-complete-display-prefix on"
 # PATH
 export GOPATH="/usr/local/go/bin"
 export COREUTILS_PATH="/usr/local/opt/coreutils/libexec/gnubin"
-export MYSQL_PATH="/usr/local/mysql/bin"
-export PORT_PATH="/opt/local/bin"
-export SUMO_HOME="/opt/local/share/sumo"
 export RUST_PATH="$HOME/.cargo/bin"
 export FZF_PATH="/usr/local/opt/fzf/bin"
 export GLOBAL_NPM_PACKAGES="$HOME/node_modules/.bin"
@@ -26,7 +23,6 @@ export PATH="$COREUTILS_PATH:$PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PO
 
 # MANPATH
 export COREUTILS_MANPATH="/usr/local/opt/coreutils/libexec/gnuman"
-export MACPORTS_PATH="/opt/local/share/man"
 export BASE_MANPATH="/usr/share/man:/usr/local/share/man:/usr/X11/share/man"
 export MANPATH="$BASE_MANPATH:$MACPORTS_PATH:$COREUTILS_MANPATH"
 
