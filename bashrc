@@ -32,6 +32,8 @@ export LESS="-Ri"
 export BASH_SILENCE_DEPRECATION_WARNING=1
 export VISUAL=vim
 export EDITOR="$VISUAL"
+# remove duplicates in bash history
+export HISTCONTROL=ignoredups:erasedups
 
 # python
 export VIRTUAL_ENV_DISABLE_PROMPT=1

@@ -313,28 +313,6 @@ set clipboard=unnamed
 set autoread " Re-read file if it is changed by an external program
 set scrolloff=10
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages sessionoptions-=folds
-" set swapfile directory
-let &directory = $VIMHOME . 'swapfile_dir/'
-call mkdir(&directory, "p")
-" persist undo history to disk
-let &undodir = $VIMHOME . 'undo_dir/'
-call mkdir(&undodir, "p")
-set undofile
-" set backup directory
-let &backupdir = $VIMHOME . 'backup_dir/'
-call mkdir(&backupdir, "p")
-set backup
-" tab setup
-set expandtab
-set autoindent smartindent
-set smarttab
-set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
-let s:tab_width = 2
-let &tabstop = s:tab_width
-let &shiftwidth = s:tab_width
-let &softtabstop = s:tab_width
-" Display all highlight groups in a new window
-command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
 augroup Miscellaneous
   autocmd!
   " for some reason there is an ftplugin that is bundled with vim that
@@ -364,6 +342,33 @@ augroup Miscellaneous
   " highlight trailing whitespace
   autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red | exe '2match ErrorMsg /\s\+$/'
 augroup END
+
+" set swapfile directory
+let &directory = $VIMHOME . 'swapfile_dir/'
+call mkdir(&directory, "p")
+
+" persist undo history to disk
+let &undodir = $VIMHOME . 'undo_dir/'
+call mkdir(&undodir, "p")
+set undofile
+
+" set backup directory
+let &backupdir = $VIMHOME . 'backup_dir/'
+call mkdir(&backupdir, "p")
+set backup
+
+" tab setup
+set expandtab
+set autoindent smartindent
+set smarttab
+set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
+let s:tab_width = 2
+let &tabstop = s:tab_width
+let &shiftwidth = s:tab_width
+let &softtabstop = s:tab_width
+
+" Display all highlight groups in a new window
+command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
 
 inoremap jk <Esc>
 " toggle search highlighting
@@ -427,7 +432,6 @@ nnoremap <Leader>z :let &foldlevel = foldlevel('.') - 1<CR>
 
 """ Section: System Mappings
 " Map the output of these key combinations to their actual names
-" to make mappings that use these key combinations easier to understand
 map l <M-l>
 map h <M-h>
 map j <M-j>
