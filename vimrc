@@ -287,13 +287,15 @@ Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
     " Transparent vertical split
     autocmd Colorscheme solarized8,nord highlight VertSplit ctermbg=NONE guibg=NONE
     " statusline colors
-    autocmd ColorScheme nord hi StatusLine guibg=#2E3440 guifg=#88C0D0 ctermfg=1 ctermbg=3
-    autocmd ColorScheme nord hi StatusLineNC guibg=#2E3440 guifg=#E5E9F0  ctermfg=1 ctermbg=3
+    autocmd ColorScheme nord hi StatusLine guibg=NONE guifg=#88C0D0 ctermfg=1 ctermbg=3
+    autocmd ColorScheme nord hi StatusLineNC guibg=NONE guifg=#E5E9F0  ctermfg=1 ctermbg=3
     " autocomplete popupmenu
     autocmd ColorScheme * highlight PmenuSel guibg=#6E90B4 guifg=#2E3440 ctermfg=1 ctermbg=3
     autocmd ColorScheme * highlight Pmenu guibg=#3B4252 ctermbg=12E3440 guifg=#ECEFF4 ctermfg=81 ctermbg=3
     " cursorline for quickpick
-    autocmd Colorscheme * highlight! link CursorLine PmenuSel
+    autocmd ColorScheme * highlight! link CursorLine PmenuSel
+    " transparent background
+    autocmd ColorScheme * highlight Normal guibg=NONE ctermbg=NONE
   augroup END
 
 """" End Plugin Manager
@@ -522,7 +524,7 @@ set shortmess-=S shortmess+=s
 " Use ripgrep as the grep program, if it's available. Otherwise use the internal
 " grep implementation since it's cross-platform
 let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
-nnoremap <silent> <Leader>\ :set hlsearch!<CR>
+nnoremap <silent> <Leader>/ :set hlsearch!<CR>
 
 """" Use '/' and '?' search in visual mode
 vnoremap <silent> * :<C-U>
@@ -720,7 +722,7 @@ function! MyStatusLine()
   if &ft ==# 'help'
     return "%= HELP"
   endif
-  return "%=\ %h%w%q%t%m%r,\ Ln:%l/%L,\ Col:%c\ "
+  return "%= %h%w%q%t%m%r │ Ln:%l/%L │ Col:%c%= "
 endfunction
 set statusline=%{%MyStatusLine()%}
 
