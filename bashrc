@@ -1,10 +1,18 @@
-# prompt (ezprompt.net)
+# prompt
+CONNECTBAR_DOWN=$'\u250C\u2500\u257C'
+CONNECTBAR_UP=$'\u2514\u2500'
+SPLITBAR=$'\u257E\u2500\u257C'
+ARROW=$'\u25B6'
+c_gray='\e[01;30m'
+c_blue='\e[0;34m'
+c_cyan='\e[0;36m'
+c_reset='\e[0m'
 function parse_git_branch() {
     BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
-    [ -n "$BRANCH" ] && echo -e "[${BRANCH}]⏤⏤ "
+    [ -n "$BRANCH" ] && echo -e "[${c_cyan}${BRANCH}${c_gray}]$SPLITBAR"
 }
-PS1="\[\e[34m\]╭─\`parse_git_branch\`[\w]\[\e[m\]
-\[\e[34m\]╰\[\e[m\]"
+PS1="${c_gray}$CONNECTBAR_DOWN\`parse_git_branch\`[${c_cyan}\w${c_gray}]${c_reset}
+${c_gray}$CONNECTBAR_UP>>> \[\e[m\]"
 
 # make tab cycle through commands after listing
 bind 'Tab:menu-complete'
@@ -70,7 +78,6 @@ source $(brew --prefix asdf)/libexec/asdf.sh
 source ~/.asdf/plugins/java/set-java-home.bash
 
 # aliases
-alias la='ls -A'
 alias r="source ~/.bashrc"
 alias youtube-mp3='youtube-dl -x --audio-format mp3 '
 alias trash='trash -F '

@@ -254,10 +254,10 @@ Plug 'KabbAmine/vCoolor.vim'
 
 """" File explorer
 Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
-  let g:NERDTreeMouseMode=2
-  let g:NERDTreeWinPos="right"
-  let g:NERDTreeShowHidden=1
-  let g:NERDTreeStatusline="%= %{exists('b:NERDTree')?'NERDTree':''}"
+  let g:NERDTreeMouseMode = 2
+  let g:NERDTreeWinPos = "right"
+  let g:NERDTreeShowHidden = 1
+  let g:NERDTreeStatusline = -1
   " Sync nerdtree across tabs
   Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
     let g:nerdtree_tabs_autofind = 1
@@ -373,7 +373,6 @@ let &softtabstop = s:tab_width
 command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
 
 inoremap jk <Esc>
-" toggle search highlighting
 nnoremap <silent> <Leader>w :wa<CR>
 nnoremap <Leader>x :wqa<CR>
 nnoremap <Leader>r :source $MYVIMRC<CR>
@@ -412,7 +411,7 @@ set complete=.,w,b,u
 set wildmenu wildmode=longest:full,full
 " move to beginning of line
 cnoremap <C-a> <C-b>
-set cmdheight=3
+set cmdheight=2
 
 """ Section: Fold settings
 set foldlevelstart=999
@@ -524,6 +523,7 @@ set shortmess-=S shortmess+=s
 " Use ripgrep as the grep program, if it's available. Otherwise use the internal
 " grep implementation since it's cross-platform
 let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
+" toggle search highlighting
 nnoremap <silent> <Leader>/ :set hlsearch!<CR>
 
 """" Use '/' and '?' search in visual mode
@@ -720,9 +720,11 @@ augroup END
 set fillchars+=stl:─,stlnc:─
 function! MyStatusLine()
   if &ft ==# 'help'
-    return "%= HELP"
+    return "%#VertSplit#%=[%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}HELP%#VertSplit#]"
+  elseif exists('b:NERDTree')
+    return "%#VertSplit#%=[%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}NERDTree%#VertSplit#]"
   endif
-  return "%= %h%w%q%t%m%r │ Ln:%l/%L │ Col:%c%= "
+  return "%#VertSplit#[%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}%h%w%q%t%m%r%#VertSplit#]%=[%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}Ln:%l:%L%#VertSplit#]╾─╼[%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}Col:%c%#VertSplit#]"
 endfunction
 set statusline=%{%MyStatusLine()%}
 
