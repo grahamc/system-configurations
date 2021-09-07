@@ -12,10 +12,6 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
   \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 endif
-" Run PlugInstall if there are missing plugins
-autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-  \| PlugInstall --sync | source $MYVIMRC
-\| endif
 
 """" Start Plugin Manager
 call plug#begin('~/.vim/plugged')
@@ -197,7 +193,7 @@ Plug 'AndrewRadev/switch.vim'
 Plug 'mattn/emmet-vim'
   let g:user_emmet_expandabbr_key = '<Leader>e'
   let g:user_emmet_mode='n'
-" Easy movement between vim windows and tmux panes.
+" Seamless movement between vim windows and tmux panes.
 Plug 'christoomey/vim-tmux-navigator'
   let g:tmux_navigator_no_mappings = 1
   noremap <silent> <M-h> :TmuxNavigateLeft<cr>
@@ -297,7 +293,7 @@ Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
     " cursorline for quickpick
     autocmd ColorScheme * highlight! link CursorLine PmenuSel
     " transparent background
-    "autocmd ColorScheme * highlight Normal guibg=NONE ctermbg=NONE
+    autocmd ColorScheme * highlight Normal guibg=NONE ctermbg=NONE
   augroup END
 
 """" End Plugin Manager
@@ -672,18 +668,28 @@ nnoremap <silent> <Leader>b :silent! call QuickpickBuffers()<CR>
 """ Section: Restore Settings
 augroup RestoreSettings
   autocmd!
+  function! HasMissingPlugins()
+    return len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  endfunction
   " Restore session after vim starts. The 'nested' keyword tells vim to fire events
   " normally while this autocmd is executing. By default, no events are fired
   " during the execution of an autocmd to prevent infinite loops.
   let s:session_dir = $VIMHOME . 'sessions/'
+  function! RestoreOrCreateSession()
+    if argc() == 0 |
+      call mkdir(s:session_dir, "p") |
+      let s:session_name =  substitute($PWD, '/', '%', 'g') . '%vim' |
+      let s:session_full_path = s:session_dir . s:session_name |
+      let s:session_cmd = filereadable(s:session_full_path) ? "source " : "mksession! " |
+      exe s:session_cmd . fnameescape(s:session_full_path) |
+    endif
+  endfunction
   autocmd VimEnter * nested
-        \ if argc() == 0 |
-          \ call mkdir(s:session_dir, "p") |
-          \ let s:session_name =  substitute($PWD, '/', '%', 'g') . '%vim' |
-          \ let s:session_full_path = s:session_dir . s:session_name |
-          \ let s:session_cmd = filereadable(s:session_full_path) ? "source " : "mksession! " |
-          \ exe s:session_cmd . fnameescape(s:session_full_path) |
-        \ endif
+    \ call RestoreOrCreateSession() |
+    \ if HasMissingPlugins() |
+      \ PlugInstall --sync |
+      \ source $MYVIMRC |
+    \ endif
   " save session before vim exits
   autocmd VimLeavePre *
         \ if !empty(v:this_session) |
@@ -730,6 +736,8 @@ function! MyStatusLine()
     return g:FormatGroup('HELP').s:STL_SEPARATOR
   elseif exists('b:NERDTree')
     return g:FormatGroup('NERDTree').s:STL_SEPARATOR
+  elseif &ft ==# 'vim-plug'
+    return g:FormatGroup('VIM_PLUG').s:STL_SEPARATOR
   endif
   return g:FormatGroup('%h%w%q%t%m%r').s:STL_SEPARATOR.g:FormatGroup('Ln:%l:%L').s:GROUP_SEPARATOR.g:FormatGroup('Col:%c')
 endfunction
