@@ -40,6 +40,8 @@ Plug 'puremourning/vimspector'
   let g:vimspector_enable_mappings = 'HUMAN'
 " Applies editorconfig settings to vim
 Plug 'editorconfig/editorconfig-vim'
+" Dim inactive windows
+Plug 'TaDaa/vimade'
 
 """" Linting
 " Asynchronous linting
@@ -295,7 +297,7 @@ Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
     " cursorline for quickpick
     autocmd ColorScheme * highlight! link CursorLine PmenuSel
     " transparent background
-    autocmd ColorScheme * highlight Normal guibg=NONE ctermbg=NONE
+    "autocmd ColorScheme * highlight Normal guibg=NONE ctermbg=NONE
   augroup END
 
 """" End Plugin Manager
@@ -718,13 +720,18 @@ augroup END
 
 """" Statusline
 set fillchars+=stl:─,stlnc:─
+let s:GREY_HIGHLIGHT = "%#VertSplit#"
+let s:STL_HIGHLIGHT = "%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}"
+let s:STL_SEPARATOR = s:GREY_HIGHLIGHT.'%='
+let s:GROUP_SEPARATOR = s:GREY_HIGHLIGHT.'╾─╼'
+let g:FormatGroup = { group -> s:GREY_HIGHLIGHT.'['.s:STL_HIGHLIGHT.group.s:GREY_HIGHLIGHT.']' }
 function! MyStatusLine()
   if &ft ==# 'help'
-    return "%#VertSplit#%=[%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}HELP%#VertSplit#]"
+    return g:FormatGroup('HELP').s:STL_SEPARATOR
   elseif exists('b:NERDTree')
-    return "%#VertSplit#%=[%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}NERDTree%#VertSplit#]"
+    return g:FormatGroup('NERDTree').s:STL_SEPARATOR
   endif
-  return "%#VertSplit#[%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}%h%w%q%t%m%r%#VertSplit#]%=[%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}Ln:%l:%L%#VertSplit#]╾─╼[%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}Col:%c%#VertSplit#]"
+  return g:FormatGroup('%h%w%q%t%m%r').s:STL_SEPARATOR.g:FormatGroup('Ln:%l:%L').s:GROUP_SEPARATOR.g:FormatGroup('Col:%c')
 endfunction
 set statusline=%{%MyStatusLine()%}
 
