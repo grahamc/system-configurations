@@ -2,9 +2,8 @@
 CONNECTBAR_DOWN=$'\u250C\u2500\u257C'
 CONNECTBAR_UP=$'\u2514'
 SPLITBAR=$'\u257E\u2500\u257C'
-ARROW=$'\u25B6'
+ARROW=$'>>>'
 c_gray='\e[01;30m'
-c_blue='\e[0;34m'
 c_cyan='\e[0;36m'
 c_reset='\e[0m'
 function parse_git_branch() {
@@ -12,14 +11,7 @@ function parse_git_branch() {
     [ -n "$BRANCH" ] && echo -e "[${c_cyan}${BRANCH}${c_gray}]$SPLITBAR"
 }
 PS1="${c_gray}$CONNECTBAR_DOWN\`parse_git_branch\`[${c_cyan}\w${c_gray}]${c_reset}
-${c_gray}$CONNECTBAR_UP>>> \[\e[m\]"
-
-# make tab cycle through commands after listing
-bind 'Tab:menu-complete'
-bind '"\e[Z":menu-complete-backward'
-bind "set show-all-if-ambiguous on"
-bind "set completion-ignore-case on"
-bind "set menu-complete-display-prefix on"
+${c_gray}$CONNECTBAR_UP$ARROW ${c_reset}"
 
 # PATH
 export GOPATH="/usr/local/go/bin"
@@ -34,7 +26,7 @@ export COREUTILS_MANPATH="/usr/local/opt/coreutils/libexec/gnuman"
 export BASE_MANPATH="/usr/share/man:/usr/local/share/man:/usr/X11/share/man"
 export MANPATH="$BASE_MANPATH:$MACPORTS_PATH:$COREUTILS_MANPATH"
 
-# system
+# bash
 export LESS="-Ri"
 # Get MacOS to stop complaining that I'm not using ZSH
 export BASH_SILENCE_DEPRECATION_WARNING=1
@@ -42,25 +34,29 @@ export VISUAL=vim
 export EDITOR="$VISUAL"
 # remove duplicates in bash history
 export HISTCONTROL=ignoredups:erasedups
+# use blinking bar for bash cursor
+echo -ne '\033[5 q'
+# bash_completion
+# Tells bash_completion to source all completion sources in this directory
+export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
+[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
+# make tab cycle through commands after listing
+bind 'Tab:menu-complete'
+bind '"\e[Z":menu-complete-backward'
+bind "set show-all-if-ambiguous on"
+bind "set completion-ignore-case on"
+bind "set menu-complete-display-prefix on"
+# aliases
+alias r="source ~/.bashrc"
+alias trash='trash -F '
 
 # python
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 export PYTHON_CONFIGURE_OPTS="--enable-framework"
 
 # rg
-export RG_DEFAULT_OPTIONS='--hidden --column --line-number --no-heading --fixed-strings \
-    --ignore-case --no-ignore \
-    --glob "!.git" \
-    --glob "!.cache" \
-    --glob "!*.log" \
-    --glob "!*.plist" \
-    --glob "!*.jpg" \
-    --glob "!*.lock-info" \
-    --glob "!.vscode" \
-    --glob "!dist" \
-    --glob "!package-lock.json" \
-    --glob "!.DS_Store" \
-    --glob "!node_modules"'
+export RG_DEFAULT_OPTIONS='--hidden --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore \
+    --glob "!{.cache,.git,*.log,*.plist,*.jpg,*.lock-info,.vscode,dist,package-lock.json,.DS_Store,node_modules}"'
 
 #fzf
 source "/usr/local/opt/fzf/shell/key-bindings.bash"
@@ -77,36 +73,9 @@ source $(brew --prefix asdf)/libexec/asdf.sh
 # set JAVA_HOME
 source ~/.asdf/plugins/java/set-java-home.bash
 
-# aliases
-alias r="source ~/.bashrc"
-alias youtube-mp3='youtube-dl -x --audio-format mp3 '
-alias trash='trash -F '
-
+# rust
 # compile, run, and remove the binary
 function rust() {
     name=$(basename $1 .rs)
     rustc $@ && ./$name && rm $name
-}
-
-# bash_completion
-# Tells bash_completion to source all completion sources in this directory
-export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
-[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
-
-# use blinking bar for bash cursor
-echo -ne '\033[5 q'
-
-# sync colorscheme with macos
-colorsync() {
-    SYSTEM_THEME="$(defaults read -g AppleInterfaceStyle 2>/dev/null)"
-    [ "$SYSTEM_THEME" = "Dark" ] && NEW_MODE='1' || NEW_MODE='0'
-
-    if [ "$NEW_MODE" != "$CURRENT_MODE" ]; then
-        CURRENT_MODE="$NEW_MODE"
-        [[ "$NEW_MODE" -eq '0' ]] && newTheme='Solarized Light' || newTheme='Nord'
-
-        setThemeEscapeSequence="\033]50;SetColors=preset=$newTheme\a"
-        [ -n "$TMUX" ] && setThemeEscapeSequence="\033Ptmux;\033$setThemeEscapeSequence\033\a"
-        echo -ne "$setThemeEscapeSequence"
-    fi
 }

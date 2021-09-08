@@ -168,6 +168,8 @@ Plug 'prabirshrestha/asyncomplete.vim'
 " Automatically add closing keywords (e.g. function/endfunction in vimscript)
 Plug 'tpope/vim-endwise'
   let g:endwise_no_mappings = 1
+  " this way endwise triggers on 'o'
+  nmap o A<CR>
 " Automatically close html tags
 Plug 'alvan/vim-closetag'
 " Automatically insert closing braces/quotes
@@ -256,7 +258,8 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
   let g:NERDTreeWinPos = "right"
   let g:NERDTreeShowHidden = 1
   let g:NERDTreeStatusline = -1
-  " Sync nerdtree across tabs
+  " Syncs nerdtree across tabs, but I'm really only using this
+  " since it has an option for auto-focusing on the current file
   Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
     let g:nerdtree_tabs_autofind = 1
     nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
@@ -727,19 +730,19 @@ augroup END
 """" Statusline
 set fillchars+=stl:─,stlnc:─
 let s:GREY_HIGHLIGHT = "%#VertSplit#"
-let s:STL_HIGHLIGHT = "%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}"
-let s:STL_SEPARATOR = s:GREY_HIGHLIGHT.'%='
+let s:STATUSLINE_HIGHLIGHT = "%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}"
+let s:STATUSLINE_SEPARATOR = s:GREY_HIGHLIGHT.'%='
 let s:GROUP_SEPARATOR = s:GREY_HIGHLIGHT.'╾─╼'
-let g:FormatGroup = { group -> s:GREY_HIGHLIGHT.'['.s:STL_HIGHLIGHT.group.s:GREY_HIGHLIGHT.']' }
+let g:FormatGroup = { group -> s:GREY_HIGHLIGHT.'['.s:STATUSLINE_HIGHLIGHT.group.s:GREY_HIGHLIGHT.']' }
 function! MyStatusLine()
   if &ft ==# 'help'
-    return g:FormatGroup('HELP').s:STL_SEPARATOR
+    return g:FormatGroup('HELP').s:STATUSLINE_SEPARATOR
   elseif exists('b:NERDTree')
-    return g:FormatGroup('NERDTree').s:STL_SEPARATOR
+    return g:FormatGroup('NERDTree').s:STATUSLINE_SEPARATOR
   elseif &ft ==# 'vim-plug'
-    return g:FormatGroup('VIM_PLUG').s:STL_SEPARATOR
+    return g:FormatGroup('VIM_PLUG').s:STATUSLINE_SEPARATOR
   endif
-  return g:FormatGroup('%h%w%q%t%m%r').s:STL_SEPARATOR.g:FormatGroup('Ln:%l:%L').s:GROUP_SEPARATOR.g:FormatGroup('Col:%c')
+  return g:FormatGroup('%h%w%q%t%m%r').s:STATUSLINE_SEPARATOR.g:FormatGroup('Ln:%l:%L').s:GROUP_SEPARATOR.g:FormatGroup('Col:%c')
 endfunction
 set statusline=%{%MyStatusLine()%}
 
