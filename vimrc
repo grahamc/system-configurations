@@ -388,11 +388,6 @@ nnoremap <Leader>r :source $MYVIMRC<CR>
 nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
 nnoremap <silent> <Leader>t :vimgrep /TODO/j **/*<CR>
 
-" Show diff of unsaved changes in current file
-command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
-	 	\ | wincmd p | diffthis | wincmd p
-nnoremap <Leader>d :DiffOrig<CR>
-
 " LSP
 nnoremap <Leader>ls :LspStatus<CR>
 nnoremap <Leader>ld :LspDefinition<CR>
