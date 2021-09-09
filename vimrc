@@ -38,6 +38,14 @@ Plug 'puremourning/vimspector'
 Plug 'editorconfig/editorconfig-vim'
 " Dim inactive windows
 Plug 'TaDaa/vimade'
+  " Enabling this so that 'incsearch' highlighting works
+  let g:vimade = {'usecursorhold': 1}
+  " Quickpick windows should never be dimmed
+  augroup Vimade
+    autocmd!
+    autocmd FileType quickpick :VimadeWinDisable
+    autocmd FileType quickpick-filter :VimadeWinDisable
+  augroup END
 
 """" Linting
 " Asynchronous linting
