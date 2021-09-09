@@ -515,6 +515,8 @@ noremap <C-h> 10h
 noremap <C-j> 10j
 noremap <C-k> 10k
 noremap <C-l> 10l
+noremap <C-e> 10<C-e>
+noremap <C-y> 10<C-y>
 
 """ Section: Search
 """" Misc.

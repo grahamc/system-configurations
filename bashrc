@@ -51,7 +51,7 @@ function parse_git_dirty {
 		echo ""
 	fi
 }
-PS1="${c_gray}$CONNECTBAR_DOWN\`parse_git_branch\`[${c_cyan}\w${c_gray}]${c_reset}
+PS1="${c_gray}$CONNECTBAR_DOWN\`parse_git_branch\`${c_gray}[${c_cyan}\u@\h${c_gray}]$SPLITBAR${c_gray}[${c_cyan}\w${c_gray}]${c_reset}
 ${c_gray}$CONNECTBAR_UP$ARROW ${c_reset}"
 
 # PATH
