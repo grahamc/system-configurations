@@ -46,6 +46,8 @@ Plug 'TaDaa/vimade'
     autocmd FileType quickpick :VimadeWinDisable
     autocmd FileType quickpick-filter :VimadeWinDisable
   augroup END
+Plug 'unblevable/quick-scope'
+  let g:qs_lazy_highlight = 1
 
 """" Linting
 " Asynchronous linting
