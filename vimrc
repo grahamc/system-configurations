@@ -48,6 +48,12 @@ Plug 'TaDaa/vimade'
   augroup END
 Plug 'unblevable/quick-scope'
   let g:qs_lazy_highlight = 1
+  let g:qs_hi_priority = 10
+  augroup qs_colors
+    autocmd!
+    autocmd ColorScheme * highlight link QuickScopePrimary Todo
+    autocmd ColorScheme * highlight link QuickScopeSecondary Todo
+  augroup END
 
 """" Linting
 " Asynchronous linting
