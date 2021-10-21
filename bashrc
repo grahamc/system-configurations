@@ -1,11 +1,17 @@
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
 # prompt
 CONNECTBAR_DOWN=$'\u250C\u2500\u257C'
 CONNECTBAR_UP=$'\u2514'
 SPLITBAR=$'\u257E\u2500\u257C'
 ARROW=$'>>>'
-c_gray='\e[01;30m'
-c_cyan='\e[0;36m'
-c_reset='\e[0m'
+c_gray='\[\033[01;30m\]'
+c_cyan='\[\033[0;36m\]'
+c_reset='\[\033[0m\]'
 # get current branch in git repo (from ezprompt.net)
 function parse_git_branch() {
 	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
@@ -56,8 +62,6 @@ ${c_gray}$CONNECTBAR_UP$ARROW ${c_reset}"
 
 # PATH
 export GOPATH="/usr/local/go/bin"
-export COREUTILS_PATH="/usr/local/opt/coreutils/libexec/gnubin"
-export RUST_PATH="$HOME/.cargo/bin"
 export FZF_PATH="/usr/local/opt/fzf/bin"
 export GLOBAL_NPM_PACKAGES="$HOME/node_modules/.bin"
 export PATH="$COREUTILS_PATH:$PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH:$FZF_PATH:$GLOBAL_NPM_PACKAGES"
@@ -69,18 +73,22 @@ export MANPATH="$BASE_MANPATH:$MACPORTS_PATH:$COREUTILS_MANPATH"
 
 # bash
 export LESS="-Ri"
-# Get MacOS to stop complaining that I'm not using ZSH
-export BASH_SILENCE_DEPRECATION_WARNING=1
 export VISUAL=vim
 export EDITOR="$VISUAL"
 # remove duplicates in bash history
 export HISTCONTROL=ignoredups:erasedups
 # use blinking bar for bash cursor
 echo -ne '\033[5 q'
-# bash_completion
-# Tells bash_completion to source all completion sources in this directory
-export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
-[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
 # make tab cycle through commands after listing
 bind 'Tab:menu-complete'
 bind '"\e[Z":menu-complete-backward'
@@ -90,14 +98,10 @@ bind "set menu-complete-display-prefix on"
 # aliases
 alias r="source ~/.bashrc"
 alias trash='trash -F '
-
-# python
-export VIRTUAL_ENV_DISABLE_PROMPT=1
-export PYTHON_CONFIGURE_OPTS="--enable-framework"
-
-# rg
-export RG_DEFAULT_OPTIONS='--hidden --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore \
-    --glob "!{.cache,.git,*.log,*.plist,*.jpg,*.lock-info,.vscode,dist,package-lock.json,.DS_Store,node_modules}"'
+alias pbcopy='xclip -selection clipboard'
+alias pbpaste='xclip -selection clipboard -o'
+alias refresh-desktop-entries='update-desktop-database ~/.local/share/applications'
+alias refresh-xbindkeys='killall -HUP xbindkeys'
 
 #fzf
 source "/usr/local/opt/fzf/shell/key-bindings.bash"
@@ -113,6 +117,13 @@ export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up'
 source $(brew --prefix asdf)/libexec/asdf.sh
 # set JAVA_HOME
 source ~/.asdf/plugins/java/set-java-home.bash
+
+# python
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+# rg
+export RG_DEFAULT_OPTIONS='--hidden --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore \
+    --glob "!{.cache,.git,*.log,*.plist,*.jpg,*.lock-info,.vscode,dist,package-lock.json,.DS_Store,node_modules}"'
 
 # rust
 # compile, run, and remove the binary
