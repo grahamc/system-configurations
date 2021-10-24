@@ -97,14 +97,14 @@ bind "set completion-ignore-case on"
 bind "set menu-complete-display-prefix on"
 # aliases
 alias r="source ~/.bashrc"
-alias trash='trash -F '
+alias trash='trash-put '
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 alias refresh-desktop-entries='update-desktop-database ~/.local/share/applications'
 alias refresh-xbindkeys='killall -HUP xbindkeys'
 
 #fzf
-source "/usr/local/opt/fzf/shell/key-bindings.bash"
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 bind '"\C-f":" \C-u \C-a\C-k`__fzf_select__`\e\C-e\C-y\C-a\C-y\ey\C-h\C-e\ef \C-h"'
 export FZF_DEFAULT_COMMAND="rg $RG_DEFAULT_OPTIONS --files"
 export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --margin=5%,2%,5%,2%'

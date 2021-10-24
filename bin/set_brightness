@@ -1,0 +1,18 @@
+#!/bin/bash
+
+case $1 in
+
+  "up")
+    ddcutil setvcp 10 + 20 --bus 5 &
+    ;;
+
+  "down")
+    ddcutil setvcp 10 - 20 --bus 5 &
+    ;;
+
+  *)
+    echo 'invalid argument, use "up" or "down"'
+    exit 1
+    ;;
+esac
+

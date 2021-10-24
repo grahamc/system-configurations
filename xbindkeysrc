@@ -39,17 +39,17 @@
 "xclip -out -selection primary | xclip -in -selection clipboard"
     Mod4 + c
 
-# Decrease brightness
+# Paste. Using Shift+Insert since XF86Paste doesn't work in a terminal
+"xdotool keyup Super+v key Shift+Insert"
+    Mod4 + v
+
+# Increase brightness
 "sudo /home/bigolu/bin/set_brightness up"
     Mod4 + F2
 
 # Decrease brightness
 "sudo /home/bigolu/bin/set_brightness down"
     Mod4 + F1
-
-# Paste
-"xdotool keyup Super+v key Shift+Insert"
-    Mod4 + v
 
 # Decrease Volume
 "echo 'KeyStrRelease Super_L KeyStrRelease F9' | xmacroplay :1; xmodmap -e 'remove Mod4 = Super_L'; echo 'KeyStrPress XF86AudioLowerVolume KeyStrRelease XF86AudioLowerVolume' | xmacroplay :1; xmodmap -e 'add Mod4 = Super_L'; echo 'KeyStrPress Super_L' | xmacroplay :1"
