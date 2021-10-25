@@ -1,0 +1,3 @@
+#!/bin/bash
+
+flatpak run org.gabmus.hydrapaper --cli ~/Pictures/Wallpapers/persona-5-night-wide.png ~/Pictures/Wallpapers/persona-5-night-tall.jpg --modes zoom zoom

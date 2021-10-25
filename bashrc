@@ -9,16 +9,16 @@ CONNECTBAR_DOWN=$'\u250C\u2500\u257C'
 CONNECTBAR_UP=$'\u2514'
 SPLITBAR=$'\u257E\u2500\u257C'
 ARROW=$'>>>'
-c_gray='\e[01;30m'
-c_cyan='\e[0;36m'
-c_reset='\e[0m'
+c_gray='\[\033[01;30m\]'
+c_cyan='\[\033[0;36m\]'
+c_reset='\[\033[0m\]'
 # get current branch in git repo (from ezprompt.net)
 function parse_git_branch() {
 	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 	if [ ! "${BRANCH}" == "" ]
 	then
 		STAT=`parse_git_dirty`
-    echo -e "[${c_cyan}${BRANCH}${STAT}${c_gray}]$SPLITBAR"
+    echo -e "[\e[0;36m${BRANCH}${STAT}\e[1;30m]$SPLITBAR"
 	else
 		echo ""
 	fi
