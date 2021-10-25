@@ -9,9 +9,9 @@ CONNECTBAR_DOWN=$'\u250C\u2500\u257C'
 CONNECTBAR_UP=$'\u2514'
 SPLITBAR=$'\u257E\u2500\u257C'
 ARROW=$'>>>'
-c_gray='\[\033[01;30m\]'
-c_cyan='\[\033[0;36m\]'
-c_reset='\[\033[0m\]'
+c_gray='\e[01;30m'
+c_cyan='\e[0;36m'
+c_reset='\e[0m'
 # get current branch in git repo (from ezprompt.net)
 function parse_git_branch() {
 	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
@@ -79,9 +79,7 @@ export EDITOR="$VISUAL"
 export HISTCONTROL=ignoredups:erasedups
 # use blinking bar for bash cursor
 echo -ne '\033[5 q'
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
+# enable programmable completion features
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
     . /usr/share/bash-completion/bash_completion
@@ -97,11 +95,13 @@ bind "set completion-ignore-case on"
 bind "set menu-complete-display-prefix on"
 # aliases
 alias r="source ~/.bashrc"
+alias r-desktop-entries='update-desktop-database ~/.local/share/applications'
+alias r-xbindkeys='killall -HUP xbindkeys'
+alias r-kitty='xdotool key ctrl+shift+F5'
 alias trash='trash-put '
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
-alias refresh-desktop-entries='update-desktop-database ~/.local/share/applications'
-alias refresh-xbindkeys='killall -HUP xbindkeys'
+alias ls='ls --classify'
 
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
