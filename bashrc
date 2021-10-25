@@ -114,7 +114,9 @@ export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up'
 # asdf
 # Init asdf. This needs to be done after the PATH has been set
 # and any frameworks, like oh-my-zsh, have been sourced
-source $(brew --prefix asdf)/libexec/asdf.sh
+source $HOME/.asdf/asdf.sh
+# configure completions
+source $HOME/.asdf/completions/asdf.bash
 # set JAVA_HOME
 source ~/.asdf/plugins/java/set-java-home.bash
 
