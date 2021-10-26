@@ -1,0 +1,21 @@
+- defaults:
+    link:
+      create: true
+      relink: true
+
+- clean: ['~', '~/.config']
+
+- link:
+    ~/.tmux.conf: tmux.conf
+    ~/.vimrc: vimrc
+    ~/.gitconfig: gitconfig
+    ~/.xbindkeysrc: xbindkeysrc
+    ~/.bashrc: bashrc
+    ~/.config/kitty: kitty
+    ~/.asdfrc: asdf/asdfrc
+    ~/.default-python-packages: asdf/default-python-packages
+    ~/.tool-versions: asdf/tool-versions
+    ~/bin: bin
+
+- create:
+    - ~/code
