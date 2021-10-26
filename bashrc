@@ -64,7 +64,8 @@ ${c_gray}$CONNECTBAR_UP$ARROW ${c_reset}"
 export GOPATH="/usr/local/go/bin"
 export FZF_PATH="/usr/local/opt/fzf/bin"
 export GLOBAL_NPM_PACKAGES="$HOME/node_modules/.bin"
-export PATH="$COREUTILS_PATH:$PATH:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH:$FZF_PATH:$GLOBAL_NPM_PACKAGES"
+export LOCAL_BIN="$HOME/.local/bin"
+export PATH="$PATH:$LOCAL_BIN:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH:$FZF_PATH:$GLOBAL_NPM_PACKAGES"
 
 # MANPATH
 export COREUTILS_MANPATH="/usr/local/opt/coreutils/libexec/gnuman"
@@ -117,8 +118,6 @@ export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up'
 source $HOME/.asdf/asdf.sh
 # configure completions
 source $HOME/.asdf/completions/asdf.bash
-# set JAVA_HOME
-source ~/.asdf/plugins/java/set-java-home.bash
 
 # python
 export VIRTUAL_ENV_DISABLE_PROMPT=1
