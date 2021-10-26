@@ -103,6 +103,8 @@ alias trash='trash-put '
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 alias ls='ls --classify'
+cdl() { cd "$@" && ls; }
+alias tree="tree -a -I '.git'"
 
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
