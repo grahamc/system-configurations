@@ -16,6 +16,7 @@
     ~/.default-python-packages: asdf/default-python-packages
     ~/.tool-versions: asdf/tool-versions
     ~/bin: bin
+    ~/.dotfiles/.git/hooks/post-commit: hooks/post-commit
 
 - create:
     - ~/code
