@@ -71,5 +71,9 @@
 "echo 'KeyStrRelease Super_L KeyStrRelease F7' | xmacroplay :1; xmodmap -e 'remove Mod4 = Super_L'; echo 'KeyStrPress XF86AudioPlay KeyStrRelease XF86AudioPlay' | xmacroplay :1; xmodmap -e 'add Mod4 = Super_L'; echo 'KeyStrPress Super_L' | xmacroplay :1"
     Mod4 + F7
 
+# Drop down terminal
+"tdrop --pointer-monitor-detection --monitor-aware --width='' --height='' --x-offset='' --y-offset='' current"
+    Mod4 + t
+
 #
 # End of xbindkeys configuration
