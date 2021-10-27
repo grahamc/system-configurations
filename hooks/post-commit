@@ -1,3 +1,5 @@
 #!/bin/bash
 
-~/.dotfiles/install
+# Clearing the environment first since $GIT_INDEX_FILE was causing an issue
+# See: https://stackoverflow.com/questions/21058363/git-failing-to-find-the-index-when-in-submodule-index-file-open-failed-not-a
+env -i ./install
