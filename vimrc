@@ -285,7 +285,7 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
     nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
 
 """" Colorscheme
-Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
+Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim' | Plug 'ayu-theme/ayu-vim'
   " Overrides
   augroup ColorschemeOverrides
     autocmd!
