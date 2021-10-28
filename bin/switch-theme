@@ -1,0 +1,18 @@
+#!/bin/bash
+
+case $1 in
+
+  "day")
+    flatpak run org.gabmus.hydrapaper --cli ~/Pictures/Wallpapers/persona-5-day-wide.png ~/Pictures/Wallpapers/persona-5-day-tall.jpg --modes zoom zoom
+    ;;
+
+  "night")
+    flatpak run org.gabmus.hydrapaper --cli ~/Pictures/Wallpapers/persona-5-night-wide.png ~/Pictures/Wallpapers/persona-5-night-tall.jpg --modes zoom zoom
+    ;;
+
+  *)
+    echo 'invalid argument, use "day" or "night"'
+    exit 1
+    ;;
+esac
+
