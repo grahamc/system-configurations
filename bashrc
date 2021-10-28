@@ -98,7 +98,7 @@ bind "set menu-complete-display-prefix on"
 alias r="source ~/.bashrc"
 alias r-desktop-entries='update-desktop-database ~/.local/share/applications'
 alias r-xbindkeys='killall -HUP xbindkeys'
-alias r-kitty='xdotool key ctrl+shift+F5'
+alias r-kitty='xdotool key Super+F5'
 alias trash='trash-put'
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
