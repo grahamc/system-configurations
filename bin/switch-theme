@@ -1,13 +1,15 @@
 #!/bin/bash
 
+mode=''
+
 case $1 in
 
   "day")
-    flatpak run org.gabmus.hydrapaper --cli ~/Pictures/Wallpapers/persona-5-day-wide.png ~/Pictures/Wallpapers/persona-5-day-tall.jpg --modes zoom zoom
+    mode='day'
     ;;
 
   "night")
-    flatpak run org.gabmus.hydrapaper --cli ~/Pictures/Wallpapers/persona-5-night-wide.png ~/Pictures/Wallpapers/persona-5-night-tall.jpg --modes zoom zoom
+    mode='night'
     ;;
 
   *)
@@ -16,3 +18,5 @@ case $1 in
     ;;
 esac
 
+# Change wallpaper
+flatpak run org.gabmus.hydrapaper --cli ~/Pictures/Wallpapers/persona-5-"$mode"-wide.png ~/Pictures/Wallpapers/persona-5-"$mode"-tall.jpg --modes zoom zoom
