@@ -1,7 +1,6 @@
 - defaults:
     link:
       create: true
-      relink: true
 
 - clean: ['~', '~/.config']
 
@@ -12,6 +11,7 @@
     ~/.xbindkeysrc: xbindkeysrc
     ~/.bashrc: bashrc
     ~/.config/kitty: kitty
+    ~/.config/kitty/current-theme.conf: ~/.config/kitty/night-theme.conf
     ~/.asdfrc: asdf/asdfrc
     ~/.default-python-packages: asdf/default-python-packages
     ~/.tool-versions: asdf/tool-versions
