@@ -218,6 +218,10 @@ Plug 'christoomey/vim-tmux-navigator'
   noremap <silent> <M-l> :TmuxNavigateRight<cr>
   noremap <silent> <M-j> :TmuxNavigateDown<cr>
   noremap <silent> <M-k> :TmuxNavigateUp<cr>
+  noremap <silent> <C-Left> :TmuxNavigateLeft<cr>
+  noremap <silent> <C-Right> :TmuxNavigateRight<cr>
+  noremap <silent> <C-Down> :TmuxNavigateDown<cr>
+  noremap <silent> <C-Up> :TmuxNavigateUp<cr>
 " Visualizes indentation. Useful for fixing incorrectly indented lines.
 Plug 'Yggdroot/indentLine'
   let g:indentLine_char = '▏'
