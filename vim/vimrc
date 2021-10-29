@@ -364,6 +364,8 @@ augroup Miscellaneous
   autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
   " highlight trailing whitespace
   autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red | exe '2match ErrorMsg /\s\+$/'
+  " When vim receives the SIGUSR1 signal, update the colorscheme
+  autocmd SigUSR1 * nested call SyncColorscheme()
 augroup END
 
 " set swapfile directory
@@ -769,17 +771,11 @@ function! SetColorscheme(background)
     let l:vim_colorscheme = a:background ==? "light" ? "solarized8" : "nord"
     exe "color " . l:vim_colorscheme
 endfunction
-function! SyncColorschemeWithOs(...)
-  let l:is_os_in_dark_mode = system("defaults read -g AppleInterfaceStyle 2>/dev/null") =~? 'dark'
-  let l:new_vim_background = l:is_os_in_dark_mode ? "dark" : "light"
-  let l:vim_background_changed_or_is_not_set = &background !=? l:new_vim_background || !exists('g:colors_name')
-  if l:vim_background_changed_or_is_not_set
-    call SetColorscheme(l:new_vim_background)
-  endif
+function! SyncColorscheme()
+  call SetColorscheme(readfile(glob('~/.vim/colorscheme/colorscheme-name.txt'))[0])
 endfunction
-if has('macunix')
-  call SyncColorschemeWithOs()
-  nnoremap <Leader>l :call SyncColorschemeWithOs()<CR>:call system('colorsync')<CR>
+if !empty(glob('~/.vim/colorscheme/colorscheme-name.txt'))
+  call SyncColorscheme()
 else
   call SetColorscheme('dark')
 endif

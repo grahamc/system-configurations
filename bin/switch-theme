@@ -27,3 +27,10 @@ for pid in $(pgrep kitty)
 do
   kill -SIGUSR1 "$pid"
 done
+
+# Change vim theme
+ln -sf ~/.vim/colorscheme/"$mode"-colorscheme-name.txt ~/.vim/colorscheme/colorscheme-name.txt
+for pid in $(pgrep vim)
+do
+  kill -SIGUSR1 "$pid"
+done
