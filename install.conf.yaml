@@ -8,12 +8,16 @@
     ~/.tmux.conf: tmux.conf
     ~/.vimrc: vim/vimrc
     ~/.vim/colorscheme: vim/colorscheme
-    ~/.vim/colorscheme/colorscheme-name.txt: ~/.vim/colorscheme/night-colorscheme-name.txt
+    ~/.vim/colorscheme/colorscheme-name.txt:
+        path: ~/.vim/colorscheme/night-colorscheme-name.txt
+        if: '[ ! -f ~/.vim/colorscheme/colorscheme-name.txt ]'
     ~/.gitconfig: gitconfig
     ~/.xbindkeysrc: xbindkeysrc
     ~/.bashrc: bashrc
     ~/.config/kitty: kitty
-    ~/.config/kitty/current-theme.conf: ~/.config/kitty/night-theme.conf
+    ~/.config/kitty/current-theme.conf:
+        path: ~/.config/kitty/night-theme.conf
+        if: '[ ! -f ~/.config/kitty/current-theme.conf ]'
     ~/.asdfrc: asdf/asdfrc
     ~/.default-python-packages: asdf/default-python-packages
     ~/.tool-versions: asdf/tool-versions
