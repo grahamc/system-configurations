@@ -104,7 +104,7 @@ alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 alias ls='ls --classify'
 cdl() { cd "$@" && ls; }
-alias tree="tree -a -I '.git'"
+alias tree="tree -a -I '.git|dotbot'"
 
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
