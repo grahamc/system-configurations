@@ -307,11 +307,13 @@ Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
     autocmd Colorscheme solarized8 hi clear LineNR
     " Transparent vertical split
     autocmd Colorscheme solarized8,nord highlight VertSplit ctermbg=NONE guibg=NONE
+    " Vertical split
+    autocmd Colorscheme solarized8 highlight VertSplit ctermfg=7 guifg=#C2BBA5
     " statusline colors
     autocmd ColorScheme nord hi StatusLine guibg=NONE guifg=#88C0D0 ctermfg=1 ctermbg=3
     autocmd ColorScheme nord hi StatusLineNC guibg=NONE guifg=#E5E9F0  ctermfg=1 ctermbg=3
     autocmd ColorScheme solarized8 hi StatusLine guibg=NONE guifg=#268bd2 ctermfg=13 ctermbg=15 cterm=NONE gui=NONE
-    autocmd ColorScheme solarized8 hi StatusLineNC guibg=NONE guifg=#073642  ctermfg=0 ctermbg=15 cterm=NONE gui=NONE
+    autocmd ColorScheme solarized8 hi StatusLineNC guibg=NONE guifg=#93a1a1  ctermfg=10 ctermbg=15 cterm=NONE gui=NONE
     " autocomplete popupmenu
     autocmd ColorScheme * highlight PmenuSel guibg=#6E90B4 guifg=#2E3440 ctermfg=1 ctermbg=3
     autocmd ColorScheme * highlight Pmenu guibg=#3B4252 ctermbg=12E3440 guifg=#ECEFF4 ctermfg=81 ctermbg=3
