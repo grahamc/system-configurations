@@ -18,9 +18,6 @@ case $1 in
     ;;
 esac
 
-# Change wallpaper
-flatpak run org.gabmus.hydrapaper --cli ~/Pictures/Wallpapers/persona-5-"$mode"-wide.png ~/Pictures/Wallpapers/persona-5-"$mode"-tall.png --modes zoom zoom
-
 # Change kitty theme
 ln -sf ~/.config/kitty/"$mode"-theme.conf ~/.config/kitty/current-theme.conf
 for pid in $(pgrep kitty)
