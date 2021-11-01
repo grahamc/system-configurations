@@ -31,3 +31,7 @@ for pid in $(pgrep vim)
 do
   kill -SIGUSR1 "$pid"
 done
+
+# Change tmux theme
+ln -sf ~/.tmux/theme/set-"$mode"-theme-colors.conf ~/.tmux/theme/set-current-theme-colors.conf
+tmux source-file ~/.tmux/theme/theme.conf

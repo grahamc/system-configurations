@@ -2,10 +2,14 @@
     link:
       create: true
 
-- clean: ['~', '~/.config', '~/.vim', '~/.vim/colorscheme']
+- clean: ['~', '~/.config', '~/.vim', '~/.vim/colorscheme', '~/.tmux', '~/.tmux/theme']
 
 - link:
-    ~/.tmux.conf: tmux.conf
+    ~/.tmux.conf: tmux/tmux.conf
+    ~/.tmux/theme: tmux/theme
+    ~/.tmux/theme/set-current-theme-colors.conf:
+        path: ~/.tmux/theme/set-night-theme-colors.conf
+        if: '[ ! -f ~/.tmux/theme/set-current-theme-colors.conf ]'
     ~/.vimrc: vim/vimrc
     ~/.vim/colorscheme: vim/colorscheme
     ~/.vim/colorscheme/colorscheme-name.txt:
