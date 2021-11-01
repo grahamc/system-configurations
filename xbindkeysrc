@@ -72,7 +72,7 @@
     Mod4 + F7
 
 # Drop down terminal
-"tdrop --pointer-monitor-detection --monitor-aware --width='' --height='' --x-offset='' --y-offset='' current"
+"tdrop --pointer-monitor-detection --monitor-aware --width='' --height='' --x-offset='' --y-offset='' kitty"
     Mod4 + t
 
 #
