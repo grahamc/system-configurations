@@ -368,7 +368,8 @@ augroup Miscellaneous
   autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
   " highlight trailing whitespace
   autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red | exe '2match ErrorMsg /\s\+$/'
-  " When vim receives the SIGUSR1 signal, update the colorscheme
+  " When vim receives the SIGUSR1 signal, update the colorscheme.
+  " Using 'nested' here so that the 'ColorScheme' autocommands are run.
   autocmd SigUSR1 * nested call SyncColorscheme()
 augroup END
 
@@ -775,10 +776,13 @@ function! SetColorscheme(background)
     let l:vim_colorscheme = a:background ==? "light" ? "solarized8" : "nord"
     exe "color " . l:vim_colorscheme
 endfunction
+function! CanSyncColorscheme()
+  return !empty(glob('~/.vim/colorscheme/colorscheme-name.txt'))
+endfunction
 function! SyncColorscheme()
   call SetColorscheme(readfile(glob('~/.vim/colorscheme/colorscheme-name.txt'))[0])
 endfunction
-if !empty(glob('~/.vim/colorscheme/colorscheme-name.txt'))
+if CanSyncColorscheme()
   call SyncColorscheme()
 else
   call SetColorscheme('dark')
