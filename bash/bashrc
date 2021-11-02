@@ -74,18 +74,6 @@ ${BORDER_COLOR}$CONNECTBAR_UP$ARROW ${RESET_COLOR}"
 # based on the time of day.
 PROMPT_COMMAND="set_prompt"
 
-# PATH
-export GOPATH="/usr/local/go/bin"
-export FZF_PATH="/usr/local/opt/fzf/bin"
-export GLOBAL_NPM_PACKAGES="$HOME/node_modules/.bin"
-export LOCAL_BIN="$HOME/.local/bin"
-export PATH="$PATH:$LOCAL_BIN:$RUST_PATH:$SUMO_HOME:$GOPATH:$MYSQL_PATH:$PORT_PATH:$FZF_PATH:$GLOBAL_NPM_PACKAGES"
-
-# MANPATH
-export COREUTILS_MANPATH="/usr/local/opt/coreutils/libexec/gnuman"
-export BASE_MANPATH="/usr/share/man:/usr/local/share/man:/usr/X11/share/man"
-export MANPATH="$BASE_MANPATH:$MACPORTS_PATH:$COREUTILS_MANPATH"
-
 # bash
 export LESS="-Ri"
 export VISUAL=vim
