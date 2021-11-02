@@ -2,7 +2,7 @@
     link:
       create: true
 
-- clean: ['~', '~/.config', '~/.vim', '~/.vim/colorscheme', '~/.tmux', '~/.tmux/theme']
+- clean: ['~/.dotfiles/.git/hooks', '~', '~/.config', '~/.vim', '~/.vim/colorscheme', '~/.tmux', '~/.tmux/theme']
 
 - link:
     ~/.tmux.conf: tmux/tmux.conf
@@ -30,7 +30,7 @@
     ~/.default-python-packages: asdf/default-python-packages
     ~/.tool-versions: asdf/tool-versions
     ~/bin: bin
-    ~/.dotfiles/.git/hooks/post-commit: hooks/post-commit
+    ~/.dotfiles/.git/hooks/post-commit: installer/hooks/post-commit
 
 - create:
     - ~/code
