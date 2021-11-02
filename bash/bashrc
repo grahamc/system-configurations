@@ -9,21 +9,26 @@ CONNECTBAR_DOWN=$'\u250C\u2500\u257C'
 CONNECTBAR_UP=$'\u2514'
 SPLITBAR=$'\u257E\u2500\u257C'
 ARROW=$'>>>'
-c_gray='\[\033[01;30m\]'
-c_cyan='\[\033[0;36m\]'
-c_reset='\[\033[0m\]'
+set_colors () {
+	export BASH_PROMPT_TEXT_COLOR='0;34m'
+	export BASH_PROMPT_BORDER_COLOR='01;34m'
+	source ~/.bash_prompt_theme/set-current-theme-colors.sh
+	BORDER_COLOR="\[\033[$BASH_PROMPT_BORDER_COLOR\]"
+	TEXT_COLOR="\[\033[$BASH_PROMPT_TEXT_COLOR\]"
+	RESET_COLOR="\[\033[0m\]"
+}
 # get current branch in git repo (from ezprompt.net)
-function parse_git_branch() {
+function set_git_info() {
 	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 	if [ ! "${BRANCH}" == "" ]
 	then
 		STAT=`parse_git_dirty`
-    echo -e "[\e[0;36m${BRANCH}${STAT}\e[1;30m]$SPLITBAR"
+		GIT_INFO="[${TEXT_COLOR}${BRANCH}${STAT}${BORDER_COLOR}]$SPLITBAR"
 	else
 		echo ""
 	fi
 }
-# get current status of git repo (from ezprompt.net)
+# get current status of git repo (logic taken from ezprompt.net)
 function parse_git_dirty {
 	status=`git status 2>&1 | tee`
 	dirty=`echo -n "${status}" 2> /dev/null | grep "modified:" &> /dev/null; echo "$?"`
@@ -57,8 +62,17 @@ function parse_git_dirty {
 		echo ""
 	fi
 }
-PS1="${c_gray}$CONNECTBAR_DOWN\`parse_git_branch\`${c_gray}[${c_cyan}\u@\h${c_gray}]$SPLITBAR${c_gray}[${c_cyan}\w${c_gray}]${c_reset}
-${c_gray}$CONNECTBAR_UP$ARROW ${c_reset}"
+set_prompt () {
+	set_colors
+	set_git_info
+
+	PS1="${BORDER_COLOR}$CONNECTBAR_DOWN${GIT_INFO}${BORDER_COLOR}[${TEXT_COLOR}\u@\h${BORDER_COLOR}]$SPLITBAR${BORDER_COLOR}[${TEXT_COLOR}\w${BORDER_COLOR}]${RESET_COLOR}
+${BORDER_COLOR}$CONNECTBAR_UP$ARROW ${RESET_COLOR}"
+}
+# We set the PS1 through PROMPT_COMMAND so that the PS1 will get reevaluated each time.
+# It needs to be reevaluated since set_colors() might be setting different colors
+# based on the time of day.
+PROMPT_COMMAND="set_prompt"
 
 # PATH
 export GOPATH="/usr/local/go/bin"

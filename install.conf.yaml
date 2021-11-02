@@ -17,7 +17,11 @@
         if: '[ ! -f ~/.vim/colorscheme/colorscheme-name.txt ]'
     ~/.gitconfig: gitconfig
     ~/.xbindkeysrc: xbindkeysrc
-    ~/.bashrc: bashrc
+    ~/.bashrc: bash/bashrc
+    ~/.bash_prompt_theme: bash/bash_prompt_theme
+    ~/.bash_prompt_theme/set-current-theme-colors.sh:
+        path: ~/.bash_prompt_theme/set-night-theme-colors.sh
+        if: '[ ! -f ~/.bash_prompt_theme/set-current-theme-colors.sh ]'
     ~/.config/kitty: kitty
     ~/.config/kitty/current-theme.conf:
         path: ~/.config/kitty/night-theme.conf

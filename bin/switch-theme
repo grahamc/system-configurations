@@ -41,3 +41,6 @@ done
 # Change tmux theme
 ln -sf ~/.tmux/theme/set-"$mode"-theme-colors.conf ~/.tmux/theme/set-current-theme-colors.conf
 tmux source-file ~/.tmux/theme/theme.conf
+
+# Change bash prompt theme
+ln -sf ~/.bash_prompt_theme/set-"$mode"-theme-colors.sh ~/.bash_prompt_theme/set-current-theme-colors.sh
