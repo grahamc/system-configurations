@@ -2,3 +2,6 @@
 	path = installer/dotbot
 	url = https://github.com/anishathalye/dotbot
 	ignore = dirty
+[submodule "installer/dotbot-asdf"]
+	path = installer/dotbot-asdf
+	url = https://github.com/sobolevn/dotbot-asdf.git

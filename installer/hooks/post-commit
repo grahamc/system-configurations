@@ -4,4 +4,4 @@ echo -e 'Executing dotfile manager...\n'
 
 # Clearing some git-related environment vars first  since they were causing an issue
 # See: https://stackoverflow.com/questions/21058363/git-failing-to-find-the-index-when-in-submodule-index-file-open-failed-not-a
-env --unset=GIT_DIR --unset=GIT_INDEX_FILE ./install
+env --unset=GIT_DIR --unset=GIT_INDEX_FILE ./installer/install
