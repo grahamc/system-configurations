@@ -28,7 +28,6 @@
         if: '[ ! -f ~/.config/kitty/current-theme.conf ]'
     ~/.asdfrc: asdf/asdfrc
     ~/.default-python-packages: asdf/default-python-packages
-    ~/.tool-versions: asdf/tool-versions
     ~/bin: bin
     ~/.dotfiles/.git/hooks/post-commit: installer/hooks/post-commit
 
