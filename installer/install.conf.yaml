@@ -30,6 +30,7 @@
     ~/.default-python-packages: asdf/default-python-packages
     ~/bin: bin
     ~/.dotfiles/.git/hooks/post-commit: installer/hooks/post-commit
+    ~/Pictures/wallpapers: wallpapers
 
 - create:
     - ~/code
