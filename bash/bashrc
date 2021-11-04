@@ -107,6 +107,10 @@ alias pbpaste='xclip -selection clipboard -o'
 alias ls='ls --classify'
 cdl() { cd "$@" && ls; }
 alias tree="tree -a -I '.git|dotbot'"
+# Quick way to reconnect to tmux after a restart/closed-terminal.
+# This command connects to a running session, or if there isn't one, it just
+# launches tmux, in which case tmux-resurrect should restore the entire tmux environment
+alias reconnect='tmux a || tmux'
 
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
