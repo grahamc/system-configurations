@@ -25,7 +25,7 @@ function set_git_info() {
 		STAT=`parse_git_dirty`
 		GIT_INFO="[${TEXT_COLOR}${BRANCH}${STAT}${BORDER_COLOR}]$SPLITBAR"
 	else
-		echo ""
+		GIT_INFO=""
 	fi
 }
 # get current status of git repo (logic taken from ezprompt.net)
