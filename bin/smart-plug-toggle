@@ -2,16 +2,16 @@
 
 case $1 in
 
-  "off")
+  "stop")
     kasa --alias plug off
     ;;
 
-  "on")
+  "start")
     kasa --alias plug on
     ;;
 
   *)
-    echo 'invalid argument, use "off" or "on"'
+    echo 'invalid argument, use "stop" or "start"'
     exit 1
     ;;
 esac
