@@ -29,7 +29,7 @@
     ~/.asdfrc: asdf/asdfrc
     ~/.default-python-packages: asdf/default-python-packages
     ~/bin: bin
-    ~/.dotfiles/.git/hooks/post-commit: installer/hooks/post-commit
+    ~/.dotfiles/.git/hooks/post-commit: install.d/hooks/post-commit
 
 - create:
     - ~/code
