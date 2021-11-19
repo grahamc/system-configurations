@@ -253,7 +253,7 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
   augroup Quickpick
     autocmd!
     autocmd ColorScheme *
-          \ highlight QuickpickInvisibleStatusLine ctermbg=NONE ctermfg=7
+          \ highlight QuickpickInvisibleStatusLine ctermbg=NONE ctermfg=8
     autocmd FileType quickpick
           \ setlocal cursorline |
           \ setlocal cursorlineopt=line |
@@ -312,8 +312,8 @@ Plug 'cormacrelf/vim-colors-github' | Plug 'arcticicestudio/nord-vim'
     " Vertical split
     autocmd Colorscheme github highlight VertSplit ctermfg=7
     " statusline colors
-    autocmd ColorScheme nord hi StatusLine ctermfg=1 ctermbg=3
-    autocmd ColorScheme nord hi StatusLineNC ctermfg=1 ctermbg=3
+    autocmd ColorScheme nord hi StatusLine ctermfg=6 ctermbg=NONE
+    autocmd ColorScheme nord hi StatusLineNC ctermfg=8 ctermbg=NONE
     autocmd ColorScheme github hi StatusLine ctermfg=13 ctermbg=NONE cterm=NONE
     autocmd ColorScheme github hi StatusLineNC ctermfg=7 ctermbg=NONE cterm=NONE
     " autocomplete popupmenu
