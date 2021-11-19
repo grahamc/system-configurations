@@ -253,7 +253,7 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
   augroup Quickpick
     autocmd!
     autocmd ColorScheme *
-          \ highlight QuickpickInvisibleStatusLine guibg=NONE guifg=#2E3440 ctermbg=NONE ctermfg=NONE
+          \ highlight QuickpickInvisibleStatusLine ctermbg=NONE ctermfg=7
     autocmd FileType quickpick
           \ setlocal cursorline |
           \ setlocal cursorlineopt=line |
@@ -285,42 +285,44 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
     nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
 
 """" Colorscheme
-Plug 'lifepillar/vim-solarized8' | Plug 'arcticicestudio/nord-vim'
+Plug 'cormacrelf/vim-colors-github' | Plug 'arcticicestudio/nord-vim'
   " Overrides
   augroup ColorschemeOverrides
     autocmd!
     " Increase brightness of comments in nord
-    autocmd ColorScheme nord highlight Comment guifg=#6d7a96
+    autocmd ColorScheme nord highlight Comment
     " MatchParen
-    autocmd Colorscheme * hi MatchParen ctermfg=blue guifg=#5E81AC cterm=underline gui=underline guibg=NONE ctermbg=NONE
+    autocmd Colorscheme * hi MatchParen ctermfg=blue cterm=underline ctermbg=NONE
     " Transparent SignColumn
-    autocmd Colorscheme solarized8,nord hi clear SignColumn
-    autocmd Colorscheme solarized8 hi DiffAdd ctermbg=NONE guibg=NONE
-    autocmd Colorscheme solarized8 hi DiffChange ctermbg=NONE guibg=NONE
-    autocmd Colorscheme solarized8 hi DiffDelete ctermbg=NONE guibg=NONE
-    autocmd Colorscheme solarized8 hi SignifyLineChange ctermbg=NONE guibg=NONE
-    autocmd Colorscheme solarized8 hi SignifyLineDelete ctermbg=NONE guibg=NONE
-    autocmd Colorscheme solarized8 hi ALEErrorSign ctermbg=NONE guibg=NONE
-    autocmd Colorscheme solarized8 hi ALEWarningSign ctermbg=NONE guibg=NONE
+    autocmd Colorscheme github,nord hi clear SignColumn
+    autocmd Colorscheme github hi DiffAdd ctermbg=NONE
+    autocmd Colorscheme github hi DiffChange ctermbg=NONE
+    autocmd Colorscheme github hi DiffDelete ctermbg=NONE
+    autocmd Colorscheme github hi SignifySignChange ctermbg=NONE ctermfg=11
+    autocmd Colorscheme github hi SignifySignDelete ctermbg=NONE ctermfg=9
+    autocmd Colorscheme github hi SignifySignAdd ctermbg=NONE ctermfg=2
+    autocmd Colorscheme github hi ALEErrorSign ctermbg=NONE
+    autocmd Colorscheme github hi ALEWarningSign ctermbg=NONE
     " Transparent number column
-    autocmd Colorscheme solarized8 hi clear CursorLineNR
-    autocmd Colorscheme solarized8 hi clear LineNR
+    autocmd Colorscheme github hi clear CursorLineNR
+    autocmd Colorscheme github hi clear LineNR
+    autocmd Colorscheme github hi LineNR ctermfg=7
     " Transparent vertical split
-    autocmd Colorscheme solarized8,nord highlight VertSplit ctermbg=NONE guibg=NONE
+    autocmd Colorscheme github,nord highlight VertSplit ctermbg=NONE
     " Vertical split
-    autocmd Colorscheme solarized8 highlight VertSplit ctermfg=7 guifg=#C2BBA5
+    autocmd Colorscheme github highlight VertSplit ctermfg=7
     " statusline colors
-    autocmd ColorScheme nord hi StatusLine guibg=NONE guifg=#88C0D0 ctermfg=1 ctermbg=3
-    autocmd ColorScheme nord hi StatusLineNC guibg=NONE guifg=#E5E9F0  ctermfg=1 ctermbg=3
-    autocmd ColorScheme solarized8 hi StatusLine guibg=NONE guifg=#268bd2 ctermfg=13 ctermbg=15 cterm=NONE gui=NONE
-    autocmd ColorScheme solarized8 hi StatusLineNC guibg=NONE guifg=#93a1a1  ctermfg=10 ctermbg=15 cterm=NONE gui=NONE
+    autocmd ColorScheme nord hi StatusLine ctermfg=1 ctermbg=3
+    autocmd ColorScheme nord hi StatusLineNC ctermfg=1 ctermbg=3
+    autocmd ColorScheme github hi StatusLine ctermfg=13 ctermbg=NONE cterm=NONE
+    autocmd ColorScheme github hi StatusLineNC ctermfg=7 ctermbg=NONE cterm=NONE
     " autocomplete popupmenu
-    autocmd ColorScheme * highlight PmenuSel guibg=#6E90B4 guifg=#2E3440 ctermfg=1 ctermbg=3
-    autocmd ColorScheme * highlight Pmenu guibg=#3B4252 ctermbg=12E3440 guifg=#ECEFF4 ctermfg=81 ctermbg=3
+    autocmd ColorScheme * highlight PmenuSel ctermfg=1 ctermbg=3
+    autocmd ColorScheme * highlight Pmenu ctermbg=12E3440 ctermfg=81 ctermbg=3
     " cursorline for quickpick
     autocmd ColorScheme * highlight! link CursorLine PmenuSel
     " transparent background
-    autocmd ColorScheme * highlight Normal guibg=NONE ctermbg=NONE
+    autocmd ColorScheme * highlight Normal ctermbg=NONE
   augroup END
 
 """" End Plugin Manager
@@ -367,7 +369,7 @@ augroup Miscellaneous
   " Put focus back in quickfix window after opening an entry
   autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
   " highlight trailing whitespace
-  autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red | exe '2match ErrorMsg /\s\+$/'
+  autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red | exe '2match ErrorMsg /\s\+$/'
   " When vim receives the SIGUSR1 signal, update the colorscheme.
   " Using 'nested' here so that the 'ColorScheme' autocommands are run.
   autocmd SigUSR1 * nested call SyncColorscheme()
@@ -732,7 +734,6 @@ augroup END
 """ Section: Aesthetics
 """" Misc.
 set linebreak
-set termguicolors
 set number relativenumber
 set cursorline cursorlineopt=number
 set laststatus=2
@@ -773,7 +774,7 @@ set statusline=%{%MyStatusLine()%}
 """" Colorscheme
 function! SetColorscheme(background)
     let &background = a:background
-    let l:vim_colorscheme = a:background ==? "light" ? "solarized8" : "nord"
+    let l:vim_colorscheme = a:background ==? "light" ? "github" : "nord"
     exe "color " . l:vim_colorscheme
 endfunction
 function! CanSyncColorscheme()
