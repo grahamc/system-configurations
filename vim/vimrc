@@ -323,6 +323,8 @@ Plug 'cormacrelf/vim-colors-github' | Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme * highlight! link CursorLine PmenuSel
     " transparent background
     autocmd ColorScheme * highlight Normal ctermbg=NONE
+    autocmd ColorScheme * highlight NonText ctermbg=NONE
+    autocmd ColorScheme * highlight! link EndOfBuffer NonText
   augroup END
 
 """" End Plugin Manager
