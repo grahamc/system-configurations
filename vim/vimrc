@@ -289,8 +289,6 @@ Plug 'cormacrelf/vim-colors-github' | Plug 'arcticicestudio/nord-vim'
   " Overrides
   augroup ColorschemeOverrides
     autocmd!
-    " Increase brightness of comments in nord
-    autocmd ColorScheme nord highlight Comment
     " MatchParen
     autocmd Colorscheme * hi MatchParen ctermfg=blue cterm=underline ctermbg=NONE
     " Transparent SignColumn
