@@ -10,8 +10,10 @@ CONNECTBAR_UP=$'\u2514'
 SPLITBAR=$'\u257E\u2500\u257C'
 ARROW=$'>>>'
 set_colors () {
+	# default colors
 	export BASH_PROMPT_TEXT_COLOR='0;34m'
 	export BASH_PROMPT_BORDER_COLOR='01;34m'
+
 	source ~/.bash_prompt_theme/set-current-theme-colors.sh
 	BORDER_COLOR="\[\033[$BASH_PROMPT_BORDER_COLOR\]"
 	TEXT_COLOR="\[\033[$BASH_PROMPT_TEXT_COLOR\]"
