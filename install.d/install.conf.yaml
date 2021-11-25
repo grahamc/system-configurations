@@ -2,7 +2,7 @@
     link:
       create: true
 
-- clean: ['~/.dotfiles/.git/hooks', '~', '~/.config', '~/.vim', '~/.vim/colorscheme', '~/.tmux', '~/.tmux/theme']
+- clean: ['~', '~/.config', '~/.vim', '~/.vim/colorscheme', '~/.tmux', '~/.tmux/theme']
 
 - link:
     ~/.tmux.conf: tmux/tmux.conf
@@ -29,7 +29,6 @@
     ~/.asdfrc: asdf/asdfrc
     ~/.default-python-packages: asdf/default-python-packages
     ~/bin: bin
-    ~/.dotfiles/.git/hooks/post-commit: install.d/hooks/post-commit
 
 - create:
     - ~/code
@@ -47,3 +46,6 @@
       global: 1.17.2
       versions:
           - 1.17.2
+
+- shell:
+    - [./smart-plug/install , Install and start smart plug service]
