@@ -9,16 +9,9 @@ CONNECTBAR_DOWN=$'\u250C\u2500\u257C'
 CONNECTBAR_UP=$'\u2514'
 SPLITBAR=$'\u257E\u2500\u257C'
 ARROW=$'>>>'
-set_colors () {
-	# default colors
-	export BASH_PROMPT_TEXT_COLOR='0;34m'
-	export BASH_PROMPT_BORDER_COLOR='01;34m'
-
-	source ~/.bash_prompt_theme/set-current-theme-colors.sh
-	BORDER_COLOR="\[\033[$BASH_PROMPT_BORDER_COLOR\]"
-	TEXT_COLOR="\[\033[$BASH_PROMPT_TEXT_COLOR\]"
-	RESET_COLOR="\[\033[0m\]"
-}
+BORDER_COLOR="\[\033[0;30m\]"
+TEXT_COLOR="\[\033[0;36m\]"
+RESET_COLOR="\[\033[0m\]"
 # get current branch in git repo (from ezprompt.net)
 function set_git_info() {
 	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
@@ -85,19 +78,12 @@ function set_user_info() {
 function set_path_info() {
 		PATH_INFO="${BORDER_COLOR}[${TEXT_COLOR}\w${BORDER_COLOR}]"
 }
-set_prompt () {
-	set_colors
-	set_git_info
-	set_python_info
-	set_user_info
-	set_path_info
+set_git_info
+set_python_info
+set_user_info
+set_path_info
 	PS1="${BORDER_COLOR}${CONNECTBAR_DOWN}${PYTHON_INFO}${GIT_INFO}${USER_INFO}${PATH_INFO}${RESET_COLOR}
 ${BORDER_COLOR}${CONNECTBAR_UP}${ARROW} ${RESET_COLOR}"
-}
-# We set the PS1 through PROMPT_COMMAND so that the PS1 will get reevaluated each time.
-# It needs to be reevaluated since set_colors() might be setting different colors
-# based on the time of day.
-PROMPT_COMMAND="set_prompt"
 
 # bash
 export LESS="-Ri"

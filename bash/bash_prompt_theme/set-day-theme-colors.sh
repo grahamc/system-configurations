@@ -1,4 +1,0 @@
-# Github Light
-
-export BASH_PROMPT_TEXT_COLOR='0;34m'
-export BASH_PROMPT_BORDER_COLOR='37m'
