@@ -83,8 +83,7 @@ function set_prompt() {
 	set_python_info
 	set_user_info
 	set_path_info
-	PS1="${BORDER_COLOR}${CONNECTBAR_DOWN}${PYTHON_INFO}${GIT_INFO}${USER_INFO}${PATH_INFO}${RESET_COLOR}
-${BORDER_COLOR}${CONNECTBAR_UP}${ARROW} ${RESET_COLOR}"
+	PS1="${BORDER_COLOR}${CONNECTBAR_DOWN}${PYTHON_INFO}${GIT_INFO}${USER_INFO}${PATH_INFO}${RESET_COLOR}\n${BORDER_COLOR}${CONNECTBAR_UP}${ARROW} ${RESET_COLOR}"
 }
 # We set the PS1 through PROMPT_COMMAND so that the PS1 will get reevaluated each time.
 # It needs to be reevaluated each time so things like the git branch can get recalculated
