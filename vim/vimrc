@@ -31,9 +31,6 @@ Plug 'andymass/vim-matchup'
   let g:matchup_matchparen_offscreen = {}
 " Additional text objects and motions
 Plug 'wellle/targets.vim'
-" Debugger
-Plug 'puremourning/vimspector'
-  let g:vimspector_enable_mappings = 'HUMAN'
 " Applies editorconfig settings to vim
 Plug 'editorconfig/editorconfig-vim'
 " Dim inactive windows
@@ -55,70 +52,7 @@ Plug 'unblevable/quick-scope'
     autocmd ColorScheme * highlight link QuickScopeSecondary Todo
   augroup END
 
-"""" Linting
-" Asynchronous linting
-Plug 'dense-analysis/ale'
-  " If a linter is not found don't continue to check on subsequent linting operations.
-  let g:ale_cache_executable_check_failures = 1
-  " Don't show popup when the mouse if over a symbol, vim-lsp
-  " should be responsible for that.
-  let g:ale_set_balloons = 0
-  " Don't show variable information in the status line,
-  " vim-lsp should be responsible for that.
-  let g:ale_hover_cursor = 0
-  " Only display diagnostics with a warning level or above
-  " i.e. warning,error
-  let g:ale_lsp_show_message_severity = "warning"
-  let g:ale_lint_on_enter = 0 " Don't lint when a buffer opens
-  let g:ale_lint_on_text_changed = "always"
-  let g:ale_lint_delay = 1000
-  let g:ale_lint_on_insert_leave = 0
-  let g:ale_lint_on_filetype_changed = 0
-  let g:ale_lint_on_save = 0
-  let g:ale_fix_on_save = 1
-  let g:ale_fixers = {
-        \ 'javascript': ['prettier'],
-        \ 'javascriptreact': ['prettier'],
-        \ 'typescript': ['prettier'],
-        \ 'typescriptreact': ['prettier'],
-        \ 'json': ['prettier'],
-        \ 'html': ['prettier'],
-        \ 'css': ['prettier']
-        \ }
-  let g:ale_linters = {
-        \ 'vim': [],
-        \ 'javascript': ['eslint'],
-        \ 'javascriptreact': ['eslint'],
-        \ 'typescript': ['eslint'],
-        \ 'typescriptreact': ['eslint'],
-        \ 'python': []
-        \ }
-
-"""" LSP
-" Language Server Protocol client that provides IDE like features
-" e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
-Plug 'prabirshrestha/vim-lsp'
-  " for debugging
-  let g:lsp_log_file = $VIMHOME . 'vim-lsp-log'
-  let g:lsp_fold_enabled = 0
-  let g:lsp_document_code_action_signs_enabled = 0
-  let g:lsp_document_highlight_enabled = 1
-  " An easy way to install/manage language servers for vim-lsp.
-  Plug 'mattn/vim-lsp-settings'
-    " where the language servers are stored
-    let g:lsp_settings_servers_dir = $VIMHOME . "vim-lsp-servers"
-    call mkdir(g:lsp_settings_servers_dir, "p")
-
 """" Coordination between plugins
-""""" vim-lsp, ale
-" A bridge between vim-lsp and ale. This works by
-" sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
-" This way, vim-lsp will only provide LSP features
-" and ALE will only provide realtime diagnostics.
-Plug 'rhysd/vim-lsp-ale'
-  " Only report diagnostics with a level of 'warning' or above
-  " i.e. warning,error
-  let g:lsp_ale_diagnostics_severity = "warning"
 """"" asyncomplete, delimitmate, vim-endwise
 " Combine enter key (<CR>) mappings from my plugins
 imap <expr> <CR>
@@ -143,7 +77,6 @@ Plug 'prabirshrestha/asyncomplete.vim'
     \ pumvisible() ? "\<C-n>" :
     \ <SID>check_back_space() ? "\<TAB>" :
     \ asyncomplete#force_refresh()
-  Plug 'prabirshrestha/asyncomplete-lsp.vim'
   Plug 'prabirshrestha/asyncomplete-buffer.vim'
     let g:asyncomplete_buffer_clear_cache = 0
     autocmd User asyncomplete_setup
@@ -214,10 +147,6 @@ Plug 'mattn/emmet-vim'
 " Seamless movement between vim windows and tmux panes.
 Plug 'christoomey/vim-tmux-navigator'
   let g:tmux_navigator_no_mappings = 1
-  noremap <silent> <M-h> :TmuxNavigateLeft<cr>
-  noremap <silent> <M-l> :TmuxNavigateRight<cr>
-  noremap <silent> <M-j> :TmuxNavigateDown<cr>
-  noremap <silent> <M-k> :TmuxNavigateUp<cr>
   noremap <silent> <C-Left> :TmuxNavigateLeft<cr>
   noremap <silent> <C-Right> :TmuxNavigateRight<cr>
   noremap <silent> <C-Down> :TmuxNavigateDown<cr>
@@ -233,8 +162,6 @@ Plug 'mhinz/vim-signify'
 " Open a split with the current register values when '"' or '@' is pressed
 Plug 'junegunn/vim-peekaboo'
   let g:peekaboo_window = 'vert bo 40new'
-" A tool for profiling vim's startup time. Useful for finding slow plugins.
-Plug 'tweekmonster/startuptime.vim'
 " The author said this is experimental so I'll pin a commit to avoid breaking changes
 Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b0134aa1e2d9'}
   function! QuickpickMappings()
@@ -407,14 +334,6 @@ nnoremap <silent> <Leader>w :wa<CR>
 nnoremap <Leader>x :wqa<CR>
 nnoremap <Leader>r :source $MYVIMRC<CR>
 nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
-nnoremap <silent> <Leader>t :vimgrep /TODO/j **/*<CR>
-
-" LSP
-nnoremap <Leader>ls :LspStatus<CR>
-nnoremap <Leader>ld :LspDefinition<CR>
-nnoremap <Leader>lrn :LspRename<CR>
-nnoremap <Leader>lrf :LspReferences<CR>
-nnoremap <Leader>lo :LspCodeActionSync source.organizeImports<CR>
 
 " open new horizontal and vertical panes to the right and bottom respectively
 set splitright splitbelow
@@ -438,24 +357,6 @@ set wildmenu wildmode=longest:full,full
 cnoremap <C-a> <C-b>
 set cmdheight=2
 
-""" Section: Fold settings
-set foldlevelstart=999
-augroup SetFoldMethod
-  autocmd!
-  autocmd FileType * if &ft ==# 'vim' | setlocal fdm=expr fde=getline(v\:lnum)=~'^\"\"'?'>'.(matchend(getline(v\:lnum),'\"\"*')-2)\:'=' | else | setlocal foldmethod=syntax | endif |
-augroup END
-function! FirstFold()
-  let g:first_fold = 1
-  for line_number in range(1, line('$') + 1)
-    if !empty(foldtextresult(line_number))
-      return 'zm'
-    endif
-  endfor
-  let &foldlevel = max(map(range(1, line('$')), 'foldlevel(v:val)')) - 1
-endfunction
-nnoremap <expr> zm !exists('g:first_fold') ? FirstFold() : 'zm'
-nnoremap <Leader>z :let &foldlevel = foldlevel('.') - 1<CR>
-
 """ Section: System Mappings
 " Map the output of these key combinations to their actual names
 map l <M-l>
@@ -464,41 +365,6 @@ map j <M-j>
 map k <M-k>
 imap OB <Down>
 imap OA <Up>
-
-""" Section: <S-k> settings
-command! -nargs=1 SilentEx
-  \   execute 'silent! !' . <q-args>
-  \ | execute 'redraw!'
-let s:failure_indicators = {
-      \ 'python': 'no python documentation found',
-      \ 'vim': 'Sorry, no help',
-      \ 'sh': 'No manual entry',
-      \ }
-function! ChainedKeywordprg()
-  let l:cword = expand("<cword>")
-
-  if !empty(&keywordprg)
-    let l:failure_indicator = get(s:failure_indicators, &ft, '')
-
-    if &keywordprg[0] == ':'
-      let l:result = execute('silent! ' . &keywordprg[1:] . ' ' . l:cword)
-      if empty(l:failure_indicator) || l:result !~? l:failure_indicator
-        return
-      endif
-    else
-      let l:result = system(&keywordprg . ' ' . l:cword)
-      if empty(l:failure_indicator) || l:result !~? l:failure_indicator
-        exe 'SilentEx ' . &keywordprg . ' ' . l:cword
-        return
-      endif
-    endif
-  endif
-
-  if exists(':LspHover')
-      exe "LspHover"
-  endif
-endfunction
-nnoremap K :call ChainedKeywordprg()<CR>
 
 """ Section: Line folding / splitting
 " Prevents inserting two spaces after punctuation on a join (J)
