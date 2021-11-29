@@ -13,14 +13,14 @@ BORDER_COLOR="\[\033[0;30m\]"
 TEXT_COLOR="\[\033[0;36m\]"
 RESET_COLOR="\[\033[0m\]"
 # get current branch in git repo (from ezprompt.net)
-function set_git_info() {
+function git_info() {
 	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 	if [ ! "${BRANCH}" == "" ]
 	then
 		STAT=`parse_git_dirty`
-		GIT_INFO="[${TEXT_COLOR}${BRANCH}${STAT}${BORDER_COLOR}]$SPLITBAR"
+		echo "[${TEXT_COLOR}${BRANCH}${STAT}${BORDER_COLOR}]$SPLITBAR"
 	else
-		GIT_INFO=""
+		echo ""
 	fi
 }
 # get current status of git repo (logic taken from ezprompt.net)
@@ -57,33 +57,29 @@ function parse_git_dirty {
 		echo ""
 	fi
 }
-function set_python_info() {
+function python_info() {
 	if [ -n "$VIRTUAL_ENV" ]
 	then
 		# We use the name of the directory that holds the virtual environment as the virtual environment name.
 		# Unless the name of that directory is '.venv' in which case we'll use the name of the folder containing '.venv'
 		[ `basename $VIRTUAL_ENV` == '.venv' ] && VIRTUAL_ENVIRONMENT_NAME=`echo $VIRTUAL_ENV  | sed -e "s/.*\/\([^/]*\)\/[^/]*/\1/"` || VIRTUAL_ENVIRONMENT_NAME=`basename $VIRTUAL_ENV`
-		PYTHON_INFO="${BORDER_COLOR}[${TEXT_COLOR}venv: ${VIRTUAL_ENVIRONMENT_NAME}${BORDER_COLOR}]$SPLITBAR"
+		echo "${BORDER_COLOR}[${TEXT_COLOR}venv: ${VIRTUAL_ENVIRONMENT_NAME}${BORDER_COLOR}]$SPLITBAR"
 	else
-		PYTHON_INFO=""
+		echo ""
 	fi
 }
-function set_user_info() {
+function user_info() {
 	if [ "$HOSTNAME" == "bigpop-os" ]; then
-		USER_INFO=""
+		echo ""
 	else
-		USER_INFO="${BORDER_COLOR}[${TEXT_COLOR}\u@\h${BORDER_COLOR}]$SPLITBAR"
+		echo "${BORDER_COLOR}[${TEXT_COLOR}\u@\h${BORDER_COLOR}]$SPLITBAR"
 	fi
 }
-function set_path_info() {
-		PATH_INFO="${BORDER_COLOR}[${TEXT_COLOR}\w${BORDER_COLOR}]"
+function path_info() {
+		echo "${BORDER_COLOR}[${TEXT_COLOR}\w${BORDER_COLOR}]"
 }
 function set_prompt() {
-	set_git_info
-	set_python_info
-	set_user_info
-	set_path_info
-	PS1="${BORDER_COLOR}${CONNECTBAR_DOWN}${PYTHON_INFO}${GIT_INFO}${USER_INFO}${PATH_INFO}${RESET_COLOR}\n${BORDER_COLOR}${CONNECTBAR_UP}${ARROW} ${RESET_COLOR}"
+	PS1="${BORDER_COLOR}${CONNECTBAR_DOWN}$(python_info)$(git_info)$(user_info)$(path_info)${RESET_COLOR}\n${BORDER_COLOR}${CONNECTBAR_UP}${ARROW} ${RESET_COLOR}"
 }
 # We set the PS1 through PROMPT_COMMAND so that the PS1 will get reevaluated each time.
 # It needs to be reevaluated each time so things like the git branch can get recalculated
