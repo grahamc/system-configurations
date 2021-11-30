@@ -163,9 +163,6 @@ Plug 'Yggdroot/indentLine'
 " Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
 Plug 'mhinz/vim-signify'
   nnoremap <Leader>vk :SignifyHunkDiff<CR>
-" Open a split with the current register values when '"' or '@' is pressed
-Plug 'junegunn/vim-peekaboo'
-  let g:peekaboo_window = 'vert bo 40new'
 " The author said this is experimental so I'll pin a commit to avoid breaking changes
 Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b0134aa1e2d9'}
   function! QuickpickMappings()
