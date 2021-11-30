@@ -4,10 +4,12 @@ case $1 in
 
   "up")
     ddcutil setvcp 10 + 20 --bus 5 &
+    ddcutil setvcp 10 + 20 --bus 6 &
     ;;
 
   "down")
     ddcutil setvcp 10 - 20 --bus 5 &
+    ddcutil setvcp 10 - 20 --bus 6 &
     ;;
 
   *)
