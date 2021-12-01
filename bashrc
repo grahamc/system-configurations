@@ -79,7 +79,7 @@ function path_info() {
 		echo "${BORDER_COLOR}[${TEXT_COLOR}\w${BORDER_COLOR}]"
 }
 function set_prompt() {
-	PS1="${BORDER_COLOR}${CONNECTBAR_DOWN}$(python_info)$(git_info)$(user_info)$(path_info)${RESET_COLOR}\n${BORDER_COLOR}${CONNECTBAR_UP}${ARROW} ${RESET_COLOR}"
+	PS1="${BORDER_COLOR}${CONNECTBAR_DOWN}$(python_info)$(git_info)$(user_info)$(path_info)\n${BORDER_COLOR}${CONNECTBAR_UP}${ARROW} ${RESET_COLOR}"
 }
 # We set the PS1 through PROMPT_COMMAND so that the PS1 will get reevaluated each time.
 # It needs to be reevaluated each time so things like the git branch can get recalculated
