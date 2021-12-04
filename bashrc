@@ -110,7 +110,7 @@ bind "set menu-complete-display-prefix on"
 # aliases
 alias r="source ~/.bashrc"
 alias r-desktop-entries='update-desktop-database ~/.local/share/applications'
-alias r-xbindkeys='killall -HUP xbindkeys'
+alias r-xbindkeys='killall xbindkeys; xbindkeys'
 alias r-kitty='xdotool key Super+F5'
 alias r-asdf='asdf reshim'
 alias trash='trash-put'
