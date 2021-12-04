@@ -75,5 +75,21 @@
 "tdrop --pointer-monitor-detection --monitor-aware --width='' --height='' --x-offset='' --y-offset='' kitty"
     Mod4 + t
 
+# Move up one workspace when holding super and scrollling up
+"xdotool set_desktop --relative -- -1"
+    Mod4 + b:4 + release
+
+# Move down one workspace when holding super and scrolling down
+"xdotool set_desktop --relative -- +1"
+    Mod4 + b:5 + release
+
+# no-op for mouse top-side button
+""
+    b:8
+
+# no-op for mouse bottom-side button
+""
+    b:10
+
 #
 # End of xbindkeys configuration
