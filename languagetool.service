@@ -1,0 +1,16 @@
+[Unit]
+Description=LanguageTool Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=on-failure
+ExecStartPre=-/usr/bin/docker stop %n
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStartPre=/bin/sh -c 'until ping -c1 google.com; do sleep 1; done;'
+ExecStartPre=/usr/bin/docker pull erikvl87/languagetool
+ExecStart=/usr/bin/docker run --rm --name %n -p 8010:8010 -e Java_Xms=512m -e Java_Xmx=2g erikvl87/languagetool
+
+[Install]
+WantedBy=multi-user.target

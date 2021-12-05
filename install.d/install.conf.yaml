@@ -41,3 +41,4 @@
 
 - shell:
     - [./smart-plug/install , Install and start smart plug service]
+    - [sudo cp ./languagetool.service /etc/systemd/system/ && sudo systemctl enable languagetool.service && sudo systemctl start languagetool.service, Install and start languagetool service]
