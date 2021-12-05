@@ -32,7 +32,7 @@
       versions:
           - 3.10.0
     - plugin: nodejs
-      global: 17.0.1
+      global: 16.3.1
       versions:
           - 17.0.1
     - plugin: golang
