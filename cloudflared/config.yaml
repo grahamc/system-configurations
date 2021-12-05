@@ -1,2 +1,6 @@
 tunnel: a52a24f6-92ee-4dc5-b537-24bad84b7b1f
+# If cloudflared can't find a cert.pem in any of the default locations,
+# it prints an error whenever you start a tunnel, even though you don't
+# need a cert.pem to run a tunnel. By explicitly setting the location
+# where cert.pem _may_ be found, cloudflared will not print the error.
 origincert: ~/.cloudflared
