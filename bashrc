@@ -123,7 +123,7 @@ alias tree="tree -a -I '.git|dotbot|dotbot-asdf|.venv'"
 # This command connects to a running session, or if there isn't one, it just
 # launches tmux, in which case tmux-resurrect should restore the entire tmux environment
 alias reconnect='tmux a || tmux'
-tunnel() { cloudflared tunnel run --url "http://localhost:$1" a52a24f6-92ee-4dc5-b537-24bad84b7b1f; }
+tunnel() { cloudflared tunnel run --url "http://localhost:$1"; }
 
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash

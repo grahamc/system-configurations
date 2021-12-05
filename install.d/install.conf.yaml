@@ -21,6 +21,7 @@
     ~/.asdfrc: asdf/asdfrc
     ~/.default-python-packages: asdf/default-python-packages
     ~/bin: bin
+    ~/.cloudflared/config.yaml: cloudflared/config.yaml
 
 - create:
     - ~/code
