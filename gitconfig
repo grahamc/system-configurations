@@ -12,7 +12,7 @@
     ss = status --short
     c = commit
     a = add
-    d = diff --color-words='[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+'
+    d = diff
     undo = checkout --
     some = add -u
     undocommit = reset "HEAD^"
