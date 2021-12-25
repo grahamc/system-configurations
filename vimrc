@@ -43,14 +43,6 @@ Plug 'TaDaa/vimade'
     autocmd FileType quickpick :VimadeWinDisable
     autocmd FileType quickpick-filter :VimadeWinDisable
   augroup END
-Plug 'unblevable/quick-scope'
-  let g:qs_lazy_highlight = 1
-  let g:qs_hi_priority = 10
-  augroup qs_colors
-    autocmd!
-    autocmd ColorScheme * highlight link QuickScopePrimary Todo
-    autocmd ColorScheme * highlight link QuickScopeSecondary Todo
-  augroup END
 
 """" Coordination between plugins
 """"" asyncomplete, delimitmate, vim-endwise
