@@ -213,35 +213,19 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
     nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
 
 """" Colorscheme
-Plug 'cormacrelf/vim-colors-github' | Plug 'arcticicestudio/nord-vim'
+Plug 'arcticicestudio/nord-vim'
   " Overrides
   augroup ColorschemeOverrides
     autocmd!
     " MatchParen
     autocmd Colorscheme * hi MatchParen ctermfg=blue cterm=underline ctermbg=NONE
     " Transparent SignColumn
-    autocmd Colorscheme github,nord hi clear SignColumn
-    autocmd Colorscheme github hi DiffAdd ctermbg=NONE
-    autocmd Colorscheme github hi DiffChange ctermbg=NONE
-    autocmd Colorscheme github hi DiffDelete ctermbg=NONE
-    autocmd Colorscheme github hi SignifySignChange ctermbg=NONE ctermfg=11
-    autocmd Colorscheme github hi SignifySignDelete ctermbg=NONE ctermfg=9
-    autocmd Colorscheme github hi SignifySignAdd ctermbg=NONE ctermfg=2
-    autocmd Colorscheme github hi ALEErrorSign ctermbg=NONE
-    autocmd Colorscheme github hi ALEWarningSign ctermbg=NONE
-    " Transparent number column
-    autocmd Colorscheme github hi clear CursorLineNR
-    autocmd Colorscheme github hi clear LineNR
-    autocmd Colorscheme github hi LineNR ctermfg=7
+    autocmd Colorscheme nord hi clear SignColumn
     " Transparent vertical split
-    autocmd Colorscheme github,nord highlight VertSplit ctermbg=NONE
-    " Vertical split
-    autocmd Colorscheme github highlight VertSplit ctermfg=7
+    autocmd Colorscheme nord highlight VertSplit ctermbg=NONE ctermfg=0
     " statusline colors
     autocmd ColorScheme nord hi StatusLine ctermfg=6 ctermbg=NONE
     autocmd ColorScheme nord hi StatusLineNC ctermfg=8 ctermbg=NONE
-    autocmd ColorScheme github hi StatusLine ctermfg=13 ctermbg=NONE cterm=NONE
-    autocmd ColorScheme github hi StatusLineNC ctermfg=7 ctermbg=NONE cterm=NONE
     " autocomplete popupmenu
     autocmd ColorScheme * highlight PmenuSel ctermfg=1 ctermbg=3
     autocmd ColorScheme * highlight Pmenu ctermbg=12E3440 ctermfg=81 ctermbg=3
@@ -298,9 +282,6 @@ augroup Miscellaneous
   autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
   " highlight trailing whitespace
   autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red | exe '2match ErrorMsg /\s\+$/'
-  " When vim receives the SIGUSR1 signal, update the colorscheme.
-  " Using 'nested' here so that the 'ColorScheme' autocommands are run.
-  autocmd SigUSR1 * nested call SyncColorscheme()
 augroup END
 
 " set swapfile directory
@@ -600,6 +581,7 @@ augroup END
 
 """ Section: Aesthetics
 """" Misc.
+colorscheme nord
 set linebreak
 set number relativenumber
 set cursorline cursorlineopt=number
@@ -637,21 +619,3 @@ function! MyStatusLine()
   return g:FormatGroup('%h%w%q%t%m%r').s:STATUSLINE_SEPARATOR.g:FormatGroup('Ln:%l:%L').s:GROUP_SEPARATOR.g:FormatGroup('Col:%c')
 endfunction
 set statusline=%{%MyStatusLine()%}
-
-"""" Colorscheme
-function! SetColorscheme(background)
-    let &background = a:background
-    let l:vim_colorscheme = a:background ==? "light" ? "github" : "nord"
-    exe "color " . l:vim_colorscheme
-endfunction
-function! CanSyncColorscheme()
-  return !empty(glob('~/.vim/colorscheme/colorscheme-name.txt'))
-endfunction
-function! SyncColorscheme()
-  call SetColorscheme(readfile(glob('~/.vim/colorscheme/colorscheme-name.txt'))[0])
-endfunction
-if CanSyncColorscheme()
-  call SyncColorscheme()
-else
-  call SetColorscheme('dark')
-endif

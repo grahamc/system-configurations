@@ -2,15 +2,11 @@
     link:
       create: true
 
-- clean: ['~', '~/.config', '~/.vim', '~/.vim/colorscheme']
+- clean: ['~', '~/.config']
 
 - link:
     ~/.tmux.conf: tmux.conf
-    ~/.vimrc: vim/vimrc
-    ~/.vim/colorscheme: vim/colorscheme
-    ~/.vim/colorscheme/colorscheme-name.txt:
-        path: ~/.vim/colorscheme/night-colorscheme-name.txt
-        if: '[ ! -f ~/.vim/colorscheme/colorscheme-name.txt ]'
+    ~/.vimrc: vimrc
     ~/.gitconfig: gitconfig
     ~/.xbindkeysrc: xbindkeysrc
     ~/.bashrc: bashrc
