@@ -581,7 +581,7 @@ set laststatus=2
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
-set fillchars+=foldopen:\ ,fold:\ ,vert:│
+set fillchars+=foldopen:\ ,fold:\ ,vert:\|
 
 """" Block cursor in normal mode, thin line in insert mode, and underline in replace mode
 let &t_SI.="\e[5 q" "SI = INSERT mode
@@ -594,11 +594,11 @@ augroup ResetCursor
 augroup END
 
 """" Statusline
-set fillchars+=stl:─,stlnc:─
+set fillchars+=stl:-,stlnc:-
 let s:GREY_HIGHLIGHT = "%#VertSplit#"
 let s:STATUSLINE_HIGHLIGHT = "%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}"
 let s:STATUSLINE_SEPARATOR = s:GREY_HIGHLIGHT.'%='
-let s:GROUP_SEPARATOR = s:GREY_HIGHLIGHT.'╾─╼'
+let s:GROUP_SEPARATOR = s:GREY_HIGHLIGHT.'---'
 let g:FormatGroup = { group -> s:GREY_HIGHLIGHT.'['.s:STATUSLINE_HIGHLIGHT.group.s:GREY_HIGHLIGHT.']' }
 function! MyStatusLine()
   if &ft ==# 'help'
