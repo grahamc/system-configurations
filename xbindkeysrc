@@ -91,5 +91,9 @@
 ""
     b:10
 
+# Use flameshot for screenshots
+"flameshot gui"
+    Print
+
 #
 # End of xbindkeys configuration
