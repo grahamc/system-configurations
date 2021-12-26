@@ -1,0 +1,13 @@
+.DS_Store
+opt/
+!.asdfrc
+!.bashrc
+!.config/
+!.dotfiles/
+!.gitconfig
+!.local/
+!.tmux/
+!.tmux.conf
+!.vim/
+!.vimrc
+!.xbindkeysrc

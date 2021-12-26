@@ -362,7 +362,7 @@ function! s:quickpick_files_on_selection(data, ...) abort
   return
 endfunction
 function! s:quickpick_files_on_change(data, ...) abort
-  call quickpick#items(systemlist('rg --vimgrep --files ' . $RG_DEFAULT_OPTIONS . ' | fzf --filter ' . shellescape(a:data['input'])))
+  call quickpick#items(systemlist('rg --vimgrep --files | fzf --filter ' . shellescape(a:data['input'])))
 endfunction
 nnoremap <silent> <Leader>f :silent! call QuickpickFiles()<CR>
 """" Line search
@@ -428,7 +428,7 @@ function! s:quickpick_lines_on_selection(data, ...) abort
   call win_execute(s:quickpick_popup, ['normal! '. l:line .'Gzz', 'setlocal cursorline cursorlineopt=line'])
 endfunction
 function! s:quickpick_lines_on_change(data, ...) abort
-  call quickpick#items(systemlist('rg '.$RG_DEFAULT_OPTIONS.' ' . shellescape(a:data['input'])))
+  call quickpick#items(systemlist('rg ' . shellescape(a:data['input'])))
 endfunction
 nnoremap <silent> <Leader>g :silent! call QuickpickLines()<CR>
 """" Buffer search
