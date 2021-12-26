@@ -43,67 +43,20 @@ Plug 'TaDaa/vimade'
     autocmd FileType quickpick :VimadeWinDisable
     autocmd FileType quickpick-filter :VimadeWinDisable
   augroup END
+" Autocomplete
+Plug 'maxboisvert/vim-simple-complete'
 
 """" Coordination between plugins
-""""" asyncomplete, delimitmate, vim-endwise
-" Combine enter key (<CR>) mappings from my plugins
+""""" delimitmate, vim-endwise
+" Combine enter key (<CR>) mappings from the plugins above.
+" Also, if the popupmenu is visible, but no items are selected, close the
+" popup and insert a newline.
 imap <expr> <CR>
   \ pumvisible() ?
-    \ asyncomplete#close_popup() :
+    \ (complete_info().selected == -1 ? '<C-y><CR>' : '<C-y>') :
     \ delimitMate#WithinEmptyPair() ?
       \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
       \ "\<CR>\<Plug>DiscretionaryEnd"
-
-"""" Autocomplete
-Plug 'prabirshrestha/asyncomplete.vim'
-  let g:asyncomplete_auto_completeopt = 0
-  let g:asyncomplete_auto_popup = 0
-  let g:asyncomplete_min_chars = 4
-  let g:asyncomplete_matchfuzzy = 0
-  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-  function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-  endfunction
-  inoremap <silent><expr> <TAB>
-    \ pumvisible() ? "\<C-n>" :
-    \ <SID>check_back_space() ? "\<TAB>" :
-    \ asyncomplete#force_refresh()
-  Plug 'prabirshrestha/asyncomplete-buffer.vim'
-    let g:asyncomplete_buffer_clear_cache = 0
-    autocmd User asyncomplete_setup
-      \ call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-      \ 'name': 'buffer',
-      \ 'allowlist': ['*'],
-      \ 'completor': function('asyncomplete#sources#buffer#completor'),
-      \ }))
-  Plug 'prabirshrestha/asyncomplete-file.vim'
-  autocmd User asyncomplete_setup
-      \ call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-      \ 'name': 'file',
-      \ 'allowlist': ['*'],
-      \ 'priority': 10,
-      \ 'completor': function('asyncomplete#sources#file#completor')
-      \ }))
-  " TODO this doesn't insert correctly, at least in python, need to fix
-  " Plug 'yami-beta/asyncomplete-omni.vim'
-  " autocmd User asyncomplete_setup
-  "     \ call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
-  "     \ 'name': 'omni',
-  "     \ 'allowlist': ['*'],
-  "     \ 'completor': function('asyncomplete#sources#omni#completor'),
-  "     \ 'config': {
-  "     \   'show_source_kind': 1,
-  "     \ },
-  "     \ }))
-  Plug 'Shougo/neco-vim'
-    Plug 'prabirshrestha/asyncomplete-necovim.vim'
-    autocmd User asyncomplete_setup
-        \ call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
-        \ 'name': 'necovim',
-        \ 'allowlist': ['vim'],
-        \ 'completor': function('asyncomplete#sources#necovim#completor'),
-        \ }))
 
 """" Editing
 " Automatically add closing keywords (e.g. function/endfunction in vimscript)
