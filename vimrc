@@ -270,15 +270,6 @@ set wildmenu wildmode=longest:full,full
 cnoremap <C-a> <C-b>
 set cmdheight=2
 
-""" Section: System Mappings
-" Map the output of these key combinations to their actual names
-map l <M-l>
-map h <M-h>
-map j <M-j>
-map k <M-k>
-imap OB <Down>
-imap OA <Up>
-
 """ Section: Line folding / splitting
 " Prevents inserting two spaces after punctuation on a join (J)
 set nojoinspaces
