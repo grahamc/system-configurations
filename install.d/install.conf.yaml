@@ -16,6 +16,7 @@
         if: '[ ! -f ~/.config/kitty/current-theme.conf ]'
     ~/.asdfrc: asdf/asdfrc
     ~/.default-python-packages: asdf/default-python-packages
+    ~/.default-npm-packages: asdf/default-npm-packages
     ~/bin: bin
     ~/.cloudflared/config.yaml: cloudflared/config.yaml
 
