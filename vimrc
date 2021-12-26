@@ -358,7 +358,7 @@ function! s:try(cmd, default)
   endif
 endfunction
 nnoremap <silent> J :<C-u>call <SID>try('SplitjoinJoin',  'J')<CR>
-nnoremap <silent> sj :<C-u>call <SID>try('SplitjoinSplit', "r\015")<CR>
+nnoremap <silent> <CR> :<C-u>call <SID>try('SplitjoinSplit', "r\015")<CR>
 
 """ Section: Motions / Text Objects
 set matchpairs+=<:>
