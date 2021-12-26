@@ -72,7 +72,7 @@
     Mod4 + F7
 
 # Drop down terminal
-"tdrop --pointer-monitor-detection --monitor-aware --width='' --height='' --x-offset='' --y-offset='' kitty"
+"tdrop --pointer-monitor-detection --monitor-aware --width='100%' --height='100%' --x-offset='' --y-offset='' kitty"
     Mod4 + t
 
 # Move up one workspace when holding super and scrollling up
