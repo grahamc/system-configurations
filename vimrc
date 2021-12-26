@@ -139,10 +139,6 @@ Plug 'mattn/emmet-vim'
 " Seamless movement between vim windows and tmux panes.
 Plug 'christoomey/vim-tmux-navigator'
   let g:tmux_navigator_no_mappings = 1
-  noremap <silent> <M-h> :TmuxNavigateLeft<cr>
-  noremap <silent> <M-l> :TmuxNavigateRight<cr>
-  noremap <silent> <M-j> :TmuxNavigateDown<cr>
-  noremap <silent> <M-k> :TmuxNavigateUp<cr>
   noremap <silent> <C-Left> :TmuxNavigateLeft<cr>
   noremap <silent> <C-Right> :TmuxNavigateRight<cr>
   noremap <silent> <C-Down> :TmuxNavigateDown<cr>
