@@ -118,7 +118,7 @@ alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 alias ls='ls --classify'
 cdl() { cd "$@" && ls; }
-alias tree="tree -a -I '.git|dotbot|dotbot-asdf|.venv'"
+alias tree='rg --color=never --files | \tree --fromfile  .'
 # Quick way to reconnect to tmux after a restart/closed-terminal.
 # This command connects to a running session, or if there isn't one, it just
 # launches tmux, in which case tmux-resurrect should restore the entire tmux environment
