@@ -1,4 +1,5 @@
-# If not running interactively, don't do anything
+# If not running interactively, don't do anything.
+# Reasoning is explained here: https://unix.stackexchange.com/questions/257571/why-does-bashrc-check-whether-the-current-shell-is-interactive
 case $- in
     *i*) ;;
       *) return;;
