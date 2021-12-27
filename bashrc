@@ -133,7 +133,6 @@ export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --m
 export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up'
 
-
 # Part of asdf initialization is adding shims. This means that if the bashrc
 # gets reloaded, then asdf will add its shims again. This could be an issue if
 # the bashrc gets reloaded while you're inside a python virtual environment
