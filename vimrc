@@ -35,6 +35,7 @@ Plug 'wellle/targets.vim'
 Plug 'editorconfig/editorconfig-vim'
 " Autocomplete
 Plug 'maxboisvert/vim-simple-complete'
+Plug 'lambdalisue/vim-manpager'
 
 """" Coordination between plugins
 """"" delimitmate, vim-endwise

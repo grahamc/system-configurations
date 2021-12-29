@@ -130,6 +130,9 @@ alias tree='rg --color=never --files | \tree --fromfile  .'
 alias reconnect='tmux a || tmux'
 tunnel() { cloudflared tunnel run --url "http://localhost:$1"; }
 
+# man
+export MANPAGER="vim -c MANPAGER -"
+
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 bind '"\C-f":" \C-u \C-a\C-k`__fzf_select__`\e\C-e\C-y\C-a\C-y\ey\C-h\C-e\ef \C-h"'
