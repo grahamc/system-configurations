@@ -547,6 +547,10 @@ function! MyStatusLine()
     return g:FormatGroup('NERDTree').s:STATUSLINE_SEPARATOR
   elseif &ft ==# 'vim-plug'
     return g:FormatGroup('VIM_PLUG').s:STATUSLINE_SEPARATOR
+  elseif &ft ==# 'man'
+    return g:FormatGroup('MANPAGER MODE').s:STATUSLINE_SEPARATOR
+  elseif &ft ==# 'PAGER'
+    return g:FormatGroup('PAGER MODE').s:STATUSLINE_SEPARATOR
   endif
   return g:FormatGroup('%h%w%q%t%m%r').s:STATUSLINE_SEPARATOR.g:FormatGroup('Ln:%l:%L').s:GROUP_SEPARATOR.g:FormatGroup('Col:%c')
 endfunction

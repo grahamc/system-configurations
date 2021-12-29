@@ -87,7 +87,7 @@ function set_prompt() {
 PROMPT_COMMAND="set_prompt"
 
 # general
-export PAGER="vim -c PAGER -"
+export PAGER='vim "+set filetype=PAGER" "+set nonumber" "+set norelativenumber" -c PAGER -'
 
 # bash
 export LESS="-Ri"
@@ -134,7 +134,7 @@ alias reconnect='tmux a || tmux'
 tunnel() { cloudflared tunnel run --url "http://localhost:$1"; }
 
 # man
-export MANPAGER="vim -c MANPAGER -"
+export MANPAGER='vim "+set nonumber" "+set norelativenumber" -c MANPAGER -'
 
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
