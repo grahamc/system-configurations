@@ -480,7 +480,8 @@ augroup RestoreSettings
   " during the execution of an autocmd to prevent infinite loops.
   let s:session_dir = $VIMHOME . 'sessions/'
   function! RestoreOrCreateSession()
-    if argc() == 0 |
+    let s:commandline_arguments = split( system( "ps -o command= -p " . getpid() ) )
+    if s:commandline_arguments->len() == 1 |
       call mkdir(s:session_dir, "p") |
       let s:session_name =  substitute($PWD, '/', '%', 'g') . '%vim' |
       let s:session_full_path = s:session_dir . s:session_name |
