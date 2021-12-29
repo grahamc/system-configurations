@@ -86,6 +86,9 @@ function set_prompt() {
 # It needs to be reevaluated each time so things like the git branch can get recalculated
 PROMPT_COMMAND="set_prompt"
 
+# general
+export PAGER="vim -c PAGER -"
+
 # bash
 export LESS="-Ri"
 export VISUAL=vim

@@ -36,6 +36,9 @@ Plug 'editorconfig/editorconfig-vim'
 " Autocomplete
 Plug 'maxboisvert/vim-simple-complete'
 Plug 'lambdalisue/vim-manpager'
+Plug 'lambdalisue/vim-pager'
+  " handle ANSI escape sequences
+  Plug 'powerman/vim-plugin-AnsiEsc'
 
 """" Coordination between plugins
 """"" delimitmate, vim-endwise
