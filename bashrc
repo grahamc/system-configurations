@@ -70,7 +70,8 @@ function python_info() {
 	fi
 }
 function user_info() {
-	if [ "$HOSTNAME" == "bigpop-os" ]; then
+	# If this is not an ssh session, then do not display the user info
+	if [ -z "$SSH_CLIENT" ] && [ -z "$SSH_TTY" ]; then
 		echo ""
 	else
 		echo "${BORDER_COLOR}[${TEXT_COLOR}\u@\h${BORDER_COLOR}]$SPLITBAR"
