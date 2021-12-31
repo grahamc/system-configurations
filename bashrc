@@ -143,6 +143,8 @@ export FZF_DEFAULT_COMMAND="rg --files"
 export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --margin=5%,2%,5%,2%'
 export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up'
+export FZF_ALT_C_COMMAND="rg --files --null | xargs -0 dirname | sort -u"
+export FZF_ALT_C_OPTS="--preview '\tree -C {} | head -200'"
 # use control+space for history search (bindings taken from ~/.fzf.bash)
 bind -m emacs-standard -x '"\C-@": __fzf_history__'
 bind -m vi-command -x '"\C-@": __fzf_history__'
