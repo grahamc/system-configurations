@@ -147,10 +147,11 @@ export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up'
 bind -m emacs-standard -x '"\C-@": __fzf_history__'
 bind -m vi-command -x '"\C-@": __fzf_history__'
 bind -m vi-insert -x '"\C-@": __fzf_history__'
-# use control +f for file search (bindings taken from ~/.fzf.bash)
-bind -m emacs-standard -x '"\C-f": fzf-file-widget'
-bind -m vi-command -x '"\C-f": fzf-file-widget'
-bind -m vi-insert -x '"\C-f": fzf-file-widget'
+# use control +f for directory search (bindings taken from ~/.fzf.bash)
+bind -m emacs-standard '"\C-f": " \C-b\C-k \C-u`__fzf_cd__`\e\C-e\er\C-m\C-y\C-h\e \C-y\ey\C-x\C-x\C-d"'
+bind -m vi-command '"\C-f": "\C-z\ec\C-z"'
+bind -m vi-insert '"\C-f": "\C-z\ec\C-z"'
+
 
 # asdf
 # Part of asdf initialization is adding shims. This means that if the bashrc
