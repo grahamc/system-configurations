@@ -38,6 +38,10 @@
       global: 1.17.2
       versions:
           - 1.17.2
+    - plugin: rust
+      global: 1.57.0
+      versions:
+          - 1.57.0
 
 - shell:
     - [./smart-plug/install , Install and start smart plug service]
