@@ -139,7 +139,6 @@ export MANPAGER='vim "+set nonumber" "+set norelativenumber" -c MANPAGER -'
 
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-bind '"\C-f":" \C-u \C-a\C-k`__fzf_select__`\e\C-e\C-y\C-a\C-y\ey\C-h\C-e\ef \C-h\er"'
 export FZF_DEFAULT_COMMAND="rg --files"
 export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --margin=5%,2%,5%,2%'
 export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
@@ -148,6 +147,10 @@ export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up'
 bind -m emacs-standard -x '"\C-@": __fzf_history__'
 bind -m vi-command -x '"\C-@": __fzf_history__'
 bind -m vi-insert -x '"\C-@": __fzf_history__'
+# use control +f for file search
+bind -m emacs-standard -x '"\C-f": fzf-file-widget'
+bind -m vi-command -x '"\C-f": fzf-file-widget'
+bind -m vi-insert -x '"\C-f": fzf-file-widget'
 
 # asdf
 # Part of asdf initialization is adding shims. This means that if the bashrc
