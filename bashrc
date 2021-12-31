@@ -133,6 +133,8 @@ alias tree='rg --color=never --files | \tree --fromfile  .'
 # launches tmux, in which case tmux-resurrect should restore the entire tmux environment
 alias reconnect='tmux a || tmux'
 tunnel() { cloudflared tunnel run --url "http://localhost:$1"; }
+# do not show percentages or ascii bars
+alias dust='dust -b'
 
 # man
 export MANPAGER='vim "+set nonumber" "+set norelativenumber" -c MANPAGER -'
