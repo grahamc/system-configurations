@@ -142,7 +142,7 @@ export MANPAGER='vim "+set nonumber" "+set norelativenumber" -c MANPAGER -'
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 export FZF_DEFAULT_COMMAND="rg --files"
-export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="rg>" --height 90% --margin=5%,2%,5%,2%'
+export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="(ctrl+e to open in $EDITOR)>" --height 90% --margin=5%,2%,5%,2% --bind "ctrl-e:execute($EDITOR {} > /dev/tty)+abort"'
 export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up --color=bg+:black --layout=reverse'
 export FZF_ALT_C_COMMAND="rg --files --null | xargs -0 dirname | sort -u"
