@@ -155,6 +155,20 @@ bind -m vi-insert -x '"\C-@": __fzf_history__'
 bind -m emacs-standard '"\C-f": " \C-b\C-k \C-u`__fzf_cd__`\e\C-e\er\C-m\C-y\C-h\e \C-y\ey\C-x\C-x\C-d"'
 bind -m vi-command '"\C-f": "\C-z\ec\C-z"'
 bind -m vi-insert '"\C-f": "\C-z\ec\C-z"'
+# use fzf to select a process to kill
+fkill() {
+    local pid
+    if [ "$UID" != "0" ]; then
+        pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
+    else
+        pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+    fi
+
+    if [ "x$pid" != "x" ]
+    then
+        echo $pid | xargs kill -${1:-9}
+    fi
+}
 
 
 # asdf
