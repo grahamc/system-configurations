@@ -88,7 +88,7 @@ function set_prompt() {
 PROMPT_COMMAND="set_prompt"
 
 # general
-export PAGER='vim "+set filetype=PAGER" "+set nonumber" "+set norelativenumber" -c PAGER -'
+export PAGER='vim --not-a-term "+set filetype=PAGER" "+set nonumber" "+set norelativenumber" -c PAGER -'
 
 # bash
 export LESS="-Ri"
@@ -138,7 +138,7 @@ alias dust='dust -b'
 mktouch() { mkdir -p "$(dirname "$1")" && touch "$1" ; }
 
 # man
-export MANPAGER='vim "+set nonumber" "+set norelativenumber" -c MANPAGER -'
+export MANPAGER='vim --not-a-term "+set nonumber" "+set norelativenumber" -c MANPAGER -'
 
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
