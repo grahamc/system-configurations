@@ -135,6 +135,7 @@ alias reconnect='tmux a || tmux'
 tunnel() { cloudflared tunnel run --url "http://localhost:$1"; }
 # do not show percentages or ascii bars
 alias dust='dust -b'
+mktouch() { mkdir -p "$(dirname "$1")" && touch "$1" ; }
 
 # man
 export MANPAGER='vim "+set nonumber" "+set norelativenumber" -c MANPAGER -'
