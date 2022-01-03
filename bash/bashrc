@@ -113,7 +113,7 @@ bind "set show-all-if-ambiguous on"
 bind "set completion-ignore-case on"
 bind "set menu-complete-display-prefix on"
 # aliases
-source ~/.config/bash/complete-alias
+source ~/.config/bash/complete_alias
 make_alias_and_enable_autocomplete() {
 	if [ $# -ne 2 ]; then
 			echo -e "\e[31mError: Two arguments are required, the alias name and the command it should be expanded to. \nExample: make_alias_and_enable_autocomplete la 'ls -a'\e[m" >>/dev/stderr
