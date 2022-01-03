@@ -16,5 +16,6 @@
     undo = checkout --
     some = add -u
     undocommit = reset "HEAD^"
+    co = checkout
 [init]
 	defaultBranch = master
