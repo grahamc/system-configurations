@@ -10,6 +10,7 @@
     ~/.gitconfig: gitconfig
     ~/.xbindkeysrc: xbindkeysrc
     ~/.bashrc: bash/bashrc
+    ~/.config/bash/complete_alias: bash/complete-alias/complete_alias
     ~/.config/kitty: kitty
     ~/.config/kitty/current-theme.conf:
         path: ~/.config/kitty/night-theme.conf
