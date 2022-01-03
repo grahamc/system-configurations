@@ -136,6 +136,10 @@ tunnel() { cloudflared tunnel run --url "http://localhost:$1"; }
 # do not show percentages or ascii bars
 alias dust='dust -b'
 mktouch() { mkdir -p "$(dirname "$1")" && touch "$1" ; }
+alias sai='sudo apt install'
+alias sar='sudo apt remove'
+alias saar='sudo apt autoremove'
+alias ap='apt policy'
 
 # man
 export MANPAGER='vim --not-a-term "+set nonumber" "+set norelativenumber" -c MANPAGER -'
