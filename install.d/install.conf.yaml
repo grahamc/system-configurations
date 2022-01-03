@@ -9,7 +9,7 @@
     ~/.vimrc: vimrc
     ~/.gitconfig: gitconfig
     ~/.xbindkeysrc: xbindkeysrc
-    ~/.bashrc: bashrc
+    ~/.bashrc: bash/bashrc
     ~/.config/kitty: kitty
     ~/.config/kitty/current-theme.conf:
         path: ~/.config/kitty/night-theme.conf
