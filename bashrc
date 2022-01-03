@@ -113,33 +113,43 @@ bind "set show-all-if-ambiguous on"
 bind "set completion-ignore-case on"
 bind "set menu-complete-display-prefix on"
 # aliases
-alias r="source ~/.bashrc"
-alias r-desktop-entries='update-desktop-database ~/.local/share/applications'
-alias r-xbindkeys='killall xbindkeys; xbindkeys'
-alias r-kitty='xdotool key Super+F5'
-alias r-asdf='asdf reshim'
-alias r-tmux='xdotool key ctrl+b key r'
-alias r-tmux-plugins='xdotool key ctrl+b key I'
-alias r-tmux-server='tmux kill-server; tmux'
-alias r-tmux-pane='tmux respawn-pane -k'
-alias trash='trash-put'
-alias pbcopy='xclip -selection clipboard'
-alias pbpaste='xclip -selection clipboard -o'
-alias ls='ls --classify'
+source ~/complete_alias
+make_alias_and_enable_autocomplete() {
+	if [ $# -ne 2 ]; then
+			echo -e "\e[31mError: Two arguments are required, the alias name and the command it should be expanded to. \nExample: make_alias_and_enable_autocomplete la 'ls -a'\e[m" >>/dev/stderr
+	fi
+
+	alias "$1"="$2"
+	# If the function is defined, call it
+	[[ "$(declare -fF _complete_alias)" ]] && complete -F _complete_alias "$1";
+}
+make_alias_and_enable_autocomplete 'r' "source ~/.bashrc"
+make_alias_and_enable_autocomplete 'r-desktop-entries' 'update-desktop-database ~/.local/share/applications'
+make_alias_and_enable_autocomplete 'r-xbindkeys' 'killall xbindkeys; xbindkeys'
+make_alias_and_enable_autocomplete 'r-kitty' 'xdotool key Super+F5'
+make_alias_and_enable_autocomplete 'r-asdf' 'asdf reshim'
+make_alias_and_enable_autocomplete 'r-tmux' 'xdotool key ctrl+b key r'
+make_alias_and_enable_autocomplete 'r-tmux-plugins' 'xdotool key ctrl+b key I'
+make_alias_and_enable_autocomplete 'r-tmux-server' 'tmux kill-server; tmux'
+make_alias_and_enable_autocomplete 'r-tmux-pane' 'tmux respawn-pane -k'
+make_alias_and_enable_autocomplete 'trash' 'trash-put'
+make_alias_and_enable_autocomplete 'pbcopy' 'xclip -selection clipboard'
+make_alias_and_enable_autocomplete 'pbpaste' 'xclip -selection clipboard -o'
+make_alias_and_enable_autocomplete 'ls' 'ls --classify'
 cdl() { cd "$@" && ls; }
-alias tree='rg --color=never --files | \tree --fromfile  .'
+make_alias_and_enable_autocomplete 'tree' 'rg --color=never --files | \tree --fromfile  .'
 # Quick way to reconnect to tmux after a restart/closed-terminal.
 # This command connects to a running session, or if there isn't one, it just
 # launches tmux, in which case tmux-resurrect should restore the entire tmux environment
-alias reconnect='tmux a || tmux'
+make_alias_and_enable_autocomplete 'reconnect' 'tmux a || tmux'
 tunnel() { cloudflared tunnel run --url "http://localhost:$1"; }
 # do not show percentages or ascii bars
-alias dust='dust -b'
+make_alias_and_enable_autocomplete 'dust' 'dust -b'
 mktouch() { mkdir -p "$(dirname "$1")" && touch "$1" ; }
-alias sai='sudo apt install'
-alias sar='sudo apt remove'
-alias saar='sudo apt autoremove'
-alias ap='apt policy'
+make_alias_and_enable_autocomplete 'sai' 'sudo apt install'
+make_alias_and_enable_autocomplete 'sar' 'sudo apt remove'
+make_alias_and_enable_autocomplete 'saar' 'sudo apt autoremove'
+make_alias_and_enable_autocomplete 'ap' 'apt policy'
 
 # man
 export MANPAGER='vim --not-a-term "+set nonumber" "+set norelativenumber" -c MANPAGER -'
