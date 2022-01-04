@@ -137,7 +137,7 @@ make_alias_and_enable_autocomplete 'pbcopy' 'xclip -selection clipboard'
 make_alias_and_enable_autocomplete 'pbpaste' 'xclip -selection clipboard -o'
 make_alias_and_enable_autocomplete 'ls' 'ls --classify'
 cdl() { cd "$@" && ls; }
-make_alias_and_enable_autocomplete 'tree' 'rg --color=never --files | \tree --fromfile  .'
+make_alias_and_enable_autocomplete 'rgtree' 'rg --color=never --files | \tree --fromfile  .'
 # Quick way to reconnect to tmux after a restart/closed-terminal.
 # This command connects to a running session, or if there isn't one, it just
 # launches tmux, in which case tmux-resurrect should restore the entire tmux environment
