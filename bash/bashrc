@@ -199,11 +199,11 @@ if [ -z "$ASDF_INITIALIZED" ]; then
 	# Init asdf. This needs to be done after the PATH has been set
 	# and any frameworks, like oh-my-zsh, have been sourced
 	source $HOME/.asdf/asdf.sh
-	# configure completions
-	source $HOME/.asdf/completions/asdf.bash
 	# Export this variable so we can tell if asdf has been initialized
 	export ASDF_INITIALIZED=1
 fi
+# configure completions
+source $HOME/.asdf/completions/asdf.bash
 
 # python
 export VIRTUAL_ENV_DISABLE_PROMPT=1
