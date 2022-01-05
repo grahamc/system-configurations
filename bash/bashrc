@@ -117,6 +117,7 @@ source ~/.config/bash/complete_alias
 make_alias_and_enable_autocomplete() {
 	if [ $# -ne 2 ]; then
 			echo -e "\e[31mError: Two arguments are required, the alias name and the command it should be expanded to. \nExample: ${FUNCNAME[0]} la 'ls -a'\e[m" >>/dev/stderr
+			return 1
 	fi
 
 	alias "$1"="$2"
