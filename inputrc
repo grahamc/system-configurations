@@ -18,13 +18,6 @@ set show-all-if-unmodified On
 # Ignore case for autocomplete
 set completion-ignore-case On
 
-# If the common prefix for the entered text and a completion is more than
-# 3 characters it is replaced by ellipsis. For example, if a directory
-# contains two files, longprefix-123 and longprefix-456, and the you
-# 'lon<TAB>' it the two results from the autocomplete will look like
-# '...123' and '...456' instead of having their entire name
-set completion-prefix-display-length 3
-
 # Use tab to cycle forward through completions
 Tab:menu-complete
 
@@ -33,3 +26,8 @@ Tab:menu-complete
 
 # Display the common prefix between the entered text and completions
 set menu-complete-display-prefix on
+
+# When performing autocomplete while the cursor is in the middle of a word,
+# do not insert characters from the completion that match characters that
+# come after the cursor. This way they don't get duplicated.
+set skip-completed-text on
