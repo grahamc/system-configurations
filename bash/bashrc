@@ -106,10 +106,6 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-# make tab cycle through commands after listing
-bind 'Tab:menu-complete'
-bind '"\e[Z":menu-complete-backward'
-bind "set menu-complete-display-prefix on"
 # aliases
 source ~/.config/bash/complete_alias
 make_alias_and_enable_autocomplete() {

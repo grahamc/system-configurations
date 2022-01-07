@@ -24,3 +24,12 @@ set completion-ignore-case On
 # 'lon<TAB>' it the two results from the autocomplete will look like
 # '...123' and '...456' instead of having their entire name
 set completion-prefix-display-length 3
+
+# Use tab to cycle forward through completions
+Tab:menu-complete
+
+# Use shift+tab to cycle backward through completions
+"\e[Z":menu-complete-backward
+
+# Display the common prefix between the entered text and completions
+set menu-complete-display-prefix on
