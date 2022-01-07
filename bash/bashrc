@@ -13,7 +13,7 @@ ARROW=$'>>'
 BORDER_COLOR="\[\033[0;30m\]"
 TEXT_COLOR="\[\033[0;36m\]"
 RESET_COLOR="\[\033[0m\]"
-# get current branch in git repo (from ezprompt.net)
+# get current branch in git repo (adapted from ezprompt.net)
 function git_info() {
 	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 	if [ ! "${BRANCH}" == "" ]
@@ -24,7 +24,7 @@ function git_info() {
 		echo ""
 	fi
 }
-# get current status of git repo (logic taken from ezprompt.net)
+# get current status of git repo (adapted from ezprompt.net)
 function parse_git_dirty {
 	status=`git status 2>&1 | tee`
 	dirty=`echo -n "${status}" 2> /dev/null | grep "modified:" &> /dev/null; echo "$?"`
