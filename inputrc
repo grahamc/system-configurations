@@ -1,4 +1,26 @@
+# Load the systemwide inputrc
+$include /etc/inputrc
+
 # Bracketed paste prevents the automatic execution of any commands
 # that are pasted into the terminal.
 # For more info: https://univers-libre.net/posts/safe-paste-in-terminals.html
 set enable-bracketed-paste on
+
+# Add a slash to every completion which is a symbolic link to a directory
+set mark-symlinked-directories On
+
+# Show all completions the first time tab is pressed and a partial completion can be made
+set show-all-if-ambiguous On
+
+# Show all completions the first time tab is pressed, but no partial completion can be made
+set show-all-if-unmodified On
+
+# Ignore case for autocomplete
+set completion-ignore-case On
+
+# If the common prefix for the entered text and a completion is more than
+# 3 characters it is replaced by ellipsis. For example, if a directory
+# contains two files, longprefix-123 and longprefix-456, and the you
+# 'lon<TAB>' it the two results from the autocomplete will look like
+# '...123' and '...456' instead of having their entire name
+set completion-prefix-display-length 3
