@@ -1,0 +1,4 @@
+# Bracketed paste prevents the automatic execution of any commands
+# that are pasted into the terminal.
+# For more info: https://univers-libre.net/posts/safe-paste-in-terminals.html
+set enable-bracketed-paste on
