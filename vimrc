@@ -221,7 +221,13 @@ augroup Miscellaneous
 autocmd FileType PAGER,man
     \ set nonumber |
     \ set norelativenumber |
-    \ set notermguicolors
+    \ set notermguicolors |
+    \ nmap i <nop> |
+    \ nmap I <nop> |
+    \ nmap a <nop> |
+    \ nmap A <nop> |
+    \ nmap o <nop> |
+    \ nmap O <nop>
 augroup END
 
 " set swapfile directory
