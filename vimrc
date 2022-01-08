@@ -217,8 +217,8 @@ augroup Miscellaneous
   autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
   " highlight trailing whitespace
   autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red | exe '2match ErrorMsg /\s\+$/'
-  " Settings for when vim is being used a pager
-  autocmd FileType PAGER,man
+" Settings for when vim is being used a pager
+autocmd FileType PAGER,man
     \ set nonumber |
     \ set norelativenumber |
     \ set notermguicolors
