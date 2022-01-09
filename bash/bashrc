@@ -131,6 +131,9 @@ make_alias_and_enable_autocomplete 'trash' 'trash-put'
 make_alias_and_enable_autocomplete 'pbcopy' 'xclip -selection clipboard'
 make_alias_and_enable_autocomplete 'pbpaste' 'xclip -selection clipboard -o'
 make_alias_and_enable_autocomplete 'ls' 'ls --classify'
+make_alias_and_enable_autocomplete 'la' 'ls -a'
+make_alias_and_enable_autocomplete 'll' 'ls -l'
+make_alias_and_enable_autocomplete 'lal' 'ls -al'
 cdl() { cd "$@" && ls; }
 make_alias_and_enable_autocomplete 'rgtree' 'rg --color=never --files | \tree --fromfile  .'
 # Quick way to reconnect to tmux after a restart/closed-terminal.
