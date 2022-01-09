@@ -1,6 +1,6 @@
 (
     selected_tab: Reset,
-    command_fg: White,
+    command_fg: Reset,
     selection_bg: Black,
     cmdbar_extra_lines_bg: Black,
     disabled_fg: DarkGray,
