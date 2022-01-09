@@ -170,6 +170,7 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme * highlight Normal ctermbg=NONE
     autocmd ColorScheme * highlight NonText ctermbg=NONE
     autocmd ColorScheme * highlight! link EndOfBuffer NonText
+    autocmd ColorScheme * highlight WordUnderCursor cterm=underline
   augroup END
 
 """" End Plugin Manager
@@ -208,7 +209,7 @@ augroup Miscellaneous
   autocmd FileType sh setlocal keywordprg=man
   augroup HighlightWordUnderCursor
     autocmd!
-    autocmd CursorMoved * exe printf('match CursorColumn /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+    autocmd CursorMoved * exe printf('match WordUnderCursor /\V\<%s\>/', escape(expand('<cword>'), '/\'))
   augroup END
   " After a quickfix command is run, open the quickfix window , if there are results
   autocmd QuickFixCmdPost [^l]* cwindow
