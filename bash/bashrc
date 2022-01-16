@@ -106,6 +106,10 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+# cd into directory without having to type cd
+shopt -s autocd
+# Prevent overwriting a file with the '>' operator
+set -C
 # aliases
 source ~/.config/bash/complete_alias
 make_alias_and_enable_autocomplete() {
@@ -134,7 +138,7 @@ make_alias_and_enable_autocomplete 'ls' 'ls --classify'
 make_alias_and_enable_autocomplete 'la' 'ls -a'
 make_alias_and_enable_autocomplete 'll' 'ls -l'
 make_alias_and_enable_autocomplete 'lal' 'ls -al'
-cdl() { cd "$@" && ls; }
+cd() { command cd "$@" && ls; }
 make_alias_and_enable_autocomplete 'rgtree' 'rg --color=never --files | \tree --fromfile  .'
 # Quick way to reconnect to tmux after a restart/closed-terminal.
 # This command connects to a running session, or if there isn't one, it just
