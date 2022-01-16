@@ -51,7 +51,7 @@ augroup Miscellaneous
   autocmd FileType sh setlocal keywordprg=man
   augroup HighlightWordUnderCursor
     autocmd!
-    autocmd CursorMoved * exe printf('match WordUnderCursor /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+    autocmd CursorMoved * execute printf('match WordUnderCursor /\V\<%s\>/', escape(expand('<cword>'), '/\'))
   augroup END
   " After a quickfix command is run, open the quickfix window , if there are results
   autocmd QuickFixCmdPost [^l]* cwindow
@@ -59,7 +59,7 @@ augroup Miscellaneous
   " Put focus back in quickfix window after opening an entry
   autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
   " highlight trailing whitespace
-  autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red | exe '2match ErrorMsg /\s\+$/'
+  autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red | execute '2match ErrorMsg /\s\+$/'
   " Settings for when vim is being used a pager
   autocmd FileType PAGER,man
       \ set nonumber |
@@ -214,7 +214,7 @@ function! QuickpickFiles() abort
 endfunction
 function! s:quickpick_files_on_accept(data, ...) abort
   call quickpick#close()
-  exe 'edit ' . a:data['items'][0]
+  execute 'edit ' . a:data['items'][0]
 endfunction
 function! s:quickpick_files_on_selection(data, ...) abort
   return
@@ -243,7 +243,7 @@ function! s:quickpick_lines_on_accept(data, ...) abort
     let s:quickpick_popup = v:none
   endif
   let [l:file, l:line; rest] = a:data['items'][0]->split(':')
-  exe 'edit +' . l:line . ' ' . l:file
+  execute 'edit +' . l:line . ' ' . l:file
 endfunction
 function! s:quickpick_lines_on_cancel(data, ...) abort
   call quickpick#close()
@@ -324,7 +324,7 @@ function! s:quickpick_buffers_on_accept(data, ...) abort
   " go to the buffer specified by the number in between braces
   let l:left_or_right_brace_pattern = '[\[|\]]'
   let l:keep_empty_strings = 0
-  exe 'b' . a:data['items'][0]->split(l:left_or_right_brace_pattern, l:keep_empty_strings)[0]
+  execute 'b' . a:data['items'][0]->split(l:left_or_right_brace_pattern, l:keep_empty_strings)[0]
 endfunction
 function! s:quickpick_buffers_on_change(data, ...) abort
   call quickpick#items(systemlist('fzf --filter ' . shellescape(a:data['input']), s:quickpick_buffers_string))
@@ -344,21 +344,21 @@ augroup SaveAndRestoreSettings
       let s:session_name =  substitute($PWD, '/', '%', 'g') . '%vim'
       let s:session_full_path = s:session_dir . s:session_name
       let s:session_cmd = filereadable(s:session_full_path) ? "source " : "mksession! "
-      exe s:session_cmd . fnameescape(s:session_full_path)
+      execute s:session_cmd . fnameescape(s:session_full_path)
     endif
   endfunction
   autocmd VimEnter * nested call RestoreOrCreateSession()
   " save session before vim exits
   function! SaveSession()
     if !empty(v:this_session)
-      exe 'mksession! ' . fnameescape(v:this_session)
+      execute 'mksession! ' . fnameescape(v:this_session)
     endif
   endfunction
   autocmd VimLeavePre * call SaveSession()
   " restore last cursor position after opening a file
   function! RestoreCursorPosition()
     if line("'\"") > 0 && line ("'\"") <= line("$")
-      exe "normal! g'\""
+      execute "normal! g'\""
     endif
   endfunction
   autocmd BufReadPost * call RestoreCursorPosition()
@@ -379,7 +379,7 @@ set fillchars+=foldopen:\ ,fold:\ ,vert:\|
 function! Colorscheme(background)
     let &background = a:background
     let l:vim_colorscheme = a:background ==? "light" ? "solarized8" : "nord"
-    exe "color " . l:vim_colorscheme
+    execute "color " . l:vim_colorscheme
 endfunction
 function! CanSyncColorscheme()
   return !empty(glob('~/.vim/colorscheme/colorscheme-name.txt'))
@@ -407,7 +407,7 @@ let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
 " When vim exits, reset terminal cursor to blinking bar
 augroup ResetCursor
   autocmd!
-  autocmd VimLeave * silent exe "!echo -ne '\e[5 q'"
+  autocmd VimLeave * silent execute "!echo -ne '\e[5 q'"
 augroup END
 
 """" Statusline
