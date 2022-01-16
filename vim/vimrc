@@ -603,6 +603,10 @@ Plug 'KabbAmine/vCoolor.vim'
 
 """" File explorer
 Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
+  augroup NerdTree
+    " open/close directories with 'h' and 'l'
+    autocmd FileType nerdtree nmap <buffer> l o | nmap <buffer> h o
+  augroup END
   let g:NERDTreeMouseMode = 2
   let g:NERDTreeWinPos = "right"
   let g:NERDTreeShowHidden = 1
