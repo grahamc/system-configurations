@@ -153,8 +153,12 @@ export MANPAGER='vim --not-a-term -c MANPAGER -'
 
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-source ~/fzf-bash-completion.sh
-bind -x '"\C-@": fzf_bash_completion'
+source ~/.config/bash/fzf-bash-completion.sh
+# use my prompt as the loading message so that there isn't a quick flash of loading text
+# taken from: https://github.com/lincheney/fzf-tab-completion#custom-loading-message
+_fzf_bash_completion_loading_msg() { echo "${PS1@P}${READLINE_LINE}" | tail -n1; }
+# bind -x '"\C-@": fzf_bash_completion'
+bind -x '"\t": fzf_bash_completion'
 export FZF_DEFAULT_COMMAND="rg --files"
 export FZF_COMPLETION_TRIGGER="*"
 export FZF_DEFAULT_OPTS="
@@ -164,7 +168,7 @@ export FZF_DEFAULT_OPTS="
 	--layout=reverse
 	--color='bg+:-1,fg+:blue,info:black,gutter:black,pointer:blue,prompt:blue,border:black,query:-1,marker:blue,header:yellow,spinner:yellow,hl:cyan,hl+:cyan'
 	--padding=0,0,1,0
-	--prompt='$CONNECTBAR_UP$ARROW '
+	--prompt='$(echo "${PS1@P}${READLINE_LINE}" | tail -n1;)'
 	--preview-window=wrap,60%
 	--keep-right"
 export FZF_ALT_C_COMMAND="rg --files --null | xargs -0 dirname | sort -u"

@@ -7,3 +7,6 @@
 [submodule "dotbot"]
 	path = install/dotbot
 	url = https://github.com/anishathalye/dotbot
+[submodule "fzf-tab-completion"]
+	path = bash/fzf-tab-completion
+	url = https://github.com/bigolu/fzf-tab-completion

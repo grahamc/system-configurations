@@ -2,7 +2,7 @@
     link:
       create: true
 
-- clean: ['~', '~/.config', '~/.vim', '~/.vim/colorscheme']
+- clean: ['~', '~/.config', '~/.vim', '~/.vim/colorscheme', '~/.config/bash']
 
 - link:
     ~/.tmux.conf: tmux.conf
@@ -15,6 +15,7 @@
     ~/.xbindkeysrc: xbindkeysrc
     ~/.bashrc: bash/bashrc
     ~/.config/bash/complete_alias: bash/complete-alias/complete_alias
+    ~/.config/bash/fzf-bash-completion.sh: bash/fzf-tab-completion/bash/fzf-bash-completion.sh
     ~/.config/kitty: kitty
     ~/.config/kitty/current-theme.conf:
         path: ~/.config/kitty/night-theme.conf
