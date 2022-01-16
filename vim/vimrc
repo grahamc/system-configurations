@@ -1,180 +1,22 @@
 """ Section: This Stuff Should Stay at the Top
-set nocompatible
 let $VIMHOME = $HOME . '/.vim/'
 let g:mapleader = "\<Space>"
 " if 'encoding' is set, 'scriptencoding' must be set after it
-set encoding=utf8 | scriptencoding utf-8
-
-""" Section: Plugins
-"""" Plugin Manager Settings
-" Install vim-plug if not found
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-  \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+set encoding=utf8
+scriptencoding utf-8
+" Should be at the top since it gets used in various places
+" We omit the first element in the list since that will always be the name
+" of the command, in this case 'vim'
+let g:commandline_arguments = split(system("ps -o command= -p " . getpid()))[1:]
+let g:vim_is_reading_from_stdin = g:commandline_arguments->index('-') != -1
+let g:terminal_has_24_bit_color_support = $COLORTERM ==# 'truecolor'
+if g:vim_is_reading_from_stdin
+  set notermguicolors
+elseif !g:terminal_has_24_bit_color_support
+  set notermguicolors
+else
+  set termguicolors
 endif
-
-"""" Start Plugin Manager
-call plug#begin('~/.vim/plugged')
-
-"""" General
-" Syntax plugins for practically any language
-Plug 'sheerun/vim-polyglot'
-" Split/join lines, adding/removing language-specific continuation characters as necessary
-Plug 'AndrewRadev/splitjoin.vim'
-" Motions for levels of indentation
-Plug 'jeetsukumaran/vim-indentwise'
-  map [<Tab> <Plug>(IndentWiseBlockScopeBoundaryBegin)
-  map ]<Tab> <Plug>(IndentWiseBlockScopeBoundaryEnd)
-" replacement for matchit since matchit wasn't working for me
-Plug 'andymass/vim-matchup'
-  " Don't display offscreen matches in my statusline or a popup window
-  let g:matchup_matchparen_offscreen = {}
-" Additional text objects and motions
-Plug 'wellle/targets.vim'
-" Applies editorconfig settings to vim
-Plug 'editorconfig/editorconfig-vim'
-" Autocomplete
-Plug 'maxboisvert/vim-simple-complete'
-Plug 'lambdalisue/vim-manpager'
-Plug 'lambdalisue/vim-pager'
-  " handle ANSI escape sequences
-  Plug 'powerman/vim-plugin-AnsiEsc'
-
-"""" Coordination between plugins
-""""" delimitmate, vim-endwise
-" Combine enter key (<CR>) mappings from the plugins above.
-" Also, if the popupmenu is visible, but no items are selected, close the
-" popup and insert a newline.
-imap <expr> <CR>
-  \ pumvisible() ?
-    \ (complete_info().selected == -1 ? '<C-y><CR>' : '<C-y>') :
-    \ delimitMate#WithinEmptyPair() ?
-      \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
-      \ "\<CR>\<Plug>DiscretionaryEnd"
-
-"""" Editing
-" Automatically add closing keywords (e.g. function/endfunction in vimscript)
-Plug 'tpope/vim-endwise'
-  let g:endwise_no_mappings = 1
-  " this way endwise triggers on 'o'
-  nmap o A<CR>
-" Automatically close html tags
-Plug 'alvan/vim-closetag'
-" Automatically insert closing braces/quotes
-Plug 'Raimondi/delimitMate'
-  " Given the following line (where | represents the cursor):
-  "   function foo(bar) {|}
-  " Pressing enter will result in:
-  " function foo(bar) {
-  "   |
-  " }
-  let g:delimitMate_expand_cr = 0
-" Makes it easier to manipulate brace/bracket/quote pairs by providing commands to do common
-" operations like change pair, remove pair, etc.
-Plug 'tpope/vim-surround'
-" For swapping two pieces of text
-Plug 'tommcdo/vim-exchange'
-" I use it for more robust substitutions, but it does alot more
-Plug 'tpope/vim-abolish'
-" Swap a piece of text for one of its specified replacements. For example, calling swap on
-" the logical operator '&&' would change it to '||'.
-Plug 'AndrewRadev/switch.vim'
-" Expands Emmet abbreviations to write HTML more quickly
-Plug 'mattn/emmet-vim'
-  let g:user_emmet_expandabbr_key = '<Leader>e'
-  let g:user_emmet_mode='n'
-" Seamless movement between vim windows and tmux panes.
-Plug 'christoomey/vim-tmux-navigator'
-  let g:tmux_navigator_no_mappings = 1
-  noremap <silent> <C-Left> :TmuxNavigateLeft<cr>
-  noremap <silent> <C-Right> :TmuxNavigateRight<cr>
-  noremap <silent> <C-Down> :TmuxNavigateDown<cr>
-  noremap <silent> <C-Up> :TmuxNavigateUp<cr>
-" Visualizes indentation. Useful for fixing incorrectly indented lines.
-Plug 'Yggdroot/indentLine'
-  let g:indentLine_char = '▏'
-  let g:indentLine_setColors = 0
-  let g:indentLine_enabled = 0
-" Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
-Plug 'mhinz/vim-signify'
-  nnoremap <Leader>vk :SignifyHunkDiff<CR>
-" The author said this is experimental so I'll pin a commit to avoid breaking changes
-Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b0134aa1e2d9'}
-  function! QuickpickMappings()
-    " move next
-    imap <silent> <buffer> <Down> <Plug>(quickpick-move-next)
-    nmap <silent> <buffer> <Down> <Plug>(quickpick-move-next)
-    imap <silent> <buffer> <Tab> <Plug>(quickpick-move-next)
-    nmap <silent> <buffer> <Tab> <Plug>(quickpick-move-next)
-    " move previous
-    imap <silent> <buffer> <Up> <Plug>(quickpick-move-previous)
-    nmap <silent> <buffer> <Up> <Plug>(quickpick-move-previous)
-    imap <silent> <buffer> <S-Tab> <Plug>(quickpick-move-previous)
-    nmap <silent> <buffer> <S-Tab> <Plug>(quickpick-move-previous)
-  endfunction
-  call sign_define("quickpick_cursor", {'text': '> ', 'texthl': 'Normal'})
-  augroup Quickpick
-    autocmd!
-    autocmd ColorScheme *
-          \ highlight QuickpickInvisibleStatusLine ctermbg=NONE ctermfg=8
-    autocmd FileType quickpick
-          \ setlocal cursorline |
-          \ setlocal cursorlineopt=line |
-          \ setlocal statusline=%#QuickpickInvisibleStatusLine#
-    autocmd FileType quickpick-filter
-          \ call QuickpickMappings() |
-          \ call sign_place(0, '', 'quickpick_cursor', 'quickpick-filter', {'lnum': 1})
-  augroup END
-
-"""" Colors
-" Detects color strings (e.g. hex, rgba) and changes the background of the characters
-" in that string to match the color. For example, in the following sample line of CSS:
-"   p {color: red}
-" The background color of the string "red" would be the color red.
-Plug 'ap/vim-css-color'
-" Opens the OS color picker and inserts the chosen color into the buffer.
-Plug 'KabbAmine/vCoolor.vim'
-
-"""" File explorer
-Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
-  let g:NERDTreeMouseMode = 2
-  let g:NERDTreeWinPos = "right"
-  let g:NERDTreeShowHidden = 1
-  let g:NERDTreeStatusline = -1
-  " Syncs nerdtree across tabs, but I'm really only using this
-  " since it has an option for auto-focusing on the current file
-  Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
-    let g:nerdtree_tabs_autofind = 1
-    nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
-
-"""" Colorscheme
-Plug 'arcticicestudio/nord-vim'
-  " Overrides
-  augroup ColorschemeOverrides
-    autocmd!
-    " MatchParen
-    autocmd Colorscheme * hi MatchParen ctermfg=blue cterm=underline ctermbg=NONE
-    " Transparent SignColumn
-    autocmd Colorscheme nord hi clear SignColumn
-    " Transparent vertical split
-    autocmd Colorscheme nord highlight VertSplit ctermbg=NONE ctermfg=0
-    " statusline colors
-    autocmd ColorScheme nord hi StatusLine ctermfg=6 ctermbg=NONE
-    autocmd ColorScheme nord hi StatusLineNC ctermfg=8 ctermbg=NONE
-    " autocomplete popupmenu
-    autocmd ColorScheme * highlight PmenuSel ctermfg=1 ctermbg=3
-    autocmd ColorScheme * highlight Pmenu ctermbg=12E3440 ctermfg=81 ctermbg=3
-    " cursorline for quickpick
-    autocmd ColorScheme * highlight! link CursorLine PmenuSel
-    " transparent background
-    autocmd ColorScheme * highlight Normal ctermbg=NONE
-    autocmd ColorScheme * highlight NonText ctermbg=NONE
-    autocmd ColorScheme * highlight! link EndOfBuffer NonText
-    autocmd ColorScheme * highlight WordUnderCursor cterm=underline
-  augroup END
-
-"""" End Plugin Manager
-call plug#end()
 
 """ Section: General
 set confirm
@@ -201,7 +43,7 @@ augroup Miscellaneous
   autocmd FileType
     \ css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss
     \ setlocal iskeyword+=-,?,!
-  autocmd FileType vim setlocal iskeyword+=:,#,-
+  autocmd FileType vim setlocal iskeyword+=:,#
   autocmd BufEnter *
         \ if &ft ==# 'help' && &columns > 150 | wincmd L | endif
   " Use vim help pages for keywordprg in vim files
@@ -218,17 +60,21 @@ augroup Miscellaneous
   autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
   " highlight trailing whitespace
   autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red | exe '2match ErrorMsg /\s\+$/'
-" Settings for when vim is being used a pager
-autocmd FileType PAGER,man
-    \ set nonumber |
-    \ set norelativenumber |
-    \ set notermguicolors |
-    \ nmap i <nop> |
-    \ nmap I <nop> |
-    \ nmap a <nop> |
-    \ nmap A <nop> |
-    \ nmap o <nop> |
-    \ nmap O <nop>
+  " Settings for when vim is being used a pager
+  autocmd FileType PAGER,man
+      \ set nonumber |
+      \ set norelativenumber |
+      \ set signcolumn=no |
+      \ set cmdheight=1 |
+      \ nmap i <nop> |
+      \ nmap I <nop> |
+      \ nmap a <nop> |
+      \ nmap A <nop> |
+      \ nmap o <nop> |
+      \ nmap O <nop>
+  " When vim receives the SIGUSR1 signal, update the colorscheme.
+  " Using 'nested' here so that the 'ColorScheme' autocommands are run.
+  autocmd SigUSR1 * nested call SyncColorscheme()
 augroup END
 
 " set swapfile directory
@@ -486,46 +332,40 @@ endfunction
 nnoremap <silent> <Leader>b :silent! call QuickpickBuffers()<CR>
 
 """ Section: Restore Settings
-augroup RestoreSettings
+augroup SaveAndRestoreSettings
   autocmd!
-  function! HasMissingPlugins()
-    return len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-  endfunction
   " Restore session after vim starts. The 'nested' keyword tells vim to fire events
   " normally while this autocmd is executing. By default, no events are fired
   " during the execution of an autocmd to prevent infinite loops.
   let s:session_dir = $VIMHOME . 'sessions/'
   function! RestoreOrCreateSession()
-    let s:commandline_arguments = split( system( "ps -o command= -p " . getpid() ) )
-    if s:commandline_arguments->len() == 1 |
-      call mkdir(s:session_dir, "p") |
-      let s:session_name =  substitute($PWD, '/', '%', 'g') . '%vim' |
-      let s:session_full_path = s:session_dir . s:session_name |
-      let s:session_cmd = filereadable(s:session_full_path) ? "source " : "mksession! " |
-      exe s:session_cmd . fnameescape(s:session_full_path) |
+    if g:commandline_arguments->empty()
+      call mkdir(s:session_dir, "p")
+      let s:session_name =  substitute($PWD, '/', '%', 'g') . '%vim'
+      let s:session_full_path = s:session_dir . s:session_name
+      let s:session_cmd = filereadable(s:session_full_path) ? "source " : "mksession! "
+      exe s:session_cmd . fnameescape(s:session_full_path)
     endif
   endfunction
-  autocmd VimEnter * nested
-    \ call RestoreOrCreateSession() |
-    \ if HasMissingPlugins() |
-      \ PlugInstall --sync |
-      \ source $MYVIMRC |
-    \ endif
+  autocmd VimEnter * nested call RestoreOrCreateSession()
   " save session before vim exits
-  autocmd VimLeavePre *
-        \ if !empty(v:this_session) |
-          \ exe 'mksession! ' . fnameescape(v:this_session) |
-        \ endif
+  function! SaveSession()
+    if !empty(v:this_session)
+      exe 'mksession! ' . fnameescape(v:this_session)
+    endif
+  endfunction
+  autocmd VimLeavePre * call SaveSession()
   " restore last cursor position after opening a file
-  autocmd BufReadPost *
-        \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-          \ exe "normal! g'\"" |
-        \ endif
+  function! RestoreCursorPosition()
+    if line("'\"") > 0 && line ("'\"") <= line("$")
+      exe "normal! g'\""
+    endif
+  endfunction
+  autocmd BufReadPost * call RestoreCursorPosition()
 augroup END
 
 """ Section: Aesthetics
 """" Misc.
-colorscheme nord
 set linebreak
 set number relativenumber
 set cursorline cursorlineopt=number
@@ -534,6 +374,31 @@ set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
 set fillchars+=foldopen:\ ,fold:\ ,vert:\|
+
+"""" colorscheme
+function! Colorscheme(background)
+    let &background = a:background
+    let l:vim_colorscheme = a:background ==? "light" ? "solarized8" : "nord"
+    exe "color " . l:vim_colorscheme
+endfunction
+function! CanSyncColorscheme()
+  return !empty(glob('~/.vim/colorscheme/colorscheme-name.txt'))
+endfunction
+function! SyncColorscheme()
+  call Colorscheme(readfile(glob('~/.vim/colorscheme/colorscheme-name.txt'))[0])
+endfunction
+function! SetColorscheme()
+  if !&termguicolors
+    colorscheme nord
+  else
+    if CanSyncColorscheme()
+      call SyncColorscheme()
+    else
+      call Colorscheme('dark')
+    endif
+  endif
+endfunction
+autocmd VimEnter * nested call SetColorscheme()
 
 """" Block cursor in normal mode, thin line in insert mode, and underline in replace mode
 let &t_SI.="\e[5 q" "SI = INSERT mode
@@ -553,6 +418,11 @@ let s:STATUSLINE_SEPARATOR = s:GREY_HIGHLIGHT.'%='
 let s:GROUP_SEPARATOR = s:GREY_HIGHLIGHT.'---'
 let g:FormatGroup = { group -> s:GREY_HIGHLIGHT.'['.s:STATUSLINE_HIGHLIGHT.group.s:GREY_HIGHLIGHT.']' }
 function! MyStatusLine()
+  " empty statusline for inactive windows
+  if g:actual_curwin != win_getid()
+    return s:GREY_HIGHLIGHT
+  endif
+
   if &ft ==# 'help'
     return g:FormatGroup('HELP').s:STATUSLINE_SEPARATOR
   elseif exists('b:NERDTree')
@@ -567,3 +437,216 @@ function! MyStatusLine()
   return g:FormatGroup('%h%w%q%t%m%r').s:STATUSLINE_SEPARATOR.g:FormatGroup('Ln:%l:%L').s:GROUP_SEPARATOR.g:FormatGroup('Col:%c')
 endfunction
 set statusline=%{%MyStatusLine()%}
+
+""" Section: Plugins
+"""" Plugin Manager Settings
+" Install vim-plug if not found
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+  \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+endif
+" Install plugins if not found
+function! InstallMissingPlugins()
+  let l:has_missing_plugins = len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  if l:has_missing_plugins
+    PlugInstall --sync
+  endif
+endfunction
+autocmd VimEnter * nested call InstallMissingPlugins()
+" Helper function to load a plugin based on the value of a boolean.
+" Taken from the vim-plug wiki: https://github.com/junegunn/vim-plug/wiki/tips#conditional-activation
+function! LoadPluginIfTrue(boolean, ...)
+  let opts = get(a:000, 0, {})
+  return a:boolean ? opts : extend(opts, { 'on': [], 'for': [] })
+endfunction
+
+"""" Start Plugin Manager
+call plug#begin('~/.vim/plugged')
+
+"""" General
+" Syntax plugins for practically any language
+Plug 'sheerun/vim-polyglot'
+" Split/join lines, adding/removing language-specific continuation characters as necessary
+Plug 'AndrewRadev/splitjoin.vim'
+" Motions for levels of indentation
+Plug 'jeetsukumaran/vim-indentwise'
+  map [<Tab> <Plug>(IndentWiseBlockScopeBoundaryBegin)
+  map ]<Tab> <Plug>(IndentWiseBlockScopeBoundaryEnd)
+" replacement for matchit since matchit wasn't working for me
+Plug 'andymass/vim-matchup'
+  " Don't display offscreen matches in my statusline or a popup window
+  let g:matchup_matchparen_offscreen = {}
+" Additional text objects and motions
+Plug 'wellle/targets.vim'
+" Applies editorconfig settings to vim
+Plug 'editorconfig/editorconfig-vim'
+" Autocomplete
+Plug 'maxboisvert/vim-simple-complete'
+Plug 'lambdalisue/vim-manpager'
+Plug 'lambdalisue/vim-pager'
+  let g:pager#use_AnsiEsc = 0
+  let g:pager#remove_ansi_sequences = 0
+  augroup VimPager
+    autocmd!
+    autocmd FileType PAGER execute "autocmd ColorScheme * execute 'AnsiEsc'"
+  augroup END
+  " handle ANSI escape sequences
+  Plug 'powerman/vim-plugin-AnsiEsc'
+
+"""" Coordination between plugins
+""""" delimitmate, vim-endwise
+" Combine enter key (<CR>) mappings from the plugins above.
+" Also, if the popupmenu is visible, but no items are selected, close the
+" popup and insert a newline.
+imap <expr> <CR>
+  \ pumvisible() ?
+    \ (complete_info().selected == -1 ? '<C-y><CR>' : '<C-y>') :
+    \ delimitMate#WithinEmptyPair() ?
+      \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
+      \ "\<CR>\<Plug>DiscretionaryEnd"
+
+"""" Editing
+" Automatically add closing keywords (e.g. function/endfunction in vimscript)
+Plug 'tpope/vim-endwise'
+  let g:endwise_no_mappings = 1
+  " this way endwise triggers on 'o'
+  nmap o A<CR>
+" Automatically close html tags
+Plug 'alvan/vim-closetag'
+" Automatically insert closing braces/quotes
+Plug 'Raimondi/delimitMate'
+  " Given the following line (where | represents the cursor):
+  "   function foo(bar) {|}
+  " Pressing enter will result in:
+  " function foo(bar) {
+  "   |
+  " }
+  let g:delimitMate_expand_cr = 0
+" Makes it easier to manipulate brace/bracket/quote pairs by providing commands to do common
+" operations like change pair, remove pair, etc.
+Plug 'tpope/vim-surround'
+" For swapping two pieces of text
+Plug 'tommcdo/vim-exchange'
+" I use it for more robust substitutions, but it does alot more
+Plug 'tpope/vim-abolish'
+" Swap a piece of text for one of its specified replacements. For example, calling swap on
+" the logical operator '&&' would change it to '||'.
+Plug 'AndrewRadev/switch.vim'
+" Expands Emmet abbreviations to write HTML more quickly
+Plug 'mattn/emmet-vim'
+  let g:user_emmet_expandabbr_key = '<Leader>e'
+  let g:user_emmet_mode='n'
+" Seamless movement between vim windows and tmux panes.
+Plug 'christoomey/vim-tmux-navigator'
+  let g:tmux_navigator_no_mappings = 1
+  noremap <silent> <C-Left> :TmuxNavigateLeft<cr>
+  noremap <silent> <C-Right> :TmuxNavigateRight<cr>
+  noremap <silent> <C-Down> :TmuxNavigateDown<cr>
+  noremap <silent> <C-Up> :TmuxNavigateUp<cr>
+" Visualizes indentation. Useful for fixing incorrectly indented lines.
+Plug 'Yggdroot/indentLine'
+  let g:indentLine_char = '▏'
+  let g:indentLine_setColors = 0
+  let g:indentLine_enabled = 0
+" Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
+Plug 'mhinz/vim-signify'
+  nnoremap <Leader>vk :SignifyHunkDiff<CR>
+" The author said this is experimental so I'll pin a commit to avoid breaking changes
+Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b0134aa1e2d9'}
+  function! QuickpickMappings()
+    " move next
+    imap <silent> <buffer> <Down> <Plug>(quickpick-move-next)
+    nmap <silent> <buffer> <Down> <Plug>(quickpick-move-next)
+    imap <silent> <buffer> <Tab> <Plug>(quickpick-move-next)
+    nmap <silent> <buffer> <Tab> <Plug>(quickpick-move-next)
+    " move previous
+    imap <silent> <buffer> <Up> <Plug>(quickpick-move-previous)
+    nmap <silent> <buffer> <Up> <Plug>(quickpick-move-previous)
+    imap <silent> <buffer> <S-Tab> <Plug>(quickpick-move-previous)
+    nmap <silent> <buffer> <S-Tab> <Plug>(quickpick-move-previous)
+  endfunction
+  call sign_define("quickpick_cursor", {'text': '> ', 'texthl': 'Normal'})
+  augroup Quickpick
+    autocmd!
+    autocmd ColorScheme *
+          \ highlight QuickpickInvisibleStatusLine ctermbg=NONE ctermfg=0
+    autocmd FileType quickpick
+          \ setlocal cursorline |
+          \ setlocal cursorlineopt=line |
+          \ setlocal statusline=%#QuickpickInvisibleStatusLine#
+    autocmd FileType quickpick-filter
+          \ call QuickpickMappings() |
+          \ call sign_place(0, '', 'quickpick_cursor', 'quickpick-filter', {'lnum': 1})
+  augroup END
+"""" Colors
+" Detects color strings (e.g. hex, rgba) and changes the background of the characters
+" in that string to match the color. For example, in the following sample line of CSS:
+"   p {color: #000000}
+" The background color of the string "#000000" would be the color black.
+"
+" It will only get loaded if vim is running in 24-bit color mode as signified
+" by the setting 'termguicolors'. Plugins should always be registered, even
+" if they are not loaded, so that they are not accidentally deleted when
+" calling ':PlugClean'
+Plug 'BourgeoisBear/clrzr', LoadPluginIfTrue(&termguicolors)
+" Opens the OS color picker and inserts the chosen color into the buffer.
+Plug 'KabbAmine/vCoolor.vim'
+  " Make an alias for the 'VCoolor' command with a name that is easier to remember
+  command! ColorPicker VCoolor
+
+"""" File explorer
+Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
+  let g:NERDTreeMouseMode = 2
+  let g:NERDTreeWinPos = "right"
+  let g:NERDTreeShowHidden = 1
+  let g:NERDTreeStatusline = -1
+  " Syncs nerdtree across tabs, but I'm really only using this
+  " since it has an option for auto-focusing on the current file
+  Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
+    let g:nerdtree_tabs_autofind = 1
+    nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
+
+"""" Colorscheme
+Plug 'arcticicestudio/nord-vim'
+  " Overrides
+  augroup NordColorschemeOverrides
+    autocmd!
+    " MatchParen
+    autocmd ColorScheme nord highlight MatchParen ctermfg=blue cterm=underline ctermbg=NONE
+    " Transparent SignColumn
+    autocmd ColorScheme nord highlight clear SignColumn
+    " Transparent vertical split
+    autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=0 guibg=NONE
+    " statusline colors
+    autocmd ColorScheme nord highlight StatusLine ctermfg=6 ctermbg=NONE guibg=NONE
+    autocmd ColorScheme nord highlight StatusLineNC ctermfg=8 ctermbg=NONE guibg=NONE
+    " autocomplete popupmenu
+    autocmd ColorScheme nord highlight PmenuSel ctermfg=NONE ctermbg=0 cterm=underline
+    autocmd ColorScheme nord highlight Pmenu ctermfg=8 ctermbg=0
+    " cursorline for quickpick
+    autocmd ColorScheme nord highlight CursorLine ctermfg=NONE ctermbg=0
+    " transparent background
+    autocmd ColorScheme nord highlight Normal ctermbg=NONE guibg=NONE
+    autocmd ColorScheme nord highlight NonText ctermbg=NONE
+    autocmd ColorScheme nord highlight! link EndOfBuffer NonText
+    " relative line numbers
+    autocmd ColorScheme nord highlight LineNrAbove ctermfg=0
+    autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
+    autocmd ColorScheme nord highlight WordUnderCursor cterm=underline guibg=#272A34
+  augroup END
+Plug 'lifepillar/vim-solarized8'
+  augroup SolarizedColorschemeOverrides
+    " Transparent SignColumn
+    autocmd ColorScheme solarized8 highlight SignColumn guibg=#EEE8D5
+    " statusline colors
+    autocmd ColorScheme solarized8 highlight StatusLine guibg=NONE guifg=#0087FF cterm=NONE
+    autocmd ColorScheme solarized8 highlight StatusLineNC guibg=NONE cterm=NONE
+    " Transparent vertical split
+    autocmd ColorScheme solarized8 highlight VertSplit guibg=NONE
+    " Darken the the line number for the current line
+    autocmd ColorScheme solarized8 highlight CursorLineNr guifg=#000000
+    autocmd ColorScheme solarized8 highlight WordUnderCursor cterm=underline guibg=#FDF6E3
+  augroup END
+
+"""" End Plugin Manager
+call plug#end()

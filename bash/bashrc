@@ -141,8 +141,6 @@ make_alias_and_enable_autocomplete 'rgtree' 'rg --color=never --files | \tree --
 # launches tmux, in which case tmux-resurrect should restore the entire tmux environment
 make_alias_and_enable_autocomplete 'ta' 'tmux a || tmux'
 tunnel() { cloudflared tunnel run --url "http://localhost:$1"; }
-# do not show percentages or ascii bars
-make_alias_and_enable_autocomplete 'dust' 'dust -b'
 mktouch() { mkdir -p "$(dirname "$1")" && touch "$1" ; }
 make_alias_and_enable_autocomplete 'sai' 'sudo apt install'
 make_alias_and_enable_autocomplete 'sar' 'sudo apt remove'
@@ -155,20 +153,24 @@ export MANPAGER='vim --not-a-term -c MANPAGER -'
 
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+source ~/fzf-bash-completion.sh
+bind -x '"\t": fzf_bash_completion'
 export FZF_DEFAULT_COMMAND="rg --files"
-export FZF_CTRL_T_OPTS='--preview "head -100 {}" --prompt="(ctrl+e to open in $EDITOR)>" --height 90% --margin=5%,2%,5%,2% --bind "ctrl-e:execute($EDITOR {} > /dev/tty)+abort"'
-export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
-export FZF_DEFAULT_OPTS='--bind tab:down,shift-tab:up --color=bg+:black --layout=reverse'
+export FZF_COMPLETION_TRIGGER="*"
+export FZF_DEFAULT_OPTS="
+	--multi
+	--bind tab:down,shift-tab:up,alt-enter:toggle,alt-down:last,alt-up:first,backward-eof:abort
+	--header 'move [↓↑ or tab/shift-tab], select [enter], select multiple items [alt+enter], go to top/bottom [alt + ↑/↓]'
+	--layout=reverse
+	--color='bg+:-1,fg+:blue,info:black,gutter:black,pointer:blue,prompt:blue,border:black,query:-1,marker:blue,header:yellow,spinner:yellow,hl:cyan,hl+:cyan'
+	--padding=0,0,1,0
+	--prompt='$CONNECTBAR_UP$ARROW '
+	--preview-window=wrap,60%
+	--keep-right"
 export FZF_ALT_C_COMMAND="rg --files --null | xargs -0 dirname | sort -u"
-export FZF_ALT_C_OPTS="--preview '\tree -C {} | head -200'"
-# use control+space for history search (bindings taken from ~/.fzf.bash)
-bind -m emacs-standard -x '"\C-@": __fzf_history__'
-bind -m vi-command -x '"\C-@": __fzf_history__'
-bind -m vi-insert -x '"\C-@": __fzf_history__'
-# use control +f for directory search (bindings taken from ~/.fzf.bash)
-bind -m emacs-standard '"\C-f": " \C-b\C-k \C-u`__fzf_cd__`\e\C-e\er\C-m\C-y\C-h\e \C-y\ey\C-x\C-x\C-d"'
-bind -m vi-command '"\C-f": "\C-z\ec\C-z"'
-bind -m vi-insert '"\C-f": "\C-z\ec\C-z"'
+export FZF_ALT_C_OPTS="--height 90% --preview '\tree -C {} | head -200'"
+export FZF_CTRL_T_OPTS='--preview "head -100 {}" --height 90%'
+export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 # use fzf to select a process to kill
 fkill() {
     local pid
@@ -183,7 +185,30 @@ fkill() {
         echo $pid | xargs kill -${1:-9}
     fi
 }
+fzf() {
+	# calculate fzf preview window position based on terminal window orientation
+	local preview_window_position lines columns
+	if [ -n "$TMUX" ]; then
+		lines="$(tmux display -p '#{pane_height}' | xargs echo -n)"
+		columns="$(tmux display -p '#{pane_width}' | xargs echo -n)"
+	else
+		lines=$LINES
+		columns=$COLUMNS
+	fi
+	# bash does not have floating point numbers so in order to get precision to the
+	# tenths place, I multiply the dividend by 10, as well as the ratio I compare it to (3.1 * 10)
+	local column_to_line_ratio=$((($columns * 10) / $lines))
+	# This column_to_line_ratio is relative to the line height and column width of your terminal so it may need to be tweaked a bit.
+	# The column_to_line_ratio used here was calculated using the font 'Fira Code', size 14, line height 150%, and column width 100%
+	local preview_window_position
+	if [ $column_to_line_ratio -lt 31 ]; then # terminal window is in portrait
+		preview_window_position="bottom"
+	else # terminal window is in landscape
+		preview_window_position="right"
+	fi
 
+	command fzf "--preview-window=$preview_window_position" "$@"
+}
 
 # asdf
 # Part of asdf initialization is adding shims. This means that if the bashrc

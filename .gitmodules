@@ -1,10 +1,9 @@
-[submodule "dotbot"]
-	path = install/dotbot
-	url = https://github.com/anishathalye/dotbot
-	ignore = dirty
-[submodule "installer/dotbot-asdf"]
+[ubmodule "installer/dotbot-asdf"]
 	path = install/dotbot-asdf
 	url = https://github.com/sobolevn/dotbot-asdf.git
 [submodule "bash/complete-alias"]
 	path = bash/complete-alias
 	url = https://github.com/cykerway/complete-alias
+[submodule "dotbot"]
+	path = install/dotbot
+	url = https://github.com/anishathalye/dotbot

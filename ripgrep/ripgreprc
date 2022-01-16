@@ -1,9 +1,2 @@
-# Limit the number of characters shown for each line
---max-columns=200
---max-columns-preview
-
---column
---line-number
 --no-heading
---fixed-strings
 --smart-case
