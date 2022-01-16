@@ -646,6 +646,10 @@ Plug 'lifepillar/vim-solarized8'
     " Darken the the line number for the current line
     autocmd ColorScheme solarized8 highlight CursorLineNr guifg=#000000
     autocmd ColorScheme solarized8 highlight WordUnderCursor cterm=underline guibg=#FDF6E3
+    " transparent background
+    autocmd ColorScheme solarized8 highlight Normal ctermbg=NONE guibg=NONE
+    autocmd ColorScheme solarized8 highlight NonText ctermbg=NONE
+    autocmd ColorScheme solarized8 highlight! link EndOfBuffer NonText
   augroup END
 
 """" End Plugin Manager
