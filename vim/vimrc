@@ -74,7 +74,7 @@ augroup Miscellaneous
       \ nmap O <nop>
   " When vim receives the SIGUSR1 signal, update the colorscheme.
   " Using 'nested' here so that the 'ColorScheme' autocommands are run.
-  autocmd SigUSR1 * nested if &termguicolors | call SyncColorscheme() | endif
+  autocmd SigUSR1 * nested if | &termguicolors | call SyncColorscheme() | endif
 augroup END
 
 " set swapfile directory
