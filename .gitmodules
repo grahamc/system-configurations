@@ -1,4 +1,4 @@
-[ubmodule "installer/dotbot-asdf"]
+[submodule "installer/dotbot-asdf"]
 	path = install/dotbot-asdf
 	url = https://github.com/sobolevn/dotbot-asdf.git
 [submodule "bash/complete-alias"]
