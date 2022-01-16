@@ -539,10 +539,14 @@ Plug 'mattn/emmet-vim'
 " Seamless movement between vim windows and tmux panes.
 Plug 'christoomey/vim-tmux-navigator'
   let g:tmux_navigator_no_mappings = 1
-  noremap <silent> <C-h> :TmuxNavigateLeft<cr>
-  noremap <silent> <C-l> :TmuxNavigateRight<cr>
-  noremap <silent> <C-j> :TmuxNavigateDown<cr>
-  noremap <silent> <C-k> :TmuxNavigateUp<cr>
+  execute "set <M-h>=\eh"
+  execute "set <M-j>=\ej"
+  execute "set <M-k>=\ek"
+  execute "set <M-l>=\el"
+  noremap <silent> <M-h> :TmuxNavigateLeft<cr>
+  noremap <silent> <M-l> :TmuxNavigateRight<cr>
+  noremap <silent> <M-j> :TmuxNavigateDown<cr>
+  noremap <silent> <M-k> :TmuxNavigateUp<cr>
 " Visualizes indentation. Useful for fixing incorrectly indented lines.
 Plug 'Yggdroot/indentLine'
   let g:indentLine_char = '▏'
