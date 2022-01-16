@@ -75,6 +75,9 @@ augroup Miscellaneous
   " When vim receives the SIGUSR1 signal, update the colorscheme.
   " Using 'nested' here so that the 'ColorScheme' autocommands are run.
   autocmd SigUSR1 * nested if | &termguicolors | call SyncColorscheme() | endif
+  " Automatically resize all splits to make them equal when the vim window is
+  " resized
+  autocmd VimResized * wincmd =
 augroup END
 
 " set swapfile directory
