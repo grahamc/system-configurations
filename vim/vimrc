@@ -389,7 +389,7 @@ function! SyncColorscheme()
 endfunction
 function! SetColorscheme()
   if !&termguicolors
-    colorscheme nord
+    call Colorscheme('dark')
   else
     if CanSyncColorscheme()
       call SyncColorscheme()
