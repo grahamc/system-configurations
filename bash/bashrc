@@ -235,3 +235,6 @@ function rust() {
     name=$(basename $1 .rs)
     rustc $@ && ./$name && rm $name
 }
+
+# zoxide
+eval "$(zoxide init bash)"
