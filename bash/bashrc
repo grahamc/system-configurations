@@ -151,6 +151,7 @@ make_alias_and_enable_autocomplete 'sar' 'sudo apt remove'
 make_alias_and_enable_autocomplete 'saar' 'sudo apt autoremove'
 make_alias_and_enable_autocomplete 'ap' 'apt policy'
 make_alias_and_enable_autocomplete 'sau' 'sudo apt update'
+bd() { cd `command bd "$@"`; }
 
 # man
 export MANPAGER='vim --not-a-term -c MANPAGER -'
