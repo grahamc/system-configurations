@@ -6,8 +6,10 @@ set encoding=utf8
 scriptencoding utf-8
 " Should be at the top since it gets used in various places
 " We omit the first element in the list since that will always be the name
-" of the command, in this case 'vim'
-let g:commandline_arguments = split(system("ps -o command= -p " . getpid()))[1:]
+" of the command, in this case 'vim'.
+" The command stores the ps output in a variable because otherwise
+" ps would truncate the output depending on the size of the window
+let g:commandline_arguments = split(system("vimargs=$(ps -o command= -p ".getpid()."); echo \"$vimargs\""))[1:]
 let g:vim_is_reading_from_stdin = g:commandline_arguments->index('-') != -1
 let g:terminal_has_24_bit_color_support = $COLORTERM ==# 'truecolor'
 if g:vim_is_reading_from_stdin
