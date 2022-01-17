@@ -1,6 +1,3 @@
-[submodule "installer/dotbot-asdf"]
-	path = install/dotbot-asdf
-	url = https://github.com/sobolevn/dotbot-asdf.git
 [submodule "bash/complete-alias"]
 	path = bash/complete-alias
 	url = https://github.com/cykerway/complete-alias

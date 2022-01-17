@@ -24,6 +24,7 @@
     ~/.default-python-packages: asdf/default-python-packages
     ~/.default-npm-packages: asdf/default-npm-packages
     ~/.default-cargo-crates: asdf/default-cargo-crates
+    ~/.tool-versions: asdf/tool-versions
     ~/bin: bin
     ~/.cloudflared/config.yaml: cloudflared/config.yaml
     ~/.rgignore: ripgrep/rgignore
@@ -33,24 +34,6 @@
 
 - create:
     - ~/code
-
-- asdf:
-    - plugin: python
-      global: 3.10.0
-      versions:
-          - 3.10.0
-    - plugin: nodejs
-      global: 16.3.1
-      versions:
-          - 16.3.1
-    - plugin: golang
-      global: 1.17.2
-      versions:
-          - 1.17.2
-    - plugin: rust
-      global: 1.57.0
-      versions:
-          - 1.57.0
 
 - shell:
     - [./smart-plug/install , Install and start smart plug service]
