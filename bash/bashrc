@@ -168,6 +168,7 @@ export FZF_DEFAULT_COMMAND="rg --files"
 export FZF_COMPLETION_TRIGGER="*"
 export FZF_DEFAULT_OPTS="
 	--multi
+	--cycle
 	--bind tab:down,shift-tab:up,alt-enter:toggle,alt-down:last,alt-up:first,backward-eof:abort
 	--header 'move [↓↑ or tab/shift-tab], select [enter], select multiple items [alt+enter], go to top/bottom [alt + ↑/↓]'
 	--layout=reverse
