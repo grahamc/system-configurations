@@ -238,3 +238,4 @@ function rust() {
 
 # zoxide
 eval "$(zoxide init bash)"
+z() { __zoxide_z "$@" && ls; }
