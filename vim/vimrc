@@ -493,7 +493,7 @@ Plug 'bigolu/vim-pager'
   augroup END
   " handle ANSI escape sequences
   Plug 'powerman/vim-plugin-AnsiEsc'
-  Plug 'junegunn/vim-peekaboo'
+Plug 'junegunn/vim-peekaboo'
 
 """" Coordination between plugins
 """"" delimitmate, vim-endwise
