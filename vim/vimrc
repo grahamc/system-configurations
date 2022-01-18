@@ -117,8 +117,8 @@ nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
 
 " open new horizontal and vertical panes to the right and bottom respectively
 set splitright splitbelow
-nnoremap <Leader>" :vsplit<CR>
-nnoremap <Leader>% :split<CR>
+nnoremap <Leader>\| :vsplit<CR>
+nnoremap <Leader>_ :split<CR>
 " close a window, quit if last window
 nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':q<CR>' : ':close<CR>'
 
