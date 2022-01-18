@@ -488,7 +488,7 @@ Plug 'editorconfig/editorconfig-vim'
 " Autocomplete
 Plug 'maxboisvert/vim-simple-complete'
 Plug 'lambdalisue/vim-manpager'
-Plug 'lambdalisue/vim-pager'
+Plug 'bigolu/vim-pager'
   let g:pager#use_AnsiEsc = 0
   let g:pager#remove_ansi_sequences = 0
   augroup VimPager
