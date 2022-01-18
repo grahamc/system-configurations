@@ -86,6 +86,8 @@ function set_prompt() {
 # We set the PS1 through PROMPT_COMMAND so that the PS1 will get reevaluated each time.
 # It needs to be reevaluated each time so things like the git branch can get recalculated
 PROMPT_COMMAND="set_prompt"
+# call it now so that the code below references the correct prompt
+set_prompt
 
 # general
 export PAGER='vim --not-a-term "+set filetype=PAGER" -c PAGER -'
