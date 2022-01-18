@@ -175,7 +175,7 @@ export FZF_DEFAULT_OPTS="
 	--layout=reverse
 	--color='bg+:-1,fg+:blue,info:black,gutter:black,pointer:blue,prompt:blue,border:black,query:-1,marker:blue,header:yellow,spinner:yellow,hl:cyan,hl+:cyan'
 	--padding=0,0,1,0
-	--prompt='$(echo "${PS1@P}${READLINE_LINE}" | tail -n1;)'
+	--prompt='$(echo "${PS1@P}" | tail -n1;)'
 	--preview-window=wrap,60%
 	--keep-right"
 export FZF_ALT_C_COMMAND="rg --files --null | xargs -0 dirname | sort -u"
