@@ -138,7 +138,6 @@ make_alias_and_enable_autocomplete 'ls' 'ls --classify'
 make_alias_and_enable_autocomplete 'la' 'ls -a'
 make_alias_and_enable_autocomplete 'll' 'ls -l'
 make_alias_and_enable_autocomplete 'lal' 'ls -al'
-cd() { command cd "$@" && ls; }
 make_alias_and_enable_autocomplete 'rgtree' 'rg --color=never --files | \tree --fromfile  .'
 # Quick way to reconnect to tmux after a restart/closed-terminal.
 # This command connects to a running session, or if there isn't one, it just
@@ -237,5 +236,5 @@ function rust() {
 }
 
 # zoxide
-eval "$(zoxide init bash)"
-z() { __zoxide_z "$@" && ls; }
+eval "$(zoxide init bash --cmd cd)"
+cd() { __zoxide_z "$@" && ls; }
