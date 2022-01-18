@@ -221,6 +221,18 @@ if [ -z "$ASDF_INITIALIZED" ]; then
 fi
 # configure completions
 source $HOME/.asdf/completions/asdf.bash
+export ASDF_VIM_CONFIG="\
+	--with-tlib=ncurses \
+	--with-features=huge \
+	--with-compiledby=asdf \
+	--enable-multibyte \
+	--enable-cscope \
+	--enable-terminal \
+	--enable-perlinterp \
+	--enable-rubyinterp \
+	--enable-python3interp \
+	--enable-luainterp \
+	--enable-gui=no"
 
 # python
 export VIRTUAL_ENV_DISABLE_PROMPT=1
