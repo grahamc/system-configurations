@@ -127,10 +127,10 @@ make_alias_and_enable_autocomplete() {
 make_alias_and_enable_autocomplete 'r' "source ~/.bashrc"
 make_alias_and_enable_autocomplete 'r-desktop-entries' 'update-desktop-database ~/.local/share/applications'
 make_alias_and_enable_autocomplete 'r-xbindkeys' 'killall xbindkeys; xbindkeys'
-make_alias_and_enable_autocomplete 'r-kitty' 'xdotool key Super+F5'
+make_alias_and_enable_autocomplete 'r-kitty' 'reload-kitty'
 make_alias_and_enable_autocomplete 'r-asdf' 'asdf reshim'
-make_alias_and_enable_autocomplete 'r-tmux' 'xdotool key ctrl+b key r'
-make_alias_and_enable_autocomplete 'r-tmux-plugins' 'xdotool key ctrl+b key I'
+make_alias_and_enable_autocomplete 'r-tmux' 'tmux source ~/.tmux.conf && tmux display-message "Reloaded TMUX..."'
+make_alias_and_enable_autocomplete 'r-tmux-plugins' "$HOME/.tmux/plugins/tpm/bindings/install_plugins"
 make_alias_and_enable_autocomplete 'r-tmux-server' 'tmux kill-server; tmux'
 make_alias_and_enable_autocomplete 'r-tmux-pane' 'tmux respawn-pane -k'
 make_alias_and_enable_autocomplete 'trash' 'trash-put'
