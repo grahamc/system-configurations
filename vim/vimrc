@@ -4,13 +4,7 @@ let g:mapleader = "\<Space>"
 " if 'encoding' is set, 'scriptencoding' must be set after it
 set encoding=utf8
 scriptencoding utf-8
-" Should be at the top since it gets used in various places
-" We omit the first element in the list since that will always be the name
-" of the command, in this case 'vim'.
-" The command stores the ps output in a variable because otherwise
-" ps would truncate the output depending on the size of the window
-let g:commandline_arguments = split(system("vimargs=$(ps -o command= -p ".getpid()."); echo \"$vimargs\""))[1:]
-let g:vim_is_reading_from_stdin = g:commandline_arguments->index('-') != -1
+let g:vim_is_reading_from_stdin = v:argv->index('-') != -1
 let g:terminal_has_24_bit_color_support = $COLORTERM ==# 'truecolor'
 if g:vim_is_reading_from_stdin
   set notermguicolors
@@ -344,7 +338,9 @@ augroup SaveAndRestoreSettings
   " during the execution of an autocmd to prevent infinite loops.
   let s:session_dir = $VIMHOME . 'sessions/'
   function! RestoreOrCreateSession()
-    if g:commandline_arguments->empty()
+    " We omit the first element in the list since that will always be the path
+    " to the vim binary e.g. /usr/local/bin/vim
+    if v:argv[1:]->empty()
       call mkdir(s:session_dir, "p")
       let s:session_name =  substitute($PWD, '/', '%', 'g') . '%vim'
       let s:session_full_path = s:session_dir . s:session_name
