@@ -87,5 +87,13 @@
 "flameshot gui"
     Print
 
+# Increase brightness
+"sudo /home/bigolu/bin/set_brightness up"
+    XF86MonBrightnessUp
+
+# Decrease brightness
+"sudo /home/bigolu/bin/set_brightness down"
+    XF86MonBrightnessDown
+
 #
 # End of xbindkeys configuration
