@@ -641,7 +641,7 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight LineNrAbove ctermfg=0
     autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
     autocmd ColorScheme nord highlight WordUnderCursor cterm=underline guibg=#272A34
-    autocmd ColorScheme * highlight QuickpickInvisibleStatusLine ctermbg=NONE ctermfg=0 guifg=#272A34 guibg=#272A34
+    autocmd ColorScheme nord highlight QuickpickInvisibleStatusLine ctermbg=NONE ctermfg=0 guifg=#272A34 guibg=#272A34
   augroup END
 Plug 'lifepillar/vim-solarized8'
   augroup SolarizedColorschemeOverrides
@@ -659,7 +659,7 @@ Plug 'lifepillar/vim-solarized8'
     autocmd ColorScheme solarized8 highlight Normal ctermbg=NONE guibg=NONE
     autocmd ColorScheme solarized8 highlight NonText ctermbg=NONE
     autocmd ColorScheme solarized8 highlight! link EndOfBuffer NonText
-    autocmd ColorScheme * highlight QuickpickInvisibleStatusLine guifg=#FDF6E3 guibg=#FDF6E3
+    autocmd ColorScheme solarized8 highlight QuickpickInvisibleStatusLine guifg=#FDF6E3 guibg=#FDF6E3
   augroup END
 
 """" End Plugin Manager
