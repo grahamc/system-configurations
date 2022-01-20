@@ -174,6 +174,7 @@ noremap <C-k> 10k
 noremap <C-l> 10l
 noremap <C-e> 10<C-e>
 noremap <C-y> 10<C-y>
+nnoremap Y yg_
 
 """ Section: Search
 """" Misc.
