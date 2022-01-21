@@ -218,8 +218,10 @@ if [ -z "$ASDF_INITIALIZED" ]; then
 	# Init asdf. This needs to be done after the PATH has been set
 	# and any frameworks, like oh-my-zsh, have been sourced
 	source $HOME/.asdf/asdf.sh
-	# Export this variable so we can tell if asdf has been initialized
-	export ASDF_INITIALIZED=1
+	# Set this variable so we can tell if asdf has been initialized.
+	# It purposely isn't exported so that sub shells (e.g. tmux shells)
+	# don't inherit the value. This way sub shells perform initialization as well.
+	ASDF_INITIALIZED=1
 fi
 # configure completions
 source $HOME/.asdf/completions/asdf.bash
