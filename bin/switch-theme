@@ -5,16 +5,16 @@ mode=''
 case $1 in
 
   "day")
-    for unused in {1..5}; do
-      set_brightness up
-    done
+    # for unused in {1..5}; do
+    #   set_brightness up
+    # done
     mode='day'
     ;;
 
   "night")
-    for unused in {1..5}; do
-      set_brightness down
-    done
+    # for unused in {1..5}; do
+    #   set_brightness down
+    # done
     mode='night'
     ;;
 
