@@ -19,3 +19,5 @@
     co = checkout
 [init]
 	defaultBranch = master
+[merge]
+	conflictstyle = diff3
