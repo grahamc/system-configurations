@@ -613,7 +613,7 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
   " since it has an option for auto-focusing on the current file
   Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
     let g:nerdtree_tabs_autofind = 1
-    nnoremap <silent> <Leader>n :NERDTreeTabsToggle<CR>
+    nnoremap <silent> <Leader>e :NERDTreeTabsToggle<CR>
 
 """" Colorscheme
 Plug 'arcticicestudio/nord-vim'
