@@ -40,6 +40,7 @@ augroup Miscellaneous
     \ css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss
     \ setlocal iskeyword+=-,?,!
   autocmd FileType vim setlocal iskeyword+=:,#
+  autocmd FileType tmux setlocal iskeyword+=-
   autocmd BufEnter *
         \ if &ft ==# 'help' && (&columns * 10) / &lines > 31 | wincmd L | endif
   " Use vim help pages for keywordprg in vim files
