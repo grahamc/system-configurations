@@ -171,9 +171,9 @@ export FZF_DEFAULT_OPTS="
 	--multi
 	--cycle
 	--bind tab:down,shift-tab:up,alt-enter:toggle,alt-down:last,alt-up:first,backward-eof:abort
-	--header 'move [↓↑ or tab/shift-tab], select [enter], select multiple items [alt+enter], go to top/bottom [alt + ↑/↓]'
+	--header 'move [↓↑ or tab/shift-tab], select [enter], select multiple items [alt+enter]'
 	--layout=reverse
-	--color='bg+:-1,fg+:blue,info:black,gutter:black,pointer:blue,prompt:black,border:black,query:-1,marker:blue,header:yellow,spinner:yellow,hl:cyan,hl+:cyan'
+	--color='bg+:-1,fg+:blue,info:black,gutter:black,pointer:blue,prompt:black:regular,border:black,query:-1:regular,marker:blue,header:yellow,spinner:yellow,hl:cyan,hl+:cyan'
 	--padding=0,0,1,0
 	--prompt='$(echo "${PS1@P}" | tail -n1;)'
 	--preview-window=wrap,60%
