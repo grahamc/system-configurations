@@ -607,7 +607,6 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
     autocmd FileType nerdtree nmap <buffer> l o | nmap <buffer> h o
   augroup END
   let g:NERDTreeMouseMode = 2
-  let g:NERDTreeWinPos = "right"
   let g:NERDTreeShowHidden = 1
   let g:NERDTreeStatusline = -1
   " Syncs nerdtree across tabs, but I'm really only using this
