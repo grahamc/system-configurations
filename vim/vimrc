@@ -437,7 +437,7 @@ function! MyStatusLine()
   elseif &ft ==# 'PAGER'
     return g:FormatGroup('PAGER MODE').s:STATUSLINE_SEPARATOR
   endif
-  return g:FormatGroup('%h%w%q%t%m%r').s:STATUSLINE_SEPARATOR.g:FormatGroup('Ln:%l:%L').s:GROUP_SEPARATOR.g:FormatGroup('Col:%c')
+  return g:FormatGroup('%h%w%q%f%m%r').s:STATUSLINE_SEPARATOR.g:FormatGroup('Ln:%l:%L').s:GROUP_SEPARATOR.g:FormatGroup('Col:%c')
 endfunction
 set statusline=%{%MyStatusLine()%}
 
