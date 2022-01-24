@@ -371,7 +371,7 @@ augroup END
 """" Misc.
 set linebreak
 set number relativenumber
-set cursorline cursorlineopt=number
+set cursorline cursorlineopt=number,line
 set laststatus=2
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
@@ -496,6 +496,7 @@ Plug 'bigolu/vim-pager'
   " handle ANSI escape sequences
   Plug 'powerman/vim-plugin-AnsiEsc'
 Plug 'junegunn/vim-peekaboo'
+Plug 'inkarkat/vim-CursorLineCurrentWindow'
 
 """" Coordination between plugins
 """"" delimitmate, vim-endwise
@@ -577,7 +578,7 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
   augroup Quickpick
     autocmd!
     autocmd FileType quickpick
-          \ setlocal cursorline |
+          \ execute 'let w:persistent_cursorline = 1' |
           \ setlocal cursorlineopt=line |
           \ setlocal statusline=%#QuickpickInvisibleStatusLine#
     autocmd FileType quickpick-filter
@@ -633,16 +634,16 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight PmenuSel ctermfg=NONE ctermbg=0 cterm=underline
     autocmd ColorScheme nord highlight Pmenu ctermfg=8 ctermbg=0
     " cursorline for quickpick
-    autocmd ColorScheme nord highlight CursorLine ctermfg=NONE ctermbg=0
+    autocmd ColorScheme nord highlight CursorLine ctermfg=NONE ctermbg=NONE guibg=NONE guifg=NONE cterm=underline
     " transparent background
     autocmd ColorScheme nord highlight Normal ctermbg=NONE guibg=NONE
     autocmd ColorScheme nord highlight NonText ctermbg=NONE
     autocmd ColorScheme nord highlight! link EndOfBuffer NonText
     " relative line numbers
-    autocmd ColorScheme nord highlight LineNrAbove ctermfg=0
+    autocmd ColorScheme nord highlight LineNrAbove ctermfg=0 guifg=#434C5E
     autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
-    autocmd ColorScheme nord highlight WordUnderCursor cterm=underline guibg=#272A34
-    autocmd ColorScheme nord highlight QuickpickInvisibleStatusLine ctermbg=NONE ctermfg=0 guifg=#272A34 guibg=#272A34
+    autocmd ColorScheme nord highlight WordUnderCursor cterm=underline,bold guibg=#272A34
+    autocmd ColorScheme nord highlight QuickpickInvisibleStatusLine ctermbg=NONE ctermfg=0 guifg=#272A34 guibg=NONE
   augroup END
 Plug 'lifepillar/vim-solarized8'
   augroup SolarizedColorschemeOverrides
@@ -655,12 +656,12 @@ Plug 'lifepillar/vim-solarized8'
     autocmd ColorScheme solarized8 highlight VertSplit guibg=NONE
     " Darken the the line number for the current line
     autocmd ColorScheme solarized8 highlight CursorLineNr guifg=#000000
-    autocmd ColorScheme solarized8 highlight WordUnderCursor cterm=underline guibg=#FDF6E3
+    autocmd ColorScheme solarized8 highlight WordUnderCursor cterm=underline,bold guibg=#FDF6E3
     " transparent background
     autocmd ColorScheme solarized8 highlight Normal ctermbg=NONE guibg=NONE
     autocmd ColorScheme solarized8 highlight NonText ctermbg=NONE
     autocmd ColorScheme solarized8 highlight! link EndOfBuffer NonText
-    autocmd ColorScheme solarized8 highlight QuickpickInvisibleStatusLine guifg=#FDF6E3 guibg=#FDF6E3
+    autocmd ColorScheme solarized8 highlight QuickpickInvisibleStatusLine guifg=#FDF6E3 guibg=NONE
   augroup END
 
 """" End Plugin Manager
