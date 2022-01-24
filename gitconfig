@@ -1,6 +1,6 @@
 [user]
     name = Biggie Emmanuel
-	email = hi@bigo.lu
+	  email = hi@bigo.lu
 [core]
     editor = vim
 [push]
@@ -18,6 +18,6 @@
     undocommit = reset "HEAD^"
     co = checkout
 [init]
-	defaultBranch = master
+    defaultBranch = master
 [merge]
-	conflictstyle = diff3
+    conflictstyle = diff3
