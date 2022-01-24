@@ -165,6 +165,9 @@ source ~/.config/bash/fzf-bash-completion.sh
 _fzf_bash_completion_loading_msg() {
 	echo "${PS1@P}${READLINE_LINE}" | tail -n1
 }
+_fzf_bash_completion_prompt() {
+	echo "${PS1@P}" | tail -n1;
+}
 # bind -x '"\C-@": fzf_bash_completion'
 bind -x '"\t": fzf_bash_completion'
 export FZF_DEFAULT_COMMAND="rg --files"
