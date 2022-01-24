@@ -73,8 +73,8 @@ augroup Miscellaneous
   " Using 'nested' here so that the 'ColorScheme' autocommands are run.
   autocmd SigUSR1 * nested call SetColorscheme()
   " Automatically resize all splits to make them equal when the vim window is
-  " resized
-  autocmd VimResized * wincmd =
+  " resized or a new window is created/closed
+  autocmd VimResized,WinNew,WinClosed * wincmd =
 augroup END
 
 " set swapfile directory
