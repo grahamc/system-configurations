@@ -17,6 +17,7 @@
     some = add -u
     undocommit = reset "HEAD^"
     co = checkout
+    ui = "!gitui"
 [init]
     defaultBranch = master
 [merge]
