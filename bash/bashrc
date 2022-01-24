@@ -162,7 +162,9 @@ export MANPAGER='vim --not-a-term -c MANPAGER -'
 source ~/.config/bash/fzf-bash-completion.sh
 # use my prompt as the loading message so that there isn't a quick flash of loading text
 # taken from: https://github.com/lincheney/fzf-tab-completion#custom-loading-message
-_fzf_bash_completion_loading_msg() { echo "${PS1@P}${READLINE_LINE}" | tail -n1; }
+_fzf_bash_completion_loading_msg() {
+	echo "${PS1@P}${READLINE_LINE}" | tail -n1
+}
 # bind -x '"\C-@": fzf_bash_completion'
 bind -x '"\t": fzf_bash_completion'
 export FZF_DEFAULT_COMMAND="rg --files"
