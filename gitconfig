@@ -3,6 +3,7 @@
 	  email = hi@bigo.lu
 [core]
     editor = vim
+    pager = "command -v delta > /dev/null && delta --hyperlinks || less"
 [push]
     default = current
 [alias]
@@ -22,3 +23,13 @@
     defaultBranch = master
 [merge]
     conflictstyle = diff3
+[diff]
+    colorMoved = default
+[interactive]
+    diffFilter = "delta --color-only"
+[include]
+    path = ~/.dotfiles/themes.gitconfig
+[delta]
+    line-numbers = true
+    navigate = true  # use n and N to move between diff sections
+    light = true
