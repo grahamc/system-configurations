@@ -361,7 +361,7 @@ set laststatus=2
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
-set fillchars+=foldopen:\ ,fold:\ ,vert:\|
+set fillchars+=foldopen:\ ,fold:\ ,vert:│
 
 """" colorscheme
 function! Colorscheme(background)
