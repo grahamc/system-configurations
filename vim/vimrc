@@ -548,6 +548,26 @@ Plug 'prabirshrestha/vim-lsp'
       autocmd FileType vista_kind exe 'vertical resize 30' | exe 'setlocal winfixwidth'
     augroup END
 
+" Asynchronous linting
+Plug 'dense-analysis/ale'
+  " If a linter is not found don't continue to check on subsequent linting operations.
+  let g:ale_cache_executable_check_failures = 1
+  " Don't show popup when the mouse if over a symbol, vim-lsp
+  " should be responsible for that.
+  let g:ale_set_balloons = 0
+  " Don't show variable information in the status line,
+  " vim-lsp should be responsible for that.
+  let g:ale_hover_cursor = 0
+  " Only display diagnostics with a warning level or above
+  " i.e. warning,error
+  let g:ale_lsp_show_message_severity = "warning"
+  let g:ale_lint_on_enter = 0 " Don't lint when a buffer opens
+  let g:ale_lint_on_text_changed = "always"
+  let g:ale_lint_delay = 1000
+  let g:ale_lint_on_insert_leave = 0
+  let g:ale_lint_on_filetype_changed = 0
+  let g:ale_lint_on_save = 0
+
 """" Coordination between plugins
 """"" delimitmate, vim-endwise
 " Combine enter key (<CR>) mappings from the plugins above.
@@ -559,6 +579,15 @@ imap <expr> <CR>
     \ delimitMate#WithinEmptyPair() ?
       \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
       \ "\<CR>\<Plug>DiscretionaryEnd"
+""""" vim-lsp, ale
+" A bridge between vim-lsp and ale. This works by
+" sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
+" This way, vim-lsp will only provide LSP features
+" and ALE will only provide realtime diagnostics.
+Plug 'rhysd/vim-lsp-ale'
+  " Only report diagnostics with a level of 'warning' or above
+  " i.e. warning,error
+  let g:lsp_ale_diagnostics_severity = "warning"
 
 """" Editing
 " Automatically add closing keywords (e.g. function/endfunction in vimscript)
