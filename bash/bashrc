@@ -124,7 +124,7 @@ make_alias_and_enable_autocomplete() {
 	# If the function is defined, call it
 	[[ "$(declare -fF _complete_alias)" ]] && complete -F _complete_alias "$1";
 }
-make_alias_and_enable_autocomplete 'r' "source ~/.bashrc"
+make_alias_and_enable_autocomplete 'r' "source ~/.bashrc && hash -r"
 make_alias_and_enable_autocomplete 'r-desktop-entries' 'update-desktop-database ~/.local/share/applications'
 make_alias_and_enable_autocomplete 'r-xbindkeys' 'killall xbindkeys; xbindkeys'
 make_alias_and_enable_autocomplete 'r-kitty' 'reload-kitty'
