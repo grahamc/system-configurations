@@ -241,6 +241,7 @@ export ASDF_VIM_CONFIG="\
 	--enable-rubyinterp \
 	--enable-python3interp \
 	--enable-luainterp \
+	--with-x \
 	--enable-gui=no"
 
 # python
