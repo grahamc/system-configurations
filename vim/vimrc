@@ -583,9 +583,6 @@ Plug 'tpope/vim-surround'
 Plug 'tommcdo/vim-exchange'
 " I use it for more robust substitutions, but it does alot more
 Plug 'tpope/vim-abolish'
-" Swap a piece of text for one of its specified replacements. For example, calling swap on
-" the logical operator '&&' would change it to '||'.
-Plug 'AndrewRadev/switch.vim'
 " Expands Emmet abbreviations to write HTML more quickly
 Plug 'mattn/emmet-vim'
   let g:user_emmet_expandabbr_key = '<Leader>e'
