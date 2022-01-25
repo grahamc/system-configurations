@@ -90,7 +90,7 @@ PROMPT_COMMAND="set_prompt"
 set_prompt
 
 # general
-export PAGER='ls -RF'
+export PAGER='less -RF'
 
 # bash
 export LESS="-Ri"
