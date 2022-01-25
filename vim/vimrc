@@ -531,6 +531,11 @@ Plug 'prabirshrestha/vim-lsp'
   nnoremap <Leader>lrn :LspRename<CR>
   nnoremap <Leader>lrf :LspReferences<CR>
   nnoremap <Leader>lo :LspCodeActionSync source.organizeImports<CR>
+  " An easy way to install/manage language servers for vim-lsp.
+  Plug 'mattn/vim-lsp-settings'
+    " where the language servers are stored
+    let g:lsp_settings_servers_dir = $VIMHOME . "vim-lsp-servers"
+    call mkdir(g:lsp_settings_servers_dir, "p")
 
 """" Coordination between plugins
 """"" delimitmate, vim-endwise
