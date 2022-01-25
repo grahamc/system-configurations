@@ -3,7 +3,7 @@
 	  email = hi@bigo.lu
 [core]
     editor = vim
-    pager = "command -v delta > /dev/null && delta --hyperlinks || less"
+    pager = "command -v delta > /dev/null && delta || less"
 [push]
     default = current
 [alias]
