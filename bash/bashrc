@@ -228,6 +228,7 @@ fi
 # configure completions
 source $HOME/.asdf/completions/asdf.bash
 export ASDF_VIM_CONFIG="\
+	--enable-fail-if-missing \
 	--with-tlib=ncurses \
 	--with-features=huge \
 	--with-compiledby=asdf \
