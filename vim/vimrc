@@ -585,6 +585,8 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
           \ call QuickpickMappings() |
           \ call sign_place(0, '', 'quickpick_cursor', 'quickpick-filter', {'lnum': 1})
   augroup END
+Plug 'airblade/vim-matchquote'
+
 """" Colors
 " Detects color strings (e.g. hex, rgba) and changes the background of the characters
 " in that string to match the color. For example, in the following sample line of CSS:
