@@ -600,7 +600,8 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
           \ setlocal statusline=%#QuickpickInvisibleStatusLine#
     autocmd FileType quickpick-filter
           \ call QuickpickMappings() |
-          \ call sign_place(0, '', 'quickpick_cursor', 'quickpick-filter', {'lnum': 1})
+          \ call sign_place(0, '', 'quickpick_cursor', 'quickpick-filter', {'lnum': 1}) |
+          \ let b:asyncomplete_enable = 0
   augroup END
 Plug 'airblade/vim-matchquote'
 
