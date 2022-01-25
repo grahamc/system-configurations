@@ -90,7 +90,7 @@ PROMPT_COMMAND="set_prompt"
 set_prompt
 
 # general
-export PAGER='vim --not-a-term "+set filetype=PAGER" -c PAGER -'
+export PAGER='ls -RF'
 
 # bash
 export LESS="-Ri"
@@ -153,9 +153,6 @@ make_alias_and_enable_autocomplete 'saar' 'sudo apt autoremove'
 make_alias_and_enable_autocomplete 'ap' 'apt policy'
 make_alias_and_enable_autocomplete 'sau' 'sudo apt update'
 bd() { cd `command bd "$@"`; }
-
-# man
-export MANPAGER='vim --not-a-term -c MANPAGER -'
 
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash

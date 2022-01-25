@@ -4,11 +4,8 @@ let g:mapleader = "\<Space>"
 " if 'encoding' is set, 'scriptencoding' must be set after it
 set encoding=utf8
 scriptencoding utf-8
-let g:vim_is_reading_from_stdin = v:argv->index('-') != -1
 let g:terminal_has_24_bit_color_support = $COLORTERM ==# 'truecolor'
-if g:vim_is_reading_from_stdin
-  set notermguicolors
-elseif !g:terminal_has_24_bit_color_support
+if !g:terminal_has_24_bit_color_support
   set notermguicolors
 else
   set termguicolors
@@ -57,18 +54,6 @@ augroup Miscellaneous
   autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
   " highlight trailing whitespace
   autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red | execute '2match ErrorMsg /\s\+$/'
-  " Settings for when vim is being used a pager
-  autocmd FileType PAGER,man
-      \ set nonumber |
-      \ set norelativenumber |
-      \ set signcolumn=no |
-      \ set cmdheight=1 |
-      \ nmap i <nop> |
-      \ nmap I <nop> |
-      \ nmap a <nop> |
-      \ nmap A <nop> |
-      \ nmap o <nop> |
-      \ nmap O <nop>
   " When vim receives the SIGUSR1 signal, update the colorscheme.
   " Using 'nested' here so that the 'ColorScheme' autocommands are run.
   autocmd SigUSR1 * nested call SetColorscheme()
@@ -432,10 +417,6 @@ function! MyStatusLine()
     return g:FormatGroup('NERDTree').s:STATUSLINE_SEPARATOR
   elseif &ft ==# 'vim-plug'
     return g:FormatGroup('VIM_PLUG').s:STATUSLINE_SEPARATOR
-  elseif &ft ==# 'man'
-    return g:FormatGroup('MANPAGER MODE').s:STATUSLINE_SEPARATOR
-  elseif &ft ==# 'PAGER'
-    return g:FormatGroup('PAGER MODE').s:STATUSLINE_SEPARATOR
   endif
   return g:FormatGroup('%h%w%q%f%m%r').s:STATUSLINE_SEPARATOR.g:FormatGroup('Ln:%l:%L').s:GROUP_SEPARATOR.g:FormatGroup('Col:%c')
 endfunction
@@ -483,16 +464,6 @@ Plug 'andymass/vim-matchup'
 Plug 'wellle/targets.vim'
 " Applies editorconfig settings to vim
 Plug 'editorconfig/editorconfig-vim'
-Plug 'lambdalisue/vim-manpager'
-Plug 'bigolu/vim-pager'
-  let g:pager#use_AnsiEsc = 0
-  let g:pager#remove_ansi_sequences = 0
-  augroup VimPager
-    autocmd!
-    autocmd FileType PAGER execute "autocmd ColorScheme * execute 'AnsiEsc'"
-  augroup END
-  " handle ANSI escape sequences
-  Plug 'powerman/vim-plugin-AnsiEsc'
 Plug 'junegunn/vim-peekaboo'
 Plug 'inkarkat/vim-CursorLineCurrentWindow'
 
