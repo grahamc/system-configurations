@@ -131,7 +131,16 @@ make_alias_and_enable_autocomplete 'r-kitty' 'reload-kitty'
 make_alias_and_enable_autocomplete 'r-asdf' 'asdf reshim'
 make_alias_and_enable_autocomplete 'r-tmux' 'tmux source ~/.tmux.conf && tmux display-message "Reloaded TMUX..."'
 make_alias_and_enable_autocomplete 'r-tmux-plugins' "$HOME/.tmux/plugins/tpm/bindings/install_plugins"
-make_alias_and_enable_autocomplete 'r-tmux-server' 'tmux kill-server; tmux'
+r_tmux_server() {
+	if tmux list-sessions &> /dev/null; then
+		# save server state before killing it
+		~/.tmux/plugins/tmux-resurrect/scripts/save.sh
+		tmux kill-server
+	fi
+
+	tmux
+}
+make_alias_and_enable_autocomplete 'r-tmux-server' 'r_tmux_server'
 make_alias_and_enable_autocomplete 'r-tmux-pane' 'tmux respawn-pane -k'
 make_alias_and_enable_autocomplete 'trash' 'trash-put'
 make_alias_and_enable_autocomplete 'pbcopy' 'xclip -selection clipboard'
