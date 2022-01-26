@@ -91,15 +91,15 @@ set_prompt
 
 # general
 export PAGER='less -RF'
-
-# bash
 export LESS="-Ri"
 export VISUAL=vim
 export EDITOR="$VISUAL"
-# remove duplicates in bash history
-export HISTCONTROL=ignoredups:erasedups
 # use blinking bar for bash cursor
 echo -ne '\033[5 q'
+
+# bash
+# remove duplicates in bash history
+HISTCONTROL=ignoredups:erasedups
 # enable programmable completion features
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
