@@ -187,7 +187,7 @@ export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 fzf() {
 	# calculate fzf preview window position based on terminal window orientation
 	local preview_window_position lines columns
-	if [ -n "$TMUX" ]; then
+	if [ -n "$IN_TMUX" ]; then
 		lines="$(tmux display -p '#{pane_height}' | xargs echo -n)"
 		columns="$(tmux display -p '#{pane_width}' | xargs echo -n)"
 	else
