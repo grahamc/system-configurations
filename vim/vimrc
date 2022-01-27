@@ -475,6 +475,7 @@ Plug 'wellle/targets.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'inkarkat/vim-CursorLineCurrentWindow'
+Plug 'bigolu/tabline.vim'
 
 """" Autocomplete
 Plug 'prabirshrestha/asyncomplete.vim'
