@@ -490,6 +490,8 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'inkarkat/vim-CursorLineCurrentWindow'
 Plug 'bigolu/tabline.vim'
+" deleted text won't go into the register
+Plug 'svermeulen/vim-cutlass'
 
 """" Autocomplete
 Plug 'prabirshrestha/asyncomplete.vim'
