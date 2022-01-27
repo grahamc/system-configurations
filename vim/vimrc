@@ -62,6 +62,8 @@ augroup Miscellaneous
   autocmd VimResized,WinNew,WinClosed * wincmd =
 augroup END
 
+cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
+
 " set swapfile directory
 let &directory = $VIMHOME . 'swapfile_dir/'
 call mkdir(&directory, "p")
