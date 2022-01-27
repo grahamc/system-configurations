@@ -43,10 +43,7 @@ augroup Miscellaneous
   " Use vim help pages for keywordprg in vim files
   autocmd FileType vim setlocal keywordprg=:help
   autocmd FileType sh setlocal keywordprg=man
-  augroup HighlightWordUnderCursor
-    autocmd!
-    autocmd CursorMoved * execute printf('match WordUnderCursor /\V\<%s\>/', escape(expand('<cword>'), '/\'))
-  augroup END
+  autocmd CursorMoved * execute printf('match WordUnderCursor /\V\<%s\>/', escape(expand('<cword>'), '/\'))
   " After a quickfix command is run, open the quickfix window , if there are results
   autocmd QuickFixCmdPost [^l]* cwindow
   autocmd QuickFixCmdPost l*    lwindow
