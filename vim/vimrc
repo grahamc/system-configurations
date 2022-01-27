@@ -577,7 +577,7 @@ Plug 'prabirshrestha/asyncomplete.vim'
       \ call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
       \ 'name': 'buffer',
       \ 'allowlist': ['*'],
-      \ 'events': ['TextChanged','InsertLeave','BufWinEnter','BufWritePost'],
+      \ 'events': ['TextChanged','InsertLeave','BufWinEnter','BufWritePost', 'TextChangedI'],
       \ 'completor': function('asyncomplete#sources#buffer#completor'),
       \ }))
   Plug 'prabirshrestha/asyncomplete-file.vim'
