@@ -178,6 +178,8 @@ bd() { cd `command bd "$@"`; }
 
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+bind -x '"\C-f": fzf-file-widget'
+bind -x '"\C-r": __fzf_history__'
 source ~/.config/bash/fzf-bash-completion.sh
 # use my prompt as the loading message so that there isn't a quick flash of loading text
 # taken from: https://github.com/lincheney/fzf-tab-completion#custom-loading-message
