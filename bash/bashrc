@@ -125,6 +125,10 @@ fi
 shopt -s autocd
 # Prevent overwriting a file with the '>' operator
 set -C
+# Use ctrl+t to a shortcut for running the 'fg' command.
+# This way I can jump in and out of a program (e.g. vim) with ctrl+t
+stty susp undef
+bind '"\C-t":"fg\015"'
 # aliases
 source ~/.config/bash/complete_alias
 make_alias_and_enable_autocomplete() {

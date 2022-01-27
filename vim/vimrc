@@ -155,6 +155,12 @@ function! s:Repl()
   return "p@=RestoreRegister()\<cr>"
 endfunction
 vmap <silent> <expr> p <sid>Repl()
+
+" suspend vim and start a new shell
+nnoremap <C-t> :suspend<CR>
+inoremap <C-t> <ESC>:suspend<CR>
+xnoremap <C-t> <ESC>:suspend<CR>
+
 """ Section: System Mappings
 " Map the output of these key combinations to their actual names
 imap OB <Down>
