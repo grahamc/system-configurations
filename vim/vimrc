@@ -534,7 +534,7 @@ Plug 'prabirshrestha/vim-lsp'
   let g:lsp_log_file = $VIMHOME . 'vim-lsp-log'
   let g:lsp_fold_enabled = 0
   let g:lsp_document_code_action_signs_enabled = 0
-  let g:lsp_document_highlight_enabled = 1
+  let g:lsp_document_highlight_enabled = 0
   nnoremap <Leader>ls :LspStatus<CR>
   nnoremap <Leader>ld :LspDefinition<CR>
   nnoremap <Leader>lrn :LspRename<CR>
