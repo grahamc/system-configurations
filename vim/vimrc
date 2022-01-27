@@ -25,13 +25,31 @@ set clipboard=unnamed
 set autoread " Re-read file if it is changed by an external program
 set scrolloff=10
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages sessionoptions-=folds
+
+function! OverrideVimsDefaultFiletypePlugins()
+  " there is an ftplugin that is bundled with vim that
+  " sets the textwidth to 78 if it is currently 0. This sets it back to 0
+  set textwidth=0
+
+  " Vim's default filetype plugins get run after filetype detection is
+  " performed (i.e. ':filetype plugin on'). So in order to override
+  " settings from vim's filetype plugins, the FileType autocommands
+  " need to be registered after filetype detection.
+  " Since this function gets called on the VimEnter event, we're
+  " certain that filetype detection has already
+  " happened. In this case it gets triggered when the plugin manager
+  " finishes loading plugins.
+  augroup OverrideFiletypePlugins
+    autocmd!
+    " Use vim help pages for keywordprg in vim files
+    autocmd FileType vim setlocal keywordprg=:tab\ help
+    " Set a default omnifunc
+    autocmd FileType * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
+  augroup END
+endfunction
+
 augroup Miscellaneous
   autocmd!
-  " for some reason there is an ftplugin that is bundled with vim that
-  " sets the textwidth to 78 if it is currently 0. This sets it back to 0
-  autocmd VimEnter * :set tw=0
-  " Set a default omnifunc
-  autocmd FileType * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
   " Extend iskeyword for filetypes that can reference CSS classes
   autocmd FileType
     \ css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss
@@ -40,9 +58,8 @@ augroup Miscellaneous
   autocmd FileType tmux setlocal iskeyword+=-
   autocmd BufEnter *
         \ if &ft ==# 'help' && (&columns * 10) / &lines > 31 | wincmd L | endif
-  " Use vim help pages for keywordprg in vim files
-  autocmd FileType vim setlocal keywordprg=:help
   autocmd FileType sh setlocal keywordprg=man
+  autocmd VimEnter * call OverrideVimsDefaultFiletypePlugins()
   autocmd CursorMoved * execute printf('match WordUnderCursor /\V\<%s\>/', escape(expand('<cword>'), '/\'))
   " After a quickfix command is run, open the quickfix window , if there are results
   autocmd QuickFixCmdPost [^l]* cwindow
