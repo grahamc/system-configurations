@@ -6,6 +6,11 @@ case $- in
 esac
 
 # prompt
+# number of trailing directories to include in the current working directory
+# ('\w' prompt escape sequence). All other directories will be replaced
+# with '...'. For example, '/dir1/dir2/dir3/dir4' would be come '/.../dir3/dir4'
+# if PROMPT_DIRTRIM is 2
+PROMPT_DIRTRIM=2
 CONNECTBAR_DOWN=$'\u250C\u257C'
 CONNECTBAR_UP=$'\u2514'
 SPLITBAR=$'\u257E\u257C'
