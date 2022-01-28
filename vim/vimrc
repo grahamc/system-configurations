@@ -597,12 +597,6 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
   augroup END
 Plug 'airblade/vim-matchquote'
 
-"""" Colors
-" Opens the OS color picker and inserts the chosen color into the buffer.
-Plug 'KabbAmine/vCoolor.vim'
-  " Make an alias for the 'VCoolor' command with a name that is easier to remember
-  command! ColorPicker VCoolor
-
 """" File explorer
 Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
   augroup NerdTree
