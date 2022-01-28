@@ -554,25 +554,6 @@ Plug 'prabirshrestha/asyncomplete.vim'
           \ 'completor': function('asyncomplete#sources#necovim#completor'),
           \ }))
 
-" Language Server Protocol client that provides IDE like features
-" e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
-Plug 'prabirshrestha/vim-lsp'
-  " for debugging
-  let g:lsp_log_file = $VIMHOME . 'vim-lsp-log'
-  let g:lsp_fold_enabled = 0
-  let g:lsp_document_code_action_signs_enabled = 0
-  let g:lsp_document_highlight_enabled = 0
-  nnoremap <Leader>ls :LspStatus<CR>
-  nnoremap <Leader>ld :LspDefinition<CR>
-  nnoremap <Leader>lrn :LspRename<CR>
-  nnoremap <Leader>lrf :LspReferences<CR>
-  nnoremap <Leader>lo :LspCodeActionSync source.organizeImports<CR>
-  " An easy way to install/manage language servers for vim-lsp.
-  Plug 'mattn/vim-lsp-settings'
-    " where the language servers are stored
-    let g:lsp_settings_servers_dir = $VIMHOME . "vim-lsp-servers"
-    call mkdir(g:lsp_settings_servers_dir, "p")
-
 " Asynchronous linting
 Plug 'dense-analysis/ale'
   " If a linter is not found don't continue to check on subsequent linting operations.
@@ -604,15 +585,6 @@ imap <expr> <CR>
     \ delimitMate#WithinEmptyPair() ?
       \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
       \ "\<CR>\<Plug>DiscretionaryEnd"
-""""" vim-lsp, ale
-" A bridge between vim-lsp and ale. This works by
-" sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
-" This way, vim-lsp will only provide LSP features
-" and ALE will only provide realtime diagnostics.
-Plug 'rhysd/vim-lsp-ale'
-  " Only report diagnostics with a level of 'warning' or above
-  " i.e. warning,error
-  let g:lsp_ale_diagnostics_severity = "warning"
 
 """" Editing
 " Automatically add closing keywords (e.g. function/endfunction in vimscript)
