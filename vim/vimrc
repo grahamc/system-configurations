@@ -508,6 +508,8 @@ Plug 'prabirshrestha/asyncomplete.vim'
           \ 'allowlist': ['vim'],
           \ 'completor': function('asyncomplete#sources#necovim#completor'),
           \ }))
+  Plug 'prabirshrestha/async.vim'
+    Plug 'wellle/tmux-complete.vim'
 
 """" Coordination between plugins
 """"" delimitmate, vim-endwise
