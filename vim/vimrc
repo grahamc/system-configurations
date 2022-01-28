@@ -4,12 +4,6 @@ let g:mapleader = "\<Space>"
 " if 'encoding' is set, 'scriptencoding' must be set after it
 set encoding=utf8
 scriptencoding utf-8
-let g:terminal_has_24_bit_color_support = $COLORTERM ==# 'truecolor'
-if !g:terminal_has_24_bit_color_support
-  set notermguicolors
-else
-  set termguicolors
-endif
 
 """ Section: General
 set confirm
@@ -68,9 +62,6 @@ augroup Miscellaneous
   autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
   " highlight trailing whitespace
   autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red | execute '2match ErrorMsg /\s\+$/'
-  " When vim receives the SIGUSR1 signal, update the colorscheme.
-  " Using 'nested' here so that the 'ColorScheme' autocommands are run.
-  autocmd SigUSR1 * nested call SetColorscheme()
   " Automatically resize all splits to make them equal when the vim window is
   " resized or a new window is created/closed
   autocmd VimResized,WinNew,WinClosed * wincmd =
@@ -401,29 +392,7 @@ set signcolumn=yes " always show the sign column
 set fillchars+=foldopen:\ ,fold:\ ,vert:│
 
 """" colorscheme
-function! Colorscheme(background)
-    let &background = a:background
-    let l:vim_colorscheme = a:background ==? "light" ? "solarized8" : "nord"
-    execute "color " . l:vim_colorscheme
-endfunction
-function! CanSyncColorscheme()
-  return !empty(glob('~/.vim/colorscheme/colorscheme-name.txt'))
-endfunction
-function! SyncColorscheme()
-  call Colorscheme(readfile(glob('~/.vim/colorscheme/colorscheme-name.txt'))[0])
-endfunction
-function! SetColorscheme()
-  if !&termguicolors
-    call Colorscheme('dark')
-  else
-    if CanSyncColorscheme()
-      call SyncColorscheme()
-    else
-      call Colorscheme('dark')
-    endif
-  endif
-endfunction
-autocmd VimEnter * nested call SetColorscheme()
+colorscheme nord
 
 """" Block cursor in normal mode, thin line in insert mode, and underline in replace mode
 let &t_SI.="\e[5 q" "SI = INSERT mode
@@ -685,26 +654,6 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
     autocmd ColorScheme nord highlight WordUnderCursor cterm=underline,bold guibg=#272A34
     autocmd ColorScheme nord highlight QuickpickInvisibleStatusLine ctermbg=NONE ctermfg=0 guifg=#272A34 guibg=NONE
-  augroup END
-Plug 'lifepillar/vim-solarized8'
-  augroup SolarizedColorschemeOverrides
-    " Transparent SignColumn
-    autocmd ColorScheme solarized8 highlight SignColumn guibg=#EEE8D5
-    " statusline colors
-    autocmd ColorScheme solarized8 highlight StatusLine guibg=NONE guifg=#0087FF cterm=NONE
-    autocmd ColorScheme solarized8 highlight StatusLineNC guibg=NONE cterm=NONE
-    " Transparent vertical split
-    autocmd ColorScheme solarized8 highlight VertSplit guibg=NONE
-    " Darken the the line number for the current line
-    autocmd ColorScheme solarized8 highlight CursorLineNr guifg=#000000
-    autocmd ColorScheme solarized8 highlight WordUnderCursor cterm=underline,bold guibg=#FDF6E3
-    " transparent background
-    autocmd ColorScheme solarized8 highlight Normal ctermbg=NONE guibg=NONE
-    autocmd ColorScheme solarized8 highlight NonText ctermbg=NONE
-    autocmd ColorScheme solarized8 highlight! link EndOfBuffer NonText
-    autocmd ColorScheme solarized8 highlight QuickpickInvisibleStatusLine guifg=#FDF6E3 guibg=NONE
-    " cursorline for quickpick
-    autocmd ColorScheme solarized8 highlight CursorLine guibg=NONE guifg=NONE cterm=underline
   augroup END
 
 """" End Plugin Manager

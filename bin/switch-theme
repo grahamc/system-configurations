@@ -27,10 +27,3 @@ esac
 # Change kitty theme
 ln -sf ~/.config/kitty/"$mode"-theme.conf ~/.config/kitty/current-theme.conf
 reload-kitty
-
-# Change vim theme
-ln -sf ~/.vim/colorscheme/"$mode"-colorscheme-name.txt ~/.vim/colorscheme/colorscheme-name.txt
-for pid in $(pgrep vim)
-do
-  kill -SIGUSR1 "$pid"
-done
