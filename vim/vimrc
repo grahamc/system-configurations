@@ -454,8 +454,6 @@ function! MyStatusLine()
     return g:FormatGroup('NERDTree').s:STATUSLINE_SEPARATOR
   elseif &ft ==# 'vim-plug'
     return g:FormatGroup('VIM_PLUG').s:STATUSLINE_SEPARATOR
-  elseif &ft ==# 'vista_kind'
-    return g:FormatGroup('MINIMAP').s:STATUSLINE_SEPARATOR
   endif
   return g:FormatGroup('%h%w%q%f%m%r').s:STATUSLINE_SEPARATOR.g:FormatGroup('Ln:%l:%L').s:GROUP_SEPARATOR.g:FormatGroup('Col:%c')
 endfunction
@@ -574,15 +572,6 @@ Plug 'prabirshrestha/vim-lsp'
     " where the language servers are stored
     let g:lsp_settings_servers_dir = $VIMHOME . "vim-lsp-servers"
     call mkdir(g:lsp_settings_servers_dir, "p")
-  Plug 'liuchengxu/vista.vim'
-    let g:vista_default_executive = 'vim_lsp'
-    let g:vista_close_on_jump = 1
-    let g:vista_disable_statusline = 1
-    nnoremap <Leader>m :Vista!!<CR>
-    augroup Vista
-      autocmd!
-      autocmd FileType vista_kind exe 'vertical resize 30' | exe 'setlocal winfixwidth'
-    augroup END
 
 " Asynchronous linting
 Plug 'dense-analysis/ale'
