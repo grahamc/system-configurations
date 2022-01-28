@@ -132,7 +132,6 @@ shopt -s autocd
 set -C
 # Use ctrl+t as a shortcut for running the 'fg' command.
 # This way I can quickly return to a suspended program (e.g. vim) with ctrl+t
-stty susp undef
 bind '"\C-t":"fg\015"'
 # aliases
 source ~/.config/bash/complete_alias
