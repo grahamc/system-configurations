@@ -474,12 +474,6 @@ function! InstallMissingPlugins()
   endif
 endfunction
 autocmd VimEnter * nested call InstallMissingPlugins()
-" Helper function to load a plugin based on the value of a boolean.
-" Taken from the vim-plug wiki: https://github.com/junegunn/vim-plug/wiki/tips#conditional-activation
-function! LoadPluginIfTrue(boolean, ...)
-  let opts = get(a:000, 0, {})
-  return a:boolean ? opts : extend(opts, { 'on': [], 'for': [] })
-endfunction
 
 """" Start Plugin Manager
 call plug#begin('~/.vim/plugged')
@@ -642,16 +636,6 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
 Plug 'airblade/vim-matchquote'
 
 """" Colors
-" Detects color strings (e.g. hex, rgba) and changes the background of the characters
-" in that string to match the color. For example, in the following sample line of CSS:
-"   p {color: #000000}
-" The background color of the string "#000000" would be the color black.
-"
-" It will only get loaded if vim is running in 24-bit color mode as signified
-" by the setting 'termguicolors'. Plugins should always be registered, even
-" if they are not loaded, so that they are not accidentally deleted when
-" calling ':PlugClean'
-Plug 'BourgeoisBear/clrzr', LoadPluginIfTrue(&termguicolors)
 " Opens the OS color picker and inserts the chosen color into the buffer.
 Plug 'KabbAmine/vCoolor.vim'
   " Make an alias for the 'VCoolor' command with a name that is easier to remember
