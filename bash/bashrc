@@ -130,9 +130,6 @@ fi
 shopt -s autocd
 # Prevent overwriting a file with the '>' operator
 set -C
-# Use ctrl+t as a shortcut for running the 'fg' command.
-# This way I can quickly return to a suspended program (e.g. vim) with ctrl+t
-bind '"\C-t":"fg\015"'
 # aliases
 source ~/.config/bash/complete_alias
 make_alias_and_enable_autocomplete() {
@@ -186,8 +183,12 @@ bd() { cd `command bd "$@"`; }
 
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# Use ctrl+t as a shortcut for running the 'fg' command.
+# This way I can quickly return to a suspended program (e.g. vim) with ctrl+t
+# this is a bash setting, but I'm purposely doing this after fzf gets sourced
+# since fzf has a keybinding for ctrl+t
+bind -x '"\C-t":"fg\015"'
 bind -x '"\C-f": fzf-file-widget'
-bind -x '"\C-r": __fzf_history__'
 source ~/.config/bash/fzf-bash-completion.sh
 # use my prompt as the loading message so that there isn't a quick flash of loading text
 # taken from: https://github.com/lincheney/fzf-tab-completion#custom-loading-message
