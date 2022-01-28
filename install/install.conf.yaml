@@ -7,10 +7,6 @@
 - link:
     ~/.tmux.conf: tmux.conf
     ~/.vimrc: vim/vimrc
-    ~/.vim/colorscheme: vim/colorscheme
-    ~/.vim/colorscheme/colorscheme-name.txt:
-        path: ~/.vim/colorscheme/night-colorscheme-name.txt
-        if: '[ ! -f ~/.vim/colorscheme/colorscheme-name.txt ]'
     ~/.gitconfig: gitconfig
     ~/.xbindkeysrc: xbindkeysrc
     ~/.bashrc: bash/bashrc
