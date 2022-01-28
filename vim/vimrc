@@ -369,13 +369,6 @@ augroup SaveAndRestoreSettings
     endif
   endfunction
   autocmd VimLeavePre * call SaveSession()
-  " restore last cursor position after opening a file
-  function! RestoreCursorPosition()
-    if line("'\"") > 0 && line ("'\"") <= line("$")
-      execute "normal! g'\""
-    endif
-  endfunction
-  autocmd BufReadPost * call RestoreCursorPosition()
 augroup END
 
 """ Section: Aesthetics
@@ -463,6 +456,7 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'inkarkat/vim-CursorLineCurrentWindow'
 Plug 'bigolu/tabline.vim'
+Plug 'farmergreg/vim-lastplace'
 
 """" Autocomplete
 Plug 'prabirshrestha/asyncomplete.vim'
