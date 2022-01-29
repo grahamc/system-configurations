@@ -188,6 +188,9 @@ noremap <C-k> 10k
 noremap <C-l> 10l
 nnoremap Y yg_
 
+nnoremap } :keepjumps normal! }<CR>
+nnoremap { :keepjumps normal! {<CR>
+
 """ Section: Search
 """" Misc.
 " While typing the search query, highlight where the first match would be.
