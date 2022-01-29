@@ -5,3 +5,4 @@ rust 1.57.0
 vim 8.2.4118
 tmux 3.3-rc
 gitui 0.19.0
+neovim nightly
