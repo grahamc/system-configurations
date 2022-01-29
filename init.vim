@@ -33,36 +33,8 @@ Plug 'andymass/vim-matchup'
   let g:matchup_matchparen_offscreen = {}
 " Additional text objects and motions
 Plug 'wellle/targets.vim'
-
-"""" Coordination between plugins
-""""" delimitmate, vim-endwise
-" Combine enter key (<CR>) mappings from the plugins above.
-" Also, if the popupmenu is visible, but no items are selected, close the
-" popup and insert a newline.
-imap <expr> <CR>
-  \ pumvisible() ?
-    \ (complete_info().selected == -1 ? '<C-y><CR>' : '<C-y>') :
-    \ delimitMate#WithinEmptyPair() ?
-      \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
-      \ "\<CR>\<Plug>DiscretionaryEnd"
-
-"""" Editing
-" Automatically add closing keywords (e.g. function/endfunction in vimscript)
-Plug 'tpope/vim-endwise'
-  let g:endwise_no_mappings = 1
-  " this way endwise triggers on 'o'
-  nmap o A<CR>
 " Automatically close html tags
 Plug 'alvan/vim-closetag'
-" Automatically insert closing braces/quotes
-Plug 'Raimondi/delimitMate'
-  " Given the following line (where | represents the cursor):
-  "   function foo(bar) {|}
-  " Pressing enter will result in:
-  " function foo(bar) {
-  "   |
-  " }
-  let g:delimitMate_expand_cr = 0
 " Makes it easier to manipulate brace/bracket/quote pairs by providing commands to do common
 " operations like change pair, remove pair, etc.
 Plug 'tpope/vim-surround'
