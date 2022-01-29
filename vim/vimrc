@@ -8,16 +8,13 @@ let g:mapleader = "\<Space>"
 " if 'encoding' is set, 'scriptencoding' must be set after it
 set encoding=utf8
 scriptencoding utf-8
-let g:is_running_in_neovim = has('nvim')
 
 """ Section: General
 set confirm
 set mouse=a
 " neovim does not have this setting since it has mouse support by default
-if !g:is_running_in_neovim
-  " enable mouse mode while in tmux
-  let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
-endif
+" enable mouse mode while in tmux
+let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
 set backspace=indent,eol,start
 set hidden
 set nrformats-=octal
@@ -126,11 +123,7 @@ nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':q<CR>' : ':close<CR>'
 " show the completion menu even if there is only one suggestion
 " when autocomplete gets triggered, no suggestion is selected
 " Use popup instead of preview window
-set completeopt+=menuone,noselect completeopt-=preview
-" This option is not supported in neovim
-if !g:is_running_in_neovim
-  set completeopt+=popup
-endif
+set completeopt+=menuone,noselect,popup completeopt-=preview
 set complete=.,w,b,u
 
 """ Section: Command line settings
@@ -569,12 +562,10 @@ Plug 'mattn/emmet-vim'
 " Seamless movement between vim windows and tmux panes.
 Plug 'christoomey/vim-tmux-navigator'
   let g:tmux_navigator_no_mappings = 1
-  if !g:is_running_in_neovim
-    execute "set <M-h>=\eh"
-    execute "set <M-j>=\ej"
-    execute "set <M-k>=\ek"
-    execute "set <M-l>=\el"
-  endif
+  execute "set <M-h>=\eh"
+  execute "set <M-j>=\ej"
+  execute "set <M-k>=\ek"
+  execute "set <M-l>=\el"
   noremap <silent> <M-h> :TmuxNavigateLeft<cr>
   noremap <silent> <M-l> :TmuxNavigateRight<cr>
   noremap <silent> <M-j> :TmuxNavigateDown<cr>
