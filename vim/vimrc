@@ -103,8 +103,8 @@ command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
 
 " tabs
 nnoremap <Leader>c :tabnew<CR>
-nnoremap <C-Left> :tabprevious<CR>
-nnoremap <C-Right> :tabnext<CR>
+nnoremap <C-h> :tabprevious<CR>
+nnoremap <C-l> :tabnext<CR>
 
 inoremap jk <Esc>
 nnoremap <silent> <Leader>w :wa<CR>
@@ -186,11 +186,9 @@ function! GoEnd(type) abort
 endfunction
 nnoremap <silent> gb :set opfunc=GoStart<CR>g@
 nnoremap <silent> ge :set opfunc=GoEnd<CR>g@
-" move ten lines/columns at a time by holding ctrl and a directional key
-noremap <C-h> 10h
+" move ten lines at a time by holding ctrl and a directional key
 noremap <C-j> 10j
 noremap <C-k> 10k
-noremap <C-l> 10l
 nnoremap Y yg_
 
 nnoremap } :keepjumps normal! }<CR>
