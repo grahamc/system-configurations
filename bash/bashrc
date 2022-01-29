@@ -187,7 +187,7 @@ bd() { cd `command bd "$@"`; }
 # This way I can quickly return to a suspended program (e.g. vim) with ctrl+t
 # this is a bash setting, but I'm purposely doing this after fzf gets sourced
 # since fzf has a keybinding for ctrl+t
-bind '"\C-t":"fg\015"'
+bind -x '"\C-t":"fg"'
 bind -x '"\C-f": fzf-file-widget'
 source ~/.config/bash/fzf-bash-completion.sh
 # use my prompt as the loading message so that there isn't a quick flash of loading text
