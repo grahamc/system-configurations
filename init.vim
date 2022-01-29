@@ -45,3 +45,18 @@ Plug 'tpope/vim-abolish'
 Plug 'airblade/vim-matchquote'
 """" End Plugin Manager
 call plug#end()
+
+set clipboard=unnamedplus
+let g:mapleader = "\<Space>"
+xmap <C-Space> <C-S-P>
+nnoremap <Leader>x :Wqall<CR>
+nnoremap <silent> <Leader>w :Wall<CR>
+nnoremap <silent> <Leader>q :Quit<CR>
+nmap <Leader>\| <C-w>v
+nmap <Leader>_ <C-w>s
+nnoremap <silent> <Leader>f :Find<CR>
+nnoremap <silent> <Leader>g :call VSCodeNotify("workbench.action.findInFiles")<CR>
+noremap <C-j> 10j
+noremap <C-k> 10k
+nnoremap <Leader>e :call VSCodeNotify("workbench.action.toggleSidebarVisibility")<CR>
+xmap gc  <Plug>VSCodeCommentary
