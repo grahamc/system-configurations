@@ -21,8 +21,6 @@ autocmd VimEnter * nested call InstallMissingPlugins()
 call plug#begin('~/.vim/plugged')
 
 """" General
-" Syntax plugins for practically any language
-Plug 'sheerun/vim-polyglot'
 " Motions for levels of indentation
 Plug 'jeetsukumaran/vim-indentwise'
   map [<Tab> <Plug>(IndentWiseBlockScopeBoundaryBegin)

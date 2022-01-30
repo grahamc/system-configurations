@@ -457,8 +457,6 @@ Plug 'andymass/vim-matchup'
   let g:matchup_matchparen_offscreen = {}
 " Additional text objects and motions
 Plug 'wellle/targets.vim'
-" Applies editorconfig settings to vim
-Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'inkarkat/vim-CursorLineCurrentWindow'
 Plug 'bigolu/tabline.vim'
