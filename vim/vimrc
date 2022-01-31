@@ -403,7 +403,6 @@ augroup ResetCursor
 augroup END
 
 """" Statusline
-set fillchars+=stl:-,stlnc:-
 let s:GREY_HIGHLIGHT = "%#VertSplit#"
 let s:STATUSLINE_HIGHLIGHT = "%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}"
 let s:STATUSLINE_SEPARATOR = s:GREY_HIGHLIGHT.'%='
