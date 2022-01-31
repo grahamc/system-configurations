@@ -383,6 +383,7 @@ set linebreak
 set number relativenumber
 set cursorline cursorlineopt=number,line
 set laststatus=2
+set showtabline=2
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
@@ -402,18 +403,12 @@ augroup ResetCursor
 augroup END
 
 """" Statusline
-set fillchars+=stl:-,stlnc:-
 let s:GREY_HIGHLIGHT = "%#VertSplit#"
 let s:STATUSLINE_HIGHLIGHT = "%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}"
 let s:STATUSLINE_SEPARATOR = s:GREY_HIGHLIGHT.'%='
 let s:GROUP_SEPARATOR = s:GREY_HIGHLIGHT.'---'
 let g:FormatGroup = { group -> s:GREY_HIGHLIGHT.'['.s:STATUSLINE_HIGHLIGHT.group.s:GREY_HIGHLIGHT.']' }
 function! MyStatusLine()
-  " empty statusline for inactive windows
-  if g:actual_curwin != win_getid()
-    return s:GREY_HIGHLIGHT
-  endif
-
   if &ft ==# 'help'
     return g:FormatGroup('HELP').s:STATUSLINE_SEPARATOR
   elseif exists('b:NERDTree')
