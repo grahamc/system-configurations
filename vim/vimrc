@@ -409,11 +409,6 @@ let s:STATUSLINE_SEPARATOR = s:GREY_HIGHLIGHT.'%='
 let s:GROUP_SEPARATOR = s:GREY_HIGHLIGHT.'---'
 let g:FormatGroup = { group -> s:GREY_HIGHLIGHT.'['.s:STATUSLINE_HIGHLIGHT.group.s:GREY_HIGHLIGHT.']' }
 function! MyStatusLine()
-  " empty statusline for inactive windows
-  if g:actual_curwin != win_getid()
-    return s:GREY_HIGHLIGHT
-  endif
-
   if &ft ==# 'help'
     return g:FormatGroup('HELP').s:STATUSLINE_SEPARATOR
   elseif exists('b:NERDTree')
