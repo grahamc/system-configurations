@@ -383,6 +383,7 @@ set linebreak
 set number relativenumber
 set cursorline cursorlineopt=number,line
 set laststatus=2
+set showtabline=2
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
