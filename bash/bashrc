@@ -293,4 +293,7 @@ eval "$(zoxide init bash --cmd z)"
 z() { __zoxide_z "$@" && ls; }
 
 # automatically attach to tmux
-ta &> /dev/null
+if [ -z "$ATTACHED_TO_TMUX" ]; then
+	ta &> /dev/null
+	export ATTACHED_TO_TMUX=1
+fi
