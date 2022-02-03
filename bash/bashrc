@@ -178,6 +178,9 @@ export ASDF_VIM_CONFIG="\
 
 # python
 export VIRTUAL_ENV_DISABLE_PROMPT=1
+# automatically enable/disable virtual environment
+source ~/.config/bash/pyvenv-activate.sh
+pyvenv_auto_activate_enable
 
 # rg
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"

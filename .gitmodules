@@ -7,3 +7,6 @@
 [submodule "fzf-tab-completion"]
 	path = bash/fzf-tab-completion
 	url = https://github.com/bigolu/fzf-tab-completion
+[submodule "bash/pyvenv-activate"]
+	path = bash/pyvenv-activate
+	url = git@github.com:Intersec/pyvenv-activate.git

@@ -14,6 +14,7 @@
     ~/.config/bash/complete_alias: bash/complete-alias/complete_alias
     ~/.config/bash/fzf-bash-completion.sh: bash/fzf-tab-completion/bash/fzf-bash-completion.sh
     ~/.config/bash/prompt.bash: bash/prompt.bash
+    ~/.config/bash/pyvenv-activate.sh: bash/pyvenv-activate/pyvenv-activate.sh
     ~/.profile: bash/profile
     ~/.config/kitty: kitty
     ~/.config/kitty/current-theme.conf:
