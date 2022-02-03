@@ -288,5 +288,5 @@ function rust() {
 }
 
 # zoxide
-eval "$(zoxide init bash --cmd cd)"
-cd() { __zoxide_z "$@" && ls; }
+eval "$(zoxide init bash --cmd z)"
+z() { __zoxide_z "$@" && ls; }
