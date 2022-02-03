@@ -220,135 +220,6 @@ vnoremap <silent> # :<C-U>
   \escape(@y, '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gVzv:call setreg('y', old_reg, old_regtype)<CR>
 
-"""" File search
-function! QuickpickFiles() abort
-  call quickpick#open({
-    \ 'items': [],
-    \ 'on_accept': function('s:quickpick_files_on_accept'),
-    \ 'on_selection': function('s:quickpick_files_on_selection'),
-    \ 'on_change': function('s:quickpick_files_on_change'),
-    \ 'maxheight': 5,
-    \ })
-endfunction
-function! s:quickpick_files_on_accept(data, ...) abort
-  call quickpick#close()
-  execute 'edit ' . a:data['items'][0]
-endfunction
-function! s:quickpick_files_on_selection(data, ...) abort
-  return
-endfunction
-function! s:quickpick_files_on_change(data, ...) abort
-  call quickpick#items(systemlist('rg --vimgrep --files | fzf --filter ' . shellescape(a:data['input'])))
-endfunction
-nnoremap <silent> <Leader>f :silent! call QuickpickFiles()<CR>
-"""" Line search
-function! QuickpickLines() abort
-  let s:quickpick_current_buffer = bufnr()
-  let s:quickpick_current_line = line(".")
-  let s:quickpick_popup = v:none
-  call quickpick#open({
-    \ 'on_accept': function('s:quickpick_lines_on_accept'),
-    \ 'on_selection': function('s:quickpick_lines_on_selection'),
-    \ 'on_change': function('s:quickpick_lines_on_change'),
-    \ 'on_cancel': function('s:quickpick_lines_on_cancel'),
-    \ 'maxheight': 5,
-    \ })
-endfunction
-function! s:quickpick_lines_on_accept(data, ...) abort
-  call quickpick#close()
-  if s:quickpick_popup != v:none
-    call popup_close(s:quickpick_popup)
-    let s:quickpick_popup = v:none
-  endif
-  let [l:file, l:line; rest] = a:data['items'][0]->split(':')
-  execute 'edit +' . l:line . ' ' . l:file
-endfunction
-function! s:quickpick_lines_on_cancel(data, ...) abort
-  call quickpick#close()
-  if s:quickpick_popup != v:none
-    call popup_close(s:quickpick_popup)
-    let s:quickpick_popup = v:none
-  endif
-endfunction
-function! s:quickpick_lines_on_selection(data, ...) abort
-  if empty(a:data['items'])
-    if s:quickpick_popup != v:none
-      call popup_close(s:quickpick_popup)
-      let s:quickpick_popup = v:none
-    endif
-    return
-  endif
-  let [l:file, l:line; rest] = a:data['items'][0]->split(':')
-  let l:wininfo = getwininfo(bufwinid('quickpick-filter'))[0]
-
-  if s:quickpick_popup != v:none
-    call popup_close(s:quickpick_popup)
-    let s:quickpick_popup = v:none
-  endif
-
-  " open buffer for file if it isn't already open
-  let l:buffer_number = bufadd(l:file)
-
-  let s:quickpick_popup_options = {
-        \ 'pos':    'botleft',
-        \ 'borderchars': ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
-        \ 'border': [1,1,1,1],
-        \ 'title':  "Preview",
-        \ 'maxheight': 9,
-        \ 'minwidth':  l:wininfo.width - 3,
-        \ 'maxwidth':  l:wininfo.width - 3,
-        \ 'col':       l:wininfo.wincol,
-        \ 'line':      l:wininfo.winrow - 9,
-        \ }
-  silent let s:quickpick_popup = popup_create(l:buffer_number, s:quickpick_popup_options)
-  call win_execute(s:quickpick_popup, ['normal! '. l:line .'Gzz', 'setlocal cursorline cursorlineopt=line'])
-endfunction
-function! s:quickpick_lines_on_change(data, ...) abort
-  call quickpick#items(systemlist('rg ' . shellescape(a:data['input'])))
-endfunction
-nnoremap <silent> <Leader>g :silent! call QuickpickLines()<CR>
-"""" Buffer search
-function! QuickpickBuffers() abort
-  let s:quickpick_current_buffer = bufnr()
-  let s:quickpick_buffers = s:quickpick_get_buffers()
-  let s:quickpick_buffers_string = s:quickpick_buffers->join("\n")
-  call quickpick#open({
-    \ 'items': s:quickpick_buffers,
-    \ 'on_accept': function('s:quickpick_buffers_on_accept'),
-    \ 'on_change': function('s:quickpick_buffers_on_change'),
-    \ 'maxheight': 5,
-    \ })
-endfunction
-function! s:quickpick_get_buffers() abort
-  let l:buffer_numbers = filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&filetype") != "qf" && v:val != s:quickpick_current_buffer')
-
-  if empty(l:buffer_numbers)
-    return l:buffer_numbers
-  endif
-
-  " previous buffer gets listed first
-  let l:previous_buffer = bufnr('#')
-  let l:previous_buffer_index = index(l:buffer_numbers, l:previous_buffer)
-  if l:previous_buffer_index != -1
-    let [l:buffer_numbers[0], l:buffer_numbers[l:previous_buffer_index]] = [l:buffer_numbers[l:previous_buffer_index], l:buffer_numbers[0]]
-  endif
-
-  let l:formatted_buffer_numbers = mapnew(l:buffer_numbers, { index, buf -> '[' . buf . '] ' . bufname(buf) })
-
-  return l:formatted_buffer_numbers
-endfunction
-function! s:quickpick_buffers_on_accept(data, ...) abort
-  call quickpick#close()
-  " go to the buffer specified by the number in between braces
-  let l:left_or_right_brace_pattern = '[\[|\]]'
-  let l:keep_empty_strings = 0
-  execute 'b' . a:data['items'][0]->split(l:left_or_right_brace_pattern, l:keep_empty_strings)[0]
-endfunction
-function! s:quickpick_buffers_on_change(data, ...) abort
-  call quickpick#items(systemlist('fzf --filter ' . shellescape(a:data['input']), s:quickpick_buffers_string))
-endfunction
-nnoremap <silent> <Leader>b :silent! call QuickpickBuffers()<CR>
-
 """ Section: Restore Settings
 augroup SaveAndRestoreSettings
   autocmd!
@@ -590,6 +461,134 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
           \ call sign_place(0, '', 'quickpick_cursor', 'quickpick-filter', {'lnum': 1}) |
           \ let b:asyncomplete_enable = 0
   augroup END
+  """" File search
+  function! QuickpickFiles() abort
+    call quickpick#open({
+      \ 'items': [],
+      \ 'on_accept': function('s:quickpick_files_on_accept'),
+      \ 'on_selection': function('s:quickpick_files_on_selection'),
+      \ 'on_change': function('s:quickpick_files_on_change'),
+      \ 'maxheight': 5,
+      \ })
+  endfunction
+  function! s:quickpick_files_on_accept(data, ...) abort
+    call quickpick#close()
+    execute 'edit ' . a:data['items'][0]
+  endfunction
+  function! s:quickpick_files_on_selection(data, ...) abort
+    return
+  endfunction
+  function! s:quickpick_files_on_change(data, ...) abort
+    call quickpick#items(systemlist('rg --vimgrep --files | fzf --filter ' . shellescape(a:data['input'])))
+  endfunction
+  nnoremap <silent> <Leader>f :silent! call QuickpickFiles()<CR>
+  """" Line search
+  function! QuickpickLines() abort
+    let s:quickpick_current_buffer = bufnr()
+    let s:quickpick_current_line = line(".")
+    let s:quickpick_popup = v:none
+    call quickpick#open({
+      \ 'on_accept': function('s:quickpick_lines_on_accept'),
+      \ 'on_selection': function('s:quickpick_lines_on_selection'),
+      \ 'on_change': function('s:quickpick_lines_on_change'),
+      \ 'on_cancel': function('s:quickpick_lines_on_cancel'),
+      \ 'maxheight': 5,
+      \ })
+  endfunction
+  function! s:quickpick_lines_on_accept(data, ...) abort
+    call quickpick#close()
+    if s:quickpick_popup != v:none
+      call popup_close(s:quickpick_popup)
+      let s:quickpick_popup = v:none
+    endif
+    let [l:file, l:line; rest] = a:data['items'][0]->split(':')
+    execute 'edit +' . l:line . ' ' . l:file
+  endfunction
+  function! s:quickpick_lines_on_cancel(data, ...) abort
+    call quickpick#close()
+    if s:quickpick_popup != v:none
+      call popup_close(s:quickpick_popup)
+      let s:quickpick_popup = v:none
+    endif
+  endfunction
+  function! s:quickpick_lines_on_selection(data, ...) abort
+    if empty(a:data['items'])
+      if s:quickpick_popup != v:none
+        call popup_close(s:quickpick_popup)
+        let s:quickpick_popup = v:none
+      endif
+      return
+    endif
+    let [l:file, l:line; rest] = a:data['items'][0]->split(':')
+    let l:wininfo = getwininfo(bufwinid('quickpick-filter'))[0]
+
+    if s:quickpick_popup != v:none
+      call popup_close(s:quickpick_popup)
+      let s:quickpick_popup = v:none
+    endif
+
+    " open buffer for file if it isn't already open
+    let l:buffer_number = bufadd(l:file)
+
+    let s:quickpick_popup_options = {
+          \ 'pos':    'botleft',
+          \ 'borderchars': ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
+          \ 'border': [1,1,1,1],
+          \ 'title':  "Preview",
+          \ 'maxheight': 9,
+          \ 'minwidth':  l:wininfo.width - 3,
+          \ 'maxwidth':  l:wininfo.width - 3,
+          \ 'col':       l:wininfo.wincol,
+          \ 'line':      l:wininfo.winrow - 9,
+          \ }
+    silent let s:quickpick_popup = popup_create(l:buffer_number, s:quickpick_popup_options)
+    call win_execute(s:quickpick_popup, ['normal! '. l:line .'Gzz', 'setlocal cursorline cursorlineopt=line'])
+  endfunction
+  function! s:quickpick_lines_on_change(data, ...) abort
+    call quickpick#items(systemlist('rg ' . shellescape(a:data['input'])))
+  endfunction
+  nnoremap <silent> <Leader>g :silent! call QuickpickLines()<CR>
+  """" Buffer search
+  function! QuickpickBuffers() abort
+    let s:quickpick_current_buffer = bufnr()
+    let s:quickpick_buffers = s:quickpick_get_buffers()
+    let s:quickpick_buffers_string = s:quickpick_buffers->join("\n")
+    call quickpick#open({
+      \ 'items': s:quickpick_buffers,
+      \ 'on_accept': function('s:quickpick_buffers_on_accept'),
+      \ 'on_change': function('s:quickpick_buffers_on_change'),
+      \ 'maxheight': 5,
+      \ })
+  endfunction
+  function! s:quickpick_get_buffers() abort
+    let l:buffer_numbers = filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&filetype") != "qf" && v:val != s:quickpick_current_buffer')
+
+    if empty(l:buffer_numbers)
+      return l:buffer_numbers
+    endif
+
+    " previous buffer gets listed first
+    let l:previous_buffer = bufnr('#')
+    let l:previous_buffer_index = index(l:buffer_numbers, l:previous_buffer)
+    if l:previous_buffer_index != -1
+      let [l:buffer_numbers[0], l:buffer_numbers[l:previous_buffer_index]] = [l:buffer_numbers[l:previous_buffer_index], l:buffer_numbers[0]]
+    endif
+
+    let l:formatted_buffer_numbers = mapnew(l:buffer_numbers, { index, buf -> '[' . buf . '] ' . bufname(buf) })
+
+    return l:formatted_buffer_numbers
+  endfunction
+  function! s:quickpick_buffers_on_accept(data, ...) abort
+    call quickpick#close()
+    " go to the buffer specified by the number in between braces
+    let l:left_or_right_brace_pattern = '[\[|\]]'
+    let l:keep_empty_strings = 0
+    execute 'b' . a:data['items'][0]->split(l:left_or_right_brace_pattern, l:keep_empty_strings)[0]
+  endfunction
+  function! s:quickpick_buffers_on_change(data, ...) abort
+    call quickpick#items(systemlist('fzf --filter ' . shellescape(a:data['input']), s:quickpick_buffers_string))
+  endfunction
+  nnoremap <silent> <Leader>b :silent! call QuickpickBuffers()<CR>
 Plug 'airblade/vim-matchquote'
 
 """" File explorer
