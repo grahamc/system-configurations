@@ -171,7 +171,7 @@ make_alias_and_enable_autocomplete 'tree' 'rg --color=never --files | \tree --fr
 # Quick way to reconnect to tmux after a restart/closed-terminal.
 # This command connects to a running session, or if there isn't one, it just
 # launches tmux, in which case tmux-resurrect should restore the entire tmux environment
-make_alias_and_enable_autocomplete 'ta' 'tmux a || tmux'
+make_alias_and_enable_autocomplete 'ta' 'tmux attach-session -t main &> /dev/null || tmux attach-session &> /dev/null || tmux'
 tunnel() { cloudflared tunnel run --url "http://localhost:$1"; }
 mktouch() { mkdir -p "$(dirname "$1")" && touch "$1" ; }
 make_alias_and_enable_autocomplete 'sai' 'sudo apt install'
