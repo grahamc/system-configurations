@@ -290,3 +290,6 @@ function rust() {
 # zoxide
 eval "$(zoxide init bash --cmd z)"
 z() { __zoxide_z "$@" && ls; }
+
+# automatically attach to tmux
+ta &> /dev/null
