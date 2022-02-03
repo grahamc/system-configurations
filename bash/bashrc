@@ -13,10 +13,14 @@ esac
 PROMPT_DIRTRIM=2
 CONNECTBAR_DOWN=$'\u250C\u257C'
 CONNECTBAR_UP=$'\u2514'
-SPLITBAR=$'\u257E\u257C'
+SPLITBAR_LINE=$'\u2014'
+LEFT_SPLITBAR=$'\u257E'
+RIGHT_SPLITBAR=$'\u257C'
+SPLITBAR=$"${LEFT_SPLITBAR}${RIGHT_SPLITBAR}"
 ARROW=$'>>'
 BORDER_COLOR="\[\033[0;30m\]"
 TEXT_COLOR="\[\033[0;34m\]"
+STANDOUT_TEXT_COLOR="\[\033[0;33m\]"
 RESET_COLOR="\[\033[0m\]"
 # get current branch in git repo (adapted from ezprompt.net)
 function git_info() {
@@ -98,8 +102,18 @@ function job_info() {
 		echo ''
 	fi
 }
+function root_info() {
+	local root_indicator_escape_sequence='\$'
+	local root_indicator=${root_indicator_escape_sequence@P}
+	if [ "$root_indicator" = '#' ]
+	then
+		echo "${BORDER_COLOR}${RIGHT_SPLITBAR}[${STANDOUT_TEXT_COLOR}warning: root${BORDER_COLOR}]${SPLITBAR_LINE}"
+	else
+		echo ''
+	fi
+}
 function set_prompt() {
-	PS1="${BORDER_COLOR}${CONNECTBAR_DOWN}$(python_info)$(git_info)$(job_info)$(user_info)$(path_info)\n${BORDER_COLOR}${CONNECTBAR_UP}${ARROW} ${RESET_COLOR}"
+	PS1="${BORDER_COLOR}${CONNECTBAR_DOWN}$(python_info)$(git_info)$(job_info)$(user_info)$(path_info)\n${BORDER_COLOR}${CONNECTBAR_UP}$(root_info)${ARROW} ${RESET_COLOR}"
 }
 # We set the PS1 through PROMPT_COMMAND so that the PS1 will get reevaluated each time.
 # It needs to be reevaluated each time so things like the git branch can get recalculated
