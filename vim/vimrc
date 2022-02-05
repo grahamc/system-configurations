@@ -449,6 +449,9 @@ Plug 'tpope/vim-abolish'
 Plug 'mattn/emmet-vim'
   let g:user_emmet_expandabbr_key = '<Leader>e'
   let g:user_emmet_mode='n'
+Plug 'airblade/vim-matchquote'
+Plug 'tpope/vim-commentary'
+
 " Seamless movement between vim windows and tmux panes.
 Plug 'christoomey/vim-tmux-navigator'
   let g:tmux_navigator_no_mappings = 1
@@ -460,9 +463,11 @@ Plug 'christoomey/vim-tmux-navigator'
   noremap <silent> <M-l> :TmuxNavigateRight<cr>
   noremap <silent> <M-j> :TmuxNavigateDown<cr>
   noremap <silent> <M-k> :TmuxNavigateUp<cr>
+
 " Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
 Plug 'mhinz/vim-signify'
   nnoremap <Leader>vk :SignifyHunkDiff<CR>
+
 " The author said this is experimental so I'll pin a commit to avoid breaking changes
 Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b0134aa1e2d9'}
   function! QuickpickMappings()
@@ -617,7 +622,6 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
     call quickpick#items(systemlist('fzf --filter ' . shellescape(a:data['input']), s:quickpick_buffers_string))
   endfunction
   nnoremap <silent> <Leader>b :silent! call QuickpickBuffers()<CR>
-Plug 'airblade/vim-matchquote'
 
 """" File explorer
 Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
