@@ -265,10 +265,19 @@ autocmd VimEnter * nested colorscheme nord
 let &t_SI.="\e[5 q" "SI = INSERT mode
 let &t_SR.="\e[3 q" "SR = REPLACE mode
 let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
-" When vim exits, reset terminal cursor to blinking bar
-augroup ResetCursor
+function! RestoreCursor()
+  " set cursor back to blinking bar
+  silent execute "!echo -ne '\e[1 q'"
+endfunction
+function! ResetCursor()
+  " reset terminal cursor to blinking bar
+  silent execute "!echo -ne '\e[5 q'"
+endfunction
+augroup Cursor
   autocmd!
-  autocmd VimLeave * silent execute "!echo -ne '\e[5 q'"
+  autocmd VimLeave * call ResetCursor()
+  autocmd VimSuspend * call ResetCursor()
+  autocmd VimResume * call RestoreCursor()
 augroup END
 
 """" Statusline
