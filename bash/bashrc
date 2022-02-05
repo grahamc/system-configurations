@@ -82,6 +82,7 @@ make_alias_and_enable_autocomplete 'ap' 'apt policy'
 make_alias_and_enable_autocomplete 'sau' 'sudo apt update'
 bd() { cd `command bd "$@"`; }
 cd() { command cd "$@" && ls; }
+make_alias_and_enable_autocomplete 'sudo' 'sudo '
 
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
