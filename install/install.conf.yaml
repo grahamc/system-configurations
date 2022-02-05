@@ -1,6 +1,10 @@
 - defaults:
     link:
       create: true
+    shell:
+      stdin: true
+      stdout: true
+      stderr: true
 
 - clean: ['~', '~/.config', '~/.vim', '~/.vim/colorscheme', '~/.config/bash', '~/bin']
 
@@ -45,6 +49,12 @@
     - ~/code
 
 - shell:
-    - [./smart-plug/install , Install and start smart plug service]
-    - [sudo cp ./languagetool.service /etc/systemd/system/ && sudo systemctl enable languagetool.service && sudo systemctl start languagetool.service, Install and start languagetool service]
-    - [ sudo install --compare --backup --suffix=.bak --owner=root --group=root --mode='u=rw,g=r,o=r' -D --verbose --no-target-directory bash/bashrc_root.bash /root/.bashrc && sudo install --compare --backup --suffix=.bak --owner=root --group=root --mode='u=rw,g=r,o=r' -D --verbose --no-target-directory bash/prompt.bash  /root/.config/bash/prompt.bash, Install .bashrc for the root user]
+    -
+        description: Install and start smart plug service
+        command: ./smart-plug/install
+    -
+        description: Install and start languagetool service
+        command: ./languagetool/install
+    -
+        description: Install .bashrc for the root user
+        command: ./bash/install_bashrc_root

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo "Are you sure want to install the bash prompt for the root user? (y/n): "
+read response
+if [ "$response" = "n" ]; then
+    exit
+elif [ "$response" != "y" ] # invalid input
+  then
+    exit
+fi
+
+sudo install --compare --backup --suffix=.bak --owner=root --group=root --mode='u=rw,g=r,o=r' -D --verbose --no-target-directory bash/bashrc_root.bash /root/.bashrc
+sudo install --compare --backup --suffix=.bak --owner=root --group=root --mode='u=rw,g=r,o=r' -D --verbose --no-target-directory bash/prompt.bash  /root/.config/bash/prompt.bash
