@@ -2,13 +2,13 @@
     link:
       create: true
 
-- clean: ['~', '~/.config', '~/.vim', '~/.vim/colorscheme', '~/.config/bash']
+- clean: ['~', '~/.config', '~/.vim', '~/.vim/colorscheme', '~/.config/bash', '~/bin']
 
 - link:
     ~/.tmux.conf: tmux.conf
     ~/.vimrc: vim/vimrc
     ~/.config/nvim/init.vim: init.vim
-    ~/.gitconfig: gitconfig
+    ~/.gitconfig: git/gitconfig
     ~/.xbindkeysrc: xbindkeysrc
     ~/.bashrc: bash/bashrc
     ~/.config/bash/complete_alias: bash/complete-alias/complete_alias
@@ -33,6 +33,13 @@
     ~/.ripgreprc: ripgrep/ripgreprc
     ~/.config/gitui/theme.ron: gitui/theme.ron
     ~/.inputrc: inputrc
+
+# Using another link directive since I have multiple links to ~/bin and you can't have
+# multiple keys with the same name in YAML
+- link:
+    ~/bin:
+        glob: true
+        path: git/git-*
 
 - create:
     - ~/code
