@@ -100,13 +100,13 @@ function root_info() {
 	local root_indicator=${root_indicator_escape_sequence@P}
 	if [ "$root_indicator" = '#' ]
 	then
-		echo "${BORDER_COLOR}${RIGHT_SPLITBAR}[${STANDOUT_TEXT_COLOR}warning: root${BORDER_COLOR}]${SPLITBAR_LINE}"
+		echo "${BORDER_COLOR}[${STANDOUT_TEXT_COLOR}warning: root${BORDER_COLOR}]${SPLITBAR}"
 	else
 		echo ''
 	fi
 }
 function set_prompt() {
-	PS1="${BORDER_COLOR}${CONNECTBAR_DOWN}$(python_info)$(git_info)$(job_info)$(user_info)$(path_info)\n${BORDER_COLOR}${CONNECTBAR_UP}$(root_info)${ARROW} ${RESET_COLOR}"
+	PS1="${BORDER_COLOR}${CONNECTBAR_DOWN}$(root_info)$(python_info)$(git_info)$(job_info)$(user_info)$(path_info)\n${BORDER_COLOR}${CONNECTBAR_UP}${ARROW} ${RESET_COLOR}"
 }
 # We set the PS1 through PROMPT_COMMAND so that the PS1 will get reevaluated each time.
 # It needs to be reevaluated each time so things like the git branch can get recalculated
