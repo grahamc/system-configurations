@@ -295,12 +295,15 @@ set statusline=%{%MyStatusLine()%}
 
 " Tabline
 function! Tabline()
-  let s = '%#TabLine# '
+  let s = ''
 
   " shift tabline over if NERDTree is active
   if bufname(winbufnr(1)) == 'NERD_tree_1'
     let s .= '%#QuickpickInvisibleStatusLine#' . repeat(' ', winwidth(1)) . '%#VertSplit#'
   endif
+
+  " padding
+  let s .= '%#TabLine# '
 
   for i in range(tabpagenr('$'))
     let tab = i + 1
