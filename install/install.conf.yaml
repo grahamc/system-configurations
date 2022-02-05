@@ -25,7 +25,9 @@
     ~/.default-npm-packages: asdf/default-npm-packages
     ~/.default-cargo-crates: asdf/default-cargo-crates
     ~/.tool-versions: asdf/tool-versions
-    ~/bin: bin
+    ~/bin:
+        glob: true
+        path: executables/*
     ~/.cloudflared/config.yaml: cloudflared/config.yaml
     ~/.rgignore: ripgrep/rgignore
     ~/.ripgreprc: ripgrep/ripgreprc
