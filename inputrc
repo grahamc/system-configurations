@@ -31,3 +31,6 @@ set menu-complete-display-prefix on
 # do not insert characters from the completion that match characters that
 # come after the cursor. This way they don't get duplicated.
 set skip-completed-text on
+
+# use ctrl+b to go the beginning of a line
+"\C-b":beginning-of-line

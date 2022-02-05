@@ -130,8 +130,6 @@ set complete=.,w,b,u
 " on first wildchar press (<Tab>), show all matches and complete the longest common substring among them.
 " on subsequent wildchar presses, cycle through matches
 set wildmenu wildmode=longest:full,full
-" move to beginning of line
-cnoremap <C-a> <C-b>
 set cmdheight=2
 
 " automatically go to the end of pasted text
