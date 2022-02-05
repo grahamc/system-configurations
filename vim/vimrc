@@ -274,22 +274,51 @@ augroup ResetCursor
 augroup END
 
 """" Statusline
-let s:GREY_HIGHLIGHT = "%#VertSplit#"
-let s:STATUSLINE_HIGHLIGHT = "%{%g:actual_curwin==win_getid()?'%#StatusLine#':'%#StatusLineNC#'%}"
-let s:STATUSLINE_SEPARATOR = s:GREY_HIGHLIGHT.'%='
-let s:GROUP_SEPARATOR = s:GREY_HIGHLIGHT.'---'
-let g:FormatGroup = { group -> s:GREY_HIGHLIGHT.'['.s:STATUSLINE_HIGHLIGHT.group.s:GREY_HIGHLIGHT.']' }
+let s:STATUSLINE_SEPARATOR = '%='
+let s:GROUP_SEPARATOR = ' │ '
 function! MyStatusLine()
-  if &ft ==# 'help'
-    return g:FormatGroup('HELP').s:STATUSLINE_SEPARATOR
-  elseif exists('b:NERDTree')
-    return g:FormatGroup('NERDTree').s:STATUSLINE_SEPARATOR
-  elseif &ft ==# 'vim-plug'
-    return g:FormatGroup('VIM_PLUG').s:STATUSLINE_SEPARATOR
+  " no statusline for inactive windows
+  if g:actual_curwin != win_getid()
+    return ''
   endif
-  return g:FormatGroup('%h%w%q%f%m%r').s:STATUSLINE_SEPARATOR.g:FormatGroup('Ln:%l:%L').s:GROUP_SEPARATOR.g:FormatGroup('Col:%c')
+
+  if &ft ==# 'help'
+    return '  HELP'
+  elseif exists('b:NERDTree')
+    return '  NERDTree'
+  elseif &ft ==# 'vim-plug'
+    return '  VIM_PLUG'
+  endif
+  return ' %h%w%q%f%m%r'.s:STATUSLINE_SEPARATOR.s:GROUP_SEPARATOR.'Ln:%l:%L'.s:GROUP_SEPARATOR.'Col:%c '
 endfunction
 set statusline=%{%MyStatusLine()%}
+
+" Tabline
+function! Tabline()
+  let s = '%#TabLine# '
+
+  " shift tabline over if NERDTree is active
+  if bufname(winbufnr(1)) == 'NERD_tree_1'
+    let s .= '%#QuickpickInvisibleStatusLine#' . repeat(' ', winwidth(1)) . '%#VertSplit#'
+  endif
+
+  for i in range(tabpagenr('$'))
+    let tab = i + 1
+    let winnr = tabpagewinnr(tab)
+    let buflist = tabpagebuflist(tab)
+    let bufnr = buflist[winnr - 1]
+    let bufname = bufname(bufnr)
+    let bufmodified = getbufvar(bufnr, "&mod")
+
+    let s .= '%' . tab . 'T'
+    let s .= (tab == tabpagenr() ? '%#TabLineSel# ⯀ ' : '%#TabLine# ⯀ ')
+    let s .= (bufname != '' ? fnamemodify(bufname, ':t') : '[No Name]') . ' '
+    let s .= '%#TabLine#'
+  endfor
+
+  return s
+endfunction
+set tabline=%!Tabline()
 
 """ Section: Plugins
 """" Plugin Manager Settings
@@ -325,7 +354,6 @@ Plug 'andymass/vim-matchup'
 Plug 'wellle/targets.vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'inkarkat/vim-CursorLineCurrentWindow'
-Plug 'bigolu/tabline.vim'
 Plug 'farmergreg/vim-lastplace'
 
 """" Autocomplete
@@ -619,11 +647,11 @@ Plug 'arcticicestudio/nord-vim'
     " Transparent vertical split
     autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=0 guibg=NONE
     " statusline colors
-    autocmd ColorScheme nord highlight StatusLine ctermfg=3 guifg=#EBCB8B ctermbg=NONE guibg=NONE
-    autocmd ColorScheme nord highlight StatusLineNC ctermfg=8 ctermbg=NONE guibg=NONE
+    autocmd ColorScheme nord highlight StatusLine ctermfg=black guifg=#EBCB8B ctermbg=NONE cterm=bold,reverse
+    autocmd ColorScheme nord highlight StatusLineNC ctermfg=black ctermbg=NONE cterm=bold,reverse
     " autocomplete popupmenu
-    autocmd ColorScheme nord highlight PmenuSel ctermfg=NONE ctermbg=0 cterm=underline
-    autocmd ColorScheme nord highlight Pmenu ctermfg=8 ctermbg=0
+    autocmd ColorScheme nord highlight PmenuSel ctermfg=yellow ctermbg=NONE cterm=reverse,bold
+    autocmd ColorScheme nord highlight Pmenu ctermfg=black ctermbg=NONE cterm=reverse,bold
     " cursorline for quickpick
     autocmd ColorScheme nord highlight CursorLine ctermfg=NONE ctermbg=NONE guibg=NONE guifg=NONE cterm=underline
     " transparent background
@@ -635,6 +663,8 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
     autocmd ColorScheme nord highlight WordUnderCursor cterm=underline,bold guibg=#272A34
     autocmd ColorScheme nord highlight QuickpickInvisibleStatusLine ctermbg=NONE ctermfg=0 guifg=#272A34 guibg=NONE
+    autocmd ColorScheme nord highlight TabLine ctermbg=NONE ctermfg=blue cterm=bold,underline
+    autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=yellow cterm=bold,underline
   augroup END
 
 """" End Plugin Manager
