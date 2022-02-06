@@ -49,7 +49,7 @@ _fzf_bash_completion_loading_msg() {
 	echo "${PS1@P}${READLINE_LINE}" | tail -n1
 }
 _fzf_bash_completion_prompt() {
-	echo "${PS1@P}" | tail -n1;
+	echo "${PS1@P}${READLINE_LINE}" | tail -n1;
 }
 _fzf_bash_completion_options() {
 		if [[ "$1" == *"sai "* || "$1" == *"sar "* ]] # apt install/remove
