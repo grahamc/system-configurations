@@ -102,9 +102,9 @@ let &softtabstop = s:tab_width
 command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
 
 " tabs
-nnoremap <Leader>c :tabnew<CR>
-nnoremap <C-h> :tabprevious<CR>
-nnoremap <C-l> :tabnext<CR>
+nnoremap <silent> <Leader>c :tabnew<CR>
+nnoremap <silent> <C-h> :tabprevious<CR>
+nnoremap <silent> <C-l> :tabnext<CR>
 
 inoremap jk <Esc>
 nnoremap <silent> <Leader>w :wa<CR>
