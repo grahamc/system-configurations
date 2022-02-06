@@ -12,7 +12,6 @@ scriptencoding utf-8
 """ Section: General
 set confirm
 set mouse=a
-" neovim does not have this setting since it has mouse support by default
 " enable mouse mode while in tmux
 let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
 set backspace=indent,eol,start
