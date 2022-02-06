@@ -51,6 +51,16 @@ _fzf_bash_completion_loading_msg() {
 _fzf_bash_completion_prompt() {
 	echo "${PS1@P}" | tail -n1;
 }
+_fzf_bash_completion_options() {
+		if [[ "$1" == *"sai "* || "$1" == *"sar "* ]] # apt install/remove
+		then
+			echo '--height=90% --preview="apt show 2>/dev/null $(echo {} | sed "s/[^[:blank:][:print:]]//g")"'
+		elif [ "$2" = '0' ] # command completion
+		then
+			echo '--preview="shopt -s expand_aliases; source ~/.config/bash/aliases_and_functions.bash; _suggestion=$(echo {} | sed "s/[^[:blank:][:print:]]//g"); [ -d "$_suggestion" ] && ls "$_suggestion" || type "$_suggestion" "'
+		fi
+    echo ""
+}
 bind -x '"\t": fzf_bash_completion'
 export FZF_DEFAULT_COMMAND="rg --files"
 export FZF_COMPLETION_TRIGGER="*"
