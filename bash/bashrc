@@ -103,7 +103,7 @@ fzf() {
 
 	# Add the preview window position first so that it can
 	# be overriden by FZF_DEFAULT_OPTIONS or commandline arguments
-	FZF_DEFAULT_OPTIONS="--preview-window=$preview_window_position $FZF_DEFAULT_OPTIONS" command fzf "$@"
+	FZF_DEFAULT_OPTS="--preview-window=$preview_window_position $FZF_DEFAULT_OPTS" command fzf "$@"
 }
 
 # asdf
