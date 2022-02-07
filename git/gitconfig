@@ -8,12 +8,13 @@
 [alias]
     all = add -A
     p = pull
+    p-sub = submodule update
     s = status
     ss = status --short
     c = commit
     a = add
     d = diff
-    d-submodule = diff --submodule=diff
+    d-sub = diff --submodule=diff
     undo = checkout --
     some = add -u
     undocommit = reset "HEAD^"
