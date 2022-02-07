@@ -686,6 +686,7 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight QuickpickInvisibleStatusLine ctermbg=NONE ctermfg=0 guifg=#272A34 guibg=NONE
     autocmd ColorScheme nord highlight TabLine ctermbg=NONE ctermfg=blue cterm=bold,underline
     autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=yellow cterm=bold,underline
+    autocmd ColorScheme nord highlight WildMenu ctermfg=yellow guifg=#EBCB8B ctermbg=NONE cterm=bold
   augroup END
 
 """" End Plugin Manager
