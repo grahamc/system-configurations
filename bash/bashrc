@@ -14,6 +14,8 @@ export VISUAL=vim
 export EDITOR="$VISUAL"
 # use blinking bar for bash cursor
 echo -ne '\033[5 q'
+# change the color grep uses for highlighting matches to yellow
+export GREP_COLORS='ms=01;33'
 
 # bash
 # remove duplicates in bash history
