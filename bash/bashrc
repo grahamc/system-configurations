@@ -77,7 +77,6 @@ mktouch() { mkdir -p "$(dirname "$1")" && touch "$1" ; }
 make_alias_and_enable_autocomplete 'sai' 'sudo apt install'
 make_alias_and_enable_autocomplete 'sar' 'sudo apt remove'
 make_alias_and_enable_autocomplete 'saar' 'sudo apt autoremove'
-make_alias_and_enable_autocomplete 'ap' 'apt policy'
 make_alias_and_enable_autocomplete 'sau' 'sudo apt update'
 bd() { cd `command bd "$@"`; }
 cd() { command cd "$@" && ls; }
