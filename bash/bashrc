@@ -78,6 +78,7 @@ make_alias_and_enable_autocomplete 'sai' 'sudo apt install'
 make_alias_and_enable_autocomplete 'sar' 'sudo apt remove'
 make_alias_and_enable_autocomplete 'saar' 'sudo apt autoremove'
 make_alias_and_enable_autocomplete 'sau' 'sudo apt update'
+make_alias_and_enable_autocomplete 'as' 'apt show'
 bd() { cd `command bd "$@"`; }
 cd() { command cd "$@" && ls; }
 make_alias_and_enable_autocomplete 'sudo' 'sudo '
