@@ -262,7 +262,7 @@ set showtabline=2
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
-set fillchars+=foldopen:\ ,fold:\ ,vert:│
+let &fillchars = "foldopen: ,fold: ,vert:\u23B9"
 
 """" colorscheme
 autocmd VimEnter * nested colorscheme nord
@@ -312,7 +312,7 @@ function! Tabline()
 
   " shift tabline over if NERDTree is active
   if bufname(winbufnr(1)) == 'NERD_tree_1'
-    let s .= '%#QuickpickInvisibleStatusLine#' . repeat(' ', winwidth(1)) . '%#VertSplit#'
+    let s .= '%#QuickpickInvisibleStatusLine#' . repeat(' ', winwidth(1) + 1) . '%#VertSplit#'
   endif
 
   " padding
