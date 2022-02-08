@@ -84,6 +84,8 @@ make_alias_and_enable_autocomplete 'as' 'apt show'
 bd() { cd `command bd "$@"`; }
 cd() { command cd "$@" && ls; }
 make_alias_and_enable_autocomplete 'sudo' 'sudo '
+# pressing space will perform history expansion on the current line and insert a space
+bind Space:magic-space
 
 #fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
