@@ -109,7 +109,6 @@ inoremap jk <Esc>
 nnoremap <silent> <Leader>w :wa<CR>
 nnoremap <Leader>x :wqa<CR>
 nnoremap <Leader>r :source $MYVIMRC<CR>
-nnoremap <silent> <Leader>i :IndentLinesToggle<CR>
 
 " open new horizontal and vertical panes to the right and bottom respectively
 set splitright splitbelow
