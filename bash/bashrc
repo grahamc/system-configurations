@@ -100,7 +100,7 @@ _fzf_bash_completion_prompt() {
 	echo "${PS1@P}${READLINE_LINE}" | tail -n1;
 }
 _fzf_bash_completion_options() {
-		if [[ "$1" == *"sai "* || "$1" == *"sar "* ]] # apt install/remove
+		if [[ "$1" == *"apt install "* || "$1" == *"apt remove "* ]]
 		then
 			echo '--height=90% --preview="apt show 2>/dev/null $(echo {} | sed "s/[^[:blank:][:print:]]//g")"'
 		elif [ "$2" = '0' ] # command completion
