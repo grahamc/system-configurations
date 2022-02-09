@@ -35,7 +35,7 @@ set skip-completed-text on
 # use ctrl+b to go the beginning of a line
 "\C-b":beginning-of-line
 
-# automatically add closing parenthese
+# automatically add closing parenthesis
 "(": "\C-v()\e[D"
 
 # automatically add closing double quote
