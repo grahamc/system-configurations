@@ -9,5 +9,5 @@ elif [ "$response" != "y" ] # invalid input
     exit
 fi
 
-sudo install --compare --backup --suffix=.bak --owner=root --group=root --mode='u=rw,g=r,o=r' -D --verbose --no-target-directory bash/bashrc_root.bash /root/.bashrc
+sudo install --compare --backup --suffix=.bak --owner=root --group=root --mode='u=rw,g=r,o=r' --verbose --no-target-directory bash/bashrc_root.bash /root/.bashrc
 sudo install --compare --backup --suffix=.bak --owner=root --group=root --mode='u=rw,g=r,o=r' -D --verbose --no-target-directory bash/prompt.bash  /root/.config/bash/prompt.bash
