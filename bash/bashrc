@@ -95,6 +95,7 @@ bind Space:magic-space
 # since fzf has a keybinding for ctrl+t
 bind -x '"\C-t":"fg"'
 bind -x '"\C-f": fzf-file-widget'
+bind -x '"\e[Z": __fzf_history__'
 source ~/.config/bash/fzf-bash-completion.sh
 # use my prompt as the loading message so that there isn't a quick flash of loading text
 # taken from: https://github.com/lincheney/fzf-tab-completion#custom-loading-message
