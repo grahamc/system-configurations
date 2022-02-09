@@ -107,7 +107,7 @@ _fzf_bash_completion_prompt() {
 _fzf_bash_completion_options() {
 		if [[ "$1" == *"apt install "* || "$1" == *"apt remove "* ]]
 		then
-			echo '--height=90% --preview="apt show 2>/dev/null $(echo {} | sed "s/[^[:blank:][:print:]]//g") | grep --color=always \"^\\|^Package:\\|^Version:\\|^Origin:\\|^Provides:\\|^Depends:\\|^Suggests:\\|^Description:\""'
+			echo '--height=90% --preview="apt show 2>/dev/null $(echo {} | sed "s/[^[:blank:][:print:]]//g") | grep --color=always -E \"(^[a-z|A-Z|-]*:|^)\""'
 		elif [ "$2" = '0' ] # command completion
 		then
 			echo '--preview="_suggestion=$(echo {} | sed "s/[^[:blank:][:print:]]//g"); [ -d "$_suggestion" ] && ls "$_suggestion" || echo -e \"$( bash -c \"export PS1=ps1 &>/dev/null; shopt -s expand_aliases &>/dev/null; source ~/.bashrc &>/dev/null; type $_suggestion\" 2>/dev/null)\" "'
