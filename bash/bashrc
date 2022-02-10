@@ -215,8 +215,9 @@ eval "$(zoxide init bash --cmd z)"
 z() { __zoxide_z "$@" && ls; }
 
 # Ask the user to connect to tmux.
-# We only want to ask the user once so we first check if we've already asked
-if [ -z "$ASKED_USER_TO_CONNECT_TO_TMUX" ]; then
+# We only want to ask the user once so we first check if we've already asked.
+# We also don't want to ask if the user is already in tmux
+if [ -z "$ASKED_USER_TO_CONNECT_TO_TMUX" ] && [ -z "$IN_TMUX" ]; then
 	export ASKED_USER_TO_CONNECT_TO_TMUX=1
 	echo "Would you like to connect to tmux? (y/n): "
 	read response
