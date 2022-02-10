@@ -214,8 +214,14 @@ function rust() {
 eval "$(zoxide init bash --cmd z)"
 z() { __zoxide_z "$@" && ls; }
 
-# automatically attach to tmux
-if [ -z "$ATTACHED_TO_TMUX" ]; then
-	ta &> /dev/null
-	export ATTACHED_TO_TMUX=1
+# Ask the user to connect to tmux.
+# We only want to ask the user once so we first check if we've already asked
+if [ -z "$ASKED_USER_TO_CONNECT_TO_TMUX" ]; then
+	echo "Would you like to connect to tmux? (y/n): "
+	read response
+	if [ "$response" = "y" ]; then
+			ta &> /dev/null
+	fi
+
+	export ASKED_USER_TO_CONNECT_TO_TMUX=1
 fi
