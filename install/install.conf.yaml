@@ -6,7 +6,13 @@
       stdout: true
       stderr: true
 
-- clean: ['~', '~/.config', '~/.vim', '~/.vim/colorscheme', '~/.config/bash', '~/bin']
+# I'd prefer to use empty dictionaries (e.g. 'directory/with/no/options: {}') instead of putting
+# these items in a list, but dotbot fails when I specify an empty dictionary
+- clean: ['~', '~/.vim', '~/.vim/colorscheme', '~/.local/bin']
+
+- clean:
+    ~/.config:
+        recursive: true
 
 - link:
     ~/.tmux.conf: tmux.conf
@@ -29,7 +35,7 @@
     ~/.default-npm-packages: asdf/default-npm-packages
     ~/.default-cargo-crates: asdf/default-cargo-crates
     ~/.tool-versions: asdf/tool-versions
-    ~/bin:
+    ~/.local/bin/:
         glob: true
         path: executables/*
     ~/.cloudflared/config.yaml: cloudflared/config.yaml
@@ -37,18 +43,29 @@
     ~/.ripgreprc: ripgrep/ripgreprc
     ~/.config/gitui/theme.ron: gitui/theme.ron
     ~/.inputrc: inputrc
+    ~/.config/fish/config.fish: fish/config.fish
+    ~/.config/fish/functions/:
+        glob: true
+        path: fish/functions/*
+    ~/.config/fish/conf.d/:
+        glob: true
+        path: fish/conf.d/*
+    ~/.config/direnv/direnvrc: direnv/direnvrc
 
-# Using another link directive since I have multiple links to ~/bin and you can't have
+# Using another link directive since I have multiple links to this directory and you can't have
 # multiple keys with the same name in YAML
 - link:
-    ~/bin:
+    ~/.local/bin/:
         glob: true
-        path: git/git-*
+        path: git/subcommands/*
 
 - create:
     - ~/code
 
 - shell:
+    -
+        description: Install fish prompt for the root user
+        command: fish ./fish/install_fish_prompt_for_root.fish
     -
         description: Install and start smart plug service
         command: ./smart-plug/install

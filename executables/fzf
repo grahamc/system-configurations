@@ -1,0 +1,31 @@
+#!/bin/env fish
+
+# fzf wrapper that automatically sets the preview window location based on the orientation of
+# the terminal e.g. portrait/landscape.
+
+# I'm using a function so that my variables will have a function-local scope
+function _fzf
+    if set --query IN_TMUX
+        set columns (echo -n (tmux display -p '#{pane_width}'))
+        set lines (echo -n (tmux display -p '#{pane_height}'))
+    else
+        set columns $COLUMNS
+        set lines $LINES
+    end
+    set column_to_line_ratio (math $columns / $lines)
+
+    # I determined this threshold through guess and check
+    set portrait_threshold 3.1
+
+    if test $column_to_line_ratio -lt $portrait_threshold
+        set preview_window_position bottom
+    else # terminal window is in landscape
+        set preview_window_position right
+    end
+
+    # Add the preview window position first so that it can be overriden by FZF_DEFAULT_OPTIONS
+    # or commandline arguments
+    FZF_DEFAULT_OPTS="--preview-window=$preview_window_position $FZF_DEFAULT_OPTS" $HOME/.fzf/bin/fzf $argv
+end
+
+_fzf $argv
