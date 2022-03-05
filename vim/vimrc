@@ -23,6 +23,8 @@ set clipboard=unnamed
 set autoread " Re-read file if it is changed by an external program
 set scrolloff=10
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages sessionoptions-=folds
+set showcmd
+set display+=lastline
 
 function! OverrideVimsDefaultFiletypePlugins()
   " there is an ftplugin that is bundled with vim that
@@ -58,7 +60,7 @@ augroup Miscellaneous
         \ if &ft ==# 'help' && (&columns * 10) / &lines > 31 | wincmd L | endif
   autocmd FileType sh setlocal keywordprg=man
   autocmd VimEnter * call OverrideVimsDefaultFiletypePlugins()
-  autocmd CursorMoved * execute printf('match WordUnderCursor /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+  autocmd CursorHold * execute printf('match WordUnderCursor /\V\<%s\>/', escape(expand('<cword>'), '/\'))
   " After a quickfix command is run, open the quickfix window , if there are results
   autocmd QuickFixCmdPost [^l]* cwindow
   autocmd QuickFixCmdPost l*    lwindow
@@ -69,6 +71,8 @@ augroup Miscellaneous
   " Automatically resize all splits to make them equal when the vim window is
   " resized or a new window is created/closed
   autocmd VimResized,WinNew,WinClosed * wincmd =
+  " So that the line and column number stay updated
+  autocmd CursorHold * execute 'redrawtabline'
 augroup END
 
 cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
@@ -113,7 +117,7 @@ nnoremap <Leader>r :source $MYVIMRC<CR>
 " open new horizontal and vertical panes to the right and bottom respectively
 set splitright splitbelow
 nnoremap <Leader>\| :vsplit<CR>
-nnoremap <Leader>_ :split<CR>
+nnoremap <Leader>- :split<CR>
 " close a window, quit if last window
 " also when closing a tab, go to the previously opened tab
 nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':exe "q" \| tabn '.g:lasttab.'<CR>' : ':close<CR>'
@@ -122,7 +126,6 @@ if !exists('g:lasttab')
   let g:lasttab = 1
 endif
 autocmd TabLeave * let g:lasttab = tabpagenr()
-
 
 """ Section: Autocomplete
 " show the completion menu even if there is only one suggestion
@@ -156,9 +159,9 @@ endfunction
 vmap <silent> <expr> p <sid>Repl()
 
 " suspend vim and start a new shell
-nnoremap <C-t> :suspend<CR>
-inoremap <C-t> <ESC>:suspend<CR>
-xnoremap <C-t> <ESC>:suspend<CR>
+nnoremap <C-z> :suspend<CR>
+inoremap <C-z> <ESC>:suspend<CR>
+xnoremap <C-z> <ESC>:suspend<CR>
 
 """ Section: System Mappings
 " Map the output of these key combinations to their actual names
@@ -261,7 +264,8 @@ set showtabline=2
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
-let &fillchars = "foldopen: ,fold: ,vert:\u23B9"
+let &fillchars = "foldopen: ,fold: ,vert:\u23B9,stl:―,stlnc:―"
+set statusline=―
 
 """" colorscheme
 autocmd VimEnter * nested colorscheme nord
@@ -271,7 +275,7 @@ let &t_SI.="\e[5 q" "SI = INSERT mode
 let &t_SR.="\e[3 q" "SR = REPLACE mode
 let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
 function! RestoreCursor()
-  " set cursor back to blinking bar
+  " set cursor back to block
   silent execute "!echo -ne '\e[1 q'"
 endfunction
 function! ResetCursor()
@@ -285,37 +289,14 @@ augroup Cursor
   autocmd VimResume * call RestoreCursor()
 augroup END
 
-"""" Statusline
-let s:STATUSLINE_SEPARATOR = '%='
-let s:GROUP_SEPARATOR = ' │ '
-function! MyStatusLine()
-  " no statusline for inactive windows
-  if g:actual_curwin != win_getid()
-    return ''
-  endif
-
-  if &ft ==# 'help'
-    return '  HELP'
-  elseif exists('b:NERDTree')
-    return '  NERDTree'
-  elseif &ft ==# 'vim-plug'
-    return '  VIM_PLUG'
-  endif
-  return ' %h%w%q%f%m%r'.s:STATUSLINE_SEPARATOR.s:GROUP_SEPARATOR.'Ln:%l:%L'.s:GROUP_SEPARATOR.'Col:%c '
-endfunction
-set statusline=%{%MyStatusLine()%}
-
 " Tabline
 function! Tabline()
-  let s = ''
+  let tabline = ''
 
-  " shift tabline over if NERDTree is active
+  " shift tabline over if NERDTree is active on the left side
   if bufname(winbufnr(1)) == 'NERD_tree_1'
-    let s .= '%#QuickpickInvisibleStatusLine#' . repeat(' ', winwidth(1) + 1) . '%#VertSplit#'
+    let tabline .= '%#VertSplit#' . repeat(' ', winwidth(1) + 1)
   endif
-
-  " padding
-  let s .= '%#TabLine# '
 
   for i in range(tabpagenr('$'))
     let tab = i + 1
@@ -324,13 +305,31 @@ function! Tabline()
     let bufnr = buflist[winnr - 1]
     let bufname = bufname(bufnr)
 
-    let s .= '%' . tab . 'T'
-    let s .= (tab == tabpagenr() ? '%#TabLineSel# ⯀ ' : '%#TabLine# ⯀ ')
-    let s .= (bufname != '' ? fnamemodify(bufname, ':t') : '[No Name]') . ' '
-    let s .= '%#TabLine#'
-  endfor
+    let tabline .= '%' . tab . 'T'
+    let tabline .= (tab == tabpagenr() ? '%#TabLineSel# ⯀ ' : '%#TabLine# ⯀ ')
+    let tabline .= (bufname != '' ? fnamemodify(bufname, ':t') : '[No Name]')
 
-  return s
+    if tab == tabpagenr()
+      let tabline .= ', Ln %l of %L, Col %c '
+      let bufmodified = getbufvar(bufnr, "&mod")
+      if bufmodified
+        let tabline .= '[+] '
+      endif
+    else
+      let tabline .= ' '
+    endif
+  endfor
+  " If the last tab is active, we don't want the rest of the line to have the
+  " active highlight
+  let tabline .= '%#TabLine#'
+
+  " shift tabline over if NERDTree is active on the right side
+  let l:last_window_number = winnr('$')
+  if bufname(winbufnr(l:last_window_number)) == 'NERD_tree_1'
+    let tabline .= "%=%#VertSplit#" . repeat(' ', winwidth(l:last_window_number))
+  endif
+
+  return tabline
 endfunction
 set tabline=%!Tabline()
 
@@ -369,6 +368,7 @@ Plug 'wellle/targets.vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'inkarkat/vim-CursorLineCurrentWindow'
 Plug 'farmergreg/vim-lastplace'
+Plug 'tmux-plugins/vim-tmux-focus-events'
 
 """" Autocomplete
 Plug 'prabirshrestha/asyncomplete.vim'
@@ -642,11 +642,11 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
   augroup NerdTree
     " open/close directories with 'h' and 'l'
     autocmd FileType nerdtree nmap <buffer> l o | nmap <buffer> h o
-    autocmd FileType nerdtree setlocal signcolumn=no
   augroup END
   let g:NERDTreeMouseMode = 2
   let g:NERDTreeShowHidden = 1
   let g:NERDTreeStatusline = -1
+  let g:NERDTreeWinPos = "right"
   " Syncs nerdtree across tabs, but I'm really only using this
   " since it has an option for auto-focusing on the current file
   Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
@@ -664,27 +664,27 @@ Plug 'arcticicestudio/nord-vim'
     " Transparent SignColumn
     autocmd ColorScheme nord highlight clear SignColumn
     " Transparent vertical split
-    autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=0 guibg=NONE
+    autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=0
     " statusline colors
-    autocmd ColorScheme nord highlight StatusLine ctermfg=yellow guifg=#EBCB8B ctermbg=NONE cterm=bold,reverse,underline
-    autocmd ColorScheme nord highlight StatusLineNC ctermfg=blue ctermbg=NONE cterm=bold,reverse,underline
+    autocmd ColorScheme nord highlight StatusLine ctermfg=magenta ctermbg=NONE
+    autocmd ColorScheme nord highlight StatusLineNC ctermfg=black ctermbg=NONE
     " autocomplete popupmenu
-    autocmd ColorScheme nord highlight PmenuSel ctermfg=yellow ctermbg=NONE cterm=reverse,bold
+    autocmd ColorScheme nord highlight PmenuSel ctermfg=magenta ctermbg=NONE cterm=reverse,bold
     autocmd ColorScheme nord highlight Pmenu ctermfg=black ctermbg=NONE cterm=reverse,bold
     " cursorline for quickpick
-    autocmd ColorScheme nord highlight CursorLine ctermfg=NONE ctermbg=NONE guibg=NONE guifg=NONE cterm=underline
+    autocmd ColorScheme nord highlight CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
     " transparent background
-    autocmd ColorScheme nord highlight Normal ctermbg=NONE guibg=NONE
+    autocmd ColorScheme nord highlight Normal ctermbg=NONE
     autocmd ColorScheme nord highlight NonText ctermbg=NONE
     autocmd ColorScheme nord highlight! link EndOfBuffer NonText
     " relative line numbers
-    autocmd ColorScheme nord highlight LineNrAbove ctermfg=0 guifg=#434C5E
+    autocmd ColorScheme nord highlight LineNrAbove ctermfg=0
     autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
-    autocmd ColorScheme nord highlight WordUnderCursor cterm=underline,bold guibg=#272A34
-    autocmd ColorScheme nord highlight QuickpickInvisibleStatusLine ctermbg=NONE ctermfg=0 guifg=#272A34 guibg=NONE
-    autocmd ColorScheme nord highlight TabLine ctermbg=NONE ctermfg=blue cterm=bold,underline
-    autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=yellow cterm=bold,underline
-    autocmd ColorScheme nord highlight WildMenu ctermfg=yellow guifg=#EBCB8B ctermbg=NONE cterm=bold
+    autocmd ColorScheme nord highlight WordUnderCursor cterm=underline,bold
+    autocmd ColorScheme nord highlight QuickpickInvisibleStatusLine ctermbg=NONE ctermfg=0
+    autocmd ColorScheme nord highlight TabLine ctermbg=NONE ctermfg=black cterm=bold,underline
+    autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=magenta cterm=bold,underline
+    autocmd ColorScheme nord highlight WildMenu ctermfg=magenta ctermbg=NONE cterm=bold,underline
   augroup END
 
 """" End Plugin Manager

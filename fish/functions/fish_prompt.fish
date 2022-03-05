@@ -3,12 +3,12 @@ set right_splitbar \u257E
 set connectbar_up \u2514
 set connectbar_down \u250C
 set connectbar_middle \u251C
-set arrow '>>'
-set color_border (set_color brblack)
-set color_text (set_color cyan)
-set color_standout_text (set_color yellow)
+set color_border (set_color --bold brblack)
+set color_text (set_color normal; set_color cyan)
+set color_standout_text (set_color normal; set_color yellow)
 set color_normal (set_color normal)
-set color_text_error (set_color red)
+set color_text_error (set_color normal; set_color red)
+set color_arrow (set_color normal; set_color brblack)
 
 set --global --export __fish_git_prompt_showdirtystate
 set --global --export __fish_git_prompt_showupstream informative
@@ -20,6 +20,22 @@ function fish_prompt --description 'Print the prompt'
     # executed on the command line so I will store the value of pipestatus
     # now, before executing any commands.
     set last_pipestatus $pipestatus
+
+    # TODO: This clears the text in the terminal after the cursor. If we don't do this, multiline
+    # transient prompts won't display properly.
+    # issue: https://github.com/fish-shell/fish-shell/issues/8418
+    printf \e\[0J
+
+    # transient prompt
+    if set --query TRANSIENT
+        set --erase TRANSIENT
+        echo -n -s $color_arrow (fish_prompt_get_arrow) ' ' $color_normal
+        return
+    else if set --query TRANSIENT_EMPTY
+        set --erase TRANSIENT_EMPTY
+        echo -n ' '
+        return
+    end
 
     # Setting this value now since it gets used in some of the context functions
     if set --query IN_TMUX
@@ -49,15 +65,12 @@ function fish_prompt --description 'Print the prompt'
             continue
         end
 
-        set -l formatted_context (fish_prompt_format_context $context)
-        # TODO: I'm waiting on the --visible flag for the command 'string length' (comes out in version 3.4.0)
-        # so I can get the number of columns a string takes up on the screen, as opposed to the number
-        # of bytes in it. Until then, I'll just subtract an arbitrary amount from the length
-        # to account for color codes and multi-byte unicode characters
-        if test (math (string length (string join '' $lines[-1] $formatted_context)) - 30) -le $columns
-            set lines[-1] (string join '' $lines[-1] $formatted_context)
-            continue
-        end
+        # set -l formatted_context (fish_prompt_format_context $context)
+        # # I take the minimum of the number of columns and 120 to prevent the prompt from going past 120 chars
+        # if test (string length --visible (string join '' $lines[-1] $formatted_context)) -le (math "min(120, $columns)")
+        #     set lines[-1] (string join '' $lines[-1] $formatted_context)
+        #     continue
+        # end
 
         set --local formatted_context (fish_prompt_format_context $context first)
         set --local middle_line (string join '' (fish_prompt_make_line) $formatted_context)
@@ -75,10 +88,14 @@ function fish_prompt_make_line --argument-names type
     if test "$type" = first
         echo -n -s $color_border $connectbar_down
     else if test "$type" = last
-        echo -n -s -e $color_border $connectbar_up $arrow $color_normal ' '
+        echo -n -s -e $color_border $connectbar_up $color_arrow (fish_prompt_get_arrow) $color_normal ' '
     else
         echo -n -s $color_border $connectbar_middle
     end
+end
+
+function fish_prompt_get_arrow
+    string repeat -n $SHLVL '❯'
 end
 
 function fish_prompt_get_python_context
@@ -125,9 +142,9 @@ function fish_prompt_get_git_context --no-scope-shadowing
     end
 
     # subtract 4 for the unicode characters
-    if test (string length $git_context) -gt (math $columns - 4)
-        set --global --export __fish_git_prompt_char_upstream_ahead '>'
-        set --global --export __fish_git_prompt_char_upstream_behind '<'
+    if test (string length --visible $git_context) -gt (math $columns - 4)
+        set --global --export __fish_git_prompt_char_upstream_ahead '↑'
+        set --global --export __fish_git_prompt_char_upstream_behind '↓'
         set --global --export __fish_git_prompt_char_untrackedfiles '?'
         set --global --export __fish_git_prompt_char_dirtystate '!'
         set --global --erase __fish_git_prompt_char_stagedstate
@@ -136,13 +153,15 @@ function fish_prompt_get_git_context --no-scope-shadowing
         set git_context (fish_git_prompt)
     end
 
-    # remove parentheses and leading space e.g. ' (branch|dirty|untracked)' -> 'branch|dirty|untracked'
+    # remove parentheses and leading space e.g. ' (branch,dirty,untracked)' -> 'branch,dirty,untracked'
     set --local formatted_context (string sub --start=3 --end=-1 $git_context)
 
-    # replace first comma with ' (' e.g. 'branch|dirty|untracked' -> 'branch dirty|untracked'
+    # replace first comma with ' (' e.g. ',branch,dirty,untracked' -> ' (branch dirty,untracked'
     set --local formatted_context (string replace ',' ' (' $formatted_context)
+    # only add the closing parenthese if we added the opening one
+    and set formatted_context (string join '' $formatted_context ')')
 
-    echo -n -s $color_text 'git: ' $formatted_context ')'
+    echo -n -s $color_text 'git: ' $formatted_context
 end
 
 function fish_prompt_get_job_context
@@ -158,8 +177,13 @@ end
 function fish_prompt_get_user_context
     set privilege_context
     if test (id --user) -eq 0
-        set privilege_context 'user has root privileges'
-    else if sudo -nv 2>/dev/null
+        set privilege_context 'user has admin privileges'
+        # TODO: I use this command to see if sudo currently has any credentials cached, but technically
+        # this line attempts to extend the lifetime of the cache for another 15 minutes, failing if
+        # there currently aren't any credentials cached. Since I only want to know if credentials
+        # are cached, I should probably find something that just gives me that information without
+        # extending anything.
+    else if sudo --non-interactive --validate 2>/dev/null
         set privilege_context 'sudo credentials cached'
     end
 
@@ -167,7 +191,7 @@ function fish_prompt_get_user_context
         return
     end
 
-    echo -n -s $color_text 'user: ' $USER $color_standout_text (test -n "$privilege_context" && echo -n -s ' (' $privilege_context ')')
+    echo -n -s $color_text 'user: ' $USER $color_standout_text (test -n "$privilege_context" && string join '' ' (' $privilege_context ')')
 end
 
 function fish_prompt_get_host_context
@@ -183,13 +207,13 @@ function fish_prompt_get_path_context --no-scope-shadowing
     set path (prompt_pwd)
 
     set dir_length 5
-    while test (string length $path) -gt (math $columns - 4) -a $dir_length -ge 1
+    while test (string length --visible $path) -gt (math $columns - 4) -a $dir_length -ge 1
         set -g fish_prompt_pwd_dir_length $dir_length
         set path (prompt_pwd)
         set dir_length (math $dir_length - 1)
     end
 
-    echo -n -s $color_text $path
+    echo -n -s $color_text 'path: ' $path
 end
 
 function fish_prompt_get_status_context --no-scope-shadowing

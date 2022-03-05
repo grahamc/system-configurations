@@ -4,6 +4,6 @@ golang 1.17.2
 rust 1.57.0
 vim 8.2.4118
 tmux 3.3-rc
-gitui 0.19.0
+gitui 0.20.1
 neovim nightly
 direnv 2.30.3

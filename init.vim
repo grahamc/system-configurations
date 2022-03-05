@@ -51,7 +51,7 @@ nnoremap <Leader>x :Wqall<CR>
 nnoremap <silent> <Leader>w :Wall<CR>
 nnoremap <silent> <Leader>q :Quit<CR>
 nmap <Leader>\| <C-w>v
-nmap <Leader>_ <C-w>s
+nmap <Leader>- <C-w>s
 nnoremap <silent> <Leader>f :Find<CR>
 nnoremap <silent> <Leader>g :call VSCodeNotify("workbench.action.findInFiles")<CR>
 noremap <C-j> 10j

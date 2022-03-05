@@ -95,7 +95,7 @@ if status is-interactive
 
     # fish
     set --global --export fish_color_normal
-    set --global --export fish_color_command --bold
+    set --global --export fish_color_command
     set --global --export fish_color_quote
     set --global --export fish_color_redirection
     set --global --export fish_color_end
@@ -119,34 +119,95 @@ if status is-interactive
     abbr --add --global r 'source ~/.config/fish/config.fish'
     # Don't print a greeting when a new interactive fish shell is started
     set --global --export fish_greeting ''
-    # use ctrl+t to resume a suspended job
-    bind \ct fg
+    # use ctrl+z to resume the most recently suspended job
+    bind \cz fg
     # use ctrl+right-arrow to accept the next suggested word
     bind \e\[1\;3C forward-word
+    # bash-style history expansion (!! and !$)
+    function _bind_bang
+        switch (commandline -t)
+            case "!"
+                commandline -t -- $history[1]
+                commandline -f repaint
+            case "*"
+                commandline -i !
+        end
+    end
+    function _bind_dollar
+        switch (commandline -t)
+            # Variation on the original, vanilla "!" case
+            # ===========================================
+            #
+            # If the `!$` is preceded by text, search backward for tokens that
+            # contain that text as a substring. E.g., if we'd previously run
+            #
+            #   git checkout -b a_feature_branch
+            #   git checkout main
+            #
+            # then the `fea!$` in the following would be replaced with
+            # `a_feature_branch`
+            #
+            #   git branch -d fea!$
+            #
+            # and our command line would look like
+            #
+            #   git branch -d a_feature_branch
+            #
+            case "*!"
+                commandline -f backward-delete-char history-token-search-backward
+            case "*"
+                commandline -i '$'
+        end
+    end
+    bind ! _bind_bang
+    bind '$' _bind_dollar
+    # transient prompt
+    function transient_execute
+        set commandline_contents (commandline)
+        # I use --valid so that the prompt doesn't become transient while I'm entering a multiline
+        # command
+        if commandline --is-valid
+            set --global TRANSIENT
+            commandline -f repaint
+        # Make a distinction for when the commandline is empty. For example, I could insert a blank
+        # line when the command is empty. This way, hitting enter on an empty commandline could be a
+        # way to separate commands visually
+        else if test -z "$commandline_contents"
+            set --global TRANSIENT_EMPTY
+            commandline -f repaint
+        end
+        commandline -f execute
+    end
+    bind \r transient_execute
 
     # fzf
-    bind \cf fzf-file-widget
     bind \cg fzf-grep-widget
     set --global --export FZF_DEFAULT_OPTS "
         --multi
         --cycle
         --bind tab:down,shift-tab:up,alt-enter:toggle,alt-down:last,alt-up:first,backward-eof:abort,change:first
-        --header 'move [↓↑ or tab/shift-tab], select [enter], select multiple items [alt+enter]'
         --layout=reverse
-        --color='bg+:-1,fg+:blue,info:black,gutter:black,pointer:blue,prompt:blue:regular,border:black,query:-1:regular,marker:blue,header:yellow,spinner:yellow,hl:cyan,hl+:cyan'
-        --padding=0,0,1,0
+        --header-first
+        --info=hidden
+        --color='bg+:-1,fg+:blue,info:black,gutter:bright-black,pointer:blue,prompt:bright-black:underline,border:black,query:-1:regular,marker:blue,header:magenta,spinner:magenta,hl:cyan,hl+:cyan'
+        --margin=7%
+        --height 100%
         --prompt='> '
         --preview-window=wrap,60%
         --keep-right"
     set --global --export FZF_ALT_C_COMMAND "rg --files --null | xargs -0 dirname | sort -u"
-    set --global --export FZF_ALT_C_OPTS "--height 90% --preview 'ls --classify {}'"
+    set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify {}' --prompt='directories: '"
     set --global --export FZF_CTRL_T_COMMAND ''
-    set --global --export FZF_CTRL_T_OPTS '--preview "head -100 {}" --height 90%'
+    set --global --export FZF_CTRL_T_OPTS '--preview "head -100 {}" --prompt="files: "'
+    set --global --export FZF_CTRL_R_OPTS '--prompt="history: "'
+    # use ctrl+f for file search instead of default ctrl+t
+    bind --erase \ct
+    bind \cf fzf-file-widget
 
     # x server
     abbr --add --global r-xbindkeys 'killall xbindkeys; xbindkeys'
     abbr --add --global copy 'xclip -selection clipboard'
-    abbr --add --global paste 'xclip -selection clipboard -o'
+    abbr --add --global paste 'xclip -selection clipboard -out'
 
     # Set preferred editor.
     #
@@ -197,7 +258,9 @@ if status is-interactive
     abbr --add --global sar 'sudo apt remove'
     abbr --add --global saar 'sudo apt autoremove'
     abbr --add --global sau 'sudo apt update'
-    abbr --add --global as 'apt show'
+    abbr --add --global as apt-show
+    abbr --add --global ap 'apt policy'
+    abbr --add --global alu 'apt list --upgradeable'
 
     # asdf version manager
     set --global --export ASDF_VIM_CONFIG \
@@ -267,7 +330,9 @@ if status is-interactive
             return
         end
 
-        if get-user-confirmation 'Would you like to connect to tmux?'
+        echo 'Would you like to connect to tmux? (y/n):'
+        read --prompt 'echo "> "' --nchars 1 response
+        if test $response = y
             tmux-attach-or-create
         end
     end

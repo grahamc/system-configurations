@@ -23,7 +23,7 @@ function _fzf
         set preview_window_position right
     end
 
-    # Add the preview window position first so that it can be overriden by FZF_DEFAULT_OPTIONS
+    # Add the preview window position first so that it can be overriden by FZF_DEFAULT_OPTS
     # or commandline arguments
     FZF_DEFAULT_OPTS="--preview-window=$preview_window_position $FZF_DEFAULT_OPTS" $HOME/.fzf/bin/fzf $argv
 end

@@ -6,13 +6,14 @@
       stdout: true
       stderr: true
 
-# I'd prefer to use empty dictionaries (e.g. 'directory/with/no/options: {}') instead of putting
-# these items in a list, but dotbot fails when I specify an empty dictionary
-- clean: ['~', '~/.vim', '~/.vim/colorscheme', '~/.local/bin']
-
 - clean:
     ~/.config:
         recursive: true
+    # Dotbot fails if I don't add a slash after '~'
+    ~/: {}
+    ~/.vim: {}
+    ~/.vim/colorscheme: {}
+    ~/.local/bin: {}
 
 - link:
     ~/.tmux.conf: tmux.conf
@@ -47,9 +48,6 @@
     ~/.config/fish/functions/:
         glob: true
         path: fish/functions/*
-    ~/.config/fish/conf.d/:
-        glob: true
-        path: fish/conf.d/*
     ~/.config/direnv/direnvrc: direnv/direnvrc
 
 # Using another link directive since I have multiple links to this directory and you can't have
