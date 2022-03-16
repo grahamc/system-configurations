@@ -134,34 +134,32 @@ function fish_prompt_get_python_venv_name
 end
 
 function fish_prompt_get_git_context --no-scope-shadowing
-    set --global --export __fish_git_prompt_char_upstream_ahead ',ahead:'
-    set --global --export __fish_git_prompt_char_upstream_behind ',behind:'
-    set --global --export __fish_git_prompt_char_untrackedfiles ',untracked'
-    set --global --export __fish_git_prompt_char_dirtystate ',dirty'
-    set --global --export __fish_git_prompt_char_stagedstate ',staged'
-    set --global --export __fish_git_prompt_char_invalidstate ',invalid'
-    set --global --export __fish_git_prompt_char_stateseparator ''
+    set --global __fish_git_prompt_char_upstream_ahead ',ahead:'
+    set --global __fish_git_prompt_char_upstream_behind ',behind:'
+    set --global __fish_git_prompt_char_untrackedfiles ',untracked'
+    set --global __fish_git_prompt_char_dirtystate ',dirty'
+    set --global __fish_git_prompt_char_stagedstate ',staged'
+    set --global __fish_git_prompt_char_invalidstate ',invalid'
+    set --global __fish_git_prompt_char_stateseparator ''
 
     set git_context (fish_git_prompt)
     if test -z $git_context
         return
     end
 
-    # subtract 4 for the unicode characters
-    if test (string length --visible $git_context) -gt (math $columns - 4)
-        set --global --export __fish_git_prompt_char_upstream_ahead '↑'
-        set --global --export __fish_git_prompt_char_upstream_behind '↓'
-        set --global --export __fish_git_prompt_char_untrackedfiles '?'
-        set --global --export __fish_git_prompt_char_dirtystate '!'
+    if test (string length --visible $git_context) -gt (math $columns - 10)
+        set --global __fish_git_prompt_char_upstream_ahead '↑'
+        set --global __fish_git_prompt_char_upstream_behind '↓'
+        set --global __fish_git_prompt_char_untrackedfiles '?'
+        set --global __fish_git_prompt_char_dirtystate '!'
         set --global --erase __fish_git_prompt_char_stagedstate
         set --global --erase __fish_git_prompt_char_invalidstate
-        set --global --export __fish_git_prompt_char_stateseparator ' '
+        set --global __fish_git_prompt_char_stateseparator ' '
         set git_context (fish_git_prompt)
     end
 
     # remove parentheses and leading space e.g. ' (branch,dirty,untracked)' -> 'branch,dirty,untracked'
     set --local formatted_context (string sub --start=3 --end=-1 $git_context)
-
     # replace first comma with ' (' e.g. ',branch,dirty,untracked' -> ' (branch dirty,untracked'
     set --local formatted_context (string replace ',' ' (' $formatted_context)
     # only add the closing parenthese if we added the opening one
