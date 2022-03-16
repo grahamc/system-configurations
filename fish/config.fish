@@ -162,7 +162,7 @@ if status is-interactive
     bind ! _bind_bang
     bind '$' _bind_dollar
     # transient prompt
-    function transient_execute
+    function _load_transient_prompt_and_execute
         set commandline_contents (commandline)
         # I use --valid so that the prompt doesn't become transient while I'm entering a multiline
         # command
@@ -170,16 +170,15 @@ if status is-interactive
             set --global TRANSIENT
             commandline -f repaint
         # Make a distinction for when the commandline is empty. For example, I could insert a blank
-        # line when the command is empty. This way, hitting enter on an empty commandline could be a
-        # way to separate commands visually
+        # line when the commandline is empty, giving me a way to separate commands visually
         else if test -z "$commandline_contents"
             set --global TRANSIENT_EMPTY
             commandline -f repaint
         end
         commandline -f execute
     end
-    bind \r transient_execute
-    # TODO: This disables the default fish window resize (SIGWINCH) handler and defines a new one that clears the screen
+    bind \r _load_transient_prompt_and_execute
+    # TODO: This disables fish's default window resize (SIGWINCH) handler and defines a new one that clears the screen
     # after reloading the prompt. This is necessary due to an issue between the terminal's linewrapping
     # and fish's prompt reloading that results in a stray line of the old prompt being left on the screen.
     #
