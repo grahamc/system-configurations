@@ -697,8 +697,8 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
     autocmd ColorScheme nord highlight WordUnderCursor cterm=underline,bold
     autocmd ColorScheme nord highlight QuickpickInvisibleStatusLine ctermbg=NONE ctermfg=0
-    autocmd ColorScheme nord highlight TabLine ctermbg=NONE ctermfg=black cterm=bold,underline
-    autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=magenta cterm=bold,underline
+    autocmd ColorScheme nord highlight TabLine ctermbg=NONE ctermfg=black cterm=underline
+    autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=magenta cterm=underline
     autocmd ColorScheme nord highlight WildMenu ctermfg=magenta ctermbg=NONE cterm=bold,underline
   augroup END
 
