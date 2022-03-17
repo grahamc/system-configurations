@@ -45,11 +45,12 @@ function fish_prompt --description 'Print the prompt'
         return
     end
 
-    # Setting this value now since it gets used in some of the context functions
+    # Get the number of columns for the screen or tmux pane. Setting this value now since it gets used in some
+    # of the context functions.
     if set --query IN_TMUX
-        # Get the id of the pane that belongs to this shell instance. This is different from the active pane
-        # in tmux. This way when I am resizing one of the panes, the other panes will get _their_ new size
-        # as opposed to the new size of the pane that I am currently dragging, which tmux would deem the active pane.
+        # Get the id of the pane that belongs to this shell instance. This may be different from the active pane
+        # in tmux. This way when I am resizing one of the panes, the other panes will get _their_ new column count
+        # instead of the new column count of the pane that I am currently dragging, which tmux would deem the active pane.
         set grep_pattern (string join '' '^' $fish_pid)
         set pane_id (tmux list-panes -a -F "#{pane_pid} #{pane_id}" | grep $grep_pattern | string sub --start (math (string length $fish_pid) + 2))
 
