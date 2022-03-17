@@ -175,8 +175,8 @@ function fish_prompt_get_job_context
         return
     end
 
-    set --local job_commands = (jobs --command)
-    set --local formatted_job_commands (string split $job_commands | string join ,)
+    set --local job_commands (jobs --command)
+    set --local formatted_job_commands (string split ' ' $job_commands | string join ,)
     echo -n -s $color_text 'jobs: ' $formatted_job_commands
 end
 
