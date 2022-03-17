@@ -4,6 +4,7 @@ set connectbar_up \u2514
 set connectbar_down \u250C
 set connectbar_middle \u251C
 set color_border (set_color --bold brblack)
+# The reason for all the 'set_color normal' commands is to undo the bold set by color_border
 set color_text (set_color normal; set_color cyan)
 set color_standout_text (set_color normal; set_color yellow)
 set color_normal (set_color normal)
@@ -70,13 +71,6 @@ function fish_prompt --description 'Print the prompt'
             set --append lines $first_line
             continue
         end
-
-        # set -l formatted_context (fish_prompt_format_context $context)
-        # # I take the minimum of the number of columns and 120 to prevent the prompt from going past 120 chars
-        # if test (string length --visible (string join '' $lines[-1] $formatted_context)) -le (math "min(120, $columns)")
-        #     set lines[-1] (string join '' $lines[-1] $formatted_context)
-        #     continue
-        # end
 
         set --local formatted_context (fish_prompt_format_context $context first)
         set --local middle_line (string join '' (fish_prompt_make_line) $formatted_context)
