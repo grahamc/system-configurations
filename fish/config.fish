@@ -179,7 +179,7 @@ if status is-interactive
     end
     bind \r _load_transient_prompt_and_execute
     # TODO: This disables fish's default window resize (SIGWINCH) handler and defines a new one that clears the screen
-    # after reloading the prompt. This is necessary due to an issue between the terminal's linewrapping
+    # after reloading the prompt. This covers up an issue between the terminal's linewrapping
     # and fish's prompt reloading that results in a stray line of the old prompt being left on the screen.
     #
     # issue filed with VTE: https://gitlab.gnome.org/GNOME/vte/-/issues/2294
