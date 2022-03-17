@@ -88,7 +88,7 @@ function fish_prompt_make_line --argument-names type
     if test "$type" = first
         echo -n -s $color_border $connectbar_down
     else if test "$type" = last
-        echo -n -s -e $color_border $connectbar_up $color_arrow (fish_prompt_get_arrow) $color_normal ' '
+        echo -n -s $color_border $connectbar_up $color_arrow (fish_prompt_get_arrow) $color_normal ' '
     else
         echo -n -s $color_border $connectbar_middle
     end
