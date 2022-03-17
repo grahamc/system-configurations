@@ -269,7 +269,7 @@ function! MyStatusLine()
   let l:highlight_text = (g:actual_curwin == win_getid()) ? 'StatusLineText' : 'StatusLineNCText'
   let l:highlight_text = '%#' . l:highlight_text . '#'
 
-  let l:highlight = (g:actual_curwin == win_getid()) ? 'StatusLineNonText' : 'StatusLineNCNonText'
+  let l:highlight = (g:actual_curwin == win_getid()) ? 'StatusLineFillchar' : 'StatusLineNCFillchar'
   let l:highlight = '%#' . l:highlight . '#'
 
   if &ft ==# 'help'
@@ -677,8 +677,8 @@ Plug 'arcticicestudio/nord-vim'
     " Transparent vertical split
     autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=0
     " statusline colors
-    autocmd ColorScheme nord highlight StatusLineNonText ctermfg=magenta ctermbg=NONE
-    autocmd ColorScheme nord highlight StatusLineNCNonText ctermfg=black ctermbg=NONE
+    autocmd ColorScheme nord highlight StatusLineFillchar ctermfg=magenta ctermbg=NONE
+    autocmd ColorScheme nord highlight StatusLineNCFillchar ctermfg=black ctermbg=NONE
     autocmd ColorScheme nord highlight StatusLineText ctermfg=magenta ctermbg=NONE cterm=reverse
     autocmd ColorScheme nord highlight StatusLineNCText ctermfg=black ctermbg=NONE cterm=reverse
     autocmd ColorScheme nord highlight StatusLine ctermfg=black ctermbg=NONE
