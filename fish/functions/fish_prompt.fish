@@ -22,18 +22,25 @@ function fish_prompt --description 'Print the prompt'
     # now, before executing any commands.
     set last_pipestatus $pipestatus
 
-    # TODO: This clears the text in the terminal after the cursor. If we don't do this, multiline
-    # transient prompts won't display properly.
-    # issue: https://github.com/fish-shell/fish-shell/issues/8418
-    printf \e\[0J
-
     # transient prompt
     if set --query TRANSIENT
         set --erase TRANSIENT
+
+        # TODO: This clears the text in the terminal after the cursor. If we don't do this, multiline
+        # transient prompts won't display properly.
+        # issue: https://github.com/fish-shell/fish-shell/issues/8418
+        printf \e\[0J
+
         echo -n -s $color_arrow (fish_prompt_get_arrow) ' ' $color_normal
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY
+
+        # TODO: This clears the text in the terminal after the cursor. If we don't do this, multiline
+        # transient prompts won't display properly.
+        # issue: https://github.com/fish-shell/fish-shell/issues/8418
+        printf \e\[0J
+
         echo -n ' '
         return
     end
