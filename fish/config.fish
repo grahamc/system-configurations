@@ -169,7 +169,7 @@ if status is-interactive
         if commandline --is-valid
             set --global TRANSIENT
             commandline -f repaint
-        # Make a distinction for when the commandline is empty. For example, I could insert a blank
+        # Make a distinction for an empty commandline. With this, I could insert a blank
         # line when the commandline is empty, giving me a way to separate commands visually
         else if test -z "$commandline_contents"
             set --global TRANSIENT_EMPTY
