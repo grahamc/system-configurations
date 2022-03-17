@@ -191,6 +191,9 @@ if status is-interactive
         echo -n (clear | string replace \e\[3J "")
     end
 
+    # cloudflared
+    abbr --add --global tunnel cloudflared-tunnel
+
     # fzf
     bind \cg fzf-grep-widget
     set --global --export FZF_DEFAULT_OPTS "
