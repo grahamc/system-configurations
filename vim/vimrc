@@ -283,7 +283,7 @@ function! MyStatusLine()
     return l:highlight_text . ' ' . l:special_statusline . ' ' . l:highlight
   endif
 
-  return l:highlight_text . ' %h%w%q%f%m%r, Ln %l/%L, Col %c/%{execute("echon col(\"$\") - 1")} '. l:highlight
+  return l:highlight_text . ' %h%w%q%f%m%r ❯ Ln %l/%L ❯ Col %c/%{execute("echon col(\"$\") - 1")} '. l:highlight
 endfunction
 set statusline=%{%MyStatusLine()%}
 
@@ -679,8 +679,8 @@ Plug 'arcticicestudio/nord-vim'
     " statusline colors
     autocmd ColorScheme nord highlight StatusLineNonText ctermfg=magenta ctermbg=NONE
     autocmd ColorScheme nord highlight StatusLineNCNonText ctermfg=black ctermbg=NONE
-    autocmd ColorScheme nord highlight StatusLineText ctermfg=magenta ctermbg=NONE cterm=reverse,bold
-    autocmd ColorScheme nord highlight StatusLineNCText ctermfg=black ctermbg=NONE cterm=reverse,bold
+    autocmd ColorScheme nord highlight StatusLineText ctermfg=magenta ctermbg=NONE cterm=reverse
+    autocmd ColorScheme nord highlight StatusLineNCText ctermfg=black ctermbg=NONE cterm=reverse
     autocmd ColorScheme nord highlight StatusLine ctermfg=black ctermbg=NONE
     autocmd ColorScheme nord highlight StatusLineNC ctermfg=magenta ctermbg=NONE
     " autocomplete popupmenu
