@@ -71,8 +71,6 @@ augroup Miscellaneous
   " Automatically resize all splits to make them equal when the vim window is
   " resized or a new window is created/closed
   autocmd VimResized,WinNew,WinClosed * wincmd =
-  " So that the line and column number stay updated
-  autocmd CursorHold * execute 'redrawtabline'
 augroup END
 
 cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
@@ -260,12 +258,34 @@ set linebreak
 set number relativenumber
 set cursorline cursorlineopt=number,line
 set laststatus=2
-set showtabline=2
+set showtabline=1
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
-let &fillchars = "foldopen: ,fold: ,vert:\u23B9,stl:―,stlnc:―"
-set statusline=―
+let &fillchars = "foldopen: ,fold: ,vert:\u23B9,stl:\u23B9,stlnc:\u23B9"
+
+" Statusline
+function! MyStatusLine()
+  let l:highlight_text = (g:actual_curwin == win_getid()) ? 'StatusLineText' : 'StatusLineNCText'
+  let l:highlight_text = '%#' . l:highlight_text . '#'
+
+  let l:highlight = (g:actual_curwin == win_getid()) ? 'StatusLineNonText' : 'StatusLineNCNonText'
+  let l:highlight = '%#' . l:highlight . '#'
+
+  if &ft ==# 'help'
+    let l:special_statusline = 'Help'
+  elseif exists('b:NERDTree')
+    let l:special_statusline = 'NERDTree'
+  elseif &ft ==# 'vim-plug'
+    let l:special_statusline = 'Vim Plug'
+  endif
+  if exists('l:special_statusline')
+    return l:highlight_text . ' ' . l:special_statusline . ' ' . l:highlight
+  endif
+
+  return l:highlight_text . ' %h%w%q%f%m%r, Ln %l/%L, Col %c/%{execute("echon col(\"$\") - 1")} '. l:highlight
+endfunction
+set statusline=%{%MyStatusLine()%}
 
 """" colorscheme
 autocmd VimEnter * nested colorscheme nord
@@ -308,16 +328,7 @@ function! Tabline()
     let tabline .= '%' . tab . 'T'
     let tabline .= (tab == tabpagenr() ? '%#TabLineSel# ⯀ ' : '%#TabLine# ⯀ ')
     let tabline .= (bufname != '' ? fnamemodify(bufname, ':t') : '[No Name]')
-
-    if tab == tabpagenr()
-      let tabline .= ', Ln %l of %L, Col %c '
-      let bufmodified = getbufvar(bufnr, "&mod")
-      if bufmodified
-        let tabline .= '[+] '
-      endif
-    else
-      let tabline .= ' '
-    endif
+    let tabline .= ' '
   endfor
   " If the last tab is active, we don't want the rest of the line to have the
   " active highlight
@@ -666,8 +677,12 @@ Plug 'arcticicestudio/nord-vim'
     " Transparent vertical split
     autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=0
     " statusline colors
-    autocmd ColorScheme nord highlight StatusLine ctermfg=magenta ctermbg=NONE
-    autocmd ColorScheme nord highlight StatusLineNC ctermfg=black ctermbg=NONE
+    autocmd ColorScheme nord highlight StatusLineNonText ctermfg=magenta ctermbg=NONE
+    autocmd ColorScheme nord highlight StatusLineNCNonText ctermfg=black ctermbg=NONE
+    autocmd ColorScheme nord highlight StatusLineText ctermfg=magenta ctermbg=NONE cterm=reverse,bold
+    autocmd ColorScheme nord highlight StatusLineNCText ctermfg=black ctermbg=NONE cterm=reverse,bold
+    autocmd ColorScheme nord highlight StatusLine ctermfg=black ctermbg=NONE
+    autocmd ColorScheme nord highlight StatusLineNC ctermfg=magenta ctermbg=NONE
     " autocomplete popupmenu
     autocmd ColorScheme nord highlight PmenuSel ctermfg=magenta ctermbg=NONE cterm=reverse,bold
     autocmd ColorScheme nord highlight Pmenu ctermfg=black ctermbg=NONE cterm=reverse,bold
