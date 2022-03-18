@@ -507,13 +507,16 @@ Plug 'prabirshrestha/quickpick.vim', {'commit': '3d4d574d16d2a6629f32e11e9d33b01
     imap <silent> <buffer> <S-Tab> <Plug>(quickpick-move-previous)
     nmap <silent> <buffer> <S-Tab> <Plug>(quickpick-move-previous)
   endfunction
+  function! BlankStatusline()
+    return repeat("\ua0", &columns)
+  endfunction
   call sign_define("quickpick_cursor", {'text': '> ', 'texthl': 'Normal'})
   augroup Quickpick
     autocmd!
     autocmd FileType quickpick
           \ execute 'let w:persistent_cursorline = 1' |
           \ setlocal cursorlineopt=line |
-          \ setlocal statusline=%#QuickpickInvisibleStatusLine#
+          \ setlocal statusline=%{BlankStatusline()}
     autocmd FileType quickpick-filter
           \ call QuickpickMappings() |
           \ call sign_place(0, '', 'quickpick_cursor', 'quickpick-filter', {'lnum': 1}) |
@@ -696,7 +699,6 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight LineNrAbove ctermfg=0
     autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
     autocmd ColorScheme nord highlight WordUnderCursor cterm=underline,bold
-    autocmd ColorScheme nord highlight QuickpickInvisibleStatusLine ctermbg=NONE ctermfg=0
     autocmd ColorScheme nord highlight TabLine ctermbg=NONE ctermfg=black cterm=underline
     autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=magenta cterm=underline
     autocmd ColorScheme nord highlight WildMenu ctermfg=magenta ctermbg=NONE cterm=bold,underline
