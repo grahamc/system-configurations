@@ -163,17 +163,21 @@ if status is-interactive
     bind '$' _bind_dollar
     # transient prompt
     function _load_transient_prompt_and_execute
-        set commandline_contents (commandline)
-        # I use --valid so that the prompt doesn't become transient while I'm entering a multiline
-        # command
-        if commandline --is-valid
-            set --global TRANSIENT
-            commandline -f repaint
-        # Make a distinction for an empty commandline. With this, I could insert a blank
-        # line when the commandline is empty, giving me a way to separate commands visually
-        else if test -z "$commandline_contents"
-            set --global TRANSIENT_EMPTY
-            commandline -f repaint
+        # If the pager is open, that means I am selecting an item, like an autocomplete suggestion.
+        # In which case, I do not want to load a transient prompt.
+        if not commandline --paging-mode
+            set commandline_contents (commandline)
+            # I use --valid so that the prompt doesn't become transient while I'm entering a multiline
+            # command
+            if commandline --is-valid
+                set --global TRANSIENT
+                commandline -f repaint
+            # Make a distinction for an empty commandline. With this, I could insert a blank
+            # line when the commandline is empty, giving me a way to separate commands visually
+            else if test -z "$commandline_contents"
+                set --global TRANSIENT_EMPTY
+                commandline -f repaint
+            end
         end
         commandline -f execute
     end
