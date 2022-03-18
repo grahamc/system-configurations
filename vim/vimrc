@@ -681,10 +681,10 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=0
     " statusline colors
     autocmd ColorScheme nord highlight StatusLineFillchar ctermfg=magenta ctermbg=NONE
-    autocmd ColorScheme nord highlight StatusLineNCFillchar ctermfg=black ctermbg=NONE
+    autocmd ColorScheme nord highlight StatusLineNCFillchar ctermfg=DarkGray ctermbg=NONE
     autocmd ColorScheme nord highlight StatusLineText ctermfg=magenta ctermbg=NONE cterm=reverse
-    autocmd ColorScheme nord highlight StatusLineNCText ctermfg=black ctermbg=NONE cterm=reverse
-    autocmd ColorScheme nord highlight StatusLine ctermfg=black ctermbg=NONE
+    autocmd ColorScheme nord highlight StatusLineNCText ctermfg=DarkGray ctermbg=NONE cterm=reverse
+    autocmd ColorScheme nord highlight StatusLine ctermfg=DarkGray ctermbg=NONE
     autocmd ColorScheme nord highlight StatusLineNC ctermfg=magenta ctermbg=NONE
     " autocomplete popupmenu
     autocmd ColorScheme nord highlight PmenuSel ctermfg=magenta ctermbg=NONE cterm=reverse,bold
