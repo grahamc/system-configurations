@@ -41,7 +41,9 @@ function fish_prompt --description 'Print the prompt'
         # issue: https://github.com/fish-shell/fish-shell/issues/8418
         printf \e\[0J
 
-        echo -n ' '
+        # Print nothing. This results in the prompt being refreshed in-place since it erases the old prompt, prints nothing,
+        # and then draws the prompt again.
+        echo -n ''
         return
     end
 
