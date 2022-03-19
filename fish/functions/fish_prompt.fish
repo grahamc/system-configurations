@@ -8,7 +8,6 @@ set color_border (set_color --bold brblack)
 set color_text (set_color normal; set_color cyan)
 set color_standout_text (set_color normal; set_color yellow)
 set color_normal (set_color normal)
-set color_text_error (set_color normal; set_color red)
 set color_arrow (set_color normal; set_color brblack)
 
 set --global --export __fish_git_prompt_showdirtystate
@@ -230,7 +229,7 @@ function fish_prompt_get_status_context --no-scope-shadowing
         return
     end
     set --local pipestatus_formatted (fish_status_to_signal $last_pipestatus | string join '|')
-    echo -n -s $color_text_error 'status: ' $pipestatus_formatted
+    echo -n -s $color_standout_text 'status: ' $pipestatus_formatted
 end
 
 function fish_prompt_get_direnv_context
