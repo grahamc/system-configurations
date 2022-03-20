@@ -681,14 +681,14 @@ Plug 'arcticicestudio/nord-vim'
     " Transparent vertical split
     autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=0
     " statusline colors
-    autocmd ColorScheme nord highlight StatusLineFillchar ctermfg=magenta ctermbg=NONE
+    autocmd ColorScheme nord highlight StatusLineFillchar ctermfg=DarkCyan ctermbg=NONE
     autocmd ColorScheme nord highlight StatusLineNCFillchar ctermfg=DarkGray ctermbg=NONE
-    autocmd ColorScheme nord highlight StatusLineText ctermfg=magenta ctermbg=NONE cterm=reverse
+    autocmd ColorScheme nord highlight StatusLineText ctermfg=DarkCyan ctermbg=NONE cterm=reverse
     autocmd ColorScheme nord highlight StatusLineNCText ctermfg=DarkGray ctermbg=NONE cterm=reverse
     autocmd ColorScheme nord highlight StatusLine ctermfg=DarkGray ctermbg=NONE
-    autocmd ColorScheme nord highlight StatusLineNC ctermfg=magenta ctermbg=NONE
+    autocmd ColorScheme nord highlight StatusLineNC ctermfg=DarkCyan ctermbg=NONE
     " autocomplete popupmenu
-    autocmd ColorScheme nord highlight PmenuSel ctermfg=magenta ctermbg=NONE cterm=reverse,bold
+    autocmd ColorScheme nord highlight PmenuSel ctermfg=DarkCyan ctermbg=NONE cterm=reverse,bold
     autocmd ColorScheme nord highlight Pmenu ctermfg=black ctermbg=NONE cterm=reverse,bold
     " cursorline for quickpick
     autocmd ColorScheme nord highlight CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
@@ -701,8 +701,8 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
     autocmd ColorScheme nord highlight WordUnderCursor cterm=underline,bold
     autocmd ColorScheme nord highlight TabLine ctermbg=NONE ctermfg=black cterm=underline
-    autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=magenta cterm=underline
-    autocmd ColorScheme nord highlight WildMenu ctermfg=magenta ctermbg=NONE cterm=bold,underline
+    autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=DarkCyan cterm=underline
+    autocmd ColorScheme nord highlight WildMenu ctermfg=DarkCyan ctermbg=NONE cterm=bold,underline
   augroup END
 
 """" End Plugin Manager
