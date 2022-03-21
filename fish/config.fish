@@ -91,7 +91,7 @@ if status is-interactive
     abbr --add --global g git
 
     # reload the database used to search for applications
-    abbr --add --global r-desktop-entries 'update-desktop-database ~/.local/share/applications'
+    abbr --add --global r-desktop-entries 'sudo update-desktop-database; update-desktop-database ~/.local/share/applications'
 
     # fish
     set --global --export fish_color_normal
