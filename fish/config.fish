@@ -211,7 +211,7 @@ if status is-interactive
         --layout=reverse
         --header-first
         --info=hidden
-        --color='bg+:-1,fg+:blue,info:black,gutter:bright-black,pointer:blue:regular,prompt:bright-black:regular,border:black,query:-1:regular,marker:blue:regular,header:magenta,spinner:magenta,hl:cyan,hl+:cyan'
+        --color='bg+:-1,fg+:cyan,info:black,gutter:bright-black,pointer:cyan:regular,prompt:bright-black:regular,border:black,query:-1:regular,marker:cyan:regular,header:magenta,spinner:magenta,hl:cyan,hl+:cyan'
         --margin=7%
         --height 100%
         --prompt='❯ '
