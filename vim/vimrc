@@ -269,7 +269,7 @@ function! MyStatusLine()
   let l:highlight_text = (g:actual_curwin == win_getid()) ? 'StatusLineText' : 'StatusLineNCText'
   let l:highlight_text = '%#' . l:highlight_text . '#'
 
-  let l:highlight = (g:actual_curwin == win_getid()) ? 'StatusLineFillchar' : 'StatusLineNCFillchar'
+  let l:highlight = (g:actual_curwin == win_getid()) ? 'StatusLine' : 'StatusLineNC'
   let l:highlight = '%#' . l:highlight . '#'
 
   if &ft ==# 'help'
@@ -681,12 +681,10 @@ Plug 'arcticicestudio/nord-vim'
     " Transparent vertical split
     autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=0
     " statusline colors
-    autocmd ColorScheme nord highlight StatusLineFillchar ctermfg=DarkCyan ctermbg=NONE cterm=bold
-    autocmd ColorScheme nord highlight StatusLineNCFillchar ctermfg=DarkGray ctermbg=NONE cterm=bold
+    autocmd ColorScheme nord highlight StatusLine ctermfg=DarkCyan ctermbg=NONE cterm=bold
+    autocmd ColorScheme nord highlight StatusLineNC ctermfg=DarkGray ctermbg=NONE cterm=bold
     autocmd ColorScheme nord highlight StatusLineText ctermfg=DarkCyan ctermbg=NONE cterm=reverse
     autocmd ColorScheme nord highlight StatusLineNCText ctermfg=DarkGray ctermbg=NONE cterm=reverse
-    autocmd ColorScheme nord highlight StatusLine ctermfg=DarkGray ctermbg=NONE
-    autocmd ColorScheme nord highlight StatusLineNC ctermfg=DarkCyan ctermbg=NONE
     " autocomplete popupmenu
     autocmd ColorScheme nord highlight PmenuSel ctermfg=DarkCyan ctermbg=NONE cterm=reverse,bold
     autocmd ColorScheme nord highlight Pmenu ctermfg=black ctermbg=NONE cterm=reverse,bold
