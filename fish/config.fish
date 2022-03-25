@@ -197,9 +197,6 @@ if status is-interactive
         # Clear the screen. Taken from the default ctrl+l keybinding for fish
         echo -n (clear | string replace \e\[3J "")
     end
-    # separate interactive commands with a line
-    function _print_command_separator --on-event fish_postexec
-        echo -n -e -s (set_color black) (string repeat -n $COLUMNS \u2015) "\n" (set_color normal)
     end
 
     # cloudflared

@@ -30,7 +30,8 @@ function fish_prompt --description 'Print the prompt'
         # issue: https://github.com/fish-shell/fish-shell/issues/8418
         printf \e\[0J
 
-        echo -n -s $color_arrow (fish_prompt_get_arrow) ' ' $color_normal
+        # The underline is to visually separate commands
+        echo -n -s -e (set_color --underline black) "\n" $fish_prompt_color_arrow (fish_prompt_get_arrow) ' ' $fish_prompt_color_normal
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY
@@ -86,6 +87,8 @@ function fish_prompt --description 'Print the prompt'
         set --append lines $middle_line
     end
     set --append lines (fish_prompt_make_line last)
+    # Use underline to visually separate commands
+    set --prepend lines (set_color --underline black)
     echo -e -n (string join '\n' $lines)
 end
 
