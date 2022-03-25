@@ -31,7 +31,7 @@ function fish_prompt --description 'Print the prompt'
         printf \e\[0J
 
         # The underline is to visually separate commands
-        echo -n -s -e (set_color --underline black) "\n" $fish_prompt_color_arrow (fish_prompt_get_arrow) ' ' $fish_prompt_color_normal
+        echo -n -s -e (fish_prompt_get_separator) "\n" $fish_prompt_color_arrow (fish_prompt_get_arrow) ' ' $fish_prompt_color_normal
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY
@@ -88,8 +88,12 @@ function fish_prompt --description 'Print the prompt'
     end
     set --append lines (fish_prompt_make_line last)
     # Use underline to visually separate commands
-    set --prepend lines (set_color --underline black)
+    set --prepend lines (fish_prompt_get_separator)
     echo -e -n (string join '\n' $lines)
+end
+
+function fish_prompt_get_separator
+    echo -n -s (set_color black) (string repeat -n $COLUMNS \u2015)
 end
 
 function fish_prompt_format_context --argument-names context type
