@@ -285,6 +285,7 @@ if status is-interactive
     abbr --add --global as apt-show
     abbr --add --global ap 'apt policy'
     abbr --add --global alu 'apt list --upgradeable'
+    abbr --add --global sap 'sudo apt purge'
 
     # asdf version manager
     set --global --export ASDF_VIM_CONFIG \
