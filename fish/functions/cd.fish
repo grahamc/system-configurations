@@ -1,5 +1,6 @@
 function cd --description 'Change the current directory'
-    _fish_default_cd_wrapper $argv && ls --classify --color=never
+    _fish_default_cd_wrapper $argv
+        and ls --classify --color=never
 end
 
 # Wrap the builtin cd command to maintain directory history.
