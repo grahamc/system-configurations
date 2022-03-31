@@ -218,11 +218,10 @@ if status is-interactive
         --pointer='❯'
         --marker='❯'
         --preview-window=wrap,60%
-        --keep-right"
     set --global --export FZF_ALT_C_COMMAND "rg --files --null | xargs -0 dirname | sort -u"
-    set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify {}' --prompt='directories: '"
+    set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify {}' --prompt='directories: ' --keep-right"
     set --global --export FZF_CTRL_T_COMMAND ''
-    set --global --export FZF_CTRL_T_OPTS '--preview "head -100 {}" --prompt="files: "'
+    set --global --export FZF_CTRL_T_OPTS '--preview "head -100 {}" --prompt="files: " --keep-right'
     set --global --export FZF_CTRL_R_OPTS '--prompt="history: "'
     # use ctrl+f for file search instead of default ctrl+t
     bind --erase \ct
