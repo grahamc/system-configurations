@@ -56,7 +56,7 @@ function fish_prompt --description 'Print the prompt'
         set grep_pattern (string join '' '^' $fish_pid)
         set pane_id (tmux list-panes -a -F "#{pane_pid} #{pane_id}" | grep $grep_pattern | string sub --start (math (string length $fish_pid) + 2))
 
-        set columns (echo -n (tmux display -t $pane_id -p '#{pane_width}'))
+        set columns (tmux display -pt $pane_id -p '#{pane_width}')
     else
         set columns $COLUMNS
     end
