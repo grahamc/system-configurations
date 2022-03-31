@@ -203,7 +203,7 @@ if status is-interactive
     abbr --add --global tunnel cloudflared-tunnel
 
     # fzf
-    bind \cg fzf-grep-widget
+    bind \cg 'COLUMNS="$COLUMNS" fzf-grep-widget'
     set --global --export FZF_DEFAULT_OPTS "
         --multi
         --cycle
@@ -226,7 +226,11 @@ if status is-interactive
     set --global --export FZF_CTRL_R_OPTS '--prompt="history: "'
     # use ctrl+f for file search instead of default ctrl+t
     bind --erase \ct
-    bind \cf fzf-file-widget
+    bind \cf 'COLUMNS="$COLUMNS" fzf-file-widget'
+    # Pass COLUMNS since this value doesn't get set by default in non-interactive shells and I
+    # need it for my fzf wrapper
+    bind \ec 'COLUMNS="$COLUMNS" fzf-cd-widget'
+    bind \cr 'COLUMNS="$COLUMNS" fzf-history-widget'
 
     # x server
     abbr --add --global r-xbindkeys 'killall xbindkeys; xbindkeys'
