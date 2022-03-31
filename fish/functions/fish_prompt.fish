@@ -47,7 +47,7 @@ function fish_prompt --description 'Print the prompt'
         return
     end
 
-    # Get the number of columns for the screen or tmux pane. Setting this value now since it gets used in some
+    # Get the number of columns for the terminal window or tmux pane. Setting this value now since it gets used in some
     # of the context functions.
     if set --query IN_TMUX
         # Get the id of the pane that belongs to this shell instance. This may be different from the active pane
