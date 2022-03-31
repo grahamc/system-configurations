@@ -1,2 +1,19 @@
 function fzf-grep-widget --description 'Search by line, recursively, from current directory'
+  set rg_command 'rg --column --line-number --no-heading --color=always --smart-case'
+  set choice \
+      ( \
+        FZF_DEFAULT_COMMAND="$rg_command ''" \
+        fzf --ansi \
+            --disabled \
+            --bind "change:first+reload:sleep 0.1; $rg_command {q} || true" \
+            --delimiter ':' \
+            --prompt 'lines: ' \
+            --preview-window '+{2}/3' \
+            --preview 'bat --terminal-width $FZF_PREVIEW_COLUMNS {1} --highlight-line {2}' \
+      )
+    or return
+
+  set tokens (string split ':' $choice)
+  set filename $tokens[1]
+  commandline --insert $filename
 end
