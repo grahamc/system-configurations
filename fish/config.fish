@@ -217,7 +217,7 @@ if status is-interactive
         --prompt='❯ '
         --pointer='❯'
         --marker='❯'
-        --preview-window=wrap,60%
+        --preview-window=wrap,60%,bottom,border-top"
     set --global --export FZF_ALT_C_COMMAND "rg --files --null | xargs -0 dirname | sort -u"
     set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify {}' --prompt='directories: ' --keep-right"
     set --global --export FZF_CTRL_T_COMMAND ''
