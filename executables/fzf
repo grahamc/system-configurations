@@ -5,13 +5,8 @@
 
 # I'm using a function so that my variables will have a function-local scope
 function _fzf
-    if set --query IN_TMUX
-        set columns (echo -n (tmux display -p '#{pane_width}'))
-        set lines (echo -n (tmux display -p '#{pane_height}'))
-    else
-        set columns $COLUMNS
-        set lines $LINES
-    end
+    set columns (stty size </dev/tty | cut -d" " -f2)
+    set lines (stty size </dev/tty | cut -d" " -f1)
     set column_to_line_ratio (math $columns / $lines)
 
     # I determined this threshold through guess and check
