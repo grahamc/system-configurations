@@ -50,6 +50,7 @@
         path: fish/functions/*
     ~/.config/fish/fish_plugins: fish/fish_plugins
     ~/.config/direnv/direnvrc: direnv/direnvrc
+    ~/.config/bat/config: bat/config
 
 # Using another link directive since I have multiple links to this directory and you can't have
 # multiple keys with the same name in YAML
