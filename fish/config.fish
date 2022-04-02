@@ -246,12 +246,6 @@ if status is-interactive
     set --global --export VISUAL vim
     set --global --export EDITOR $VISUAL
 
-    # Set default less options.
-    # 'R' - process color (ANSI) and hyperlink (OSC 8) escape sequences.
-    # 'i' - ignore case, except when the search term contains a capital letter.
-    # 'F' - If the content can fit in one terminal window, print it and exit.
-    set --global --export LESS -RiF
-
     # Change the color grep uses for highlighting matches to yellow
     set --global --export GREP_COLORS 'ms=01;33'
 

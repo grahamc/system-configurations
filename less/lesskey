@@ -1,0 +1,11 @@
+#command
+# Make forward and backward search wrap around
+/ forw-search ^W
+? back-search ^W
+
+#env
+# Set default less options.
+# 'R' - process color (ANSI) and hyperlink (OSC 8) escape sequences.
+# 'i' - ignore case, except when the search term contains a capital letter.
+# 'F' - If the content can fit in one terminal window, print it and exit.
+LESS = -RiF
