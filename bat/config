@@ -3,3 +3,5 @@
 --map-syntax "vimrc:vim"
 
 --color=always
+
+--style="numbers,grid"
