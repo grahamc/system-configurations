@@ -211,7 +211,7 @@ if status is-interactive
         --layout=reverse
         --header-first
         --info=hidden
-        --color='bg+:-1,fg+:cyan,info:black,gutter:bright-black,pointer:cyan:regular,prompt:bright-black:regular,border:black,query:-1:regular,marker:cyan:regular,header:magenta,spinner:magenta,hl:cyan,hl+:cyan'
+        --color='bg+:-1,fg+:-1,info:black,gutter:bright-black,pointer:cyan:regular,prompt:bright-black:regular,border:black,query:-1:regular,marker:cyan:regular,header:magenta,spinner:magenta,hl:cyan,hl+:cyan'
         --margin=7%
         --height 100%
         --prompt='❯ '
@@ -219,10 +219,10 @@ if status is-interactive
         --marker='❯'
         --preview-window=wrap,60%,bottom,border-top"
     set --global --export FZF_ALT_C_COMMAND "rg --files --null | xargs -0 dirname | sort -u"
-    set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify {}' --prompt='directories: ' --keep-right"
+    set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify {}' --prompt='directories: ' --keep-right --color='fg+:cyan'"
     set --global --export FZF_CTRL_T_COMMAND ''
-    set --global --export FZF_CTRL_T_OPTS '--preview "head -100 {}" --prompt="files: " --keep-right'
-    set --global --export FZF_CTRL_R_OPTS '--prompt="history: "'
+    set --global --export FZF_CTRL_T_OPTS '--preview "head -100 {}" --prompt="files: " --keep-right --color="fg+:cyan"'
+    set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --color="fg+:cyan"'
     # use ctrl+f for file search instead of default ctrl+t
     bind --erase \ct
     bind \cf fzf-file-widget
