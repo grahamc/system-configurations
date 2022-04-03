@@ -10,9 +10,8 @@ function rust --description 'run the given rust source file' --wraps rustc
     set source_file $argv[-1]
     set executable_name (basename $source_file .rs)
     rustc $argv
-    set compilation_exit_code $status
-    if test $compilation_exit_code -eq 0
-        ./$executable_name
-        rm $executable_name
-    end
+        and begin
+            ./$executable_name
+            rm $executable_name
+        end
 end
