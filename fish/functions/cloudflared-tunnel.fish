@@ -1,4 +1,4 @@
-function cloudflared-tunnel --description 'Run my cloudflare tunnel with the provided url' --argument-names url
+function cloudflared-tunnel --description 'Connect my cloudflare tunnel to the specified port on localhost' --argument-names port
     if test (count $argv) -eq 0
         set function_name (status current-function)
         echo -s \
@@ -6,5 +6,5 @@ function cloudflared-tunnel --description 'Run my cloudflare tunnel with the pro
             "ERROR: You need to specify a port, e.g. '$function_name 8000'" >/dev/stderr
         return 1
     end
-    cloudflared tunnel run --url "http://localhost:$url"
+    cloudflared tunnel run --url "http://localhost:$port"
 end
