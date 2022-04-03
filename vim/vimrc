@@ -25,6 +25,7 @@ set scrolloff=10
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages sessionoptions-=folds
 set showcmd
 set display+=lastline
+set nofoldenable
 
 function! OverrideVimsDefaultFiletypePlugins()
   " there is an ftplugin that is bundled with vim that
@@ -165,13 +166,6 @@ xnoremap <C-z> <ESC>:suspend<CR>
 " Map the output of these key combinations to their actual names
 imap OB <Down>
 imap OA <Up>
-
-""" Section: Fold settings
-set foldlevelstart=999
-augroup SetFoldMethod
-  autocmd!
-  autocmd FileType * if &ft ==# 'vim' | setlocal fdm=expr fde=getline(v\:lnum)=~'^\"\"'?'>'.(matchend(getline(v\:lnum),'\"\"*')-2)\:'=' | else | setlocal foldmethod=syntax | endif |
-augroup END
 
 """ Section: Line folding / splitting
 " Prevents inserting two spaces after punctuation on a join (J)
