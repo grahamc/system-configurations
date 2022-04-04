@@ -73,6 +73,8 @@ augroup Miscellaneous
   " resized or a new window is created/closed
   autocmd VimResized,WinNew,WinClosed * wincmd =
   autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | else | :syntax sync fromstart | endif
+  autocmd! bufwritepost .vimrc source %
+  autocmd! bufwritepost vimrc source ~/.vimrc
 augroup END
 
 cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
