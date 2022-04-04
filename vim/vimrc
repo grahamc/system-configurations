@@ -373,7 +373,6 @@ Plug 'wellle/targets.vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'inkarkat/vim-CursorLineCurrentWindow'
 Plug 'farmergreg/vim-lastplace'
-Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'tmux-plugins/vim-tmux'
 
 """" Autocomplete
