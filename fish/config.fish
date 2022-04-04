@@ -92,6 +92,7 @@ if status is-interactive
     abbr --add --global r-asdf 'asdf reshim'
     abbr --add --global r-kitty reload-kitty
     abbr --add --global g git
+    abbr --add --global touchp touch-and-make-parent-dirs
     set --global --export PAGER less
 
     # reload the database used to search for applications
