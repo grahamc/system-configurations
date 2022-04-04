@@ -16,11 +16,11 @@
     ~/.local/bin: {}
 
 - link:
-    ~/.tmux.conf: tmux.conf
+    ~/.tmux.conf: tmux/tmux.conf
     ~/.vimrc: vim/vimrc
-    ~/.config/nvim/init.vim: init.vim
+    ~/.config/nvim/init.vim: neovim/init.vim
     ~/.gitconfig: git/gitconfig
-    ~/.xbindkeysrc: xbindkeysrc
+    ~/.xbindkeysrc: xbindkeys/xbindkeysrc
     ~/.bashrc: bash/bashrc
     ~/.config/bash/complete_alias: bash/complete-alias/complete_alias
     ~/.config/bash/fzf-bash-completion.sh: bash/fzf-tab-completion/bash/fzf-bash-completion.sh
@@ -43,7 +43,7 @@
     ~/.rgignore: ripgrep/rgignore
     ~/.ripgreprc: ripgrep/ripgreprc
     ~/.config/gitui/theme.ron: gitui/theme.ron
-    ~/.inputrc: inputrc
+    ~/.inputrc: readline/inputrc
     ~/.config/fish/config.fish: fish/config.fish
     ~/.config/fish/functions/:
         glob: true
