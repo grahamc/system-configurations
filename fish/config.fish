@@ -205,7 +205,7 @@ if status is-interactive
     abbr --add --global tunnel cloudflared-tunnel
 
     # fzf
-    bind \cg fzf-grep-widget
+    bind \cg 'fzf-grep-widget; commandline -f repaint'
     set --global --export FZF_DEFAULT_OPTS "
         --multi
         --cycle
