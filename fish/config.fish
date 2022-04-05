@@ -209,7 +209,7 @@ if status is-interactive
     set --global --export FZF_DEFAULT_OPTS "
         --multi
         --cycle
-        --bind tab:down,shift-tab:up,alt-enter:toggle,alt-down:last,alt-up:first,backward-eof:abort,change:first
+        --bind tab:down,shift-tab:up,alt-enter:toggle,alt-down:last,alt-up:first,change:first
         --layout=reverse
         --header-first
         --info=hidden
