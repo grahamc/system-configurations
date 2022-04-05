@@ -219,7 +219,7 @@ if status is-interactive
         --prompt='❯ '
         --pointer='❯'
         --marker='❯'
-        --preview-window=wrap,60%,bottom,border-top"
+        --preview-window=wrap,bottom,border-top"
     set --global --export FZF_ALT_C_COMMAND "rg --files --null | xargs -0 dirname | sort -u"
     set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -C {}' --keep-right --color='fg+:cyan'"
     set --global --export FZF_CTRL_T_COMMAND ''
