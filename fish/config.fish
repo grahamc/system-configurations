@@ -221,19 +221,19 @@ if status is-interactive
         --marker='❯'
         --preview-window=wrap,60%,bottom,border-top"
     set --global --export FZF_ALT_C_COMMAND "rg --files --null | xargs -0 dirname | sort -u"
-    set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify {}' --prompt='directories: ' --keep-right --color='fg+:cyan'"
+    set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -C {}' --keep-right --color='fg+:cyan'"
     set --global --export FZF_CTRL_T_COMMAND ''
-    set --global --export FZF_CTRL_T_OPTS '--preview "head -100 {}" --prompt="files: " --keep-right --color="fg+:cyan"'
+    set --global --export FZF_CTRL_T_OPTS '--preview "bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {}" --keep-right --color="fg+:cyan"'
     set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --color="fg+:cyan"'
     # use ctrl+f for file search instead of default ctrl+t
     bind --erase \ct
-    bind \cf fzf-file-widget
+    bind \cf 'FZF_CTRL_T_OPTS="$FZF_CTRL_T_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-file-widget'
     # use ctrl+h for history search instead of default ctrl+r
     bind --erase \cr
     bind \ch fzf-history-widget
     # use alt+d for directory search instead of default alt+c
     bind --erase \ec
-    bind \ed 'fzf-cd-widget'
+    bind \ed 'FZF_ALT_C_OPTS="$FZF_ALT_C_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-cd-widget'
 
     # x server
     abbr --add --global r-xbindkeys 'killall xbindkeys; xbindkeys'
