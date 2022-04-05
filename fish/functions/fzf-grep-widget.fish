@@ -1,5 +1,5 @@
 function fzf-grep-widget --description 'Search by line, recursively, from current directory'
-  set rg_command 'rg --column --line-number --no-heading --color=always --smart-case'
+  set rg_command 'rg --fixed-strings --column --line-number --no-heading --color=always --smart-case --'
   set choice \
       ( \
         FZF_DEFAULT_COMMAND="$rg_command ''" \
