@@ -259,13 +259,13 @@ if status is-interactive
     echo -ne '\033[5 q'
 
     # ls
-    abbr --add --global ls 'ls --color=never --classify'
+    abbr --add --global ls 'ls --color=never --classify --hyperlink=auto'
     # include hidden files
-    abbr --add --global la 'ls --color=never --classify --almost-all'
+    abbr --add --global la 'ls --color=never --classify --almost-all --hyperlink=auto'
     # use the long format and a more human-readable format for sizes e.g. 25M
-    abbr --add --global ll 'ls --color=never --classify -l --human-readable'
+    abbr --add --global ll 'ls --color=never --classify -l --human-readable --hyperlink=auto'
     # combination of the the two above
-    abbr --add --global lal 'ls --color=never --classify --almost-all -l --human-readable'
+    abbr --add --global lal 'ls --color=never --classify --almost-all -l --human-readable --hyperlink=auto'
 
     # cd
     abbr --add --global -- - 'cd -'
