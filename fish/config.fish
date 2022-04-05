@@ -228,6 +228,12 @@ if status is-interactive
     # use ctrl+f for file search instead of default ctrl+t
     bind --erase \ct
     bind \cf fzf-file-widget
+    # use ctrl+h for history search instead of default ctrl+r
+    bind --erase \cr
+    bind \ch fzf-history-widget
+    # use alt+d for directory search instead of default alt+c
+    bind --erase \ec
+    bind \ed 'fzf-cd-widget'
 
     # x server
     abbr --add --global r-xbindkeys 'killall xbindkeys; xbindkeys'
