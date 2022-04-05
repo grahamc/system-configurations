@@ -200,6 +200,8 @@ if status is-interactive
         echo -n (clear | string replace \e\[3J "")
     end
     end
+    # use ctrl+b to jump to beginning of line
+    bind \cb beginning-of-line
 
     # cloudflared
     abbr --add --global tunnel cloudflared-tunnel
