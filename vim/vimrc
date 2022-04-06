@@ -280,7 +280,7 @@ function! MyStatusLine()
     return l:highlight_text . ' ' . l:special_statusline . ' ' . l:highlight
   endif
 
-  return l:highlight_text . ' %h%w%q%f%m%r ❯ Ln %l/%L ❯ Col %c/%{execute("echon col(\"$\") - 1")} '. l:highlight
+  return l:highlight_text . ' %h%w%q%t%m%r ❯ Ln %l/%L ❯ Col %c/%{execute("echon col(\"$\") - 1")} '. l:highlight
 endfunction
 set statusline=%{%MyStatusLine()%}
 
