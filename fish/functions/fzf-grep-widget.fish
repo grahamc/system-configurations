@@ -13,7 +13,7 @@ function fzf-grep-widget --description 'Search by line, recursively, from curren
             # the minus 2 prevents a weird line wrap issue
             --preview 'bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {1} --highlight-line {2}' \
       )
-    or return
+  or return
 
   set tokens (string split ':' $choice)
   set filename $tokens[1]
