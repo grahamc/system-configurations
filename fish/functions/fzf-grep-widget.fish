@@ -5,6 +5,7 @@ function fzf-grep-widget --description 'Search by line, recursively, from curren
         FZF_DEFAULT_COMMAND="$rg_command ''" \
         fzf --ansi \
             --disabled \
+            --multi \
             --bind "ctrl-v:execute(vim {1} +{2}  < /dev/tty > /dev/tty 2>&1),change:first+reload:sleep 0.1; $rg_command {q} || true" \
             --delimiter ':' \
             --header '(ctrl+v to open in vim)' \
