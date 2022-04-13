@@ -3,8 +3,8 @@
 <plist version="1.0">
     <dict>
         <!--
-            This is copy of the base16 theme that comes with bat with a few changes:
-            - Some of the usages of bright black have been changed to black since black is more visible in my terminal
+            This is a copy of the base16 theme that comes with bat, but with a few changes:
+            - Some of the usages of bright black (#08000000) have been changed to black (#00000000) since black is more visible in my terminal
             color palette
         -->
         <!--
