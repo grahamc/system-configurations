@@ -1,4 +1,4 @@
---theme="base16"
+--theme="base16-brighter"
 
 --map-syntax "vimrc:vim"
 
