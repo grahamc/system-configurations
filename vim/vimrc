@@ -242,6 +242,10 @@ augroup SaveAndRestoreSettings
   autocmd VimEnter * nested call RestoreOrCreateSession()
   " save session before vim exits
   function! SaveSession()
+    " Need to do this before we save the window state in the session
+    if get(g:, 'is_window_maximized', v:false)
+      call ToggleMaximizedWindowAndTrackState()
+    endif
     if !empty(v:this_session)
       execute 'mksession! ' . fnameescape(v:this_session)
     endif
@@ -263,11 +267,20 @@ let &fillchars = "foldopen: ,fold: ,vert:\u23B9,stl:\u2502,stlnc:\u2502"
 
 " Statusline
 function! MyStatusLine()
-  let l:highlight_text = (g:actual_curwin == win_getid()) ? 'StatusLineText' : 'StatusLineNCText'
-  let l:highlight_text = '%#' . l:highlight_text . '#'
-
-  let l:highlight = (g:actual_curwin == win_getid()) ? 'StatusLine' : 'StatusLineNC'
+  let g:is_window_maximized = get(g:, 'is_window_maximized', v:false)
+  let l:highlight = v:null
+  if g:actual_curwin == win_getid()
+    if g:is_window_maximized
+      let l:highlight = 'StatusLineStandout'
+    else
+      let l:highlight = 'StatusLine'
+    endif
+  else
+    let l:highlight = 'StatusLineNC'
+  endif
+  let l:highlight_text = l:highlight . 'Text'
   let l:highlight = '%#' . l:highlight . '#'
+  let l:highlight_text = '%#' . l:highlight_text . '#'
 
   if &ft ==# 'help'
     let l:special_statusline = 'Help'
@@ -280,7 +293,9 @@ function! MyStatusLine()
     return l:highlight_text . ' ' . l:special_statusline . ' ' . l:highlight
   endif
 
-  return l:highlight_text . ' %h%w%q%t%m%r ❯ Ln %l/%L ❯ Col %c/%{execute("echon col(\"$\") - 1")} '. l:highlight
+  let l:maximized_window_indicator = (g:is_window_maximized) ? '❯ [WINDOW_MAXIMIZED] ' : ''
+
+  return l:highlight_text . ' %h%w%q%t%m%r ❯ Ln %l/%L ❯ Col %c/%{execute("echon col(\"$\") - 1")} ' . l:maximized_window_indicator . l:highlight
 endfunction
 set statusline=%{%MyStatusLine()%}
 
@@ -377,6 +392,26 @@ Plug 'junegunn/vim-peekaboo'
 Plug 'inkarkat/vim-CursorLineCurrentWindow'
 Plug 'farmergreg/vim-lastplace'
 Plug 'tmux-plugins/vim-tmux'
+Plug 'szw/vim-maximizer'
+  let g:maximizer_set_default_mapping = 0
+  function! ToggleMaximizedWindowAndTrackState()
+    let l:window_count_in_current_tab = tabpagewinnr(tabpagenr(), '$')
+    if l:window_count_in_current_tab == 1
+      return
+    endif
+
+    let g:is_window_maximized = get(g:, 'is_window_maximized', v:false)
+    if g:is_window_maximized
+      execute 'MaximizerToggle'
+      let g:is_window_maximized = v:false
+    else
+      execute 'MaximizerToggle'
+      let g:is_window_maximized = v:true
+    endif
+  endfunction
+  nnoremap <silent><C-m> :call ToggleMaximizedWindowAndTrackState()<CR>
+  vnoremap <silent><C-m> :call ToggleMaximizedWindowAndTrackState()<CR>gv
+  inoremap <silent><C-m> <ESC>:call ToggleMaximizedWindowAndTrackState()<CR>
 
 """" Autocomplete
 Plug 'prabirshrestha/asyncomplete.vim'
@@ -681,6 +716,8 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight StatusLineNC ctermfg=DarkGray ctermbg=NONE cterm=bold
     autocmd ColorScheme nord highlight StatusLineText ctermfg=DarkCyan ctermbg=NONE cterm=reverse
     autocmd ColorScheme nord highlight StatusLineNCText ctermfg=DarkGray ctermbg=NONE cterm=reverse
+    autocmd ColorScheme nord highlight StatusLineStandout ctermfg=DarkYellow ctermbg=NONE cterm=bold
+    autocmd ColorScheme nord highlight StatusLineStandoutText ctermfg=DarkYellow ctermbg=NONE cterm=reverse
     " autocomplete popupmenu
     autocmd ColorScheme nord highlight PmenuSel ctermfg=DarkCyan ctermbg=NONE cterm=reverse,bold
     autocmd ColorScheme nord highlight Pmenu ctermfg=black ctermbg=NONE cterm=reverse,bold
