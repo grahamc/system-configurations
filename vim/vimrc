@@ -737,6 +737,8 @@ Plug 'arcticicestudio/nord-vim'
     " By unsetting this, I ensure that terminals opened in vim will use the color palette of the
     " terminal emulator in which vim is running
     autocmd ColorScheme nord unlet g:terminal_ansi_colors
+    " Have vim only use the 16 color palette of the terminal emulator in which it runs
+    autocmd ColorScheme nord set t_Co=16
   augroup END
 
 """" End Plugin Manager
