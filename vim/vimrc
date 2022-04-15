@@ -733,6 +733,10 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight TabLine ctermbg=NONE ctermfg=black cterm=underline
     autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=DarkCyan cterm=underline
     autocmd ColorScheme nord highlight WildMenu ctermfg=DarkCyan ctermbg=NONE cterm=bold,underline
+    " This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
+    " By unsetting this, I ensure that terminals opened in vim will use the color palette of the
+    " terminal emulator in which vim is running
+    autocmd ColorScheme nord unlet g:terminal_ansi_colors
   augroup END
 
 """" End Plugin Manager
