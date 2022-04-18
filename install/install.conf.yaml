@@ -17,7 +17,7 @@
 
 - link:
     ~/.tmux.conf: tmux/tmux.conf
-    ~/.vimrc: vim/vimrc
+    ~/.vim/vimrc: vim/vimrc
     ~/.config/nvim/init.vim: neovim/init.vim
     ~/.gitconfig: git/gitconfig
     ~/.xbindkeysrc: xbindkeys/xbindkeysrc
