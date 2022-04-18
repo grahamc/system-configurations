@@ -20,6 +20,7 @@
     undocommit = reset "HEAD^"
     co = checkout
     ui = "!gitui"
+    l = log
 [init]
     defaultBranch = master
 [merge]
