@@ -1,8 +1,4 @@
 """ Section: This Stuff Should Stay at the Top
-" Make sure vim is not run in vi-compatible mode
-if &compatible
-  set nocompatible
-endif
 let $VIMHOME = $HOME . '/.vim/'
 let g:mapleader = "\<Space>"
 " if 'encoding' is set, 'scriptencoding' must be set after it
