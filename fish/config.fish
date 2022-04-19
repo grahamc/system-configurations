@@ -287,6 +287,8 @@ if status is-interactive
     abbr --add --global ap 'apt policy'
     abbr --add --global alu 'apt list --upgradeable'
     abbr --add --global sap 'sudo apt purge'
+    abbr --add --global fai 'fzf-apt-install-widget'
+    abbr --add --global far 'fzf-apt-remove-widget'
 
     # asdf version manager
     set --global --export ASDF_VIM_CONFIG \
