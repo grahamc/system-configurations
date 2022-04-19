@@ -13,7 +13,9 @@ function fzf-grep-widget --description 'Search by line, recursively, from curren
             --prompt 'lines: ' \
             --preview-window '+{2}/3' \
             # the minus 2 prevents a weird line wrap issue
-            --preview 'bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {1} --highlight-line {2}' \
+            # The head and tail commands are there to remove the first and last line of output of bat
+            # i.e. the top and bottom border of bat since I don't like how they look
+            --preview 'bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {1} --highlight-line {2} | tail -n +2 | head -n -1' \
       )
   or return
 
