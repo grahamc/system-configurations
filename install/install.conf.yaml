@@ -48,6 +48,9 @@
     ~/.config/fish/functions/:
         glob: true
         path: fish/functions/*
+    ~/.config/fish/conf.d/:
+        glob: true
+        path: fish/conf.d/*
     ~/.config/fish/fish_plugins: fish/fish_plugins
     ~/.config/direnv/direnvrc: direnv/direnvrc
     ~/.config/bat/config: bat/config
