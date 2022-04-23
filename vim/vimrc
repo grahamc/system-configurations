@@ -405,9 +405,9 @@ Plug 'szw/vim-maximizer'
       let g:is_window_maximized = v:true
     endif
   endfunction
-  nnoremap <silent><C-m> :call ToggleMaximizedWindowAndTrackState()<CR>
-  vnoremap <silent><C-m> :call ToggleMaximizedWindowAndTrackState()<CR>gv
-  inoremap <silent><C-m> <ESC>:call ToggleMaximizedWindowAndTrackState()<CR>
+  nnoremap <silent><C-m> <Cmd>call ToggleMaximizedWindowAndTrackState()<CR>
+  vnoremap <silent><C-m> <Cmd>call ToggleMaximizedWindowAndTrackState()<CR>
+  inoremap <silent><C-m> <Cmd>call ToggleMaximizedWindowAndTrackState()<CR>
 
 """" Autocomplete
 Plug 'prabirshrestha/asyncomplete.vim'
