@@ -395,6 +395,7 @@ Plug 'andymass/vim-matchup'
 " Additional text objects and motions
 Plug 'wellle/targets.vim'
 Plug 'junegunn/vim-peekaboo'
+  let g:peekaboo_delay = 500 " measured in milliseconds
 Plug 'inkarkat/vim-CursorLineCurrentWindow'
 Plug 'farmergreg/vim-lastplace'
 Plug 'tmux-plugins/vim-tmux'
