@@ -203,7 +203,7 @@ set shortmess-=S shortmess+=s
 " grep implementation since it's cross-platform
 let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
 " toggle search highlighting
-nnoremap <silent> <Leader>/ :set hlsearch!<CR>
+nnoremap <silent> <Leader>\ :set hlsearch!<CR>
 
 """" Use '/' and '?' search in visual mode
 vnoremap <silent> * :<C-U>
