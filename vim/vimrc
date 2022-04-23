@@ -117,7 +117,7 @@ nnoremap <Leader>\| :vsplit<CR>
 nnoremap <Leader>- :split<CR>
 " close a window, quit if last window
 " also when closing a tab, go to the previously opened tab
-nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':exe "q" \| tabn '.g:lasttab.'<CR>' : ':close<CR>'
+nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':exe "q" \| silent! tabn '.g:lasttab.'<CR>' : ':close<CR>'
 " track which tab last opened
 if !exists('g:lasttab')
   let g:lasttab = 1
