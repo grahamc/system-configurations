@@ -320,32 +320,42 @@ augroup END
 " Tabline
 function! Tabline()
   let tabline = ''
+  let l:visible_length = 0
 
   " shift tabline over if NERDTree is active on the left side
-  if bufname(winbufnr(1)) == 'NERD_tree_1'
-    let tabline .= '%#VertSplit#' . repeat(' ', winwidth(1) + 1)
-  endif
+  " if bufname(winbufnr(1)) == 'NERD_tree_1'
+  "   let tabline .= '%#VertSplit#' . repeat(' ', winwidth(1) + 1)
+  " endif
+
 
   for i in range(tabpagenr('$'))
     let tab = i + 1
     let winnr = tabpagewinnr(tab)
     let buflist = tabpagebuflist(tab)
     let bufnr = buflist[winnr - 1]
+
     let bufname = bufname(bufnr)
+    if bufname != ''
+      let bufname = fnamemodify(bufname, ':t')
+    else
+      let bufname = '[No Name]'
+    endif
+
+    let l:visible_length += 3 + strlen(bufname) + 1
 
     let tabline .= '%' . tab . 'T'
     let tabline .= (tab == tabpagenr() ? '%#TabLineSel# ⯀ ' : '%#TabLine# ⯀ ')
-    let tabline .= (bufname != '' ? fnamemodify(bufname, ':t') : '[No Name]')
+    let tabline .= bufname
     let tabline .= ' '
   endfor
-  " If the last tab is active, we don't want the rest of the line to have the
-  " active highlight
-  let tabline .= '%#TabLine#'
+
+  let tabline .= '%#TabLineFill#'
+  let tabline .= repeat("\u2502", &columns - l:visible_length)
 
   " shift tabline over if NERDTree is active on the right side
   let l:last_window_number = winnr('$')
   if bufname(winbufnr(l:last_window_number)) == 'NERD_tree_1'
-    let tabline .= "%=%#VertSplit#" . repeat(' ', winwidth(l:last_window_number))
+    let tabline = strcharpart(tabline, 0, strcharlen(tabline) - winwidth(l:last_window_number))
   endif
 
   return tabline
