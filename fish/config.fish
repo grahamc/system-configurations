@@ -271,14 +271,14 @@ if status is-interactive
     abbr --add --global r-tmux-server reload-tmux-server
 
     # apt
-    abbr --add --global sai 'sudo apt install'
-    abbr --add --global sar 'sudo apt remove'
-    abbr --add --global saar 'sudo apt autoremove'
-    abbr --add --global sau 'sudo apt update'
+    abbr --add --global ai 'sudo apt install'
+    abbr --add --global ar 'sudo apt remove'
+    abbr --add --global aar 'sudo apt autoremove'
+    abbr --add --global au 'sudo apt update'
     abbr --add --global as apt-show
     abbr --add --global ap 'apt policy'
     abbr --add --global alu 'apt list --upgradeable'
-    abbr --add --global sap 'sudo apt purge'
+    abbr --add --global ap 'sudo apt purge'
     abbr --add --global fai 'fzf-apt-install-widget'
     abbr --add --global far 'fzf-apt-remove-widget'
 
