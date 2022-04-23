@@ -289,7 +289,7 @@ function! MyStatusLine()
     return l:highlight_text . ' ' . l:special_statusline . ' ' . l:highlight
   endif
 
-  let l:maximized_window_indicator = (g:is_window_maximized) ? '❯ [WINDOW_MAXIMIZED] ' : ''
+  let l:maximized_window_indicator = (g:is_window_maximized && g:actual_curwin == win_getid()) ? '❯ [WINDOW_MAXIMIZED] ' : ''
 
   return l:highlight_text . ' %h%w%q%t%m%r ❯ Ln %l/%L ❯ Col %c/%{execute("echon col(\"$\") - 1")} ' . l:maximized_window_indicator . l:highlight
 endfunction
