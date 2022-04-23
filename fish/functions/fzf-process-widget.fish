@@ -11,9 +11,9 @@ function fzf-process-widget --description 'Manage processes'
             --header-lines=2 \
             --prompt 'processes: ' \
             --preview-window '~1' \
-            # The 'string join' is to get around the fact that fzf substitutions are single quoted and the quotes
+            # I 'echo' the fzf placeholder in the grep regex to get around the fact that fzf substitutions are single quoted and the quotes
             # would mess up the grep regex.
-            --preview 'echo -s (set_color black) {} (set_color normal); pstree --hide-threads --long --show-pids --unicode --show-parents --arguments {2} | GREP_COLORS="ms=00;36" grep --color=always -E (string join "" "(([a-z|A-Z|0-9|-]| )+," {2} "(\$| .*)|^)")' \
+            --preview 'echo -s (set_color black) {} (set_color normal); pstree --hide-threads --long --show-pids --unicode --show-parents --arguments {2} | GREP_COLORS="ms=00;36" grep --color=always -E "(([a-z|A-Z|0-9|-]| )+,$(echo {2})(\$| .*)|^)"' \
       )
   or return
 
