@@ -69,8 +69,7 @@ augroup Miscellaneous
   " resized or a new window is created/closed
   autocmd VimResized,WinNew,WinClosed * wincmd =
   autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | else | :syntax sync fromstart | endif
-  autocmd! bufwritepost .vimrc source %
-  autocmd! bufwritepost vimrc source ~/.vimrc
+  autocmd! bufwritepost .vimrc,vimrc nested source $MYVIMRC | execute 'colorscheme ' . trim(execute('colorscheme'))
   " Leaving a maximized window should revert it to normal
   autocmd WinLeave * if get(g:, 'is_window_maximized', v:false) | call ToggleMaximizedWindowAndTrackState() | endif
 augroup END
