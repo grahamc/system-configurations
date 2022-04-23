@@ -101,25 +101,29 @@ if status is-interactive
     # fish
     set --global --export fish_color_normal
     set --global --export fish_color_command
-    set --global --export fish_color_quote
+    set --global --export fish_color_quote green
     set --global --export fish_color_redirection
     set --global --export fish_color_end
     set --global --export fish_color_error red
     set --global --export fish_color_param
-    set --global --export fish_color_comment brblack
+    set --global --export fish_color_comment black
     set --global --export fish_color_match
-    set --global --export fish_color_search_match --background=black
+    set --global --export fish_color_search_match --background=brblack
+    # TODO: I want to remove the default bolding, but currently only the background is configurable.
+    # Issue: https://github.com/fish-shell/fish-shell/issues/2442
+    set --global --export fish_pager_color_selected_background --background=brblack
     set --global --export fish_color_operator
     set --global --export fish_color_escape
     set --global --export fish_color_cwd
     set --global --export fish_color_autosuggestion blue
     set --global --export fish_color_user
     set --global --export fish_color_host
-    set --global --export fish_pager_color_prefix
+    set --global --export fish_pager_color_prefix cyan
     set --global --export fish_pager_color_completion
     set --global --export fish_pager_color_description
-    set --global --export fish_pager_color_progress --reverse --bold
+    set --global --export fish_pager_color_progress --background=brblack normal
     set --global --export fish_pager_color_secondary
+    set --global --export fish_color_cancel black
     # reload this config file
     abbr --add --global r 'source ~/.config/fish/config.fish'
     # Don't print a greeting when a new interactive fish shell is started
