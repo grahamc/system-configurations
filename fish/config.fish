@@ -356,7 +356,7 @@ if status is-interactive
             return
         end
 
-        echo 'Welcome back, would you like to connect to tmux? (y/n):'
+        echo "Welcome back $USER, would you like to connect to tmux? (y/n):"
         read --prompt 'echo "> "' --nchars 1 response
         if test $response = y
             tmux-attach-or-create
