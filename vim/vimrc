@@ -279,9 +279,9 @@ function! MyStatusLine()
   let l:highlight_text = '%#' . l:highlight_text . '#'
 
   if &ft ==# 'help'
-    let l:special_statusline = 'Help'
+    let l:special_statusline = 'Help ❯ %t'
   elseif exists('b:NERDTree')
-    let l:special_statusline = 'NERDTree'
+    let l:special_statusline = '%t'
   elseif &ft ==# 'vim-plug'
     let l:special_statusline = 'Vim Plug'
   endif
