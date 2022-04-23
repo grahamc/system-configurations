@@ -187,18 +187,6 @@ if status is-interactive
         commandline -f execute
     end
     bind \r _load_transient_prompt_and_execute
-    # TODO: This disables fish's default window resize (SIGWINCH) handler and defines a new one that clears the screen
-    # after reloading the prompt. This covers up an issue between the terminal's linewrapping
-    # and fish's prompt reloading that results in a stray line of the old prompt being left on the screen.
-    #
-    # issue filed with VTE: https://gitlab.gnome.org/GNOME/vte/-/issues/2294
-    # issue filed with fish: https://github.com/fish-shell/fish-shell/issues/2320
-    set --global --export fish_handle_reflow 0
-    function _handle_resize --on-signal SIGWINCH
-        commandline -f repaint >/dev/null 2>/dev/null
-        # Clear the screen. Taken from the default ctrl+l keybinding for fish
-        echo -n (clear | string replace \e\[3J "")
-    end
     end
     # use ctrl+b to jump to beginning of line
     bind \cb beginning-of-line
