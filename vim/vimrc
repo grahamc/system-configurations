@@ -260,7 +260,7 @@ set showtabline=1
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
-let &fillchars = "foldopen: ,fold: ,vert:\u23B9,stl:\u2502,stlnc:\u2502"
+let &fillchars = "foldopen: ,fold: ,vert:\u2502,stl:\u2502,stlnc:\u2502"
 
 " Statusline
 function! MyStatusLine()
