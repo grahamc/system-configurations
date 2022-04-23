@@ -285,6 +285,9 @@ function! MyStatusLine()
   elseif &ft ==# 'vim-plug'
     let l:special_statusline = 'Vim Plug'
   endif
+  if exists('l:special_statusline')
+    let l:special_statusline = ' ' . l:special_statusline . ' '
+  endif
 
   let l:maximized_window_indicator = (g:is_window_maximized && g:actual_curwin == win_getid()) ? '❯ [WINDOW_MAXIMIZED] ' : ''
 
