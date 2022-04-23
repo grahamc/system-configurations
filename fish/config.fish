@@ -199,6 +199,7 @@ if status is-interactive
     abbr --add --global tunnel cloudflared-tunnel
 
     # fzf
+    set --global --export FZF_TMUX_OPTS '-p 100%'
     bind \cg 'fzf-grep-widget; commandline -f repaint'
     set --global --export FZF_DEFAULT_OPTS "
         --multi

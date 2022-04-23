@@ -2,7 +2,8 @@ function fzf-apt-remove-widget --description 'Remove packages with apt'
   set choices \
       ( \
         FZF_DEFAULT_COMMAND='dpkg-query -W -f=\'${binary:Package}\n\'' \
-        fzf --ansi \
+        fzf-tmux -p 100% \
+            --ansi \
             --multi \
             --color='fg+:cyan' \
             --bind "alt-enter:toggle,change:first" \

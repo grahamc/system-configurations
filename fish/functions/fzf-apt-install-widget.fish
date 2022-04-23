@@ -2,7 +2,8 @@ function fzf-apt-install-widget --description 'Install packages with apt'
   set choices \
       ( \
         FZF_DEFAULT_COMMAND='apt-cache pkgnames' \
-        fzf --ansi \
+         fzf-tmux -p 100% \
+            --ansi \
             --multi \
             --color='fg+:cyan' \
             --bind "alt-enter:toggle,change:first" \
