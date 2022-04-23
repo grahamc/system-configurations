@@ -6,7 +6,6 @@ function fzf-grep-widget --description 'Search by line, recursively, from curren
         fzf-tmux -p 100% \
             --ansi \
             --disabled \
-            --multi \
             # we refresh-preview after executing vim in the event that the file gets modified by vim
             --bind "ctrl-v:execute(vim {1} +{2}  < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $rg_command {q} || true" \
             --delimiter ':' \

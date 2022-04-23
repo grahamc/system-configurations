@@ -5,14 +5,13 @@ function fzf-apt-remove-widget --description 'Remove packages with apt'
         fzf-tmux -p 100% \
             --ansi \
             --multi \
-            --color='fg+:cyan' \
             --bind "alt-enter:toggle,change:first" \
             --header '(alt+enter to multi-select)' \
             --prompt 'apt remove: ' \
-            --preview 'apt show {} 2>/dev/null | grep --color=always -E "(^[a-z|A-Z|-]*:|^)" | less' \
+            --preview "apt show {} 2>/dev/null | GREP_COLORS='$GREP_COLORS' grep --color=always -E '(^[a-z|A-Z|-]*:|^)' | less" \
       )
   or return
 
   echo "Running command 'sudo apt-get remove $choices'..."
-  sudo apt-get remove $choices
+  sudo apt-get remove --assume-yes $choices
 end
