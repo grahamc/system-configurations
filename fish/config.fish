@@ -246,8 +246,8 @@ if status is-interactive
     set --global --export VISUAL vim
     set --global --export EDITOR $VISUAL
 
-    # Change the color grep uses for highlighting matches to yellow
-    set --global --export GREP_COLORS 'ms=01;33'
+    # Change the color grep uses for highlighting matches to magenta
+    set --global --export GREP_COLORS 'ms=00;35'
 
     # Sets the cursor shape to a blinking bar
     echo -ne '\033[5 q'
