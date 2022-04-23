@@ -579,14 +579,14 @@ Plug 'arcticicestudio/nord-vim'
     " Transparent vertical split
     autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=0
     " statusline colors
-    autocmd ColorScheme nord highlight StatusLine ctermfg=DarkCyan ctermbg=NONE cterm=bold
-    autocmd ColorScheme nord highlight StatusLineNC ctermfg=DarkGray ctermbg=NONE cterm=bold
-    autocmd ColorScheme nord highlight StatusLineText ctermfg=DarkCyan ctermbg=NONE cterm=reverse
-    autocmd ColorScheme nord highlight StatusLineNCText ctermfg=DarkGray ctermbg=NONE cterm=reverse
-    autocmd ColorScheme nord highlight StatusLineStandout ctermfg=DarkYellow ctermbg=NONE cterm=bold
+    autocmd ColorScheme nord highlight StatusLine ctermfg=0 ctermbg=NONE cterm=bold
+    autocmd ColorScheme nord highlight StatusLineNC ctermfg=0 ctermbg=NONE cterm=bold
+    autocmd ColorScheme nord highlight StatusLineText ctermfg=14 ctermbg=NONE cterm=reverse
+    autocmd ColorScheme nord highlight StatusLineNCText ctermfg=0 ctermbg=NONE cterm=reverse
+    autocmd ColorScheme nord highlight StatusLineStandout ctermfg=0 ctermbg=NONE cterm=bold
     autocmd ColorScheme nord highlight StatusLineStandoutText ctermfg=DarkYellow ctermbg=NONE cterm=reverse
     " autocomplete popupmenu
-    autocmd ColorScheme nord highlight PmenuSel ctermfg=DarkCyan ctermbg=NONE cterm=reverse,bold
+    autocmd ColorScheme nord highlight PmenuSel ctermfg=14 ctermbg=NONE cterm=reverse,bold
     autocmd ColorScheme nord highlight Pmenu ctermfg=black ctermbg=NONE cterm=reverse,bold
     autocmd ColorScheme nord highlight CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
     " transparent background
@@ -596,16 +596,19 @@ Plug 'arcticicestudio/nord-vim'
     " relative line numbers
     autocmd ColorScheme nord highlight LineNrAbove ctermfg=0
     autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
-    autocmd ColorScheme nord highlight WordUnderCursor cterm=underline,bold
-    autocmd ColorScheme nord highlight TabLine ctermbg=NONE ctermfg=black cterm=underline
-    autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=DarkCyan cterm=underline
-    autocmd ColorScheme nord highlight WildMenu ctermfg=DarkCyan ctermbg=NONE cterm=bold,underline
+    autocmd ColorScheme nord highlight WordUnderCursor ctermbg=8
+    autocmd ColorScheme nord highlight TabLine ctermbg=NONE ctermfg=black cterm=reverse
+    autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=14 cterm=reverse
+    autocmd ColorScheme nord highlight TabLineFill ctermbg=NONE ctermfg=0
+    autocmd ColorScheme nord highlight WildMenu ctermfg=14 ctermbg=NONE cterm=bold,underline
+    autocmd ColorScheme nord highlight Comment ctermfg=Black ctermbg=NONE
     " This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
-    " By unsetting this, I ensure that terminals opened in vim will use the color palette of the
+    " By unsetting this, I ensure that terminals opened in vim will use the colors from the color palette of the
     " terminal emulator in which vim is running
     autocmd ColorScheme nord unlet g:terminal_ansi_colors
-    " Have vim only use the 16 color palette of the terminal emulator in which it runs
+    " Have vim only use the colors from the 16 color palette of the terminal emulator in which it runs
     autocmd ColorScheme nord set t_Co=16
+    autocmd ColorScheme nord highlight Visual ctermbg=8
   augroup END
 
 """" End Plugin Manager
