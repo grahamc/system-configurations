@@ -344,7 +344,7 @@ function! Tabline()
     let l:visible_length += 3 + strlen(bufname) + 1
 
     let tabline .= '%' . tab . 'T'
-    let tabline .= (tab == tabpagenr() ? '%#TabLineSel# ⯀ ' : '%#TabLine# ⯀ ')
+    let tabline .= (tab == tabpagenr() ? '%#TabLineSel# ❍ ' : '%#TabLine# ❍ ')
     let tabline .= bufname
     let tabline .= ' '
   endfor
