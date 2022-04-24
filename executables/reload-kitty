@@ -1,6 +1,0 @@
-#!/bin/bash
-
-for pid in $(pgrep kitty)
-do
-  kill -SIGUSR1 "$pid"
-done

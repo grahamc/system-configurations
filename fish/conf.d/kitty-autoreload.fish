@@ -19,5 +19,5 @@ else
 end
 set kitty_config_path "$xdg_config_home/kitty/"
 
-flock --nonblock /tmp/kitty-autoreload-lock --command "find $kitty_config_path | entr -np reload-kitty" &
+flock --nonblock /tmp/kitty-autoreload-lock --command "find $kitty_config_path | entr -nps 'killall --signal SIGUSR1 kitty'" > /dev/null &
 disown
