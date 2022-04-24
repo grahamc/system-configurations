@@ -327,10 +327,10 @@ if status is-interactive
     # python
     # Don't add the name of the virtual environment to my prompt. This way, I can add it myself
     # using the same formatting as the rest of my prompt.
-    export VIRTUAL_ENV_DISABLE_PROMPT=1
+    set --global --export VIRTUAL_ENV_DISABLE_PROMPT 1
 
     # ripgrep
-    export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+    set --global --export RIPGREP_CONFIG_PATH "$HOME/.ripgreprc"
 
     # zoxide
     set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'ls --classify -C {2}' --keep-right --bind='change:first'"
