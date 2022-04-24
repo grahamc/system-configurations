@@ -204,22 +204,23 @@ if status is-interactive
     set --global --export FZF_TMUX_OPTS '-p 100%'
     bind \cg 'fzf-grep-widget; commandline -f repaint'
     set --global --export FZF_DEFAULT_OPTS "
-        --multi
         --cycle
-        --bind tab:down,shift-tab:up,alt-enter:toggle,alt-down:last,alt-up:first,change:first
+        --ellipsis='…'
+        --bind tab:down,shift-tab:up,alt-down:last,alt-up:first
         --layout=reverse
-        --color='bg+:-1,fg+:-1,info:black,gutter:bright-black,pointer:cyan:regular,prompt:black:regular:bold,border:black,query:-1:regular,marker:cyan:regular,header:black,spinner:cyan,hl:cyan,hl+:cyan'
+        --color='16,bg+:-1,fg+:-1:regular,bg+:8,info:black,gutter:bright-black,pointer:14:regular,prompt:14:regular,border:black,query:-1:regular,marker:14:regular,header:black,spinner:14,hl:cyan,hl+:regular:cyan'
         --margin=7%
         --height 100%
-        --prompt='❯ '
+        --prompt='> '
+        --info='inline'
         --pointer='❯'
         --marker='❯'
         --preview-window=wrap,bottom,border-top"
     set --global --export FZF_ALT_C_COMMAND "rg --files --null | xargs -0 dirname | sort -u"
-    set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -C {}' --keep-right --color='fg+:cyan'"
-    set --global --export FZF_CTRL_T_COMMAND ''
-    set --global --export FZF_CTRL_T_OPTS '--preview "bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {}" --keep-right --color="fg+:cyan"'
-    set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --color="fg+:cyan"'
+    set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -C {}' --keep-right --bind='change:first'"
+    set --global --export FZF_CTRL_T_COMMAND 'rg --files'
+    set --global --export FZF_CTRL_T_OPTS '--multi --preview "bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --keep-right --bind="change:first"'
+    set --global --export FZF_CTRL_R_OPTS '--prompt="history: "'
     # use ctrl+f for file search instead of default ctrl+t
     bind --erase \ct
     bind \cf 'FZF_CTRL_T_OPTS="$FZF_CTRL_T_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-file-widget'
