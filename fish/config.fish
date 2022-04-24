@@ -221,6 +221,7 @@ if status is-interactive
         --info='inline'
         --pointer='❯'
         --marker='❯'
+        --history='$HOME/.fzf.history'
         --preview-window=wrap,bottom,border-top"
     set --global --export FZF_ALT_C_COMMAND "rg --files --null | xargs -0 dirname | sort -u"
     set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -C {}' --keep-right --bind='change:first'"
