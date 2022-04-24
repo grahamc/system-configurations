@@ -197,8 +197,14 @@ if status is-interactive
     # use ctrl+b to jump to beginning of line
     bind \cb beginning-of-line
 
+    # sudo
+    abbr --add --global s sudo
+
     # cloudflared
     abbr --add --global tunnel cloudflared-tunnel
+
+    # ps
+    abbr --add --global fp fzf-process-widget
 
     # fzf
     set --global --export FZF_TMUX_OPTS '-p 100%'
