@@ -605,6 +605,7 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight NonText ctermbg=NONE
     autocmd ColorScheme nord highlight! link EndOfBuffer NonText
     " relative line numbers
+    autocmd ColorScheme nord highlight LineNr ctermfg=NONE
     autocmd ColorScheme nord highlight LineNrAbove ctermfg=0
     autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
     autocmd ColorScheme nord highlight WordUnderCursor ctermbg=8
