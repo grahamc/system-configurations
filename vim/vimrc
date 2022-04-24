@@ -70,8 +70,6 @@ augroup Miscellaneous
   autocmd VimResized,WinNew,WinClosed * wincmd =
   autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | else | :syntax sync fromstart | endif
   autocmd! bufwritepost .vimrc,vimrc nested source $MYVIMRC | execute 'colorscheme ' . trim(execute('colorscheme'))
-  " Leaving a maximized window should revert it to normal
-  autocmd WinLeave * if get(g:, 'is_window_maximized', v:false) | call ToggleMaximizedWindowAndTrackState() | endif
 augroup END
 
 cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
@@ -111,6 +109,11 @@ nnoremap <silent> <C-l> :tabnext<CR>
 inoremap jk <Esc>
 nnoremap <silent> <Leader>w :wa<CR>
 nnoremap <Leader>x :wqa<CR>
+
+" maximize a window by opening it in a new tab
+nnoremap <silent><C-m> <Cmd>tab sp<CR>
+vnoremap <silent><C-m> <Cmd>tab sp<CR>
+inoremap <silent><C-m> <Cmd>tab sp<CR>
 
 " open new horizontal and vertical panes to the right and bottom respectively
 set splitright splitbelow
@@ -238,10 +241,6 @@ augroup SaveAndRestoreSettings
   autocmd VimEnter * nested call RestoreOrCreateSession()
   " save session before vim exits
   function! SaveSession()
-    " Need to do this before we save the window state in the session
-    if get(g:, 'is_window_maximized', v:false)
-      call ToggleMaximizedWindowAndTrackState()
-    endif
     if !empty(v:this_session)
       execute 'mksession! ' . fnameescape(v:this_session)
     endif
@@ -263,14 +262,8 @@ let &fillchars = "foldopen: ,fold: ,vert:\u2502,stl:\u2502,stlnc:\u2502"
 
 " Statusline
 function! MyStatusLine()
-  let g:is_window_maximized = get(g:, 'is_window_maximized', v:false)
-  let l:highlight = v:null
   if g:actual_curwin == win_getid()
-    if g:is_window_maximized
-      let l:highlight = 'StatusLineStandout'
-    else
-      let l:highlight = 'StatusLine'
-    endif
+    let l:highlight = 'StatusLine'
   else
     let l:highlight = 'StatusLineNC'
   endif
@@ -289,9 +282,7 @@ function! MyStatusLine()
     let l:special_statusline = ' ' . l:special_statusline . ' '
   endif
 
-  let l:maximized_window_indicator = (g:is_window_maximized && g:actual_curwin == win_getid()) ? '❯ [WINDOW_MAXIMIZED] ' : ''
-
-  return l:highlight_text . (exists('l:special_statusline') ? l:special_statusline : ' %h%w%q%t%m%r ❯ Ln %l/%L ❯ Col %c/%{execute("echon col(\"$\") - 1")} ') . l:maximized_window_indicator . l:highlight
+  return l:highlight_text . (exists('l:special_statusline') ? l:special_statusline : ' %h%w%q%t%m%r ❯ Ln %l/%L ❯ Col %c/%{execute("echon col(\"$\") - 1")} ') . l:highlight
 endfunction
 set statusline=%{%MyStatusLine()%}
 
@@ -399,26 +390,6 @@ Plug 'junegunn/vim-peekaboo'
 Plug 'inkarkat/vim-CursorLineCurrentWindow'
 Plug 'farmergreg/vim-lastplace'
 Plug 'tmux-plugins/vim-tmux'
-Plug 'szw/vim-maximizer'
-  let g:maximizer_set_default_mapping = 0
-  function! ToggleMaximizedWindowAndTrackState()
-    let l:window_count_in_current_tab = tabpagewinnr(tabpagenr(), '$')
-    if l:window_count_in_current_tab == 1
-      return
-    endif
-
-    let g:is_window_maximized = get(g:, 'is_window_maximized', v:false)
-    if g:is_window_maximized
-      execute 'MaximizerToggle'
-      let g:is_window_maximized = v:false
-    else
-      execute 'MaximizerToggle'
-      let g:is_window_maximized = v:true
-    endif
-  endfunction
-  nnoremap <silent><C-m> <Cmd>call ToggleMaximizedWindowAndTrackState()<CR>
-  vnoremap <silent><C-m> <Cmd>call ToggleMaximizedWindowAndTrackState()<CR>
-  inoremap <silent><C-m> <Cmd>call ToggleMaximizedWindowAndTrackState()<CR>
 
 """" Autocomplete
 Plug 'prabirshrestha/asyncomplete.vim'
