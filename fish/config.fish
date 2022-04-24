@@ -193,6 +193,24 @@ if status is-interactive
     bind \r _load_transient_prompt_and_execute
     # rebind ctrl+c so that before cancelling the commandline it redraws the prompt as a transient prompt
     bind \cc 'set --global TRANSIENT; commandline -f repaint; commandline -f cancel-commandline; commandline -f repaint'
+    # rebind ctrl+d so that before exiting a shell it redraws the prompt as a transient prompt
+    function _delete_or_load_transient_prompt_and_exit
+        if test -n "$(commandline)"
+            commandline -f delete-char
+            return
+        end
+
+        set --global TRANSIENT
+        commandline -f repaint
+
+        # I do this instead of 'commandline -f exit' so that this way the word exit will be left on the previous prompt
+        # instead of it just being blank. This way it's clear that the previous command was to exit from a shell.
+        commandline --replace 'exit'
+        commandline -f execute
+
+        commandline -f repaint
+    end
+    bind \cd _delete_or_load_transient_prompt_and_exit
     end
     # use ctrl+b to jump to beginning of line
     bind \cb beginning-of-line
