@@ -325,6 +325,7 @@ if status is-interactive
     export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 
     # zoxide
+    set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'ls --classify -C {2}' --keep-right --bind='change:first'"
     zoxide init fish | source
 
     # direnv
