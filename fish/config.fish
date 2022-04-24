@@ -361,7 +361,7 @@ if status is-interactive
         end
 
         type --query figlet
-        and figlet -kt -f slant (basename $SHELL) Shell
+        and figlet -kt -f slant Fish Shell v$version
         echo "Welcome back $USER, would you like to connect to tmux? (y/n):"
         read --prompt 'echo "> "' --nchars 1 response
         if test $response = y
