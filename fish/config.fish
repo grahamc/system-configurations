@@ -87,6 +87,11 @@ if status is-interactive
         functions --erase $fish_keybind_function_name
     end
 
+    # Initialize brew. Doing this now since some of the tools used in this file may be installed with brew
+    # and they won't be on the PATH until brew gets initialized.
+    # TODO: Move to login shell initialization for the reason above.
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
     abbr --add --global trash trash-put
     abbr --add --global t-sys sysz
     abbr --add --global r-asdf 'asdf reshim'
