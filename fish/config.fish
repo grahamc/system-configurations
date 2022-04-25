@@ -253,7 +253,7 @@ if status is-interactive
     set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -C {}' --keep-right --bind='change:first'"
     set --global --export FZF_CTRL_T_COMMAND 'rg --files'
     set --global --export FZF_CTRL_T_OPTS '--multi --preview "bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --keep-right --bind="change:first"'
-    set --global --export FZF_CTRL_R_OPTS '--prompt="history: "'
+    set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}" --preview-window=33%'
     # use ctrl+f for file search instead of default ctrl+t
     bind --erase \ct
     bind \cf 'FZF_CTRL_T_OPTS="$FZF_CTRL_T_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-file-widget'
