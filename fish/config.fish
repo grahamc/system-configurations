@@ -170,7 +170,9 @@ if status is-interactive
     end
     bind ! _bind_bang
     bind '$' _bind_dollar
-    # transient prompt
+    # transient prompt. Ideally I'd do this with a preexec hook, but that won't work for reasons outlined
+    # in this issue: https://github.com/fish-shell/fish-shell/issues/7602#issuecomment-831601418
+    # rebind enter so that before executing the commandline it redraws the prompt as a transient prompt
     function _load_transient_prompt_and_execute
         # If the pager is open, that means I am selecting an item, like an autocomplete suggestion.
         # In which case, I do not want to load a transient prompt.
