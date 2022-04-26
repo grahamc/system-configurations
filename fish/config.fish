@@ -130,7 +130,7 @@ if status is-interactive
     set --global --export fish_pager_color_secondary
     set --global --export fish_color_cancel black
     # reload this config file
-    abbr --add --global r 'source ~/.config/fish/config.fish'
+    abbr --add --global r 'exec fish'
     # Don't print a greeting when a new interactive fish shell is started
     set --global --export fish_greeting ''
     # use ctrl+z to resume the most recently suspended job
