@@ -407,6 +407,7 @@ Plug 'prabirshrestha/asyncomplete.vim'
     \ pumvisible() ? "\<C-n>" :
     \ <SID>check_back_space() ? "\<TAB>" :
     \ asyncomplete#force_refresh()
+  imap <C-a> <Plug>(asyncomplete_force_refresh)
   Plug 'prabirshrestha/asyncomplete-buffer.vim'
     let g:asyncomplete_buffer_clear_cache = 1
     autocmd User asyncomplete_setup
