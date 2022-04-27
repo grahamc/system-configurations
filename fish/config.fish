@@ -227,6 +227,26 @@ if status is-interactive
     end
     # use ctrl+b to jump to beginning of line
     bind \cb beginning-of-line
+    # autoreload fish when a configuration file is modified
+    set --query _autoreload_indicator
+    or set --universal _autoreload_indicator 1
+    function _autoreload_fish --on-variable _autoreload_indicator
+        exec fish
+    end
+    set xdg_config_home
+    if set --query XDG_CONFIG_HOME
+    set xdg_config_home $XDG_CONFIG_HOME
+    else
+    set xdg_config_home "$HOME/.config"
+    end
+    set fish_config_path "$xdg_config_home/fish/"
+    flock --nonblock /tmp/fish-autoreload-lock --command "find $fish_config_path | entr -nps 'fish -c \"set --universal _autoreload_indicator (math -1 \* \$_autoreload_indicator)\"'" > /dev/null &
+    # If flock can't acquire the lock then the background job exits immediately and there will be nothing to disown
+    # so disown will print an error which is why we suppress error output.
+    #
+    # TODO: If there was another background job started before we attempt to acquire this lock and flock could
+    # not acquire this lock, disown would probably disown the wrong job
+    disown 2> /dev/null
 
     # sudo
     abbr --add --global s sudo
