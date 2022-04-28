@@ -14,6 +14,12 @@ set --global --export __fish_git_prompt_showdirtystate
 set --global --export __fish_git_prompt_showupstream informative
 set --global --export __fish_git_prompt_showuntrackedfiles
 
+# async prompt
+set --universal async_prompt_functions fish_prompt_get_git_context
+function fish_prompt_get_git_context_loading_indicator
+    echo -n -s (set_color normal) $fish_prompt_color_text 'git: ' $fish_prompt_color_arrow 'loading…' (set_color normal)
+end
+
 function fish_prompt --description 'Print the prompt'
     # pipestatus contains the exit code(s) of the last command that was executed
     # (there are multiple codes in the case of a pipeline). I want the value of the last command
@@ -55,7 +61,9 @@ function fish_prompt --description 'Print the prompt'
     set -l contexts \
         (fish_prompt_get_direnv_context) \
         (fish_prompt_get_python_context) \
-        (fish_prompt_get_git_context) \
+        # Workaround for async prompt plugin. I need make sure that if I am not in a git repo, then
+        # the git context function does not get called.
+        (git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null; and echo -n (fish_prompt_get_git_context)) \
         (fish_prompt_get_job_context) \
         (fish_prompt_get_user_context) \
         (fish_prompt_get_host_context) \
