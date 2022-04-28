@@ -593,6 +593,8 @@ Plug 'arcticicestudio/nord-vim'
     " Have vim only use the colors from the 16 color palette of the terminal emulator in which it runs
     autocmd ColorScheme nord set t_Co=16
     autocmd ColorScheme nord highlight Visual ctermbg=8
+    " Search hit
+    autocmd ColorScheme nord highlight Search ctermfg=DarkYellow ctermbg=NONE cterm=reverse
   augroup END
 
 """" End Plugin Manager
