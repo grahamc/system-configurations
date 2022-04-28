@@ -248,9 +248,6 @@ if status is-interactive
     flock --nonblock /tmp/fish-autoreload-lock --command "find $fish_config_path | entr -nps 'fish -c \"set --universal _autoreload_indicator (math -1 \* \$_autoreload_indicator)\"'" > /dev/null &
     # If flock can't acquire the lock then the background job exits immediately and there will be nothing to disown
     # so disown will print an error which is why we suppress error output.
-    #
-    # TODO: If there was another background job started before we attempt to acquire this lock and flock could
-    # not acquire this lock, disown would probably disown the wrong job
     disown 2> /dev/null
 
     # sudo
