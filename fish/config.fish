@@ -241,9 +241,9 @@ if status is-interactive
     end
     set xdg_config_home
     if set --query XDG_CONFIG_HOME
-    set xdg_config_home $XDG_CONFIG_HOME
+        set xdg_config_home $XDG_CONFIG_HOME
     else
-    set xdg_config_home "$HOME/.config"
+        set xdg_config_home "$HOME/.config"
     end
     set fish_config_path "$xdg_config_home/fish/"
     flock --nonblock /tmp/fish-autoreload-lock --command "find $fish_config_path | entr -nps 'fish -c \"set --universal _autoreload_indicator (math -1 \* \$_autoreload_indicator)\"'" > /dev/null &
