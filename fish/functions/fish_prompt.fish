@@ -3,12 +3,12 @@ set right_splitbar \u257E
 set connectbar_up \u2514
 set connectbar_down \u250C
 set connectbar_middle \u251C
-set color_border (set_color --bold brblack)
-# The reason for all the 'set_color normal' commands is to undo the bold set by color_border
-set color_text (set_color normal; set_color cyan)
-set color_standout_text (set_color normal; set_color yellow)
-set color_normal (set_color normal)
-set color_arrow (set_color normal; set_color brblack)
+# The reason for all the 'set_color normal' commands is to undo the bold set by the border color
+set fish_prompt_color_text (set_color normal; set_color brcyan)
+set fish_prompt_color_standout_text (set_color normal; set_color yellow)
+set fish_prompt_color_normal (set_color normal)
+set fish_prompt_color_arrow (set_color normal; set_color black)
+set fish_prompt_color_border (set_color normal; set_color --bold black)
 
 set --global --export __fish_git_prompt_showdirtystate
 set --global --export __fish_git_prompt_showupstream informative
@@ -36,8 +36,7 @@ function fish_prompt --description 'Print the prompt'
         # issue: https://github.com/fish-shell/fish-shell/issues/8418
         printf \e\[0J
 
-        # The underline is to visually separate commands
-        echo -n -s -e (fish_prompt_get_separator) "\n" $fish_prompt_color_arrow (fish_prompt_get_arrow) ' ' $fish_prompt_color_normal
+        echo -n -s -e (fish_prompt_get_separator) "\n" (set_color brcyan) (fish_prompt_get_arrow) ' ' $fish_prompt_color_normal
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY
@@ -75,12 +74,12 @@ function fish_prompt --description 'Print the prompt'
         end
 
         if not set --query lines[1]
-            set --local first_line (string join '' (fish_prompt_make_line first) (fish_prompt_format_context $context first))
+            set --local first_line (string join '' (fish_prompt_make_line first) (fish_prompt_format_context $context))
             set --append lines $first_line
             continue
         end
 
-        set --local formatted_context (fish_prompt_format_context $context first)
+        set --local formatted_context (fish_prompt_format_context $context)
         set --local middle_line (string join '' (fish_prompt_make_line) $formatted_context)
         set --append lines $middle_line
     end
@@ -91,20 +90,23 @@ function fish_prompt --description 'Print the prompt'
 end
 
 function fish_prompt_get_separator
-    echo -n -s (set_color black) (string repeat -n $COLUMNS \u2015)
+    # echo -n -s (set_color --underline black)
+    # echo -n -s (set_color brblack) (string repeat -n $COLUMNS \u2015)
+    # echo -n -s (set_color brblack) (string repeat -n 30 \u2015)
+    echo -n -s ' '
 end
 
-function fish_prompt_format_context --argument-names context type
-    echo -n -s $color_border (test "$type" != 'first' && echo -n $right_splitbar) $left_splitbar [ $context $color_border ]
+function fish_prompt_format_context --argument-names context
+    echo -n -s $fish_prompt_color_border $left_splitbar [ $context $fish_prompt_color_border ]
 end
 
 function fish_prompt_make_line --argument-names type
     if test "$type" = first
-        echo -n -s $color_border $connectbar_down
+        echo -n -s $fish_prompt_color_border $connectbar_down
     else if test "$type" = last
-        echo -n -s $color_border $connectbar_up $color_arrow (fish_prompt_get_arrow) $color_normal ' '
+        echo -n -s $fish_prompt_color_border $connectbar_up $fish_prompt_color_arrow (fish_prompt_get_arrow) $fish_prompt_color_normal ' '
     else
-        echo -n -s $color_border $connectbar_middle
+        echo -n -s $fish_prompt_color_border $connectbar_middle
     end
 end
 
@@ -117,7 +119,7 @@ function fish_prompt_get_python_context
         return
     end
 
-    echo -n -s $color_text 'venv: ' (fish_prompt_get_python_venv_name)
+    echo -n -s $fish_prompt_color_text 'venv: ' (fish_prompt_get_python_venv_name)
 end
 
 function fish_prompt_get_python_venv_name
@@ -141,41 +143,6 @@ function fish_prompt_get_python_venv_name
     echo -n $last_path_segment
 end
 
-function fish_prompt_get_git_context --no-scope-shadowing
-    set --global __fish_git_prompt_char_upstream_ahead ',ahead:'
-    set --global __fish_git_prompt_char_upstream_behind ',behind:'
-    set --global __fish_git_prompt_char_untrackedfiles ',untracked'
-    set --global __fish_git_prompt_char_dirtystate ',dirty'
-    set --global __fish_git_prompt_char_stagedstate ',staged'
-    set --global __fish_git_prompt_char_invalidstate ',invalid'
-    set --global __fish_git_prompt_char_stateseparator ''
-
-    set git_context (fish_git_prompt)
-    if test -z $git_context
-        return
-    end
-
-    if test (string length --visible $git_context) -gt (math $columns - 10)
-        set --global __fish_git_prompt_char_upstream_ahead '↑'
-        set --global __fish_git_prompt_char_upstream_behind '↓'
-        set --global __fish_git_prompt_char_untrackedfiles '?'
-        set --global __fish_git_prompt_char_dirtystate '!'
-        set --global --erase __fish_git_prompt_char_stagedstate
-        set --global --erase __fish_git_prompt_char_invalidstate
-        set --global __fish_git_prompt_char_stateseparator ' '
-        set git_context (fish_git_prompt)
-    end
-
-    # remove parentheses and leading space e.g. ' (branch,dirty,untracked)' -> 'branch,dirty,untracked'
-    set --local formatted_context (string sub --start=3 --end=-1 $git_context)
-    # replace first comma with ' (' e.g. ',branch,dirty,untracked' -> ' (branch dirty,untracked'
-    set --local formatted_context (string replace ',' ' (' $formatted_context)
-    # only add the closing parenthese if we added the opening one
-    and set formatted_context (string join '' $formatted_context ')')
-
-    echo -n -s $color_text 'git: ' $formatted_context
-end
-
 function fish_prompt_get_job_context
     if not jobs --query
         return
@@ -183,7 +150,7 @@ function fish_prompt_get_job_context
 
     set --local job_commands (jobs --command)
     set --local formatted_job_commands (string split ' ' $job_commands | string join ,)
-    echo -n -s $color_text 'jobs: ' $formatted_job_commands
+    echo -n -s $fish_prompt_color_text 'jobs: ' $formatted_job_commands
 end
 
 function fish_prompt_get_user_context
@@ -203,7 +170,7 @@ function fish_prompt_get_user_context
         return
     end
 
-    echo -n -s $color_text 'user: ' $USER $color_standout_text (test -n "$privilege_context" && string join '' ' (' $privilege_context ')')
+    echo -n -s $fish_prompt_color_text 'user: ' $USER $fish_prompt_color_standout_text (test -n "$privilege_context" && string join '' ' (' $privilege_context ')')
 end
 
 function fish_prompt_get_host_context
@@ -211,30 +178,30 @@ function fish_prompt_get_host_context
         return
     end
 
-    echo -n -s $color_text 'host: ' (hostname)
+    echo -n -s $fish_prompt_color_text 'host: ' (hostname)
 end
 
-function fish_prompt_get_path_context --no-scope-shadowing
+function fish_prompt_get_path_context
     set -g fish_prompt_pwd_dir_length 0
     set path (prompt_pwd)
 
     set dir_length 5
-    while test (string length --visible $path) -gt (math $columns - 4) -a $dir_length -ge 1
+    while test (string length --visible $path) -gt (math $columns - 10) -a $dir_length -ge 1
         set -g fish_prompt_pwd_dir_length $dir_length
         set path (prompt_pwd)
         set dir_length (math $dir_length - 1)
     end
 
-    echo -n -s $color_text 'path: ' $path
+    echo -n -s $fish_prompt_color_text 'path: ' $path
 end
 
-function fish_prompt_get_status_context --no-scope-shadowing
+function fish_prompt_get_status_context
     # If there aren't any non-zero exit codes, i.e. failures, then we won't print anything
     if not string match --quiet --invert 0 $last_pipestatus
         return
     end
     set --local pipestatus_formatted (fish_status_to_signal $last_pipestatus | string join '|')
-    echo -n -s $color_standout_text 'status: ' $pipestatus_formatted
+    echo -n -s $fish_prompt_color_standout_text 'status: ' $pipestatus_formatted
 end
 
 function fish_prompt_get_direnv_context
@@ -242,5 +209,44 @@ function fish_prompt_get_direnv_context
         return
     end
     # remove the '-' in the beginning
-    echo -n -s $color_text 'direnv: ' (basename (string sub --start 2 -- $DIRENV_DIR))
+    echo -n -s $fish_prompt_color_text 'direnv: ' (basename (string sub --start 2 -- $DIRENV_DIR))
+end
+
+function fish_prompt_get_git_context
+    set --global __fish_git_prompt_char_upstream_ahead ',ahead:'
+    set --global __fish_git_prompt_char_upstream_behind ',behind:'
+    set --global __fish_git_prompt_char_untrackedfiles ',untracked'
+    set --global __fish_git_prompt_char_dirtystate ',dirty'
+    set --global __fish_git_prompt_char_stagedstate ',staged'
+    set --global __fish_git_prompt_char_invalidstate ',invalid'
+    set --global __fish_git_prompt_char_stateseparator ''
+
+    set git_context (fish_git_prompt)
+    if test -z $git_context
+        return
+    end
+
+    # DEBUG: Simulate increased latency when accessing the git remote. This way I can test
+    # the async prompt
+    # sleep 2
+
+    if test (string length --visible $git_context) -gt (math $columns - 10)
+        set --global --export __fish_git_prompt_char_upstream_ahead '↑'
+        set --global --export __fish_git_prompt_char_upstream_behind '↓'
+        set --global --export __fish_git_prompt_char_untrackedfiles '?'
+        set --global --export __fish_git_prompt_char_dirtystate '!'
+        set --global --erase __fish_git_prompt_char_stagedstate
+        set --global --erase __fish_git_prompt_char_invalidstate
+        set --global --export __fish_git_prompt_char_stateseparator ' '
+        set git_context (fish_git_prompt)
+    end
+
+    # remove parentheses and leading space e.g. ' (branch,dirty,untracked)' -> 'branch,dirty,untracked'
+    set --local formatted_context (string sub --start=3 --end=-1 $git_context)
+    # replace first comma with ' (' e.g. ',branch,dirty,untracked' -> ' (branch dirty,untracked'
+    set --local formatted_context (string replace ',' ' (' $formatted_context)
+    # only add the closing parenthese if we added the opening one
+    and set formatted_context (string join '' $formatted_context ')')
+
+    echo -n -s $fish_prompt_color_text 'git: ' $formatted_context
 end
