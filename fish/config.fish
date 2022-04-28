@@ -92,6 +92,12 @@ if status is-interactive
     # TODO: Move to login shell initialization for the reason above.
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
+    # Load navi widget. I'm doing this now since part of loading navi is setting a keybind (ctrl+g)
+    # that would overwrite one of my keybinds. By doing this first, navi's keybind will be
+    # the one that gets overwritten. Instead I'll use ctrl+n.
+    navi widget fish | source
+    bind \cn _navi_smart_replace
+
     abbr --add --global trash trash-put
     abbr --add --global t-sys sysz
     abbr --add --global r-asdf 'asdf reshim'
