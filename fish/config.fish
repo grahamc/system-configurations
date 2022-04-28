@@ -230,7 +230,6 @@ if status is-interactive
         commandline -f repaint
     end
     bind \cd _delete_or_load_transient_prompt_and_exit
-    end
     # use ctrl+b to jump to beginning of line
     bind \cb beginning-of-line
     # autoreload fish when a configuration file is modified
