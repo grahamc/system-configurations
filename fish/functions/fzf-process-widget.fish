@@ -3,7 +3,7 @@ function fzf-process-widget --description 'Manage processes'
   set choice \
       ( \
         FZF_DEFAULT_COMMAND="$reload_command" \
-        fzf-tmux -p 100% \
+        fzf-tmux -B -p 100% -- \
             --ansi \
             --tac \
             --bind "change:first,ctrl-r:reload($reload_command)+first,ctrl-k:execute(clear > /dev/tty 2>&1; echo 'Are you sure? (y/n):' > /dev/tty 2>&1; read --prompt='echo -n \"> \" > /dev/tty 2>&1' --nchars 1 response; test \$response = y; and kill --signal SIGKILL {2})+reload($reload_command)" \

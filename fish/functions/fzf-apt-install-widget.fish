@@ -2,7 +2,7 @@ function fzf-apt-install-widget --description 'Install packages with apt'
   set choices \
       ( \
         FZF_DEFAULT_COMMAND='apt-cache pkgnames' \
-         fzf-tmux -p 100% \
+         fzf-tmux -B -p 100% -- \
             --ansi \
             --multi \
             --bind "alt-enter:toggle,change:first" \

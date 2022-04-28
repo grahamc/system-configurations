@@ -264,7 +264,7 @@ if status is-interactive
     abbr --add --global fp fzf-process-widget
 
     # fzf
-    set --global --export FZF_TMUX_OPTS '-p 100%'
+    set --global --export FZF_TMUX_OPTS '-p 100% -B'
     bind \cg 'fzf-grep-widget; commandline -f repaint'
     set --global --export FZF_DEFAULT_OPTS "
         --cycle

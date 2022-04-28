@@ -3,7 +3,7 @@ function fzf-grep-widget --description 'Search by line, recursively, from curren
   set choice \
       ( \
         FZF_DEFAULT_COMMAND="$rg_command ''" \
-        fzf-tmux -p 100% \
+        fzf-tmux -p 100% -B -- \
             --ansi \
             --disabled \
             # we refresh-preview after executing vim in the event that the file gets modified by vim
