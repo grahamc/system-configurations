@@ -401,6 +401,9 @@ if status is-interactive
         set --prepend fish_complete_path "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_completions.d"
     end
 
+    # vim
+    abbr --add --global v vim
+
     # Ask the user to connect to tmux.
     # Wrapping this in a function so that I am able to exit early with 'return'
     function _tmux_connect
