@@ -60,9 +60,7 @@ function fish_prompt --description 'Print the prompt'
     set -l contexts \
         (fish_prompt_get_direnv_context) \
         (fish_prompt_get_python_context) \
-        # Workaround for async prompt plugin. I need make sure that if I am not in a git repo, then
-        # the git context function does not get called.
-        (git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null; and echo -n (fish_prompt_get_git_context)) \
+        (fish_prompt_get_git_context) \
         (fish_prompt_get_job_context) \
         (fish_prompt_get_user_context) \
         (fish_prompt_get_host_context) \
