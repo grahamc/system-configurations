@@ -281,6 +281,8 @@ function! MyStatusLine()
     let l:special_statusline = 'Help ❯ %t'
   elseif &ft ==# 'vim-plug'
     let l:special_statusline = 'Vim Plug'
+  elseif g:actual_curwin != win_getid()
+    let l:special_statusline = '%t'
   endif
   if exists('l:special_statusline')
     let l:special_statusline = ' ' . l:special_statusline . ' '
