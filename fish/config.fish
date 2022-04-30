@@ -277,7 +277,7 @@ if status is-interactive
         --history='$HOME/.fzf.history'
         --preview-window=wrap,bottom,border-top"
     set --global --export FZF_ALT_C_COMMAND "rg --files --null | xargs -0 dirname | sort -u"
-    set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -C {}' --keep-right --bind='change:first'"
+    set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -x {}' --keep-right --bind='change:first'"
     set --global --export FZF_CTRL_T_COMMAND 'rg --files'
     set --global --export FZF_CTRL_T_OPTS '--multi --preview "bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --keep-right --bind="change:first"'
     set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}" --preview-window=33%'
@@ -317,13 +317,13 @@ if status is-interactive
     echo -ne '\033[5 q'
 
     # ls
-    abbr --add --global ls 'ls --color=never --classify --hyperlink=auto'
+    abbr --add --global ls 'ls -x --color=never --classify --hyperlink=auto'
     # include hidden files
-    abbr --add --global la 'ls --color=never --classify --almost-all --hyperlink=auto'
+    abbr --add --global la 'ls -x --color=never --classify --almost-all --hyperlink=auto'
     # use the long format and a more human-readable format for sizes e.g. 25M
-    abbr --add --global ll 'ls --color=never --classify -l --human-readable --hyperlink=auto'
+    abbr --add --global ll 'ls -x --color=never --classify -l --human-readable --hyperlink=auto'
     # combination of the the two above
-    abbr --add --global lal 'ls --color=never --classify --almost-all -l --human-readable --hyperlink=auto'
+    abbr --add --global lal 'ls -x --color=never --classify --almost-all -l --human-readable --hyperlink=auto'
 
     # cd
     abbr --add --global -- - 'cd -'
@@ -386,7 +386,7 @@ if status is-interactive
     set --global --export RIPGREP_CONFIG_PATH "$HOME/.ripgreprc"
 
     # zoxide
-    set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'ls --classify -C {2}' --keep-right --bind='change:first'"
+    set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'ls --classify -x {2}' --keep-right --bind='change:first'"
     zoxide init fish | source
 
     # direnv
