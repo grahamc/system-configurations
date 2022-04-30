@@ -1,5 +1,5 @@
 function fzf-process-widget --description 'Manage processes'
-  set reload_command 'date; ps -eo user,pid,ppid,start_time,etime,command'
+  set reload_command 'date; ps -eo user,pid,ppid,nice,start_time,etime,command'
   set choice \
       ( \
         FZF_DEFAULT_COMMAND="$reload_command" \
