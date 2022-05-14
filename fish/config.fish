@@ -38,6 +38,13 @@
 #
 # More info: https://unix.stackexchange.com/questions/38175/difference-between-login-shell-and-non-login-shell
 
+# Config for all types of shells
+if set --query XDG_CONFIG_HOME
+    set xdg_config_home $XDG_CONFIG_HOME
+else
+    set xdg_config_home "$HOME/.config"
+end
+
 # Config for non-interactive shells e.g. shells running scripts.
 if not status is-interactive
     # WARNING: To be safe, all code should be put inside this 'begin' block.
@@ -50,12 +57,6 @@ if not status is-interactive
     begin
         # Do not load user functions. This is because I often have functions with the same name
         # as common commands and I don't want scripts to accidentally use them.
-        set xdg_config_home
-        if set --query XDG_CONFIG_HOME
-            set xdg_config_home $XDG_CONFIG_HOME
-        else
-            set xdg_config_home "$HOME/.config"
-        end
         set -l user_fish_functions_directory "$xdg_config_home/fish/functions"
         set -l index (contains --index $user_fish_functions_directory $fish_function_path)
         if test -n "$index"
@@ -237,12 +238,6 @@ if status is-interactive
     or set --universal _autoreload_indicator 1
     function _autoreload_fish --on-variable _autoreload_indicator
         exec fish
-    end
-    set xdg_config_home
-    if set --query XDG_CONFIG_HOME
-        set xdg_config_home $XDG_CONFIG_HOME
-    else
-        set xdg_config_home "$HOME/.config"
     end
     set fish_config_path "$xdg_config_home/fish/"
     flock --nonblock /tmp/fish-autoreload-lock --command "find $fish_config_path | entr -nps 'fish -c \"set --universal _autoreload_indicator (math -1 \* \$_autoreload_indicator)\"'" > /dev/null &
