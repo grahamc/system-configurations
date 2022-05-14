@@ -1,7 +1,5 @@
 # Automatically reload kitty whenever one of the files in its config directory changes.
 
-# TODO: Not sure this is necessary. Scripts in conf.d may only be loaded in interactive shells in which
-# case there is no need to check.
 if not status is-interactive
     exit
 end
