@@ -269,7 +269,7 @@ if status is-interactive
         --marker='❯'
         --history='$HOME/.fzf.history'
         --preview-window=wrap,bottom,border-top"
-    set --global --export FZF_ALT_C_COMMAND "rg --files --null | xargs -0 dirname | sort -u"
+    set --global --export FZF_ALT_C_COMMAND "rg --files --null | xargs -0 dirname | uniq"
     set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -x {}' --keep-right --bind='change:first'"
     set --global --export FZF_CTRL_T_COMMAND 'rg --files'
     set --global --export FZF_CTRL_T_OPTS '--multi --preview "bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --keep-right --bind="change:first"'
