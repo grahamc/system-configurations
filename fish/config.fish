@@ -232,13 +232,15 @@ if status is-interactive
     # use ctrl+b to jump to beginning of line
     bind \cb beginning-of-line
     # autoreload fish when a configuration file is modified
-    set --query _autoreload_indicator
-    or set --universal _autoreload_indicator 1
     function _autoreload_fish --on-variable _autoreload_indicator
         exec fish
     end
-    set fish_config_path "$xdg_config_home/fish/"
-    flock --nonblock /tmp/fish-autoreload-lock --command "find $fish_config_path | entr -nps 'fish -c \"set --universal _autoreload_indicator (math -1 \* \$_autoreload_indicator)\"'" > /dev/null &
+    set fish_config_path "$xdg_config_home/fish"
+    flock --nonblock /tmp/fish-autoreload-lock --command "watchman-make --root '$fish_config_path/my-fish' --pattern 'conf.d/**' 'config.fish' --run 'fish -c \"set --universal _autoreload_indicator (random)\"' 2>/dev/null" &
+    # If flock can't acquire the lock then the background job exits immediately and there will be nothing to disown
+    # so disown will print an error which is why we suppress error output.
+    disown 2> /dev/null
+    flock --nonblock /tmp/fish-autoreload-2-lock --command "watchman-make --root '$fish_config_path' --pattern 'conf.d/**' --run 'fish -c \"set --universal _autoreload_indicator (random)\"' 2>/dev/null" &
     # If flock can't acquire the lock then the background job exits immediately and there will be nothing to disown
     # so disown will print an error which is why we suppress error output.
     disown 2> /dev/null
