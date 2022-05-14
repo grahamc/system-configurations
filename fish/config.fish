@@ -71,6 +71,9 @@ if status is-login
     # XDG Base Directory spec.
     # More info: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
     fish_add_path --prepend --global "$HOME/.local/bin"
+
+    # Initialize brew
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 end
 
 # Config for interactive shells e.g. shells in terminals
@@ -87,11 +90,6 @@ if status is-interactive
         eval $fish_keybind_function_name
         functions --erase $fish_keybind_function_name
     end
-
-    # Initialize brew. Doing this now since some of the tools used in this file may be installed with brew
-    # and they won't be on the PATH until brew gets initialized.
-    # TODO: Move to login shell initialization for the reason above.
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
     # Load navi widget. I'm doing this now since part of loading navi is setting a keybind (ctrl+g)
     # that would overwrite one of my keybinds. By doing this first, navi's keybind will be
