@@ -38,6 +38,13 @@
 #
 # More info: https://unix.stackexchange.com/questions/38175/difference-between-login-shell-and-non-login-shell
 
+# Config for all types of shells
+if set --query XDG_CONFIG_HOME
+    set xdg_config_home $XDG_CONFIG_HOME
+else
+    set xdg_config_home "$HOME/.config"
+end
+
 # Config for non-interactive shells e.g. shells running scripts.
 if not status is-interactive
     # WARNING: To be safe, all code should be put inside this 'begin' block.
@@ -50,12 +57,6 @@ if not status is-interactive
     begin
         # Do not load user functions. This is because I often have functions with the same name
         # as common commands and I don't want scripts to accidentally use them.
-        set xdg_config_home
-        if set --query XDG_CONFIG_HOME
-            set xdg_config_home $XDG_CONFIG_HOME
-        else
-            set xdg_config_home "$HOME/.config"
-        end
         set -l user_fish_functions_directory "$xdg_config_home/fish/functions"
         set -l index (contains --index $user_fish_functions_directory $fish_function_path)
         if test -n "$index"
@@ -70,6 +71,9 @@ if status is-login
     # XDG Base Directory spec.
     # More info: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
     fish_add_path --prepend --global "$HOME/.local/bin"
+
+    # Initialize brew
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 end
 
 # Config for interactive shells e.g. shells in terminals
@@ -86,11 +90,6 @@ if status is-interactive
         eval $fish_keybind_function_name
         functions --erase $fish_keybind_function_name
     end
-
-    # Initialize brew. Doing this now since some of the tools used in this file may be installed with brew
-    # and they won't be on the PATH until brew gets initialized.
-    # TODO: Move to login shell initialization for the reason above.
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
     # Load navi widget. I'm doing this now since part of loading navi is setting a keybind (ctrl+g)
     # that would overwrite one of my keybinds. By doing this first, navi's keybind will be
@@ -233,19 +232,15 @@ if status is-interactive
     # use ctrl+b to jump to beginning of line
     bind \cb beginning-of-line
     # autoreload fish when a configuration file is modified
-    set --query _autoreload_indicator
-    or set --universal _autoreload_indicator 1
     function _autoreload_fish --on-variable _autoreload_indicator
         exec fish
     end
-    set xdg_config_home
-    if set --query XDG_CONFIG_HOME
-        set xdg_config_home $XDG_CONFIG_HOME
-    else
-        set xdg_config_home "$HOME/.config"
-    end
-    set fish_config_path "$xdg_config_home/fish/"
-    flock --nonblock /tmp/fish-autoreload-lock --command "find $fish_config_path | entr -nps 'fish -c \"set --universal _autoreload_indicator (math -1 \* \$_autoreload_indicator)\"'" > /dev/null &
+    set fish_config_path "$xdg_config_home/fish"
+    flock --nonblock /tmp/fish-autoreload-lock --command "watchman-make --root '$fish_config_path/my-fish' --pattern 'conf.d/**' 'config.fish' --run 'fish -c \"set --universal _autoreload_indicator (random)\"' 2>/dev/null" &
+    # If flock can't acquire the lock then the background job exits immediately and there will be nothing to disown
+    # so disown will print an error which is why we suppress error output.
+    disown 2> /dev/null
+    flock --nonblock /tmp/fish-autoreload-2-lock --command "watchman-make --root '$fish_config_path' --pattern 'conf.d/**' --run 'fish -c \"set --universal _autoreload_indicator (random)\"' 2>/dev/null" &
     # If flock can't acquire the lock then the background job exits immediately and there will be nothing to disown
     # so disown will print an error which is why we suppress error output.
     disown 2> /dev/null
@@ -276,8 +271,8 @@ if status is-interactive
         --marker='❯'
         --history='$HOME/.fzf.history'
         --preview-window=wrap,bottom,border-top"
-    set --global --export FZF_ALT_C_COMMAND "rg --files --null | xargs -0 dirname | sort -u"
-    set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -C {}' --keep-right --bind='change:first'"
+    set --global --export FZF_ALT_C_COMMAND "rg --files --null | xargs -0 dirname | uniq"
+    set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -x {}' --keep-right --bind='change:first'"
     set --global --export FZF_CTRL_T_COMMAND 'rg --files'
     set --global --export FZF_CTRL_T_OPTS '--multi --preview "bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --keep-right --bind="change:first"'
     set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}" --preview-window=33%'
@@ -317,13 +312,13 @@ if status is-interactive
     echo -ne '\033[5 q'
 
     # ls
-    abbr --add --global ls 'ls --color=never --classify --hyperlink=auto'
+    abbr --add --global ls 'ls -x --color=never --classify --hyperlink=auto'
     # include hidden files
-    abbr --add --global la 'ls --color=never --classify --almost-all --hyperlink=auto'
+    abbr --add --global la 'ls -x --color=never --classify --almost-all --hyperlink=auto'
     # use the long format and a more human-readable format for sizes e.g. 25M
-    abbr --add --global ll 'ls --color=never --classify -l --human-readable --hyperlink=auto'
+    abbr --add --global ll 'ls -x --color=never --classify -l --human-readable --hyperlink=auto'
     # combination of the the two above
-    abbr --add --global lal 'ls --color=never --classify --almost-all -l --human-readable --hyperlink=auto'
+    abbr --add --global lal 'ls -x --color=never --classify --almost-all -l --human-readable --hyperlink=auto'
 
     # cd
     abbr --add --global -- - 'cd -'
@@ -386,7 +381,7 @@ if status is-interactive
     set --global --export RIPGREP_CONFIG_PATH "$HOME/.ripgreprc"
 
     # zoxide
-    set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'ls --classify -C {2}' --keep-right --bind='change:first'"
+    set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'ls --classify -x {2}' --keep-right --bind='change:first'"
     zoxide init fish | source
 
     # direnv
@@ -425,7 +420,7 @@ if status is-interactive
         end
 
         type --query figlet
-        and figlet -ktc -f slant Fish Shell v$version
+        and figlet -W -w (stty size | cut -d" " -f2) -f smblock Fish Shell v$version
         echo "Welcome back $USER, would you like to connect to tmux? (y/n):"
         read --prompt 'echo "> "' --nchars 1 response
         if test $response = y

@@ -7,7 +7,7 @@ function fzf-grep-widget --description 'Search by line, recursively, from curren
             --ansi \
             --disabled \
             # we refresh-preview after executing vim in the event that the file gets modified by vim
-            --bind "ctrl-v:execute(vim {1} +{2}  < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $rg_command {q} || true" \
+            --bind "ctrl-v:execute(vim '+call cursor({2},{3})' {1} < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $rg_command {q} || true" \
             --delimiter ':' \
             --header '(ctrl+v to open in vim)' \
             --prompt 'lines: ' \

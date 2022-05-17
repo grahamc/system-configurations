@@ -44,13 +44,18 @@
     ~/.ripgreprc: ripgrep/ripgreprc
     ~/.config/gitui/theme.ron: gitui/theme.ron
     ~/.inputrc: readline/inputrc
-    ~/.config/fish/config.fish: fish/config.fish
+    # The reason I symlink the entire fish folder instead of linking
+    # the individual files is that watchman does not support change detection in symlinks.
+    # By symlinking the entire folder, the files themselves will not be symlinks.
+    # watchman issue: https://github.com/facebook/watchman/issues/105
+    ~/.config/fish/my-fish: fish
+    ~/.config/fish/config.fish: ~/.config/fish/my-fish/config.fish
     ~/.config/fish/functions/:
         glob: true
-        path: fish/functions/*
+        path: ~/.config/fish/my-fish/functions/*
     ~/.config/fish/conf.d/:
         glob: true
-        path: fish/conf.d/*
+        path: ~/.config/fish/my-fish/conf.d/*
     ~/.config/fish/fish_plugins: fish/fish_plugins
     ~/.config/direnv/direnvrc: direnv/direnvrc
     ~/.config/bat/config: bat/config
@@ -68,6 +73,9 @@
     - ~/code
 
 - shell:
+    -
+        description: Link watchman configs
+        command: fish ./watchman/install.fish
     -
         description: Install fish prompt for the root user
         command: fish ./fish/install_fish_prompt_for_root.fish

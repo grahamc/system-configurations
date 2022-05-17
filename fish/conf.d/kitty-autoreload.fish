@@ -1,7 +1,5 @@
 # Automatically reload kitty whenever one of the files in its config directory changes.
 
-# TODO: Not sure this is necessary. Scripts in conf.d may only be loaded in interactive shells in which
-# case there is no need to check.
 if not status is-interactive
     exit
 end
@@ -17,7 +15,7 @@ if set --query XDG_CONFIG_HOME
 else
     set xdg_config_home "$HOME/.config"
 end
-set kitty_config_path "$xdg_config_home/kitty/"
+set kitty_config_path "$xdg_config_home/kitty"
 
-flock --nonblock /tmp/kitty-autoreload-lock --command "find $kitty_config_path | entr -nps 'killall --signal SIGUSR1 kitty'" > /dev/null &
+flock --nonblock /tmp/kitty-autoreload-lock --command "watchman-make --root '$kitty_config_path' --pattern '**/*' --run 'killall --signal SIGUSR1 kitty' >/dev/null 2>/dev/null" >/dev/null &
 disown

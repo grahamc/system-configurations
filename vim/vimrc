@@ -262,6 +262,12 @@ let &fillchars = "foldopen: ,fold: ,vert:\u2502,stl:\u2502,stlnc:\u2502"
 
 " Statusline
 function! MyStatusLine()
+  " blank statusline for NERDTree
+  if exists('b:NERDTree')
+    let l:last_window_number = winnr('$')
+    return repeat("\u2800", winwidth(bufname(winbufnr(l:last_window_number)) == 'NERD_tree_1' ? l:last_window_number : 1))
+  endif
+
   if g:actual_curwin == win_getid()
     let l:highlight = 'StatusLine'
   else
@@ -273,10 +279,10 @@ function! MyStatusLine()
 
   if &ft ==# 'help'
     let l:special_statusline = 'Help ❯ %t'
-  elseif exists('b:NERDTree')
-    let l:special_statusline = '%t'
   elseif &ft ==# 'vim-plug'
     let l:special_statusline = 'Vim Plug'
+  elseif g:actual_curwin != win_getid()
+    let l:special_statusline = '%t'
   endif
   if exists('l:special_statusline')
     let l:special_statusline = ' ' . l:special_statusline . ' '
