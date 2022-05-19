@@ -40,7 +40,6 @@
         glob: true
         path: executables/*
     ~/.cloudflared/config.yaml: cloudflared/config.yaml
-    ~/.rgignore: ripgrep/rgignore
     ~/.ripgreprc: ripgrep/ripgreprc
     ~/.config/gitui/theme.ron: gitui/theme.ron
     ~/.inputrc: readline/inputrc

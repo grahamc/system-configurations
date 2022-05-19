@@ -519,8 +519,6 @@ Plug 'junegunn/fzf'
     nnoremap <silent> <Leader>h :History:<CR>
     nnoremap <silent> <Leader>/ :Commands<CR>
     nnoremap <silent> <Leader>b :Buffers<CR>
-    let g:rg_vim_options = '--vimgrep'
-    let g:fzfFindFileCommand = 'rg ' . g:rg_vim_options . ' --files'
     " recursive grep
     function! RipgrepFzf(query, fullscreen)
       let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
@@ -534,7 +532,7 @@ Plug 'junegunn/fzf'
     " recursive file search
     command! -bang -nargs=* FindFile call
         \ fzf#run(fzf#wrap({
-        \ 'source': g:fzfFindFileCommand.' | tr -d "\017"',
+        \ 'source': 'fd --strip-cwd-prefix --type file | tr -d "\017"',
         \ 'sink': 'edit',
         \ 'options': '--ansi --preview "bat --style=numbers,grid --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --prompt="' . substitute(getcwd(), $HOME, '~', "") .'/" --keep-right'}))
     nnoremap <Leader>f :FindFile<CR>
