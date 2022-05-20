@@ -348,20 +348,6 @@ if status is-interactive
     abbr --add --global bo 'brew outdated'
 
     # asdf version manager
-    set --global --export ASDF_VIM_CONFIG \
-        "--enable-fail-if-missing \
-        --with-tlib=ncurses \
-        --with-features=huge \
-        --with-compiledby=asdf \
-        --enable-multibyte \
-        --enable-cscope \
-        --enable-terminal \
-        --enable-perlinterp \
-        --enable-rubyinterp \
-        --enable-python3interp \
-        --enable-luainterp \
-        --with-x \
-        --enable-gui=no"
     # Part of asdf initialization is adding shims. This means that if this config
     # gets reloaded, then asdf will add its shims again. This could be an issue if
     # this config gets reloaded while you're inside a python virtual environment
