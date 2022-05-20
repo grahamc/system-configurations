@@ -8,7 +8,7 @@ function fzf-process-widget --description 'Manage processes'
             --no-clear \
             --tac \
             --bind "change:reload(sleep 0.1; $reload_command)+first,ctrl-r:reload($reload_command)+first" \
-            --header '(ctrl+r to refresh)' \
+            --header '(ctrl+r or enter any character to refresh)' \
             --header-lines=2 \
             --prompt 'processes: ' \
             --preview-window '~1' \
