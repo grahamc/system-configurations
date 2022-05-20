@@ -342,6 +342,10 @@ if status is-interactive
     abbr --add --global fai 'fzf-apt-install-widget'
     abbr --add --global far 'fzf-apt-remove-widget'
 
+    # brew
+    abbr --add --global fbi 'fzf-brew-install-widget'
+    abbr --add --global fbu 'fzf-brew-uninstall-widget'
+
     # asdf version manager
     set --global --export ASDF_VIM_CONFIG \
         "--enable-fail-if-missing \
