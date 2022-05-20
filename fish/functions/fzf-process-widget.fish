@@ -3,11 +3,12 @@ function fzf-process-widget --description 'Manage processes'
   set choice \
       ( \
         FZF_DEFAULT_COMMAND="$reload_command" \
-        fzf-tmux -B -p 100% -- \
+        fzf \
             --ansi \
+            --no-clear \
             --tac \
-            --bind "change:reload(sleep 0.1; $reload_command)+first,ctrl-r:reload($reload_command)+first,ctrl-k:execute(clear > /dev/tty 2>&1; echo 'Are you sure? (y/n):' > /dev/tty 2>&1; read --prompt='echo -n \"> \" > /dev/tty 2>&1' --nchars 1 response; test \$response = y; and kill --signal SIGKILL {2})+reload($reload_command)" \
-            --header '(ctrl+r to refresh, ctrl+k to send SIGKILL)' \
+            --bind "change:reload(sleep 0.1; $reload_command)+first,ctrl-r:reload($reload_command)+first" \
+            --header '(ctrl+r to refresh)' \
             --header-lines=2 \
             --prompt 'processes: ' \
             --preview-window '~1' \
@@ -15,7 +16,27 @@ function fzf-process-widget --description 'Manage processes'
             # would mess up the grep regex.
             --preview 'echo -s (set_color black) {} (set_color normal); pstree --hide-threads --long --show-pids --unicode --show-parents --arguments {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp "[^└|─]+,$(echo {2})( .*|\$)" --regexp "^"' \
       )
-  or return
+  or begin
+    # necessary since I'm using the --no-clear option in fzf
+    tput rmcup
 
-  echo $choice | awk '{print $2}'
+    return
+  end
+  set choice (echo $choice | awk '{print $2}')
+
+  set signal \
+      ( \
+        FZF_DEFAULT_COMMAND="string split ' ' (kill -l)" \
+        fzf \
+            --bind "change:first" \
+            --header 'Select a signal to send or exit to print the PIDs' \
+            --prompt 'signals: ' \
+      )
+  or begin
+    echo $choice
+    return
+  end
+
+  echo "Sending SIG$signal to the processes with the following ids: $choice"
+  kill --signal $signal $choice
 end
