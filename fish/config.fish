@@ -345,6 +345,7 @@ if status is-interactive
     # brew
     abbr --add --global fbi 'fzf-brew-install-widget'
     abbr --add --global fbu 'fzf-brew-uninstall-widget'
+    abbr --add --global bo 'brew outdated'
 
     # asdf version manager
     set --global --export ASDF_VIM_CONFIG \
