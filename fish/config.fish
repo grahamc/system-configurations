@@ -355,7 +355,7 @@ if status is-interactive
     # To get around this, we make sure asdf is only initialized once by setting
     # a variable after init and only initializing asdf if that variable doesn't exist.
     if not set --query ASDF_INITIALIZED
-        source ~/.asdf/asdf.fish
+        source "$(brew --prefix asdf)/libexec/asdf.fish"
         # Set this variable so we can tell if asdf has been initialized.
         # It purposely isn't exported so that sub shells (e.g. tmux shells)
         # don't inherit this value. This way sub shells perform initialization as well which is
