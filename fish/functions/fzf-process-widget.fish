@@ -7,6 +7,8 @@ function fzf-process-widget --description 'Manage processes'
             --ansi \
             --no-clear \
             --tac \
+            # only search on PID, PPID, and the command
+            --nth '2,3,7..' \
             --bind "change:reload(sleep 0.1; $reload_command)+first,ctrl-r:reload($reload_command)+first" \
             --header '(ctrl+r or enter any character to refresh)' \
             --header-lines=2 \
