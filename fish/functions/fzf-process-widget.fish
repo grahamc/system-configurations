@@ -1,12 +1,11 @@
 function fzf-process-widget --description 'Manage processes'
-  set reload_command 'date; ps -e --format user,pid,ppid,nice=NICE,start_time,etime,command'
+  set reload_command 'date; ps -e --format user,pid,ppid,nice=NICE,start_time,etime,command --sort=-start_time'
   set choice \
       ( \
         FZF_DEFAULT_COMMAND="$reload_command" \
         fzf \
             --ansi \
             --no-clear \
-            --tac \
             # only search on PID, PPID, and the command
             --nth '2,3,7..' \
             --bind "change:reload(sleep 0.1; $reload_command)+first,ctrl-r:reload($reload_command)+first" \
