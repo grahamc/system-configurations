@@ -1,8 +1,8 @@
 --theme="base16-brighter"
 
---map-syntax "vimrc:vim"
+--map-syntax "vimrc:VimL"
 
---map-syntax "bashrc:bash"
+--map-syntax "bashrc:Bourne Again Shell (bash)"
 
 --color=always
 
