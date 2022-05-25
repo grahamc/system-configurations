@@ -256,7 +256,7 @@ if status is-interactive
 
     # fzf
     set --global --export FZF_TMUX_OPTS '-p 100% -B'
-    bind \cg 'fzf-grep-widget; commandline -f repaint'
+    bind \cg 'fzf-grep-widget'
     set --global --export FZF_DEFAULT_OPTS "
         --cycle
         --ellipsis='…'

@@ -22,4 +22,7 @@ function fzf-grep-widget --description 'Search by line, recursively, from curren
   set tokens (string split ':' $choice)
   set filename $tokens[1]
   commandline --insert $filename
+
+  # this should be done whenever a binding produces output (see: man bind)
+  commandline -f repaint
 end
