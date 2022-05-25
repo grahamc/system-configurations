@@ -268,6 +268,7 @@ if status is-interactive
         --padding=3%
         --height 100%
         --prompt='> '
+        --tabstop=4
         --info='inline'
         --pointer='❯'
         --marker='❯'
