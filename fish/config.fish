@@ -407,7 +407,7 @@ if status is-interactive
         set --global --export TMUX_CONNECT_WAS_RUN
 
         # User is already in TMUX so no need to connect
-        if set --query IN_TMUX
+        if test -n "$TMUX"
             return
         end
 

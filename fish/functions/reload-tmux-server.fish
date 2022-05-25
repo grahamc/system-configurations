@@ -1,7 +1,7 @@
 function reload-tmux-server --description 'Reload tmux server'
     # Not sure how to restart the tmux server and reconnect to it
     # from within a tmux session
-    if set --query IN_TMUX
+    if test -n "$TMUX"
         echo -s \
             (set_color red) \
             'ERROR: Unable to reload the tmux server from within a tmux session, please dettach from the session and try again.' \
