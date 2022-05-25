@@ -511,6 +511,10 @@ Plug 'mhinz/vim-signify'
   nnoremap <Leader>vk :SignifyHunkDiff<CR>
 
 " fzf integration
+"
+" TODO: Until vim gets support for dim text in its terminals, it will be hard to see which item is
+" active.
+" issue: https://github.com/vim/vim/issues/8269
 Plug 'junegunn/fzf'
   let g:fzf_layout = { 'window': { 'width': 1, 'height': 1, 'border': 'none' } }
   " Collection of fzf-based commands
