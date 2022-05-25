@@ -17,7 +17,7 @@ set --global --export __fish_git_prompt_showuntrackedfiles
 # async prompt
 set --universal async_prompt_functions fish_prompt_get_git_context
 function fish_prompt_get_git_context_loading_indicator
-    echo -n -s (set_color normal) $fish_prompt_color_text 'git: ' $fish_prompt_color_arrow 'loading…' (set_color normal)
+    echo -n -s $fish_prompt_color_text (set_color --dim) 'git: loading…'
 end
 
 function fish_prompt --description 'Print the prompt'
