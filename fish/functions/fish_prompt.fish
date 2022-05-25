@@ -155,13 +155,14 @@ function fish_prompt_get_user_context
     set privilege_context
     if test (id --user) -eq 0
         set privilege_context 'user has admin privileges'
-        # TODO: I use this command to see if sudo currently has any credentials cached, but technically
-        # this line attempts to extend the lifetime of the cache for another 15 minutes, failing if
-        # there currently aren't any credentials cached. Since I only want to know if credentials
-        # are cached, I should probably find something that just gives me that information without
-        # extending anything.
-    else if sudo --non-interactive --validate 2>/dev/null
-        set privilege_context 'sudo credentials cached'
+    # TODO: I use this command to see if sudo currently has any credentials cached, but technically
+    # this line attempts to extend the lifetime of the cache for another 15 minutes, failing if
+    # there currently aren't any credentials cached. Since I only want to know if credentials
+    # are cached, I should probably find something that just gives me that information without
+    # extending anything.
+    # TODO: Despite using --non-interactive, I'm still being prompted so I'm commenting this out for now
+    # else if sudo --non-interactive --validate 2>/dev/null
+    #     set privilege_context 'sudo credentials cached'
     end
 
     if not set --query SSH_TTY && test -z "$privilege_context"
