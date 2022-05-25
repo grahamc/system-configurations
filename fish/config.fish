@@ -265,6 +265,7 @@ if status is-interactive
         --border=rounded
         --color='16,fg+:-1:regular,bg+:-1,fg:dim,info:black,gutter:bright-black,pointer:14:regular,prompt:14:regular,border:black,query:-1:regular,marker:14:regular,header:black,spinner:14,hl:cyan:dim,hl+:regular:cyan'
         --margin=5%
+        --padding=3%
         --height 100%
         --prompt='> '
         --info='inline'
