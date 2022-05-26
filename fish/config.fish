@@ -273,7 +273,7 @@ if status is-interactive
         --pointer='❯'
         --marker='❯'
         --history='$HOME/.fzf.history'
-        --preview-window=wrap,bottom,border-top"
+        --preview-window=wrap,bottom,border-top,60%"
     set --global --export FZF_ALT_C_COMMAND "fd --strip-cwd-prefix --type directory"
     set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -x {}' --keep-right --bind='change:first'"
     set --global --export FZF_CTRL_T_COMMAND 'fd --strip-cwd-prefix --type file'
