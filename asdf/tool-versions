@@ -1,5 +1,5 @@
-python 3.9.0
+python 3.10.4
 nodejs lts
-golang 1.17.2
+golang 1.18.2
 rust stable
 direnv system
