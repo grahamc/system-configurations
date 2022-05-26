@@ -395,6 +395,13 @@ if status is-interactive
     # vim
     abbr --add --global v vim
 
+    # pipx
+    set pipx_completion_filepath "$HOME/.config/fish/completions/pipx.fish"
+    if type --query pipx && not test -e $pipx_completion_filepath
+        echo 'Adding autocomplete for pipx'
+        register-python-argcomplete --shell fish pipx > $pipx_completion_filepath
+    end
+
     # Ask the user to connect to tmux.
     # Wrapping this in a function so that I am able to exit early with 'return'
     function _tmux_connect
