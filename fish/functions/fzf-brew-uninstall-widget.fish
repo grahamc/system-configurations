@@ -12,6 +12,6 @@ function fzf-brew-uninstall-widget --description 'Uninstall packages with brew'
       )
   or return
 
-  echo "Running command 'sudo brew uninstall $choices'..."
-  sudo brew uninstall $choices
+  echo "Running command 'brew uninstall $choices'..."
+  brew uninstall $choices
 end
