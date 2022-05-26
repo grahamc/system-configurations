@@ -57,6 +57,7 @@
     ~/.config/bat/config: bat/config
     ~/.lesskey: less/lesskey
     ~/.config/bat/themes/base16-brighter.tmTheme: bat/base16-brighter.tmTheme
+    ~/.config/direnv/direnv.toml: direnv/direnv.toml
 
 # Using another link directive since I have multiple links to this directory and you can't have
 # multiple keys with the same name in YAML
