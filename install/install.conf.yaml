@@ -56,7 +56,6 @@
         glob: true
         path: ~/.config/fish/my-fish/conf.d/*
     ~/.config/fish/fish_plugins: fish/fish_plugins
-    ~/.config/direnv/direnvrc: direnv/direnvrc
     ~/.config/bat/config: bat/config
     ~/.lesskey: less/lesskey
     ~/.config/bat/themes/base16-brighter.tmTheme: bat/base16-brighter.tmTheme
