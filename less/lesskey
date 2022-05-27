@@ -2,6 +2,8 @@
 # Make forward and backward search wrap around
 / forw-search ^W
 ? back-search ^W
+^j forw-scroll
+^k back-scroll
 
 #env
 # Set default less options:
