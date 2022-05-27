@@ -339,7 +339,8 @@ if status is-interactive
     abbr --add --global ai 'sudo apt install'
     abbr --add --global ar 'sudo apt remove'
     abbr --add --global aar 'sudo apt autoremove'
-    abbr --add --global au 'sudo apt update'
+    abbr --add --global aud 'sudo apt update'
+    abbr --add --global aug 'sudo apt upgrade'
     abbr --add --global as apt-show
     abbr --add --global ap 'apt policy'
     abbr --add --global alu 'apt list --upgradeable'
