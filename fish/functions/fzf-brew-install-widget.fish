@@ -17,7 +17,9 @@ function fzf-brew-install-widget --description 'Install packages with brew'
             # fzf triggers its loading animation for the preview window if the command hasn't completed
             # and has outputted at least one line. To get a loading animation for the 'brew info' command
             # we first echo a blank line and then clear it.
-            --preview 'echo ""; printf "\033[2J"; HOMEBREW_COLOR=1 brew info {}' \
+            #
+            # The grep command is to highlight the different section names in the output.
+            --preview 'echo ""; printf "\033[2J"; HOMEBREW_COLOR=1 brew info {} | grep --color=always --extended-regexp --regexp "^.*:\ " --regexp "^"' \
       )
   or return
 
