@@ -7,7 +7,17 @@ function fzf-man-widget --description 'Search manpages'
             --no-clear \
             --tiebreak=begin \
             --prompt 'manpages: ' \
-            --preview "man (string sub --start=2 --end=-1 {2}) {1}" \
+            # Setting a very large MANWIDTH so that man will not truncate lines and instead allow
+            # them to wrap. This way if I increase the terminal window size, the lines will take
+            # up the new width.
+            #
+            # Because of the large MANWIDTH the man formatters (e.g. troff) print errors so we suppress
+            # stderr.
+            #
+            # If fzf allowed refreshing the preview on SIGWINCH, we could remove MANWIDTH and just
+            # refresh the preview in the larger terminal window.
+            # Issue: https://github.com/junegunn/fzf/issues/2248
+            --preview "MANWIDTH=1000000 man (string sub --start=2 --end=-1 {2}) {1} 2>/dev/null" \
       )
   or begin
     # necessary since I'm using the --no-clear option in fzf
