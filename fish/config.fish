@@ -254,6 +254,9 @@ if status is-interactive
     # ps
     abbr --add --global fp fzf-process-widget
 
+    # man
+    abbr --add --global fm fzf-man-widget
+
     # fzf
     set --global --export FZF_TMUX_OPTS '-p 100% -B'
     bind \cg 'fzf-grep-widget'

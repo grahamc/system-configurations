@@ -14,4 +14,6 @@
 # '--hilite-search' - when searching, don't highlight all matches at once, only the current match
 # '--no-histdups' - no duplicate entries in the search history
 # '--save-marks' - save marks before less exits
-LESS = --RAW-CONTROL-CHARS --ignore-case --quit-if-one-screen --incsearch --quit-on-intr --jump-target=.5 --hilite-search --no-histdups --save-marks
+# '--clear-screen' - clear the screen when less starts. This is useful if you are executing less after 'fzf --no-clear'
+# because without it, fzf will not clear the screen when it exits and the less content will just print on top of it.
+LESS = --RAW-CONTROL-CHARS --ignore-case --quit-if-one-screen --incsearch --quit-on-intr --jump-target=.5 --hilite-search --no-histdups --save-marks --clear-screen
