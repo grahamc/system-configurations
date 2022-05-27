@@ -17,6 +17,8 @@ function fzf-man-widget --description 'Search manpages'
             # If fzf allowed refreshing the preview on SIGWINCH, we could remove MANWIDTH and just
             # refresh the preview in the larger terminal window.
             # Issue: https://github.com/junegunn/fzf/issues/2248
+            #
+            # The 'string sub' is to remove the parentheses around the manpage section
             --preview "MANWIDTH=1000000 man (string sub --start=2 --end=-1 {2}) {1} 2>/dev/null" \
       )
   or begin
