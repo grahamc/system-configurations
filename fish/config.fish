@@ -259,7 +259,6 @@ if status is-interactive
 
     # fzf
     set --global --export FZF_TMUX_OPTS '-p 100% -B'
-    bind \cg 'fzf-grep-widget'
     set --global --export FZF_DEFAULT_OPTS "
         --cycle
         --ellipsis='…'
@@ -291,6 +290,7 @@ if status is-interactive
     # use alt+d for directory search instead of default alt+c
     bind --erase \ec
     bind \ed 'FZF_ALT_C_OPTS="$FZF_ALT_C_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-cd-widget'
+    bind \cg 'fzf-grep-widget'
 
     # x server
     abbr --add --global r-xbindkeys 'killall xbindkeys; xbindkeys'
