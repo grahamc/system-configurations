@@ -3,3 +3,4 @@ nodejs lts
 golang 1.18.2
 rust stable
 direnv system
+java temurin-17.0.3+7
