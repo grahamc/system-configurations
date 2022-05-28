@@ -1,2 +1,4 @@
+# Read version files used by other version managers (e.g. .ruby-version), if the plugin supports this
 legacy_version_file = yes
+# After installing the direnv plugin, run the setup script
 post_asdf_plugin_add_direnv = COMMAND='asdf direnv setup --shell fish --version system'; echo -e "\033[01;34mSetting up asdf-direnv by running the command '$COMMAND'...\033[0m"; eval "$COMMAND"
