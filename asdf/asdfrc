@@ -1,4 +1,11 @@
 # Read version files used by other version managers (e.g. .ruby-version), if the plugin supports this
 legacy_version_file = yes
+
 # After installing the direnv plugin, run the setup script
 post_asdf_plugin_add_direnv = COMMAND='asdf direnv setup --shell fish --version system'; echo -e "\033[01;34mSetting up asdf-direnv by running the command '$COMMAND'...\033[0m"; eval "$COMMAND"
+
+# After installing a plugin, check if the user specified a version for that tool and that the version
+# is not installed. If this is true, install the specified version. This can be checked by checking
+# if the command 'asdf current <tool>' returns an exit code of 1. The first argument passed to this
+# hook is the name of the tool.
+post_asdf_plugin_add = asdf current $1 2>/dev/null; test $? -eq 1 && echo -e "\033[01;34mThe currently active version of $1 is not installed. Installing now...\033[0m" && asdf install $1 && echo -e "\033[01;34mSuccessfully installed the currently active version of $1\033[0m" || echo -e "\033[01;31mFailed to install the active version of $1\033[0m"
