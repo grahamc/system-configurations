@@ -57,7 +57,7 @@ augroup Miscellaneous
         \ if &ft ==# 'help' && (&columns * 10) / &lines > 31 | wincmd L | endif
   autocmd FileType sh setlocal keywordprg=man
   autocmd VimEnter * call OverrideVimsDefaultFiletypePlugins()
-  autocmd CursorHold * execute printf('silent! match WordUnderCursor /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+  autocmd CursorHold * execute printf('silent! 3match WordUnderCursor /\V\<%s\>/', escape(expand('<cword>'), '/\'))
   " After a quickfix command is run, open the quickfix window , if there are results
   autocmd QuickFixCmdPost [^l]* cwindow
   autocmd QuickFixCmdPost l*    lwindow
