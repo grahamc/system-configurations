@@ -1,0 +1,39 @@
+if not status is-interactive
+    exit
+end
+
+set --global --export FZF_TMUX_OPTS '-p 100% -B'
+set --global --export FZF_DEFAULT_OPTS "
+    --cycle
+    --ellipsis='…'
+    --bind 'tab:down,shift-tab:up,alt-down:preview-page-down,alt-up:preview-page-up,change:first,alt-o:change-preview-window(right,border-left,50%|bottom,border-top,60%),ctrl-/:preview(fzf-help-preview),ctrl-\\:refresh-preview,enter:select+accept'
+    --layout=reverse
+    --border=rounded
+    --color='16,fg+:-1:regular,bg+:-1,fg:dim,info:black,gutter:bright-black,pointer:14:regular,prompt:14:regular,border:black,query:-1:regular,marker:14:regular,header:black,spinner:14,hl:cyan:dim,hl+:regular:cyan'
+    --margin=5%
+    --padding=3%
+    --height 100%
+    --prompt='> '
+    --tabstop=4
+    --info='inline'
+    --pointer='❯'
+    --marker='❯'
+    --history='$HOME/.fzf.history'
+    --header='(Press ctrl+/ for help)'
+    --preview='echo Current selection: {}'
+    --preview-window=wrap,bottom,border-top,60%"
+set --global --export FZF_ALT_C_COMMAND "fd --strip-cwd-prefix --type directory"
+set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -x {}' --keep-right --bind='change:first'"
+set --global --export FZF_CTRL_T_COMMAND 'fd --strip-cwd-prefix --type file'
+set --global --export FZF_CTRL_T_OPTS '--multi --preview "bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --keep-right --bind="change:first"'
+set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}" --preview-window=33%'
+# use ctrl+f for file search instead of default ctrl+t
+bind --erase \ct
+bind \cf 'FZF_CTRL_T_OPTS="$FZF_CTRL_T_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-file-widget'
+# use ctrl+h for history search instead of default ctrl+r
+bind --erase \cr
+bind \ch fzf-history-widget
+# use alt+d for directory search instead of default alt+c
+bind --erase \ec
+bind \ed 'FZF_ALT_C_OPTS="$FZF_ALT_C_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-cd-widget'
+bind \cg 'fzf-grep-widget'

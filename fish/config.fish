@@ -38,33 +38,6 @@
 #
 # More info: https://unix.stackexchange.com/questions/38175/difference-between-login-shell-and-non-login-shell
 
-# Config for all types of shells
-if set --query XDG_CONFIG_HOME
-    set xdg_config_home $XDG_CONFIG_HOME
-else
-    set xdg_config_home "$HOME/.config"
-end
-
-# Config for non-interactive shells e.g. shells running scripts.
-if not status is-interactive
-    # WARNING: To be safe, all code should be put inside this 'begin' block.
-    # Reason being, the code in this conditional gets run when fish is running a script so the output
-    # could break a script that expects certain content, or no content, in stdout or stderr.
-    # By using a block, I can supress any of its output to stdout or stderr.
-    #
-    # For an example of how output could break ssh/scp/rsync, see the following link:
-    # https://fishshell.com/docs/current/faq.html#why-won-t-ssh-scp-rsync-connect-properly-when-fish-is-my-login-shell
-    begin
-        # Do not load user functions. This is because I often have functions with the same name
-        # as common commands and I don't want scripts to accidentally use them.
-        set -l user_fish_functions_directory "$xdg_config_home/fish/functions"
-        set -l index (contains --index $user_fish_functions_directory $fish_function_path)
-        if test -n "$index"
-            set --erase fish_function_path[$index]
-        end
-    end >/dev/null 2>/dev/null
-end
-
 # Config for login shells i.e. shells started as part of the login process
 if status is-login
     # Adding this to the PATH since this is where user-specific executables should go, per the
@@ -78,19 +51,6 @@ end
 
 # Config for interactive shells e.g. shells in terminals
 if status is-interactive
-    # By default, fish calls the function 'fish_user_key_bindings', if it exists, after this config
-    # gets loaded. This means any key bindings set in 'fish_user_key_bindings' will override keybinds
-    # set in this file. I would prefer it if keybinds here would override keybinds in 'fish_user_key_bindings'.
-    # This way I can change the default keybinds for tools like fzf.
-    #
-    # To do this, I call fish_user_key_bindings right now, if it exists, and then erase the function
-    # so that fish doesn't call it later.
-    set fish_keybind_function_name fish_user_key_bindings
-    if functions --query $fish_keybind_function_name
-        eval $fish_keybind_function_name
-        functions --erase $fish_keybind_function_name
-    end
-
     # Load navi widget. I'm doing this now since part of loading navi is setting a keybind (ctrl+g)
     # that would overwrite one of my keybinds. By doing this first, navi's keybind will be
     # the one that gets overwritten. Instead I'll use ctrl+/.
@@ -142,108 +102,8 @@ if status is-interactive
     bind \cz fg
     # use ctrl+right-arrow to accept the next suggested word
     bind \e\[1\;3C forward-word
-    # bash-style history expansion (!! and !$)
-    function _bind_bang
-        switch (commandline -t)
-            case "!"
-                commandline -t -- $history[1]
-                commandline -f repaint
-            case "*"
-                commandline -i !
-        end
-    end
-    function _bind_dollar
-        switch (commandline -t)
-            # Variation on the original, vanilla "!" case
-            # ===========================================
-            #
-            # If the `!$` is preceded by text, search backward for tokens that
-            # contain that text as a substring. E.g., if we'd previously run
-            #
-            #   git checkout -b a_feature_branch
-            #   git checkout main
-            #
-            # then the `fea!$` in the following would be replaced with
-            # `a_feature_branch`
-            #
-            #   git branch -d fea!$
-            #
-            # and our command line would look like
-            #
-            #   git branch -d a_feature_branch
-            #
-            case "*!"
-                commandline -f backward-delete-char history-token-search-backward
-            case "*"
-                commandline -i '$'
-        end
-    end
-    bind ! _bind_bang
-    bind '$' _bind_dollar
-    # transient prompt. Ideally I'd do this with a preexec hook, but that won't work for reasons outlined
-    # in this issue: https://github.com/fish-shell/fish-shell/issues/7602#issuecomment-831601418
-    # rebind enter so that before executing the commandline it redraws the prompt as a transient prompt
-    function _load_transient_prompt_and_execute
-        # If the pager is open, that means I am selecting an item, like an autocomplete suggestion.
-        # In which case, I do not want to load a transient prompt.
-        if not commandline --paging-mode
-            set commandline_contents (commandline)
-            # I use --valid so that the prompt doesn't become transient while I'm entering a multiline
-            # command
-            if commandline --is-valid
-                set --global TRANSIENT
-                commandline -f repaint
-            # Make a distinction for an empty commandline. With this, I could insert a blank
-            # line when the commandline is empty, giving me a way to separate commands visually
-            else if test -z "$commandline_contents"
-                set --global TRANSIENT_EMPTY
-                commandline -f repaint
-            end
-        end
-        commandline -f execute
-    end
-    bind \r _load_transient_prompt_and_execute
-    # rebind ctrl+c so that before cancelling the commandline it redraws the prompt as a transient prompt
-    function _load_transient_prompt_and_cancel
-        set --global TRANSIENT
-        commandline -f repaint
-        commandline -f cancel-commandline
-        commandline -f repaint
-    end
-    bind \cc _load_transient_prompt_and_cancel
-    # rebind ctrl+d so that before exiting the shell it redraws the prompt as a transient prompt
-    function _delete_or_load_transient_prompt_and_exit
-        if test -n "$(commandline)"
-            commandline -f delete-char
-            return
-        end
-
-        set --global TRANSIENT
-        commandline -f repaint
-
-        # I do this instead of 'commandline -f exit' so that this way the word exit will be left on the previous prompt
-        # instead of it just being blank. This way it's clear that the previous command was to exit from a shell.
-        commandline --replace 'exit'
-        commandline -f execute
-
-        commandline -f repaint
-    end
-    bind \cd _delete_or_load_transient_prompt_and_exit
     # use ctrl+b to jump to beginning of line
     bind \cb beginning-of-line
-    # autoreload fish when a configuration file is modified
-    function _autoreload_fish --on-variable _autoreload_indicator
-        exec fish
-    end
-    set fish_config_path "$xdg_config_home/fish"
-    flock --nonblock /tmp/fish-autoreload-lock --command "watchman-make --root '$fish_config_path/my-fish' --pattern 'conf.d/**' 'config.fish' --run 'fish -c \"set --universal _autoreload_indicator (random)\"' 2>/dev/null" &
-    # If flock can't acquire the lock then the background job exits immediately and there will be nothing to disown
-    # so disown will print an error which is why we suppress error output.
-    disown 2> /dev/null
-    flock --nonblock /tmp/fish-autoreload-2-lock --command "watchman-make --root '$fish_config_path' --pattern 'conf.d/**' --run 'fish -c \"set --universal _autoreload_indicator (random)\"' 2>/dev/null" &
-    # If flock can't acquire the lock then the background job exits immediately and there will be nothing to disown
-    # so disown will print an error which is why we suppress error output.
-    disown 2> /dev/null
 
     # sudo
     abbr --add --global s sudo
@@ -256,43 +116,6 @@ if status is-interactive
 
     # man
     abbr --add --global fm fzf-man-widget
-
-    # fzf
-    set --global --export FZF_TMUX_OPTS '-p 100% -B'
-    set --global --export FZF_DEFAULT_OPTS "
-        --cycle
-        --ellipsis='…'
-        --bind 'tab:down,shift-tab:up,alt-down:preview-page-down,alt-up:preview-page-up,change:first,alt-o:change-preview-window(right,border-left,50%|bottom,border-top,60%),ctrl-/:preview(fzf-help-preview),ctrl-\\:refresh-preview,enter:select+accept'
-        --layout=reverse
-        --border=rounded
-        --color='16,fg+:-1:regular,bg+:-1,fg:dim,info:black,gutter:bright-black,pointer:14:regular,prompt:14:regular,border:black,query:-1:regular,marker:14:regular,header:black,spinner:14,hl:cyan:dim,hl+:regular:cyan'
-        --margin=5%
-        --padding=3%
-        --height 100%
-        --prompt='> '
-        --tabstop=4
-        --info='inline'
-        --pointer='❯'
-        --marker='❯'
-        --history='$HOME/.fzf.history'
-        --header='(Press ctrl+/ for help)'
-        --preview='echo Current selection: {}'
-        --preview-window=wrap,bottom,border-top,60%"
-    set --global --export FZF_ALT_C_COMMAND "fd --strip-cwd-prefix --type directory"
-    set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -x {}' --keep-right --bind='change:first'"
-    set --global --export FZF_CTRL_T_COMMAND 'fd --strip-cwd-prefix --type file'
-    set --global --export FZF_CTRL_T_OPTS '--multi --preview "bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --keep-right --bind="change:first"'
-    set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}" --preview-window=33%'
-    # use ctrl+f for file search instead of default ctrl+t
-    bind --erase \ct
-    bind \cf 'FZF_CTRL_T_OPTS="$FZF_CTRL_T_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-file-widget'
-    # use ctrl+h for history search instead of default ctrl+r
-    bind --erase \cr
-    bind \ch fzf-history-widget
-    # use alt+d for directory search instead of default alt+c
-    bind --erase \ec
-    bind \ed 'FZF_ALT_C_OPTS="$FZF_ALT_C_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-cd-widget'
-    bind \cg 'fzf-grep-widget'
 
     # x server
     abbr --add --global r-xbindkeys 'killall xbindkeys; xbindkeys'
@@ -392,21 +215,8 @@ if status is-interactive
     # disable activation/deactivation messages
     set --global --export DIRENV_LOG_FORMAT
 
-    # kitty shell integration
-    if set -q KITTY_INSTALLATION_DIR
-        source "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_conf.d/kitty-shell-integration.fish"
-        set --prepend fish_complete_path "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_completions.d"
-    end
-
     # vim
     abbr --add --global v vim
-
-    # pipx
-    set pipx_completion_filepath "$HOME/.config/fish/completions/pipx.fish"
-    if type --query pipx && not test -e $pipx_completion_filepath
-        echo 'Adding autocomplete for pipx'
-        register-python-argcomplete --shell fish pipx > $pipx_completion_filepath
-    end
 
     # Ask the user to connect to tmux.
     # Wrapping this in a function so that I am able to exit early with 'return'
