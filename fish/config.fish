@@ -179,21 +179,7 @@ if status is-interactive
     abbr --add --global bo 'brew outdated'
 
     # asdf version manager
-    # Part of asdf initialization is adding shims. This means that if this config
-    # gets reloaded, then asdf will add its shims again. This could be an issue if
-    # this config gets reloaded while you're inside a python virtual environment
-    # since the asdf shims will be placed before the virtual environment shims in the PATH.
-    # To get around this, we make sure asdf is only initialized once by setting
-    # a variable after init and only initializing asdf if that variable doesn't exist.
-    if not set --query ASDF_INITIALIZED
-        source "$(brew --prefix asdf)/libexec/asdf.fish"
-        # Set this variable so we can tell if asdf has been initialized.
-        # It purposely isn't exported so that sub shells (e.g. tmux shells)
-        # don't inherit this value. This way sub shells perform initialization as well which is
-        # necessary since asdf loads functions as part of initialization and functions
-        # don't get inherited by sub shells.
-        set --global ASDF_INITIALIZED
-    end
+    source "$(brew --prefix asdf)/libexec/asdf.fish"
 
     # python
     # Don't add the name of the virtual environment to my prompt. This way, I can add it myself
