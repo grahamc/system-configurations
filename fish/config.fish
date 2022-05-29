@@ -185,7 +185,7 @@ if status is-interactive
 
     # zoxide
     set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'ls --classify -x {2}' --keep-right --bind='change:first'"
-    zoxide init fish | source
+    zoxide init --cmd cd fish | source
 
     # direnv
     direnv hook fish | source
