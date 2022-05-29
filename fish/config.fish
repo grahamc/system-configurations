@@ -51,12 +51,6 @@ end
 
 # Config for interactive shells e.g. shells in terminals
 if status is-interactive
-    # Load navi widget. I'm doing this now since part of loading navi is setting a keybind (ctrl+g)
-    # that would overwrite one of my keybinds. By doing this first, navi's keybind will be
-    # the one that gets overwritten. Instead I'll use ctrl+/.
-    navi widget fish | source
-    bind \c_ _navi_smart_replace
-
     abbr --add --global trash trash-put
     abbr --add --global t-sys sysz
     abbr --add --global r-asdf 'asdf reshim'
