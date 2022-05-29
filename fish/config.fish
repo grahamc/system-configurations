@@ -262,7 +262,7 @@ if status is-interactive
     set --global --export FZF_DEFAULT_OPTS "
         --cycle
         --ellipsis='…'
-        --bind tab:down,shift-tab:up,alt-down:preview-page-down,alt-up:preview-page-up,change:first,alt-o:change-preview-window\(right\,border-left\,50%\|bottom\,border-top\,60%\)
+        --bind 'tab:down,shift-tab:up,alt-down:preview-page-down,alt-up:preview-page-up,change:first,alt-o:change-preview-window(right,border-left,50%|bottom,border-top,60%),ctrl-/:preview(fzf-help-preview),ctrl-\\:refresh-preview'
         --layout=reverse
         --border=rounded
         --color='16,fg+:-1:regular,bg+:-1,fg:dim,info:black,gutter:bright-black,pointer:14:regular,prompt:14:regular,border:black,query:-1:regular,marker:14:regular,header:black,spinner:14,hl:cyan:dim,hl+:regular:cyan'
@@ -275,6 +275,8 @@ if status is-interactive
         --pointer='❯'
         --marker='❯'
         --history='$HOME/.fzf.history'
+        --header='(Press ctrl+/ for help)'
+        --preview='echo Current selection: {}'
         --preview-window=wrap,bottom,border-top,60%"
     set --global --export FZF_ALT_C_COMMAND "fd --strip-cwd-prefix --type directory"
     set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -x {}' --keep-right --bind='change:first'"

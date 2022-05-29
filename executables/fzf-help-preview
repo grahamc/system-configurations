@@ -1,0 +1,44 @@
+#!/bin/env fish
+
+# Prints a cheatsheet for fzf keybinds. This is intended to be used in a call to preview() in fzf.
+#
+# Additional keybinds can be set in the FZF_HINTS environment variable, separated by '\n',
+# in the format '<keybind>: <description>' (The format must be followed for it to styled correctly).
+# e.g. FZF_HINTS='ctrl+a: accept\nctrl+b:back'. This way you can keybinds specific to an fzf invocation.
+#
+# Usage:
+# FZF_HINTS='ctrl+a: additional binding' fzf --preview fzf-help-preview
+#
+# If you are using fzf-tmux, be sure to pass the environment variable using the '-e' flag (requires tmux >= v3.3).
+# Simply exporting the variable, like in the above example, won't work since the fzf
+# command run by fzf-tmux won't be a descendant of the process calling fzf-tmux. Therefore,
+# the variable won't be inherited. Instead do the following (the '--' signifies the end of tmux flags):
+# fzf-tmux -e 'FZF_HINTS=ctrl+a: additional keybinding' -- --preview fzf-help-preview
+#
+# TODO: The hints inside here should be taken out and passed inside FZF_HINTS. This way the script
+# doesn't have my keybinds hardcoded in it.
+
+function _format_hint_section
+    set section_name $argv[1]
+    # TODO: display in a grid like ls
+    set hints (printf %s\n $argv[2..] | grep --color=always -E '(^.*:)')
+    echo -e -s (set_color --bold) $section_name '\n' (string join "\n" $hints) '\n'
+end
+
+function _fzf_help_preview
+    set hint_sections \
+        (_format_hint_section 'Help' 'ctrl+\\\: close this page' 'ctrl+/: open this page') \
+        (_format_hint_section 'Navigation' 'tab/down: move down' 'shift+tab/up: move up') \
+        (_format_hint_section 'Layout' 'alt+o: toggle preview window orientation') \
+        (_format_hint_section 'Preview Window' 'shift+up/down: scroll preview window up/down one line' 'alt+up/down: scroll preview window up/down one page') \
+        (_format_hint_section 'History' 'ctrl+n/p: go to next/previous entry in history')
+    if set --query FZF_HINTS
+        set widget_specific_hints (echo -e $FZF_HINTS)
+        set --prepend hint_sections (_format_hint_section 'Widget-Specific' $widget_specific_hints)
+    end
+
+    echo -e (string join "\n" $hint_sections)
+end
+
+# I'm using a function so that my variables will have a function-local scope
+_fzf_help_preview

@@ -3,13 +3,13 @@ function fzf-process-widget --description 'Manage processes'
   set choice \
       ( \
         FZF_DEFAULT_COMMAND="$reload_command" \
+        FZF_HINTS='ctrl+r or input any character: refresh process list' \
         fzf \
             --ansi \
             --no-clear \
             # only search on PID, PPID, and the command
             --nth '2,3,7..' \
-            --bind "change:reload(sleep 0.1; $reload_command)+first,ctrl-r:reload($reload_command)+first" \
-            --header '(ctrl+r or enter any character to refresh)' \
+            --bind "change:reload(sleep 0.1; $reload_command)+first,ctrl-r:reload($reload_command)+first,ctrl-/:preview(fzf-help-preview)+change-preview-window(~0),ctrl-\\:refresh-preview+change-preview-window(~1)" \
             --header-lines=2 \
             --prompt 'processes: ' \
             --preview-window '~1' \

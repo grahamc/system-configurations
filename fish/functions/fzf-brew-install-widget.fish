@@ -2,7 +2,7 @@ function fzf-brew-install-widget --description 'Install packages with brew'
   set choices \
       ( \
         FZF_DEFAULT_COMMAND='brew formulae' \
-         fzf-tmux -B -p 100% -- \
+        fzf-tmux -B -p 100% -e "FZF_HINTS=alt+enter: select multiple items\nctrl+o: search online" -- \
             --ansi \
             --multi \
             # fzf triggers its loading animation for the preview window if the command hasn't completed
@@ -12,7 +12,6 @@ function fzf-brew-install-widget --description 'Install packages with brew'
             # with the infinite loop will be stopped. The inifinite loop contains a sleep command so that
             # we don't have to execute the loop conditional as much.
             --bind 'alt-enter:toggle,change:first,ctrl-o:preview(echo "Searching online..."; while :; sleep 1000; end)+reload(brew search "" | tail -n +2)' \
-            --header '(alt+enter: multi-select, ctrl+o: search online)' \
             --prompt 'brew install: ' \
             # fzf triggers its loading animation for the preview window if the command hasn't completed
             # and has outputted at least one line. To get a loading animation for the 'brew info' command
