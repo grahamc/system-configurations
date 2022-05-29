@@ -38,17 +38,6 @@
 #
 # More info: https://unix.stackexchange.com/questions/38175/difference-between-login-shell-and-non-login-shell
 
-# Config for login shells i.e. shells started as part of the login process
-if status is-login
-    # Adding this to the PATH since this is where user-specific executables should go, per the
-    # XDG Base Directory spec.
-    # More info: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-    fish_add_path --prepend --global "$HOME/.local/bin"
-
-    # Initialize brew
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-end
-
 # Config for interactive shells e.g. shells in terminals
 if status is-interactive
     abbr --add --global trash trash-put
