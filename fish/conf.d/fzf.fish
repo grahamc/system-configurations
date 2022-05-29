@@ -33,7 +33,12 @@ bind \cf 'FZF_CTRL_T_OPTS="$FZF_CTRL_T_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-fil
 # use ctrl+h for history search instead of default ctrl+r
 bind --erase \cr
 bind \ch fzf-history-widget
+
 # use alt+d for directory search instead of default alt+c
 bind --erase \ec
-bind \ed 'FZF_ALT_C_OPTS="$FZF_ALT_C_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-cd-widget'
+# TODO: This won't work until the bugfix commit gets added to a release so I'll print an error instead for now.
+# bugfix: https://github.com/junegunn/fzf/pull/2799
+# bind \ed 'FZF_ALT_C_OPTS="$FZF_ALT_C_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-cd-widget'
+bind \ed "commandline --replace \"echo -e -s (set_color red) 'ERROR: The directory won\'t actually change due to a bug in fzf. The bug has been fixed, but the commit hasn\'t been added to a release yet: https://github.com/junegunn/fzf/pull/2799' (set_color normal)\"; commandline -f execute"
+
 bind \cg 'fzf-grep-widget'
