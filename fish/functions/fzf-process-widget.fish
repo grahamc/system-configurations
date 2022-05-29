@@ -3,13 +3,14 @@ function fzf-process-widget --description 'Manage processes'
   set choice \
       ( \
         FZF_DEFAULT_COMMAND="$reload_command" \
-        FZF_HINTS='ctrl+r or input any character: refresh process list' \
+        FZF_HINTS='ctrl+r: refresh process list\nalt+enter: select multiple items' \
         fzf \
             --ansi \
+            --multi \
             --no-clear \
             # only search on PID, PPID, and the command
             --nth '2,3,7..' \
-            --bind "change:reload(sleep 0.1; $reload_command)+first,ctrl-r:reload($reload_command)+first,ctrl-/:preview(fzf-help-preview)+change-preview-window(~0),ctrl-\\:refresh-preview+change-preview-window(~1)" \
+            --bind "change:first,ctrl-r:reload($reload_command)+first,ctrl-/:preview(fzf-help-preview)+change-preview-window(~0),ctrl-\\:refresh-preview+change-preview-window(~1),alt-enter:toggle" \
             --header-lines=2 \
             --prompt 'processes: ' \
             --preview-window '~1' \
@@ -23,7 +24,12 @@ function fzf-process-widget --description 'Manage processes'
 
     return
   end
-  set choice (echo $choice | awk '{print $2}')
+
+  set process_ids (printf %s\n $choice | awk '{print $2}')
+  set process_command_names (printf %s\n $choice | awk '{print $7}')
+  for index in (seq (count $process_ids))
+    set --append process_ids_names "$process_ids[$index] ($process_command_names[$index])"
+  end
 
   set signal \
       ( \
@@ -34,10 +40,10 @@ function fzf-process-widget --description 'Manage processes'
             --prompt 'signals: ' \
       )
   or begin
-    echo $choice
+    printf %s\n $process_ids
     return
   end
 
-  echo "Sending SIG$signal to the processes with the following ids: $choice"
-  kill --signal $signal $choice
+  echo "Sending SIG$signal to the following processes: $(string join ', ' $process_ids_names)"
+  kill --signal $signal $process_ids
 end
