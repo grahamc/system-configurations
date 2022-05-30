@@ -169,6 +169,41 @@ xnoremap <C-z> <ESC>:suspend<CR>
 imap OB <Down>
 imap OA <Up>
 
+""" Section: <S-k> settings
+command! -nargs=1 SilentEx
+  \   execute 'silent! !' . <q-args>
+  \ | execute 'redraw!'
+let s:failure_indicators = {
+      \ 'python': 'no python documentation found',
+      \ 'vim': 'Sorry, no help',
+      \ 'sh': 'No manual entry',
+      \ }
+function! ChainedKeywordprg()
+  let l:cword = expand("<cword>")
+
+  if !empty(&keywordprg)
+    let l:failure_indicator = get(s:failure_indicators, &ft, '')
+
+    if &keywordprg[0] == ':'
+      let l:result = execute('silent! ' . &keywordprg[1:] . ' ' . l:cword)
+      if empty(l:failure_indicator) || l:result !~? l:failure_indicator
+        return
+      endif
+    else
+      let l:result = system(&keywordprg . ' ' . l:cword)
+      if empty(l:failure_indicator) || l:result !~? l:failure_indicator
+        exe 'SilentEx ' . &keywordprg . ' ' . l:cword
+        return
+      endif
+    endif
+  endif
+
+  if exists(':LspHover')
+      exe "LspHover"
+  endif
+endfunction
+nnoremap K :call ChainedKeywordprg()<CR>
+
 """ Section: Line folding / splitting
 " Prevents inserting two spaces after punctuation on a join (J)
 set nojoinspaces
