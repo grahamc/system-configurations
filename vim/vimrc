@@ -576,6 +576,12 @@ Plug 'junegunn/fzf'
         \ 'options': '--ansi --preview "bat --style=numbers,grid --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --prompt="' . substitute(getcwd(), $HOME, '~', "") .'/" --keep-right'}))
     nnoremap <Leader>f :FindFile<CR>
 
+"""" Colors
+" Opens the OS color picker and inserts the chosen color into the buffer.
+Plug 'KabbAmine/vCoolor.vim'
+  " Make an alias for the 'VCoolor' command with a name that is easier to remember
+  command! ColorPicker VCoolor
+
 """" File explorer
 Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
   augroup NerdTree
