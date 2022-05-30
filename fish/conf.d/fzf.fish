@@ -39,6 +39,6 @@ bind --erase \ec
 # TODO: This won't work until the bugfix commit gets added to a release so I'll print an error instead for now.
 # bugfix: https://github.com/junegunn/fzf/pull/2799
 # bind \ed 'FZF_ALT_C_OPTS="$FZF_ALT_C_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-cd-widget'
-bind \ed "commandline --replace \"echo -e -s (set_color red) 'ERROR: The directory won\'t actually change due to a bug in fzf. The bug has been fixed, but the commit hasn\'t been added to a release yet: https://github.com/junegunn/fzf/pull/2799' (set_color normal)\"; set --global TRANSIENT; commandline -f repaint; commandline -f execute"
+bind \ed "commandline --replace \"echo -e -s (set_color red) 'ERROR: This keybind does not work due to a bug in fzf. The bug has been fixed, but the commit hasn\'t been added to a release yet: https://github.com/junegunn/fzf/pull/2799' (set_color normal)\"; set --global TRANSIENT; commandline -f repaint; commandline -f execute"
 
 bind \cg 'fzf-grep-widget'
