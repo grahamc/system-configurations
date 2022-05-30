@@ -3,14 +3,14 @@
 # Prints a cheatsheet for fzf keybinds. This is intended to be used in a call to preview() in fzf.
 #
 # Additional keybinds can be set in the FZF_HINTS environment variable, separated by '\n',
-# in the format '<keybind>: <description>' (The format must be followed for it to styled correctly).
-# e.g. FZF_HINTS='ctrl+a: accept\nctrl+b:back'. This way you can keybinds specific to an fzf invocation.
+# in the format '<keybind>: <description>' (The format must be followed for it to be styled correctly).
+# e.g. FZF_HINTS='ctrl+a: accept\nctrl+b:back'. This way you can add keybinds specific to an fzf invocation.
 #
 # Usage:
 # FZF_HINTS='ctrl+a: additional binding' fzf --preview fzf-help-preview
 #
-# If you are using fzf-tmux, be sure to pass the environment variable using the '-e' flag (requires tmux >= v3.3).
-# Simply exporting the variable, like in the above example, won't work since the fzf
+# If you are using fzf-tmux, be sure to pass the FZF_HINTS environment variable using the '-e' flag (requires tmux >= v3.3).
+# Exporting the variable, like in the above example, won't work since the fzf
 # command run by fzf-tmux won't be a descendant of the process calling fzf-tmux. Therefore,
 # the variable won't be inherited. Instead do the following (the '--' signifies the end of tmux flags):
 # fzf-tmux -e 'FZF_HINTS=ctrl+a: additional keybinding' -- --preview fzf-help-preview
