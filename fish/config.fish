@@ -164,6 +164,21 @@ if status is-interactive
     # asdf version manager
     source "$(brew --prefix asdf)/libexec/asdf.fish"
 
+    # fisher
+    if not type --query fisher
+        echo -s (set_color blue) "'fisher' was not found, installing now..."
+        curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+
+        # If installing fisher is successful, install the plugins from fish_plugins
+        and begin
+            set fish_plugins_path "$__fish_config_dir/fish_plugins"
+            if test -e $fish_plugins_path
+                echo -s (set_color blue) "fisher: Installing plugins from 'fish_plugins'"
+                fisher update
+            end
+        end
+    end
+
     # python
     # Don't add the name of the virtual environment to my prompt. This way, I can add it myself
     # using the same formatting as the rest of my prompt.
