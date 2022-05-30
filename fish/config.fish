@@ -181,8 +181,6 @@ if status is-interactive
     # toggle activation/deactivation messages
     abbr --add --global dirlog \
         'set --query DIRENV_LOG_FORMAT; and set --erase DIRENV_LOG_FORMAT; or set --global --export DIRENV_LOG_FORMAT'
-    # disable activation/deactivation messages
-    set --global --export DIRENV_LOG_FORMAT
 
     # vim
     abbr --add --global v vim
