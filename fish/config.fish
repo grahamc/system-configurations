@@ -160,7 +160,9 @@ if status is-interactive
     abbr --add --global bo 'brew outdated'
 
     # asdf version manager
-    source "$(brew --prefix asdf)/libexec/asdf.fish"
+    set _asdf_init_script "$(brew --prefix asdf)/libexec/asdf.fish"
+    test -e $_asdf_init_script
+    and source $_asdf_init_script
 
     # fisher
     if not type --query fisher
@@ -190,10 +192,14 @@ if status is-interactive
 
     # zoxide
     set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'ls --classify -x {2}' --keep-right --bind='change:first'"
-    zoxide init --cmd cd fish | source
+    if type --query zoxide
+        zoxide init --cmd cd fish | source
+    end
 
     # direnv
-    direnv hook fish | source
+    if type --query direnv
+        direnv hook fish | source
+    end
     # toggle activation/deactivation messages
     abbr --add --global dirlog \
         'set --query DIRENV_LOG_FORMAT; and set --erase DIRENV_LOG_FORMAT; or set --global --export DIRENV_LOG_FORMAT'
@@ -225,7 +231,9 @@ if status is-interactive
             tmux-attach-or-create
         end
     end
-    _tmux_connect
+    if type --query tmux
+        _tmux_connect
+    end
 
     # Trigger direnv. This way if a terminal or tmux-pane gets spawned in a directory that has
     # a .envrc file, it will get loaded automatically.
