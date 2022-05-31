@@ -3,7 +3,10 @@ function fzf-grep-widget --description 'Search by line, recursively, from curren
   set choice \
       ( \
         FZF_DEFAULT_COMMAND="$rg_command ''" \
-        fzf-tmux -p 100% -B -e "FZF_HINTS=ctrl+v: open in vim" -- \
+        fzf-tmux -p 100% -B -- \
+        # TODO: Gotta wait until tmux has a release the contains the -e flag for popups.
+        # PR: https://github.com/tmux/tmux/pull/2924/commits/8b3e46ce24a7948cf928f963d6765a8039cc84a8
+        # fzf-tmux -p 100% -B -e "FZF_HINTS=ctrl+v: open in vim" -- \
             --ansi \
             --disabled \
             # we refresh-preview after executing vim in the event that the file gets modified by vim

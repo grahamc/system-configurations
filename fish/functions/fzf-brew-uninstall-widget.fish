@@ -2,7 +2,10 @@ function fzf-brew-uninstall-widget --description 'Uninstall packages with brew'
   set choices \
       ( \
         FZF_DEFAULT_COMMAND='brew leaves' \
-        fzf-tmux -B -p 100% -e "FZF_HINTS=alt+enter: select multiple items" -- \
+        fzf-tmux -B -p 100% -- \
+        # TODO: Gotta wait until tmux has a release the contains the -e flag for popups.
+        # PR: https://github.com/tmux/tmux/pull/2924/commits/8b3e46ce24a7948cf928f963d6765a8039cc84a8
+        # fzf-tmux -B -p 100% -e "FZF_HINTS=alt+enter: select multiple items" -- \
             --ansi \
             --multi \
             --bind "alt-enter:toggle,change:first" \
