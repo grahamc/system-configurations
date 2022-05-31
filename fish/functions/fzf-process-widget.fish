@@ -10,10 +10,9 @@ function fzf-process-widget --description 'Manage processes'
             --no-clear \
             # only search on PID, PPID, and the command
             --nth '2,3,7..' \
-            --bind "change:first,ctrl-r:reload($reload_command)+first,ctrl-/:preview(fzf-help-preview)+change-preview-window(~0),ctrl-\\:refresh-preview+change-preview-window(~1),alt-enter:toggle" \
+            --bind "change:first,ctrl-r:reload($reload_command)+first,alt-enter:toggle" \
             --header-lines=2 \
             --prompt 'processes: ' \
-            --preview-window '~1' \
             # I 'echo' the fzf placeholder in the grep regex to get around the fact that fzf substitutions are single quoted and the quotes
             # would mess up the grep regex.
             --preview 'echo -s (set_color black) {} (set_color normal); pstree --hide-threads --long --show-pids --unicode --show-parents --arguments {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp "[^└|─]+,$(echo {2})( .*|\$)" --regexp "^"' \
