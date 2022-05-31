@@ -327,9 +327,6 @@ function! MyStatusLine()
 endfunction
 set statusline=%{%MyStatusLine()%}
 
-"""" colorscheme
-autocmd VimEnter * nested colorscheme nord
-
 """" Block cursor in normal mode, thin line in insert mode, and underline in replace mode
 let &t_SI.="\e[5 q" "SI = INSERT mode
 let &t_SR.="\e[3 q" "SR = REPLACE mode
@@ -693,3 +690,9 @@ Plug 'arcticicestudio/nord-vim'
 
 """" End Plugin Manager
 call plug#end()
+
+"""" colorscheme
+" Must be after plugins are loaded since this colorscheme comes from a
+" plugin
+colorscheme nord
+
