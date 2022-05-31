@@ -219,8 +219,6 @@ if status is-interactive
             return
         end
 
-        type --query figlet
-        and figlet -W -w (stty size | cut -d" " -f2) -f smblock Fish Shell v(string split ' ' (fish --version) | tail -n 1)
         echo "Welcome back $USER, would you like to connect to tmux? (y/n):"
         read --prompt 'echo "> "' --nchars 1 response
         if test $response = y
