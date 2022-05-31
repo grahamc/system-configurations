@@ -167,14 +167,17 @@ if status is-interactive
     # fisher
     if not type --query fisher
         echo -s (set_color blue) "'fisher' was not found, installing now..."
-        curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+        curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source
 
-        # If installing fisher is successful, install the plugins from fish_plugins
+        # If installing fisher is successful, install the plugins from fish_plugins if the file exists.
+        # If it doesn't, just install the fisher plugin so it can manage itself.
         and begin
             set fish_plugins_path "$__fish_config_dir/fish_plugins"
             if test -e $fish_plugins_path
                 echo -s (set_color blue) "fisher: Installing plugins from 'fish_plugins'"
                 fisher update
+            else
+                fisher install jorgebucaran/fisher
             end
         end
     end
