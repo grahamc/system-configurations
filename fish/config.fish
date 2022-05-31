@@ -102,8 +102,6 @@ if status is-interactive
 
     # x server
     abbr --add --global r-xbindkeys 'killall xbindkeys; xbindkeys'
-    abbr --add --global copy 'xclip -selection clipboard'
-    abbr --add --global paste 'xclip -selection clipboard -out'
 
     # Set preferred editor.
     #
