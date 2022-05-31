@@ -604,8 +604,8 @@ Plug 'junegunn/fzf'
       let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
       let initial_command = printf(command_fmt, shellescape(a:query))
       let reload_command = printf(command_fmt, '{q}')
-      let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:first+reload:'.reload_command, '--prompt', 'lines: ']}
-      call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+      let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:first+reload:'.reload_command, '--prompt', 'lines: ', '--preview', 'bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {1} --highlight-line {2} | tail -n +2 | head -n -1']}
+      call fzf#vim#grep(initial_command, 1, spec, a:fullscreen)
     endfunction
     command! -nargs=* -bang FindLine call RipgrepFzf(<q-args>, <bang>0)
     nnoremap <Leader>g :FindLine<CR>
