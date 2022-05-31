@@ -3,7 +3,7 @@ configs and whatnot
 
 ## Try it out
 If you want to try out my dotfiles without modifying anything in your home directory you can do the following:
-1. Create the directory where you want to store my dotfiles. e.g.
+1. Create the directory where you want to store my dotfiles:
 ```
 mkdir /tmp/dotfiles
 ```
