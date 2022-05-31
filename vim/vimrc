@@ -373,6 +373,10 @@ function! Tabline()
 endfunction
 set tabline=%!Tabline()
 
+" Write to file with sudo. For when I forget to use sudoedit.
+" tee streams its input to stdout as well as the specified file so I suppress the output
+command! SudoWrite w !sudo tee % >/dev/null
+
 """ Section: Plugins
 """" Plugin Manager Settings
 " Install vim-plug if not found
@@ -677,3 +681,4 @@ call plug#end()
 " Must be after plugins are loaded since this colorscheme comes from a
 " plugin
 colorscheme nord
+
