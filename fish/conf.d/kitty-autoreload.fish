@@ -17,5 +17,5 @@ else
 end
 set kitty_config_path "$xdg_config_home/kitty"
 
-flock --nonblock /tmp/kitty-autoreload-lock --command "watchman-make --root '$kitty_config_path' --pattern '**/*' --run 'killall --signal SIGUSR1 kitty' >/dev/null 2>/dev/null" >/dev/null &
+flock --nonblock /tmp/kitty-autoreload-lock --command "watchman-make --root '$kitty_config_path' --pattern '**/*' --run 'killall --signal SIGUSR1 kitty x-terminal-emulator' >/dev/null 2>/dev/null" >/dev/null &
 disown
