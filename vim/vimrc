@@ -293,16 +293,10 @@ set showtabline=1
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
-let &fillchars = "foldopen: ,fold: ,vert:\u2502,stl:\u2502,stlnc:\u2502"
+let &fillchars = "foldopen: ,fold: ,vert:\u2502,stl:\ ,stlnc:\ "
 
 " Statusline
 function! MyStatusLine()
-  " blank statusline for NERDTree
-  if exists('b:NERDTree')
-    let l:last_window_number = winnr('$')
-    return repeat("\u2800", winwidth(bufname(winbufnr(l:last_window_number)) == 'NERD_tree_1' ? l:last_window_number : 1))
-  endif
-
   if g:actual_curwin == win_getid()
     let l:highlight = 'StatusLine'
   else
@@ -318,12 +312,15 @@ function! MyStatusLine()
     let l:special_statusline = 'Vim Plug'
   elseif g:actual_curwin != win_getid()
     let l:special_statusline = '%t'
+  elseif exists('b:NERDTree')
+    let l:special_statusline = '%t'
   endif
   if exists('l:special_statusline')
     let l:special_statusline = ' ' . l:special_statusline . ' '
+    return l:highlight_text . l:special_statusline . l:highlight
   endif
 
-  return l:highlight_text . (exists('l:special_statusline') ? l:special_statusline : ' %h%w%q%t%m%r ❯ Ln %l/%L ❯ Col %c/%{execute("echon col(\"$\") - 1")} ') . l:highlight
+  return l:highlight_text . (exists('l:special_statusline') ? l:special_statusline : ' %h%w%q%t%m%r ') . l:highlight . '%=' . l:highlight_text . ' Ln %l/%L ❮ Col %c/%{execute("echon col(\"$\") - 1")} '
 endfunction
 set statusline=%{%MyStatusLine()%}
 
@@ -349,13 +346,6 @@ augroup END
 " Tabline
 function! Tabline()
   let tabline = ''
-  let l:visible_length = 0
-
-  " shift tabline over if NERDTree is active on the left side
-  " if bufname(winbufnr(1)) == 'NERD_tree_1'
-  "   let tabline .= '%#VertSplit#' . repeat(' ', winwidth(1) + 1)
-  " endif
-
 
   for i in range(tabpagenr('$'))
     let tab = i + 1
@@ -370,22 +360,14 @@ function! Tabline()
       let bufname = '[No Name]'
     endif
 
-    let l:visible_length += 3 + strlen(bufname) + 1
-
     let tabline .= '%' . tab . 'T'
-    let tabline .= (tab == tabpagenr() ? '%#TabLineSel# ❍ ' : '%#TabLine# ❍ ')
+    let tabline .= (tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#')
+    let tabline .= ' %' . tab . 'X✕%X '
     let tabline .= bufname
     let tabline .= ' '
   endfor
 
-  let tabline .= '%#TabLineFill#'
-  let tabline .= repeat("\u2502", &columns - l:visible_length)
-
-  " shift tabline over if NERDTree is active on the right side
-  let l:last_window_number = winnr('$')
-  if bufname(winbufnr(l:last_window_number)) == 'NERD_tree_1'
-    let tabline = strcharpart(tabline, 0, strcharlen(tabline) - winwidth(l:last_window_number))
-  endif
+  let tabline .= '%T%#TabLineFill#'
 
   return tabline
 endfunction
@@ -650,10 +632,10 @@ Plug 'arcticicestudio/nord-vim'
     " Transparent SignColumn
     autocmd ColorScheme nord highlight clear SignColumn
     " Transparent vertical split
-    autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=0
+    autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=8
     " statusline colors
-    autocmd ColorScheme nord highlight StatusLine ctermfg=0 ctermbg=NONE
-    autocmd ColorScheme nord highlight StatusLineNC ctermfg=0 ctermbg=NONE
+    autocmd ColorScheme nord highlight StatusLine ctermbg=8
+    autocmd ColorScheme nord highlight StatusLineNC ctermbg=8
     autocmd ColorScheme nord highlight StatusLineText ctermfg=14 ctermbg=NONE cterm=reverse
     autocmd ColorScheme nord highlight StatusLineNCText ctermfg=0 ctermbg=NONE cterm=reverse
     autocmd ColorScheme nord highlight StatusLineStandout ctermfg=0 ctermbg=NONE
@@ -673,8 +655,8 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight WordUnderCursor cterm=bold
     autocmd ColorScheme nord highlight IncSearch ctermbg=8 cterm=NONE
     autocmd ColorScheme nord highlight TabLine ctermbg=NONE ctermfg=black cterm=reverse
-    autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=14 cterm=reverse
-    autocmd ColorScheme nord highlight TabLineFill ctermbg=NONE ctermfg=0
+    autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=6 cterm=reverse
+    autocmd ColorScheme nord highlight TabLineFill ctermbg=8
     autocmd ColorScheme nord highlight WildMenu ctermfg=14 ctermbg=NONE cterm=underline
     autocmd ColorScheme nord highlight Comment ctermfg=Black ctermbg=NONE
     " This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
@@ -695,4 +677,3 @@ call plug#end()
 " Must be after plugins are loaded since this colorscheme comes from a
 " plugin
 colorscheme nord
-
