@@ -1,10 +1,10 @@
 #!/bin/env fish
 
-# Wrapper for fzf. If caller is inside a tmux session, it will maximize the current pane,
+# Wrapper for fzf. If caller is inside a tmux session, it will zoom the current pane,
 # run fzf, and minimize the pane. Unless the pane was zoomed before calling this script,
 # in which case it will leave it zoomed.
 #
-# The benefit of this compared to a fullscreen tmux popup is that maximized tmux panes, like regular panes,
+# The benefit of this compared to a fullscreen tmux popup is that zoomed tmux panes, like regular panes,
 # expand and contract when the terminal window resizes, whereas tmux popups do not.
 # This way fzf will always take up the entire window, even if the window is resized.
 
