@@ -9,7 +9,9 @@
 # Usage:
 # FZF_HINTS='ctrl+a: additional binding' fzf --preview fzf-help-preview
 #
-# If you are using fzf-tmux, be sure to pass the FZF_HINTS environment variable using the '-e' flag (requires tmux >= v3.3).
+# If you are using fzf-tmux, be sure to pass the FZF_HINTS environment variable using the '-e' flag
+# (it was added in this commit, but isn't currently in a release:
+# https://github.com/tmux/tmux/pull/2924/commits/8b3e46ce24a7948cf928f963d6765a8039cc84a8).
 # Exporting the variable, like in the above example, won't work since the fzf
 # command run by fzf-tmux won't be a descendant of the process calling fzf-tmux. Therefore,
 # the variable won't be inherited. Instead do the following (the '--' signifies the end of tmux flags):
