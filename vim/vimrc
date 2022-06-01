@@ -363,7 +363,7 @@ function! Tabline()
     let tabline .= '%' . tab . 'T'
     let tabline .= (tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#')
     let tabline .= ' %' . tab . 'X✕%X '
-    let tabline .= bufname
+    let tabline .= empty(gettabvar(tab, 'fzf_active')) ? bufname : 'fzf'
     let tabline .= ' '
   endfor
 
@@ -587,7 +587,7 @@ Plug 'junegunn/fzf'
   let g:fzf_layout = { 'window': 'tabnew' }
   " Hide statusline when fzf is active
   autocmd! FileType fzf
-  autocmd  FileType fzf set laststatus=0 noshowmode noruler
+  autocmd  FileType fzf set laststatus=0 noshowmode noruler | let t:fzf_active = 1
     \| autocmd BufLeave <buffer> set laststatus=2 showmode
   " Collection of fzf-based commands
   Plug 'junegunn/fzf.vim'
