@@ -610,7 +610,13 @@ Plug 'KabbAmine/vCoolor.vim'
   command! ColorPicker VCoolor
 
 """" File explorer
-Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
+Plug 'preservim/nerdtree', {'on': 'NERDTreeFind'}
+  function! NerdTreeToggle()
+    let l:action = exists('b:NERDTree') ? 'NERDTreeToggle' : 'NERDTreeFind'
+    execute l:action
+  endfunction
+  execute "set <M-e>=\ee"
+  nnoremap <silent> <M-e> :call NerdTreeToggle()<CR>
   augroup NerdTree
     " open/close directories with 'h' and 'l'
     autocmd FileType nerdtree nmap <buffer> l o | nmap <buffer> h o
@@ -619,12 +625,6 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeTabsToggle'}
   let g:NERDTreeShowHidden = 1
   let g:NERDTreeStatusline = -1
   let g:NERDTreeWinPos = "right"
-  " Syncs nerdtree across tabs, but I'm really only using this
-  " since it has an option for auto-focusing on the current file
-  Plug 'jistr/vim-nerdtree-tabs', {'on': 'NERDTreeTabsToggle'}
-    let g:nerdtree_tabs_autofind = 1
-    execute "set <M-e>=\ee"
-    nnoremap <silent> <M-e> :NERDTreeTabsToggle<CR>
 
 """" Colorscheme
 Plug 'arcticicestudio/nord-vim'
