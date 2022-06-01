@@ -44,6 +44,7 @@ Plug 'airblade/vim-matchquote'
 """" End Plugin Manager
 call plug#end()
 
+set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
 set clipboard=unnamedplus
 let g:mapleader = "\<Space>"
 xmap <C-Space> <C-S-P>
