@@ -416,7 +416,7 @@ Plug 'farmergreg/vim-lastplace'
 Plug 'tmux-plugins/vim-tmux'
   " This plugin sets a mapping for 'K' that looks up the current word in the tmux manpage.
   " Instead of a mapping, the autocmd below sets the keywordprg. This way it works with
-  " my ChainedKeywordprg(). Plus this seems like the more semantic way to do it.
+  " my ChainedKeywordprg(). Plus this seems like the more idiomatic way to do it.
   augroup VimTmux
     autocmd FileType tmux setlocal keywordprg=:call\ tmux#man()
   augroup END
