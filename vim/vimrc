@@ -610,7 +610,7 @@ Plug 'junegunn/fzf'
         \ fzf#run(fzf#wrap({
         \ 'source': 'fd --strip-cwd-prefix --type file | tr -d "\017"',
         \ 'sink': 'edit',
-        \ 'options': '--ansi --preview "bat --style=numbers,grid --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --prompt="' . substitute(getcwd(), $HOME, '~', "") .'/" --keep-right'}))
+        \ 'options': '--ansi --preview "bat --style=numbers,grid --paging=never --terminal-width (math \$FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --prompt="' . substitute(getcwd(), $HOME, '~', "") .'/" --keep-right'}))
     nnoremap <Leader>f :FindFile<CR>
 
 """" Colors
