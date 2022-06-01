@@ -597,7 +597,7 @@ Plug 'junegunn/fzf'
     nnoremap <silent> <Leader>b :Buffers<CR>
     " recursive grep
     function! RipgrepFzf(query, fullscreen)
-      let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+      let command_fmt = 'rg --hidden --column --line-number --no-heading --color=always --smart-case -- %s || true'
       let initial_command = printf(command_fmt, shellescape(a:query))
       let reload_command = printf(command_fmt, '{q}')
       let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:first+reload:'.reload_command, '--prompt', 'lines: ', '--preview', 'bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {1} --highlight-line {2} | tail -n +2 | head -n -1']}
@@ -608,7 +608,7 @@ Plug 'junegunn/fzf'
     " recursive file search
     command! -bang -nargs=* FindFile call
         \ fzf#run(fzf#wrap({
-        \ 'source': 'fd --strip-cwd-prefix --type file | tr -d "\017"',
+        \ 'source': 'fd --hidden --strip-cwd-prefix --type file | tr -d "\017"',
         \ 'sink': 'edit',
         \ 'options': '--ansi --preview "bat --style=numbers,grid --paging=never --terminal-width (math \$FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --prompt="' . substitute(getcwd(), $HOME, '~', "") .'/" --keep-right'}))
     nnoremap <Leader>f :FindFile<CR>

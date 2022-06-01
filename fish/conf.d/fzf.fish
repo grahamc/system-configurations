@@ -22,9 +22,9 @@ set --global --export FZF_DEFAULT_OPTS "
     --header='(Press ctrl+/ for help)'
     --preview='echo Current selection: {}'
     --preview-window=wrap,bottom,border-top,60%"
-set --global --export FZF_ALT_C_COMMAND "fd --strip-cwd-prefix --type directory"
+set --global --export FZF_ALT_C_COMMAND "fd --hidden --strip-cwd-prefix --type directory"
 set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -x {}' --keep-right --bind='change:first'"
-set --global --export FZF_CTRL_T_COMMAND 'fd --strip-cwd-prefix --type file'
+set --global --export FZF_CTRL_T_COMMAND 'fd --hidden --strip-cwd-prefix --type file'
 set --global --export FZF_CTRL_T_OPTS '--multi --preview "bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --keep-right --bind="change:first"'
 set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}" --preview-window=33%'
 # use ctrl+f for file search instead of default ctrl+t
