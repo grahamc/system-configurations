@@ -2,10 +2,8 @@ function fzf-brew-install-widget --description 'Install packages with brew'
   set choices \
       ( \
         FZF_DEFAULT_COMMAND='brew formulae' \
-        fzf-tmux -B -p 100% -- \
-        # TODO: Gotta wait until tmux has a release the contains the -e flag for popups.
-        # PR: https://github.com/tmux/tmux/pull/2924/commits/8b3e46ce24a7948cf928f963d6765a8039cc84a8
-        # fzf-tmux -B -p 100% -e "FZF_HINTS=alt+enter: select multiple items\nctrl+o: search online" -- \
+        FZF_HINTS='alt+enter: select multiple items\nctrl+o: search online' \
+        fzf-tmux-zoom \
             --ansi \
             --multi \
             # fzf triggers its loading animation for the preview window if the command hasn't completed

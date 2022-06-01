@@ -2,7 +2,6 @@ if not status is-interactive
     exit
 end
 
-set --global --export FZF_TMUX_OPTS '-p 100% -B'
 set --global --export FZF_DEFAULT_OPTS "
     --cycle
     --ellipsis='…'
@@ -42,3 +41,10 @@ bind --erase \ec
 bind \ed "commandline --replace \"echo -e -s (set_color red) 'ERROR: This keybind does not work due to a bug in fzf. The bug has been fixed, but the commit hasn\'t been added to a release yet: https://github.com/junegunn/fzf/pull/2799' (set_color normal)\"; set --global TRANSIENT; commandline -f repaint; commandline -f execute"
 
 bind \cg 'fzf-grep-widget'
+
+# Workaround to allow me to use fzf-tmux-zoom with the default widgets that come with fzf.
+# The default widgets use __fzfcmd to get the name of the fzf command to use so I am
+# overriding it here.
+function __fzfcmd
+    echo fzf-tmux-zoom
+end

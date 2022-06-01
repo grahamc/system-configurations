@@ -2,8 +2,8 @@ function fzf-apt-remove-widget --description 'Remove packages with apt'
   set choices \
       ( \
         FZF_DEFAULT_COMMAND='dpkg-query -W -f=\'${binary:Package}\n\'' \
-        fzf-tmux -B -p 100% -- \
-        # fzf-tmux -B -p 100% -e "FZF_HINTS=alt+enter: select multiple items" -- \
+        FZF_HINTS='alt+enter: select multiple items' \
+        fzf-tmux-zoom \
             --ansi \
             --multi \
             --bind "alt-enter:toggle,change:first" \
