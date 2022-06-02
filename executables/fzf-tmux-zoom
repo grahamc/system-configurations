@@ -4,8 +4,8 @@
 # run fzf, and minimize the pane. Unless the pane was zoomed before calling this script,
 # in which case it will leave it zoomed.
 #
-# The benefit of this compared to a fullscreen tmux popup is that zoomed tmux panes, like regular panes,
-# expand and contract when the terminal window resizes, whereas tmux popups do not.
+# The benefit of this compared to a fullscreen tmux popup is that zoomed tmux panes
+# expand and contract as the terminal window resizes, whereas popups do not.
 # This way fzf will always take up the entire window, even if the window is resized.
 
 # If we're not in TMUX just passthrough to fzf
