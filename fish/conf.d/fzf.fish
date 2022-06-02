@@ -21,14 +21,19 @@ set --global --export FZF_DEFAULT_OPTS "
     --header='(Press ctrl+/ for help)'
     --preview='echo Current selection: {}'
     --preview-window=wrap,bottom,border-top,60%"
+
 set --global --export FZF_ALT_C_COMMAND 'test $dir = '.' && set _args "--strip-cwd-prefix" || set _args '.' $dir; fd $_args --hidden --type directory'
 set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -x {}' --keep-right --bind='change:first'"
+
 set --global --export FZF_CTRL_T_COMMAND 'test $dir = '.' && set _args "--strip-cwd-prefix" || set _args '.' $dir; fd $_args --hidden --type file'
 set --global --export FZF_CTRL_T_OPTS '--multi --preview "bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --keep-right --bind="change:first"'
+
 set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}" --preview-window=33%'
+
 # use ctrl+f for file search instead of default ctrl+t
 bind --erase \ct
 bind \cf 'FZF_CTRL_T_OPTS="$FZF_CTRL_T_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-file-widget'
+
 # use ctrl+h for history search instead of default ctrl+r
 bind --erase \cr
 bind \ch fzf-history-widget
