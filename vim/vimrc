@@ -421,6 +421,8 @@ Plug 'tmux-plugins/vim-tmux'
     autocmd FileType tmux setlocal keywordprg=:call\ tmux#man()
   augroup END
 Plug 'tweekmonster/startuptime.vim'
+" Determine the filetype based on the interpreter specified in the shebang
+Plug 'vitalk/vim-shebang'
 
 """" Autocomplete
 Plug 'prabirshrestha/asyncomplete.vim'
