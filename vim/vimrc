@@ -320,7 +320,7 @@ function! MyStatusLine()
     return l:highlight_text . l:special_statusline . l:highlight
   endif
 
-  return l:highlight_text . (exists('l:special_statusline') ? l:special_statusline : ' %h%w%q%t%m%r ') . l:highlight . '%=' . l:highlight_text . ' Ln %l/%L ❮ Col %c/%{execute("echon col(\"$\") - 1")} '
+  return l:highlight_text . (exists('l:special_statusline') ? l:special_statusline : ' %y ❯ %h%w%q%t%m%r ') . l:highlight . '%=' . l:highlight_text . ' Ln %l/%L ❮ Col %c/%{execute("echon col(\"$\") - 1")} '
 endfunction
 set statusline=%{%MyStatusLine()%}
 
