@@ -32,7 +32,7 @@ function _fzf_help_preview
         (_format_hint_section 'Help' 'ctrl+\\\: close this page' 'ctrl+/: open this page') \
         (_format_hint_section 'Navigation' 'tab/down: move down' 'shift+tab/up: move up') \
         (_format_hint_section 'Layout' 'alt+o: toggle preview window orientation') \
-        (_format_hint_section 'Preview Window' 'shift+up/down: scroll preview window up/down one line' 'alt+up/down: scroll preview window up/down one page') \
+        (_format_hint_section 'Preview Window' 'ctrl+r: refresh preview' 'shift+up/down: scroll preview window up/down one line' 'alt+up/down: scroll preview window up/down one page') \
         (_format_hint_section 'History' 'ctrl+n/p: go to next/previous entry in history')
     if set --query FZF_HINTS
         set widget_specific_hints (echo -e $FZF_HINTS)

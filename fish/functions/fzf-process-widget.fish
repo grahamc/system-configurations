@@ -3,14 +3,14 @@ function fzf-process-widget --description 'Manage processes'
   set choice \
       ( \
         FZF_DEFAULT_COMMAND="$reload_command" \
-        FZF_HINTS='ctrl+r: refresh process list\nalt+enter: select multiple items' \
+        FZF_HINTS='ctrl+alt+r: refresh process list\nalt+enter: select multiple items' \
         fzf \
             --ansi \
             --multi \
             --no-clear \
             # only search on PID, PPID, and the command
             --nth '2,3,7..' \
-            --bind "change:first,ctrl-r:reload($reload_command)+first,alt-enter:toggle" \
+            --bind "change:first,ctrl-alt-r:reload($reload_command)+first,alt-enter:toggle" \
             --header-lines=2 \
             --prompt 'processes: ' \
             # I 'echo' the fzf placeholder in the grep regex to get around the fact that fzf substitutions are single quoted and the quotes
