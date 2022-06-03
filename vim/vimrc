@@ -621,8 +621,18 @@ Plug 'KabbAmine/vCoolor.vim'
 """" File explorer
 Plug 'preservim/nerdtree', {'on': 'NERDTreeFind'}
   function! NerdTreeToggle()
-    let l:action = exists('b:NERDTree') ? 'NERDTreeToggle' : 'NERDTreeFind'
-    execute l:action
+    " We are currently in the NERDTree window so close it.
+    if exists('b:NERDTree')
+      silent execute 'NERDTreeToggle'
+      return
+    endif
+
+    " If NERDTree can't find the current file, it prints an error and doesn't open NERDTree.
+    " In which case, I call 'NERDTree' which opens NERDTree to the current directory.
+    silent execute 'NERDTreeFind'
+    if !g:NERDTree.IsOpen()
+      silent execute 'NERDTree'
+    endif
   endfunction
   execute "set <M-e>=\ee"
   nnoremap <silent> <M-e> :call NerdTreeToggle()<CR>
