@@ -170,9 +170,6 @@ imap OB <Down>
 imap OA <Up>
 
 """ Section: <S-k> settings
-command! -nargs=1 SilentEx
-  \   execute 'silent! !' . <q-args>
-  \ | execute 'redraw!'
 let s:failure_indicators = {
       \ 'python': 'no python documentation found',
       \ 'vim': 'Sorry, no help',
@@ -192,7 +189,7 @@ function! ChainedKeywordprg()
     else
       let l:result = system(&keywordprg . ' ' . l:cword)
       if empty(l:failure_indicator) || l:result !~? l:failure_indicator
-        exe 'SilentEx ' . &keywordprg . ' ' . l:cword
+        execute '!' . &keywordprg . ' ' . l:cword
         return
       endif
     endif
