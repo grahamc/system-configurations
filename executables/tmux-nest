@@ -50,11 +50,6 @@ ARGUMENTS:
   if tmux has-session -t $new_session_name 2>/dev/null
     # overwrite was not specified
     if test (count $_flag_overwrite) -eq 0
-      read --nchars 1 --prompt-str "Are you sure you want to attach to session '$new_session_name'? (y/n)" response
-      if test $response != 'y'
-        return
-      end
-
       TMUX= tmux attach-session -t $new_session_name
       return
     end
@@ -71,11 +66,6 @@ ARGUMENTS:
     end
   else
     tmux new-session -d -s $new_session_name "fish"
-  end
-
-  read --nchars 1 --prompt-str "Are you sure you want to attach to session '$new_session_name'? (y/n)" response
-  if test $response != 'y'
-    return
   end
 
   TMUX= tmux attach-session -t $new_session_name
