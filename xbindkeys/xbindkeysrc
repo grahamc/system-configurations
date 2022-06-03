@@ -43,26 +43,6 @@
 "xdotool keyup Super+v key Shift+Insert"
     Mod4 + v
 
-# Decrease Volume
-"echo 'KeyStrRelease Super_L KeyStrRelease F9' | xmacroplay :1; xmodmap -e 'remove Mod4 = Super_L'; echo 'KeyStrPress XF86AudioLowerVolume KeyStrRelease XF86AudioLowerVolume' | xmacroplay :1; xmodmap -e 'add Mod4 = Super_L'; echo 'KeyStrPress Super_L' | xmacroplay :1"
-    Mod4 + F9
-
-# Increase Volume
-"echo 'KeyStrRelease Super_L KeyStrRelease F10' | xmacroplay :1; xmodmap -e 'remove Mod4 = Super_L'; echo 'KeyStrPress XF86AudioRaiseVolume KeyStrRelease XF86AudioRaiseVolume' | xmacroplay :1; xmodmap -e 'add Mod4 = Super_L'; echo 'KeyStrPress Super_L' | xmacroplay :1"
-    Mod4 + F10
-
-# Previous track
-"echo 'KeyStrRelease Super_L KeyStrRelease F6' | xmacroplay :1; xmodmap -e 'remove Mod4 = Super_L'; echo 'KeyStrPress XF86AudioPrev KeyStrRelease XF86AudioPrev' | xmacroplay :1; xmodmap -e 'add Mod4 = Super_L'; echo 'KeyStrPress Super_L' | xmacroplay :1"
-    Mod4 + F6
-
-# Next track
-"echo 'KeyStrRelease Super_L KeyStrRelease F8' | xmacroplay :1; xmodmap -e 'remove Mod4 = Super_L'; echo 'KeyStrPress XF86AudioNext KeyStrRelease XF86AudioNext' | xmacroplay :1; xmodmap -e 'add Mod4 = Super_L'; echo 'KeyStrPress Super_L' | xmacroplay :1"
-    Mod4 + F8
-
-# Play/Pause track
-"echo 'KeyStrRelease Super_L KeyStrRelease F7' | xmacroplay :1; xmodmap -e 'remove Mod4 = Super_L'; echo 'KeyStrPress XF86AudioPlay KeyStrRelease XF86AudioPlay' | xmacroplay :1; xmodmap -e 'add Mod4 = Super_L'; echo 'KeyStrPress Super_L' | xmacroplay :1"
-    Mod4 + F7
-
 # Drop down terminal
 "tdrop --pointer-monitor-detection --monitor-aware --width='100%' --height='100%' --x-offset='' --y-offset='' kitty"
     Mod4 + t
@@ -74,18 +54,6 @@
 # Move down one workspace when holding super and scrolling down
 "xdotool set_desktop --relative -- +1"
     Mod4 + b:5 + release
-
-# no-op for mouse top-side button
-""
-    b:8
-
-# no-op for mouse bottom-side button
-""
-    b:10
-
-# Use flameshot for screenshots
-"flameshot gui"
-    Print
 
 #
 # End of xbindkeys configuration
