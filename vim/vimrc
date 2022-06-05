@@ -591,10 +591,16 @@ Plug 'mhinz/vim-signify'
 " issue: https://github.com/vim/vim/issues/8269
 Plug 'junegunn/fzf'
   let g:fzf_layout = { 'window': 'tabnew' }
-  " Hide statusline when fzf is active
-  autocmd! FileType fzf
-  autocmd  FileType fzf set laststatus=0 noshowmode noruler | let t:fzf_active = 1
-    \| autocmd BufLeave <buffer> set laststatus=2 showmode
+  augroup Fzf
+    autocmd!
+    " Hide statusline when fzf is active
+    autocmd  FileType fzf set laststatus=0 noshowmode noruler | let t:fzf_active = 1
+      \| autocmd BufLeave <buffer> set laststatus=2 showmode
+    " In terminals you have to press <C-\> twice to send it to the terminal.
+    " This mapping makes it so that I only have to press it once.
+    " This way, I can use a <C-\> keybind in fzf more easily.
+    autocmd  FileType fzf tnoremap <buffer> <C-\> <C-\><C-\>
+  augroup END
   " Collection of fzf-based commands
   Plug 'junegunn/fzf.vim'
     nnoremap <silent> <Leader>m :Marks<CR>
