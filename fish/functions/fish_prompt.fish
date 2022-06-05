@@ -6,6 +6,7 @@ set connectbar_middle \u251C
 # The reason for all the 'set_color normal' commands is to undo the bold set by the border color
 set fish_prompt_color_text (set_color normal; set_color brcyan)
 set fish_prompt_color_standout_text (set_color normal; set_color yellow)
+set fish_prompt_color_error_text (set_color normal; set_color red)
 set fish_prompt_color_normal (set_color normal)
 set fish_prompt_color_arrow (set_color normal; set_color black)
 set fish_prompt_color_border (set_color normal; set_color --bold black)
@@ -63,9 +64,9 @@ function fish_prompt --description 'Print the prompt'
         (fish_prompt_get_git_context) \
         (fish_prompt_get_job_context) \
         (fish_prompt_get_user_context) \
-        (fish_prompt_get_host_context) \
         (fish_prompt_get_path_context) \
-        (fish_prompt_get_status_context)
+        (fish_prompt_get_privilege_context) \
+        (fish_prompt_get_status_context $last_pipestatus)
     for context in $contexts
         if test -z $context
             continue
@@ -88,9 +89,6 @@ function fish_prompt --description 'Print the prompt'
 end
 
 function fish_prompt_get_separator
-    # echo -n -s (set_color --underline black)
-    # echo -n -s (set_color brblack) (string repeat -n $COLUMNS \u2015)
-    # echo -n -s (set_color brblack) (string repeat -n 30 \u2015)
     echo -n -s ' '
 end
 
@@ -121,6 +119,13 @@ function fish_prompt_get_python_context
 end
 
 function fish_prompt_get_python_venv_name
+    # for pipenv use the root of the project
+    if set --query PIPENV_ACTIVE
+        # get last segment of the path returned by pipenv
+        echo -n (string split -- / (pipenv --where))[-1]
+        return
+    end
+
     set -l path_segments (string split -- / $VIRTUAL_ENV)
     set -l last_path_segment $path_segments[-1]
 
@@ -128,13 +133,6 @@ function fish_prompt_get_python_venv_name
     # since that should be more descriptive
     if test $last_path_segment = '.venv'
         echo -n $path_segments[-2]
-        return
-    end
-
-    # pipenv adds a hash to the end of the directory containing the virtual environment
-    # so we'll remove it e.g. 'myvenvdir-a45n39' -> 'myvenvdir'
-    if set --query PIPENV_ACTIVE
-        echo -n (string replace --regex '(.*)(-.*)$' '${1}' $last_path_segment)
         return
     end
 
@@ -151,7 +149,7 @@ function fish_prompt_get_job_context
     echo -n -s $fish_prompt_color_text 'jobs: ' $formatted_job_commands
 end
 
-function fish_prompt_get_user_context
+function fish_prompt_get_privilege_context
     set privilege_context
     if test (id --user) -eq 0
         set privilege_context 'user has admin privileges'
@@ -165,19 +163,19 @@ function fish_prompt_get_user_context
     #     set privilege_context 'sudo credentials cached'
     end
 
-    if not set --query SSH_TTY && test -z "$privilege_context"
+    if test -z "$privilege_context"
         return
     end
 
-    echo -n -s $fish_prompt_color_text 'user: ' $USER $fish_prompt_color_standout_text (test -n "$privilege_context" && string join '' ' (' $privilege_context ')')
+    echo -n -s $fish_prompt_color_standout_text $privilege_context
 end
 
-function fish_prompt_get_host_context
+function fish_prompt_get_user_context
     if not set --query SSH_TTY
         return
     end
 
-    echo -n -s $fish_prompt_color_text 'host: ' (hostname)
+    echo -n -s $fish_prompt_color_text "user: $USER in $(hostname)"
 end
 
 function fish_prompt_get_path_context
@@ -196,11 +194,11 @@ end
 
 function fish_prompt_get_status_context
     # If there aren't any non-zero exit codes, i.e. failures, then we won't print anything
-    if not string match --quiet --invert 0 $last_pipestatus
+    if not string match --quiet --invert 0 $argv
         return
     end
-    set --local pipestatus_formatted (fish_status_to_signal $last_pipestatus | string join '|')
-    echo -n -s $fish_prompt_color_standout_text 'status: ' $pipestatus_formatted
+    set --local pipestatus_formatted (fish_status_to_signal $argv | string join '|')
+    echo -n -s $fish_prompt_color_error_text 'status: ' $pipestatus_formatted
 end
 
 function fish_prompt_get_direnv_context
