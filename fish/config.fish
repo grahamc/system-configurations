@@ -203,8 +203,9 @@ if status is-interactive
         direnv hook fish | source
     end
     # toggle activation/deactivation messages
+    set --global --export DIRENV_LOG_FORMAT "$(set_color yellow)%s"
     abbr --add --global dirlog \
-        'set --query DIRENV_LOG_FORMAT; and set --erase DIRENV_LOG_FORMAT; or set --global --export DIRENV_LOG_FORMAT'
+        'set --query DIRENV_LOG_FORMAT; and set --erase DIRENV_LOG_FORMAT; or set --global --export DIRENV_LOG_FORMAT "$(set_color yellow)%s"'
 
     # vim
     abbr --add --global v vim
