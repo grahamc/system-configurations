@@ -106,7 +106,9 @@ if status is-interactive
         echo
         echo -s (set_color blue) 'APT' (set_color normal)
         echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
-        sudo apt-get update
+        type --query chronic
+        and chronic sudo apt-get update
+        or sudo apt-get update
         if not string match --quiet '*0 not upgraded*' (apt-get --simulate upgrade)
             set something_to_do
             sudo apt-get upgrade
