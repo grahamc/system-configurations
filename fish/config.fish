@@ -87,6 +87,8 @@ if status is-interactive
     bind \e\[1\;3C forward-word
     # use ctrl+b to jump to beginning of line
     bind \cb beginning-of-line
+    # ctrl+r to refresh terminal, shell, and screen
+    bind \cr 'reset && exec fish && clear'
 
     # sudo
     abbr --add --global s sudo
