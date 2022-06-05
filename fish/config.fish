@@ -105,7 +105,7 @@ if status is-interactive
     function upgrade-apt
         echo
         echo -s (set_color blue) 'APT' (set_color normal)
-        echo -s (set_color blue) (string repeat --count 40 '#') (set_color normal)
+        echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
         sudo apt-get update
         if not string match --quiet '*0 not upgraded*' (apt-get --simulate upgrade)
             set something_to_do
@@ -123,7 +123,7 @@ if status is-interactive
     function upgrade-brew
         echo
         echo -s (set_color blue) 'BREW' (set_color normal)
-        echo -s (set_color blue) (string repeat --count 40 '#') (set_color normal)
+        echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
         if test -n "$(brew outdated)"
             set something_to_do
             brew outdated
@@ -148,7 +148,7 @@ if status is-interactive
     function upgrade-flatpak
         echo
         echo -s (set_color blue) 'FLATPAK' (set_color normal)
-        echo -s (set_color blue) (string repeat --count 40 '#') (set_color normal)
+        echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
         flatpak update
     end
 
