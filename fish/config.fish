@@ -91,6 +91,67 @@ if status is-interactive
     # ctrl+r to refresh terminal, shell, and screen
     bind \cr 'reset && exec fish && clear'
 
+    # upgrade/cleanup packages in all package managers
+    function upgrade-all
+        type --query apt
+        and upgrade-apt
+
+        type --query brew
+        and upgrade-brew
+
+        type --query flatpak
+        and upgrade-flatpak
+    end
+    function upgrade-apt
+        echo
+        echo -s (set_color blue) 'APT' (set_color normal)
+        echo -s (set_color blue) (string repeat --count 40 '#') (set_color normal)
+        sudo apt-get update
+        if not string match --quiet '*0 not upgraded*' (apt-get --simulate upgrade)
+            set something_to_do
+            sudo apt-get upgrade
+        end
+        if not string match --quiet '*0 to remove*' (apt-get --simulate autoremove)
+            set something_to_do
+            sudo apt-get autoremove
+        end
+
+        if not set --query something_to_do
+            echo 'Nothing to do.'
+        end
+    end
+    function upgrade-brew
+        echo
+        echo -s (set_color blue) 'BREW' (set_color normal)
+        echo -s (set_color blue) (string repeat --count 40 '#') (set_color normal)
+        if test -n "$(brew outdated)"
+            set something_to_do
+            brew outdated
+            read --prompt-str 'Would you like to upgrade? (y/n)' --nchars 1 response
+            if test $response = 'y'
+                brew upgrade
+            end
+        end
+        if test -n "$(brew autoremove --dry-run)"
+            set something_to_do
+            brew autoremove --dry-run
+            read --prompt-str 'Would you like to autoremove? (y/n)' --nchars 1 response
+            if test $response = 'y'
+                brew autoremove
+            end
+        end
+
+        if not set --query something_to_do
+            echo 'Nothing to do.'
+        end
+    end
+    function upgrade-flatpak
+        echo
+        echo -s (set_color blue) 'FLATPAK' (set_color normal)
+        echo -s (set_color blue) (string repeat --count 40 '#') (set_color normal)
+        flatpak update
+    end
+
     # sudo
     abbr --add --global s sudo
 
