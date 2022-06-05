@@ -628,8 +628,8 @@ Plug 'KabbAmine/vCoolor.vim'
 """" File explorer
 Plug 'preservim/nerdtree', {'on': 'NERDTreeFind'}
   function! NerdTreeToggle()
-    " We are currently in the NERDTree window so close it.
-    if exists('b:NERDTree')
+    " NERDTree is open so close it.
+    if exists('g:NERDTree') && g:NERDTree.IsOpen()
       silent execute 'NERDTreeToggle'
       return
     endif
