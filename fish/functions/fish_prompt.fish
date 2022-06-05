@@ -15,10 +15,10 @@ set --global --export __fish_git_prompt_showupstream informative
 set --global --export __fish_git_prompt_showuntrackedfiles
 
 # async prompt
-set --universal async_prompt_functions fish_prompt_get_git_context
-function fish_prompt_get_git_context_loading_indicator
-    echo -n -s $fish_prompt_color_text (set_color --dim) 'git: loading…'
-end
+set --universal async_prompt_functions testing
+# function fish_prompt_get_git_context_loading_indicator
+#     echo -n -s $fish_prompt_color_text (set_color --dim) 'git: loading…'
+# end
 
 function fish_prompt --description 'Print the prompt'
     # pipestatus contains the exit code(s) of the last command that was executed
