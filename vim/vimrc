@@ -432,7 +432,7 @@ Plug 'vitalk/vim-shebang'
 Plug 'prabirshrestha/asyncomplete.vim'
   let g:asyncomplete_auto_completeopt = 0
   let g:asyncomplete_auto_popup = 1
-  let g:asyncomplete_min_chars = 2
+  let g:asyncomplete_min_chars = 1
   let g:asyncomplete_matchfuzzy = 0
   inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
   function! s:check_back_space() abort
