@@ -90,6 +90,8 @@ if status is-interactive
     bind \cb beginning-of-line
     # ctrl+r to refresh terminal, shell, and screen
     bind \cr 'reset && exec fish && clear'
+    # search variables
+    abbr --add --global fv 'FZF_DEFAULT_COMMAND="set --names" fzf --preview "set --show {}"'
 
     # upgrade/cleanup packages in all package managers
     function upgrade-all
