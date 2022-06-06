@@ -650,8 +650,10 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeFind'}
   execute "set <M-e>=\ee"
   nnoremap <silent> <M-e> :call NerdTreeToggle()<CR>
   augroup NerdTree
+    autocmd!
     " open/close directories with 'h' and 'l'
-    autocmd FileType nerdtree nmap <buffer> l o | nmap <buffer> h o
+    autocmd FileType nerdtree nmap <buffer> l o
+    autocmd FileType nerdtree nmap <buffer> h o
   augroup END
   let g:NERDTreeMouseMode = 2
   let g:NERDTreeShowHidden = 1
