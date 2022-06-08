@@ -20,7 +20,6 @@
     ~/.vim/vimrc: vim/vimrc
     ~/.config/nvim/init.vim: neovim/init.vim
     ~/.gitconfig: git/gitconfig
-    ~/.xbindkeysrc: xbindkeys/xbindkeysrc
     ~/.bashrc: bash/bashrc
     ~/.profile: bash/profile
     ~/.config/kitty: kitty
