@@ -489,7 +489,6 @@ Plug 'prabirshrestha/asyncomplete.vim'
     let g:lsp_fold_enabled = 0
     let g:lsp_document_code_action_signs_enabled = 0
     let g:lsp_document_highlight_enabled = 0
-    nnoremap <Leader>lo :LspCodeActionSync source.organizeImports<CR>
     " An easy way to install/manage language servers for vim-lsp.
     Plug 'mattn/vim-lsp-settings'
       " where the language servers are stored
