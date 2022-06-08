@@ -56,6 +56,7 @@
     ~/.ignore: ignore
     ~/.default-cargo-crates: asdf/default-cargo-crates
     ~/.config/pipr/pipr.toml: pipr/pipr.toml
+    ~/.config/brewfile/Brewfile: brew/Brewfile
 
 # Using another link directive since I have multiple links to this directory and you can't have
 # multiple keys with the same name in YAML
