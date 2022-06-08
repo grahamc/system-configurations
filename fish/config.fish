@@ -111,7 +111,7 @@ if status is-interactive
         type --query chronic
         and chronic sudo apt-get update
         or sudo apt-get update
-        if not string match --quiet '*0 not upgraded*' (apt-get --simulate upgrade)
+        if not string match --quiet '*0 upgraded*' (apt-get --simulate upgrade)
             set something_to_do
             sudo apt-get upgrade
         end
@@ -131,7 +131,7 @@ if status is-interactive
         if test -n "$(brew outdated)"
             set something_to_do
             brew outdated
-            read --prompt-str 'Would you like to upgrade? (y/n)' --nchars 1 response
+            read --prompt-str 'Would you like to upgrade? (y/n): ' --nchars 1 response
             if test $response = 'y'
                 brew upgrade
             end
@@ -139,7 +139,7 @@ if status is-interactive
         if test -n "$(brew autoremove --dry-run)"
             set something_to_do
             brew autoremove --dry-run
-            read --prompt-str 'Would you like to autoremove? (y/n)' --nchars 1 response
+            read --prompt-str 'Would you like to autoremove? (y/n): ' --nchars 1 response
             if test $response = 'y'
                 brew autoremove
             end
