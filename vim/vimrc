@@ -619,7 +619,7 @@ Plug 'junegunn/fzf'
     " recursive file search
     command! -bang -nargs=* FindFile call
         \ fzf#run(fzf#wrap({
-        \ 'source': 'fd --hidden --strip-cwd-prefix --type file | tr -d "\017"',
+        \ 'source': 'fd --hidden --strip-cwd-prefix --type file --type symlink | tr -d "\017"',
         \ 'sink': 'edit',
         \ 'options': '--ansi --preview "bat --style=numbers,grid --paging=never --terminal-width (math \$FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --prompt="' . substitute(getcwd(), $HOME, '~', "") .'/" --keep-right'}))
     nnoremap <Leader>f :FindFile<CR>
