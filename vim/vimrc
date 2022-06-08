@@ -425,7 +425,7 @@ Plug 'tmux-plugins/vim-tmux'
     autocmd FileType tmux setlocal keywordprg=:call\ tmux#man()
   augroup END
 Plug 'tweekmonster/startuptime.vim'
-" Determine the filetype based on the interpreter specified in the shebang
+" Determine the filetype based on the interpreter specified in a shebang
 Plug 'vitalk/vim-shebang'
 
 """" Autocomplete
@@ -713,7 +713,5 @@ Plug 'arcticicestudio/nord-vim'
 """" End Plugin Manager
 call plug#end()
 
-"""" colorscheme
-" Must be after plugins are loaded since this colorscheme comes from a
-" plugin
+" Must be after plugins are loaded since this colorscheme comes from a plugin
 colorscheme nord
