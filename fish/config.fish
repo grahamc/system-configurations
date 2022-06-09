@@ -111,11 +111,11 @@ if status is-interactive
         type --query chronic
         and chronic sudo apt-get update
         or sudo apt-get update
-        if not string match --quiet '*0 upgraded*' (apt-get --simulate upgrade)
+        if not string match --regex --quiet '([^0-9]0|^0) upgraded' (apt-get --simulate upgrade)
             set something_to_do
             sudo apt-get upgrade
         end
-        if not string match --quiet '*0 to remove*' (apt-get --simulate autoremove)
+        if not string match --regex --quiet '([^0-9]0|^0) to remove' (apt-get --simulate upgrade)
             set something_to_do
             sudo apt-get autoremove
         end
