@@ -102,13 +102,13 @@ let &softtabstop = s:tab_width
 command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
 
 " tabs
-nnoremap <silent> <Leader>c :tabnew<CR>
-nnoremap <silent> <C-h> :tabprevious<CR>
-nnoremap <silent> <C-l> :tabnext<CR>
+nnoremap <silent> <Leader>c <Cmd>tabnew<CR>
+nnoremap <silent> <C-h> <Cmd>tabprevious<CR>
+nnoremap <silent> <C-l> <Cmd>tabnext<CR>
 
 inoremap jk <Esc>
-nnoremap <silent> <Leader>w :wa<CR>
-nnoremap <Leader>x :wqa<CR>
+nnoremap <silent> <Leader>w <Cmd>wa<CR>
+nnoremap <Leader>x <Cmd>wqa<CR>
 
 " maximize a window by opening it in a new tab
 nnoremap <silent><C-m> <Cmd>tab sp<CR>
@@ -117,8 +117,8 @@ inoremap <silent><C-m> <Cmd>tab sp<CR>
 
 " open new horizontal and vertical panes to the right and bottom respectively
 set splitright splitbelow
-nnoremap <Leader>\| :vsplit<CR>
-nnoremap <Leader>- :split<CR>
+nnoremap <Leader>\| <Cmd>vsplit<CR>
+nnoremap <Leader>- <Cmd>split<CR>
 " close a window, quit if last window
 " also when closing a tab, go to the previously opened tab
 nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':exe "q" \| silent! tabn '.g:lasttab.'<CR>' : ':close<CR>'
@@ -160,9 +160,9 @@ endfunction
 vmap <silent> <expr> p <sid>Repl()
 
 " suspend vim and start a new shell
-nnoremap <C-z> :suspend<CR>
-inoremap <C-z> <ESC>:suspend<CR>
-xnoremap <C-z> <ESC>:suspend<CR>
+nnoremap <C-z> <Cmd>suspend<CR>
+inoremap <C-z> <Cmd>suspend<CR>
+xnoremap <C-z> <Cmd>suspend<CR>
 
 """ Section: System Mappings
 " Map the output of these key combinations to their actual names
@@ -199,7 +199,7 @@ function! ChainedKeywordprg()
       exe "LspHover"
   endif
 endfunction
-nnoremap K :call ChainedKeywordprg()<CR>
+nnoremap K <Cmd>call ChainedKeywordprg()<CR>
 
 """ Section: Line folding / splitting
 " Prevents inserting two spaces after punctuation on a join (J)
@@ -216,15 +216,15 @@ endfunction
 function! GoEnd(type) abort
   normal! `]
 endfunction
-nnoremap <silent> gb :set opfunc=GoStart<CR>g@
-nnoremap <silent> ge :set opfunc=GoEnd<CR>g@
+nnoremap <silent> gb <Cmd>set opfunc=GoStart<CR>g@
+nnoremap <silent> ge <Cmd>set opfunc=GoEnd<CR>g@
 " move ten lines at a time by holding ctrl and a directional key
 noremap <C-j> 10j
 noremap <C-k> 10k
 nnoremap Y yg_
 
-nnoremap } :keepjumps normal! }<CR>
-nnoremap { :keepjumps normal! {<CR>
+nnoremap } <Cmd>keepjumps normal! }<CR>
+nnoremap { <Cmd>keepjumps normal! {<CR>
 
 """ Section: Search
 """" Misc.
@@ -238,15 +238,15 @@ set shortmess-=S shortmess+=s
 " grep implementation since it's cross-platform
 let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
 " toggle search highlighting
-nnoremap <silent> <Leader>\ :set hlsearch!<CR>
+nnoremap <silent> <Leader>\ <Cmd>set hlsearch!<CR>
 
 """" Use '/' and '?' search in visual mode
-vnoremap <silent> * :<C-U>
+vnoremap <silent> * <Cmd>
   \let old_reg=getreg('y')<Bar>let old_regtype=getregtype('y')<CR>
   \gv"yy/<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
   \escape(@y, '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gVzv:call setreg('y', old_reg, old_regtype)<CR>
-vnoremap <silent> # :<C-U>
+vnoremap <silent> # <Cmd>
   \let old_reg=getreg('y')<Bar>let old_regtype=getregtype('y')<CR>
   \gv"yy?<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
   \escape(@y, '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
@@ -583,7 +583,7 @@ Plug 'christoomey/vim-tmux-navigator'
 
 " Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
 Plug 'mhinz/vim-signify'
-  nnoremap <Leader>vk :SignifyHunkDiff<CR>
+  nnoremap <Leader>vk <Cmd>SignifyHunkDiff<CR>
 
 " fzf integration
 "
@@ -604,10 +604,10 @@ Plug 'junegunn/fzf'
   augroup END
   " Collection of fzf-based commands
   Plug 'junegunn/fzf.vim'
-    nnoremap <silent> <Leader>m :Marks<CR>
-    nnoremap <silent> <Leader>h :History:<CR>
-    nnoremap <silent> <Leader>/ :Commands<CR>
-    nnoremap <silent> <Leader>b :Buffers<CR>
+    nnoremap <silent> <Leader>m <Cmd>Marks<CR>
+    nnoremap <silent> <Leader>h <Cmd>History:<CR>
+    nnoremap <silent> <Leader>/ <Cmd>Commands<CR>
+    nnoremap <silent> <Leader>b <Cmd>Buffers<CR>
     " recursive grep
     function! RipgrepFzf(query, fullscreen)
       let command_fmt = 'rg --hidden --column --line-number --no-heading --color=always --smart-case -- %s || true'
@@ -617,14 +617,14 @@ Plug 'junegunn/fzf'
       call fzf#vim#grep(initial_command, 1, spec, a:fullscreen)
     endfunction
     command! -nargs=* -bang FindLine call RipgrepFzf(<q-args>, <bang>0)
-    nnoremap <Leader>g :FindLine<CR>
+    nnoremap <Leader>g <Cmd>FindLine<CR>
     " recursive file search
     command! -bang -nargs=* FindFile call
         \ fzf#run(fzf#wrap({
         \ 'source': 'fd --hidden --strip-cwd-prefix --type file --type symlink | tr -d "\017"',
         \ 'sink': 'edit',
         \ 'options': '--ansi --preview "bat --style=numbers,grid --paging=never --terminal-width (math \$FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --prompt="' . substitute(getcwd(), $HOME, '~', "") .'/" --keep-right'}))
-    nnoremap <Leader>f :FindFile<CR>
+    nnoremap <Leader>f <Cmd>FindFile<CR>
 
 """" Colors
 " Opens the OS color picker and inserts the chosen color into the buffer.
@@ -649,7 +649,7 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeFind'}
     endif
   endfunction
   execute "set <M-e>=\ee"
-  nnoremap <silent> <M-e> :call NerdTreeToggle()<CR>
+  nnoremap <silent> <M-e> <Cmd>call NerdTreeToggle()<CR>
   augroup NerdTree
     autocmd!
     " open/close directories with 'h' and 'l'
