@@ -27,7 +27,6 @@
         path: ~/.config/kitty/night-theme.conf
         if: '[ ! -f ~/.config/kitty/current-theme.conf ]'
     ~/.asdfrc: asdf/asdfrc
-    ~/.default-python-packages: asdf/default-python-packages
     ~/.tool-versions: asdf/tool-versions
     ~/.local/bin/:
         glob: true
