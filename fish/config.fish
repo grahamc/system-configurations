@@ -83,7 +83,7 @@ if status is-interactive
     # Don't print a greeting when a new interactive fish shell is started
     set --global --export fish_greeting ''
     # use ctrl+z to resume the most recently suspended job
-    bind \cz fg
+    bind \cz 'jobs --query; and fg'
     # use ctrl+right-arrow to accept the next suggested word
     bind \e\[1\;3C forward-word
     # use ctrl+b to jump to beginning of line
