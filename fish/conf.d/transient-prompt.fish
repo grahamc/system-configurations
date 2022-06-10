@@ -35,7 +35,13 @@ function _load_transient_prompt_and_execute
             _transient_empty_repaint
         end
     end
-    commandline -f execute
+
+    # TODO: fish-abbreviation-tips also has a \r binding so I'm calling it here if
+    # it's defined. Since the last line in the abbr-tips function executes the commandline,
+    # I make sure to not also do it here if I'm calling that function.
+    type --query __abbr_tips_bind_newline
+    and __abbr_tips_bind_newline
+    or commandline -f execute
 end
 bind \r _load_transient_prompt_and_execute
 
