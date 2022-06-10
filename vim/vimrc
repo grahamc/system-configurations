@@ -427,6 +427,8 @@ Plug 'tmux-plugins/vim-tmux'
 Plug 'tweekmonster/startuptime.vim'
 " Determine the filetype based on the interpreter specified in a shebang
 Plug 'vitalk/vim-shebang'
+Plug 'bkad/CamelCaseMotion'
+  let g:camelcasemotion_key = ','
 
 """" Autocomplete
 Plug 'prabirshrestha/asyncomplete.vim'
