@@ -276,6 +276,9 @@ if status is-interactive
     # vim
     abbr --add --global v vim
 
+    # fish-abbreviation-tips
+    set --global --export ABBR_TIPS_PROMPT "\n$(set_color --bold yellow)TIP:$(set_color normal) If you type $(set_color yellow)'{{ .abbr }}'$(set_color normal) it will expand to $(set_color yellow)'{{ .cmd }}'$(set_color normal)"
+
     # Ask the user to connect to tmux.
     # Wrapping this in a function so that I am able to exit early with 'return'
     function _tmux_connect
