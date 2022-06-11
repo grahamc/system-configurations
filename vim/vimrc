@@ -300,6 +300,7 @@ set signcolumn=yes " always show the sign column
 let &fillchars = "foldopen: ,fold: ,vert:\u2502,stl:\ ,stlnc:\ "
 
 " Statusline
+let g:statusline_separator = "%#StatusLineRightSeparator# \u2759 %#StatusLineRightText#"
 function! MyStatusLine()
   if g:actual_curwin == win_getid()
     let l:highlight = 'StatusLine'
@@ -312,7 +313,7 @@ function! MyStatusLine()
   let l:highlight_right_text = '%#StatusLineRightText#'
 
   if &ft ==# 'help'
-    let l:special_statusline = 'Help ❯ %t'
+    let l:special_statusline = '[Help] %t'
   elseif &ft ==# 'vim-plug'
     let l:special_statusline = 'Vim Plug'
   elseif g:actual_curwin != win_getid()
@@ -328,10 +329,10 @@ function! MyStatusLine()
   let l:ale_count = ale#statusline#Count(bufnr('%'))
   let l:error_count = l:ale_count.error
   let l:warning_count = l:ale_count.warning
-  let l:error = (l:error_count > 0) ? '%#StatusLineRightText# ❮ %#StatusLineErrorText#' . l:error_count . ' ' . (l:error_count > 1 ? 'errors' : 'error') : ''
-  let l:warning = (l:warning_count > 0) ? '%#StatusLineRightText# ❮ %#StatusLineWarningText#' . l:warning_count . ' ' . (l:warning_count > 1 ? 'warnings' : 'warning') : ''
+  let l:error = (l:error_count > 0) ? '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineErrorText#' . l:error_count . ' ' . (l:error_count > 1 ? 'errors' : 'error') : ''
+  let l:warning = (l:warning_count > 0) ? '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineWarningText#' . l:warning_count . ' ' . (l:warning_count > 1 ? 'warnings' : 'warning') : ''
 
-  return l:highlight_text . (exists('l:special_statusline') ? l:special_statusline : ' %y ❯ %h%w%q%t%m%r ') . l:highlight . '%=' . l:highlight_right_text . ' Ln %l/%L ❮ Col %c/%{execute("echon col(\"$\") - 1")}' . l:warning . l:error . ' '
+  return l:highlight_text . (exists('l:special_statusline') ? l:special_statusline : ' %y %h%w%q%t%m%r ') . l:highlight . '%=' . l:highlight_right_text . 'Ln %l/%L' . g:statusline_separator . 'Col %c/%{execute("echon col(\"$\") - 1")}' . l:warning . l:error . ' '
 endfunction
 set statusline=%{%MyStatusLine()%}
 
@@ -690,6 +691,7 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight StatusLineNC ctermbg=8
     autocmd ColorScheme nord highlight StatusLineText ctermfg=14 ctermbg=NONE cterm=reverse
     autocmd ColorScheme nord highlight StatusLineRightText ctermfg=14 ctermbg=8
+    autocmd ColorScheme nord highlight StatusLineRightSeparator ctermfg=8 ctermbg=NONE cterm=reverse
     autocmd ColorScheme nord highlight StatusLineErrorText ctermfg=1 ctermbg=8
     autocmd ColorScheme nord highlight StatusLineWarningText ctermfg=3 ctermbg=8
     autocmd ColorScheme nord highlight StatusLineNCText ctermfg=0 ctermbg=NONE cterm=reverse
