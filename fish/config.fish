@@ -283,6 +283,9 @@ if status is-interactive
         or vim $args
     end
 
+    # pipr
+    abbr --add --global pipr 'pipr --no-isolation'
+
     # Ask the user to connect to tmux.
     # Wrapping this in a function so that I am able to exit early with 'return'
     function _tmux_connect
