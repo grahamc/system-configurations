@@ -3,12 +3,12 @@ function fzf-grep-widget --description 'Search by line, recursively, from curren
   set choice \
       ( \
         FZF_DEFAULT_COMMAND="$rg_command ''" \
-        FZF_HINTS='ctrl+v: open in vim' \
+        FZF_HINTS='ctrl+v: open in neovim' \
         fzf-tmux-zoom \
             --ansi \
             --disabled \
             # we refresh-preview after executing vim in the event that the file gets modified by vim
-            --bind "ctrl-v:execute(vim '+call cursor({2},{3})' {1} < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $rg_command {q} || true" \
+            --bind "ctrl-v:execute(nvim '+call cursor({2},{3})' {1} < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $rg_command {q} || true" \
             --delimiter ':' \
             --prompt 'lines: ' \
             --preview-window '+{2}/3' \

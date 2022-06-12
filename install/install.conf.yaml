@@ -19,6 +19,9 @@
     ~/.tmux.conf: tmux/tmux.conf
     ~/.vim/vimrc: vim/vimrc
     ~/.config/nvim/init.vim: neovim/init.vim
+    ~/.config/nvim/plugin/:
+        glob: true
+        path: neovim/plugin/*
     ~/.gitconfig: git/gitconfig
     ~/.bashrc: bash/bashrc
     ~/.profile: bash/profile

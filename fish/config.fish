@@ -182,7 +182,7 @@ if status is-interactive
     # Since some programs just use the value in EDITOR without checking VISUAL, and vice-versa,
     # I set both to the same editor.
     # For more info: https://unix.stackexchange.com/questions/4859/visual-vs-editor-what-s-the-difference/302391#302391
-    set --global --export VISUAL vim
+    set --global --export VISUAL (which nvim)
     set --global --export EDITOR $VISUAL
 
     # Change the color grep uses for highlighting matches to magenta
@@ -273,11 +273,15 @@ if status is-interactive
     abbr --add --global dirlog \
         'set --query DIRENV_LOG_FORMAT; and set --erase DIRENV_LOG_FORMAT; or set --global --export DIRENV_LOG_FORMAT "$(set_color yellow)%s"'
 
-    # vim
-    abbr --add --global v vim
-
     # fish-abbreviation-tips
     set --global --export ABBR_TIPS_PROMPT "\n$(set_color --bold yellow)TIP:$(set_color normal) If you type $(set_color yellow)'{{ .abbr }}'$(set_color normal) it will expand to $(set_color yellow)'{{ .cmd }}'$(set_color normal)"
+
+    # neovim
+    function vim --wraps nvim
+        type --query nvim
+        and nvim $args
+        or vim $args
+    end
 
     # Ask the user to connect to tmux.
     # Wrapping this in a function so that I am able to exit early with 'return'
