@@ -12,7 +12,6 @@
     # Dotbot fails if I don't add a slash after '~'
     ~/: {}
     ~/.vim: {}
-    ~/.vim/colorscheme: {}
     ~/.local/bin: {}
 
 - link:
