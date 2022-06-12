@@ -11,6 +11,9 @@ let &clipboard = has('nvim') ? 'unnamedplus' : 'unnamed'
 set autoread " Re-read file if it is changed by an external program
 set scrolloff=10
 
+" persist undo history to disk
+set undofile
+
 augroup Miscellaneous
   autocmd!
   " Extend iskeyword for filetypes that can reference CSS classes
