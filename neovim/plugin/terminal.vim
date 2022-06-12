@@ -163,6 +163,7 @@ set showtabline=1
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
+autocmd VimEnter * nested colorscheme nord
 
 " Statusline
 let g:statusline_separator = "%#StatusLineRightSeparator# \u2759 %#StatusLineRightText#"
@@ -253,6 +254,3 @@ set tabline=%!Tabline()
 " Write to file with sudo. For when I forget to use sudoedit.
 " tee streams its input to stdout as well as the specified file so I suppress the output
 command! SudoWrite w !sudo tee % >/dev/null
-
-" Must be after plugins are loaded since this colorscheme comes from a plugin
-colorscheme nord
