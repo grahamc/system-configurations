@@ -119,13 +119,6 @@ function fish_prompt_get_python_context
 end
 
 function fish_prompt_get_python_venv_name
-    # for pipenv use the root of the project
-    if set --query PIPENV_ACTIVE
-        # get last segment of the path returned by pipenv
-        echo -n (string split -- / (pipenv --where))[-1]
-        return
-    end
-
     set -l path_segments (string split -- / $VIRTUAL_ENV)
     set -l last_path_segment $path_segments[-1]
 
