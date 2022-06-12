@@ -5,11 +5,7 @@ let g:mapleader = "\<Space>"
 set nrformats-=octal
 set ttimeout ttimeoutlen=100
 set updatetime=500
-let &clipboard = has('nvim') ? 'unnamedplus' : 'unnamed'
 set scrolloff=10
-
-" persist undo history to disk
-set undofile
 
 augroup Miscellaneous
   autocmd!

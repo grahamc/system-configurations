@@ -10,6 +10,10 @@ set display+=lastline
 set nofoldenable
 set wildoptions=pum
 set nohlsearch
+let &clipboard = has('nvim') ? 'unnamedplus' : 'unnamed'
+
+" persist undo history to disk
+set undofile
 
 function! OverrideVimsDefaultFiletypePlugins()
   " Vim's default filetype plugins get run after filetype detection is
