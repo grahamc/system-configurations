@@ -1,5 +1,15 @@
 let vim_home = $HOME . '/.vim/'
 
+set backspace=indent,eol,start
+let &fillchars = "foldopen: ,fold: ,vert:\u2502,stl:\ ,stlnc:\ "
+set hidden
+set laststatus=2
+set showcmd
+set wildmenu
+
+" While typing the search query, highlight where the first match would be.
+set incsearch
+
 " set swapfile directory
 let &directory = vim_home . 'swapfiles/'
 call mkdir(&directory, "p")
@@ -22,6 +32,9 @@ endfor
 
 " enable mouse mode while in tmux
 let &ttymouse = has('mouse_sgr') ? 'sgr' : 'xterm2'
+
+" Re-read file if it is changed by an external program
+set autoread
 
 " Source neovim configs
 let g:neovim_init = $HOME . '/.config/nvim/init.vim'

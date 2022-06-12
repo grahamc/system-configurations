@@ -6,7 +6,6 @@ endif
 set confirm
 set mouse=a
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages sessionoptions-=folds
-set showcmd
 set display+=lastline
 set nofoldenable
 set wildoptions=pum
@@ -109,7 +108,7 @@ set complete=.,w,b,u
 """ Section: Command line settings
 " on first wildchar press (<Tab>), show all matches and complete the longest common substring among them.
 " on subsequent wildchar presses, cycle through matches
-set wildmenu wildmode=longest:full,full
+set wildmode=longest:full,full
 set cmdheight=2
 
 " suspend vim and start a new shell
@@ -156,12 +155,10 @@ augroup END
 set linebreak
 set number relativenumber
 set cursorline cursorlineopt=number,line
-set laststatus=2
 set showtabline=1
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
-let &fillchars = "foldopen: ,fold: ,vert:\u2502,stl:\ ,stlnc:\ "
 
 " Statusline
 let g:statusline_separator = "%#StatusLineRightSeparator# \u2759 %#StatusLineRightText#"
@@ -255,4 +252,3 @@ command! SudoWrite w !sudo tee % >/dev/null
 
 " Must be after plugins are loaded since this colorscheme comes from a plugin
 colorscheme nord
-

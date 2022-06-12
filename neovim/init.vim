@@ -2,13 +2,10 @@
 let g:mapleader = "\<Space>"
 
 """ Section: General
-set backspace=indent,eol,start
-set hidden
 set nrformats-=octal
 set ttimeout ttimeoutlen=100
 set updatetime=500
 let &clipboard = has('nvim') ? 'unnamedplus' : 'unnamed'
-set autoread " Re-read file if it is changed by an external program
 set scrolloff=10
 
 " persist undo history to disk
@@ -61,9 +58,6 @@ nnoremap } <Cmd>keepjumps normal! }<CR>
 nnoremap { <Cmd>keepjumps normal! {<CR>
 
 """ Section: Search
-"""" Misc.
-" While typing the search query, highlight where the first match would be.
-set incsearch
 " searching is only case sensitive when the query contains an uppercase letter
 set ignorecase smartcase
 " Use ripgrep as the grep program, if it's available. Otherwise use the internal
