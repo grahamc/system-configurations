@@ -99,7 +99,7 @@ autocmd TabLeave * let g:lasttab = tabpagenr()
 " show the completion menu even if there is only one suggestion
 " when autocomplete gets triggered, no suggestion is selected
 " Use popup instead of preview window
-set completeopt=menu,menuone,noselect
+set completeopt=menuone,noselect
 if has('nvim')
   set completeopt+=preview
   " Automatically close the preview window when autocomplete is done
