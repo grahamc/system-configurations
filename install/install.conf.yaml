@@ -18,6 +18,7 @@
     ~/.tmux.conf: tmux/tmux.conf
     ~/.vim/vimrc: vim/vimrc
     ~/.config/nvim/init.vim: neovim/init.vim
+    ~/.config/nvim/external-plugins.vim: neovim/external-plugins.vim
     ~/.config/nvim/plugin/:
         glob: true
         path: neovim/plugin/*
