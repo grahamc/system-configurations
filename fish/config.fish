@@ -269,7 +269,7 @@ if status is-interactive
         direnv hook fish | source
     end
     # toggle activation/deactivation messages
-    set --global --export DIRENV_LOG_FORMAT "$(set_color yellow)%s"
+    set --global --export DIRENV_LOG_FORMAT "$(set_color yellow)%s$(set_color normal)"
     abbr --add --global dirlog \
         'set --query DIRENV_LOG_FORMAT; and set --erase DIRENV_LOG_FORMAT; or set --global --export DIRENV_LOG_FORMAT "$(set_color yellow)%s"'
 
