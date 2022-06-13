@@ -139,7 +139,7 @@ augroup SaveAndRestoreSettings
     if v:argv[1:]->empty()
       call mkdir(s:session_dir, "p")
       let s:session_name =  substitute($PWD, '/', '%', 'g') . '%vim'
-      let s:session_full_path = s:session_dir . s:session_name
+      let s:session_full_path = s:session_dir . '/' . s:session_name
       let s:session_cmd = filereadable(s:session_full_path) ? "source " : "mksession! "
       execute s:session_cmd . fnameescape(s:session_full_path)
     endif
