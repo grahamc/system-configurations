@@ -276,13 +276,6 @@ if status is-interactive
     # fish-abbreviation-tips
     set --global --export ABBR_TIPS_PROMPT "\n$(set_color --bold yellow)TIP:$(set_color normal) If you type $(set_color yellow)'{{ .abbr }}'$(set_color normal) it will expand to $(set_color yellow)'{{ .cmd }}'$(set_color normal)"
 
-    # neovim
-    function vim --wraps nvim
-        type --query nvim
-        and nvim $args
-        or vim $args
-    end
-
     # pipr
     abbr --add --global pipr 'pipr --no-isolation'
 
