@@ -101,9 +101,10 @@ autocmd TabLeave * let g:lasttab = tabpagenr()
 " Use popup instead of preview window
 set completeopt=menuone,noselect
 if has('nvim')
-  set completeopt+=preview
+  " TODO: not working
+  " set completeopt+=preview
   " Automatically close the preview window when autocomplete is done
-  autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+  " autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 else
   set completeopt+=popup
 endif
