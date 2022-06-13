@@ -7,7 +7,7 @@ set ttimeout ttimeoutlen=100
 set updatetime=500
 set scrolloff=10
 
-augroup Miscellaneous
+augroup InitMiscellaneous
   autocmd!
   " Extend iskeyword for filetypes that can reference CSS classes
   autocmd FileType
