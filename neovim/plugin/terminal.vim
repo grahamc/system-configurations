@@ -192,11 +192,19 @@ function! MyStatusLine()
     return l:highlight_text . l:special_statusline . l:highlight
   endif
 
-  let l:ale_count = ale#statusline#Count(bufnr('%'))
-  let l:error_count = l:ale_count.error
-  let l:warning_count = l:ale_count.warning
-  let l:error = (l:error_count > 0) ? '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineErrorText#' . l:error_count . ' ' . '⨂' : ''
-  let l:warning = (l:warning_count > 0) ? '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineWarningText#' . l:warning_count . ' ' . '⚠' : ''
+  let l:warning = ''
+  let l:error = ''
+  if &rtp =~ '/ale,'
+    let l:ale_count = ale#statusline#Count(bufnr('%'))
+    let l:error_count = l:ale_count.error
+    let l:warning_count = l:ale_count.warning
+    if (l:error_count > 0)
+      let l:error = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineErrorText#' . l:error_count . ' ' . '⨂'
+    endif
+    if (l:warning_count > 0)
+      let l:warning = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineWarningText#' . l:warning_count . ' ' . '⚠'
+    endif
+  endif
 
   return l:highlight_text . (exists('l:special_statusline') ? l:special_statusline : ' %y %h%w%q%t%m%r ') . l:highlight . '%=' . l:highlight_right_text . 'Ln %l/%L' . g:statusline_separator . 'Col %c/%{execute("echon col(\"$\") - 1")}' . l:warning . l:error . ' '
 endfunction
