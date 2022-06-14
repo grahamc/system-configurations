@@ -164,7 +164,7 @@ set showtabline=1
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
-autocmd VimEnter * nested colorscheme nord
+colorscheme nord
 
 " Statusline
 let g:statusline_separator = "%#StatusLineRightSeparator# \u2759 %#StatusLineRightText#"
