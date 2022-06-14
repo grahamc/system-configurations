@@ -11,6 +11,10 @@ else
 end
 
 function _autoreload_fish --on-variable _autoreload_indicator
+    # clear screen. taken from fish's default keybind for ctrl+l
+    echo -n (clear | string replace \e\[3J "")
+
+    echo "$(set_color blue)Configuration change detected, reloading the shell...$(set_color normal)"
     exec fish
 end
 set fish_config_path "$xdg_config_home/fish"
