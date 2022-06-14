@@ -4,7 +4,7 @@ set connectbar_up \u2514
 set connectbar_down \u250C
 set connectbar_middle \u251C
 # The reason for all the 'set_color normal' commands is to undo the bold set by the border color
-set fish_prompt_color_text (set_color normal; set_color brcyan)
+set fish_prompt_color_text (set_color normal; set_color cyan)
 set fish_prompt_color_standout_text (set_color normal; set_color yellow)
 set fish_prompt_color_error_text (set_color normal; set_color red)
 set fish_prompt_color_normal (set_color normal)
@@ -37,7 +37,7 @@ function fish_prompt --description 'Print the prompt'
         # issue: https://github.com/fish-shell/fish-shell/issues/8418
         printf \e\[0J
 
-        echo -n -s -e (fish_prompt_get_separator) "\n" (set_color brcyan) (fish_prompt_get_arrow) ' ' $fish_prompt_color_normal
+        echo -n -s -e (fish_prompt_get_separator) "\n" $fish_prompt_color_text (fish_prompt_get_arrow) ' ' $fish_prompt_color_normal
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY
