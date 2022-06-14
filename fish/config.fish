@@ -278,6 +278,7 @@ if status is-interactive
 
     # pipr
     abbr --add --global pipr 'pipr --no-isolation'
+    bind \cp pipr-widget
 
     # Ask the user to connect to tmux.
     # Wrapping this in a function so that I am able to exit early with 'return'
