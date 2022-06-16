@@ -10,5 +10,5 @@ function fish_right_prompt
       return
   end
 
-  echo -s (set_color black) '(Press ctrl+/ for help)' (set_color normal)
+  echo -s (set_color black) '(help: ctrl+/)' (set_color normal)
 end

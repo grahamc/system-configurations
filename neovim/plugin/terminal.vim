@@ -52,8 +52,9 @@ augroup TerminalMiscellaneous
   " Automatically resize all splits to make them equal when the vim window is
   " resized or a new window is created/closed
   autocmd VimResized,WinNew,WinClosed * wincmd =
-  " TODO: update for neovim
-  autocmd! bufwritepost .vimrc,vimrc nested source $MYVIMRC | execute 'colorscheme ' . trim(execute('colorscheme'))
+  " Start syntax highlighting from the beginning of the file. Unless it's a large file, in which case start
+  " don't highlight at all.
+  autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | else | syntax sync fromstart | endif
 augroup END
 
 cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
@@ -195,16 +196,18 @@ function! MyStatusLine()
 
   let l:warning = ''
   let l:error = ''
-  if &rtp =~ '/ale,'
+  try
     let l:ale_count = ale#statusline#Count(bufnr('%'))
-    let l:error_count = l:ale_count.error
-    let l:warning_count = l:ale_count.warning
-    if (l:error_count > 0)
-      let l:error = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineErrorText#' . l:error_count . ' ' . '⨂'
-    endif
-    if (l:warning_count > 0)
-      let l:warning = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineWarningText#' . l:warning_count . ' ' . '⚠'
-    endif
+  catch
+    let l:ale_count = {'warning': 0, 'error': 0}
+  endtry
+  let l:error_count = l:ale_count.error
+  let l:warning_count = l:ale_count.warning
+  if (l:error_count > 0)
+    let l:error = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineErrorText#' . l:error_count . ' ' . '⨂'
+  endif
+  if (l:warning_count > 0)
+    let l:warning = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineWarningText#' . l:warning_count . ' ' . '⚠'
   endif
 
   return l:highlight_text . (exists('l:special_statusline') ? l:special_statusline : ' %y %h%w%q%t%m%r ') . l:highlight . '%=' . l:highlight_right_text . 'Ln %l/%L' . g:statusline_separator . 'Col %c/%{execute("echon col(\"$\") - 1")}' . l:warning . l:error . ' '

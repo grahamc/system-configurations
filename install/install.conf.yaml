@@ -22,6 +22,7 @@
     ~/.config/nvim/plugin/:
         glob: true
         path: neovim/plugin/*
+    ~/.local/share/nvim/external-plugin-snapshot.vim: neovim/external-plugin-snapshot.vim
     ~/.gitconfig: git/gitconfig
     ~/.bashrc: bash/bashrc
     ~/.profile: bash/profile

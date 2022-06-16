@@ -103,14 +103,18 @@ if status is-interactive
 
         type --query flatpak
         and upgrade-flatpak
+
+        type --query fisher
+        and upgrade-fisher
+
+        type --query asdf
+        and upgrade-asdf
     end
     function upgrade-apt
         echo
         echo -s (set_color blue) 'APT' (set_color normal)
         echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
-        type --query chronic
-        and chronic sudo apt-get update
-        or sudo apt-get update
+        sudo apt-get update
         if not string match --regex --quiet '([^0-9]0|^0) upgraded' (apt-get --simulate upgrade)
             set something_to_do
             sudo apt-get upgrade
@@ -154,6 +158,18 @@ if status is-interactive
         echo -s (set_color blue) 'FLATPAK' (set_color normal)
         echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
         flatpak update
+    end
+    function upgrade-fisher
+        echo
+        echo -s (set_color blue) 'FISHER' (set_color normal)
+        echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+        fisher update
+    end
+    function upgrade-asdf
+        echo
+        echo -s (set_color blue) 'ASDF' (set_color normal)
+        echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+        asdf plugin-update --all
     end
 
     # sudo
@@ -274,16 +290,22 @@ if status is-interactive
         direnv hook fish | source
     end
     # toggle activation/deactivation messages
-    set --global --export DIRENV_LOG_FORMAT "$(set_color yellow)%s$(set_color normal)"
+    set --global --export DIRENV_LOG_FORMAT "$(set_color bryellow)%s$(set_color normal)"
     abbr --add --global dirlog \
-        'set --query DIRENV_LOG_FORMAT; and set --erase DIRENV_LOG_FORMAT; or set --global --export DIRENV_LOG_FORMAT "$(set_color yellow)%s$(set_color normal)"'
+        'set --query DIRENV_LOG_FORMAT; and set --erase DIRENV_LOG_FORMAT; or set --global --export DIRENV_LOG_FORMAT "$(set_color bryellow)%s$(set_color normal)"'
 
     # fish-abbreviation-tips
-    set --global --export ABBR_TIPS_PROMPT "\n$(set_color --bold yellow)TIP:$(set_color normal) If you type $(set_color yellow)'{{ .abbr }}'$(set_color normal) it will expand to $(set_color yellow)'{{ .cmd }}'$(set_color normal)"
+    set --global --export ABBR_TIPS_PROMPT "\n$(set_color --bold bryellow)TIP:$(set_color normal) If you type $(set_color bryellow)'{{ .abbr }}'$(set_color normal) it will expand to $(set_color bryellow)'{{ .cmd }}'$(set_color normal)"
 
     # pipr
     abbr --add --global pipr 'pipr --no-isolation'
     bind \cp pipr-widget
+
+    # pipenv
+    if type --query pipenv
+        # enable autocomplete
+        eval (env _PIPENV_COMPLETE=fish_source pipenv)
+    end
 
     # Ask the user to connect to tmux.
     # Wrapping this in a function so that I am able to exit early with 'return'

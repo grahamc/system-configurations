@@ -1,13 +1,17 @@
-" Install vim-plug if not found
-let data_dir = has('nvim') ? stdpath('data') . '/site' : $HOME.'/.vim'
-let vim_plug_plugin_file = data_dir . '/autoload/plug.vim'
-if empty(glob(vim_plug_plugin_file))
-  let should_install = confirm('vim-plug is not installed, would you like to install it?', "yes\nno") == 1
-  if should_install
-    silent execute '!curl -fLo '.vim_plug_plugin_file.' --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-  else
-    " We don't have the plugin manager so exit
-    finish
+let is_embedded = index(v:argv, '--embed') != -1 || index(v:argv, '--headless') != -1
+
+if !is_embedded
+  " Install vim-plug if not found
+  let data_dir = has('nvim') ? stdpath('data') . '/site' : $HOME.'/.vim'
+  let vim_plug_plugin_file = data_dir . '/autoload/plug.vim'
+  if empty(glob(vim_plug_plugin_file))
+    let should_install = confirm('vim-plug is not installed, would you like to install it?', "yes\nno") == 1
+    if should_install
+      silent execute '!curl -fLo '.vim_plug_plugin_file.' --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    else
+      " We don't have the plugin manager so exit
+      finish
+    endif
   endif
 endif
 
@@ -67,8 +71,16 @@ Plug 'Raimondi/delimitMate'
 Plug 'tpope/vim-surround'
 " For swapping two pieces of text
 Plug 'tommcdo/vim-exchange'
-" I use it for more robust substitutions, but it does alot more
+" Commands/mappings for working with variants of words:
+" - A command for performing substitutions. More features than vim's builtin :substitution
+" - A command for creating abbreviations. More features than vim's builtin :iabbrev
+" - Mappings for case switching e.g. mixed-case, title-case, etc.
 Plug 'tpope/vim-abolish'
+  " TODO: Using this so that substitutions made by vim-abolish get highlighted as I type them.
+  " Won't be necessary if vim-abolish adds support for neovim's `inccommand`.
+  " issue for `inccommand` support: https://github.com/tpope/vim-abolish/issues/107
+  Plug 'markonm/traces.vim'
+    let g:traces_abolish_integration = 1
 Plug 'airblade/vim-matchquote'
 Plug 'tpope/vim-commentary'
 
@@ -76,7 +88,7 @@ Plug 'tpope/vim-commentary'
 " put this in the vim config that contains all my terminal specific settings,
 " <config_directory>/plugin/terminal.vim, but since vim-plug doesn't allow
 " declaring plugins in separate files, I had to put them here.
-if index(v:argv, '--embed') == -1 && index(v:argv, '--headless') == -1
+if !is_embedded
   " General
   Plug 'junegunn/vim-peekaboo'
     let g:peekaboo_delay = 500 " measured in milliseconds
@@ -182,7 +194,6 @@ if index(v:argv, '--embed') == -1 && index(v:argv, '--headless') == -1
     " i.e. warning,error
     let g:lsp_ale_diagnostics_severity = "warning"
 
-  " Editing
   " Expands Emmet abbreviations to write HTML more quickly
   Plug 'mattn/emmet-vim'
     let g:user_emmet_expandabbr_key = '<Leader>e'
@@ -286,15 +297,13 @@ if index(v:argv, '--embed') == -1 && index(v:argv, '--headless') == -1
       autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=8
       " statusline colors
       autocmd ColorScheme nord highlight StatusLine ctermbg=8
-      autocmd ColorScheme nord highlight StatusLineNC ctermbg=8
       autocmd ColorScheme nord highlight StatusLineText ctermfg=14 ctermbg=NONE cterm=reverse
+      autocmd ColorScheme nord highlight StatusLineNC ctermbg=8
+      autocmd ColorScheme nord highlight StatusLineNCText ctermfg=0 ctermbg=NONE cterm=reverse
       autocmd ColorScheme nord highlight StatusLineRightText ctermfg=14 ctermbg=8
       autocmd ColorScheme nord highlight StatusLineRightSeparator ctermfg=8 ctermbg=NONE cterm=reverse
       autocmd ColorScheme nord highlight StatusLineErrorText ctermfg=1 ctermbg=8
       autocmd ColorScheme nord highlight StatusLineWarningText ctermfg=3 ctermbg=8
-      autocmd ColorScheme nord highlight StatusLineNCText ctermfg=0 ctermbg=NONE cterm=reverse
-      autocmd ColorScheme nord highlight StatusLineStandout ctermfg=0 ctermbg=NONE
-      autocmd ColorScheme nord highlight StatusLineStandoutText ctermfg=DarkYellow ctermbg=NONE cterm=reverse
       " autocomplete popupmenu
       autocmd ColorScheme nord highlight PmenuSel ctermfg=14 ctermbg=NONE cterm=reverse
       autocmd ColorScheme nord highlight Pmenu ctermfg=black ctermbg=NONE cterm=reverse
@@ -329,12 +338,42 @@ endif
 " End Plugin Manager
 call plug#end()
 
-" Install plugins if not found. Must be done after plugins are registered
-let missing_plugins = filter(deepcopy(get(g:, 'plugs', {})), '!isdirectory(v:val.dir)')
-if !empty(missing_plugins)
-  let install_prompt = "The following plugins are not installed:\n" . join(keys(missing_plugins), ", ") . "\nWould you like to install them?"
-  let should_install = confirm(install_prompt, "yes\nno") == 1
-  if should_install
-    PlugInstall --sync
+if !is_embedded
+  " Install plugins if not found. Must be done after plugins are registered
+  let missing_plugins = filter(deepcopy(get(g:, 'plugs', {})), '!isdirectory(v:val.dir)')
+  if !empty(missing_plugins)
+    let install_prompt = "The following plugins are not installed:\n" . join(keys(missing_plugins), ", ") . "\nWould you like to install them?"
+    let should_install = confirm(install_prompt, "yes\nno") == 1
+    if should_install
+      let snapshot_file = stdpath('data') . '/external-plugin-snapshot.vim'
+      if filereadable(snapshot_file)
+        execute printf('source %s', snapshot_file)
+        finish
+      else
+        PlugInstall --sync
+      endif
+    endif
+  endif
+
+  " If it's been more than a week, update plugins
+  let snapshot_file = stdpath('data') . '/external-plugin-snapshot.vim'
+  let last_update_timestamp_file = stdpath('data') . '/last_plugin_update_timestamp'
+  let timestamp = system('date +%s')
+  " Make this a command so it can be called manually if needed
+  execute "command! PlugUpdateAndSnapshot PlugUpdate --sync | PlugSnapshot! " . snapshot_file
+  if filereadable(last_update_timestamp_file)
+    let last_update_timestamp = readfile(last_update_timestamp_file)[0]
+    let time_since_last_update = timestamp - last_update_timestamp
+    if time_since_last_update > 604800
+      let update_prompt = "You haven't updated your plugins in over a week, would you like to update them now?"
+      let should_update = confirm(update_prompt, "yes\nno") == 1
+      if should_update
+        PlugUpgrade
+        PlugUpdateAndSnapshot
+        call writefile([timestamp], last_update_timestamp_file)
+      endif
+    endif
+  else
+    call writefile([timestamp], last_update_timestamp_file)
   endif
 endif
