@@ -248,6 +248,9 @@ if status is-interactive
     abbr --add --global fbi 'fzf-brew-install-widget'
     abbr --add --global fbu 'fzf-brew-uninstall-widget'
     abbr --add --global bo 'brew outdated'
+    set --global --export HOMEBREW_NO_INSTALL_UPGRADE 1
+    set --global --export HOMEBREW_NO_INSTALL_CLEANUP 1
+    set --global --export HOMEBREW_BUNDLE_FILE '~/.config/brewfile/Brewfile'
 
     # asdf version manager
     set _asdf_init_script "$(brew --prefix asdf)/libexec/asdf.fish"
