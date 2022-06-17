@@ -339,41 +339,37 @@ endif
 call plug#end()
 
 if !is_running_headless
+  let snapshot_file = stdpath('data') . '/external-plugin-snapshot.vim'
+
   " Install plugins if not found. Must be done after plugins are registered
   let missing_plugins = filter(deepcopy(get(g:, 'plugs', {})), '!isdirectory(v:val.dir)')
   if !empty(missing_plugins)
     let install_prompt = "The following plugins are not installed:\n" . join(keys(missing_plugins), ", ") . "\nWould you like to install them?"
     let should_install = confirm(install_prompt, "yes\nno") == 1
     if should_install
-      let snapshot_file = stdpath('data') . '/external-plugin-snapshot.vim'
       if filereadable(snapshot_file)
         execute printf('source %s', snapshot_file)
-        finish
       else
         PlugInstall --sync
       endif
+      finish
     endif
   endif
 
-  " If it's been more than a week, update plugins
-  let snapshot_file = stdpath('data') . '/external-plugin-snapshot.vim'
-  let last_update_timestamp_file = stdpath('data') . '/last_plugin_update_timestamp'
-  let timestamp = system('date +%s')
+  " If it's been more than a month, update plugins
   " Make this a command so it can be called manually if needed
   execute "command! PlugUpdateAndSnapshot PlugUpdate --sync | PlugSnapshot! " . snapshot_file
-  if filereadable(last_update_timestamp_file)
-    let last_update_timestamp = readfile(last_update_timestamp_file)[0]
-    let time_since_last_update = timestamp - last_update_timestamp
-    if time_since_last_update > 604800
-      let update_prompt = "You haven't updated your plugins in over a week, would you like to update them now?"
+  if filereadable(snapshot_file)
+    let last_modified_time = system(printf('date --reference %s +%%s', snapshot_file))
+    let current_time = system('date +%s')
+    let time_since_last_update = current_time - last_modified_time
+    if time_since_last_update > 2592000
+      let update_prompt = "You haven't updated your plugins in over a month, would you like to update them now?"
       let should_update = confirm(update_prompt, "yes\nno") == 1
       if should_update
         PlugUpgrade
         PlugUpdateAndSnapshot
-        call writefile([timestamp], last_update_timestamp_file)
       endif
     endif
-  else
-    call writefile([timestamp], last_update_timestamp_file)
   endif
 endif
