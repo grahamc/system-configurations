@@ -4,7 +4,7 @@ function brew --wraps brew
 
   # By backgrounding this command in a subshell, this shell won't be its parent, the subshell will.
   # Now tmux-resurrect won't think that this backgrounded command is the command to resurrect.
-  fish -c 'chronic brew bundle dump --force --file ~/.config/brewfile/Brewfile &'
+  fish -c 'flock --timeout 300 /tmp/brew-package-tracker-lock --command "chronic brew bundle dump --force --file ~/.config/brewfile/Brewfile" &'
 
   return $exit_code
 end
