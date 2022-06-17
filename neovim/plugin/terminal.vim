@@ -31,8 +31,9 @@ function! OverrideVimsDefaultFiletypePlugins()
     autocmd FileType vim setlocal keywordprg=:tab\ help
     " Set a default omnifunc
     autocmd FileType * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
-    autocmd FileType * set textwidth=0
-    autocmd FileType * set wrapmargin=0
+    autocmd FileType * setlocal textwidth=0
+    autocmd FileType * setlocal wrapmargin=0
+    autocmd FileType * setlocal formatoptions-=t formatoptions-=l
   augroup END
 endfunction
 
