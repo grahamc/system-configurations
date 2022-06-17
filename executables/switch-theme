@@ -26,4 +26,4 @@ esac
 
 # Change kitty theme
 ln -sf ~/.config/kitty/"$mode"-theme.conf ~/.config/kitty/current-theme.conf
-killall --signal SIGUSR1 kitty x-terminal-emulator
+pkill --signal SIGUSR1 --full '(^x\-terminal\-emulator|^kitty)'
