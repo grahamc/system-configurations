@@ -23,8 +23,3 @@ flock --nonblock /tmp/fish-autoreload-lock --command "watchman-make --root '$fis
 # If flock can't acquire the lock then the background job exits immediately and there will be nothing to disown
 # so disown will print an error which is why we suppress error output.
 disown 2> /dev/null
-
-flock --nonblock /tmp/fish-autoreload-2-lock --command "watchman-make --root '$fish_config_path' --pattern 'conf.d/**' --run 'fish -c \"set --universal _autoreload_indicator (random)\"' 2>/dev/null" &
-# If flock can't acquire the lock then the background job exits immediately and there will be nothing to disown
-# so disown will print an error which is why we suppress error output.
-disown 2> /dev/null
