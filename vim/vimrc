@@ -10,10 +10,6 @@ set wildmenu
 " While typing the search query, highlight where the first match would be.
 set incsearch
 
-" set swapfile directory
-let &directory = vim_home . 'swapfiles/'
-call mkdir(&directory, "p")
-
 " persist undo history to disk
 let &undodir = vim_home . 'undofiles/'
 call mkdir(&undodir, "p")
