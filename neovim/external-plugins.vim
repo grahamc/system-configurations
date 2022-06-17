@@ -1,6 +1,6 @@
-let is_embedded = index(v:argv, '--embed') != -1 || index(v:argv, '--headless') != -1
+let is_running_headless = index(v:argv, '--embed') != -1 || index(v:argv, '--headless') != -1
 
-if !is_embedded
+if !is_running_headless
   " Install vim-plug if not found
   let data_dir = has('nvim') ? stdpath('data') . '/site' : $HOME.'/.vim'
   let vim_plug_plugin_file = data_dir . '/autoload/plug.vim'
@@ -88,7 +88,7 @@ Plug 'tpope/vim-commentary'
 " put this in the vim config that contains all my terminal specific settings,
 " <config_directory>/plugin/terminal.vim, but since vim-plug doesn't allow
 " declaring plugins in separate files, I had to put them here.
-if !is_embedded
+if !is_running_headless
   " General
   Plug 'junegunn/vim-peekaboo'
     let g:peekaboo_delay = 500 " measured in milliseconds
@@ -338,7 +338,7 @@ endif
 " End Plugin Manager
 call plug#end()
 
-if !is_embedded
+if !is_running_headless
   " Install plugins if not found. Must be done after plugins are registered
   let missing_plugins = filter(deepcopy(get(g:, 'plugs', {})), '!isdirectory(v:val.dir)')
   if !empty(missing_plugins)
