@@ -193,9 +193,6 @@ if status is-interactive
     # man
     abbr --add --global fm fzf-man-widget
 
-    # x server
-    abbr --add --global r-xbindkeys 'killall xbindkeys; xbindkeys'
-
     # Set preferred editor.
     #
     # BACKGROUND: Historically, EDITOR referred to a line editor (e.g. ed) and
