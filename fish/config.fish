@@ -253,12 +253,7 @@ if status is-interactive
     abbr --add --global bo 'brew outdated'
 
     # asdf version manager
-    #
-    # TODO: Have to use 'command' here so that my brew wrapper is not called.
-    # If the brew wrapper is called, the background job it spawns will be
-    # mistaken for the command to restore by tmux-resurrect. Ideally I would make
-    # it so that the background job is taken off the process table when it exits.
-    set _asdf_init_script "$(command brew --prefix asdf)/libexec/asdf.fish"
+    set _asdf_init_script "$(brew --prefix asdf)/libexec/asdf.fish"
     test -e $_asdf_init_script
     and source $_asdf_init_script
 
