@@ -92,6 +92,8 @@ if status is-interactive
     bind \cr 'reset && exec fish && clear'
     # search variables
     abbr --add --global fv 'FZF_DEFAULT_COMMAND="set --names" fzf --preview "set --show {}"'
+    # set terminal title
+    echo -ne "\033]0;fish\007"
 
     # upgrade/cleanup packages in all package managers
     function upgrade-all
