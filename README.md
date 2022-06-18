@@ -16,8 +16,8 @@ This way, all the commands you launch in this shell (vim, fzf, etc.) will think 
 
 3. Run the install script. For example, if you are at the root of the repository run:
 ```
-./install/install
+./install/install --only link
 ```
-The script will symlink all my dotfiles into the directory created in step 1, thinking that's the home directory. With everything linked you can now try it out. NOTE: During the install, you may be prompted to add configs outside of the home directory. Be sure to say no to those prompts if you don't want my dotfiles to be added anywhere besides the directory created in step 1.
+The script will symlink all my dotfiles into the directory created in step 1, thinking that's the home directory. With everything linked you can now try it out.
 
 4. To exit the new shell, try control+d or the `exit` command. To remove my dotfiles, just remove the directory.
