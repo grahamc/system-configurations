@@ -44,6 +44,8 @@ function _load_transient_prompt_and_execute
     or commandline -f execute
 end
 bind \r _load_transient_prompt_and_execute
+# The newline character executes the commandline as well so rebind that too
+bind \n _load_transient_prompt_and_execute
 
 # rebind ctrl+c so that before cancelling the commandline it redraws the prompt as a transient prompt
 function _load_transient_prompt_and_cancel
