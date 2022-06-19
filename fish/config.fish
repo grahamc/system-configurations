@@ -106,11 +106,11 @@ if status is-interactive
         type --query flatpak
         and upgrade-flatpak
 
-        type --query fisher
-        and upgrade-fisher
-
         type --query asdf
         and upgrade-asdf
+
+        type --query fisher
+        and upgrade-fisher
     end
     function upgrade-apt
         echo
@@ -174,7 +174,11 @@ if status is-interactive
         echo
         echo -s (set_color blue) 'FISHER' (set_color normal)
         echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
-        fisher update
+
+        read --prompt-str 'Would you like to update? (y/n): ' --nchars 1 response
+        if test $response = 'y'
+            fisher update
+        end
     end
     function upgrade-asdf
         echo
