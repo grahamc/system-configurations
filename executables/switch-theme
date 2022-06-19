@@ -26,4 +26,3 @@ esac
 
 # Change kitty theme
 ln -sf ~/.config/kitty/"$mode"-theme.conf ~/.config/kitty/current-theme.conf
-reload-kitty
