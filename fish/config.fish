@@ -109,6 +109,9 @@ if status is-interactive
         type --query asdf
         and upgrade-asdf
 
+        type --query pipx
+        and upgrade-pipx
+
         type --query fisher
         and upgrade-fisher
     end
@@ -185,6 +188,12 @@ if status is-interactive
         echo -s (set_color blue) 'ASDF' (set_color normal)
         echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
         asdf plugin-update --all
+    end
+    function upgrade-pipx
+        echo
+        echo -s (set_color blue) 'PIPX' (set_color normal)
+        echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+        pipx upgrade-all --include-injected
     end
 
     # sudo
