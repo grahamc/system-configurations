@@ -268,3 +268,14 @@ set tabline=%!Tabline()
 " Write to file with sudo. For when I forget to use sudoedit.
 " tee streams its input to stdout as well as the specified file so I suppress the output
 command! SudoWrite w !sudo tee % >/dev/null
+
+" Delete buffers that aren't referencing a file
+function s:WipeBuffersWithoutFiles()
+    let bufs=filter(range(1, bufnr('$')), 'bufexists(v:val) && '.
+                                          \'empty(getbufvar(v:val, "&buftype")) && '.
+                                          \'!filereadable(bufname(v:val))')
+    if !empty(bufs)
+        execute 'bwipeout' join(bufs)
+    endif
+endfunction
+command CleanBuffers call s:WipeBuffersWithoutFiles()
