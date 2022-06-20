@@ -60,7 +60,7 @@
     ~/.default-cargo-crates: asdf/default-cargo-crates
     ~/.config/pipr/pipr.toml: pipr/pipr.toml
     ~/.config/brewfile/Brewfile: brew/Brewfile
-    ~/.config/pipx/pipx-packages.json: pipx/pipx-packages.json
+    ~/.config/pipx/pipx-packages: pipx/pipx-packages
 
 # Using another link directive since I have multiple links to this directory and you can't have
 # multiple keys with the same name in YAML
