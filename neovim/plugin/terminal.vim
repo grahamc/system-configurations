@@ -196,23 +196,28 @@ function! MyStatusLine()
     return l:highlight_text . l:special_statusline . l:highlight
   endif
 
+  let l:info = ''
   let l:warning = ''
   let l:error = ''
   try
     let l:ale_count = ale#statusline#Count(bufnr('%'))
   catch
-    let l:ale_count = {'warning': 0, 'error': 0}
+    let l:ale_count = {'warning': 0, 'error': 0, 'info': 0}
   endtry
   let l:error_count = l:ale_count.error
   let l:warning_count = l:ale_count.warning
+  let l:info_count = l:ale_count.info
   if (l:error_count > 0)
     let l:error = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineErrorText#' . l:error_count . ' ' . '⨂'
   endif
   if (l:warning_count > 0)
     let l:warning = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineWarningText#' . l:warning_count . ' ' . '⚠'
   endif
+  if (l:info_count > 0)
+    let l:info = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineInfoText#' . l:info_count . ' ' . 'ⓘ'
+  endif
 
-  return l:highlight_text . (exists('l:special_statusline') ? l:special_statusline : ' %y %h%w%q%t%m%r ') . l:highlight . '%=' . l:highlight_right_text . 'Ln %l/%L' . g:statusline_separator . 'Col %c/%{execute("echon col(\"$\") - 1")}' . l:warning . l:error . ' '
+  return l:highlight_text . (exists('l:special_statusline') ? l:special_statusline : ' %y %h%w%q%t%m%r ') . l:highlight . '%=' . l:highlight_right_text . 'Ln %l/%L' . g:statusline_separator . 'Col %c/%{execute("echon col(\"$\") - 1")}' . l:info . l:warning . l:error . ' '
 endfunction
 set statusline=%{%MyStatusLine()%}
 

@@ -184,6 +184,9 @@ if !is_running_headless
     let g:ale_lint_on_insert_leave = 0
     let g:ale_lint_on_filetype_changed = 0
     let g:ale_lint_on_save = 0
+    let g:ale_sign_error = '>>'
+    let g:ale_sign_warning = '>>'
+    let g:ale_sign_info = '--'
 
   " A bridge between vim-lsp and ale. This works by
   " sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
@@ -192,7 +195,7 @@ if !is_running_headless
   Plug 'rhysd/vim-lsp-ale'
     " Only report diagnostics with a level of 'warning' or above
     " i.e. warning,error
-    let g:lsp_ale_diagnostics_severity = "warning"
+    let g:lsp_ale_diagnostics_severity = "information"
 
   " Expands Emmet abbreviations to write HTML more quickly
   Plug 'mattn/emmet-vim'
@@ -304,6 +307,7 @@ if !is_running_headless
       autocmd ColorScheme nord highlight StatusLineRightSeparator ctermfg=8 ctermbg=NONE cterm=reverse
       autocmd ColorScheme nord highlight StatusLineErrorText ctermfg=1 ctermbg=8
       autocmd ColorScheme nord highlight StatusLineWarningText ctermfg=3 ctermbg=8
+      autocmd ColorScheme nord highlight StatusLineInfoText ctermfg=DarkYellow ctermbg=8
       " autocomplete popupmenu
       autocmd ColorScheme nord highlight PmenuSel ctermfg=14 ctermbg=NONE cterm=reverse
       autocmd ColorScheme nord highlight Pmenu ctermfg=black ctermbg=NONE cterm=reverse
