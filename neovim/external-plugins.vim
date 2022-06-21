@@ -184,9 +184,9 @@ if !is_running_headless
     let g:ale_lint_on_insert_leave = 0
     let g:ale_lint_on_filetype_changed = 0
     let g:ale_lint_on_save = 0
-    let g:ale_sign_error = '>>'
-    let g:ale_sign_warning = '>>'
-    let g:ale_sign_info = '--'
+    let g:ale_sign_error = '•'
+    let g:ale_sign_warning = '•'
+    let g:ale_sign_info = '•'
 
   " A bridge between vim-lsp and ale. This works by
   " sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
