@@ -259,8 +259,7 @@ function! Tabline()
 
     let tabline .= '%' . tab . 'T'
     let tabline .= (tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#')
-    let tabline .= ' %' . tab . 'X✕%X '
-    let tabline .= empty(gettabvar(tab, 'fzf_active')) ? bufname : 'fzf'
+    let tabline .= ' %' . tab . 'X✕%X ' . bufname
     let tabline .= ' '
   endfor
 
