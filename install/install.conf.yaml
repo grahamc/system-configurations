@@ -38,7 +38,6 @@
     ~/.cloudflared/config.yaml: cloudflared/config.yaml
     ~/.ripgreprc: ripgrep/ripgreprc
     ~/.config/gitui/theme.ron: gitui/theme.ron
-    ~/.inputrc: readline/inputrc
     # The reason I symlink the entire fish folder instead of linking
     # the individual files is that watchman does not support change detection in symlinks.
     # By symlinking the entire folder, the files themselves will not be symlinks.
