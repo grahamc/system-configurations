@@ -181,7 +181,7 @@ if !is_running_headless
     let g:ale_hover_cursor = 0
     " Only display diagnostics with a warning level or above
     " i.e. warning,error
-    let g:ale_lsp_show_message_severity = "warning"
+    let g:ale_lsp_show_message_severity = "information"
     let g:ale_lint_on_enter = 1 " lint when a buffer opens
     let g:ale_lint_on_text_changed = "always"
     let g:ale_lint_delay = 1000
@@ -313,7 +313,6 @@ if !is_running_headless
       autocmd ColorScheme nord highlight StatusLineRightSeparator ctermfg=8 ctermbg=NONE cterm=reverse
       autocmd ColorScheme nord highlight StatusLineErrorText ctermfg=1 ctermbg=8
       autocmd ColorScheme nord highlight StatusLineWarningText ctermfg=3 ctermbg=8
-      autocmd ColorScheme nord highlight StatusLineInfoText ctermfg=DarkYellow ctermbg=8
       " autocomplete popupmenu
       autocmd ColorScheme nord highlight PmenuSel ctermfg=14 ctermbg=NONE cterm=reverse
       autocmd ColorScheme nord highlight Pmenu ctermfg=black ctermbg=NONE cterm=reverse
