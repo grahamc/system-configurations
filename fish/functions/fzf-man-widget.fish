@@ -2,7 +2,7 @@ function fzf-man-widget --description 'Search manpages'
   set choice \
       ( \
         FZF_DEFAULT_COMMAND='man -k . --long' \
-         fzf  \
+         fzf-tmux-zoom  \
             --ansi \
             --no-clear \
             --tiebreak=begin \
