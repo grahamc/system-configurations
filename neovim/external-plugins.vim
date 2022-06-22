@@ -163,6 +163,9 @@ if !is_running_headless
         " where the language servers are stored
         let g:lsp_settings_servers_dir = has('nvim') ? stdpath('data') . '/lsp-servers' : $HOME.'/.vim/lsp-servers'
         call mkdir(g:lsp_settings_servers_dir, "p")
+        let g:lsp_settings = {
+          \ 'efm-langserver': {'disabled': v:true}
+          \ }
       Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
   " Asynchronous linting
