@@ -1,3 +1,4 @@
 [global]
   warn_timeout = "1h"
   load_dotenv = true
+  strict_env = true
