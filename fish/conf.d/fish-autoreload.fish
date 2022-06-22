@@ -19,12 +19,12 @@ function _autoreload_fish --on-variable _autoreload_indicator
 end
 set fish_config_path "$xdg_config_home/fish"
 
-flock --nonblock /tmp/fish-autoreload-lock --command "watchman-make --root '$fish_config_path/my-fish' --pattern 'conf.d/**' 'config.fish' --run 'fish -c \"set --universal _autoreload_indicator (random)\"' 2>/dev/null" &
+chronic flock --nonblock /tmp/fish-autoreload-lock --command "chronic watchman-make --root '$fish_config_path/my-fish' --pattern 'conf.d/**' 'config.fish' --run 'fish -c \"set --universal _autoreload_indicator (random)\"'" &
 # If flock can't acquire the lock then the background job exits immediately and there will be nothing to disown
 # so disown will print an error which is why we suppress error output.
 disown 2> /dev/null
 
-flock --nonblock /tmp/fish-autoreload-2-lock --command "watchman-make --root '$fish_config_path' --pattern 'conf.d/**' --run 'fish -c \"set --universal _autoreload_indicator (random)\"' 2>/dev/null" &
+chronic flock --nonblock /tmp/fish-autoreload-2-lock --command "chronic watchman-make --root '$fish_config_path' --pattern 'conf.d/**' --run 'fish -c \"set --universal _autoreload_indicator (random)\"'" &
 # If flock can't acquire the lock then the background job exits immediately and there will be nothing to disown
 # so disown will print an error which is why we suppress error output.
 disown 2> /dev/null
