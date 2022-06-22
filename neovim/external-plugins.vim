@@ -164,7 +164,8 @@ if !is_running_headless
         let g:lsp_settings_servers_dir = has('nvim') ? stdpath('data') . '/lsp-servers' : $HOME.'/.vim/lsp-servers'
         call mkdir(g:lsp_settings_servers_dir, "p")
         let g:lsp_settings = {
-          \ 'efm-langserver': {'disabled': v:true}
+          \ 'efm-langserver': {'disabled': v:true},
+          \ 'bash-language-server': {'disabled': v:true}
           \ }
       Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
