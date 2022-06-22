@@ -2,25 +2,26 @@ if not status is-interactive
     exit
 end
 
+set _fzf_history_file "$HOME/.config/fzf/fzf-history.txt"
+
 set --global --export FZF_DEFAULT_OPTS "
     --cycle
     --ellipsis='…'
     --bind 'tab:down,shift-tab:up,alt-down:preview-page-down,alt-up:preview-page-up,change:first,alt-o:change-preview-window(right,border-left|bottom,border-top),ctrl-/:preview(fzf-help-preview),ctrl-\\:refresh-preview,enter:select+accept,ctrl-r:refresh-preview'
     --layout=reverse
-    --border=rounded
-    --color='16,fg+:-1:regular,bg+:-1,fg:dim,info:black,gutter:bright-black,pointer:14:regular,prompt:14:regular,border:black,query:-1:regular,marker:14:regular,header:black,spinner:14,hl:cyan:dim,hl+:regular:cyan'
+    --border=none
+    --color='16,fg+:-1:regular,bg+:-1,fg:dim,info:black,gutter:bright-black,pointer:14:regular,prompt:14:regular,border:black:dim,query:-1:regular,marker:14:regular,header:black,spinner:yellow,hl:cyan:dim,hl+:regular:cyan'
     --margin=3%
-    --padding=1
     --height 100%
     --prompt='> '
-    --tabstop=4
+    --tabstop=2
     --info='inline'
     --pointer='❯'
     --marker='❯'
-    --history='$HOME/.fzf.history'
+    --history='$_fzf_history_file'
     --header='(Press ctrl+/ for help)'
     --preview='echo Current selection: {}'
-    --preview-window=wrap,bottom,border-top,75%"
+    --preview-window=wrap,bottom,border-rounded,75%"
 
 set --global --export FZF_ALT_C_COMMAND 'test $dir = '.' && set _args "--strip-cwd-prefix" || set _args '.' $dir; fd $_args --hidden --type directory --type symlink'
 set --global --export FZF_ALT_C_OPTS "--preview 'ls --classify -x {}' --keep-right --bind='change:first'"
@@ -53,3 +54,6 @@ bind \cg 'fzf-grep-widget'
 function __fzfcmd
     echo fzf-tmux-zoom
 end
+
+mkdir -p (dirname $_fzf_history_file)
+touch $_fzf_history_file
