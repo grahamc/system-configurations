@@ -6,7 +6,7 @@ function vim --wraps nvim
     if type --query nvim
         nvim $argv
     else
-        vim $argv
+        command vim $argv
     end
 end
 
