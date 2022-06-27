@@ -568,7 +568,7 @@ function! InstallMissingPlugins()
   let install_prompt = "The following plugins are not installed:\n" . join(keys(missing_plugins), ", ") . "\nWould you like to install them?"
   let should_install = confirm(install_prompt, "yes\nno") == 1
   if should_install
-    let snapshot_file = stdpath('data') . '/external-plugin-snapshot.vim'
+    let snapshot_file = stdpath('data') . '/vim-plug-snapshot.vim'
     if filereadable(snapshot_file)
       execute printf('source %s', snapshot_file)
     else
@@ -579,7 +579,7 @@ endfunction
 
 " If it's been more than a month, update plugins
 function! MonthlyPluginUpdate()
-  let snapshot_file = stdpath('data') . '/external-plugin-snapshot.vim'
+  let snapshot_file = stdpath('data') . '/vim-plug-snapshot.vim'
   if !filereadable(snapshot_file)
     return
   endif
