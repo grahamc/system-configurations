@@ -51,6 +51,7 @@ noremap <C-j> 10j
 noremap <C-k> 10k
 nnoremap Y yg_
 
+" Using the paragraph motions won't add to the jump stack
 nnoremap } <Cmd>keepjumps normal! }<CR>
 nnoremap { <Cmd>keepjumps normal! {<CR>
 

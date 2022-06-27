@@ -1,5 +1,5 @@
-let is_running_headless = index(v:argv, '--embed') != -1 || index(v:argv, '--headless') != -1
-if is_running_headless
+" Exit if we are not running in a terminal
+if index(v:argv, '--embed') != -1 || index(v:argv, '--headless') != -1
   finish
 endif
 
