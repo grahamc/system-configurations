@@ -96,7 +96,10 @@ nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':exe "q" \| silent! tabn 
 if !exists('g:lasttab')
   let g:lasttab = 1
 endif
-autocmd TabLeave * let g:lasttab = tabpagenr()
+augroup LastTab
+  autocmd!
+  autocmd TabLeave * let g:lasttab = tabpagenr()
+augroup END
 
 """ Section: Autocomplete
 " show the completion menu even if there is only one suggestion
@@ -106,8 +109,11 @@ set completeopt=menuone,noselect
 if has('nvim')
   " TODO: not working
   " set completeopt+=preview
-  " Automatically close the preview window when autocomplete is done
-  " autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+  " " Automatically close the preview window when autocomplete is done
+  " augroup ClosePreview
+  "   autocmd!
+  "   autocmd CompleteDone * if pumvisible() == 0 | pclose | endif
+  " augroup END
 else
   set completeopt+=popup
 endif
