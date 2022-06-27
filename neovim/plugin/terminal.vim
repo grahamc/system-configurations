@@ -53,7 +53,7 @@ augroup Miscellaneous
   autocmd ColorScheme * highlight ExtraWhitespace ctermbg=1 ctermfg=1 | execute '2match ExtraWhitespace /\s\+$/'
   " Automatically resize all splits to make them equal when the vim window is
   " resized or a new window is created/closed
-  autocmd VimResized,WinNew,WinClosed * wincmd =
+  autocmd VimResized,WinNew,WinClosed,TabEnter * wincmd =
   " Start syntax highlighting from the beginning of the file. Unless it's a large file, in which case start
   " don't highlight at all.
   autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | else | syntax sync fromstart | endif
