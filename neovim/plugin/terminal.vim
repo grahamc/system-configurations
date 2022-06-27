@@ -50,7 +50,7 @@ augroup TerminalMiscellaneous
   " Put focus back in quickfix window after opening an entry
   autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
   " highlight trailing whitespace
-  autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red | execute '2match ErrorMsg /\s\+$/'
+  autocmd ColorScheme * highlight ExtraWhitespace ctermbg=1 ctermfg=1 | execute '2match ExtraWhitespace /\s\+$/'
   " Automatically resize all splits to make them equal when the vim window is
   " resized or a new window is created/closed
   autocmd VimResized,WinNew,WinClosed * wincmd =

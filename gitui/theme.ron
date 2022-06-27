@@ -3,7 +3,7 @@
     command_fg: Reset,
     selection_bg: DarkGray,
     cmdbar_extra_lines_bg: DarkGray,
-    disabled_fg: Black,
+    disabled_fg: White,
     diff_line_add: Green,
     diff_line_delete: Red,
     diff_file_added: LightGreen,

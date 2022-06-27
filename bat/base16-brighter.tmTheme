@@ -3,9 +3,7 @@
 <plist version="1.0">
     <dict>
         <!--
-            This is a copy of the base16 theme that comes with bat, but with a few changes:
-            - Some of the usages of bright black (#08000000) have been changed to black (#00000000) since black is more visible in my terminal
-            color palette
+            This is a copy of the base16 theme that comes with bat, but with a few changes.
         -->
         <!--
         This theme is meant for users who configure their terminal with a base16
@@ -31,7 +29,7 @@
                 <key>settings</key>
                 <dict>
                     <key>background</key>
-                    <string>#00000000</string>
+                    <string>#0000000</string>
                     <key>caret</key>
                     <string>#07000000</string>
                     <key>foreground</key>
@@ -45,7 +43,7 @@
                     <key>gutter</key>
                     <string>#0a000000</string>
                     <key>gutterForeground</key>
-                    <string>#00000000</string>
+                    <string>#0f000000</string>
                 </dict>
             </dict>
             <dict>
@@ -67,7 +65,7 @@
                 <key>settings</key>
                 <dict>
                     <key>foreground</key>
-                    <string>#00000000</string>
+                    <string>#0f000000</string>
                 </dict>
             </dict>
             <dict>
@@ -166,7 +164,7 @@
                 <key>settings</key>
                 <dict>
                     <key>foreground</key>
-                    <string>#0f000000</string>
+                    <string>#08000000</string>
                 </dict>
             </dict>
             <dict>
@@ -506,7 +504,7 @@
                     <key>background</key>
                     <string>#01000000</string>
                     <key>foreground</key>
-                    <string>#0f000000</string>
+                    <string>#08000000</string>
                 </dict>
             </dict>
             <dict>
@@ -519,7 +517,7 @@
                     <key>background</key>
                     <string>#09000000</string>
                     <key>foreground</key>
-                    <string>#00000000</string>
+                    <string>#0f000000</string>
                 </dict>
             </dict>
             <dict>
@@ -532,7 +530,7 @@
                     <key>background</key>
                     <string>#0e000000</string>
                     <key>foreground</key>
-                    <string>#0f000000</string>
+                    <string>#08000000</string>
                 </dict>
             </dict>
             <dict>
@@ -543,9 +541,9 @@
                 <key>settings</key>
                 <dict>
                     <key>background</key>
-                    <string>#00000000</string>
-                    <key>foreground</key>
                     <string>#0f000000</string>
+                    <key>foreground</key>
+                    <string>#08000000</string>
                 </dict>
             </dict>
         </array>

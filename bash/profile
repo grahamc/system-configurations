@@ -7,3 +7,8 @@ PATH="$HOME/.local/bin:$PATH"
 
 # Initialize brew
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+# load bashrc
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi

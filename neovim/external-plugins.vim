@@ -308,14 +308,14 @@ if !is_running_headless
       autocmd ColorScheme nord highlight StatusLine ctermbg=8
       autocmd ColorScheme nord highlight StatusLineText ctermfg=14 ctermbg=NONE cterm=reverse
       autocmd ColorScheme nord highlight StatusLineNC ctermbg=8
-      autocmd ColorScheme nord highlight StatusLineNCText ctermfg=0 ctermbg=NONE cterm=reverse
+      autocmd ColorScheme nord highlight StatusLineNCText ctermfg=15 ctermbg=NONE cterm=reverse
       autocmd ColorScheme nord highlight StatusLineRightText ctermfg=14 ctermbg=8
       autocmd ColorScheme nord highlight StatusLineRightSeparator ctermfg=8 ctermbg=NONE cterm=reverse
       autocmd ColorScheme nord highlight StatusLineErrorText ctermfg=1 ctermbg=8
       autocmd ColorScheme nord highlight StatusLineWarningText ctermfg=3 ctermbg=8
       " autocomplete popupmenu
       autocmd ColorScheme nord highlight PmenuSel ctermfg=14 ctermbg=NONE cterm=reverse
-      autocmd ColorScheme nord highlight Pmenu ctermfg=black ctermbg=NONE cterm=reverse
+      autocmd ColorScheme nord highlight Pmenu ctermfg=15 ctermbg=NONE cterm=reverse
       autocmd ColorScheme nord highlight CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
       " transparent background
       autocmd ColorScheme nord highlight Normal ctermbg=NONE
@@ -323,15 +323,15 @@ if !is_running_headless
       autocmd ColorScheme nord highlight! link EndOfBuffer NonText
       " relative line numbers
       autocmd ColorScheme nord highlight LineNr ctermfg=NONE
-      autocmd ColorScheme nord highlight LineNrAbove ctermfg=0
+      autocmd ColorScheme nord highlight LineNrAbove ctermfg=15
       autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
       autocmd ColorScheme nord highlight WordUnderCursor cterm=bold
-      autocmd ColorScheme nord highlight IncSearch ctermbg=8 cterm=NONE
-      autocmd ColorScheme nord highlight TabLine ctermbg=NONE ctermfg=black cterm=reverse
+      autocmd ColorScheme nord highlight! link IncSearch Search
+      autocmd ColorScheme nord highlight TabLine ctermbg=NONE ctermfg=15 cterm=reverse
       autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=14 cterm=reverse
       autocmd ColorScheme nord highlight TabLineFill ctermbg=8
       autocmd ColorScheme nord highlight WildMenu ctermfg=14 ctermbg=NONE cterm=underline
-      autocmd ColorScheme nord highlight Comment ctermfg=Black ctermbg=NONE
+      autocmd ColorScheme nord highlight Comment ctermfg=15 ctermbg=NONE
       " This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
       " By unsetting this, I ensure that terminals opened in vim will use the colors from the color palette of the
       " terminal emulator in which vim is running
@@ -341,6 +341,14 @@ if !is_running_headless
       autocmd ColorScheme nord highlight Visual ctermbg=8
       " Search hit
       autocmd ColorScheme nord highlight Search ctermfg=DarkYellow ctermbg=NONE cterm=reverse
+      " Parentheses
+      autocmd ColorScheme nord highlight Delimiter ctermfg=NONE ctermbg=NONE
+      autocmd ColorScheme nord highlight ErrorMsg ctermfg=1 ctermbg=NONE cterm=bold
+      autocmd ColorScheme nord highlight Error ctermfg=1 ctermbg=NONE cterm=undercurl
+      autocmd ColorScheme nord highlight! link SpellBad Error
+      autocmd ColorScheme nord highlight! link NvimInternalError ErrorMsg
+      autocmd ColorScheme nord highlight! link ALEError Error
+      autocmd ColorScheme nord highlight ALEWarning ctermfg=3 ctermbg=NONE cterm=undercurl
     augroup END
 endif
 
