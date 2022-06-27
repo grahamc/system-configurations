@@ -27,16 +27,8 @@ nnoremap <silent> p p`]
 " select the text that was just pasted
 noremap gV `[v`]
 
-" vp doesn't replace paste buffer
-function! RestoreRegister()
-  let @" = s:restore_reg
-  return ''
-endfunction
-function! s:Repl()
-  let s:restore_reg = @"
-  return "p@=RestoreRegister()\<cr>"
-endfunction
-vmap <silent> <expr> p <sid>Repl()
+" pasting doesn't replace clipboard
+vnoremap p "_dP
 
 """ Section: Line folding / splitting
 " Prevents inserting two spaces after punctuation on a join (J)
@@ -107,29 +99,38 @@ augroup END
 
 " To get the vim help pages for vim-plug itself, you need to add it as a plugin
 Plug 'junegunn/vim-plug'
+
 " Syntax plugins for practically any language
 Plug 'sheerun/vim-polyglot'
+
 " Motions for levels of indentation
 Plug 'jeetsukumaran/vim-indentwise'
   map [<Tab> <Plug>(IndentWiseBlockScopeBoundaryBegin)
   map ]<Tab> <Plug>(IndentWiseBlockScopeBoundaryEnd)
+
 " replacement for matchit since matchit wasn't working for me
 Plug 'andymass/vim-matchup'
   " Don't display offscreen matches in my statusline or a popup window
   let g:matchup_matchparen_offscreen = {}
+
 " Additional text objects and motions
 Plug 'wellle/targets.vim'
+
 " Determine the filetype based on the interpreter specified in a shebang
 Plug 'vitalk/vim-shebang'
+
 Plug 'bkad/CamelCaseMotion'
   let g:camelcasemotion_key = ','
+
 " Automatically add closing keywords (e.g. function/endfunction in vimscript)
 Plug 'tpope/vim-endwise'
   let g:endwise_no_mappings = 1
   " this way endwise triggers on 'o'
   nmap o A<CR>
+
 " Automatically close html tags
 Plug 'alvan/vim-closetag'
+
 " Automatically insert closing braces/quotes
 Plug 'Raimondi/delimitMate'
   " Given the following line (where | represents the cursor):
@@ -139,11 +140,14 @@ Plug 'Raimondi/delimitMate'
   "   |
   " }
   let g:delimitMate_expand_cr = 0
+
 " Makes it easier to manipulate brace/bracket/quote pairs by providing commands to do common
 " operations like change pair, remove pair, etc.
 Plug 'tpope/vim-surround'
+
 " For swapping two pieces of text
 Plug 'tommcdo/vim-exchange'
+
 " Commands/mappings for working with variants of words:
 " - A command for performing substitutions. More features than vim's builtin :substitution
 " - A command for creating abbreviations. More features than vim's builtin :iabbrev
@@ -154,5 +158,7 @@ Plug 'tpope/vim-abolish'
   " issue for `inccommand` support: https://github.com/tpope/vim-abolish/issues/107
   Plug 'markonm/traces.vim'
     let g:traces_abolish_integration = 1
+
 Plug 'airblade/vim-matchquote'
+
 Plug 'tpope/vim-commentary'

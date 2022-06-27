@@ -285,12 +285,15 @@ command CleanBuffers call s:WipeBuffersWithoutFiles()
 
 " Plugins
 """"""""""""""""""""""""""""""""""""""""
-" General
 Plug 'junegunn/vim-peekaboo'
   let g:peekaboo_delay = 500 " measured in milliseconds
+
 Plug 'inkarkat/vim-CursorLineCurrentWindow'
+
 Plug 'farmergreg/vim-lastplace'
+
 Plug 'tmux-plugins/vim-tmux'
+
 Plug 'tweekmonster/startuptime.vim'
 
 " Autocomplete
@@ -409,6 +412,7 @@ Plug 'christoomey/vim-tmux-navigator'
   noremap <silent> <M-l> :TmuxNavigateRight<cr>
   noremap <silent> <M-j> :TmuxNavigateDown<cr>
   noremap <silent> <M-k> :TmuxNavigateUp<cr>
+
 " Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
 Plug 'mhinz/vim-signify'
   nnoremap <Leader>vk <Cmd>SignifyHunkDiff<CR>
@@ -523,7 +527,7 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
     autocmd ColorScheme nord highlight WordUnderCursor cterm=bold
     autocmd ColorScheme nord highlight! link IncSearch Search
-    autocmd ColorScheme nord highlight TabLine ctermbg=NONE ctermfg=15 cterm=reverse
+    autocmd ColorScheme nord highlight TabLine ctermbg=8 ctermfg=NONE
     autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=14 cterm=reverse
     autocmd ColorScheme nord highlight TabLineFill ctermbg=8
     autocmd ColorScheme nord highlight WildMenu ctermfg=14 ctermbg=NONE cterm=underline
@@ -557,34 +561,35 @@ function! InstallMissingPlugins()
 
   let install_prompt = "The following plugins are not installed:\n" . join(keys(missing_plugins), ", ") . "\nWould you like to install them?"
   let should_install = confirm(install_prompt, "yes\nno") == 1
-  if !should_install
-    return
-  endif
-
-  let snapshot_file = stdpath('data') . '/external-plugin-snapshot.vim'
-  if filereadable(snapshot_file)
-    execute printf('source %s', snapshot_file)
-  else
-    PlugInstall --sync
+  if should_install
+    let snapshot_file = stdpath('data') . '/external-plugin-snapshot.vim'
+    if filereadable(snapshot_file)
+      execute printf('source %s', snapshot_file)
+    else
+      PlugInstall --sync
+    endif
   endif
 endfunction
 
 " If it's been more than a month, update plugins
 function! MonthlyPluginUpdate()
   let snapshot_file = stdpath('data') . '/external-plugin-snapshot.vim'
+  if !filereadable(snapshot_file)
+    return
+  endif
+
   " Make this a command so it can be called manually if needed
   execute "command! PlugUpdateAndSnapshot PlugUpdate --sync | PlugSnapshot! " . snapshot_file
-  if filereadable(snapshot_file)
-    let last_modified_time = system(printf('date --reference %s +%%s', snapshot_file))
-    let current_time = system('date +%s')
-    let time_since_last_update = current_time - last_modified_time
-    if time_since_last_update > 2592000
-      let update_prompt = "You haven't updated your plugins in over a month, would you like to update them now?"
-      let should_update = confirm(update_prompt, "yes\nno") == 1
-      if should_update
-        PlugUpgrade
-        PlugUpdateAndSnapshot
-      endif
+
+  let last_modified_time = system(printf('date --reference %s +%%s', snapshot_file))
+  let current_time = system('date +%s')
+  let time_since_last_update = current_time - last_modified_time
+  if time_since_last_update > 2592000
+    let update_prompt = "You haven't updated your plugins in over a month, would you like to update them now?"
+    let should_update = confirm(update_prompt, "yes\nno") == 1
+    if should_update
+      PlugUpgrade
+      PlugUpdateAndSnapshot
     endif
   endif
 endfunction
