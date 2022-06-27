@@ -37,7 +37,7 @@ function! OverrideVimsDefaultFiletypePlugins()
   augroup END
 endfunction
 
-augroup TerminalMiscellaneous
+augroup Miscellaneous
   autocmd!
   autocmd BufEnter *
         \ if &ft ==# 'help' && (&columns * 10) / &lines > 31 | wincmd L | endif

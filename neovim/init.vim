@@ -8,7 +8,7 @@ set updatetime=500
 set scrolloff=10
 set noswapfile
 
-augroup InitMiscellaneous
+augroup ExtendIskeyword
   autocmd!
   " Extend iskeyword for filetypes that can reference CSS classes
   autocmd FileType
