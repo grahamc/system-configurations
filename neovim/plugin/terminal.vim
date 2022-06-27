@@ -148,7 +148,7 @@ augroup SaveAndRestoreSettings
       execute s:session_cmd . fnameescape(s:session_full_path)
     endif
   endfunction
-  autocmd VimEnter * nested call RestoreOrCreateSession()
+  autocmd VimEnter * ++nested call RestoreOrCreateSession()
   " save session before vim exits
   function! SaveSession()
     if !empty(v:this_session)
