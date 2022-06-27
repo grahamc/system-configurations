@@ -89,6 +89,7 @@ endif
 call plug#begin()
 
 " Set vim-plug to end at VimEnter. By running this at VimEnter, I am able to add plugins in my other config files as well.
+"
 " Since some plugins, like vim-lsp, have autocmds for VimEnter, I fire VimEnter again after loading plugins.
 " To prevent infinitely firing VimEnter, I use '++once'. Downside to this is that anything that runs at VimEnter
 " needs to be idempotent because it might get run twice since VimEnter gets fired twice now.
