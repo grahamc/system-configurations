@@ -11,3 +11,6 @@ nnoremap <silent> <Leader>f :Find<CR>
 nnoremap <silent> <Leader>g :call VSCodeNotify("workbench.action.findInFiles")<CR>
 nnoremap <Leader>e :call VSCodeNotify("workbench.action.toggleSidebarVisibility")<CR>
 xmap gc  <Plug>VSCodeCommentary
+nmap gc  <Plug>VSCodeCommentary
+omap gc  <Plug>VSCodeCommentary
+nmap gcc <Plug>VSCodeCommentaryLine
