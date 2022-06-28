@@ -557,6 +557,10 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight ALEWarning ctermfg=3 ctermbg=NONE cterm=undercurl
   augroup END
 
+Plug 'junegunn/goyo.vim'
+  let g:goyo_width = '85%'
+  " Make an alias for the 'Goyo' command with a name that is easier to remember
+  command! Focus Goyo
 
 " Install plugins if not found. Must be done after plugins are registered
 function! InstallMissingPlugins()
