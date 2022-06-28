@@ -570,7 +570,15 @@ function! InstallMissingPlugins()
   if should_install
     let snapshot_file = stdpath('data') . '/vim-plug-snapshot.vim'
     if filereadable(snapshot_file)
+      " Sourcing the snapshot will set plugins to the commit specified in the snapshot
+      " and install any missing ones.
       execute printf('source %s', snapshot_file)
+
+      " Take a new snapshot in case we've installed any plugins that aren't in the current snapshot.
+      execute printf('PlugSnapshot! %s', snapshot_file)
+
+      " Edit the snapshot file so that it updates plugins synchronously
+      execute "silent! !sed --in-place --follow-symlinks 's/PlugUpdate\\!/PlugUpdate\\! --sync/g' " . snapshot_file
     else
       PlugInstall --sync
     endif
@@ -596,6 +604,9 @@ function! MonthlyPluginUpdate()
     if should_update
       PlugUpgrade
       PlugUpdateAndSnapshot
+
+      " Edit the snapshot file so that it updates plugins synchronously
+      execute "silent! !sed --in-place --follow-symlinks 's/PlugUpdate\\!/PlugUpdate\\! --sync/g' " . snapshot_file
     endif
   endif
 endfunction
