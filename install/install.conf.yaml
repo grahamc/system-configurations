@@ -19,9 +19,7 @@
     ~/.tmux.conf: tmux/tmux.conf
     ~/.vim/vimrc: vim/vimrc
     ~/.config/nvim/init.vim: neovim/init.vim
-    ~/.config/nvim/plugin/:
-        glob: true
-        path: neovim/plugin/*
+    ~/.config/nvim/profiles: neovim/profiles
     ~/.local/share/nvim/vim-plug-snapshot.vim: neovim/vim-plug-snapshot.vim
     ~/.gitconfig: git/gitconfig
     ~/.bashrc: bash/bashrc

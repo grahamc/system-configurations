@@ -85,18 +85,7 @@ if empty(glob(vim_plug_plugin_file))
   silent execute '!curl -fLo '.vim_plug_plugin_file.' --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 endif
 
-" Start vim-plug
 call plug#begin()
-
-" Set vim-plug to end at VimEnter. By running this at VimEnter, I am able to add plugins in my other config files as well.
-"
-" Since some plugins, like vim-lsp, have autocmds for VimEnter, I fire VimEnter again after loading plugins.
-" To prevent infinitely firing VimEnter, I use '++once'. Downside to this is that anything that runs at VimEnter
-" needs to be idempotent because it might get run twice since VimEnter gets fired twice now.
-augroup VimPlug
-  autocmd!
-  autocmd VimEnter * ++nested ++once call plug#end() | doautocmd VimEnter
-augroup END
 
 " To get the vim help pages for vim-plug itself, you need to add it as a plugin
 Plug 'junegunn/vim-plug'
@@ -163,3 +152,14 @@ Plug 'tpope/vim-abolish'
 Plug 'airblade/vim-matchquote'
 
 Plug 'tpope/vim-commentary'
+
+" By loading the other profiles before calling plug#end, I can add plugins inside the profiles.
+let profile_directory = expand('<sfile>:h') . '/profiles' 
+if isdirectory(profile_directory)
+  let profiles = split(globpath(profile_directory, '*'), '\n')
+  for profile in profiles
+    execute 'source ' . profile
+  endfor
+endif
+
+call plug#end()
