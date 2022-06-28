@@ -396,6 +396,7 @@ Plug 'dense-analysis/ale'
   let g:ale_sign_error = '•'
   let g:ale_sign_warning = '•'
   let g:ale_sign_info = '•'
+  let g:ale_sign_priority = 100
 
 " A bridge between vim-lsp and ale. This works by
 " sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
