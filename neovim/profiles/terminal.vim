@@ -245,11 +245,14 @@ augroup Cursor
   autocmd VimResume * call RestoreCursor()
 augroup END
 
+set fillchars=vert:┃
+
 " Tabline
 function! Tabline()
-  let tabline = ''
+  let tab_count = tabpagenr('$')
+  let tabline = '%#StatusLineText# ' . tab_count . ' %#TabLineFill#%='
 
-  for i in range(tabpagenr('$'))
+  for i in range(tab_count)
     let tab = i + 1
     let winnr = tabpagewinnr(tab)
     let buflist = tabpagebuflist(tab)
@@ -264,11 +267,12 @@ function! Tabline()
 
     let tabline .= '%' . tab . 'T'
     let tabline .= (tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#')
-    let tabline .= ' %' . tab . 'X✕%X ' . bufname
-    let tabline .= ' '
+    let tabline .= '%' . tab . 'X✕%X ' . bufname
+    if i < tab_count - 1
+      let tabline .= g:statusline_separator
+    endif
   endfor
-
-  let tabline .= '%T%#TabLineFill#'
+  let tabline .= ' '
 
   return tabline
 endfunction
@@ -502,6 +506,10 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeFind'}
 
 " Colorscheme
 Plug 'arcticicestudio/nord-vim'
+  let g:nord_bold = 1
+  let g:nord_italic = 1
+  let g:nord_italic_comments = 1
+  let g:nord_underline = 1
   " Overrides
   augroup NordColorschemeOverrides
     autocmd!
@@ -532,10 +540,10 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight LineNr ctermfg=NONE
     autocmd ColorScheme nord highlight LineNrAbove ctermfg=15
     autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
-    autocmd ColorScheme nord highlight WordUnderCursor cterm=underline
+    autocmd ColorScheme nord highlight WordUnderCursor cterm=underline,bold
     autocmd ColorScheme nord highlight! link IncSearch Search
-    autocmd ColorScheme nord highlight TabLine ctermbg=8 ctermfg=NONE
-    autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=14 cterm=reverse
+    autocmd ColorScheme nord highlight TabLine ctermbg=8 ctermfg=15
+    autocmd ColorScheme nord highlight TabLineSel ctermbg=8 ctermfg=14 cterm=bold
     autocmd ColorScheme nord highlight TabLineFill ctermbg=8
     autocmd ColorScheme nord highlight WildMenu ctermfg=14 ctermbg=NONE cterm=underline
     autocmd ColorScheme nord highlight Comment ctermfg=15 ctermbg=NONE
