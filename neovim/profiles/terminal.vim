@@ -524,7 +524,7 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight StatusLineText ctermfg=14 ctermbg=NONE cterm=reverse
     autocmd ColorScheme nord highlight StatusLineNC ctermbg=8
     autocmd ColorScheme nord highlight StatusLineNCText ctermfg=15 ctermbg=NONE cterm=reverse
-    autocmd ColorScheme nord highlight StatusLineRightText ctermfg=14 ctermbg=8
+    autocmd ColorScheme nord highlight StatusLineRightText ctermfg=15 ctermbg=8
     autocmd ColorScheme nord highlight StatusLineRightSeparator ctermfg=8 ctermbg=NONE cterm=reverse
     autocmd ColorScheme nord highlight StatusLineErrorText ctermfg=1 ctermbg=8
     autocmd ColorScheme nord highlight StatusLineWarningText ctermfg=3 ctermbg=8
