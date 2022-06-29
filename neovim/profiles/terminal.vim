@@ -180,7 +180,7 @@ augroup SetColorscheme
 augroup END
 
 " Statusline
-let g:statusline_separator = "%#StatusLineRightSeparator# \u2759 %#StatusLineRightText#"
+let g:statusline_separator = "%#TabLineFill# %#StatusLineRightSeparator#/ %#StatusLineRightText#"
 function! MyStatusLine()
   if g:actual_curwin == win_getid()
     let l:highlight = 'StatusLine'
@@ -208,21 +208,26 @@ function! MyStatusLine()
 
   let l:warning = ''
   let l:error = ''
+  let l:info = ''
   try
     let l:ale_count = ale#statusline#Count(bufnr('%'))
   catch
     let l:ale_count = {'warning': 0, 'error': 0, 'info': 0}
   endtry
   let l:error_count = l:ale_count.error
-  let l:warning_count = l:ale_count.warning + l:ale_count.info
+  let l:warning_count = l:ale_count.warning
+  let l:info_count = l:ale_count.info
   if (l:error_count > 0)
-    let l:error = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineErrorText#' . l:error_count . ' ' . '⨂'
+    let l:error = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineErrorText#' . l:error_count . ' ' . '⨂ '
   endif
   if (l:warning_count > 0)
-    let l:warning = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineWarningText#' . l:warning_count . ' ' . '⚠'
+    let l:warning = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineWarningText#' . l:warning_count . ' ' . '⚠ '
+  endif
+  if (l:info_count > 0)
+    let l:info = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineInfoText#' . l:info_count . ' 🛈 '
   endif
 
-  return l:highlight_text . (exists('l:special_statusline') ? l:special_statusline : ' %y %h%w%q%t%m%r ') . l:highlight . '%=' . l:highlight_right_text . 'Ln %l/%L' . g:statusline_separator . 'Col %c/%{execute("echon col(\"$\") - 1")}' . l:warning . l:error . ' '
+  return l:highlight_text . (exists('l:special_statusline') ? l:special_statusline : ' %y %h%w%q%t%m%r ') . l:highlight . '%=' . l:highlight_right_text . 'Ln %l/%L' . g:statusline_separator . 'Col %c/%{execute("echon col(\"$\") - 1")}' . l:info . l:warning . l:error . ' '
 endfunction
 set statusline=%{%MyStatusLine()%}
 
@@ -250,7 +255,7 @@ set fillchars=vert:┃
 " Tabline
 function! Tabline()
   let tab_count = tabpagenr('$')
-  let tabline = '%#StatusLineText# ' . tab_count . ' %#TabLineFill#%='
+  let tabline = '%#StatusLineText# 🗐  %#TabLineFill#%='
 
   for i in range(tab_count)
     let tab = i + 1
@@ -266,13 +271,14 @@ function! Tabline()
     endif
 
     let tabline .= '%' . tab . 'T'
-    let tabline .= (tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#')
-    let tabline .= '%' . tab . 'X✕%X ' . bufname
+    let highlight = (tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#')
+    let highlight_button = (tab == tabpagenr() ? '%#TabLineButtonSel#' : '%#TabLineButton#')
+    let tabline .= highlight_button . '%' . tab . 'X✕%X' . highlight . ' ' . bufname
     if i < tab_count - 1
       let tabline .= g:statusline_separator
     endif
   endfor
-  let tabline .= ' '
+  let tabline .= '%='
 
   return tabline
 endfunction
@@ -525,9 +531,10 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight StatusLineNC ctermbg=8
     autocmd ColorScheme nord highlight StatusLineNCText ctermfg=15 ctermbg=NONE cterm=reverse
     autocmd ColorScheme nord highlight StatusLineRightText ctermfg=15 ctermbg=8
-    autocmd ColorScheme nord highlight StatusLineRightSeparator ctermfg=8 ctermbg=NONE cterm=reverse
+    autocmd ColorScheme nord highlight StatusLineRightSeparator ctermfg=8 ctermbg=NONE cterm=reverse,bold
     autocmd ColorScheme nord highlight StatusLineErrorText ctermfg=1 ctermbg=8
     autocmd ColorScheme nord highlight StatusLineWarningText ctermfg=3 ctermbg=8
+    autocmd ColorScheme nord highlight StatusLineInfoText ctermfg=7 ctermbg=8
     " autocomplete popupmenu
     autocmd ColorScheme nord highlight PmenuSel ctermfg=11 ctermbg=8
     autocmd ColorScheme nord highlight Pmenu ctermfg=NONE ctermbg=8
@@ -545,6 +552,8 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight TabLine ctermbg=8 ctermfg=15
     autocmd ColorScheme nord highlight TabLineSel ctermbg=8 ctermfg=14 cterm=bold
     autocmd ColorScheme nord highlight TabLineFill ctermbg=8
+    autocmd ColorScheme nord highlight TabLineButton ctermfg=15 ctermbg=8 cterm=bold
+    autocmd ColorScheme nord highlight TabLineButtonSel ctermfg=14 ctermbg=8 cterm=bold
     autocmd ColorScheme nord highlight WildMenu ctermfg=14 ctermbg=NONE cterm=underline
     autocmd ColorScheme nord highlight Comment ctermfg=15 ctermbg=NONE
     " This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
