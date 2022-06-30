@@ -173,6 +173,7 @@ function! FoldToggle()
     let action .= ']z'
   endif
 
+  " This way if we close a fold and reopen it with moving lines, it takes us back to where we were
   if foldclosed('.') == -1
     let g:previous_move = ''
   endif
