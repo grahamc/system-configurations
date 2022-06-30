@@ -6,7 +6,7 @@ endif
 """ Section: General
 set confirm
 set mouse=a
-set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages sessionoptions-=folds
+set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages sessionoptions+=folds
 set display+=lastline
 set nofoldenable
 set wildoptions=pum
