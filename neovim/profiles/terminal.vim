@@ -131,7 +131,7 @@ augroup LastTab
 augroup END
 
 " Folds {{{1
-" This needs to be set so we can see the where the folds are in the fold column
+" Setting this so that the fold column gets displayed
 set foldenable
 " When a file is opened, all folds should be open
 set foldlevel=999
