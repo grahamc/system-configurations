@@ -6,6 +6,7 @@ set hidden
 set laststatus=2
 set showcmd
 set wildmenu
+set completeopt+=popup
 
 " While typing the search query, highlight where the first match would be.
 set incsearch

@@ -205,22 +205,10 @@ function! FoldText()
 endfunction
 
 " Autocomplete {{{1
-" show the completion menu even if there is only one suggestion
-" when autocomplete gets triggered, no suggestion is selected
-" Use popup instead of preview window
-set completeopt=menuone,noselect
-if has('nvim')
-  " TODO: not working
-  " set completeopt+=preview
-  " " Automatically close the preview window when autocomplete is done
-  " augroup ClosePreview
-  "   autocmd!
-  "   autocmd CompleteDone * if pumvisible() == 0 | pclose | endif
-  " augroup END
-else
-  set completeopt+=popup
-endif
 set complete=.,w,b,u
+" - show the completion menu even if there is only one suggestion
+" - when autocomplete gets triggered, no suggestion is selected
+set completeopt=menuone,noselect
 
 " Command line settings {{{1
 " on first wildchar press (<Tab>), show all matches and complete the longest common substring among them.
