@@ -506,11 +506,26 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeFind'}
     endif
   endfunction
   nnoremap <silent> <M-e> <Cmd>call NerdTreeToggle()<CR>
+  function! CloseIfOnlyNerdtreeLeft()
+    if !exists('b:NERDTree')
+      return
+    endif
+    if tabpagewinnr(tabpagenr(), '$') != 1
+      return
+    endif
+
+    if tabpagenr('$') > 1
+      tabclose
+    else
+      execute 'q'
+    endif
+  endfunction
   augroup NerdTree
     autocmd!
     " open/close directories with 'h' and 'l'
     autocmd FileType nerdtree nmap <buffer> l o
     autocmd FileType nerdtree nmap <buffer> h o
+    autocmd BufEnter * call CloseIfOnlyNerdtreeLeft()
   augroup END
   let g:NERDTreeMouseMode = 2
   let g:NERDTreeShowHidden = 1
