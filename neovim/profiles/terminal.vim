@@ -447,7 +447,7 @@ Plug 'mhinz/vim-signify'
 " active.
 " issue: https://github.com/vim/vim/issues/8269
 Plug 'junegunn/fzf'
-  let g:fzf_layout = { 'window': 'tabnew' }
+  let g:fzf_layout = { 'window': 'enew' }
   augroup Fzf
     autocmd!
     " Hide all ui elements when fzf is active
