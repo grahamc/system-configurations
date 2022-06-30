@@ -162,7 +162,7 @@ nnoremap <expr> j TrackPreviousMove('j')
 nnoremap <expr> k TrackPreviousMove('k')
 function! FoldToggle()
   if !foldlevel('.')
-    return ''
+    return
   endif
 
   let action = 'za'
@@ -178,9 +178,9 @@ function! FoldToggle()
     let g:previous_move = ''
   endif
 
-  return action
+  execute 'keepjumps normal ' . action
 endfunction
-nnoremap <silent> <expr> <Tab> FoldToggle()
+nnoremap <silent> <Tab> <Cmd>call FoldToggle()<CR>
 
 set foldtext=FoldText()
 function! FoldText()
