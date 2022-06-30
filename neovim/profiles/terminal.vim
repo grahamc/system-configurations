@@ -225,10 +225,10 @@ function! MyStatusLine()
   let l:warning_count = l:ale_count.warning
   let l:info_count = l:ale_count.info
   if (l:error_count > 0)
-    let l:error = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineErrorText#' . l:error_count . ' ' . '⨂ '
+    let l:error = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineErrorText#' . l:error_count . ' ⨂ '
   endif
   if (l:warning_count > 0)
-    let l:warning = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineWarningText#' . l:warning_count . ' ' . '⚠ '
+    let l:warning = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineWarningText#' . l:warning_count . ' ⚠ '
   endif
   if (l:info_count > 0)
     let l:info = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineInfoText#' . l:info_count . ' 🛈 '
