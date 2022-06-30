@@ -83,8 +83,14 @@ nnoremap <silent> <C-l> <Cmd>tabnext<CR>
 nnoremap <silent> <Leader>w <Cmd>wa<CR>
 nnoremap <Leader>x <Cmd>wqa<CR>
 
+" TODO: When tmux is able to differentiate between tab/ctrl+i and enter/ctrl+m these mappings
+" should be updated.
+" tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
+"
 " maximize a window by opening it in a new tab
 nnoremap <silent><Leader>m <Cmd>tab sp<CR>
+" move forward in the jumplist
+nnoremap <C-p> <C-i>
 
 " open new horizontal and vertical panes to the right and bottom respectively
 set splitright splitbelow
