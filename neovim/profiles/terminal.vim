@@ -149,7 +149,6 @@ augroup Fold
   autocmd!
   autocmd FileType python,yaml setlocal foldmethod=indent
 augroup END
-set fillchars+=fold:\ 
 nnoremap [<Tab> [z
 nnoremap ]<Tab> ]z
 
