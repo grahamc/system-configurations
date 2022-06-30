@@ -1,3 +1,5 @@
+" vim:foldmethod=marker
+
 " Exit if we are not running inside vscode
 if !exists('g:vscode')
   finish

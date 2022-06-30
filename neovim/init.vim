@@ -1,7 +1,11 @@
-""" Section: This Stuff Should Stay at the Top
-let g:mapleader = "\<Space>"
+" vim:foldmethod=marker
 
-""" Section: General
+" This should stay at the top so all mappings can reference it
+let g:mapleader = "\<Space>"
+" This should stay at the top so that I can register plugins anywhere in my config
+call plug#begin()
+
+" Miscellaneous {{{1
 set nrformats-=octal
 set ttimeout ttimeoutlen=100
 set updatetime=500
@@ -29,13 +33,11 @@ noremap gV `[v`]
 " pasting doesn't replace clipboard
 vnoremap p "_dP
 
-""" Section: Line folding / splitting
 " Prevents inserting two spaces after punctuation on a join (J)
 set nojoinspaces
 " Delete comment character when joining commented lines
 set formatoptions+=j
 
-""" Section: Motions / Text Objects
 set matchpairs+=<:>
 " move ten lines at a time by holding ctrl and a directional key
 noremap <C-j> 10j
@@ -46,7 +48,17 @@ nnoremap Y yg_
 nnoremap } <Cmd>keepjumps normal! }<CR>
 nnoremap { <Cmd>keepjumps normal! {<CR>
 
-""" Section: Search
+" Combine enter key (<CR>) mappings from the delimitmate and vim-endwise plugins.
+" Also, if the popupmenu is visible, but no items are selected, close the
+" popup and insert a newline.
+imap <expr> <CR>
+  \ pumvisible() ?
+    \ (complete_info().selected == -1 ? '<C-y><CR>' : '<C-y>') :
+    \ delimitMate#WithinEmptyPair() ?
+      \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
+      \ "\<CR>\<Plug>DiscretionaryEnd"
+
+" Searching {{{1
 " searching is only case sensitive when the query contains an uppercase letter
 set ignorecase smartcase
 " Use ripgrep as the grep program, if it's available. Otherwise use the internal
@@ -65,27 +77,16 @@ vnoremap <silent> # :<C-U>
   \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gVzv:call setreg('"', old_reg, old_regtype)<CR>
 
-" Combine enter key (<CR>) mappings from the delimitmate and vim-endwise plugins.
-" Also, if the popupmenu is visible, but no items are selected, close the
-" popup and insert a newline.
-imap <expr> <CR>
-  \ pumvisible() ?
-    \ (complete_info().selected == -1 ? '<C-y><CR>' : '<C-y>') :
-    \ delimitMate#WithinEmptyPair() ?
-      \ "\<C-R>=delimitMate#ExpandReturn()\<CR>" :
-      \ "\<CR>\<Plug>DiscretionaryEnd"
-
-" Plugins
-""""""""""""""""""""""""""""""""""""""""
-" Install vim-plug if not found
+" Plugins {{{1
+" Install vim-plug if not found {{{2
 let data_dir = has('nvim') ? stdpath('data') . '/site' : $HOME.'/.vim'
 let vim_plug_plugin_file = data_dir . '/autoload/plug.vim'
 if empty(glob(vim_plug_plugin_file))
   silent execute '!curl -fLo '.vim_plug_plugin_file.' --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 endif
+" }}}
 
-call plug#begin()
-
+" Miscellaneous {{{2
 " To get the vim help pages for vim-plug itself, you need to add it as a plugin
 Plug 'junegunn/vim-plug'
 
@@ -151,8 +152,9 @@ Plug 'tpope/vim-abolish'
 Plug 'airblade/vim-matchquote'
 
 Plug 'tpope/vim-commentary'
+" }}}
 
-" By loading the other profiles before calling plug#end, I can add plugins inside the profiles.
+" Profiles {{{1
 let profile_directory = expand('<sfile>:h') . '/profiles' 
 if isdirectory(profile_directory)
   let profiles = split(globpath(profile_directory, '*'), '\n')
@@ -160,5 +162,7 @@ if isdirectory(profile_directory)
     execute 'source ' . profile
   endfor
 endif
+" }}}
 
+" This should stay at the bottom so that I can register plugins anywhere in my config
 call plug#end()

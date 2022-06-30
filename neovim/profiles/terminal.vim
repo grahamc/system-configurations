@@ -1,14 +1,15 @@
+" vim:foldmethod=marker
+
 " Exit if we are not running in a terminal
 if index(v:argv, '--embed') != -1 || index(v:argv, '--headless') != -1
   finish
 endif
 
-""" Section: General
+" Miscellaneous {{{1
 set confirm
 set mouse=a
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages sessionoptions+=folds
 set display+=lastline
-set nofoldenable
 set wildoptions=pum
 set nohlsearch
 let &clipboard = has('nvim') ? 'unnamedplus' : 'unnamed'
@@ -62,23 +63,8 @@ augroup END
 
 cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
 
-" tab setup
-set expandtab
-set autoindent smartindent
-set smarttab
-set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
-let s:tab_width = 2
-let &tabstop = s:tab_width
-let &shiftwidth = s:tab_width
-let &softtabstop = s:tab_width
-
 " Display all highlight groups in a new window
 command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
-
-" tabs
-nnoremap <silent> <Leader>c <Cmd>tabnew<CR>
-nnoremap <silent> <C-h> <Cmd>tabprevious<CR>
-nnoremap <silent> <C-l> <Cmd>tabnext<CR>
 
 nnoremap <silent> <Leader>w <Cmd>wa<CR>
 nnoremap <Leader>x <Cmd>wqa<CR>
@@ -99,6 +85,41 @@ nnoremap <Leader>- <Cmd>split<CR>
 " close a window, quit if last window
 " also when closing a tab, go to the previously opened tab
 nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':exe "q" \| silent! tabn '.g:lasttab.'<CR>' : ':close<CR>'
+
+" Write to file with sudo. For when I forget to use sudoedit.
+" tee streams its input to stdout as well as the specified file so I suppress the output
+command! SudoWrite w !sudo tee % >/dev/null
+
+" Delete buffers that aren't referencing a file
+function s:WipeBuffersWithoutFiles()
+    let bufs=filter(range(1, bufnr('$')), 'bufexists(v:val) && '.
+                                          \'empty(getbufvar(v:val, "&buftype")) && '.
+                                          \'!filereadable(bufname(v:val))')
+    if !empty(bufs)
+        execute 'bwipeout' join(bufs)
+    endif
+endfunction
+command CleanBuffers call s:WipeBuffersWithoutFiles()
+
+" suspend vim and start a new shell
+nnoremap <C-z> <Cmd>suspend<CR>
+inoremap <C-z> <Cmd>suspend<CR>
+xnoremap <C-z> <Cmd>suspend<CR>
+
+" Tab {{{1
+set expandtab
+set autoindent smartindent
+set smarttab
+set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
+let s:tab_width = 2
+let &tabstop = s:tab_width
+let &shiftwidth = s:tab_width
+let &softtabstop = s:tab_width
+
+" Tab windows {{{1
+nnoremap <silent> <Leader>c <Cmd>$tabnew<CR>
+nnoremap <silent> <C-h> <Cmd>tabprevious<CR>
+nnoremap <silent> <C-l> <Cmd>tabnext<CR>
 " track which tab last opened
 if !exists('g:lasttab')
   let g:lasttab = 1
@@ -108,7 +129,89 @@ augroup LastTab
   autocmd TabLeave * let g:lasttab = tabpagenr()
 augroup END
 
-""" Section: Autocomplete
+" Folds {{{1
+" This needs to be set so we can see the where the folds are in the fold column
+set foldenable
+" When a file is opened, all folds should be open
+set foldlevel=999
+" Set max number of nested folds when 'foldmethod' is 'syntax' or 'indent'
+set foldnestmax=2
+" Minimum number of lines a fold must have to be able to be closed
+set foldminlines=5
+" Fold visually selected lines. 'foldmethod' must be set to 'manual' for this work.
+vnoremap <Tab> zf
+" Toggle opening and closing all folds
+nnoremap <silent> <expr> <S-Tab> &foldlevel ? 'zM' : 'zR'
+" auto-resize the fold column
+set foldcolumn=auto:9
+augroup Fold
+  autocmd!
+  autocmd FileType python,yaml setlocal foldmethod=indent
+augroup END
+set fillchars+=fold:\ 
+nnoremap [<Tab> [z
+nnoremap ]<Tab> ]z
+
+" Toggle the fold at the current line, if there is one. If the previous line we were on was
+" below the current line, then start at the end of the fold.
+function! TrackPreviousMove(char)
+  let g:previous_move = a:char
+  return a:char
+endfunction
+nnoremap <expr> j TrackPreviousMove('j')
+nnoremap <expr> k TrackPreviousMove('k')
+function! FoldToggle()
+  if !foldlevel('.')
+    return ''
+  endif
+
+  let action = 'za'
+
+  " If we are opening a fold, and the last line we were on was below the fold,
+  " open to the end of the fold.
+  if exists('g:previous_move') && g:previous_move ==# 'k' && foldclosed('.') != -1
+    let action .= ']z'
+  endif
+
+  if foldclosed('.') == -1
+    let g:previous_move = ''
+  endif
+
+  return action
+endfunction
+nnoremap <silent> <expr> <Tab> FoldToggle()
+
+set foldtext=FoldText()
+function! FoldText()
+  let l:lpadding = &fdc
+  redir => l:signs
+    execute 'silent sign place buffer='.bufnr('%')
+  redir End
+  let l:lpadding += l:signs =~ 'id=' ? 2 : 0
+
+  if exists("+relativenumber")
+    if (&number)
+      let l:lpadding += max([&numberwidth, strlen(line('$'))]) + 1
+    elseif (&relativenumber)
+      let l:lpadding += max([&numberwidth, strlen(v:foldstart - line('w0')), strlen(line('w$') - v:foldstart), strlen(v:foldstart)]) + 1
+    endif
+  else
+    if (&number)
+      let l:lpadding += max([&numberwidth, strlen(line('$'))]) + 1
+    endif
+  endif
+
+  " expand tabs
+  let l:text = substitute(getline(v:foldstart), '\t', repeat(' ', &tabstop), 'g')
+
+  let l:info = ' (' . (v:foldend - v:foldstart) . ')'
+  let l:infolen = strlen(substitute(l:info, '.', 'x', 'g'))
+  let l:width = winwidth(0) - l:lpadding - l:infolen
+
+  return l:text . repeat(' ', l:width - strlen(substitute(l:text, ".", "x", "g")) -2) . l:info
+endfunction
+
+" Autocomplete {{{1
 " show the completion menu even if there is only one suggestion
 " when autocomplete gets triggered, no suggestion is selected
 " Use popup instead of preview window
@@ -126,24 +229,19 @@ else
 endif
 set complete=.,w,b,u
 
-""" Section: Command line settings
+" Command line settings {{{1
 " on first wildchar press (<Tab>), show all matches and complete the longest common substring among them.
 " on subsequent wildchar presses, cycle through matches
 set wildmode=longest:full,full
 set cmdheight=2
 
-" suspend vim and start a new shell
-nnoremap <C-z> <Cmd>suspend<CR>
-inoremap <C-z> <Cmd>suspend<CR>
-xnoremap <C-z> <Cmd>suspend<CR>
-
-""" Section: Search
+" Search {{{1
 " show match position in command window, don't show 'Search hit BOTTOM/TOP'
 set shortmess-=S shortmess+=s
 " toggle search highlighting
 nnoremap <silent> <Leader>\ <Cmd>set hlsearch!<CR>
 
-""" Section: Restore Settings
+" Restore Settings {{{1
 augroup SaveAndRestoreSettings
   autocmd!
   " Restore session after vim starts. The 'nested' keyword tells vim to fire events
@@ -171,8 +269,8 @@ augroup SaveAndRestoreSettings
   autocmd VimLeavePre * call SaveSession()
 augroup END
 
-""" Section: Aesthetics
-"""" Misc.
+" Aesthetics {{{1
+" Miscellaneous {{{2
 set linebreak
 set number relativenumber
 set cursorline cursorlineopt=number,line
@@ -180,13 +278,14 @@ set showtabline=1
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes " always show the sign column
+set fillchars+=vert:┃
 augroup SetColorscheme
   autocmd!
   " use nested so my colorscheme changes are loaded
   autocmd VimEnter * ++nested colorscheme nord
 augroup END
 
-" Statusline
+" Statusline {{{2
 let g:statusline_separator = "%#TabLineFill# %#StatusLineRightSeparator#/ %#StatusLineRightText#"
 function! MyStatusLine()
   if g:actual_curwin == win_getid()
@@ -238,28 +337,7 @@ function! MyStatusLine()
 endfunction
 set statusline=%{%MyStatusLine()%}
 
-"""" Block cursor in normal mode, thin line in insert mode, and underline in replace mode
-let &t_SI.="\e[5 q" "SI = INSERT mode
-let &t_SR.="\e[3 q" "SR = REPLACE mode
-let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
-function! RestoreCursor()
-  " set cursor back to block
-  silent execute "!echo -ne '\e[1 q'"
-endfunction
-function! ResetCursor()
-  " reset terminal cursor to blinking bar
-  silent execute "!echo -ne '\e[5 q'"
-endfunction
-augroup Cursor
-  autocmd!
-  autocmd VimLeave * call ResetCursor()
-  autocmd VimSuspend * call ResetCursor()
-  autocmd VimResume * call RestoreCursor()
-augroup END
-
-set fillchars=vert:┃
-
-" Tabline
+" Tabline {{{2
 function! Tabline()
   let tab_count = tabpagenr('$')
   let tabline = '%#StatusLineText# 🗐  %#TabLineFill#%='
@@ -291,23 +369,28 @@ function! Tabline()
 endfunction
 set tabline=%!Tabline()
 
-" Write to file with sudo. For when I forget to use sudoedit.
-" tee streams its input to stdout as well as the specified file so I suppress the output
-command! SudoWrite w !sudo tee % >/dev/null
-
-" Delete buffers that aren't referencing a file
-function s:WipeBuffersWithoutFiles()
-    let bufs=filter(range(1, bufnr('$')), 'bufexists(v:val) && '.
-                                          \'empty(getbufvar(v:val, "&buftype")) && '.
-                                          \'!filereadable(bufname(v:val))')
-    if !empty(bufs)
-        execute 'bwipeout' join(bufs)
-    endif
+" Cursor {{{2
+" Block cursor in normal mode, thin line in insert mode, and underline in replace mode
+let &t_SI.="\e[5 q" "SI = INSERT mode
+let &t_SR.="\e[3 q" "SR = REPLACE mode
+let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
+function! RestoreCursor()
+  " set cursor back to block
+  silent execute "!echo -ne '\e[1 q'"
 endfunction
-command CleanBuffers call s:WipeBuffersWithoutFiles()
+function! ResetCursor()
+  " reset terminal cursor to blinking bar
+  silent execute "!echo -ne '\e[5 q'"
+endfunction
+augroup Cursor
+  autocmd!
+  autocmd VimLeave * call ResetCursor()
+  autocmd VimSuspend * call ResetCursor()
+  autocmd VimResume * call RestoreCursor()
+augroup END
 
-" Plugins
-""""""""""""""""""""""""""""""""""""""""
+" Plugins {{{1
+" General {{{2
 Plug 'junegunn/vim-peekaboo'
   let g:peekaboo_delay = 500 " measured in milliseconds
 
@@ -318,78 +401,6 @@ Plug 'farmergreg/vim-lastplace'
 Plug 'tmux-plugins/vim-tmux'
 
 Plug 'tweekmonster/startuptime.vim'
-
-" Autocomplete
-Plug 'prabirshrestha/asyncomplete.vim'
-  let g:asyncomplete_auto_completeopt = 0
-  let g:asyncomplete_auto_popup = 1
-  let g:asyncomplete_min_chars = 1
-  let g:asyncomplete_matchfuzzy = 0
-  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-  function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-  endfunction
-  inoremap <silent><expr> <TAB>
-    \ pumvisible() ? "\<C-n>" :
-    \ <SID>check_back_space() ? "\<TAB>" :
-    \ asyncomplete#force_refresh()
-  imap <C-a> <Plug>(asyncomplete_force_refresh)
-  Plug 'prabirshrestha/asyncomplete-buffer.vim'
-    let g:asyncomplete_buffer_clear_cache = 1
-    autocmd User asyncomplete_setup
-      \ call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-      \ 'name': 'buffer',
-      \ 'allowlist': ['*'],
-      \ 'events': ['InsertLeave','BufWinEnter','BufWritePost'],
-      \ 'completor': function('asyncomplete#sources#buffer#completor'),
-      \ }))
-  Plug 'prabirshrestha/asyncomplete-file.vim'
-    autocmd User asyncomplete_setup
-        \ call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-        \ 'name': 'file',
-        \ 'allowlist': ['*'],
-        \ 'priority': 10,
-        \ 'completor': function('asyncomplete#sources#file#completor')
-        \ }))
-  Plug 'yami-beta/asyncomplete-omni.vim'
-    autocmd User asyncomplete_setup
-        \ call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
-        \ 'name': 'omni',
-        \ 'allowlist': ['*'],
-        \ 'completor': function('asyncomplete#sources#omni#completor'),
-        \ 'config': {
-        \   'show_source_kind': 1,
-        \ },
-        \ }))
-  Plug 'Shougo/neco-vim'
-    Plug 'prabirshrestha/asyncomplete-necovim.vim'
-      autocmd User asyncomplete_setup
-          \ call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
-          \ 'name': 'necovim',
-          \ 'allowlist': ['vim'],
-          \ 'completor': function('asyncomplete#sources#necovim#completor'),
-          \ }))
-  Plug 'prabirshrestha/async.vim'
-    Plug 'wellle/tmux-complete.vim'
-  " Language Server Protocol client that provides IDE like features
-  " e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
-  Plug 'prabirshrestha/vim-lsp'
-    " for debugging
-    let g:lsp_log_file = has('nvim') ? stdpath('data') . '/vim-lsp-log' : $HOME.'/.vim/vim-lsp-log'
-    let g:lsp_fold_enabled = 0
-    let g:lsp_document_code_action_signs_enabled = 0
-    let g:lsp_document_highlight_enabled = 0
-    " An easy way to install/manage language servers for vim-lsp.
-    Plug 'mattn/vim-lsp-settings'
-      " where the language servers are stored
-      let g:lsp_settings_servers_dir = has('nvim') ? stdpath('data') . '/lsp-servers' : $HOME.'/.vim/lsp-servers'
-      call mkdir(g:lsp_settings_servers_dir, "p")
-      let g:lsp_settings = {
-        \ 'efm-langserver': {'disabled': v:true},
-        \ 'bash-language-server': {'disabled': v:true}
-        \ }
-    Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
 " Asynchronous linting
 Plug 'dense-analysis/ale'
@@ -489,8 +500,12 @@ Plug 'KabbAmine/vCoolor.vim'
   " Make an alias for the 'VCoolor' command with a name that is easier to remember
   command! ColorPicker VCoolor
 
-" File explorer
+" File explorer {{{2
 Plug 'preservim/nerdtree', {'on': 'NERDTreeFind'}
+  let g:NERDTreeMouseMode = 2
+  let g:NERDTreeShowHidden = 1
+  let g:NERDTreeStatusline = -1
+  let g:NERDTreeWinPos = "right"
   function! NerdTreeToggle()
     " NERDTree is open so close it.
     if exists('g:NERDTree') && g:NERDTree.IsOpen()
@@ -527,11 +542,81 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeFind'}
     autocmd FileType nerdtree nmap <buffer> h o
     autocmd BufEnter * call CloseIfOnlyNerdtreeLeft()
   augroup END
-  let g:NERDTreeMouseMode = 2
-  let g:NERDTreeShowHidden = 1
-  let g:NERDTreeStatusline = -1
-  let g:NERDTreeWinPos = "right"
 
+" Autocomplete {{{2
+" async autocomplete
+Plug 'prabirshrestha/asyncomplete.vim'
+  let g:asyncomplete_auto_completeopt = 0
+  let g:asyncomplete_auto_popup = 1
+  let g:asyncomplete_min_chars = 1
+  let g:asyncomplete_matchfuzzy = 0
+  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+  function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+  endfunction
+  inoremap <silent><expr> <TAB>
+    \ pumvisible() ? "\<C-n>" :
+    \ <SID>check_back_space() ? "\<TAB>" :
+    \ asyncomplete#force_refresh()
+  imap <C-a> <Plug>(asyncomplete_force_refresh)
+  Plug 'prabirshrestha/asyncomplete-buffer.vim'
+    let g:asyncomplete_buffer_clear_cache = 1
+    autocmd User asyncomplete_setup
+      \ call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+      \ 'name': 'buffer',
+      \ 'allowlist': ['*'],
+      \ 'events': ['InsertLeave','BufWinEnter','BufWritePost'],
+      \ 'completor': function('asyncomplete#sources#buffer#completor'),
+      \ }))
+  Plug 'prabirshrestha/asyncomplete-file.vim'
+    autocmd User asyncomplete_setup
+        \ call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+        \ 'name': 'file',
+        \ 'allowlist': ['*'],
+        \ 'priority': 10,
+        \ 'completor': function('asyncomplete#sources#file#completor')
+        \ }))
+  Plug 'yami-beta/asyncomplete-omni.vim'
+    autocmd User asyncomplete_setup
+        \ call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+        \ 'name': 'omni',
+        \ 'allowlist': ['*'],
+        \ 'completor': function('asyncomplete#sources#omni#completor'),
+        \ 'config': {
+        \   'show_source_kind': 1,
+        \ },
+        \ }))
+  Plug 'Shougo/neco-vim'
+    Plug 'prabirshrestha/asyncomplete-necovim.vim'
+      autocmd User asyncomplete_setup
+          \ call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
+          \ 'name': 'necovim',
+          \ 'allowlist': ['vim'],
+          \ 'completor': function('asyncomplete#sources#necovim#completor'),
+          \ }))
+  Plug 'prabirshrestha/async.vim'
+    Plug 'wellle/tmux-complete.vim'
+  " Language Server Protocol client that provides IDE like features
+  " e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
+  Plug 'prabirshrestha/vim-lsp'
+    " for debugging
+    let g:lsp_log_file = has('nvim') ? stdpath('data') . '/vim-lsp-log' : $HOME.'/.vim/vim-lsp-log'
+    let g:lsp_fold_enabled = 0
+    let g:lsp_document_code_action_signs_enabled = 0
+    let g:lsp_document_highlight_enabled = 0
+    " An easy way to install/manage language servers for vim-lsp.
+    Plug 'mattn/vim-lsp-settings'
+      " where the language servers are stored
+      let g:lsp_settings_servers_dir = has('nvim') ? stdpath('data') . '/lsp-servers' : $HOME.'/.vim/lsp-servers'
+      call mkdir(g:lsp_settings_servers_dir, "p")
+      let g:lsp_settings = {
+        \ 'efm-langserver': {'disabled': v:true},
+        \ 'bash-language-server': {'disabled': v:true}
+        \ }
+    Plug 'prabirshrestha/asyncomplete-lsp.vim'
+
+" Colorscheme {{{2
 " Colorscheme
 Plug 'arcticicestudio/nord-vim'
   let g:nord_bold = 1
@@ -595,6 +680,8 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight! link NvimInternalError ErrorMsg
     autocmd ColorScheme nord highlight! link ALEError Error
     autocmd ColorScheme nord highlight ALEWarning ctermfg=3 ctermbg=NONE cterm=undercurl
+    autocmd ColorScheme nord highlight Folded ctermfg=15 ctermbg=8 cterm=NONE
+    autocmd ColorScheme nord highlight FoldColumn ctermfg=15 ctermbg=NONE
   augroup END
 
 Plug 'junegunn/goyo.vim'
@@ -602,6 +689,7 @@ Plug 'junegunn/goyo.vim'
   " Make an alias for the 'Goyo' command with a name that is easier to remember
   command! Focus Goyo
 
+" Post Plugin Load Operations {{{2
 " Install plugins if not found. Must be done after plugins are registered
 function! InstallMissingPlugins()
   let missing_plugins = filter(deepcopy(get(g:, 'plugs', {})), '!isdirectory(v:val.dir)')
