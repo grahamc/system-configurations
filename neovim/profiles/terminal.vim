@@ -14,6 +14,7 @@ set wildoptions=pum
 set nohlsearch
 let &clipboard = has('nvim') ? 'unnamedplus' : 'unnamed'
 set scrolloff=10
+set jumpoptions=stack
 
 " persist undo history to disk
 set undofile
