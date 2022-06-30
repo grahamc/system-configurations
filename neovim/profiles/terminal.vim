@@ -150,7 +150,10 @@ nnoremap [<Tab> <Cmd>keepjumps normal! [z<CR>
 nnoremap ]<Tab> <Cmd>keepjumps normal! ]z<CR>
 augroup Fold
   autocmd!
-  autocmd FileType python,yaml setlocal foldmethod=indent
+  autocmd FileType python,yaml,java,c,sh,bash,zsh,fish,ruby,toml,gitconfig setlocal foldmethod=indent
+
+  " So we don't fold the contents of the class
+  autocmd FileType java setlocal foldlevel=1
 augroup END
 
 " Toggle the fold at the current line, if there is one. If the previous line we were on was
