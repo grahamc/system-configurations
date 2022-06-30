@@ -184,32 +184,23 @@ nnoremap <silent> <expr> <Tab> FoldToggle()
 
 set foldtext=FoldText()
 function! FoldText()
-  let l:lpadding = &fdc
-  redir => l:signs
-    execute 'silent sign place buffer='.bufnr('%')
-  redir End
-  let l:lpadding += l:signs =~ 'id=' ? 2 : 0
-
-  if exists("+relativenumber")
-    if (&number)
-      let l:lpadding += max([&numberwidth, strlen(line('$'))]) + 1
-    elseif (&relativenumber)
-      let l:lpadding += max([&numberwidth, strlen(v:foldstart - line('w0')), strlen(line('w$') - v:foldstart), strlen(v:foldstart)]) + 1
-    endif
-  else
-    if (&number)
-      let l:lpadding += max([&numberwidth, strlen(line('$'))]) + 1
-    endif
-  endif
+  let window_width = winwidth(0)
+  let gutter_width = getwininfo(win_getid())[0].textoff
+  let line_width = window_width - gutter_width
 
   " expand tabs
-  let l:text = substitute(getline(v:foldstart), '\t', repeat(' ', &tabstop), 'g')
+  let line_text = substitute(getline(v:foldstart), '\t', repeat(' ', &tabstop), 'g')
+  let line_text_length = strlen(substitute(line_text, ".", "x", "g"))
 
-  let l:info = ' (' . (v:foldend - v:foldstart) . ')'
-  let l:infolen = strlen(substitute(l:info, '.', 'x', 'g'))
-  let l:width = winwidth(0) - l:lpadding - l:infolen
+  let fold_line_count = v:foldend - v:foldstart
+  " The space is in the beginning is so that the line text and fold description don't touch
+  let fold_description = ' (' . fold_line_count . ')'
+  let fold_description_length = strlen(substitute(fold_description, '.', 'x', 'g'))
 
-  return l:text . repeat(' ', l:width - strlen(substitute(l:text, ".", "x", "g")) -2) . l:info
+  let fill_text_length = line_width - line_text_length - fold_description_length
+  let fill_text = repeat(' ', fill_text_length)
+
+  return line_text . fill_text . fold_description
 endfunction
 
 " Autocomplete {{{1
