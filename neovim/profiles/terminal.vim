@@ -145,12 +145,13 @@ vnoremap <Tab> zf
 nnoremap <silent> <expr> <S-Tab> &foldlevel ? 'zM' : 'zR'
 " auto-resize the fold column
 set foldcolumn=auto:9
+" Jump to the top and bottom of the current fold, without adding to the jump list
+nnoremap [<Tab> <Cmd>keepjumps normal! [z<CR>
+nnoremap ]<Tab> <Cmd>keepjumps normal! ]z<CR>
 augroup Fold
   autocmd!
   autocmd FileType python,yaml setlocal foldmethod=indent
 augroup END
-nnoremap [<Tab> [z
-nnoremap ]<Tab> ]z
 
 " Toggle the fold at the current line, if there is one. If the previous line we were on was
 " below the current line, then start at the end of the fold.
