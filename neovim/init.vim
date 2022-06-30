@@ -5,7 +5,6 @@ let g:mapleader = "\<Space>"
 set nrformats-=octal
 set ttimeout ttimeoutlen=100
 set updatetime=500
-set scrolloff=10
 set noswapfile
 
 augroup ExtendIskeyword
