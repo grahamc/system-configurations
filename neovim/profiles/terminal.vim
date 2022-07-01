@@ -197,19 +197,32 @@ function! FoldText()
   let gutter_width = getwininfo(win_getid())[0].textoff
   let line_width = window_width - gutter_width
 
-  " expand tabs
-  let line_text = substitute(getline(v:foldstart), '\t', repeat(' ', &tabstop), 'g')
-  let line_text_length = strlen(substitute(line_text, ".", "x", "g"))
-
   let fold_line_count = v:foldend - v:foldstart
   let fold_description = fold_line_count . ' lines'
   let fold_description = printf('(%s)', fold_description)
-  let fold_description_length = strlen(substitute(fold_description, '.', 'x', 'g'))
+  let fold_description_length = strdisplaywidth(fold_description)
 
-  let fill_text_length = line_width - line_text_length - fold_description_length
-  let fill_text = ' ' . repeat('·', fill_text_length - 2) . ' '
+  let line_text = getline(v:foldstart)
+  " indent the line relative to the foldlevel if it isn't already indented
+  if line_text[0] !=# ' ' && line_text[0] !=# '\t'
+    let indent = repeat(' ', &tabstop)
+    let indent_count = max([0, v:foldlevel - 1])
+    let indentation = repeat(indent, indent_count)
+    let line_text = indentation . line_text
+  endif
+  " truncate if there isn't space for the fold description and some separator text
+  let min_separator_text_length = 7
+  let max_line_text_length = line_width - (fold_description_length + min_separator_text_length)
+  if strdisplaywidth(line_text) > max_line_text_length
+    " truncate 1 more than we need so we can add an ellipsis
+    let line_text = line_text[:max_line_text_length-2] . '…'
+  endif
+  let line_text_length = strdisplaywidth(line_text)
 
-  return line_text . fill_text . fold_description
+  let separator_text_length = line_width - line_text_length - fold_description_length
+  let separator_text = ' ' . repeat('·', separator_text_length - 2) . ' '
+
+  return line_text . separator_text . fold_description
 endfunction
 
 " Autocomplete {{{1
