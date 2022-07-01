@@ -77,7 +77,7 @@ function s:WipeBuffersWithoutFiles()
                                           \'empty(getbufvar(v:val, "&buftype")) && '.
                                           \'!filereadable(bufname(v:val))')
     if !empty(bufs)
-        execute 'bwipeout' join(bufs)
+        execute 'bwipeout!' join(bufs)
     endif
 endfunction
 command CleanBuffers call s:WipeBuffersWithoutFiles()
