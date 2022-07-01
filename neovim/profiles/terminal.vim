@@ -199,16 +199,15 @@ function! FoldText()
 
   " expand tabs
   let line_text = substitute(getline(v:foldstart), '\t', repeat(' ', &tabstop), 'g')
-  let line_text .= ' …'
   let line_text_length = strlen(substitute(line_text, ".", "x", "g"))
 
   let fold_line_count = v:foldend - v:foldstart
-  " The space is in the beginning is so that the line text and fold description don't touch
-  let fold_description = ' (' . fold_line_count . ')'
+  let fold_description = fold_line_count . ' lines'
+  let fold_description = printf('(%s)', fold_description)
   let fold_description_length = strlen(substitute(fold_description, '.', 'x', 'g'))
 
   let fill_text_length = line_width - line_text_length - fold_description_length
-  let fill_text = repeat(' ', fill_text_length)
+  let fill_text = ' ' . repeat('·', fill_text_length - 2) . ' '
 
   return line_text . fill_text . fold_description
 endfunction
