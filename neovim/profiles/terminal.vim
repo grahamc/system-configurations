@@ -363,23 +363,22 @@ endfunction
 set tabline=%!Tabline()
 
 " Cursor {{{2
-" Block cursor in normal mode, thin line in insert mode, and underline in replace mode
-let &t_SI.="\e[5 q" "SI = INSERT mode
-let &t_SR.="\e[3 q" "SR = REPLACE mode
-let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)
-function! RestoreCursor()
-  " set cursor back to block
-  silent execute "!echo -ne '\e[1 q'"
+function! SetCursor()
+  " Block cursor in normal mode, thin line in insert mode, and underline in replace mode
+  set guicursor=n-v:block-blinkon0,o:block-blinkwait0-blinkon200-blinkoff200,i-c:ver25-blinkwait0-blinkon200-blinkoff200,r:hor20-blinkwait0-blinkon200-blinkoff200
 endfunction
+call SetCursor()
+
 function! ResetCursor()
   " reset terminal cursor to blinking bar
-  silent execute "!echo -ne '\e[5 q'"
+  set guicursor=a:ver25-blinkwait0-blinkon200-blinkoff200
 endfunction
+
 augroup Cursor
   autocmd!
   autocmd VimLeave * call ResetCursor()
   autocmd VimSuspend * call ResetCursor()
-  autocmd VimResume * call RestoreCursor()
+  autocmd VimResume * call SetCursor()
 augroup END
 
 " Plugins {{{1
