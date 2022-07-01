@@ -8,10 +8,7 @@ endif
 " Miscellaneous {{{1
 set confirm
 set mouse=a
-set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages sessionoptions+=folds
 set display+=lastline
-set wildoptions=pum
-set nohlsearch
 let &clipboard = has('nvim') ? 'unnamedplus' : 'unnamed'
 set scrolloff=10
 set jumpoptions=stack
@@ -54,43 +51,26 @@ augroup Miscellaneous
   autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
   " highlight trailing whitespace
   autocmd ColorScheme * highlight ExtraWhitespace ctermbg=1 ctermfg=1 | execute '2match ExtraWhitespace /\s\+$/'
-  " Automatically resize all splits to make them equal when the vim window is
-  " resized or a new window is created/closed
-  autocmd VimResized,WinNew,WinClosed,TabEnter * wincmd =
   " Start syntax highlighting from the beginning of the file. Unless it's a large file, in which case start
   " don't highlight at all.
   autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | else | syntax sync fromstart | endif
 augroup END
 
-cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
-
-" Display all highlight groups in a new window
-command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
-
 nnoremap <silent> <Leader>w <Cmd>wa<CR>
 nnoremap <Leader>x <Cmd>wqa<CR>
 
-" TODO: When tmux is able to differentiate between tab/ctrl+i and enter/ctrl+m these mappings
-" should be updated.
+" TODO: When tmux is able to differentiate between tab and ctrl+i this mapping should be updated.
 " tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
 "
-" maximize a window by opening it in a new tab
-nnoremap <silent><Leader>m <Cmd>tab sp<CR>
 " move forward in the jumplist
 nnoremap <C-p> <C-i>
 
-" open new horizontal and vertical panes to the right and bottom respectively
-set splitright splitbelow
-nnoremap <Leader>\| <Cmd>vsplit<CR>
-nnoremap <Leader>- <Cmd>split<CR>
-" close a window, quit if last window
-" also when closing a tab, go to the previously opened tab
-nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':exe "q" \| silent! tabn '.g:lasttab.'<CR>' : ':close<CR>'
+" suspend vim and start a new shell
+nnoremap <C-z> <Cmd>suspend<CR>
+inoremap <C-z> <Cmd>suspend<CR>
+xnoremap <C-z> <Cmd>suspend<CR>
 
-" Write to file with sudo. For when I forget to use sudoedit.
-" tee streams its input to stdout as well as the specified file so I suppress the output
-command! SudoWrite w !sudo tee % >/dev/null
-
+" Utilities {{{1
 " Delete buffers that aren't referencing a file
 function s:WipeBuffersWithoutFiles()
     let bufs=filter(range(1, bufnr('$')), 'bufexists(v:val) && '.
@@ -102,12 +82,37 @@ function s:WipeBuffersWithoutFiles()
 endfunction
 command CleanBuffers call s:WipeBuffersWithoutFiles()
 
-" suspend vim and start a new shell
-nnoremap <C-z> <Cmd>suspend<CR>
-inoremap <C-z> <Cmd>suspend<CR>
-xnoremap <C-z> <Cmd>suspend<CR>
+" Write to file with sudo. For when I forget to use sudoedit.
+" tee streams its input to stdout as well as the specified file so I suppress the output
+command! SudoWrite w !sudo tee % >/dev/null
 
-" Tab {{{1
+" Display all highlight groups in a new window
+command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
+
+" Windows {{{1
+" open new horizontal and vertical panes to the right and bottom respectively
+set splitright splitbelow
+nnoremap <Leader>\| <Cmd>vsplit<CR>
+nnoremap <Leader>- <Cmd>split<CR>
+
+" close a window, quit if last window
+" also when closing a tab, go to the previously opened tab
+nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':exe "q" \| silent! tabn '.g:lasttab.'<CR>' : ':close<CR>'
+
+" TODO: When tmux is able to differentiate between enter and ctrl+m this mapping should be updated.
+" tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
+"
+" maximize a window by opening it in a new tab
+nnoremap <silent><Leader>m <Cmd>tab sp<CR>
+
+augroup Window
+  autocmd!
+  " Automatically resize all splits to make them equal when the vim window is
+  " resized or a new window is created/closed
+  autocmd VimResized,WinNew,WinClosed,TabEnter * wincmd =
+augroup END
+
+" Tabs {{{1
 set expandtab
 set autoindent smartindent
 set smarttab
@@ -218,15 +223,19 @@ set completeopt=menuone,noselect
 " on first wildchar press (<Tab>), show all matches and complete the longest common substring among them.
 " on subsequent wildchar presses, cycle through matches
 set wildmode=longest:full,full
+set wildoptions=pum
 set cmdheight=2
+cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
 
 " Search {{{1
+set nohlsearch
 " show match position in command window, don't show 'Search hit BOTTOM/TOP'
 set shortmess-=S shortmess+=s
 " toggle search highlighting
 nnoremap <silent> <Leader>\ <Cmd>set hlsearch!<CR>
 
-" Restore Settings {{{1
+" Sessions {{{1
+set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages sessionoptions+=folds
 augroup SaveAndRestoreSettings
   autocmd!
   " Restore session after vim starts. The 'nested' keyword tells vim to fire events
@@ -387,30 +396,6 @@ Plug 'tmux-plugins/vim-tmux'
 
 Plug 'tweekmonster/startuptime.vim'
 
-" Asynchronous linting
-Plug 'dense-analysis/ale'
-  " If a linter is not found don't continue to check on subsequent linting operations.
-  let g:ale_cache_executable_check_failures = 1
-  " Don't show popup when the mouse if over a symbol, vim-lsp
-  " should be responsible for that.
-  let g:ale_set_balloons = 0
-  " Don't show variable information in the status line,
-  " vim-lsp should be responsible for that.
-  let g:ale_hover_cursor = 0
-  " Only display diagnostics with a warning level or above
-  " i.e. warning,error
-  let g:ale_lsp_show_message_severity = "information"
-  let g:ale_lint_on_enter = 1 " lint when a buffer opens
-  let g:ale_lint_on_text_changed = "always"
-  let g:ale_lint_delay = 1000
-  let g:ale_lint_on_insert_leave = 0
-  let g:ale_lint_on_filetype_changed = 0
-  let g:ale_lint_on_save = 0
-  let g:ale_sign_error = '•'
-  let g:ale_sign_warning = '•'
-  let g:ale_sign_info = '•'
-  let g:ale_sign_priority = 100
-
 " A bridge between vim-lsp and ale. This works by
 " sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
 " This way, vim-lsp will only provide LSP features
@@ -437,7 +422,57 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'mhinz/vim-signify'
   nnoremap <Leader>vk <Cmd>SignifyHunkDiff<CR>
 
-" fzf integration
+" Colors
+" Opens the OS color picker and inserts the chosen color into the buffer.
+Plug 'KabbAmine/vCoolor.vim'
+  " Make an alias for the 'VCoolor' command with a name that is easier to remember
+  command! ColorPicker VCoolor
+
+Plug 'junegunn/goyo.vim'
+  let g:goyo_width = '85%'
+  " Make an alias for the 'Goyo' command with a name that is easier to remember
+  command! Focus Goyo
+
+" To get the vim help pages for vim-plug itself, you need to add it as a plugin
+Plug 'junegunn/vim-plug'
+
+" Syntax plugins for practically any language
+Plug 'sheerun/vim-polyglot'
+
+" Automatically close html tags
+Plug 'alvan/vim-closetag'
+
+" TODO: Using this so that substitutions made by vim-abolish get highlighted as I type them.
+" Won't be necessary if vim-abolish adds support for neovim's `inccommand`.
+" issue for `inccommand` support: https://github.com/tpope/vim-abolish/issues/107
+Plug 'markonm/traces.vim'
+  let g:traces_abolish_integration = 1
+
+" Asynchronous linting {{{2
+Plug 'dense-analysis/ale'
+  " If a linter is not found don't continue to check on subsequent linting operations.
+  let g:ale_cache_executable_check_failures = 1
+  " Don't show popup when the mouse if over a symbol, vim-lsp
+  " should be responsible for that.
+  let g:ale_set_balloons = 0
+  " Don't show variable information in the status line,
+  " vim-lsp should be responsible for that.
+  let g:ale_hover_cursor = 0
+  " Only display diagnostics with a warning level or above
+  " i.e. warning,error
+  let g:ale_lsp_show_message_severity = "information"
+  let g:ale_lint_on_enter = 1 " lint when a buffer opens
+  let g:ale_lint_on_text_changed = "always"
+  let g:ale_lint_delay = 1000
+  let g:ale_lint_on_insert_leave = 0
+  let g:ale_lint_on_filetype_changed = 0
+  let g:ale_lint_on_save = 0
+  let g:ale_sign_error = '•'
+  let g:ale_sign_warning = '•'
+  let g:ale_sign_info = '•'
+  let g:ale_sign_priority = 100
+
+" Fzf integration {{{2
 "
 " TODO: Until vim gets support for dim text in its terminals, it will be hard to see which item is
 " active.
@@ -478,12 +513,6 @@ Plug 'junegunn/fzf'
         \ 'sink': 'edit',
         \ 'options': '--ansi --preview "bat --style=numbers,grid --paging=never --terminal-width (math \$FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --prompt="' . substitute(getcwd(), $HOME, '~', "") .'/" --keep-right'}))
     nnoremap <Leader>f <Cmd>FindFile<CR>
-
-" Colors
-" Opens the OS color picker and inserts the chosen color into the buffer.
-Plug 'KabbAmine/vCoolor.vim'
-  " Make an alias for the 'VCoolor' command with a name that is easier to remember
-  command! ColorPicker VCoolor
 
 " File explorer {{{2
 Plug 'preservim/nerdtree', {'on': 'NERDTreeFind'}
@@ -668,11 +697,6 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight Folded ctermfg=15 ctermbg=NONE cterm=NONE
     autocmd ColorScheme nord highlight FoldColumn ctermfg=15 ctermbg=NONE
   augroup END
-
-Plug 'junegunn/goyo.vim'
-  let g:goyo_width = '85%'
-  " Make an alias for the 'Goyo' command with a name that is easier to remember
-  command! Focus Goyo
 
 " Post Plugin Load Operations {{{2
 " Install plugins if not found. Must be done after plugins are registered

@@ -2,6 +2,7 @@
 
 " This should stay at the top so all mappings can reference it
 let g:mapleader = "\<Space>"
+
 " This should stay at the top so that I can register plugins anywhere in my config
 call plug#begin()
 
@@ -42,6 +43,8 @@ set matchpairs+=<:>
 " move ten lines at a time by holding ctrl and a directional key
 noremap <C-j> 10j
 noremap <C-k> 10k
+
+" Copy up to the end of line, not including the newline character
 nnoremap Y yg_
 
 " Using the paragraph motions won't add to the jump stack
@@ -84,15 +87,8 @@ let vim_plug_plugin_file = data_dir . '/autoload/plug.vim'
 if empty(glob(vim_plug_plugin_file))
   silent execute '!curl -fLo '.vim_plug_plugin_file.' --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 endif
-" }}}
 
 " Miscellaneous {{{2
-" To get the vim help pages for vim-plug itself, you need to add it as a plugin
-Plug 'junegunn/vim-plug'
-
-" Syntax plugins for practically any language
-Plug 'sheerun/vim-polyglot'
-
 " Motions for levels of indentation
 Plug 'jeetsukumaran/vim-indentwise'
   map [<Tab> <Plug>(IndentWiseBlockScopeBoundaryBegin)
@@ -118,9 +114,6 @@ Plug 'tpope/vim-endwise'
   " this way endwise triggers on 'o'
   nmap o A<CR>
 
-" Automatically close html tags
-Plug 'alvan/vim-closetag'
-
 " Automatically insert closing braces/quotes
 Plug 'Raimondi/delimitMate'
   " Given the following line (where | represents the cursor):
@@ -143,16 +136,10 @@ Plug 'tommcdo/vim-exchange'
 " - A command for creating abbreviations. More features than vim's builtin :iabbrev
 " - Mappings for case switching e.g. mixed-case, title-case, etc.
 Plug 'tpope/vim-abolish'
-  " TODO: Using this so that substitutions made by vim-abolish get highlighted as I type them.
-  " Won't be necessary if vim-abolish adds support for neovim's `inccommand`.
-  " issue for `inccommand` support: https://github.com/tpope/vim-abolish/issues/107
-  Plug 'markonm/traces.vim'
-    let g:traces_abolish_integration = 1
 
 Plug 'airblade/vim-matchquote'
 
 Plug 'tpope/vim-commentary'
-" }}}
 
 " Profiles {{{1
 let profile_directory = expand('<sfile>:h') . '/profiles' 
