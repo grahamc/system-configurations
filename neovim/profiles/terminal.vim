@@ -112,16 +112,6 @@ augroup Window
   autocmd VimResized,WinNew,WinClosed,TabEnter * wincmd =
 augroup END
 
-" Tabs {{{1
-set expandtab
-set autoindent smartindent
-set smarttab
-set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
-let s:tab_width = 2
-let &tabstop = s:tab_width
-let &shiftwidth = s:tab_width
-let &softtabstop = s:tab_width
-
 " Tab windows {{{1
 nnoremap <silent> <Leader>c <Cmd>$tabnew<CR>
 nnoremap <silent> <C-h> <Cmd>tabprevious<CR>
@@ -134,6 +124,16 @@ augroup LastTab
   autocmd!
   autocmd TabLeave * let g:lasttab = tabpagenr()
 augroup END
+
+" Indentation {{{1
+set expandtab
+set autoindent smartindent
+set smarttab
+set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
+let s:tab_width = 2
+let &tabstop = s:tab_width
+let &shiftwidth = s:tab_width
+let &softtabstop = s:tab_width
 
 " Folds {{{1
 " Setting this so that the fold column gets displayed

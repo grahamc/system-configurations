@@ -4,6 +4,12 @@
 let g:mapleader = "\<Space>"
 
 " This should stay at the top so that I can register plugins anywhere in my config
+" Install vim-plug if not found
+let data_dir = has('nvim') ? stdpath('data') . '/site' : $HOME.'/.vim'
+let vim_plug_plugin_file = data_dir . '/autoload/plug.vim'
+if empty(glob(vim_plug_plugin_file))
+  silent execute '!curl -fLo '.vim_plug_plugin_file.' --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+endif
 call plug#begin()
 
 " Miscellaneous {{{1
@@ -64,6 +70,7 @@ imap <expr> <CR>
 " Searching {{{1
 " searching is only case sensitive when the query contains an uppercase letter
 set ignorecase smartcase
+
 " Use ripgrep as the grep program, if it's available. Otherwise use the internal
 " grep implementation since it's cross-platform
 let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
@@ -81,14 +88,6 @@ vnoremap <silent> # :<C-U>
   \gVzv:call setreg('"', old_reg, old_regtype)<CR>
 
 " Plugins {{{1
-" Install vim-plug if not found {{{2
-let data_dir = has('nvim') ? stdpath('data') . '/site' : $HOME.'/.vim'
-let vim_plug_plugin_file = data_dir . '/autoload/plug.vim'
-if empty(glob(vim_plug_plugin_file))
-  silent execute '!curl -fLo '.vim_plug_plugin_file.' --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-endif
-
-" Miscellaneous {{{2
 " Motions for levels of indentation
 Plug 'jeetsukumaran/vim-indentwise'
   map [<Tab> <Plug>(IndentWiseBlockScopeBoundaryBegin)
