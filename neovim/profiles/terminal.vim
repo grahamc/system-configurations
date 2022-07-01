@@ -194,6 +194,7 @@ function! FoldText()
 
   " expand tabs
   let line_text = substitute(getline(v:foldstart), '\t', repeat(' ', &tabstop), 'g')
+  let line_text .= ' …'
   let line_text_length = strlen(substitute(line_text, ".", "x", "g"))
 
   let fold_line_count = v:foldend - v:foldstart
@@ -664,7 +665,7 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight! link NvimInternalError ErrorMsg
     autocmd ColorScheme nord highlight! link ALEError Error
     autocmd ColorScheme nord highlight ALEWarning ctermfg=3 ctermbg=NONE cterm=undercurl
-    autocmd ColorScheme nord highlight Folded ctermfg=15 ctermbg=8 cterm=NONE
+    autocmd ColorScheme nord highlight Folded ctermfg=15 ctermbg=NONE cterm=NONE
     autocmd ColorScheme nord highlight FoldColumn ctermfg=15 ctermbg=NONE
   augroup END
 
