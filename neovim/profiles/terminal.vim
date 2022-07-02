@@ -50,7 +50,7 @@ augroup Miscellaneous
   " Put focus back in quickfix window after opening an entry
   autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
   " highlight trailing whitespace
-  autocmd ColorScheme * highlight ExtraWhitespace ctermbg=1 ctermfg=1 | execute '2match ExtraWhitespace /\s\+$/'
+  autocmd ColorScheme * highlight! link ExtraWhitespace Warning | execute 'match ExtraWhitespace /\s\+$/'
   " Start syntax highlighting from the beginning of the file. Unless it's a large file, in which case start
   " don't highlight at all.
   autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | else | syntax sync fromstart | endif
@@ -701,10 +701,11 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight Delimiter ctermfg=NONE ctermbg=NONE
     autocmd ColorScheme nord highlight ErrorMsg ctermfg=1 ctermbg=NONE cterm=bold
     autocmd ColorScheme nord highlight Error ctermfg=1 ctermbg=NONE cterm=undercurl
+    autocmd ColorScheme nord highlight Warning ctermfg=3 ctermbg=NONE cterm=undercurl
     autocmd ColorScheme nord highlight! link SpellBad Error
     autocmd ColorScheme nord highlight! link NvimInternalError ErrorMsg
     autocmd ColorScheme nord highlight! link ALEError Error
-    autocmd ColorScheme nord highlight ALEWarning ctermfg=3 ctermbg=NONE cterm=undercurl
+    autocmd ColorScheme nord highlight! link ALEWarning Warning
     autocmd ColorScheme nord highlight Folded ctermfg=15 ctermbg=NONE cterm=NONE
     autocmd ColorScheme nord highlight FoldColumn ctermfg=15 ctermbg=NONE
   augroup END
