@@ -136,6 +136,7 @@ let &shiftwidth = s:tab_width
 let &softtabstop = s:tab_width
 
 " Folds {{{1
+set fillchars+=foldsep:\ ,foldclose:>,foldopen:ݍ
 " Setting this so that the fold column gets displayed
 set foldenable
 " When a file is opened, all folds should be open
@@ -143,7 +144,7 @@ set foldlevel=999
 " Set max number of nested folds when 'foldmethod' is 'syntax' or 'indent'
 set foldnestmax=2
 " Minimum number of lines a fold must have to be able to be closed
-set foldminlines=5
+set foldminlines=1
 " Fold visually selected lines. 'foldmethod' must be set to 'manual' for this work.
 vnoremap <Tab> zf
 " Toggle opening and closing all folds
