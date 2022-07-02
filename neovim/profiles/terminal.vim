@@ -205,10 +205,10 @@ function! FoldText()
   let line_text = getline(v:foldstart)
   " indent the line relative to the foldlevel if it isn't already indented
   if line_text[0] !=# ' ' && line_text[0] !=# '\t'
-    let indent = repeat(' ', &tabstop)
     let indent_count = max([0, v:foldlevel - 1])
-    let indentation = repeat(indent, indent_count)
-    let line_text = indentation . line_text
+    let indent = repeat(' ', &tabstop)
+    let indent = repeat(indent, indent_count)
+    let line_text = indent . line_text
   endif
   " truncate if there isn't space for the fold description and some separator text
   let min_separator_text_length = 7
