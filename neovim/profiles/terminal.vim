@@ -156,7 +156,9 @@ nnoremap <silent> <expr> <S-Tab> &foldlevel ? 'zM' : 'zR'
 set foldcolumn=auto:9
 " Jump to the top and bottom of the current fold, without adding to the jump list
 nnoremap [<Tab> <Cmd>keepjumps normal! [z<CR>
-nnoremap ]<Tab> <Cmd>keepjumps normal! ]z<CR>
+nnoremap [<Tab> <Cmd>keepjumps normal! [z<CR>
+xnoremap ]<Tab> <Cmd>keepjumps normal! ]z<CR>
+xnoremap ]<Tab> <Cmd>keepjumps normal! ]z<CR>
 augroup Fold
   autocmd!
   autocmd FileType python,yaml,java,c,sh,bash,zsh,fish,ruby,toml,gitconfig setlocal foldmethod=indent
