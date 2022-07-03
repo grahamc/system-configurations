@@ -107,6 +107,7 @@ nnoremap <silent><Leader>m <Cmd>tab sp<CR>
 
 augroup Window
   autocmd!
+
   " Automatically resize all splits to make them equal when the vim window is
   " resized or a new window is created/closed
   autocmd VimResized,WinNew,WinClosed,TabEnter * wincmd =
