@@ -557,14 +557,12 @@ Plug 'dense-analysis/ale'
 " active.
 " issue: https://github.com/vim/vim/issues/8269
 Plug 'junegunn/fzf'
-  let g:fzf_layout = { 'window': 'enew' }
+  let g:fzf_layout = { 'window': 'tabnew' }
   augroup Fzf
     autocmd!
     " Hide all ui elements when fzf is active
-    " TODO: Once neovim v0.8 is released, I can hide the command window with `set cmdheight=0`
-    " v0.8 milestone: https://github.com/neovim/neovim/milestone/28
-    autocmd  FileType fzf set laststatus=0 noshowmode noruler nonumber norelativenumber showtabline=0
-      \| autocmd BufLeave <buffer> set laststatus=2 showmode number relativenumber showtabline=1
+    autocmd  FileType fzf set laststatus=0 noshowmode noruler nonumber norelativenumber showtabline=0 cmdheight=0 winbar=
+          \| autocmd BufLeave <buffer> set laststatus=3 showmode number relativenumber showtabline=1 cmdheight=2 winbar=%{%WindowBar()%}
     " In terminals you have to press <C-\> twice to send it to the terminal.
     " This mapping makes it so that I only have to press it once.
     " This way, I can use a <C-\> keybind in fzf more easily.
