@@ -30,9 +30,9 @@ augroup END
 
 inoremap jk <Esc>
 
-" automatically go to the end of pasted text
-vnoremap <silent> p p`]
-nnoremap <silent> p p`]
+" automatically go to the end of pasted text and reindent it
+vnoremap <silent> p p=`]
+nnoremap <silent> p p=`]
 
 " select the text that was just pasted
 noremap gV `[v`]
