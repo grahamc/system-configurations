@@ -126,22 +126,6 @@ Plug 'vitalk/vim-shebang'
 Plug 'bkad/CamelCaseMotion'
   let g:camelcasemotion_key = ','
 
-" Automatically add closing keywords (e.g. function/endfunction in vimscript)
-Plug 'tpope/vim-endwise'
-  let g:endwise_no_mappings = 1
-  " this way endwise triggers on 'o'
-  nmap o A<CR>
-
-" Automatically insert closing braces/quotes
-Plug 'Raimondi/delimitMate'
-  " Given the following line (where | represents the cursor):
-  "   function foo(bar) {|}
-  " Pressing enter will result in:
-  " function foo(bar) {
-  "   |
-  " }
-  let g:delimitMate_expand_cr = 0
-
 " Makes it easier to manipulate brace/bracket/quote pairs by providing commands to do common
 " operations like change pair, remove pair, etc.
 Plug 'tpope/vim-surround'
@@ -156,8 +140,6 @@ Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-abolish'
 
 Plug 'airblade/vim-matchquote'
-
-Plug 'tpope/vim-commentary'
 
 " Profiles {{{1
 let profile_directory = expand('<sfile>:h') . '/profiles' 

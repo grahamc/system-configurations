@@ -496,6 +496,24 @@ Plug 'alvan/vim-closetag'
 Plug 'markonm/traces.vim'
   let g:traces_abolish_integration = 1
 
+" Automatically insert closing braces/quotes
+Plug 'Raimondi/delimitMate'
+  " Given the following line (where | represents the cursor):
+  "   function foo(bar) {|}
+  " Pressing enter will result in:
+  " function foo(bar) {
+  "   |
+  " }
+  let g:delimitMate_expand_cr = 0
+
+" Automatically add closing keywords (e.g. function/endfunction in vimscript)
+Plug 'tpope/vim-endwise'
+  let g:endwise_no_mappings = 1
+  " this way endwise triggers on 'o'
+  nmap o A<CR>
+
+Plug 'tpope/vim-commentary'
+
 " Asynchronous linting {{{2
 Plug 'dense-analysis/ale'
   " If a linter is not found don't continue to check on subsequent linting operations.
