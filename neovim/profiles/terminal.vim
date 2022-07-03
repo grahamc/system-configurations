@@ -298,30 +298,17 @@ augroup SetColorscheme
 augroup END
 
 " Statusline {{{2
-let g:statusline_separator = "%#TabLineFill# %#StatusLineRightSeparator#/ %#StatusLineRightText#"
+let &laststatus = has('nvim') ? 3 : 2
+
+let g:statusline_separator = "%#TabLineFill# %#StatusLineRightSeparator#/ %#StatusLine#"
 function! MyStatusLine()
-  if g:actual_curwin == win_getid()
-    let l:highlight = 'StatusLine'
-  else
-    let l:highlight = 'StatusLineNC'
-  endif
-  let l:highlight_text = l:highlight . 'Text'
-  let l:highlight = '%#' . l:highlight . '#'
-  let l:highlight_text = '%#' . l:highlight_text . '#'
-  let l:highlight_right_text = '%#StatusLineRightText#'
+  let l:highlight = '%#StatusLine#'
 
   if &ft ==# 'help'
-    let l:special_statusline = '[Help] %t'
-  elseif &ft ==# 'vim-plug'
-    let l:special_statusline = 'Vim Plug'
-  elseif g:actual_curwin != win_getid()
-    let l:special_statusline = '%t'
-  elseif exists('b:NERDTree')
-    let l:special_statusline = '%t'
-  endif
-  if exists('l:special_statusline')
-    let l:special_statusline = ' ' . l:special_statusline . ' '
-    return l:highlight_text . l:special_statusline . l:highlight
+      \ || &ft ==# 'vim-plug'
+      \ || exists('b:NERDTree')
+      \ || exists('l:special_statusline')
+    return l:highlight .' %y'
   endif
 
   let l:warning = ''
@@ -336,23 +323,23 @@ function! MyStatusLine()
   let l:warning_count = l:ale_count.warning
   let l:info_count = l:ale_count.info
   if (l:error_count > 0)
-    let l:error = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineErrorText#' . l:error_count . ' ⨂ '
+    let l:error = l:highlight . g:statusline_separator . '%#StatusLineErrorText#' . l:error_count . ' •'
   endif
   if (l:warning_count > 0)
-    let l:warning = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineWarningText#' . l:warning_count . ' ⚠ '
+    let l:warning = l:highlight . g:statusline_separator . '%#StatusLineWarningText#' . l:warning_count . ' •'
   endif
   if (l:info_count > 0)
-    let l:info = '%#StatusLineRightText#' . g:statusline_separator . '%#StatusLineInfoText#' . l:info_count . ' 🛈 '
+    let l:info = l:highlight. g:statusline_separator . '%#StatusLineInfoText#' . l:info_count . ' •'
   endif
 
-  return l:highlight_text . (exists('l:special_statusline') ? l:special_statusline : ' %y %h%w%q%t%m%r ') . l:highlight . '%=' . l:highlight_right_text . 'Ln %l/%L' . g:statusline_separator . 'Col %c/%{execute("echon col(\"$\") - 1")}' . l:info . l:warning . l:error . ' '
+  return l:highlight . ' %y %h%w%q%m%r%=' . '%=' . 'Ln %l/%L' . g:statusline_separator . 'Col %c/%{execute("echon col(\"$\") - 1")}' . l:info . l:warning . l:error . ' '
 endfunction
 set statusline=%{%MyStatusLine()%}
 
 " Tabline {{{2
 function! Tabline()
   let tab_count = tabpagenr('$')
-  let tabline = '%#StatusLineText# tabs %#TabLineFill#%='
+  let tabline = ''
 
   for i in range(tab_count)
     let tab = i + 1
@@ -375,11 +362,48 @@ function! Tabline()
       let tabline .= g:statusline_separator
     endif
   endfor
-  let tabline .= '%='
+
+  " center it
+  let tabline = '%=' . tabline . '%='
 
   return tabline
 endfunction
 set tabline=%!Tabline()
+
+" Window bar {{{2
+if has('nvim')
+  function! CloseWindow(window_id, click_count, mouse_button, modifiers)
+    " If there's more than one window open, just close the window
+    if winnr('$') > 1
+      let window_number = win_id2win(a:window_id)
+      if (window_number > 0)
+        execute printf('%dwincmd c', window_number)
+      endif
+      return
+    endif
+
+    " close the window and close vim if it was the last window
+    q
+
+    " go to the previous tab
+    execute printf('silent! tabn %d', g:lasttab)
+  endfunction
+
+  function! WindowBar()
+    let winbar_highlight = (g:actual_curwin == win_getid()) ? 'WinBar' : 'WinBarNC'
+    let winbar_highlight = '%#' . winbar_highlight . '#'
+
+    " TODO: Not sure how to get the id of the window that contains the winbar that triggered
+    " a click handler from the click handler itself so I'm setting the 'minwid' section of the
+    " click item to the window id. This way, the window id will be passed to the click handler
+    " as the 'minwid'.
+    let content = '%t %' . win_getid() . '@CloseWindow@✕%X'
+
+    return  winbar_highlight . ' ' . content . ' ' . '%#WinBarFill#'
+  endfunction
+
+  set winbar=%{%WindowBar()%}
+endif
 
 " Cursor {{{2
 function! SetCursor()
@@ -724,11 +748,7 @@ Plug 'arcticicestudio/nord-vim'
     " Transparent vertical split
     autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=8
     " statusline colors
-    autocmd ColorScheme nord highlight StatusLine ctermbg=8
-    autocmd ColorScheme nord highlight StatusLineText ctermfg=14 ctermbg=NONE cterm=reverse
-    autocmd ColorScheme nord highlight StatusLineNC ctermbg=8
-    autocmd ColorScheme nord highlight StatusLineNCText ctermfg=15 ctermbg=NONE cterm=reverse
-    autocmd ColorScheme nord highlight StatusLineRightText ctermfg=15 ctermbg=8
+    autocmd ColorScheme nord highlight StatusLine ctermbg=8 ctermfg=15
     autocmd ColorScheme nord highlight StatusLineRightSeparator ctermfg=8 ctermbg=NONE cterm=reverse,bold
     autocmd ColorScheme nord highlight StatusLineErrorText ctermfg=1 ctermbg=8
     autocmd ColorScheme nord highlight StatusLineWarningText ctermfg=3 ctermbg=8
@@ -774,6 +794,9 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight! link ALEWarning Warning
     autocmd ColorScheme nord highlight Folded ctermfg=15 ctermbg=NONE cterm=NONE
     autocmd ColorScheme nord highlight FoldColumn ctermfg=15 ctermbg=NONE
+    autocmd ColorScheme nord highlight WinBar ctermfg=14 ctermbg=NONE cterm=reverse
+    autocmd ColorScheme nord highlight WinBarNC ctermfg=15 ctermbg=NONE cterm=reverse
+    autocmd ColorScheme nord highlight WinBarFill ctermfg=NONE ctermbg=NONE
   augroup END
 
 " Post Plugin Load Operations {{{2

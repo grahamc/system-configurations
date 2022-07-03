@@ -3,7 +3,6 @@ let vim_home = $HOME . '/.vim/'
 set backspace=indent,eol,start
 let &fillchars = "foldopen: ,fold: ,vert:\u2502,stl:\ ,stlnc:\ "
 set hidden
-set laststatus=2
 set showcmd
 set wildmenu
 set completeopt+=popup
