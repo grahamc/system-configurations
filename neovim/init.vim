@@ -109,8 +109,6 @@ vnoremap <silent> # :<C-U>
 " Plugins {{{1
 " Motions for levels of indentation
 Plug 'jeetsukumaran/vim-indentwise'
-  map [<Tab> <Plug>(IndentWiseBlockScopeBoundaryBegin)
-  map ]<Tab> <Plug>(IndentWiseBlockScopeBoundaryEnd)
 
 " replacement for matchit since matchit wasn't working for me
 Plug 'andymass/vim-matchup'
