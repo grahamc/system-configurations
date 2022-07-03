@@ -456,9 +456,15 @@ Plug 'junegunn/goyo.vim'
     endif
     set noshowmode
     set noshowcmd
-    set nocursorline
-    let g:asyncomplete_auto_popup = !0
-    highlight WordUnderCursor cterm=NONE
+    let g:asyncomplete_auto_popup = 0
+    highlight clear WordUnderCursor
+    highlight CursorLine cterm=NONE
+    set cmdheight=0
+    set winbar=
+    DelimitMateSwitch
+    set scrolloff=0
+    imap <buffer> <CR> <CR>
+    highlight clear MatchParen
   endfunction
 
   function! s:goyo_leave()
@@ -467,8 +473,11 @@ Plug 'junegunn/goyo.vim'
     endif
     set showmode
     set showcmd
-    set cursorline
     let g:asyncomplete_auto_popup = 1
+    set cmdheight=2
+    set winbar=%{%WindowBar()%}
+    DelimitMateSwitch
+    set scrolloff=10
   endfunction
 
   augroup Goyo
