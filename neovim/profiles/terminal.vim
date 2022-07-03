@@ -103,7 +103,7 @@ nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':exe "q" \| silent! tabn 
 " tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
 "
 " maximize a window by opening it in a new tab
-nnoremap <silent><Leader>m <Cmd>tab sp<CR>
+nnoremap <silent><Leader>m <Cmd>if winnr('$') > 1 \| tab sp \| endif<CR>
 
 augroup Window
   autocmd!
