@@ -19,7 +19,7 @@ brew "less"
 brew "moreutils"
 brew "mosh"
 brew "navi"
-brew "neovim"
+brew "neovim", args: ["HEAD"]
 brew "pipx"
 brew "ripgrep"
 brew "ruby"
