@@ -441,9 +441,44 @@ Plug 'KabbAmine/vCoolor.vim'
   command! ColorPicker VCoolor
 
 Plug 'junegunn/goyo.vim'
-  let g:goyo_width = '85%'
+  let g:goyo_width = '90%'
   " Make an alias for the 'Goyo' command with a name that is easier to remember
-  command! Focus Goyo
+  command! Prose Goyo
+
+  function! s:goyo_enter()
+    if executable('tmux') && strlen($TMUX)
+      silent !tmux set status off
+    endif
+    set noshowmode
+    set noshowcmd
+    set nocursorline
+    let g:asyncomplete_auto_popup = !0
+    highlight WordUnderCursor cterm=NONE
+  endfunction
+
+  function! s:goyo_leave()
+    if executable('tmux') && strlen($TMUX)
+      silent !tmux set status on
+    endif
+    set showmode
+    set showcmd
+    set cursorline
+    let g:asyncomplete_auto_popup = 1
+  endfunction
+
+  augroup Goyo
+    autocmd!
+
+    autocmd User GoyoEnter ++nested call <SID>goyo_enter()
+    autocmd User GoyoLeave ++nested call <SID>goyo_leave()
+
+    " If I'm about to exit vim without turning off goyo, then turn it off now.
+    " 'nested' is used so that the 'GoyoLeave' event fires
+    autocmd VimLeavePre * ++nested if exists('#goyo') | Goyo | endif
+
+    " On window resize, if goyo is active, resize the window
+    autocmd VimResized * if exists('#goyo') | exe "normal \<c-w>=" | endif
+  augroup END
 
 " To get the vim help pages for vim-plug itself, you need to add it as a plugin
 Plug 'junegunn/vim-plug'
