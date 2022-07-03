@@ -715,7 +715,7 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight LineNr ctermfg=NONE
     autocmd ColorScheme nord highlight LineNrAbove ctermfg=15
     autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
-    autocmd ColorScheme nord highlight WordUnderCursor cterm=underline,bold
+    autocmd ColorScheme nord highlight WordUnderCursor cterm=bold
     autocmd ColorScheme nord highlight! link IncSearch Search
     autocmd ColorScheme nord highlight TabLine ctermbg=8 ctermfg=15
     autocmd ColorScheme nord highlight TabLineSel ctermbg=8 ctermfg=14 cterm=bold
