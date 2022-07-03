@@ -347,7 +347,7 @@ set statusline=%{%MyStatusLine()%}
 " Tabline {{{2
 function! Tabline()
   let tab_count = tabpagenr('$')
-  let tabline = '%#StatusLineText# 🗐  %#TabLineFill#%='
+  let tabline = '%#StatusLineText# tabs %#TabLineFill#%='
 
   for i in range(tab_count)
     let tab = i + 1
