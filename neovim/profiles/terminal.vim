@@ -117,6 +117,8 @@ augroup END
 nnoremap <silent> <Leader>c <Cmd>$tabnew<CR>
 nnoremap <silent> <C-h> <Cmd>tabprevious<CR>
 nnoremap <silent> <C-l> <Cmd>tabnext<CR>
+inoremap <silent> <C-h> <Cmd>tabprevious<CR>
+inoremap <silent> <C-l> <Cmd>tabnext<CR>
 " track which tab last opened
 if !exists('g:lasttab')
   let g:lasttab = 1
