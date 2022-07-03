@@ -70,6 +70,35 @@ nnoremap <C-z> <Cmd>suspend<CR>
 inoremap <C-z> <Cmd>suspend<CR>
 xnoremap <C-z> <Cmd>suspend<CR>
 
+" There are a number of actions that could be performed when the enter key is pressed.
+" This function decides which ones.
+function! GetEnterKeyActions()
+  if pumvisible()
+    " close the popup menu
+    let keys = "\<C-y>"
+
+    " If there was no item selected, enter a newline
+    if complete_info().selected == -1
+      let keys .= "\<CR>"
+    endif
+
+    return keys
+  endif
+
+  " The existence check ensures that the plugin delimitmate was loaded
+  if exists('*delimitMate#WithinEmptyPair') && delimitMate#WithinEmptyPair()
+    return "\<C-R>=delimitMate#ExpandReturn()\<CR>"
+  endif
+
+  " The existence check ensures that the plugin vim-endwise was loaded
+  if exists('g:loaded_endwise')
+    return "\<CR>\<Plug>DiscretionaryEnd"
+  endif
+
+  return "\<CR>"
+endfunction
+imap <expr> <CR> GetEnterKeyActions()
+
 " Utilities {{{1
 " Delete buffers that aren't referencing a file
 function s:WipeBuffersWithoutFiles()
