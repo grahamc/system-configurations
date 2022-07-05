@@ -57,6 +57,12 @@ nnoremap Y yg_
 nnoremap } <Cmd>keepjumps normal! }<CR>
 nnoremap { <Cmd>keepjumps normal! {<CR>
 
+nnoremap > >>
+nnoremap < <<
+
+inoremap <buffer> <Tab> <C-t>
+inoremap <buffer> <S-Tab> <C-d>
+
 " Searching {{{1
 " searching is only case sensitive when the query contains an uppercase letter
 set ignorecase smartcase
