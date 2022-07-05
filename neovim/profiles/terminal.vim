@@ -232,7 +232,7 @@ function! FoldText()
   let gutter_width = getwininfo(win_getid())[0].textoff
   let line_width = window_width - gutter_width
 
-  let fold_line_count = v:foldend - v:foldstart
+  let fold_line_count = (v:foldend - v:foldstart) + 1
   let fold_description = fold_line_count . ' lines'
   let fold_description = printf('(%s)', fold_description)
   let fold_description_length = strdisplaywidth(fold_description)
