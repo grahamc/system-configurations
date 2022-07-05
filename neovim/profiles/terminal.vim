@@ -99,6 +99,19 @@ function! GetEnterKeyActions()
 endfunction
 imap <expr> <CR> GetEnterKeyActions()
 
+" Prose {{{1
+function! ActivateProseMode()
+  set foldlevel=0
+  set foldmethod=marker
+  Goyo
+endfunction
+command! Prose call ActivateProseMode()
+
+augroup Prose
+  autocmd!
+  autocmd VimEnter * if @% =~# '.prose.txt$' | execute 'Prose' | endif
+augroup END
+
 " Utilities {{{1
 " Delete buffers that aren't referencing a file
 function s:WipeBuffersWithoutFiles()
@@ -529,55 +542,6 @@ Plug 'KabbAmine/vCoolor.vim'
   " Make an alias for the 'VCoolor' command with a name that is easier to remember
   command! ColorPicker VCoolor
 
-Plug 'junegunn/goyo.vim'
-  let g:goyo_width = '90%'
-  " Make an alias for the 'Goyo' command with a name that is easier to remember
-  command! Prose Goyo
-
-  function! s:goyo_enter()
-    if executable('tmux') && strlen($TMUX)
-      silent !tmux set status off
-    endif
-    set noshowmode
-    set noshowcmd
-    let g:asyncomplete_auto_popup = 0
-    highlight clear WordUnderCursor
-    highlight CursorLine cterm=NONE
-    set cmdheight=0
-    set winbar=
-    DelimitMateSwitch
-    set scrolloff=0
-    imap <buffer> <CR> <CR>
-    highlight clear MatchParen
-  endfunction
-
-  function! s:goyo_leave()
-    if executable('tmux') && strlen($TMUX)
-      silent !tmux set status on
-    endif
-    set showmode
-    set showcmd
-    let g:asyncomplete_auto_popup = 1
-    set cmdheight=2
-    set winbar=%{%WindowBar()%}
-    DelimitMateSwitch
-    set scrolloff=10
-  endfunction
-
-  augroup Goyo
-    autocmd!
-
-    autocmd User GoyoEnter ++nested call <SID>goyo_enter()
-    autocmd User GoyoLeave ++nested call <SID>goyo_leave()
-
-    " If I'm about to exit vim without turning off goyo, then turn it off now.
-    " 'nested' is used so that the 'GoyoLeave' event fires
-    autocmd VimLeavePre * ++nested if exists('#goyo') | Goyo | endif
-
-    " On window resize, if goyo is active, resize the window
-    autocmd VimResized * if exists('#goyo') | exe "normal \<c-w>=" | endif
-  augroup END
-
 " To get the vim help pages for vim-plug itself, you need to add it as a plugin
 Plug 'junegunn/vim-plug'
 
@@ -610,6 +574,90 @@ Plug 'tpope/vim-endwise'
   nmap o A<CR>
 
 Plug 'tpope/vim-commentary'
+
+" Prose {{{2
+Plug 'junegunn/goyo.vim'
+  let g:goyo_width = '90%'
+
+  function! s:goyo_enter()
+    if executable('tmux') && strlen($TMUX)
+      silent !tmux set status off
+    endif
+    let g:goyo_old_option_values = SetOptions({
+          \ '&showmode': 0,
+          \ '&showcmd': 0,
+          \ '&cmdheight': 0,
+          \ '&winbar': ''
+            \})
+    let b:asyncomplete_enable = 0
+    function! GoyoSetHighlights()
+      highlight clear WordUnderCursor
+      highlight CursorLine cterm=NONE
+      highlight clear MatchParen
+    endfunction
+    call GoyoSetHighlights()
+    " In case the colorscheme gets set after I set highlights this will set them again
+    autocmd Colorscheme <buffer> call GoyoSetHighlights()
+    silent! DelimitMateSwitch
+    setlocal scrolloff=0
+    setlocal conceallevel=2
+    setlocal concealcursor=nvic
+    syn match listItem "^\s*[-*]\s\+" contains=listBullet
+    syn match listBullet "[-*]" contained conceal cchar=•
+    syn match headerUnderline "[-=][-=][-=][-=][-=][-=]*" contains=headerUnderlineDash
+    syn match headerUnderlineDash "[-=]" contained conceal cchar=―
+    syn match markerOpen "{{{" contains=markerOpenBrace
+    syn match markerOpenBrace "{" contained conceal cchar=⌄
+    syn match markerClose "}}}" contains=markerCloseBrace
+    syn match markerCloseBrace "}" contained conceal cchar=⌃
+    nnoremap <buffer> <silent> p p
+    vnoremap <buffer> <silent> p p
+    setlocal breakindent
+    let &breakindentopt = 'shift:' . &tabstop
+    function! GetBulletAction()
+      let line = getline('.')
+
+      " Insert a newline before the bullet
+      if line =~# '^\s*[-*]\s\+$'
+        return "\<Esc>\<S-o>\<Esc>j\<S-a>"
+      endif
+
+      " Create a bullet on the next line
+      if line =~# '^\s*[-*]\s\+.*'
+        return "\<CR>-\<Space>"
+      endif
+
+      return "\<CR>"
+    endfunction
+    inoremap <buffer> <expr> <CR> GetBulletAction()
+    function! NewFoldText()
+      return '›››' . FoldText()[3:]
+    endfunction
+    setlocal foldtext=NewFoldText()
+  endfunction
+
+  function! s:goyo_leave()
+    if executable('tmux') && strlen($TMUX)
+      silent !tmux set status on
+    endif
+    call SetOptions(g:goyo_old_option_values)
+    silent! DelimitMateSwitch
+  endfunction
+
+  augroup Goyo
+    autocmd!
+
+    autocmd User GoyoEnter ++nested call <SID>goyo_enter()
+    autocmd User GoyoLeave ++nested call <SID>goyo_leave()
+
+    " If I'm about to exit vim without turning off goyo, then turn it off now.
+    " 'nested' is used so that the 'GoyoLeave' event fires
+    autocmd VimLeavePre * ++nested if exists('#goyo') | Goyo | endif
+
+    " On window resize, if goyo is active, resize the window
+    autocmd VimResized * if exists('#goyo') | exe "normal \<c-w>=" | endif
+  augroup END
+  nnoremap <S-CR> <Cmd>echo 'cool'<CR>
 
 " Asynchronous linting {{{2
 Plug 'dense-analysis/ale'
