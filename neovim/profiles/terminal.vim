@@ -414,14 +414,27 @@ if has('nvim')
   function! WindowBar()
     let winbar_highlight = (g:actual_curwin == win_getid()) ? 'WinBar' : 'WinBarNC'
     let winbar_highlight = '%#' . winbar_highlight . '#'
+    let content = ''
 
+    " Add button to close the window
+    "
     " TODO: Not sure how to get the id of the window that contains the winbar that triggered
     " a click handler from the click handler itself so I'm setting the 'minwid' section of the
     " click item to the window id. This way, the window id will be passed to the click handler
     " as the 'minwid'.
-    let content = '%t %' . win_getid() . '@CloseWindow@✕%X'
+    let content .= '%' . win_getid() . '@CloseWindow@✕%X'
 
-    return  winbar_highlight . ' ' . content . ' ' . '%#WinBarFill#'
+    let content .= ' %f'
+
+    " Indicate file has unsaved changes
+    if getbufvar(winbufnr(0), "&mod")
+      let content .= '*'
+    endif
+
+    " padding
+    let content = printf(' %s ', content)
+
+    return winbar_highlight . content . '%#WinBarFill#'
   endfunction
 
   set winbar=%{%WindowBar()%}
