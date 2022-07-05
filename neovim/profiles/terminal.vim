@@ -333,13 +333,6 @@ let g:statusline_separator = "%#TabLineFill# %#StatusLineRightSeparator#/ %#Stat
 function! MyStatusLine()
   let l:highlight = '%#StatusLine#'
 
-  if &ft ==# 'help'
-      \ || &ft ==# 'vim-plug'
-      \ || exists('b:NERDTree')
-      \ || exists('l:special_statusline')
-    return l:highlight .' %y'
-  endif
-
   let l:warning = ''
   let l:error = ''
   let l:info = ''
@@ -361,7 +354,7 @@ function! MyStatusLine()
     let l:info = l:highlight. g:statusline_separator . '%#StatusLineInfoText#' . l:info_count . ' •'
   endif
 
-  return l:highlight . ' %y %h%w%q%m%r%=' . '%=' . 'Ln %l/%L' . g:statusline_separator . 'Col %c/%{execute("echon col(\"$\") - 1")}' . l:info . l:warning . l:error . ' '
+  return l:highlight . ' %y%w%q%r%=' . '%=' . 'Ln %l/%L' . g:statusline_separator . 'Col %c/%{execute("echon col(\"$\") - 1")}' . l:info . l:warning . l:error . ' '
 endfunction
 set statusline=%{%MyStatusLine()%}
 
