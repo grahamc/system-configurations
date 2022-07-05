@@ -30,15 +30,15 @@ augroup END
 
 inoremap jk <Esc>
 
+" Automatically go to the end of pasted text and reindent it.
+" Also don't replace the clipboard with whatever was selected.
+vnoremap <silent> p "_dP=`]
+
 " automatically go to the end of pasted text and reindent it
-vnoremap <silent> p p=`]
 nnoremap <silent> p p=`]
 
 " select the text that was just pasted
 noremap gV `[v`]
-
-" pasting doesn't replace clipboard
-vnoremap p "_dP
 
 " Prevents inserting two spaces after punctuation on a join (J)
 set nojoinspaces
