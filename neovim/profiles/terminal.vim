@@ -118,6 +118,31 @@ command! SudoWrite w !sudo tee % >/dev/null
 " Display all highlight groups in a new window
 command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
 
+" Sets options to the specified new values and returns their old values.
+" Useful for when you want to change an option temporarily and then restore its old value.
+function! SetOptions(new_option_values)
+  let old_option_values = {}
+
+  for item in items(a:new_option_values)
+    let option_name = item[0]
+    let new_option_value = item[1]
+
+    " store old value
+    let old_option_value = execute('echon ' . option_name)
+    let old_option_values[option_name] = old_option_value
+
+    " set new value
+    if execute(printf('echon type(%s) == type("")', option_name))
+      " quote string values
+      execute printf('let %s = "%s"', option_name, new_option_value)
+    else
+      execute printf('let %s = %s', option_name, new_option_value)
+    endif
+  endfor
+
+  return old_option_values
+endfunction
+
 " Windows {{{1
 " open new horizontal and vertical panes to the right and bottom respectively
 set splitright splitbelow
@@ -611,21 +636,30 @@ Plug 'dense-analysis/ale'
   let g:ale_sign_priority = 100
 
 " Fzf integration {{{2
-"
-" TODO: Until vim gets support for dim text in its terminals, it will be hard to see which item is
-" active.
-" issue: https://github.com/vim/vim/issues/8269
 Plug 'junegunn/fzf'
   let g:fzf_layout = { 'window': 'tabnew' }
-  augroup Fzf
-    autocmd!
-    " Hide all ui elements when fzf is active
-    autocmd  FileType fzf set laststatus=0 noshowmode noruler nonumber norelativenumber showtabline=0 cmdheight=0 winbar=
-          \| autocmd BufLeave <buffer> set laststatus=3 showmode number relativenumber showtabline=1 cmdheight=2 winbar=%{%WindowBar()%}
+  function! LoadFzfConfig()
     " In terminals you have to press <C-\> twice to send it to the terminal.
     " This mapping makes it so that I only have to press it once.
-    " This way, I can use a <C-\> keybind in fzf more easily.
-    autocmd  FileType fzf tnoremap <buffer> <C-\> <C-\><C-\>
+    " This way, I can use a <C-\> keybind more easily.
+    tnoremap <buffer> <C-\> <C-\><C-\>
+
+    " Hide all ui elements
+    let g:fzf_old_option_values = SetOptions({
+          \ '&laststatus': 0,
+          \ '&showmode': 0,
+          \ '&ruler': 0,
+          \ '&number': 0,
+          \ '&relativenumber': 0,
+          \ '&showtabline': 0,
+          \ '&cmdheight': 0,
+          \ '&winbar': '',
+          \})
+    autocmd BufLeave <buffer> call SetOptions(g:fzf_old_option_values)
+  endfunction
+  augroup Fzf
+    autocmd!
+    autocmd FileType fzf call LoadFzfConfig()
   augroup END
   " Collection of fzf-based commands
   Plug 'junegunn/fzf.vim'
