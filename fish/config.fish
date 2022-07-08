@@ -168,6 +168,8 @@ abbr --add --global tunnel cloudflared-tunnel
 abbr --add --global fp fzf-process-widget
 
 # man
+# NOTE: Per the man manpage, spaces in $MANOPT must be escaped with a backslash
+set --global --export MANOPT '--no-hyphenation'
 abbr --add --global fm fzf-man-widget
 
 # Set preferred editor.
