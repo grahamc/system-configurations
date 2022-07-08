@@ -3,12 +3,11 @@ set right_splitbar \u257E
 set connectbar_up \u2514
 set connectbar_down \u250C
 set connectbar_middle \u251C
-# The reason for all the 'set_color normal' commands is to undo the bold set by the border color
+# The reason for all the 'set_color normal' commands is to undo any attributes set like '--bold'
 set fish_prompt_color_text (set_color normal; set_color cyan)
 set fish_prompt_color_standout_text (set_color normal; set_color bryellow)
 set fish_prompt_color_error_text (set_color normal; set_color red)
 set fish_prompt_color_normal (set_color normal)
-set fish_prompt_color_arrow (set_color normal; set_color --bold brwhite)
 set fish_prompt_color_border (set_color normal; set_color --bold brwhite)
 
 set --global --export __fish_git_prompt_showdirtystate
@@ -37,7 +36,7 @@ function fish_prompt --description 'Print the prompt'
         # issue: https://github.com/fish-shell/fish-shell/issues/8418
         printf \e\[0J
 
-        echo -n -s -e (fish_prompt_get_separator) "\n" $fish_prompt_color_arrow (fish_prompt_get_arrow) ' ' $fish_prompt_color_normal
+        echo -n -s -e (fish_prompt_get_separator) "\n" (fish_prompt_get_arrow) $fish_prompt_color_normal
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY
@@ -101,14 +100,14 @@ function fish_prompt_make_line --argument-names type
     if test "$type" = first
         echo -n -s $fish_prompt_color_border $connectbar_down
     else if test "$type" = last
-        echo -n -s $fish_prompt_color_border $connectbar_up $fish_prompt_color_arrow (fish_prompt_get_arrow) $fish_prompt_color_normal ' '
+        echo -n -s $fish_prompt_color_border $connectbar_up (fish_prompt_get_arrow) $fish_prompt_color_normal
     else
         echo -n -s $fish_prompt_color_border $connectbar_middle
     end
 end
 
 function fish_prompt_get_arrow
-    string repeat -n $SHLVL '❯'
+    echo -n -s (set_color normal; set_color brwhite) (string repeat -n $SHLVL '🢒')
 end
 
 function fish_prompt_get_python_context

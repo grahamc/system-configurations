@@ -22,7 +22,7 @@ set --global --export fish_color_redirection
 set --global --export fish_color_end
 set --global --export fish_color_error red
 set --global --export fish_color_param
-set --global --export fish_color_comment black
+set --global --export fish_color_comment brwhite
 set --global --export fish_color_match
 set --global --export fish_color_search_match --background=brblack
 # TODO: I want to remove the default bolding, but currently only the background is configurable.
@@ -31,7 +31,7 @@ set --global --export fish_pager_color_selected_background --background=brblack
 set --global --export fish_color_operator
 set --global --export fish_color_escape
 set --global --export fish_color_cwd
-set --global --export fish_color_autosuggestion blue
+set --global --export fish_color_autosuggestion brwhite
 set --global --export fish_color_user
 set --global --export fish_color_host
 set --global --export fish_pager_color_prefix cyan
@@ -82,11 +82,11 @@ function upgrade-apt
     echo -s (set_color blue) 'APT' (set_color normal)
     echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
     sudo apt-get update
-    if not string match --regex --quiet '([^0-9]0|^0) upgraded' (apt-get --simulate upgrade)
+    if string match --regex --quiet '[1-9]\d* upgraded' (apt-get --simulate --with-new-pkgs upgrade)
         set something_to_do
-        sudo apt-get upgrade
+        sudo apt-get --with-new-pkgs upgrade
     end
-    if not string match --regex --quiet '([^0-9]0|^0) to remove' (apt-get --simulate upgrade)
+    if string match --regex --quiet '[1-9]\d* to remove' (apt-get --simulate upgrade)
         set something_to_do
         sudo apt-get autoremove
     end
@@ -312,11 +312,12 @@ function _tmux_connect
         return
     end
 
-    echo "Welcome back $USER, would you like to connect to tmux? (y/n):"
-    read --prompt 'echo "> "' --nchars 1 response
-    if test $response = y
-        tmux-attach-or-create
-    end
+    # echo "Welcome back $USER, would you like to connect to tmux? (y/n):"
+    # read --prompt 'echo "> "' --nchars 1 response
+    # if test $response = y
+    #     tmux-attach-or-create
+    # end
+    tmux-attach-or-create
 end
 if type --query tmux
     _tmux_connect

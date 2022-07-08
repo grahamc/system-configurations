@@ -1,11 +1,12 @@
 " vim:foldmethod=marker
 
-" Exit if we are not running in a terminal
-if index(v:argv, '--embed') != -1 || index(v:argv, '--headless') != -1
+" Exit if vim is not running in a terminal. I detect this by checking if the input
+" to vim is coming from a terminal (also referred to as a tty).
+if !has('ttyin')
   finish
 endif
 
-" Miscellaneous {{{1
+" Miscellaneous {{{
 set confirm
 set mouse=a
 set display+=lastline
@@ -16,6 +17,58 @@ set jumpoptions=stack
 " persist undo history to disk
 set undofile
 
+augroup Miscellaneous
+  autocmd!
+  autocmd BufEnter *
+        \ if &ft ==# 'help' && (&columns * 10) / &lines > 31 | wincmd L | endif
+  autocmd FileType sh setlocal keywordprg=man
+  autocmd CursorHold * execute printf('silent! 2match WordUnderCursor /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+  " After a quickfix command is run, open the quickfix window , if there are results
+  autocmd QuickFixCmdPost [^l]* cwindow
+  autocmd QuickFixCmdPost l*    lwindow
+  " Put focus back in quickfix window after opening an entry
+  autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
+  " highlight trailing whitespace
+  autocmd ColorScheme * highlight! link ExtraWhitespace Warning | execute 'match ExtraWhitespace /\s\+$/'
+  " Start syntax highlighting from the beginning of the file. Unless it's a large file, in which case
+  " don't highlight at all.
+  autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | else | syntax sync fromstart | endif
+augroup END
+
+nnoremap <silent> <Leader>w <Cmd>wa<CR>
+nnoremap <Leader>x <Cmd>wqa<CR>
+
+" TODO: When tmux is able to differentiate between tab and ctrl+i this mapping should be updated.
+" tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
+"
+" move forward in the jumplist
+nnoremap <C-p> <C-i>
+
+" suspend vim and start a new shell
+nnoremap <C-z> <Cmd>suspend<CR>
+inoremap <C-z> <Cmd>suspend<CR>
+xnoremap <C-z> <Cmd>suspend<CR>
+
+" Decide which actions to take when the enter key is pressed.
+function! GetEnterKeyActions()
+  " The existence check ensures that the plugin delimitmate was loaded
+  if exists('*delimitMate#WithinEmptyPair') && delimitMate#WithinEmptyPair()
+    return "\<C-R>=delimitMate#ExpandReturn()\<CR>"
+  endif
+
+  " The existence check ensures that the plugin vim-endwise was loaded
+  if exists('g:loaded_endwise')
+    return "\<CR>\<Plug>DiscretionaryEnd"
+  endif
+
+  return "\<CR>"
+endfunction
+imap <expr> <CR> GetEnterKeyActions()
+
+set colorcolumn=120
+" }}}
+
+" Option overrides {{{
 function! OverrideVimsDefaultFiletypePlugins()
   " Vim's default filetype plugins get run after filetype detection is
   " performed (i.e. ':filetype plugin on'). So in order to override
@@ -37,102 +90,23 @@ function! OverrideVimsDefaultFiletypePlugins()
   augroup END
 endfunction
 
-augroup Miscellaneous
+function! OverridePolyglot()
+  setlocal textwidth=0
+endfunction
+
+augroup Overrides
   autocmd!
-  autocmd BufEnter *
-        \ if &ft ==# 'help' && (&columns * 10) / &lines > 31 | wincmd L | endif
-  autocmd FileType sh setlocal keywordprg=man
   autocmd VimEnter * call OverrideVimsDefaultFiletypePlugins()
-  autocmd CursorHold * execute printf('silent! 2match WordUnderCursor /\V\<%s\>/', escape(expand('<cword>'), '/\'))
-  " After a quickfix command is run, open the quickfix window , if there are results
-  autocmd QuickFixCmdPost [^l]* cwindow
-  autocmd QuickFixCmdPost l*    lwindow
-  " Put focus back in quickfix window after opening an entry
-  autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
-  " highlight trailing whitespace
-  autocmd ColorScheme * highlight! link ExtraWhitespace Warning | execute 'match ExtraWhitespace /\s\+$/'
-  " Start syntax highlighting from the beginning of the file. Unless it's a large file, in which case start
-  " don't highlight at all.
-  autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | else | syntax sync fromstart | endif
+  autocmd VimEnter * call OverridePolyglot()
 augroup END
+" }}}
 
-nnoremap <silent> <Leader>w <Cmd>wa<CR>
-nnoremap <Leader>x <Cmd>wqa<CR>
-
-" TODO: When tmux is able to differentiate between tab and ctrl+i this mapping should be updated.
-" tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
-"
-" move forward in the jumplist
-nnoremap <C-p> <C-i>
-
-" suspend vim and start a new shell
-nnoremap <C-z> <Cmd>suspend<CR>
-inoremap <C-z> <Cmd>suspend<CR>
-xnoremap <C-z> <Cmd>suspend<CR>
-
-" There are a number of actions that could be performed when the enter key is pressed.
-" This function decides which ones.
-function! GetEnterKeyActions()
-  if pumvisible()
-    " close the popup menu
-    let keys = "\<C-y>"
-
-    " If there was no item selected, enter a newline
-    if complete_info().selected == -1
-      let keys .= "\<CR>"
-    endif
-
-    return keys
-  endif
-
-  " The existence check ensures that the plugin delimitmate was loaded
-  if exists('*delimitMate#WithinEmptyPair') && delimitMate#WithinEmptyPair()
-    return "\<C-R>=delimitMate#ExpandReturn()\<CR>"
-  endif
-
-  " The existence check ensures that the plugin vim-endwise was loaded
-  if exists('g:loaded_endwise')
-    return "\<CR>\<Plug>DiscretionaryEnd"
-  endif
-
-  return "\<CR>"
-endfunction
-imap <expr> <CR> GetEnterKeyActions()
-
-" Prose {{{1
-function! ActivateProseMode()
-  set foldlevel=0
-  set foldmethod=marker
-  Goyo
-endfunction
-command! Prose call ActivateProseMode()
-
-augroup Prose
-  autocmd!
-  autocmd VimEnter * if @% =~# '.prose.txt$' | execute 'Prose' | endif
-augroup END
-
-" Utilities {{{1
-" Delete buffers that aren't referencing a file
-function s:WipeBuffersWithoutFiles()
-    let bufs=filter(range(1, bufnr('$')), 'bufexists(v:val) && '.
-                                          \'empty(getbufvar(v:val, "&buftype")) && '.
-                                          \'!filereadable(bufname(v:val))')
-    if !empty(bufs)
-        execute 'bwipeout!' join(bufs)
-    endif
-endfunction
-command CleanBuffers call s:WipeBuffersWithoutFiles()
-
-" Write to file with sudo. For when I forget to use sudoedit.
-" tee streams its input to stdout as well as the specified file so I suppress the output
-command! SudoWrite w !sudo tee % >/dev/null
-
+" Utilities {{{
 " Display all highlight groups in a new window
 command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
 
 " Sets options to the specified new values and returns their old values.
-" Useful for when you want to change an option temporarily and then restore its old value.
+" Useful for when you want to change an option and then restore its old value later on.
 function! SetOptions(new_option_values)
   let old_option_values = {}
 
@@ -141,11 +115,11 @@ function! SetOptions(new_option_values)
     let new_option_value = item[1]
 
     " store old value
-    let old_option_value = execute('echon ' . option_name)
+    execute 'let old_option_value = ' . option_name
     let old_option_values[option_name] = old_option_value
 
     " set new value
-    if execute(printf('echon type(%s) == type("")', option_name))
+    if type(new_option_value) == type("")
       " quote string values
       execute printf('let %s = "%s"', option_name, new_option_value)
     else
@@ -155,22 +129,23 @@ function! SetOptions(new_option_values)
 
   return old_option_values
 endfunction
+" }}}
 
-" Windows {{{1
+" Windows {{{
 " open new horizontal and vertical panes to the right and bottom respectively
 set splitright splitbelow
-nnoremap <Leader>\| <Cmd>vsplit<CR>
+nnoremap <Leader><Bar> <Cmd>vsplit<CR>
 nnoremap <Leader>- <Cmd>split<CR>
 
 " close a window, quit if last window
 " also when closing a tab, go to the previously opened tab
-nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':exe "q" \| silent! tabn '.g:lasttab.'<CR>' : ':close<CR>'
+nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':exe "q" <Bar> silent! tabn '.g:lasttab.'<CR>' : ':close<CR>'
 
 " TODO: When tmux is able to differentiate between enter and ctrl+m this mapping should be updated.
 " tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
 "
 " maximize a window by opening it in a new tab
-nnoremap <silent><Leader>m <Cmd>if winnr('$') > 1 \| tab sp \| endif<CR>
+nnoremap <silent><Leader>m <Cmd>if winnr('$') > 1 <Bar> tab sp <Bar> endif<CR>
 
 augroup Window
   autocmd!
@@ -179,9 +154,10 @@ augroup Window
   " resized or a new window is created/closed
   autocmd VimResized,WinNew,WinClosed,TabEnter * wincmd =
 augroup END
+" }}}
 
-" Tab windows {{{1
-nnoremap <silent> <Leader>c <Cmd>$tabnew<CR>
+" Tab pages {{{
+nnoremap <silent> <Leader>t <Cmd>$tabnew<CR>
 nnoremap <silent> <C-h> <Cmd>tabprevious<CR>
 nnoremap <silent> <C-l> <Cmd>tabnext<CR>
 inoremap <silent> <C-h> <Cmd>tabprevious<CR>
@@ -194,8 +170,9 @@ augroup LastTab
   autocmd!
   autocmd TabLeave * let g:lasttab = tabpagenr()
 augroup END
+" }}}
 
-" Indentation {{{1
+" Indentation {{{
 set expandtab
 set autoindent smartindent
 set smarttab
@@ -204,13 +181,18 @@ let s:tab_width = 2
 let &tabstop = s:tab_width
 let &shiftwidth = s:tab_width
 let &softtabstop = s:tab_width
+" }}}
 
-" Folds {{{1
-set fillchars+=foldsep:\ ,foldclose:>,foldopen:ݍ
+" Folds {{{
+set fillchars+=foldsep:\ ,foldclose:›,foldopen:⌄
 " Setting this so that the fold column gets displayed
 set foldenable
-" When a file is opened, all folds should be open
-set foldlevel=999
+" When a file is opened, all folds should be open.
+" Only set the foldlevel once when vim starts up
+if !exists('g:foldlevel_set')
+  set foldlevel=999
+  let g:foldlevel_set = 1
+endif
 " Set max number of nested folds when 'foldmethod' is 'syntax' or 'indent'
 set foldnestmax=2
 " Minimum number of lines a fold must have to be able to be closed
@@ -228,10 +210,7 @@ xnoremap [<Tab> <Cmd>keepjumps normal! [z<CR>
 xnoremap ]<Tab> <Cmd>keepjumps normal! ]z<CR>
 augroup Fold
   autocmd!
-  autocmd FileType python,yaml,java,c,sh,bash,zsh,fish,ruby,toml,gitconfig setlocal foldmethod=indent
-
-  " So we don't fold the contents of the class
-  autocmd FileType java setlocal foldlevel=1
+  autocmd FileType * setlocal foldmethod=indent
 augroup END
 
 " Toggle the fold at the current line, if there is one. If the previous line we were on was
@@ -277,7 +256,7 @@ function! FoldText()
 
   let line_text = getline(v:foldstart)
   " indent the line relative to the foldlevel if it isn't already indented
-  if line_text[0] !=# ' ' && line_text[0] !=# '\t'
+  if line_text !~# '\v^\s+'
     let indent_count = max([0, v:foldlevel - 1])
     let indent = repeat(' ', &tabstop)
     let indent = repeat(indent, indent_count)
@@ -288,7 +267,7 @@ function! FoldText()
   let max_line_text_length = line_width - (fold_description_length + min_separator_text_length)
   if strdisplaywidth(line_text) > max_line_text_length
     " truncate 1 more than we need so we can add an ellipsis
-    let line_text = line_text[:max_line_text_length-2] . '…'
+    let line_text = line_text[: max_line_text_length - 2] . '…'
   endif
   let line_text_length = strdisplaywidth(line_text)
 
@@ -297,62 +276,71 @@ function! FoldText()
 
   return line_text . separator_text . fold_description
 endfunction
+" }}}
 
-" Autocomplete {{{1
+" Autocomplete {{{
 set complete=.,w,b,u
 " - show the completion menu even if there is only one suggestion
 " - when autocomplete gets triggered, no suggestion is selected
-set completeopt=menuone,noselect
+set completeopt=menu,menuone,noselect
+" }}}
 
-" Command line settings {{{1
+" Command line {{{
 " on first wildchar press (<Tab>), show all matches and complete the longest common substring among them.
 " on subsequent wildchar presses, cycle through matches
 set wildmode=longest:full,full
 set wildoptions=pum
 set cmdheight=2
 cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
+" }}}
 
-" Search {{{1
+" Search {{{
 set nohlsearch
 " show match position in command window, don't show 'Search hit BOTTOM/TOP'
 set shortmess-=S shortmess+=s
 " toggle search highlighting
 nnoremap <silent> <Leader>\ <Cmd>set hlsearch!<CR>
+" }}}
 
-" Sessions {{{1
+" Sessions {{{
 set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages sessionoptions+=folds
+let s:session_dir = g:data_path . '/sessions'
+call mkdir(s:session_dir, "p")
+
+function! RestoreOrCreateSession()
+  " We omit the first element in the list since that will always be the path to the vim executable
+  if v:argv[1:]->empty()
+    let session_name =  substitute($PWD, '/', '%', 'g') . '%vim'
+    let session_full_path = s:session_dir . '/' . session_name
+    let session_cmd = filereadable(session_full_path) ? "source " : "mksession! "
+    execute session_cmd . fnameescape(session_full_path)
+    let s:session_active = 1
+  endif
+endfunction
+
+function! SaveSession()
+  if exists("s:session_active") && !empty(v:this_session)
+    execute 'mksession! ' . fnameescape(v:this_session)
+  endif
+endfunction
+
 augroup SaveAndRestoreSettings
   autocmd!
   " Restore session after vim starts. The 'nested' keyword tells vim to fire events
   " normally while this autocmd is executing. By default, no events are fired
   " during the execution of an autocmd to prevent infinite loops.
-  let s:session_dir = has('nvim') ? stdpath('data') . '/sessions' : $HOME.'/.vim/sessions'
-  function! RestoreOrCreateSession()
-    " We omit the first element in the list since that will always be the path
-    " to the vim binary e.g. /usr/local/bin/vim
-    if v:argv[1:]->empty()
-      call mkdir(s:session_dir, "p")
-      let s:session_name =  substitute($PWD, '/', '%', 'g') . '%vim'
-      let s:session_full_path = s:session_dir . '/' . s:session_name
-      let s:session_cmd = filereadable(s:session_full_path) ? "source " : "mksession! "
-      execute s:session_cmd . fnameescape(s:session_full_path)
-    endif
-  endfunction
   autocmd VimEnter * ++nested call RestoreOrCreateSession()
   " save session before vim exits
-  function! SaveSession()
-    if !empty(v:this_session)
-      execute 'mksession! ' . fnameescape(v:this_session)
-    endif
-  endfunction
   autocmd VimLeavePre * call SaveSession()
 augroup END
+" }}}
 
-" Aesthetics {{{1
-" Miscellaneous {{{2
+" Aesthetics {{{
+
+" Miscellaneous {{{
 set linebreak
 set number relativenumber
-set cursorline cursorlineopt=number,line
+set cursorline cursorlineopt=number,screenline
 set showtabline=1
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
@@ -363,43 +351,84 @@ augroup SetColorscheme
   " use nested so my colorscheme changes are loaded
   autocmd VimEnter * ++nested colorscheme nord
 augroup END
+" }}}
 
-" Statusline {{{2
+" Statusline {{{
 let &laststatus = has('nvim') ? 3 : 2
 
-let g:statusline_separator = "%#TabLineFill# %#StatusLineRightSeparator#/ %#StatusLine#"
 function! MyStatusLine()
-  let l:highlight = '%#StatusLine#'
+  let item_separator = '%#StatusLineSeparator# ∙ '
+  let line = '%#StatusLine#Ln %l/%L'
+  let column = '%#StatusLine#Col %c/%{execute("echon col(\"$\") - 1")}'
 
-  let l:warning = ''
-  let l:error = ''
-  let l:info = ''
+  if getbufvar(bufnr('%'), "&mod")
+    let modified_indicator = '*'
+  else
+    let modified_indicator = ''
+  endif
+  let file_info = '%#StatusLine#%y %t' . modified_indicator . '%w%q'
+
+  if &fileformat !=# 'unix'
+    let fileformat = printf('%%#StatusLineStandoutText#[%s]', &fileformat)
+  endif
+
+  if &readonly
+    let readonly = '%#StatusLineStandoutText#[RO]'
+  endif
+
   try
-    let l:ale_count = ale#statusline#Count(bufnr('%'))
+    let ale_count = ale#statusline#Count(bufnr('%'))
   catch
-    let l:ale_count = {'warning': 0, 'error': 0, 'info': 0}
+    let ale_count = {'warning': 0, 'error': 0, 'info': 0}
   endtry
-  let l:error_count = l:ale_count.error
-  let l:warning_count = l:ale_count.warning
-  let l:info_count = l:ale_count.info
-  if (l:error_count > 0)
-    let l:error = l:highlight . g:statusline_separator . '%#StatusLineErrorText#' . l:error_count . ' •'
+  let error_count = ale_count.error
+  if (error_count > 0)
+    let error = '%#StatusLineErrorText#' . 'ⓧ '. error_count
   endif
-  if (l:warning_count > 0)
-    let l:warning = l:highlight . g:statusline_separator . '%#StatusLineWarningText#' . l:warning_count . ' •'
+  let warning_count = ale_count.warning
+  if (warning_count > 0)
+    let warning = '%#StatusLineWarningText#' . '⚠ ' . warning_count
   endif
-  if (l:info_count > 0)
-    let l:info = l:highlight. g:statusline_separator . '%#StatusLineInfoText#' . l:info_count . ' •'
+  let info_count = ale_count.info
+  if (info_count > 0)
+    let info = '%#StatusLineInfoText#' . 'ⓘ ' . info_count
   endif
 
-  return l:highlight . ' %y%w%q%r%=' . '%=' . 'Ln %l/%L' . g:statusline_separator . 'Col %c/%{execute("echon col(\"$\") - 1")}' . l:info . l:warning . l:error . ' '
+  let left_side_items = [file_info]
+  if exists('fileformat')
+    call add(left_side_items, fileformat)
+  endif
+  if exists('readonly')
+    call add(left_side_items, readonly)
+  endif
+  let left_side = left_side_items->join(' ')
+
+  let right_side_items = [line, column]
+  if exists('info')
+    call add(right_side_items, info)
+  endif
+  if exists('warning')
+    call add(right_side_items, warning)
+  endif
+  if exists('error')
+    call add(right_side_items, error)
+  endif
+  let right_side = right_side_items->join(item_separator)
+
+  let statusline_separator = '%#StatusLine#%='
+  let padding = '%#StatusLine# '
+
+  return padding . left_side . statusline_separator . right_side . padding
 endfunction
 set statusline=%{%MyStatusLine()%}
+" }}}
 
-" Tabline {{{2
+" Tabline {{{
 function! Tabline()
   let tab_count = tabpagenr('$')
   let tabline = ''
+  let left_divider_char = '▎'
+  let right_divider_char = '🮇'
 
   for i in range(tab_count)
     let tab = i + 1
@@ -416,69 +445,22 @@ function! Tabline()
 
     let tabline .= '%' . tab . 'T'
     let highlight = (tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#')
-    let highlight_button = (tab == tabpagenr() ? '%#TabLineButtonSel#' : '%#TabLineButton#')
-    let tabline .= highlight_button . '%' . tab . 'X✕%X' . highlight . ' ' . bufname
+    let separator_highlight = (tab == tabpagenr() ? '%#TabLineSeparator#' : '%#TabLineSeparatorNC#')
+    let tabline .= separator_highlight . left_divider_char . '  ' . highlight . bufname . '  '
     if i < tab_count - 1
-      let tabline .= g:statusline_separator
+      let tabline .= ' %#StatusLineSeparator#' . highlight
     endif
   endfor
-
-  " center it
-  let tabline = '%=' . tabline . '%='
+  let last_tab_number = tab_count
+  let last_separator_highlight = (last_tab_number == tabpagenr() ? '%#TabLineLastSeparator#' : '%#TabLineLastSeparatorNC#')
+  let tabline .= last_separator_highlight . right_divider_char . '%#TabLineFill#'
 
   return tabline
 endfunction
 set tabline=%!Tabline()
+" }}}
 
-" Window bar {{{2
-if has('nvim')
-  function! CloseWindow(window_id, click_count, mouse_button, modifiers)
-    " If there's more than one window open, just close the window
-    if winnr('$') > 1
-      let window_number = win_id2win(a:window_id)
-      if (window_number > 0)
-        execute printf('%dwincmd c', window_number)
-      endif
-      return
-    endif
-
-    " close the window and close vim if it was the last window
-    q
-
-    " go to the previous tab
-    execute printf('silent! tabn %d', g:lasttab)
-  endfunction
-
-  function! WindowBar()
-    let winbar_highlight = (g:actual_curwin == win_getid()) ? 'WinBar' : 'WinBarNC'
-    let winbar_highlight = '%#' . winbar_highlight . '#'
-    let content = ''
-
-    " Add button to close the window
-    "
-    " TODO: Not sure how to get the id of the window that contains the winbar that triggered
-    " a click handler from the click handler itself so I'm setting the 'minwid' section of the
-    " click item to the window id. This way, the window id will be passed to the click handler
-    " as the 'minwid'.
-    let content .= '%' . win_getid() . '@CloseWindow@✕%X'
-
-    let content .= ' %f'
-
-    " Indicate file has unsaved changes
-    if getbufvar(winbufnr(0), "&mod")
-      let content .= '*'
-    endif
-
-    " padding
-    let content = printf(' %s ', content)
-
-    return winbar_highlight . content . '%#WinBarFill#'
-  endfunction
-
-  set winbar=%{%WindowBar()%}
-endif
-
-" Cursor {{{2
+" Cursor {{{
 function! SetCursor()
   " Block cursor in normal mode, thin line in insert mode, and underline in replace mode
   set guicursor=n-v:block-blinkon0,o:block-blinkwait0-blinkon200-blinkoff200,i-c:ver25-blinkwait0-blinkon200-blinkoff200,r:hor20-blinkwait0-blinkon200-blinkoff200
@@ -496,9 +478,13 @@ augroup Cursor
   autocmd VimSuspend * call ResetCursor()
   autocmd VimResume * call SetCursor()
 augroup END
+" }}}
 
-" Plugins {{{1
-" General {{{2
+" }}}
+
+" Plugins {{{
+
+" Miscellaneous {{{
 Plug 'junegunn/vim-peekaboo'
   let g:peekaboo_delay = 500 " measured in milliseconds
 
@@ -509,15 +495,6 @@ Plug 'farmergreg/vim-lastplace'
 Plug 'tmux-plugins/vim-tmux'
 
 Plug 'tweekmonster/startuptime.vim'
-
-" A bridge between vim-lsp and ale. This works by
-" sending diagnostics (e.g. errors, warning) from vim-lsp to ale.
-" This way, vim-lsp will only provide LSP features
-" and ALE will only provide realtime diagnostics.
-Plug 'rhysd/vim-lsp-ale'
-  " Only report diagnostics with a level of 'warning' or above
-  " i.e. warning,error
-  let g:lsp_ale_diagnostics_severity = "information"
 
 " Expands Emmet abbreviations to write HTML more quickly
 Plug 'mattn/emmet-vim'
@@ -539,8 +516,7 @@ Plug 'mhinz/vim-signify'
 " Colors
 " Opens the OS color picker and inserts the chosen color into the buffer.
 Plug 'KabbAmine/vCoolor.vim'
-  " Make an alias for the 'VCoolor' command with a name that is easier to remember
-  command! ColorPicker VCoolor
+  let g:vcoolor_disable_mappings = 1
 
 " To get the vim help pages for vim-plug itself, you need to add it as a plugin
 Plug 'junegunn/vim-plug'
@@ -573,9 +549,24 @@ Plug 'tpope/vim-endwise'
   " this way endwise triggers on 'o'
   nmap o A<CR>
 
-Plug 'tpope/vim-commentary'
+" Use the ANSI OSC52 sequence to copy text to the system clipboard
+Plug 'ojroques/vim-oscyank', {'branch': 'main'}
+  let g:oscyank_silent = 1
+  augroup VimOscyank
+    autocmd!
+    autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '+' && (!empty($SSH_CLIENT) || !empty($SSH_TTY)) | execute 'OSCYankReg +' | endif
+  augroup END
 
-" Prose {{{2
+Plug 'lukas-reineke/virt-column.nvim'
+  function! SetupVirtColumn()
+    lua << EOF
+    require("virt-column").setup { char = "│" }
+EOF
+  endfunction
+  autocmd VimEnter * call SetupVirtColumn() | execute 'VirtColumnRefresh!' | autocmd WinEnter * VirtColumnRefresh!
+" }}}
+
+" Prose {{{
 Plug 'junegunn/goyo.vim'
   let g:goyo_width = '90%'
 
@@ -587,13 +578,14 @@ Plug 'junegunn/goyo.vim'
           \ '&showmode': 0,
           \ '&showcmd': 0,
           \ '&cmdheight': 0,
-          \ '&winbar': ''
+          \ '&winbar': '',
+          \ 'b:asyncomplete_enable': 0
             \})
-    let b:asyncomplete_enable = 0
     function! GoyoSetHighlights()
       highlight clear WordUnderCursor
       highlight CursorLine cterm=NONE
       highlight clear MatchParen
+      highlight FoldColumn ctermbg=NONE ctermfg=15
     endfunction
     call GoyoSetHighlights()
     " In case the colorscheme gets set after I set highlights this will set them again
@@ -606,10 +598,8 @@ Plug 'junegunn/goyo.vim'
     syn match listBullet "[-*]" contained conceal cchar=•
     syn match headerUnderline "[-=][-=][-=][-=][-=][-=]*" contains=headerUnderlineDash
     syn match headerUnderlineDash "[-=]" contained conceal cchar=―
-    syn match markerOpen "{{{" contains=markerOpenBrace
-    syn match markerOpenBrace "{" contained conceal cchar=⌄
-    syn match markerClose "}}}" contains=markerCloseBrace
-    syn match markerCloseBrace "}" contained conceal cchar=⌃
+    syn match emDash "\s\+--\s\+" contains=emDashSingleDash
+    syn match emDashSingleDash "-" contained conceal cchar=―
     nnoremap <buffer> <silent> p p
     vnoremap <buffer> <silent> p p
     setlocal breakindent
@@ -624,16 +614,17 @@ Plug 'junegunn/goyo.vim'
 
       " Create a bullet on the next line
       if line =~# '^\s*[-*]\s\+.*'
-        return "\<CR>-\<Space>"
+        let bullet_character = line->stridx('-') != -1 ? "-" : "*"
+        return "\<CR>" . bullet_character . "\<Space>"
       endif
 
       return "\<CR>"
     endfunction
     inoremap <buffer> <expr> <CR> GetBulletAction()
-    function! NewFoldText()
-      return '›››' . FoldText()[3:]
-    endfunction
-    setlocal foldtext=NewFoldText()
+    setlocal foldlevel=0
+    setlocal foldmethod=marker
+    inoremap <buffer> <Tab> <C-t>
+    inoremap <buffer> <S-Tab> <C-d>
   endfunction
 
   function! s:goyo_leave()
@@ -642,6 +633,7 @@ Plug 'junegunn/goyo.vim'
     endif
     call SetOptions(g:goyo_old_option_values)
     silent! DelimitMateSwitch
+    silent! SignifyEnableAll
   endfunction
 
   augroup Goyo
@@ -656,34 +648,13 @@ Plug 'junegunn/goyo.vim'
 
     " On window resize, if goyo is active, resize the window
     autocmd VimResized * if exists('#goyo') | exe "normal \<c-w>=" | endif
+
+    " Auto activate for files ending in '.txt'
+    autocmd VimEnter * if @% =~# '.txt$' | execute 'Goyo' | endif
   augroup END
-  nnoremap <S-CR> <Cmd>echo 'cool'<CR>
+" }}}
 
-" Asynchronous linting {{{2
-Plug 'dense-analysis/ale'
-  " If a linter is not found don't continue to check on subsequent linting operations.
-  let g:ale_cache_executable_check_failures = 1
-  " Don't show popup when the mouse if over a symbol, vim-lsp
-  " should be responsible for that.
-  let g:ale_set_balloons = 0
-  " Don't show variable information in the status line,
-  " vim-lsp should be responsible for that.
-  let g:ale_hover_cursor = 0
-  " Only display diagnostics with a warning level or above
-  " i.e. warning,error
-  let g:ale_lsp_show_message_severity = "information"
-  let g:ale_lint_on_enter = 1 " lint when a buffer opens
-  let g:ale_lint_on_text_changed = "always"
-  let g:ale_lint_delay = 1000
-  let g:ale_lint_on_insert_leave = 0
-  let g:ale_lint_on_filetype_changed = 0
-  let g:ale_lint_on_save = 0
-  let g:ale_sign_error = '•'
-  let g:ale_sign_warning = '•'
-  let g:ale_sign_info = '•'
-  let g:ale_sign_priority = 100
-
-" Fzf integration {{{2
+" Fzf integration {{{
 Plug 'junegunn/fzf'
   let g:fzf_layout = { 'window': 'tabnew' }
   function! LoadFzfConfig()
@@ -691,6 +662,9 @@ Plug 'junegunn/fzf'
     " This mapping makes it so that I only have to press it once.
     " This way, I can use a <C-\> keybind more easily.
     tnoremap <buffer> <C-\> <C-\><C-\>
+
+    " Prevent entering normal mode in the terminal
+    autocmd ModeChanged <buffer> if mode(1) =~# '\v^nt' | startinsert | endif
 
     " Hide all ui elements
     let g:fzf_old_option_values = SetOptions({
@@ -703,6 +677,8 @@ Plug 'junegunn/fzf'
           \ '&cmdheight': 0,
           \ '&winbar': '',
           \})
+
+    " Restore old option values after leaving fzf
     autocmd BufLeave <buffer> call SetOptions(g:fzf_old_option_values)
   endfunction
   augroup Fzf
@@ -712,7 +688,6 @@ Plug 'junegunn/fzf'
   " Collection of fzf-based commands
   Plug 'junegunn/fzf.vim'
     nnoremap <silent> <Leader>h <Cmd>History:<CR>
-    nnoremap <silent> <Leader>/ <Cmd>Commands<CR>
     nnoremap <silent> <Leader>b <Cmd>Buffers<CR>
     " recursive grep
     function! RipgrepFzf(query, fullscreen)
@@ -731,22 +706,25 @@ Plug 'junegunn/fzf'
         \ 'sink': 'edit',
         \ 'options': '--ansi --preview "bat --style=numbers,grid --paging=never --terminal-width (math \$FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --prompt="' . substitute(getcwd(), $HOME, '~', "") .'/" --keep-right'}))
     nnoremap <Leader>f <Cmd>FindFile<CR>
+" }}}
 
-" File explorer {{{2
-Plug 'preservim/nerdtree', {'on': 'NERDTreeFind'}
+" File explorer {{{
+Plug 'preservim/nerdtree'
   let g:NERDTreeMouseMode = 2
   let g:NERDTreeShowHidden = 1
   let g:NERDTreeStatusline = -1
-  let g:NERDTreeWinPos = "right"
+  let g:NERDTreeMinimalUI=1
+  let g:NERDTreeAutoDeleteBuffer=0
+  let g:NERDTreeHijackNetrw=1
   function! NerdTreeToggle()
     " NERDTree is open so close it.
-    if exists('g:NERDTree') && g:NERDTree.IsOpen()
+    if g:NERDTree.IsOpen()
       silent execute 'NERDTreeToggle'
       return
     endif
 
     " If NERDTree can't find the current file, it prints an error and doesn't open NERDTree.
-    " In which case, I call 'NERDTree' which opens NERDTree to the current directory.
+    " In which case, I'll call 'NERDTree' which opens NERDTree to the current directory.
     silent execute 'NERDTreeFind'
     if !g:NERDTree.IsOpen()
       silent execute 'NERDTree'
@@ -772,154 +750,325 @@ Plug 'preservim/nerdtree', {'on': 'NERDTreeFind'}
     " open/close directories with 'h' and 'l'
     autocmd FileType nerdtree nmap <buffer> l o
     autocmd FileType nerdtree nmap <buffer> h o
+    autocmd FileType nerdtree setlocal winbar=%#NerdTreeWinBar#%=Press\ ?\ for\ help%=
     autocmd BufEnter * call CloseIfOnlyNerdtreeLeft()
   augroup END
+" }}}
 
-" Autocomplete {{{2
-" async autocomplete
-Plug 'prabirshrestha/asyncomplete.vim'
-  let g:asyncomplete_auto_completeopt = 0
-  let g:asyncomplete_auto_popup = 1
-  let g:asyncomplete_min_chars = 1
-  let g:asyncomplete_matchfuzzy = 0
-  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-  function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
+" Autocomplete {{{
+Plug 'hrsh7th/nvim-cmp'
+  function! SetupNvimCmp()
+    lua << EOF
+    local cmp = require("cmp")
+
+    -- sources
+    local buffer = { name = 'buffer' }
+    local nvim_lsp = { name = 'nvim_lsp' }
+    local omni = { name = 'omni' }
+    local path = { name = 'path' }
+    local nvim_lua = { name = 'nvim_lua' }
+    local tmux = {
+      name = 'tmux',
+      option = { all_panes = true },
+    }
+    local cmdline = { name = 'cmdline' }
+    local cmdline_history = { name = 'cmdline_history' }
+
+    -- views
+    local wildmenu = {
+      entries = {
+        name = 'wildmenu',
+        separator = '|',
+      },
+    }
+
+    -- helpers
+    local is_cursor_preceded_by_nonblank_character = function()
+      local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+      return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
+    end
+
+    cmp.setup({
+      mapping = cmp.mapping.preset.insert({
+        ['<C-a>'] = cmp.mapping.complete(),
+        ['<CR>'] = cmp.mapping.confirm({ select = false }),
+        ["<Tab>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_next_item()
+          elseif is_cursor_preceded_by_nonblank_character() then
+            cmp.complete()
+          else
+            fallback()
+          end
+        end, { 'i', 's' }),
+        ["<S-Tab>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_prev_item()
+          else
+            fallback()
+          end
+        end, { 'i', 's' }),
+      }),
+      sources = cmp.config.sources(
+        {
+          nvim_lsp,
+          buffer,
+          omni,
+          path,
+          nvim_lua,
+          tmux,
+        }
+      )
+    })
+
+    -- TODO: Until I can reposition the completion window vertically, it will cover my cmdline
+    -- issue: https://github.com/hrsh7th/nvim-cmp/issues/908
+    -- cmp.setup.cmdline(
+    --   '/',
+    --   {
+    --     view = wildmenu,
+    --     mapping = cmp.mapping.preset.cmdline(),
+    --     sources = {
+    --       buffer,
+    --       cmdline_history,
+    --     }
+    --   }
+    -- )
+    -- cmp.setup.cmdline(
+    --   ':',
+    --   {
+    --     view = wildmenu,
+    --     mapping = cmp.mapping.preset.cmdline(),
+    --     sources = cmp.config.sources(
+    --       {
+    --         path,
+    --         cmdline,
+    --         buffer,
+    --         cmdline_history,
+    --       }
+    --     )
+    --   }
+    -- )
+    -- cmp.setup.cmdline(
+    --   '?',
+    --   {
+    --     view = wildmenu,
+    --     mapping = cmp.mapping.preset.cmdline(),
+    --     sources = cmp.config.sources(
+    --       {
+    --         buffer,
+    --         cmdline_history,
+    --       }
+    --     )
+    --   }
+    -- )
+EOF
   endfunction
-  inoremap <silent><expr> <TAB>
-    \ pumvisible() ? "\<C-n>" :
-    \ <SID>check_back_space() ? "\<TAB>" :
-    \ asyncomplete#force_refresh()
-  imap <C-a> <Plug>(asyncomplete_force_refresh)
-  Plug 'prabirshrestha/asyncomplete-buffer.vim'
-    let g:asyncomplete_buffer_clear_cache = 1
-    autocmd User asyncomplete_setup
-      \ call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-      \ 'name': 'buffer',
-      \ 'allowlist': ['*'],
-      \ 'events': ['InsertLeave','BufWinEnter','BufWritePost'],
-      \ 'completor': function('asyncomplete#sources#buffer#completor'),
-      \ }))
-  Plug 'prabirshrestha/asyncomplete-file.vim'
-    autocmd User asyncomplete_setup
-        \ call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-        \ 'name': 'file',
-        \ 'allowlist': ['*'],
-        \ 'priority': 10,
-        \ 'completor': function('asyncomplete#sources#file#completor')
-        \ }))
-  Plug 'yami-beta/asyncomplete-omni.vim'
-    autocmd User asyncomplete_setup
-        \ call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
-        \ 'name': 'omni',
-        \ 'allowlist': ['*'],
-        \ 'completor': function('asyncomplete#sources#omni#completor'),
-        \ 'config': {
-        \   'show_source_kind': 1,
-        \ },
-        \ }))
-  Plug 'Shougo/neco-vim'
-    Plug 'prabirshrestha/asyncomplete-necovim.vim'
-      autocmd User asyncomplete_setup
-          \ call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
-          \ 'name': 'necovim',
-          \ 'allowlist': ['vim'],
-          \ 'completor': function('asyncomplete#sources#necovim#completor'),
-          \ }))
-  Plug 'prabirshrestha/async.vim'
-    Plug 'wellle/tmux-complete.vim'
-  " Language Server Protocol client that provides IDE like features
-  " e.g. autocomplete, autoimport, smart renaming, go to definition, etc.
-  Plug 'prabirshrestha/vim-lsp'
-    " for debugging
-    let g:lsp_log_file = has('nvim') ? stdpath('data') . '/vim-lsp-log' : $HOME.'/.vim/vim-lsp-log'
-    let g:lsp_fold_enabled = 0
-    let g:lsp_document_code_action_signs_enabled = 0
-    let g:lsp_document_highlight_enabled = 0
-    " An easy way to install/manage language servers for vim-lsp.
-    Plug 'mattn/vim-lsp-settings'
-      " where the language servers are stored
-      let g:lsp_settings_servers_dir = has('nvim') ? stdpath('data') . '/lsp-servers' : $HOME.'/.vim/lsp-servers'
-      call mkdir(g:lsp_settings_servers_dir, "p")
-      let g:lsp_settings = {
-        \ 'efm-langserver': {'disabled': v:true},
-        \ 'bash-language-server': {'disabled': v:true}
-        \ }
-    Plug 'prabirshrestha/asyncomplete-lsp.vim'
+  autocmd VimEnter * call SetupNvimCmp()
 
-" Colorscheme {{{2
-" Colorscheme
+Plug 'hrsh7th/cmp-omni'
+
+Plug 'hrsh7th/cmp-cmdline'
+
+Plug 'dmitmel/cmp-cmdline-history'
+
+Plug 'andersevenrud/cmp-tmux'
+
+Plug 'hrsh7th/cmp-nvim-lua'
+
+Plug 'hrsh7th/cmp-buffer'
+
+Plug 'hrsh7th/cmp-nvim-lsp'
+
+Plug 'hrsh7th/cmp-path'
+" }}}
+
+" Tool Manager {{{
+Plug 'williamboman/mason.nvim'
+  function! SetupMason()
+    lua << EOF
+    require("mason").setup({
+      ui = {
+        icons = {
+          package_installed = "●",
+          package_pending = "⧖",
+          package_uninstalled = "○"
+        }
+      }
+    })
+EOF
+  endfunction
+  autocmd VimEnter * call SetupMason()
+
+Plug 'williamboman/mason-lspconfig.nvim'
+  function! SetupMasonLspConfig()
+    lua << EOF
+    require("mason-lspconfig").setup()
+
+    local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    require("mason-lspconfig").setup_handlers({
+      -- Default handler to be called for each installed server that doesn't have a dedicated handler.
+      function (server_name)
+        require("lspconfig")[server_name].setup({
+          capabilities = capabilities
+        })
+      end,
+    })
+EOF
+  endfunction
+  autocmd VimEnter * call SetupMasonLspConfig()
+
+Plug 'neovim/nvim-lspconfig'
+  function! SetupNvimLspconfig()
+    LspStart
+    autocmd WinEnter * LspStart
+  endfunction
+  autocmd VimEnter * call SetupNvimLspconfig()
+" }}}
+
+" Diagnostics {{{
+Plug 'folke/trouble.nvim'
+  function! SetupTrouble()
+    lua << EOF
+    require("trouble").setup({
+      icons = false,
+      mode = "document_diagnostics",
+      fold_open = "⌄",
+      fold_closed = "›",
+      indent_lines = false,
+      auto_close = true,
+      auto_preview = false,
+      signs = {
+        error = "error:",
+        warning = "warning:",
+        hint = "hint:",
+        information = "info:",
+        other = "other:"
+      },
+      use_diagnostic_signs = false
+    })
+EOF
+  endfunction
+  autocmd VimEnter * call SetupTrouble()
+
+" }}}
+
+" CLI -> LSP Adapter {{{
+Plug 'jose-elias-alvarez/null-ls.nvim'
+  function! SetupNullLs()
+    lua << EOF
+    local null_ls = require('null-ls')
+    local builtins = null_ls.builtins
+    null_ls.setup({
+      sources = {
+        builtins.diagnostics.shellcheck.with({
+          filetypes = { 'sh', 'bash' }
+        })
+      }
+    })
+EOF
+  endfunction
+  autocmd VimEnter * call SetupNullLs()
+
+Plug 'nvim-lua/plenary.nvim'
+
+" }}}
+
+" Colorscheme {{{
 Plug 'arcticicestudio/nord-vim'
   let g:nord_bold = 1
   let g:nord_italic = 1
   let g:nord_italic_comments = 1
   let g:nord_underline = 1
-  " Overrides
   augroup NordColorschemeOverrides
     autocmd!
     " MatchParen
     autocmd ColorScheme nord highlight MatchParen ctermfg=blue cterm=underline ctermbg=NONE
-    " Transparent SignColumn
-    autocmd ColorScheme nord highlight clear SignColumn
     " Transparent vertical split
     autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=8
     " statusline colors
-    autocmd ColorScheme nord highlight StatusLine ctermbg=8 ctermfg=15
-    autocmd ColorScheme nord highlight StatusLineRightSeparator ctermfg=8 ctermbg=NONE cterm=reverse,bold
+    autocmd ColorScheme nord highlight StatusLine ctermbg=8 ctermfg=NONE
+    autocmd ColorScheme nord highlight StatusLineSeparator ctermfg=8 ctermbg=NONE cterm=reverse,bold
     autocmd ColorScheme nord highlight StatusLineErrorText ctermfg=1 ctermbg=8
     autocmd ColorScheme nord highlight StatusLineWarningText ctermfg=3 ctermbg=8
-    autocmd ColorScheme nord highlight StatusLineInfoText ctermfg=7 ctermbg=8
+    autocmd ColorScheme nord highlight StatusLineInfoText ctermfg=4 ctermbg=8
+    autocmd ColorScheme nord highlight StatusLineStandoutText ctermfg=3 ctermbg=8
     " autocomplete popupmenu
-    autocmd ColorScheme nord highlight PmenuSel ctermfg=11 ctermbg=8
+    autocmd ColorScheme nord highlight PmenuSel ctermfg=14 ctermbg=NONE cterm=reverse
     autocmd ColorScheme nord highlight Pmenu ctermfg=NONE ctermbg=8
+    autocmd ColorScheme nord highlight PmenuThumb ctermfg=NONE ctermbg=15
+    autocmd ColorScheme nord highlight PmenuSbar ctermbg=8
     autocmd ColorScheme nord highlight CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
     " transparent background
     autocmd ColorScheme nord highlight Normal ctermbg=NONE
-    autocmd ColorScheme nord highlight NonText ctermbg=NONE
-    autocmd ColorScheme nord highlight! link EndOfBuffer NonText
+    autocmd ColorScheme nord highlight EndOfBuffer ctermbg=NONE
     " relative line numbers
-    autocmd ColorScheme nord highlight LineNr ctermfg=NONE
+    autocmd ColorScheme nord highlight LineNr ctermfg=15
     autocmd ColorScheme nord highlight LineNrAbove ctermfg=15
     autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
-    autocmd ColorScheme nord highlight WordUnderCursor cterm=bold
+    autocmd ColorScheme nord highlight WordUnderCursor ctermbg=8
     autocmd ColorScheme nord highlight! link IncSearch Search
-    autocmd ColorScheme nord highlight TabLine ctermbg=8 ctermfg=15
-    autocmd ColorScheme nord highlight TabLineSel ctermbg=8 ctermfg=14 cterm=bold
+    autocmd ColorScheme nord highlight TabLine ctermbg=8 ctermfg=7
+    autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=7
     autocmd ColorScheme nord highlight TabLineFill ctermbg=8
-    autocmd ColorScheme nord highlight TabLineButton ctermfg=15 ctermbg=8 cterm=bold
-    autocmd ColorScheme nord highlight TabLineButtonSel ctermfg=14 ctermbg=8 cterm=bold
-    autocmd ColorScheme nord highlight WildMenu ctermfg=14 ctermbg=NONE cterm=underline
+    autocmd ColorScheme nord highlight TabLineSeparator ctermbg=NONE ctermfg=14
+    autocmd ColorScheme nord highlight TabLineSeparatorNC ctermbg=8 ctermfg=15
+    autocmd ColorScheme nord highlight TabLineLastSeparator ctermbg=NONE ctermfg=15
+    autocmd ColorScheme nord highlight TabLineLastSeparatorNC ctermbg=8 ctermfg=15
     autocmd ColorScheme nord highlight Comment ctermfg=15 ctermbg=NONE
     " This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
     " By unsetting this, I ensure that terminals opened in vim will use the colors from the color palette of the
-    " terminal emulator in which vim is running
+    " terminal in which vim is running
     autocmd ColorScheme nord if exists('g:terminal_ansi_colors') | unlet g:terminal_ansi_colors | endif
-    " Have vim only use the colors from the 16 color palette of the terminal emulator in which it runs
-    autocmd ColorScheme nord set t_Co=16
-    autocmd ColorScheme nord highlight Visual ctermbg=8
+    " Have vim only use the colors from the 16 color palette of the terminal in which it runs
+    autocmd ColorScheme nord set t_Co=256
+    autocmd ColorScheme nord highlight Visual ctermfg=7 ctermbg=NONE cterm=reverse
     " Search hit
     autocmd ColorScheme nord highlight Search ctermfg=DarkYellow ctermbg=NONE cterm=reverse
     " Parentheses
     autocmd ColorScheme nord highlight Delimiter ctermfg=NONE ctermbg=NONE
     autocmd ColorScheme nord highlight ErrorMsg ctermfg=1 ctermbg=NONE cterm=bold
+    autocmd ColorScheme nord highlight WarningMsg ctermfg=3 ctermbg=NONE cterm=bold
     autocmd ColorScheme nord highlight Error ctermfg=1 ctermbg=NONE cterm=undercurl
     autocmd ColorScheme nord highlight Warning ctermfg=3 ctermbg=NONE cterm=undercurl
     autocmd ColorScheme nord highlight! link SpellBad Error
     autocmd ColorScheme nord highlight! link NvimInternalError ErrorMsg
-    autocmd ColorScheme nord highlight! link ALEError Error
-    autocmd ColorScheme nord highlight! link ALEWarning Warning
     autocmd ColorScheme nord highlight Folded ctermfg=15 ctermbg=NONE cterm=NONE
     autocmd ColorScheme nord highlight FoldColumn ctermfg=15 ctermbg=NONE
-    autocmd ColorScheme nord highlight WinBar ctermfg=14 ctermbg=NONE cterm=reverse
-    autocmd ColorScheme nord highlight WinBarNC ctermfg=15 ctermbg=NONE cterm=reverse
-    autocmd ColorScheme nord highlight WinBarFill ctermfg=NONE ctermbg=NONE
+    autocmd ColorScheme nord highlight SpecialKey ctermfg=13 ctermbg=NONE
+    autocmd ColorScheme nord highlight NonText ctermfg=15 ctermbg=NONE
+    autocmd ColorScheme nord highlight NerdTreeWinBar ctermfg=15 ctermbg=NONE cterm=italic
+    autocmd ColorScheme nord highlight! link VirtColumn VertSplit
   augroup END
+" }}}
 
-" Post Plugin Load Operations {{{2
-" Install plugins if not found. Must be done after plugins are registered
+" Plugin Management {{{
+" Helpers
+let g:snapshot_file = g:data_path . '/vim-plug-snapshot.vim'
+function! CreateSnapshotSync()
+  execute printf('PlugSnapshot! %s', g:snapshot_file)
+
+  " Edit the snapshot file so that it updates plugins synchronously
+  execute "silent! !sed --in-place --follow-symlinks 's/PlugUpdate\\!/PlugUpdate\\! --sync/g' " . g:snapshot_file
+endfunction
+function! UpdateAndSnapshotSync()
+  PlugUpdate --sync
+  call CreateSnapshotSync()
+endfunction
+command! PlugUpdateAndSnapshot call UpdateAndSnapshotSync()
+function! PlugRestore()
+  if !filereadable(g:snapshot_file)
+    echoerr printf("Restore failed. Unable to read the snapshot file '%s'", g:snapshot_file)
+    return
+  endif
+  execute printf('source %s', g:snapshot_file)
+endfunction
+command! PlugRestore call PlugRestore()
+
+" Install any plugins that have been registered, but aren't installed
 function! InstallMissingPlugins()
-  let missing_plugins = filter(deepcopy(get(g:, 'plugs', {})), '!isdirectory(v:val.dir)')
+  let plugs = get(g:, 'plugs', {})
+  let missing_plugins = filter(deepcopy(plugs), {plugin_name, plugin_info -> !isdirectory(plugin_info.dir)})
   if empty(missing_plugins)
     return
   endif
@@ -927,17 +1076,17 @@ function! InstallMissingPlugins()
   let install_prompt = "The following plugins are not installed:\n" . join(keys(missing_plugins), ", ") . "\nWould you like to install them?"
   let should_install = confirm(install_prompt, "yes\nno") == 1
   if should_install
-    let snapshot_file = stdpath('data') . '/vim-plug-snapshot.vim'
-    if filereadable(snapshot_file)
+    if filereadable(g:snapshot_file)
       " Sourcing the snapshot will set plugins to the commit specified in the snapshot
       " and install any missing ones.
-      execute printf('source %s', snapshot_file)
+      execute printf('source %s', g:snapshot_file)
 
-      " Take a new snapshot in case we've installed any plugins that aren't in the current snapshot.
-      execute printf('PlugSnapshot! %s', snapshot_file)
-
-      " Edit the snapshot file so that it updates plugins synchronously
-      execute "silent! !sed --in-place --follow-symlinks 's/PlugUpdate\\!/PlugUpdate\\! --sync/g' " . snapshot_file
+      " Any plugins that don't have a commit specified must not be in the snapshot.
+      " In which case, we'll make a new snapshot.
+      let plugins_without_commit = filter(deepcopy(plugs), {plugin_name, plugin_info -> !has_key(plugin_info, 'commit')})
+      if !empty(plugins_without_commit)
+        call CreateSnapshotSync()
+      endif
     else
       PlugInstall --sync
     endif
@@ -946,30 +1095,29 @@ endfunction
 
 " If it's been more than a month, update plugins
 function! MonthlyPluginUpdate()
-  let snapshot_file = stdpath('data') . '/vim-plug-snapshot.vim'
-  if !filereadable(snapshot_file)
+  if !filereadable(g:snapshot_file)
     return
   endif
 
-  " Make this a command so it can be called manually if needed
-  execute "command! PlugUpdateAndSnapshot PlugUpdate --sync | PlugSnapshot! " . snapshot_file
-
-  let last_modified_time = system(printf('date --reference %s +%%s', snapshot_file))
+  let last_modified_time = system(printf('date --reference %s +%%s', g:snapshot_file))
   let current_time = system('date +%s')
   let time_since_last_update = current_time - last_modified_time
-  if time_since_last_update > 2592000
-    let update_prompt = "You haven't updated your plugins in over a month, would you like to update them now?"
-    let should_update = confirm(update_prompt, "yes\nno") == 1
-    if should_update
-      PlugUpgrade
-      PlugUpdateAndSnapshot
+  if time_since_last_update < 2592000
+    return
+  endif
 
-      " Edit the snapshot file so that it updates plugins synchronously
-      execute "silent! !sed --in-place --follow-symlinks 's/PlugUpdate\\!/PlugUpdate\\! --sync/g' " . snapshot_file
-    endif
+  let update_prompt = "You haven't updated your plugins in over a month, would you like to update them now?"
+  let should_update = confirm(update_prompt, "yes\nno") == 1
+  if should_update
+    PlugUpgrade
+    call UpdateAndSnapshotSync()
   endif
 endfunction
 
 augroup PostPluginLoadOperations
-  autocmd VimEnter * call InstallMissingPlugins() | call MonthlyPluginUpdate()
+  autocmd!
+  autocmd User PlugEndPost call InstallMissingPlugins() | call MonthlyPluginUpdate()
 augroup END
+" }}}
+
+" }}}

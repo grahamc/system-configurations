@@ -1,29 +1,36 @@
 [user]
-    name = Biggie Emmanuel
-    email = hi@bigo.lu
+  name = Biggie Emmanuel
+  email = hi@bigo.lu
 [core]
-    editor = nvim
+  editor = nvim
 [push]
-    default = current
+  default = current
 [alias]
-    all = add -A
-    p = pull
-    p-sub = submodule update
-    s = status
-    ss = status --short
-    c = commit
-    a = add
-    d = diff
-    d-sub = diff --submodule=diff
-    undo = checkout --
-    some = add -u
-    undocommit = reset "HEAD^"
-    co = checkout
-    ui = "!gitui"
-    l = log
+  all = add -A
+  p = pull
+  p-sub = submodule update
+  s = status
+  ss = status --short
+  c = commit
+  a = add
+  d = diff
+  d-sub = diff --submodule=diff
+  undo = checkout --
+  some = add -u
+  undocommit = reset "HEAD^"
+  co = checkout
+  ui = "!gitui"
+  l = log
 [init]
-    defaultBranch = master
+  defaultBranch = master
 [merge]
-    conflictstyle = diff3
+  conflictstyle = diff3
+	tool = smerge
 [diff]
-    colorMoved = default
+  colorMoved = default
+[mergetool "smartsynchronize"]
+  cmd = smartsynchronize "$LOCAL" "$REMOTE" "$MERGED"
+  trustExitCode = false
+[mergetool "smerge"]
+  cmd = smerge mergetool \"$BASE\" \"$LOCAL\" \"$REMOTE\" -o \"$MERGED\"
+  trustExitCode = true
