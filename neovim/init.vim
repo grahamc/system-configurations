@@ -1,6 +1,6 @@
 " Variables used across config files
 let g:mapleader = "\<Space>"
-let g:data_path = has('nvim') ? stdpath('data') : $HOME.'/.vim'
+let g:data_path = stdpath('data')
 let g:profiles = []
 let profile_directory = expand('<sfile>:h') . '/profiles'
 if isdirectory(profile_directory)
@@ -8,7 +8,7 @@ if isdirectory(profile_directory)
 endif
 
 " Install vim-plug if not found
-let vim_plug_plugin_file = g:data_path . (has('nvim') ? '/site/autoload/plug.vim' : '/autoload/plug.vim')
+let vim_plug_plugin_file = g:data_path . '/site/autoload/plug.vim'
 if empty(glob(vim_plug_plugin_file))
   silent execute '!curl -fLo '.vim_plug_plugin_file.' --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 endif

@@ -106,11 +106,6 @@ for profile in g:profiles
   call add(config_files, last_filename_segment)
 endfor
 
-" vim config files
-if !has('nvim')
-  call extend(config_files, ['.vimrc', 'vimrc'])
-endif
-
 let config_file_pattern = config_files->join(',')
 execute printf(
       \ 'autocmd! bufwritepost %s ++nested source $MYVIMRC | execute "colorscheme " . trim(execute("colorscheme"))',

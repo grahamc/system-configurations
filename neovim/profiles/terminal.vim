@@ -10,7 +10,7 @@ endif
 set confirm
 set mouse=a
 set display+=lastline
-let &clipboard = has('nvim') ? 'unnamedplus' : 'unnamed'
+let &clipboard = 'unnamedplus'
 set scrolloff=10
 set jumpoptions=stack
 
@@ -354,7 +354,7 @@ augroup END
 " }}}
 
 " Statusline {{{
-let &laststatus = has('nvim') ? 3 : 2
+set laststatus=3
 
 function! MyStatusLine()
   let item_separator = '%#StatusLineSeparator# ∙ '
