@@ -97,7 +97,7 @@ function upgrade-debian
 end
 function upgrade-brew
     echo
-    echo -s (set_color blue) 'BREW' (set_color normal)
+    echo -s (set_color blue) 'HOMEBREW' (set_color normal)
     echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
     brew update
     if test -n "$(brew outdated)"
@@ -110,19 +110,11 @@ function upgrade-brew
     end
     if test -n "$(brew autoremove --dry-run)"
         set something_to_do
-        brew autoremove --dry-run
-        read --prompt-str 'Would you like to autoremove? (y/n): ' --nchars 1 response
-        if test $response = 'y'
-            brew autoremove
-        end
+        brew autoremove
     end
     if test -n "$(brew cleanup --dry-run)"
         set something_to_do
-        brew cleanup --dry-run
-        read --prompt-str 'Would you like to cleanup? (y/n): ' --nchars 1 response
-        if test $response = 'y'
-            brew cleanup
-        end
+        brew cleanup
     end
 
     if not set --query something_to_do
