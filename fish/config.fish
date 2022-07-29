@@ -59,8 +59,8 @@ echo -ne "\033]0;fish\007"
 
 # upgrade/cleanup packages in all package managers
 function upgrade-all
-    type --query apt
-    and upgrade-apt
+    type --query aptitude
+    and upgrade-debian
 
     type --query brew
     and upgrade-brew
@@ -77,18 +77,18 @@ function upgrade-all
     type --query fisher
     and upgrade-fisher
 end
-function upgrade-apt
+function upgrade-debian
     echo
-    echo -s (set_color blue) 'APT' (set_color normal)
+    echo -s (set_color blue) 'DEBIAN' (set_color normal)
     echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
-    sudo apt-get update
-    if string match --regex --quiet '[1-9]\d* upgraded' (apt-get --simulate --with-new-pkgs upgrade)
+    sudo aptitude update
+    if string match --regex --quiet '[1-9]\d* packages upgraded' (aptitude --simulate --assume-yes safe-upgrade)
         set something_to_do
-        sudo apt-get --with-new-pkgs upgrade
+        sudo aptitude safe-upgrade
     end
-    if string match --regex --quiet '[1-9]\d* to remove' (apt-get --simulate upgrade)
+    if string match --regex --quiet '[1-9]\d* to remove' (aptitude --simulate --assume-yes -o Aptitude::Delete-Unused=1 install)
         set something_to_do
-        sudo apt-get autoremove
+        sudo aptitude --assume-yes -o Aptitude::Delete-Unused=1 install
     end
 
     if not set --query something_to_do
