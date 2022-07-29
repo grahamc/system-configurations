@@ -358,8 +358,10 @@ set laststatus=3
 
 function! MyStatusLine()
   let item_separator = '%#StatusLineSeparator# ∙ '
+
   let line = '%#StatusLine#Ln %l/%L'
   let column = '%#StatusLine#Col %c/%{execute("echon col(\"$\") - 1")}'
+  let position = line . ', ' . column
 
   if getbufvar(bufnr('%'), "&mod")
     let modified_indicator = '*'
@@ -376,22 +378,44 @@ function! MyStatusLine()
     let readonly = '%#StatusLineStandoutText#[RO]'
   endif
 
-  try
-    let ale_count = ale#statusline#Count(bufnr('%'))
-  catch
-    let ale_count = {'warning': 0, 'error': 0, 'info': 0}
-  endtry
-  let error_count = ale_count.error
+  function! OpenDiagnosticWindow(minimum_width, mouse_click_count, mouse_button, modifiers)
+    if exists(':TroubleToggle')
+      TroubleToggle
+    endif
+  endfunction
+  function! GetDiagnosticCountForSeverity(severity)
+    return v:lua.vim.diagnostic.get(0, {'severity': a:severity})->len()
+  endfunction
+  let diagnostic_count = {
+        \ 'warning': GetDiagnosticCountForSeverity('warn'),
+        \ 'error': GetDiagnosticCountForSeverity('error'),
+        \ 'info': GetDiagnosticCountForSeverity('info'),
+        \ 'hint': GetDiagnosticCountForSeverity('hint')
+        \ }
+  let diagnostic_list = []
+  let error_count = diagnostic_count.error
   if (error_count > 0)
     let error = '%#StatusLineErrorText#' . 'ⓧ '. error_count
+    call add(diagnostic_list, error)
   endif
-  let warning_count = ale_count.warning
+  let warning_count = diagnostic_count.warning
   if (warning_count > 0)
     let warning = '%#StatusLineWarningText#' . '⚠ ' . warning_count
+    call add(diagnostic_list, warning)
   endif
-  let info_count = ale_count.info
+  let info_count = diagnostic_count.info
   if (info_count > 0)
     let info = '%#StatusLineInfoText#' . 'ⓘ ' . info_count
+    call add(diagnostic_list, info)
+  endif
+  let hint_count = diagnostic_count.hint
+  if (hint_count > 0)
+    let hint = '%#StatusLineHintText#' . 'ⓗ ' . hint_count
+    call add(diagnostic_list, hint)
+  endif
+  if !empty(diagnostic_list)
+    let diagnostics = diagnostic_list->join(' ')
+    let diagnostics = '%@OpenDiagnosticWindow@' . diagnostics . '%X'
   endif
 
   let left_side_items = [file_info]
@@ -403,15 +427,9 @@ function! MyStatusLine()
   endif
   let left_side = left_side_items->join(' ')
 
-  let right_side_items = [line, column]
-  if exists('info')
-    call add(right_side_items, info)
-  endif
-  if exists('warning')
-    call add(right_side_items, warning)
-  endif
-  if exists('error')
-    call add(right_side_items, error)
+  let right_side_items = [position]
+  if exists('diagnostics')
+    call add(right_side_items, diagnostics)
   endif
   let right_side = right_side_items->join(item_separator)
 
