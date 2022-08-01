@@ -941,7 +941,18 @@ Plug 'williamboman/mason-lspconfig.nvim'
       -- Default handler to be called for each installed server that doesn't have a dedicated handler.
       function (server_name)
         require("lspconfig")[server_name].setup({
-          capabilities = capabilities
+          capabilities = capabilities,
+        })
+      end,
+      ["jsonls"] = function()
+        require("lspconfig").jsonls.setup({
+          capabilities = capabilities,
+          settings = {
+            json = {
+              schemas = require('schemastore').json.schemas(),
+              validate = { enable = true },
+            },
+          },
         })
       end,
     })
@@ -955,6 +966,8 @@ Plug 'neovim/nvim-lspconfig'
     autocmd WinEnter * LspStart
   endfunction
   autocmd VimEnter * call SetupNvimLspconfig()
+
+Plug 'b0o/schemastore.nvim'
 " }}}
 
 " Diagnostics {{{
