@@ -286,6 +286,10 @@ end
 # watch
 abbr --add --global watch 'watch --no-title'
 
+# vscode
+# Make vscode run natively in Wayland, as opposed to using xwayland. This way the font won't be blurry on HiDPI screens.
+abbr --add --global code 'code --enable-features=UseOzonePlatform --ozone-platform=wayland'
+
 # Ask the user to connect to tmux.
 # Wrapping this in a function so that I am able to exit early with 'return'
 function _tmux_connect
