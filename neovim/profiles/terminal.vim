@@ -587,6 +587,10 @@ EOF
     autocmd WinEnter,VimResized * VirtColumnRefresh!
   endfunction
   autocmd VimEnter * call SetupVirtColumn()
+
+" lua library specfically for use in neovim
+" DEPENDED_ON_BY: null-ls.nvim
+Plug 'nvim-lua/plenary.nvim'
 " }}}
 
 " Prose {{{
@@ -1016,9 +1020,6 @@ Plug 'jose-elias-alvarez/null-ls.nvim'
 EOF
   endfunction
   autocmd VimEnter * call SetupNullLs()
-
-Plug 'nvim-lua/plenary.nvim'
-
 " }}}
 
 " Colorscheme {{{
