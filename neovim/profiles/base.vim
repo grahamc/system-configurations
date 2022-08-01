@@ -65,8 +65,10 @@ set formatoptions+=j
 
 set matchpairs+=<:>
 " move ten lines at a time by holding ctrl and a directional key
-noremap <C-j> 10j
-noremap <C-k> 10k
+nmap <C-j> 10j
+nmap <C-k> 10k
+xmap <C-j> 10j
+xmap <C-k> 10k
 
 " Copy up to the end of line, not including the newline character
 nnoremap Y yg_
