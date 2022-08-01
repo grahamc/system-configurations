@@ -1026,7 +1026,6 @@ Plug 'arcticicestudio/nord-vim'
   let g:nord_underline = 1
   augroup NordColorschemeOverrides
     autocmd!
-    " MatchParen
     autocmd ColorScheme nord highlight MatchParen ctermfg=blue cterm=underline ctermbg=NONE
     " Transparent vertical split
     autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=8
