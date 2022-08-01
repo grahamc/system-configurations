@@ -606,7 +606,6 @@ Plug 'junegunn/goyo.vim'
           \ '&showcmd': 0,
           \ '&cmdheight': 0,
           \ '&winbar': '',
-          \ 'b:asyncomplete_enable': 0
             \})
     function! GoyoSetHighlights()
       highlight clear WordUnderCursor
