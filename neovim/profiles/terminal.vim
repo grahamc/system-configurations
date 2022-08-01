@@ -530,6 +530,9 @@ Plug 'christoomey/vim-tmux-navigator'
 " Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
 Plug 'mhinz/vim-signify'
   nnoremap <Leader>vk <Cmd>SignifyHunkDiff<CR>
+  let g:signify_sign_add               = '│'
+  let g:signify_sign_change            = '│'
+  let g:signify_sign_show_count = 0
 
 " Colors
 " Opens the OS color picker and inserts the chosen color into the buffer.
