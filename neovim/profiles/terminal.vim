@@ -994,10 +994,12 @@ Plug 'folke/trouble.nvim'
 EOF
   endfunction
   autocmd VimEnter * call SetupTrouble()
-
 " }}}
 
-" CLI -> LSP Adapter {{{
+" CLI -> LSP {{{
+" A language server that acts as a bridge between neovim's language server client and commandline tools that don't
+" support the language server protocol. It does this by transforming the output of a commandline tool into the
+" format specified by the language server protocol.
 Plug 'jose-elias-alvarez/null-ls.nvim'
   function! SetupNullLs()
     lua << EOF
