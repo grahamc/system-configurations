@@ -1071,6 +1071,16 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight LineNrAbove ctermfg=15
     autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
     autocmd ColorScheme nord highlight WordUnderCursor ctermbg=8
+    " The highlight I use for the word under the cursor and text selected in visual mode is the same.
+    " This will disable the highlighting for the word under the cursor while I'm in visual mode.
+    function! DisableWordUnderCursorHighlight()
+      if mode(1) =~# '\v^v'
+        highlight WordUnderCursor ctermbg=NONE
+        " When I reenter normal mode, enable WordUnderCursor highlighting
+        autocmd ModeChanged * ++once if mode(1) =~# '\v^n' | highlight WordUnderCursor ctermbg=8 | endif
+      endif
+    endfunction
+    autocmd ModeChanged * call DisableWordUnderCursorHighlight()
     autocmd ColorScheme nord highlight! link IncSearch Search
     autocmd ColorScheme nord highlight TabLine ctermbg=8 ctermfg=7
     autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=7
@@ -1086,7 +1096,7 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord if exists('g:terminal_ansi_colors') | unlet g:terminal_ansi_colors | endif
     " Have vim only use the colors from the 16 color palette of the terminal in which it runs
     autocmd ColorScheme nord set t_Co=256
-    autocmd ColorScheme nord highlight Visual ctermfg=7 ctermbg=NONE cterm=reverse
+    autocmd ColorScheme nord highlight Visual ctermbg=8
     " Search hit
     autocmd ColorScheme nord highlight Search ctermfg=DarkYellow ctermbg=NONE cterm=reverse
     " Parentheses
