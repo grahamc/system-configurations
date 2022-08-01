@@ -702,7 +702,8 @@ Plug 'junegunn/fzf'
           \ '&showtabline': 0,
           \ '&cmdheight': 0,
           \ '&winbar': '',
-          \})
+          \ '&colorcolumn': '',
+          \ })
 
     " Restore old option values after leaving fzf
     autocmd BufLeave <buffer> call SetOptions(g:fzf_old_option_values)
