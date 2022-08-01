@@ -788,7 +788,14 @@ Plug 'hrsh7th/nvim-cmp'
     local buffer = { name = 'buffer' }
     local nvim_lsp = { name = 'nvim_lsp' }
     local omni = { name = 'omni' }
-    local path = { name = 'path' }
+    local path = {
+      name = 'path',
+      option = {
+        get_cwd = function(params)
+          return vim.fn.getcwd()
+        end,
+      },
+    }
     local nvim_lua = { name = 'nvim_lua' }
     local tmux = {
       name = 'tmux',
