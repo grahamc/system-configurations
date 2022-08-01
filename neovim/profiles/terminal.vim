@@ -1009,7 +1009,8 @@ Plug 'jose-elias-alvarez/null-ls.nvim'
       sources = {
         builtins.diagnostics.shellcheck.with({
           filetypes = { 'sh', 'bash' }
-        })
+        }),
+        builtins.diagnostics.fish,
       }
     })
 EOF
