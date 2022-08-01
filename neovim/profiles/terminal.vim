@@ -917,7 +917,8 @@ Plug 'williamboman/mason.nvim'
           package_pending = "⧖",
           package_uninstalled = "○"
         }
-      }
+      },
+      log_level = vim.log.levels.DEBUG,
     })
 EOF
   endfunction
