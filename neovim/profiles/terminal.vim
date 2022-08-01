@@ -699,6 +699,10 @@ Plug 'junegunn/goyo.vim'
 " Fzf integration {{{
 Plug 'junegunn/fzf'
   let g:fzf_layout = { 'window': 'tabnew' }
+  function! IsFloatingWindow()
+    let window_config = nvim_win_get_config(0)
+    return !empty(window_config.relative) || window_config.external
+  endfunction
   function! LoadFzfConfig()
     " In terminals you have to press <C-\> twice to send it to the terminal.
     " This mapping makes it so that I only have to press it once.
@@ -708,21 +712,26 @@ Plug 'junegunn/fzf'
     " Prevent entering normal mode in the terminal
     autocmd ModeChanged <buffer> if mode(1) =~# '\v^nt' | startinsert | endif
 
-    " Hide all ui elements
-    let g:fzf_old_option_values = SetOptions({
-          \ '&laststatus': 0,
-          \ '&showmode': 0,
-          \ '&ruler': 0,
-          \ '&number': 0,
-          \ '&relativenumber': 0,
-          \ '&showtabline': 0,
-          \ '&cmdheight': 0,
-          \ '&winbar': '',
-          \ '&colorcolumn': '',
-          \ })
+    " If fzf is the only window in the current tab, hide all ui elements, otherwise customize them.
+    if tabpagewinnr(tabpagenr(), '$') == 1
+      " Hide all ui elements
+      let g:fzf_old_option_values = SetOptions({
+            \ '&laststatus': 0,
+            \ '&showmode': 0,
+            \ '&ruler': 0,
+            \ '&number': 0,
+            \ '&relativenumber': 0,
+            \ '&showtabline': 0,
+            \ '&cmdheight': 0,
+            \ '&winbar': '',
+            \ '&colorcolumn': '',
+            \ })
 
-    " Restore old option values after leaving fzf
-    autocmd BufLeave <buffer> call SetOptions(g:fzf_old_option_values)
+      " Restore old option values after leaving fzf
+      autocmd BufLeave <buffer> call SetOptions(g:fzf_old_option_values)
+    else
+      autocmd! User FzfStatusLine setlocal statusline=%#StatusLine#\ fzf
+    endif
   endfunction
   augroup Fzf
     autocmd!
