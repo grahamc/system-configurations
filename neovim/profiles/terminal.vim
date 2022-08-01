@@ -33,6 +33,7 @@ augroup Miscellaneous
   " Start syntax highlighting from the beginning of the file. Unless it's a large file, in which case
   " don't highlight at all.
   autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | else | syntax sync fromstart | endif
+  autocmd OptionSet readonly if v:option_new | setlocal colorcolumn= | endif
 augroup END
 
 nnoremap <silent> <Leader>w <Cmd>wa<CR>
