@@ -583,8 +583,10 @@ Plug 'lukas-reineke/virt-column.nvim'
     lua << EOF
     require("virt-column").setup { char = "│" }
 EOF
+    execute 'VirtColumnRefresh!'
+    autocmd WinEnter,VimResized * VirtColumnRefresh!
   endfunction
-  autocmd VimEnter * call SetupVirtColumn() | execute 'VirtColumnRefresh!' | autocmd WinEnter * VirtColumnRefresh!
+  autocmd VimEnter * call SetupVirtColumn()
 " }}}
 
 " Prose {{{
