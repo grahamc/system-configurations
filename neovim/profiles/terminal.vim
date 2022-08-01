@@ -1039,6 +1039,7 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight StatusLineErrorText ctermfg=1 ctermbg=8
     autocmd ColorScheme nord highlight StatusLineWarningText ctermfg=3 ctermbg=8
     autocmd ColorScheme nord highlight StatusLineInfoText ctermfg=4 ctermbg=8
+    autocmd ColorScheme nord highlight StatusLineHintText ctermfg=5 ctermbg=8
     autocmd ColorScheme nord highlight StatusLineStandoutText ctermfg=3 ctermbg=8
     " autocomplete popupmenu
     autocmd ColorScheme nord highlight PmenuSel ctermfg=14 ctermbg=NONE cterm=reverse
