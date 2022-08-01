@@ -598,6 +598,7 @@ Plug 'lukas-reineke/virt-column.nvim'
     lua << EOF
     require("virt-column").setup { char = "│" }
 EOF
+
     execute 'VirtColumnRefresh!'
     autocmd WinEnter,VimResized * VirtColumnRefresh!
   endfunction
