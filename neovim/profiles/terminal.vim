@@ -68,6 +68,21 @@ imap <expr> <CR> GetEnterKeyActions()
 set colorcolumn=120
 " }}}
 
+" Autoreload {{{
+" neovim config files
+let config_files = ['init.vim']
+for profile in g:profiles
+  let last_filename_segment = profile->split('/', 0)[-1]
+  call add(config_files, last_filename_segment)
+endfor
+
+let config_file_pattern = config_files->join(',')
+execute printf(
+      \ 'autocmd! bufwritepost %s ++nested source $MYVIMRC | execute "colorscheme " . trim(execute("colorscheme"))',
+      \ config_file_pattern
+      \ )
+" }}}
+
 " Option overrides {{{
 function! OverrideVimsDefaultFiletypePlugins()
   " Vim's default filetype plugins get run after filetype detection is

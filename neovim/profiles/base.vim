@@ -100,21 +100,6 @@ let g:loaded_node_provider = 0
 let g:loaded_perl_provider = 0
 " }}}
 
-" Autoreload {{{
-" neovim config files
-let config_files = ['init.vim']
-for profile in g:profiles
-  let last_filename_segment = profile->split('/', 0)[-1]
-  call add(config_files, last_filename_segment)
-endfor
-
-let config_file_pattern = config_files->join(',')
-execute printf(
-      \ 'autocmd! bufwritepost %s ++nested source $MYVIMRC | execute "colorscheme " . trim(execute("colorscheme"))',
-      \ config_file_pattern
-      \ )
-" }}}
-
 " Searching {{{
 " searching is only case sensitive when the query contains an uppercase letter
 set ignorecase smartcase
