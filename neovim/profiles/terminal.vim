@@ -1041,6 +1041,7 @@ Plug 'jose-elias-alvarez/null-ls.nvim'
           filetypes = { 'sh', 'bash' }
         }),
         builtins.diagnostics.fish,
+        builtins.diagnostics.markdownlint,
       }
     })
 EOF
