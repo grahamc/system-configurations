@@ -200,7 +200,7 @@ let &softtabstop = s:tab_width
 " }}}
 
 " Folds {{{
-set fillchars+=foldsep:\ ,foldclose:›,foldopen:⌄
+set fillchars+=foldsep:\ ,foldclose:›,foldopen:⌄,fold:\ 
 " Setting this so that the fold column gets displayed
 set foldenable
 " When a file is opened, all folds should be open.
@@ -270,6 +270,9 @@ function! FoldText()
   let fold_description = printf('(%s)', fold_description)
   let fold_description_length = strdisplaywidth(fold_description)
 
+  let separator_text = '⋯ '
+  let separator_text_length = 2
+
   let line_text = getline(v:foldstart)
   " indent the line relative to the foldlevel if it isn't already indented
   if line_text !~# '\v^\s+'
@@ -278,17 +281,12 @@ function! FoldText()
     let indent = repeat(indent, indent_count)
     let line_text = indent . line_text
   endif
-  " truncate if there isn't space for the fold description and some separator text
-  let min_separator_text_length = 7
-  let max_line_text_length = line_width - (fold_description_length + min_separator_text_length)
+  " truncate if there isn't space for the fold description and separator text
+  let max_line_text_length = line_width - (fold_description_length + separator_text_length)
   if strdisplaywidth(line_text) > max_line_text_length
-    " truncate 1 more than we need so we can add an ellipsis
-    let line_text = line_text[: max_line_text_length - 2] . '…'
+    let line_text = line_text[: max_line_text_length - 1]
   endif
   let line_text_length = strdisplaywidth(line_text)
-
-  let separator_text_length = line_width - line_text_length - fold_description_length
-  let separator_text = ' ' . repeat('·', separator_text_length - 2) . ' '
 
   return line_text . separator_text . fold_description
 endfunction
@@ -1118,7 +1116,7 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight Warning ctermfg=3 ctermbg=NONE cterm=undercurl
     autocmd ColorScheme nord highlight! link SpellBad Error
     autocmd ColorScheme nord highlight! link NvimInternalError ErrorMsg
-    autocmd ColorScheme nord highlight Folded ctermfg=15 ctermbg=NONE cterm=NONE
+    autocmd ColorScheme nord highlight Folded ctermfg=15 ctermbg=8 cterm=NONE
     autocmd ColorScheme nord highlight FoldColumn ctermfg=15 ctermbg=NONE
     autocmd ColorScheme nord highlight SpecialKey ctermfg=13 ctermbg=NONE
     autocmd ColorScheme nord highlight NonText ctermfg=15 ctermbg=NONE
