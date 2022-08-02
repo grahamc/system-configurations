@@ -606,6 +606,12 @@ EOF
 " lua library specfically for use in neovim
 " DEPENDED_ON_BY: null-ls.nvim
 Plug 'nvim-lua/plenary.nvim'
+
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+  augroup MarkdownPreview
+    autocmd!
+    autocmd BufWinEnter *.{md,mkd,mdown,mkdn,mdwn} MarkdownPreview
+  augroup END
 " }}}
 
 " Prose {{{
