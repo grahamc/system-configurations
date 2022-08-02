@@ -868,7 +868,21 @@ Plug 'hrsh7th/nvim-cmp'
     local cmp = require("cmp")
 
     -- sources
-    local buffer = { name = 'buffer' }
+    local buffer = {
+      name = 'buffer',
+      option = {
+        keyword_length = 2,
+        get_bufnrs = function()
+          local buf = vim.api.nvim_get_current_buf()
+          local byte_size = vim.api.nvim_buf_get_offset(buf, vim.api.nvim_buf_line_count(buf))
+          if byte_size > 1024 * 1024 then -- 1 Megabyte max
+            return {}
+          end
+
+          return { buf }
+        end,
+      },
+    }
     local nvim_lsp = { name = 'nvim_lsp' }
     local omni = { name = 'omni' }
     local path = {
