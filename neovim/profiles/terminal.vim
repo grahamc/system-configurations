@@ -1177,6 +1177,14 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight NonText ctermfg=15 ctermbg=NONE
     autocmd ColorScheme nord highlight NerdTreeWinBar ctermfg=15 ctermbg=NONE cterm=italic
     autocmd ColorScheme nord highlight! link VirtColumn VertSplit
+    autocmd ColorScheme nord highlight DiagnosticSignError ctermfg=1 ctermbg=NONE
+    autocmd ColorScheme nord highlight DiagnosticSignWarn ctermfg=3 ctermbg=NONE
+    autocmd ColorScheme nord highlight DiagnosticSignInfo ctermfg=1 ctermbg=NONE
+    autocmd ColorScheme nord highlight DiagnosticSignHint ctermfg=5 ctermbg=NONE
+    autocmd ColorScheme nord highlight! link DiagnosticUnderlineError Error
+    autocmd ColorScheme nord highlight! link DiagnosticUnderlineWarn Warning
+    autocmd ColorScheme nord highlight DiagnosticUnderlineInfo ctermfg=1 ctermbg=NONE cterm=undercurl
+    autocmd ColorScheme nord highlight DiagnosticUnderlineHint ctermfg=5 ctermbg=NONE cterm=undercurl
   augroup END
 " }}}
 
