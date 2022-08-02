@@ -660,10 +660,6 @@ EOF
 Plug 'nvim-lua/plenary.nvim'
 
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
-  augroup MarkdownPreview
-    autocmd!
-    autocmd BufWinEnter *.{md,mkd,mdown,mkdn,mdwn} MarkdownPreview
-  augroup END
 " }}}
 
 " Prose {{{
