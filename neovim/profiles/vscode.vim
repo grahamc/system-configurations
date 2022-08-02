@@ -15,8 +15,11 @@ nnoremap <silent> <Leader>g :call VSCodeNotify("workbench.action.findInFiles")<C
 
 " Folds
 nnoremap <silent> <Tab> :call VSCodeNotify('editor.toggleFold')<CR>
-let g:is_folded = 0
 function! FoldToggle()
+  if !exists('g:is_folded')
+    let g:is_folded = 0
+  endif
+
   if g:is_folded
     call VSCodeNotify('editor.unfoldAll')
     let g:is_folded = 0
