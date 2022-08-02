@@ -1199,6 +1199,18 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight! link DiagnosticUnderlineWarn Warning
     autocmd ColorScheme nord highlight DiagnosticUnderlineInfo ctermfg=1 ctermbg=NONE cterm=undercurl
     autocmd ColorScheme nord highlight DiagnosticUnderlineHint ctermfg=5 ctermbg=NONE cterm=undercurl
+    autocmd ColorScheme nord highlight! CmpItemAbbrMatch ctermbg=NONE ctermfg=6
+    autocmd ColorScheme nord highlight! link CmpItemAbbrMatchFuzzy CmpItemAbbrMatch
+    autocmd ColorScheme nord highlight! CmpItemKindVariable ctermbg=NONE ctermfg=15
+    autocmd ColorScheme nord highlight! link CmpItemKindInterface CmpItemKindVariable
+    autocmd ColorScheme nord highlight! link CmpItemKindText CmpItemKindVariable
+    autocmd ColorScheme nord highlight! link CmpItemKindFunction CmpItemKindVariable
+    autocmd ColorScheme nord highlight! link CmpItemKindMethod CmpItemKindVariable
+    autocmd ColorScheme nord highlight! link CmpItemKindKeyword CmpItemKindVariable
+    autocmd ColorScheme nord highlight! link CmpItemKindProperty CmpItemKindVariable
+    autocmd ColorScheme nord highlight! link CmpItemKindUnit CmpItemKindVariable
+    autocmd ColorScheme nord highlight! link CmpItemKindSnippet CmpItemKindVariable
+    autocmd ColorScheme nord highlight! link CmpItemKindOperator CmpItemKindVariable
   augroup END
 " }}}
 
