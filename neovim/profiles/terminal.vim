@@ -514,6 +514,58 @@ augroup END
 
 " }}}
 
+" Diagnostics {{{
+lua << EOF
+vim.diagnostic.config({
+  virtual_text = false,
+  signs = {
+    -- Make it high enough to have priority over vim-signify
+    priority = 11,
+  },
+  update_in_insert = true,
+  severity_sort = true,
+  float = {
+    source = "if_many",
+  },
+})
+
+local bullet = '•'
+local signs = { Error = bullet, Warn = bullet, Hint = bullet, Info = bullet }
+for type, icon in pairs(signs) do
+  local hl = "DiagnosticSign" .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+end
+
+function PrintDiagnostics(opts, bufnr, line_nr, client_id)
+  bufnr = bufnr or 0
+  line_nr = line_nr or (vim.api.nvim_win_get_cursor(0)[1] - 1)
+  opts = opts or {['lnum'] = line_nr}
+
+  local line_diagnostics = vim.diagnostic.get(bufnr, opts)
+  if vim.tbl_isempty(line_diagnostics) then
+    return
+  end
+
+  local line_limit = vim.o.columns * vim.o.cmdheight
+  local diagnostic_message = ""
+  for i, diagnostic in ipairs(line_diagnostics) do
+    current_message = string.format("%d: %s (%s)", i, diagnostic.message or "", diagnostic.code or "")
+    -- prevent the 'press enter to continue' message by making sure the message fits
+    current_message = string.sub(current_message, 1, line_limit)
+
+    diagnostic_message = diagnostic_message .. current_message
+    print(diagnostic_message)
+
+    -- only use the first item
+    break
+  end
+
+  vim.api.nvim_echo({{diagnostic_message, "Normal"}}, false, {})
+end
+vim.cmd [[ autocmd! CursorHold * lua PrintDiagnostics() ]]
+EOF
+" }}}
+
 " Plugins {{{
 
 " Miscellaneous {{{
