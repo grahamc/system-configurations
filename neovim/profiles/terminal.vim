@@ -1154,8 +1154,8 @@ Plug 'arcticicestudio/nord-vim'
     function! DisableWordUnderCursorHighlight()
       if mode(1) =~# '\v^v'
         highlight WordUnderCursor ctermbg=NONE
-        " When I reenter normal mode, enable WordUnderCursor highlighting
-        autocmd ModeChanged * ++once if mode(1) =~# '\v^n' | highlight WordUnderCursor ctermbg=8 | endif
+        " When I leave visual mode, enable WordUnderCursor highlighting
+        autocmd ModeChanged * ++once if mode(1) !~# '\v^v' | highlight WordUnderCursor ctermbg=8 | endif
       endif
     endfunction
     autocmd ModeChanged * call DisableWordUnderCursorHighlight()
