@@ -1063,7 +1063,10 @@ Plug 'williamboman/mason.nvim'
           package_installed = "●",
           package_pending = "⧖",
           package_uninstalled = "○"
-        }
+        },
+        keymaps = {
+          toggle_package_expand = "<Tab>",
+        },
       },
       log_level = vim.log.levels.DEBUG,
     })
@@ -1258,6 +1261,12 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight! TelescopePromptTitle ctermbg=NONE ctermfg=5 cterm=reverse
     autocmd ColorScheme nord highlight! TelescopeMatching ctermbg=NONE ctermfg=6
     autocmd ColorScheme nord highlight! TelescopeSelectionCaret ctermbg=8 ctermfg=8
+    autocmd ColorScheme nord highlight MasonHeader ctermbg=NONE ctermfg=4 cterm=reverse,bold
+    autocmd ColorScheme nord highlight MasonHighlight ctermbg=NONE ctermfg=6
+    autocmd ColorScheme nord highlight MasonHighlightBlockBold ctermbg=NONE ctermfg=6 cterm=reverse,bold
+    autocmd ColorScheme nord highlight MasonMuted ctermbg=NONE ctermfg=NONE
+    autocmd ColorScheme nord highlight MasonMutedBlock ctermbg=NONE ctermfg=15 cterm=reverse
+    autocmd ColorScheme nord highlight MasonError ctermbg=NONE ctermfg=1
   augroup END
 " }}}
 
