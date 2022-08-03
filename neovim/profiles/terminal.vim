@@ -602,6 +602,7 @@ Plug 'junegunn/vim-plug'
 
 " Syntax plugins for practically any language
 Plug 'sheerun/vim-polyglot'
+  let g:polyglot_disabled = ['ftdetect']
 
 " Automatically close html tags
 Plug 'alvan/vim-closetag'
