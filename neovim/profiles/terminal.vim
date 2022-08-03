@@ -943,6 +943,7 @@ Plug 'hrsh7th/nvim-cmp'
       name = 'dictionary',
       keyword_length = 2,
     }
+    local lsp_signature = { name = 'nvim_lsp_signature_help' }
 
     -- views
     local wildmenu = {
@@ -988,6 +989,7 @@ Plug 'hrsh7th/nvim-cmp'
           nvim_lua,
           tmux,
           dictionary,
+          lsp_signature,
         }
       )
     })
@@ -1066,6 +1068,8 @@ EOF
     CmpDictionaryUpdate
   endfunction
   autocmd VimEnter * call SetupCmpDictionary()
+
+Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
 " }}}
 
 " Tool Manager {{{
