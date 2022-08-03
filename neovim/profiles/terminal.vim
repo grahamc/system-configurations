@@ -1094,6 +1094,8 @@ Plug 'williamboman/mason-lspconfig.nvim'
     lua << EOF
     require("mason-lspconfig").setup()
 
+    local lspconfig = require('lspconfig')
+
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
     capabilities.textDocument.foldingRange = {
@@ -1109,25 +1111,31 @@ Plug 'williamboman/mason-lspconfig.nvim'
       end
     end
 
+    local default_server_config = {
+      capabilities = capabilities,
+      on_attach = on_attach,
+    }
+
     require("mason-lspconfig").setup_handlers({
       -- Default handler to be called for each installed server that doesn't have a dedicated handler.
       function (server_name)
-        require("lspconfig")[server_name].setup({
-          capabilities = capabilities,
-          on_attach = on_attach,
-        })
+        lspconfig[server_name].setup(default_server_config)
       end,
       ["jsonls"] = function()
-        require("lspconfig").jsonls.setup({
-          capabilities = capabilities,
-          on_attach = on_attach,
-          settings = {
-            json = {
-              schemas = require('schemastore').json.schemas(),
-              validate = { enable = true },
-            },
-          },
-        })
+        lspconfig.jsonls.setup(
+          vim.tbl_deep_extend(
+            'force',
+            default_server_config,
+            {
+              settings = {
+                json = {
+                  schemas = require('schemastore').json.schemas(),
+                  validate = { enable = true },
+                },
+              },
+            }
+          )
+        )
       end,
     })
 EOF
