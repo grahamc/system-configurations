@@ -1108,10 +1108,20 @@ Plug 'williamboman/mason-lspconfig.nvim'
     }
 
     local on_attach = function(client, buffer_number)
+      capabilities = client.server_capabilities
+      buffer_keymap = vim.api.nvim_buf_set_keymap
+      keymap_opts = { noremap = true, silent = true }
+
       foldmethod = vim.o.foldmethod
-      isFoldmethodOverridable = foldmethod ~= 'manual' and foldmethod ~= 'marker'
-      if client.server_capabilities.foldingRangeProvider and isFoldmethodOverridable then
+      isFoldmethodOverridable = foldmethod ~= 'manual' and foldmethod ~= 'marker' and foldmethod ~= 'diff'
+      if capabilities.foldingRangeProvider and isFoldmethodOverridable then
         require('folding').on_attach()
+      end
+
+      filetype = vim.o.filetype
+      isKeywordprgOverridable = filetype ~= 'vim' and filetype ~= 'sh'
+      if capabilities.hoverProvider and isKeywordprgOverridable then
+        buffer_keymap(buffer_number, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", keymap_opts)
       end
     end
 
