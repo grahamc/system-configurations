@@ -525,7 +525,7 @@ local bullet = '•'
 local signs = { Error = bullet, Warn = bullet, Hint = bullet, Info = bullet }
 for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+  vim.fn.sign_define(hl, { text = icon, texthl = hl})
 end
 
 function PrintDiagnostics(opts, bufnr, line_nr, client_id)
