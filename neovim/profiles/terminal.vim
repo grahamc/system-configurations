@@ -683,6 +683,26 @@ Plug 'nvim-telescope/telescope.nvim', { 'branch': '0.1.x' }
 EOF
   endfunction
   autocmd VimEnter * call SetupTelescope()
+
+" RECOMMENDED_BY: mason.nvim (for the language filter)
+Plug 'stevearc/dressing.nvim'
+  function! SetupDressing()
+    lua << EOF
+    require('dressing').setup({
+      select = {
+        telescope = {
+          layout_config = {
+            width = 0.6,
+            height = 0.6,
+          },
+          layout_strategy = 'center',
+          sorting_strategy = 'ascending'
+        },
+      },
+    })
+EOF
+  endfunction
+  autocmd VimEnter * call SetupDressing()
 " }}}
 
 " Prose {{{
