@@ -266,21 +266,13 @@ function! FoldText()
   let line_width = window_width - gutter_width
 
   let fold_line_count = (v:foldend - v:foldstart) + 1
-  let fold_description = fold_line_count . ' lines'
-  let fold_description = printf('(%s)', fold_description)
+  let fold_description = printf('(%s)', fold_line_count)
   let fold_description_length = strdisplaywidth(fold_description)
 
   let separator_text = '⋯ '
   let separator_text_length = 2
 
   let line_text = getline(v:foldstart)
-  " indent the line relative to the foldlevel if it isn't already indented
-  if line_text !~# '\v^\s+'
-    let indent_count = max([0, v:foldlevel - 1])
-    let indent = repeat(' ', &tabstop)
-    let indent = repeat(indent, indent_count)
-    let line_text = indent . line_text
-  endif
   " truncate if there isn't space for the fold description and separator text
   let max_line_text_length = line_width - (fold_description_length + separator_text_length)
   if strdisplaywidth(line_text) > max_line_text_length
