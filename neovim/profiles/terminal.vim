@@ -362,6 +362,14 @@ augroup END
 " Statusline {{{
 set laststatus=3
 
+function! OpenDiagnosticWindow(minimum_width, mouse_click_count, mouse_button, modifiers)
+  if exists(':TroubleToggle')
+    TroubleToggle
+  endif
+endfunction
+function! GetDiagnosticCountForSeverity(severity)
+  return v:lua.vim.diagnostic.get(0, {'severity': a:severity})->len()
+endfunction
 function! MyStatusLine()
   let item_separator = '%#StatusLineSeparator# ∙ '
 
@@ -384,14 +392,6 @@ function! MyStatusLine()
     let readonly = '%#StatusLineStandoutText#[RO]'
   endif
 
-  function! OpenDiagnosticWindow(minimum_width, mouse_click_count, mouse_button, modifiers)
-    if exists(':TroubleToggle')
-      TroubleToggle
-    endif
-  endfunction
-  function! GetDiagnosticCountForSeverity(severity)
-    return v:lua.vim.diagnostic.get(0, {'severity': a:severity})->len()
-  endfunction
   let diagnostic_count = {
         \ 'warning': GetDiagnosticCountForSeverity('warn'),
         \ 'error': GetDiagnosticCountForSeverity('error'),
