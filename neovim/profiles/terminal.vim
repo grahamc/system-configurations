@@ -939,6 +939,10 @@ Plug 'hrsh7th/nvim-cmp'
     }
     local cmdline = { name = 'cmdline' }
     local cmdline_history = { name = 'cmdline_history' }
+    local dictionary = {
+      name = 'dictionary',
+      keyword_length = 2,
+    }
 
     -- views
     local wildmenu = {
@@ -983,6 +987,7 @@ Plug 'hrsh7th/nvim-cmp'
           path,
           nvim_lua,
           tmux,
+          dictionary,
         }
       )
     })
@@ -1047,6 +1052,20 @@ Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-nvim-lsp'
 
 Plug 'hrsh7th/cmp-path'
+
+Plug 'uga-rosa/cmp-dictionary'
+  function! SetupCmpDictionary()
+    lua << EOF
+    require("cmp_dictionary").setup({
+      dic = {
+        ['*'] = { '/usr/share/dict/words' },
+      },
+    })
+EOF
+
+    CmpDictionaryUpdate
+  endfunction
+  autocmd VimEnter * call SetupCmpDictionary()
 " }}}
 
 " Tool Manager {{{
