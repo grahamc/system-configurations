@@ -1195,10 +1195,10 @@ Plug 'arcticicestudio/nord-vim'
     " The highlight I use for the word under the cursor and text selected in visual mode is the same.
     " This will disable the highlighting for the word under the cursor while I'm in visual mode.
     function! DisableWordUnderCursorHighlight()
-      if mode(1) =~# '\v^v'
+      if mode(1) =~# '\v^(v|)'
         highlight WordUnderCursor ctermbg=NONE
         " When I leave visual mode, enable WordUnderCursor highlighting
-        autocmd ModeChanged * ++once if mode(1) !~# '\v^v' | highlight WordUnderCursor ctermbg=8 | endif
+        autocmd ModeChanged * ++once if mode(1) !~# '\v^(v|)' | highlight WordUnderCursor ctermbg=8 | endif
       endif
     endfunction
     autocmd ModeChanged * call DisableWordUnderCursorHighlight()
