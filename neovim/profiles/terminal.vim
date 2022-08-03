@@ -656,10 +656,33 @@ EOF
   autocmd VimEnter * call SetupVirtColumn()
 
 " lua library specfically for use in neovim
-" DEPENDED_ON_BY: null-ls.nvim
+" DEPENDED_ON_BY: null-ls.nvim, telescope.nvim
 Plug 'nvim-lua/plenary.nvim'
 
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+
+Plug 'nvim-telescope/telescope.nvim', { 'branch': '0.1.x' }
+  function! SetupTelescope()
+    lua << EOF
+    telescope = require('telescope')
+    actions = require('telescope.actions')
+
+    telescope.setup({
+      defaults = {
+        mappings = {
+          i = {
+            ["<Esc>"] = actions.close,
+            ["<Tab>"] = actions.move_selection_next,
+            ["<S-Tab>"] = actions.move_selection_previous,
+            ["<C-p>"] = actions.cycle_history_prev,
+            ["<C-n>"] = actions.cycle_history_next,
+          },
+        },
+      },
+    })
+EOF
+  endfunction
+  autocmd VimEnter * call SetupTelescope()
 " }}}
 
 " Prose {{{
@@ -1211,6 +1234,10 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight! link CmpItemKindUnit CmpItemKindVariable
     autocmd ColorScheme nord highlight! link CmpItemKindSnippet CmpItemKindVariable
     autocmd ColorScheme nord highlight! link CmpItemKindOperator CmpItemKindVariable
+    autocmd ColorScheme nord highlight! TelescopeBorder ctermbg=NONE ctermfg=0
+    autocmd ColorScheme nord highlight! TelescopePromptTitle ctermbg=NONE ctermfg=5 cterm=reverse
+    autocmd ColorScheme nord highlight! TelescopeMatching ctermbg=NONE ctermfg=6
+    autocmd ColorScheme nord highlight! TelescopeSelectionCaret ctermbg=8 ctermfg=8
   augroup END
 " }}}
 
