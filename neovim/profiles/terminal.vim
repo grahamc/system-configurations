@@ -34,6 +34,7 @@ augroup Miscellaneous
   " don't highlight at all.
   autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | else | syntax sync fromstart | endif
   autocmd OptionSet readonly if v:option_new | setlocal colorcolumn= | endif
+  autocmd FileType qf,help setlocal colorcolumn=
 augroup END
 
 nnoremap <silent> <Leader>w <Cmd>wa<CR>
