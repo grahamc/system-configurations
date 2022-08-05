@@ -220,46 +220,11 @@ nnoremap [<Tab> [z
 nnoremap ]<Tab> ]z
 xnoremap [<Tab> [z
 xnoremap ]<Tab> ]z
+nnoremap <silent> <Tab> za
 augroup Fold
   autocmd!
   autocmd FileType * setlocal foldmethod=indent
 augroup END
-
-" Toggle the fold at the current line, if there is one. If the previous line we were on was below the current line,
-" then start at the end of the fold. Also, move by screen line, unless a line count was specified.
-function! TrackPreviousMove(char)
-  let g:previous_move = a:char
-
-  let keys = a:char
-  if v:count == 0
-    let keys = 'g' . keys
-  endif
-
-  return keys
-endfunction
-nnoremap <expr> j TrackPreviousMove('j')
-nnoremap <expr> k TrackPreviousMove('k')
-function! FoldToggle()
-  if !foldlevel('.')
-    return
-  endif
-
-  let action = 'za'
-
-  " If we are opening a fold, and the last line we were on was below the fold,
-  " open to the end of the fold.
-  if exists('g:previous_move') && g:previous_move ==# 'k' && foldclosed('.') != -1
-    let action .= ']z'
-  endif
-
-  " This way if we close a fold and reopen it with moving lines, it takes us back to where we were
-  if foldclosed('.') == -1
-    let g:previous_move = ''
-  endif
-
-  execute 'keepjumps normal ' . action
-endfunction
-nnoremap <silent> <Tab> <Cmd>call FoldToggle()<CR>
 
 set foldtext=FoldText()
 function! FoldText()
