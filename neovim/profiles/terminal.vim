@@ -652,7 +652,6 @@ EOF
   autocmd VimEnter * call SetupVirtColumn()
 
 " lua library specfically for use in neovim
-" DEPENDED_ON_BY: null-ls.nvim, telescope.nvim
 Plug 'nvim-lua/plenary.nvim'
 
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
@@ -680,7 +679,6 @@ EOF
   endfunction
   autocmd VimEnter * call SetupTelescope()
 
-" RECOMMENDED_BY: mason.nvim (for the language filter)
 Plug 'stevearc/dressing.nvim'
   function! SetupDressing()
     lua << EOF
@@ -807,10 +805,6 @@ Plug 'junegunn/goyo.vim'
 " Fzf integration {{{
 Plug 'junegunn/fzf'
   let g:fzf_layout = { 'window': 'tabnew' }
-  function! IsFloatingWindow()
-    let window_config = nvim_win_get_config(0)
-    return !empty(window_config.relative) || window_config.external
-  endfunction
   function! LoadFzfConfig()
     " In terminals you have to press <C-\> twice to send it to the terminal.
     " This mapping makes it so that I only have to press it once.
