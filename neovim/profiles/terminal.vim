@@ -798,7 +798,7 @@ Plug 'junegunn/fzf'
 " }}}
 
 " File explorer {{{
-Plug 'preservim/nerdtree'
+Plug 'preservim/nerdtree', {'on': []}
   let g:NERDTreeMouseMode = 2
   let g:NERDTreeShowHidden = 1
   let g:NERDTreeStatusline = -1
@@ -806,6 +806,12 @@ Plug 'preservim/nerdtree'
   let g:NERDTreeAutoDeleteBuffer=0
   let g:NERDTreeHijackNetrw=1
   function! NerdTreeToggle()
+    " Lazyload NERDTree
+    if !exists('s:loaded_nerdtree')
+      call plug#load('nerdtree')
+      let s:loaded_nerdtree = 1
+    endif
+
     " NERDTree is open so close it.
     if g:NERDTree.IsOpen()
       silent execute 'NERDTreeToggle'
