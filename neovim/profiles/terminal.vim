@@ -1007,7 +1007,7 @@ Plug 'uga-rosa/cmp-dictionary'
     })
 EOF
 
-    CmpDictionaryUpdate
+    call timer_start(0, { -> execute('CmpDictionaryUpdate')})
   endfunction
   autocmd VimEnter * call SetupCmpDictionary()
 
