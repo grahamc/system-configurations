@@ -1283,8 +1283,9 @@ Plug 'arcticicestudio/nord-vim'
     autocmd ColorScheme nord highlight! CmpItemAbbrMatch ctermbg=NONE ctermfg=6
     autocmd ColorScheme nord highlight! link CmpItemAbbrMatchFuzzy CmpItemAbbrMatch
     autocmd ColorScheme nord highlight! CmpItemKind ctermbg=NONE ctermfg=15
+    autocmd ColorScheme nord highlight! link CmpItemMenu CmpItemKind
     autocmd ColorScheme nord highlight! TelescopeBorder ctermbg=NONE ctermfg=0
-    autocmd ColorScheme nord highlight! TelescopePromptTitle ctermbg=NONE ctermfg=5 cterm=reverse
+    autocmd ColorScheme nord highlight! TelescopePromptTitle ctermbg=NONE ctermfg=5 cterm=reverse,bold
     autocmd ColorScheme nord highlight! TelescopeMatching ctermbg=NONE ctermfg=6
     autocmd ColorScheme nord highlight! TelescopeSelectionCaret ctermbg=8 ctermfg=8
     autocmd ColorScheme nord highlight MasonHeader ctermbg=NONE ctermfg=4 cterm=reverse,bold
