@@ -74,6 +74,12 @@ xmap <C-k> 10k
 nnoremap <silent> <expr> j (v:count == 0) ? 'gj' : 'j'
 nnoremap <silent> <expr> k (v:count == 0) ? 'gk' : 'k'
 
+" Resizing panes
+nnoremap <silent> <C-Left> <Cmd>vertical resize +1<CR>
+nnoremap <silent> <C-Right> <Cmd>vertical resize -1<CR>
+nnoremap <silent> <C-Up> <Cmd>resize +1<CR>
+nnoremap <silent> <C-Down> <Cmd>resize -1<CR>
+
 " Copy up to the end of line, not including the newline character
 nnoremap Y yg_
 
