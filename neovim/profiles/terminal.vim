@@ -311,7 +311,7 @@ set nohlsearch
 " show match position in command window, don't show 'Search hit BOTTOM/TOP'
 set shortmess-=S shortmess+=s
 " toggle search highlighting
-nnoremap <silent> <Leader>\ <Cmd>set hlsearch!<CR>
+nnoremap <silent> \ <Cmd>set hlsearch!<CR>
 " }}}
 
 " Sessions {{{
