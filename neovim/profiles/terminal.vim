@@ -1163,33 +1163,90 @@ Plug 'arcticicestudio/nord-vim'
   let g:nord_italic = 1
   let g:nord_italic_comments = 1
   let g:nord_underline = 1
+  function! SetNordOverrides()
+    highlight MatchParen ctermfg=blue cterm=underline ctermbg=NONE
+    " Transparent vertical split
+    highlight VertSplit ctermbg=NONE ctermfg=8
+    " statusline colors
+    highlight StatusLine ctermbg=8 ctermfg=NONE
+    highlight StatusLineSeparator ctermfg=8 ctermbg=NONE cterm=reverse,bold
+    highlight StatusLineErrorText ctermfg=1 ctermbg=8
+    highlight StatusLineWarningText ctermfg=3 ctermbg=8
+    highlight StatusLineInfoText ctermfg=4 ctermbg=8
+    highlight StatusLineHintText ctermfg=5 ctermbg=8
+    highlight StatusLineStandoutText ctermfg=3 ctermbg=8
+    " autocomplete popupmenu
+    highlight PmenuSel ctermfg=14 ctermbg=NONE cterm=reverse
+    highlight Pmenu ctermfg=NONE ctermbg=8
+    highlight PmenuThumb ctermfg=NONE ctermbg=15
+    highlight PmenuSbar ctermbg=8
+    highlight CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
+    " transparent background
+    highlight Normal ctermbg=NONE
+    highlight EndOfBuffer ctermbg=NONE
+    " relative line numbers
+    highlight LineNr ctermfg=15
+    highlight LineNrAbove ctermfg=15
+    highlight! link LineNrBelow LineNrAbove
+    highlight WordUnderCursor ctermbg=8
+    highlight! link IncSearch Search
+    highlight TabLine ctermbg=8 ctermfg=7
+    highlight TabLineSel ctermbg=NONE ctermfg=7
+    highlight TabLineFill ctermbg=8
+    highlight TabLineSeparator ctermbg=NONE ctermfg=14
+    highlight TabLineSeparatorNC ctermbg=8 ctermfg=15
+    highlight TabLineLastSeparator ctermbg=NONE ctermfg=15
+    highlight TabLineLastSeparatorNC ctermbg=8 ctermfg=15
+    highlight Comment ctermfg=15 ctermbg=NONE
+    " This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
+    " By unsetting this, I ensure that terminals opened in vim will use the colors from the color palette of the
+    " terminal in which vim is running
+    if exists('g:terminal_ansi_colors') | unlet g:terminal_ansi_colors | endif
+    " Have vim only use the colors from the 16 color palette of the terminal in which it runs
+    set t_Co=256
+    highlight Visual ctermbg=8
+    " Search hit
+    highlight Search ctermfg=DarkYellow ctermbg=NONE cterm=reverse
+    " Parentheses
+    highlight Delimiter ctermfg=NONE ctermbg=NONE
+    highlight ErrorMsg ctermfg=1 ctermbg=NONE cterm=bold
+    highlight WarningMsg ctermfg=3 ctermbg=NONE cterm=bold
+    highlight Error ctermfg=1 ctermbg=NONE cterm=undercurl
+    highlight Warning ctermfg=3 ctermbg=NONE cterm=undercurl
+    highlight! link SpellBad Error
+    highlight! link NvimInternalError ErrorMsg
+    highlight Folded ctermfg=15 ctermbg=8 cterm=NONE
+    highlight FoldColumn ctermfg=15 ctermbg=NONE
+    highlight SpecialKey ctermfg=13 ctermbg=NONE
+    highlight NonText ctermfg=15 ctermbg=NONE
+    highlight NerdTreeWinBar ctermfg=15 ctermbg=NONE cterm=italic
+    highlight! link VirtColumn VertSplit
+    highlight DiagnosticSignError ctermfg=1 ctermbg=NONE
+    highlight DiagnosticSignWarn ctermfg=3 ctermbg=NONE
+    highlight DiagnosticSignInfo ctermfg=1 ctermbg=NONE
+    highlight DiagnosticSignHint ctermfg=5 ctermbg=NONE
+    highlight! link DiagnosticUnderlineError Error
+    highlight! link DiagnosticUnderlineWarn Warning
+    highlight DiagnosticUnderlineInfo ctermfg=1 ctermbg=NONE cterm=undercurl
+    highlight DiagnosticUnderlineHint ctermfg=5 ctermbg=NONE cterm=undercurl
+    highlight! CmpItemAbbrMatch ctermbg=NONE ctermfg=6
+    highlight! link CmpItemAbbrMatchFuzzy CmpItemAbbrMatch
+    highlight! CmpItemKind ctermbg=NONE ctermfg=15
+    highlight! link CmpItemMenu CmpItemKind
+    highlight! TelescopeBorder ctermbg=NONE ctermfg=0
+    highlight! TelescopePromptTitle ctermbg=NONE ctermfg=5 cterm=reverse,bold
+    highlight! TelescopeMatching ctermbg=NONE ctermfg=6
+    highlight! TelescopeSelectionCaret ctermbg=8 ctermfg=8
+    highlight MasonHeader ctermbg=NONE ctermfg=4 cterm=reverse,bold
+    highlight MasonHighlight ctermbg=NONE ctermfg=6
+    highlight MasonHighlightBlockBold ctermbg=NONE ctermfg=6 cterm=reverse,bold
+    highlight MasonMuted ctermbg=NONE ctermfg=NONE
+    highlight MasonMutedBlock ctermbg=NONE ctermfg=15 cterm=reverse
+    highlight MasonError ctermbg=NONE ctermfg=1
+  endfunction
   augroup NordColorschemeOverrides
     autocmd!
-    autocmd ColorScheme nord highlight MatchParen ctermfg=blue cterm=underline ctermbg=NONE
-    " Transparent vertical split
-    autocmd ColorScheme nord highlight VertSplit ctermbg=NONE ctermfg=8
-    " statusline colors
-    autocmd ColorScheme nord highlight StatusLine ctermbg=8 ctermfg=NONE
-    autocmd ColorScheme nord highlight StatusLineSeparator ctermfg=8 ctermbg=NONE cterm=reverse,bold
-    autocmd ColorScheme nord highlight StatusLineErrorText ctermfg=1 ctermbg=8
-    autocmd ColorScheme nord highlight StatusLineWarningText ctermfg=3 ctermbg=8
-    autocmd ColorScheme nord highlight StatusLineInfoText ctermfg=4 ctermbg=8
-    autocmd ColorScheme nord highlight StatusLineHintText ctermfg=5 ctermbg=8
-    autocmd ColorScheme nord highlight StatusLineStandoutText ctermfg=3 ctermbg=8
-    " autocomplete popupmenu
-    autocmd ColorScheme nord highlight PmenuSel ctermfg=14 ctermbg=NONE cterm=reverse
-    autocmd ColorScheme nord highlight Pmenu ctermfg=NONE ctermbg=8
-    autocmd ColorScheme nord highlight PmenuThumb ctermfg=NONE ctermbg=15
-    autocmd ColorScheme nord highlight PmenuSbar ctermbg=8
-    autocmd ColorScheme nord highlight CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
-    " transparent background
-    autocmd ColorScheme nord highlight Normal ctermbg=NONE
-    autocmd ColorScheme nord highlight EndOfBuffer ctermbg=NONE
-    " relative line numbers
-    autocmd ColorScheme nord highlight LineNr ctermfg=15
-    autocmd ColorScheme nord highlight LineNrAbove ctermfg=15
-    autocmd ColorScheme nord highlight! link LineNrBelow LineNrAbove
-    autocmd ColorScheme nord highlight WordUnderCursor ctermbg=8
+    autocmd ColorScheme nord call SetNordOverrides()
     " The highlight I use for the word under the cursor and text selected in visual mode is the same.
     " This will disable the highlighting for the word under the cursor while I'm in visual mode.
     function! DisableWordUnderCursorHighlight()
@@ -1200,60 +1257,6 @@ Plug 'arcticicestudio/nord-vim'
       endif
     endfunction
     autocmd ModeChanged * call DisableWordUnderCursorHighlight()
-    autocmd ColorScheme nord highlight! link IncSearch Search
-    autocmd ColorScheme nord highlight TabLine ctermbg=8 ctermfg=7
-    autocmd ColorScheme nord highlight TabLineSel ctermbg=NONE ctermfg=7
-    autocmd ColorScheme nord highlight TabLineFill ctermbg=8
-    autocmd ColorScheme nord highlight TabLineSeparator ctermbg=NONE ctermfg=14
-    autocmd ColorScheme nord highlight TabLineSeparatorNC ctermbg=8 ctermfg=15
-    autocmd ColorScheme nord highlight TabLineLastSeparator ctermbg=NONE ctermfg=15
-    autocmd ColorScheme nord highlight TabLineLastSeparatorNC ctermbg=8 ctermfg=15
-    autocmd ColorScheme nord highlight Comment ctermfg=15 ctermbg=NONE
-    " This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
-    " By unsetting this, I ensure that terminals opened in vim will use the colors from the color palette of the
-    " terminal in which vim is running
-    autocmd ColorScheme nord if exists('g:terminal_ansi_colors') | unlet g:terminal_ansi_colors | endif
-    " Have vim only use the colors from the 16 color palette of the terminal in which it runs
-    autocmd ColorScheme nord set t_Co=256
-    autocmd ColorScheme nord highlight Visual ctermbg=8
-    " Search hit
-    autocmd ColorScheme nord highlight Search ctermfg=DarkYellow ctermbg=NONE cterm=reverse
-    " Parentheses
-    autocmd ColorScheme nord highlight Delimiter ctermfg=NONE ctermbg=NONE
-    autocmd ColorScheme nord highlight ErrorMsg ctermfg=1 ctermbg=NONE cterm=bold
-    autocmd ColorScheme nord highlight WarningMsg ctermfg=3 ctermbg=NONE cterm=bold
-    autocmd ColorScheme nord highlight Error ctermfg=1 ctermbg=NONE cterm=undercurl
-    autocmd ColorScheme nord highlight Warning ctermfg=3 ctermbg=NONE cterm=undercurl
-    autocmd ColorScheme nord highlight! link SpellBad Error
-    autocmd ColorScheme nord highlight! link NvimInternalError ErrorMsg
-    autocmd ColorScheme nord highlight Folded ctermfg=15 ctermbg=8 cterm=NONE
-    autocmd ColorScheme nord highlight FoldColumn ctermfg=15 ctermbg=NONE
-    autocmd ColorScheme nord highlight SpecialKey ctermfg=13 ctermbg=NONE
-    autocmd ColorScheme nord highlight NonText ctermfg=15 ctermbg=NONE
-    autocmd ColorScheme nord highlight NerdTreeWinBar ctermfg=15 ctermbg=NONE cterm=italic
-    autocmd ColorScheme nord highlight! link VirtColumn VertSplit
-    autocmd ColorScheme nord highlight DiagnosticSignError ctermfg=1 ctermbg=NONE
-    autocmd ColorScheme nord highlight DiagnosticSignWarn ctermfg=3 ctermbg=NONE
-    autocmd ColorScheme nord highlight DiagnosticSignInfo ctermfg=1 ctermbg=NONE
-    autocmd ColorScheme nord highlight DiagnosticSignHint ctermfg=5 ctermbg=NONE
-    autocmd ColorScheme nord highlight! link DiagnosticUnderlineError Error
-    autocmd ColorScheme nord highlight! link DiagnosticUnderlineWarn Warning
-    autocmd ColorScheme nord highlight DiagnosticUnderlineInfo ctermfg=1 ctermbg=NONE cterm=undercurl
-    autocmd ColorScheme nord highlight DiagnosticUnderlineHint ctermfg=5 ctermbg=NONE cterm=undercurl
-    autocmd ColorScheme nord highlight! CmpItemAbbrMatch ctermbg=NONE ctermfg=6
-    autocmd ColorScheme nord highlight! link CmpItemAbbrMatchFuzzy CmpItemAbbrMatch
-    autocmd ColorScheme nord highlight! CmpItemKind ctermbg=NONE ctermfg=15
-    autocmd ColorScheme nord highlight! link CmpItemMenu CmpItemKind
-    autocmd ColorScheme nord highlight! TelescopeBorder ctermbg=NONE ctermfg=0
-    autocmd ColorScheme nord highlight! TelescopePromptTitle ctermbg=NONE ctermfg=5 cterm=reverse,bold
-    autocmd ColorScheme nord highlight! TelescopeMatching ctermbg=NONE ctermfg=6
-    autocmd ColorScheme nord highlight! TelescopeSelectionCaret ctermbg=8 ctermfg=8
-    autocmd ColorScheme nord highlight MasonHeader ctermbg=NONE ctermfg=4 cterm=reverse,bold
-    autocmd ColorScheme nord highlight MasonHighlight ctermbg=NONE ctermfg=6
-    autocmd ColorScheme nord highlight MasonHighlightBlockBold ctermbg=NONE ctermfg=6 cterm=reverse,bold
-    autocmd ColorScheme nord highlight MasonMuted ctermbg=NONE ctermfg=NONE
-    autocmd ColorScheme nord highlight MasonMutedBlock ctermbg=NONE ctermfg=15 cterm=reverse
-    autocmd ColorScheme nord highlight MasonError ctermbg=NONE ctermfg=1
   augroup END
 " }}}
 
