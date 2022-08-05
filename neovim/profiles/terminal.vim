@@ -302,7 +302,7 @@ set completeopt=menu,menuone,noselect
 " on subsequent wildchar presses, cycle through matches
 set wildmode=longest:full,full
 set wildoptions=pum
-set cmdheight=2
+set cmdheight=1
 cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
 " }}}
 
@@ -976,47 +976,45 @@ Plug 'hrsh7th/nvim-cmp'
       )
     })
 
-    -- TODO: Until I can reposition the completion window vertically, it will cover my cmdline
-    -- issue: https://github.com/hrsh7th/nvim-cmp/issues/908
-    -- cmp.setup.cmdline(
-    --   '/',
-    --   {
-    --     view = wildmenu,
-    --     mapping = cmp.mapping.preset.cmdline(),
-    --     sources = {
-    --       buffer,
-    --       cmdline_history,
-    --     }
-    --   }
-    -- )
-    -- cmp.setup.cmdline(
-    --   ':',
-    --   {
-    --     view = wildmenu,
-    --     mapping = cmp.mapping.preset.cmdline(),
-    --     sources = cmp.config.sources(
-    --       {
-    --         path,
-    --         cmdline,
-    --         buffer,
-    --         cmdline_history,
-    --       }
-    --     )
-    --   }
-    -- )
-    -- cmp.setup.cmdline(
-    --   '?',
-    --   {
-    --     view = wildmenu,
-    --     mapping = cmp.mapping.preset.cmdline(),
-    --     sources = cmp.config.sources(
-    --       {
-    --         buffer,
-    --         cmdline_history,
-    --       }
-    --     )
-    --   }
-    -- )
+    cmp.setup.cmdline(
+      '/',
+      {
+        view = wildmenu,
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          buffer,
+          cmdline_history,
+        }
+      }
+    )
+    cmp.setup.cmdline(
+      ':',
+      {
+        view = wildmenu,
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources(
+          {
+            path,
+            cmdline,
+            buffer,
+            cmdline_history,
+          }
+        )
+      }
+    )
+    cmp.setup.cmdline(
+      '?',
+      {
+        view = wildmenu,
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources(
+          {
+            buffer,
+            cmdline_history,
+          }
+        )
+      }
+    )
 EOF
   endfunction
   autocmd VimEnter * call SetupNvimCmp()
