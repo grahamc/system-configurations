@@ -1,3 +1,31 @@
+lua << EOF
+-- Disable unused builtin plugins.
+plugins_to_disable = {
+  "netrw",
+  "netrwPlugin",
+  "netrwSettings",
+  "netrwFileHandlers",
+  "gzip",
+  "zip",
+  "zipPlugin",
+  "tar",
+  "tarPlugin",
+  "getscript",
+  "getscriptPlugin",
+  "vimball",
+  "vimballPlugin",
+  "2html_plugin",
+  "logipat",
+  "rrhelper",
+  "spellfile_plugin",
+  "matchit",
+}
+
+for _, plugin in pairs(plugins_to_disable) do
+  vim.g["loaded_" .. plugin] = 1
+end
+EOF
+
 " Variables used across config files
 let g:mapleader = "\<Space>"
 let g:data_path = stdpath('data')
