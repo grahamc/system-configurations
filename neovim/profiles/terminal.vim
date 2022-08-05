@@ -646,6 +646,8 @@ Plug 'folke/which-key.nvim'
 EOF
   endfunction
   autocmd VimEnter * call SetupWhichKey()
+
+Plug 'gpanders/editorconfig.nvim'
 " }}}
 
 " Prose {{{
