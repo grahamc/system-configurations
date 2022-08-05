@@ -2,7 +2,7 @@
 
 " Miscellaneous {{{
 set nrformats-=octal
-set ttimeout ttimeoutlen=100
+set ttimeout ttimeoutlen=500
 set updatetime=500
 set noswapfile
 set fileformats=unix,dos,mac

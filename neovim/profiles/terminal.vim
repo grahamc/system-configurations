@@ -561,9 +561,6 @@ EOF
 " Plugins {{{
 
 " Miscellaneous {{{
-Plug 'junegunn/vim-peekaboo'
-  let g:peekaboo_delay = 500 " measured in milliseconds
-
 Plug 'inkarkat/vim-CursorLineCurrentWindow'
 
 Plug 'farmergreg/vim-lastplace'
@@ -699,6 +696,19 @@ EOF
 
 " Use folds provided by a language server
 Plug 'pierreglaser/folding-nvim'
+
+Plug 'folke/which-key.nvim'
+  function! SetupWhichKey()
+    lua << EOF
+    require('which-key').setup({
+      popup_mappings = {
+        scroll_down = '<c-j>',
+        scroll_up = '<c-k>',
+      },
+    })
+EOF
+  endfunction
+  autocmd VimEnter * call SetupWhichKey()
 " }}}
 
 " Prose {{{
