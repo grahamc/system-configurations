@@ -229,11 +229,17 @@ augroup Fold
   autocmd FileType * setlocal foldmethod=indent
 augroup END
 
-" Toggle the fold at the current line, if there is one. If the previous line we were on was
-" below the current line, then start at the end of the fold.
+" Toggle the fold at the current line, if there is one. If the previous line we were on was below the current line,
+" then start at the end of the fold. Also, move by screen line, unless a line count was specified.
 function! TrackPreviousMove(char)
   let g:previous_move = a:char
-  return a:char
+
+  let keys = a:char
+  if v:count == 0
+    let keys = 'g' . keys
+  endif
+
+  return keys
 endfunction
 nnoremap <expr> j TrackPreviousMove('j')
 nnoremap <expr> k TrackPreviousMove('k')

@@ -70,6 +70,10 @@ nmap <C-k> 10k
 xmap <C-j> 10j
 xmap <C-k> 10k
 
+" Always move by screen line, unless a count was specified.
+nnoremap <silent> <expr> j (v:count == 0) ? 'gj' : 'j'
+nnoremap <silent> <expr> k (v:count == 0) ? 'gk' : 'k'
+
 " Copy up to the end of line, not including the newline character
 nnoremap Y yg_
 
