@@ -816,6 +816,7 @@ Plug 'junegunn/fzf'
     nnoremap <silent> <Leader>h <Cmd>History:<CR>
     nnoremap <silent> <Leader>b <Cmd>Buffers<CR>
     nnoremap <silent> <Leader>/ <Cmd>Commands<CR>
+    nnoremap <silent> <Leader>k <Cmd>Helptags<CR>
     " recursive grep
     function! RipgrepFzf(query, fullscreen)
       let command_fmt = 'rg --hidden --column --line-number --fixed-strings --no-heading --color=always --smart-case -- %s || true'
