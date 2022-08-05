@@ -216,10 +216,10 @@ nnoremap <silent> <expr> <S-Tab> &foldlevel ? 'zM' : 'zR'
 " auto-resize the fold column
 set foldcolumn=auto:9
 " Jump to the top and bottom of the current fold, without adding to the jump list
-nnoremap [<Tab> <Cmd>keepjumps normal! [z<CR>
-nnoremap ]<Tab> <Cmd>keepjumps normal! ]z<CR>
-xnoremap [<Tab> <Cmd>keepjumps normal! [z<CR>
-xnoremap ]<Tab> <Cmd>keepjumps normal! ]z<CR>
+nnoremap [<Tab> [z
+nnoremap ]<Tab> ]z
+xnoremap [<Tab> [z
+xnoremap ]<Tab> ]z
 augroup Fold
   autocmd!
   autocmd FileType * setlocal foldmethod=indent
