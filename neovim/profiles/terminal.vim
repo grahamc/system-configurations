@@ -204,12 +204,7 @@ let &softtabstop = s:tab_width
 set fillchars+=foldsep:\ ,foldclose:›,foldopen:⌄,fold:\ 
 " Setting this so that the fold column gets displayed
 set foldenable
-" When a file is opened, all folds should be open.
-" Only set the foldlevel once when vim starts up
-if !exists('g:foldlevel_set')
-  set foldlevel=999
-  let g:foldlevel_set = 1
-endif
+set foldlevelstart=99
 " Set max number of nested folds when 'foldmethod' is 'syntax' or 'indent'
 set foldnestmax=2
 " Minimum number of lines a fold must have to be able to be closed
