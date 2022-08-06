@@ -175,12 +175,3 @@ augroup VimIndentObject
   autocmd!
   autocmd VimEnter * call ChangeVimIndentObjectMappings()
 augroup END
-
-" " Override operators that delete text, like 'c' and 'd', such that they only delete text, not cut it
-" Plug 'svermeulen/vim-cutlass'
-" " Make 'x' behave like 'd'. This way I still have a way to cut text
-" nnoremap x d
-" xnoremap x d
-" nnoremap xx dd
-" nnoremap X D
-" }}}
