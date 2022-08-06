@@ -17,7 +17,6 @@
 
 - link:
     ~/.tmux.conf: tmux/tmux.conf
-    ~/.vim/vimrc: vim/vimrc
     ~/.config/nvim/init.lua: neovim/init.lua
     ~/.config/nvim/profiles: neovim/profiles
     ~/.local/share/nvim/vim-plug-snapshot.vim: neovim/vim-plug-snapshot.vim
