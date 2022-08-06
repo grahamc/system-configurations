@@ -1073,11 +1073,6 @@ Plug 'williamboman/mason-lspconfig.nvim'
       if capabilities.hoverProvider and isKeywordprgOverridable then
         buffer_keymap(buffer_number, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", keymap_opts)
       end
-
-      -- I don't use 'tagfunc', but I figure if I already have an implementation for it I might as well set it.
-      if capabilities.definitionProvider then
-        vim.api.nvim_buf_set_option(buffer_number, "tagfunc", "v:lua.vim.lsp.tagfunc")
-      end
     end
 
     local default_server_config = {
