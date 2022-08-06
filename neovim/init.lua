@@ -1,5 +1,5 @@
 -- Disable unused builtin plugins.
-plugins_to_disable = {
+local plugins_to_disable = {
   "netrw",
   "netrwPlugin",
   "netrwSettings",
@@ -27,13 +27,13 @@ end
 vim.g.mapleader = vim.api.nvim_replace_termcodes('<Space>', true, false, true)
 vim.g.data_path = vim.fn.stdpath('data')
 vim.g.profiles = {}
-profile_directory = vim.fn.expand('<sfile>:h') .. '/profiles'
+local profile_directory = vim.fn.expand('<sfile>:h') .. '/profiles'
 if vim.fn.isdirectory(profile_directory) then
   vim.g.profiles = vim.fn.split(vim.fn.globpath(profile_directory, '*'), '\n')
 end
 
 -- Install vim-plug if not found
-vim_plug_plugin_file = vim.g.data_path .. '/site/autoload/plug.vim'
+local vim_plug_plugin_file = vim.g.data_path .. '/site/autoload/plug.vim'
 if vim.fn.empty(vim.fn.glob(vim_plug_plugin_file)) ~= 0 then
   vim.cmd([[
     silent execute '!curl -fLo ]] .. vim_plug_plugin_file .. [[ --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
