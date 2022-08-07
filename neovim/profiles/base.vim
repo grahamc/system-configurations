@@ -131,9 +131,24 @@ vnoremap <silent> # :<C-U>
       \gVzv:call setreg('"', old_reg, old_regtype)<CR>
 " }}}
 
-" Plugins {{{
-" Motions for levels of indentation
-Plug 'jeetsukumaran/vim-indentwise'
+lua << EOF
+-- Plugins {{{
+-- Motions for levels of indentation
+Plug(
+  'jeetsukumaran/vim-indentwise',
+  {
+    config = function()
+      vim.keymap.set('', '[-', '<Plug>(IndentWisePreviousLesserIndent)', {remap = true})
+      vim.keymap.set('', '[+', '<Plug>(IndentWisePreviousGreaterIndent)', {remap = true})
+      vim.keymap.set('', '[=', '<Plug>(IndentWisePreviousEqualIndent)', {remap = true})
+      vim.keymap.set('', ']-', '<Plug>(IndentWiseNextLesserIndent)', {remap = true})
+      vim.keymap.set('', ']+', '<Plug>(IndentWiseNextGreaterIndent)', {remap = true})
+      vim.keymap.set('', ']=', '<Plug>(IndentWiseNextEqualIndent)', {remap = true})
+    end
+  }
+)
+vim.g.indentwise_suppress_keymaps = 1
+EOF
 
 " replacement for matchit since matchit wasn't working for me
 Plug 'andymass/vim-matchup'
