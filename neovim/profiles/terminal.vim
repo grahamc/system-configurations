@@ -373,7 +373,7 @@ function! MyStatusLine()
   endif
   let warning_count = diagnostic_count.warning
   if (warning_count > 0)
-    let warning = '%#StatusLineWarningText#' . '⚠ ' . warning_count
+    let warning = '%#StatusLineWarningText#' . 'ⓦ ' . warning_count
     call add(diagnostic_list, warning)
   endif
   let info_count = diagnostic_count.info
