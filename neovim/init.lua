@@ -40,10 +40,48 @@ if vim.fn.empty(vim.fn.glob(vim_plug_plugin_file)) ~= 0 then
   ]])
 end
 
--- TODO: lua binding for vim-plug's 'Plug' command
+-- Wrapper for vim-plug. Adds the option to specify a function to run after a plugin is loaded.
+local configs = {
+  immediate = {},
+  lazy = {},
+}
+local plug_begin = vim.fn['plug#begin']
+local original_plug_end = vim.fn['plug#end']
+local function plug_end()
+  original_plug_end()
+  for _, config in pairs(configs.immediate) do
+    config()
+  end
+end
+_G.PlugWrapperApplyConfig = function(plugin_name)
+  local config = configs.lazy[plugin_name]
+  if type(config) == 'function' then
+    config()
+  end
+end
+local original_plug = vim.fn['plug#']
+function Plug(repo, options)
+  local original_plug_options = vim.tbl_deep_extend('force', options, {config = nil})
+  original_plug(repo, original_plug_options)
+
+  local config = options.config
+  if type(config) == 'function' then
+    if options['on'] or options['for'] then
+      local plugin_name = repo:match("^[%w-]+/([%w-_.]+)$")
+      configs.lazy[plugin_name] = config
+      vim.cmd(string.format(
+        [[ autocmd! User %s ++once lua PlugWrapperApplyConfig('%s') ]],
+        plugin_name,
+        plugin_name
+      ))
+    else
+      table.insert(configs.immediate, config)
+    end
+  end
+end
 
 -- Calling this before I load the profiles so I can register plugins inside them
-vim.call('plug#begin')
+plug_begin()
 
 -- Load profiles
 for _, profile in pairs(vim.g.profiles) do
@@ -51,7 +89,7 @@ for _, profile in pairs(vim.g.profiles) do
 end
 
 -- Calling this after I load the profiles so I can register plugins inside them
-vim.call('plug#end')
+plug_end()
 
 -- This way the profiles can run code after plugins are loaded, but before 'VimEnter'
 vim.cmd('doautocmd User PlugEndPost')

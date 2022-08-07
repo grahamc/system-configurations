@@ -573,16 +573,23 @@ Plug 'ojroques/vim-oscyank', {'branch': 'main'}
     autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '+' && (!empty($SSH_CLIENT) || !empty($SSH_TTY)) | execute 'OSCYankReg +' | endif
   augroup END
 
-Plug 'lukas-reineke/virt-column.nvim'
-  function! SetupVirtColumn()
-    lua << EOF
-    require("virt-column").setup { char = "│" }
+lua << EOF
+Plug(
+  'lukas-reineke/virt-column.nvim',
+  {
+      config = function()
+        require("virt-column").setup({ char = "│" })
+        vim.cmd([[
+          execute 'VirtColumnRefresh!'
+          augroup VirtColumn
+            autocmd!
+            autocmd WinEnter,VimResized * VirtColumnRefresh!
+          augroup END
+        ]])
+      end
+  }
+)
 EOF
-
-    execute 'VirtColumnRefresh!'
-    autocmd WinEnter,VimResized * VirtColumnRefresh!
-  endfunction
-  autocmd VimEnter * call SetupVirtColumn()
 
 " lua library specfically for use in neovim
 Plug 'nvim-lua/plenary.nvim'
