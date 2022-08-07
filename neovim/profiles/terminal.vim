@@ -504,8 +504,6 @@ Plug 'inkarkat/vim-CursorLineCurrentWindow'
 
 Plug 'farmergreg/vim-lastplace'
 
-Plug 'tmux-plugins/vim-tmux'
-
 Plug 'tweekmonster/startuptime.vim'
 
 " Expands Emmet abbreviations to write HTML more quickly
