@@ -46,17 +46,25 @@ local configs = {
   immediate = {},
   lazy = {},
 }
+vim.cmd([[
+  augroup PlugWrapper
+    autocmd!
+    autocmd VimEnter * lua PlugWrapperApplyImmediateConfigs()
+  augroup END
+]])
 local plug_begin = vim.fn['plug#begin']
 local original_plug_end = vim.fn['plug#end']
 local function plug_end()
   original_plug_end()
-  for _, config in pairs(configs.immediate) do
+end
+_G.PlugWrapperApplyLazyConfig = function(plugin_name)
+  local config = configs.lazy[plugin_name]
+  if type(config) == 'function' then
     config()
   end
 end
-_G.PlugWrapperApplyConfig = function(plugin_name)
-  local config = configs.lazy[plugin_name]
-  if type(config) == 'function' then
+_G.PlugWrapperApplyImmediateConfigs = function()
+  for _, config in pairs(configs.immediate) do
     config()
   end
 end
@@ -76,7 +84,7 @@ function Plug(repo, options)
       local plugin_name = repo:match("^[%w-]+/([%w-_.]+)$")
       configs.lazy[plugin_name] = config
       vim.cmd(string.format(
-        [[ autocmd! User %s ++once lua PlugWrapperApplyConfig('%s') ]],
+        [[ autocmd! User %s ++once lua PlugWrapperApplyLazyConfig('%s') ]],
         plugin_name,
         plugin_name
       ))
