@@ -35,9 +35,10 @@ end
 -- Install vim-plug if not found
 local vim_plug_plugin_file = vim.g.data_path .. '/site/autoload/plug.vim'
 if vim.fn.empty(vim.fn.glob(vim_plug_plugin_file)) ~= 0 then
-  vim.cmd([[
-    silent execute '!curl -fLo ]] .. vim_plug_plugin_file .. [[ --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-  ]])
+  vim.cmd(string.format(
+    [[silent execute '!curl -fLo %s --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim']],
+    vim_plug_plugin_file
+  ))
 end
 
 -- Wrapper for vim-plug. Adds the option to specify a function to run after a plugin is loaded.
