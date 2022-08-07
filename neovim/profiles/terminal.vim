@@ -565,97 +565,119 @@ Plug 'tpope/vim-endwise'
   " this way endwise triggers on 'o'
   nmap o A<CR>
 
-" Use the ANSI OSC52 sequence to copy text to the system clipboard
-Plug 'ojroques/vim-oscyank', {'branch': 'main'}
-  let g:oscyank_silent = 1
-  augroup VimOscyank
-    autocmd!
-    autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '+' && (!empty($SSH_CLIENT) || !empty($SSH_TTY)) | execute 'OSCYankReg +' | endif
-  augroup END
-
 lua << EOF
+-- Use the ANSI OSC52 sequence to copy text to the system clipboard
+Plug(
+  'ojroques/nvim-osc52',
+  {
+    config = function()
+      require('osc52').setup({
+        silent = true,
+      })
+
+      vim.cmd([[
+        augroup Osc52
+          autocmd!
+          autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '+' && (!empty($SSH_CLIENT) || !empty($SSH_TTY)) | lua require('osc52').copy_register('+') | endif
+        augroup END
+      ]])
+    end,
+  }
+)
+
 Plug(
   'lukas-reineke/virt-column.nvim',
   {
-      config = function()
-        require("virt-column").setup({ char = "│" })
-        vim.cmd([[
-          execute 'VirtColumnRefresh!'
-          augroup VirtColumn
-            autocmd!
-            autocmd WinEnter,VimResized * VirtColumnRefresh!
-          augroup END
-        ]])
-      end
+    config = function()
+      require("virt-column").setup({ char = "│" })
+      vim.cmd([[
+        execute 'VirtColumnRefresh!'
+        augroup VirtColumn
+          autocmd!
+          autocmd WinEnter,VimResized * VirtColumnRefresh!
+        augroup END
+      ]])
+    end,
   }
 )
-EOF
 
-" lua library specfically for use in neovim
-Plug 'nvim-lua/plenary.nvim'
+-- lua library specfically for use in neovim
+Plug('nvim-lua/plenary.nvim')
 
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+Plug(
+  'iamcco/markdown-preview.nvim',
+  {
+    ['do'] = function()
+      vim.fn['mkdp#util#install']()
+    end,
+  }
+)
 
-Plug 'nvim-telescope/telescope.nvim', { 'branch': '0.1.x' }
-  function! SetupTelescope()
-    lua << EOF
-    telescope = require('telescope')
-    actions = require('telescope.actions')
+Plug(
+  'nvim-telescope/telescope.nvim',
+  {
+    branch = '0.1.x',
+    config = function()
+      telescope = require('telescope')
+      actions = require('telescope.actions')
 
-    telescope.setup({
-      defaults = {
-        mappings = {
-          i = {
-            ["<Esc>"] = actions.close,
-            ["<Tab>"] = actions.move_selection_next,
-            ["<S-Tab>"] = actions.move_selection_previous,
-            ["<C-p>"] = actions.cycle_history_prev,
-            ["<C-n>"] = actions.cycle_history_next,
+      telescope.setup({
+        defaults = {
+          mappings = {
+            i = {
+              ["<Esc>"] = actions.close,
+              ["<Tab>"] = actions.move_selection_next,
+              ["<S-Tab>"] = actions.move_selection_previous,
+              ["<C-p>"] = actions.cycle_history_prev,
+              ["<C-n>"] = actions.cycle_history_next,
+            },
           },
         },
-      },
-    })
-EOF
-  endfunction
-  autocmd VimEnter * call SetupTelescope()
+      })
+    end,
+  }
+)
 
-Plug 'stevearc/dressing.nvim'
-  function! SetupDressing()
-    lua << EOF
-    require('dressing').setup({
-      select = {
-        telescope = {
-          layout_config = {
-            width = 0.6,
-            height = 0.6,
+Plug(
+  'stevearc/dressing.nvim',
+  {
+    config = function()
+      require('dressing').setup({
+        select = {
+          telescope = {
+            layout_config = {
+              width = 0.6,
+              height = 0.6,
+            },
+            layout_strategy = 'center',
+            sorting_strategy = 'ascending',
           },
-          layout_strategy = 'center',
-          sorting_strategy = 'ascending'
         },
-      },
-    })
+      })
+    end,
+  }
+)
+
+-- Use folds provided by a language server
+Plug('pierreglaser/folding-nvim')
+
+Plug(
+  'folke/which-key.nvim',
+  {
+    config = function()
+      require('which-key').setup({
+        popup_mappings = {
+          scroll_down = '<c-j>',
+          scroll_up = '<c-k>',
+        },
+      })
+    end,
+  }
+)
+
+Plug('gpanders/editorconfig.nvim')
+-- }}}
 EOF
-  endfunction
-  autocmd VimEnter * call SetupDressing()
-
-" Use folds provided by a language server
-Plug 'pierreglaser/folding-nvim'
-
-Plug 'folke/which-key.nvim'
-  function! SetupWhichKey()
-    lua << EOF
-    require('which-key').setup({
-      popup_mappings = {
-        scroll_down = '<c-j>',
-        scroll_up = '<c-k>',
-      },
-    })
-EOF
-  endfunction
-  autocmd VimEnter * call SetupWhichKey()
-
-Plug 'gpanders/editorconfig.nvim'
-" }}}
 
 " Prose {{{
 Plug 'junegunn/goyo.vim'
