@@ -62,6 +62,11 @@ _G.PlugWrapperApplyConfig = function(plugin_name)
 end
 local original_plug = vim.fn['plug#']
 function Plug(repo, options)
+  if not options then
+    original_plug(repo)
+    return
+  end
+
   local original_plug_options = vim.tbl_deep_extend('force', options, {config = nil})
   original_plug(repo, original_plug_options)
 
