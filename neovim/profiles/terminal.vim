@@ -500,52 +500,12 @@ EOF
 " Plugins {{{
 
 " Miscellaneous {{{
-Plug 'inkarkat/vim-CursorLineCurrentWindow'
-
-Plug 'farmergreg/vim-lastplace'
-
-Plug 'tweekmonster/startuptime.vim'
-
-" Expands Emmet abbreviations to write HTML more quickly
-Plug 'mattn/emmet-vim'
-  let g:user_emmet_expandabbr_key = '<Leader>e'
-  let g:user_emmet_mode='n'
-
-" Seamless movement between vim windows and tmux panes.
-Plug 'christoomey/vim-tmux-navigator'
-  let g:tmux_navigator_no_mappings = 1
-  noremap <silent> <M-h> :TmuxNavigateLeft<cr>
-  noremap <silent> <M-l> :TmuxNavigateRight<cr>
-  noremap <silent> <M-j> :TmuxNavigateDown<cr>
-  noremap <silent> <M-k> :TmuxNavigateUp<cr>
-
 " Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
 Plug 'mhinz/vim-signify'
   nnoremap <Leader>vk <Cmd>SignifyHunkDiff<CR>
   let g:signify_sign_add               = '│'
   let g:signify_sign_change            = '│'
   let g:signify_sign_show_count = 0
-
-" Colors
-" Opens the OS color picker and inserts the chosen color into the buffer.
-Plug 'KabbAmine/vCoolor.vim'
-  let g:vcoolor_disable_mappings = 1
-
-" To get the vim help pages for vim-plug itself, you need to add it as a plugin
-Plug 'junegunn/vim-plug'
-
-" Syntax plugins for practically any language
-Plug 'sheerun/vim-polyglot'
-  let g:polyglot_disabled = ['ftdetect']
-
-" Automatically close html tags
-Plug 'alvan/vim-closetag'
-
-" TODO: Using this so that substitutions made by vim-abolish get highlighted as I type them.
-" Won't be necessary if vim-abolish adds support for neovim's `inccommand`.
-" issue for `inccommand` support: https://github.com/tpope/vim-abolish/issues/107
-Plug 'markonm/traces.vim'
-  let g:traces_abolish_integration = 1
 
 " Automatically insert closing braces/quotes
 Plug 'Raimondi/delimitMate'
@@ -557,13 +517,64 @@ Plug 'Raimondi/delimitMate'
   " }
   let g:delimitMate_expand_cr = 0
 
-" Automatically add closing keywords (e.g. function/endfunction in vimscript)
-Plug 'tpope/vim-endwise'
-  let g:endwise_no_mappings = 1
-  " this way endwise triggers on 'o'
-  nmap o A<CR>
-
 lua << EOF
+-- Seamless movement between vim windows and tmux panes.
+Plug(
+  'christoomey/vim-tmux-navigator',
+  {
+    config = function()
+      vim.keymap.set('n', '<M-h>', '<Cmd>TmuxNavigateLeft<CR>', {silent = true})
+      vim.keymap.set('n', '<M-l>', '<Cmd>TmuxNavigateRight<CR>', {silent = true})
+      vim.keymap.set('n', '<M-j>', '<Cmd>TmuxNavigateDown<CR>', {silent = true})
+      vim.keymap.set('n', '<M-k>', '<Cmd>TmuxNavigateUp<CR>', {silent = true})
+    end
+  }
+)
+vim.g.tmux_navigator_no_mappings = 1
+
+Plug('inkarkat/vim-CursorLineCurrentWindow')
+
+Plug('farmergreg/vim-lastplace')
+
+Plug('tweekmonster/startuptime.vim')
+
+-- Expands Emmet abbreviations to write HTML more quickly
+Plug('mattn/emmet-vim')
+vim.g.user_emmet_expandabbr_key = '<Leader>e'
+vim.g.user_emmet_mode = 'n'
+
+-- Opens the OS color picker and inserts the chosen color into the buffer.
+Plug('KabbAmine/vCoolor.vim')
+vim.g.vcoolor_disable_mappings = 1
+
+-- To get the vim help pages for vim-plug itself, you need to add it as a plugin
+Plug('junegunn/vim-plug')
+
+-- Syntax plugins for practically any language
+Plug('sheerun/vim-polyglot')
+vim.g.polyglot_disabled = {'ftdetect'}
+
+-- Automatically close html tags
+Plug('alvan/vim-closetag')
+
+-- TODO: Using this so that substitutions made by vim-abolish get highlighted as I type them.
+-- Won't be necessary if vim-abolish adds support for neovim's `inccommand`.
+-- issue for `inccommand` support: https://github.com/tpope/vim-abolish/issues/107
+Plug('markonm/traces.vim')
+vim.g.traces_abolish_integration = 1
+
+-- Automatically add closing keywords (e.g. function/endfunction in vimscript)
+Plug(
+  'tpope/vim-endwise',
+  {
+    config = function()
+      -- this way endwise triggers on 'o'
+      vim.keymap.set('n', 'o', 'A<CR>', {remap = true})
+    end
+  }
+)
+vim.g.endwise_no_mappings = 1
+
 -- Use the ANSI OSC52 sequence to copy text to the system clipboard
 Plug(
   'ojroques/nvim-osc52',
