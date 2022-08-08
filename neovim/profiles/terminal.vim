@@ -999,6 +999,8 @@ Plug 'hrsh7th/nvim-cmp'
             fallback()
           end
         end, { 'i', 's' }),
+        ['<C-k>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-j>'] = cmp.mapping.scroll_docs(4),
       }),
       sources = cmp.config.sources(
         {
