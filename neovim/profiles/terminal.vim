@@ -475,8 +475,8 @@ augroup END
 
 " }}}
 
-" Diagnostics {{{
 lua << EOF
+-- Diagnostics {{{
 vim.diagnostic.config({
   virtual_text = false,
   signs = {
@@ -496,20 +496,24 @@ for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type
   vim.fn.sign_define(hl, { text = icon, texthl = hl})
 end
-EOF
-" }}}
+-- }}}
 
-" Plugins {{{
+-- Plugins {{{
 
-" Miscellaneous {{{
-" Add icons to the gutter to signify version control changes (e.g. new lines, modified lines, etc.)
-Plug 'mhinz/vim-signify'
-  nnoremap <Leader>vk <Cmd>SignifyHunkDiff<CR>
-  let g:signify_sign_add               = '│'
-  let g:signify_sign_change            = '│'
-  let g:signify_sign_show_count = 0
+-- Miscellaneous {{{
+-- Add icons to the gutter to represent version control changes (e.g. new lines, modified lines, etc.)
+Plug(
+  'mhinz/vim-signify',
+  {
+    config = function()
+      vim.keymap.set('n', '<Leader>vk', '<Cmd>SignifyHunkDiff<CR>')
+    end,
+  }
+)
+vim.g.signify_sign_add = '│'
+vim.g.signify_sign_change = '│'
+vim.g.signify_sign_show_count = 0
 
-lua << EOF
 Plug(
   'windwp/nvim-autopairs',
   {

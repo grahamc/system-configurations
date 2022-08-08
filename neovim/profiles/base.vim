@@ -148,45 +148,44 @@ Plug(
   }
 )
 vim.g.indentwise_suppress_keymaps = 1
+
+-- replacement for matchit since matchit wasn't working for me
+Plug('andymass/vim-matchup')
+-- Don't display offscreen matches in my statusline or a popup window
+vim.g.matchup_matchparen_offscreen = {}
+
+-- Additional text objects and motions
+Plug('wellle/targets.vim')
+
+Plug('bkad/CamelCaseMotion')
+vim.g.camelcasemotion_key = ','
+
+-- Makes it easier to manipulate brace/bracket/quote pairs by providing commands to do common
+-- operations like change pair, remove pair, etc.
+Plug('tpope/vim-surround')
+
+-- For swapping two pieces of text
+Plug('tommcdo/vim-exchange')
+
+-- Commands/mappings for working with variants of words:
+-- - A command for performing substitutions. More features than vim's builtin :substitution
+-- - A command for creating abbreviations. More features than vim's builtin :iabbrev
+-- - Mappings for case switching e.g. mixed-case, title-case, etc.
+Plug('tpope/vim-abolish')
+
+Plug('tpope/vim-commentary')
+
+-- Text object for text at the same level of indentation
+Plug(
+  'michaeljsmith/vim-indent-object',
+  {
+    config = function()
+      -- Make 'ai' and 'ii' behave like 'aI' and 'iI' respectively
+      vim.keymap.set('o', 'ai', 'aI', {remap = true})
+      vim.keymap.set('x', 'ai', 'aI', {remap = true})
+      vim.keymap.set('o', 'ii', 'iI', {remap = true})
+      vim.keymap.set('x', 'ii', 'iI', {remap = true})
+    end
+  }
+)
 EOF
-
-" replacement for matchit since matchit wasn't working for me
-Plug 'andymass/vim-matchup'
-" Don't display offscreen matches in my statusline or a popup window
-let g:matchup_matchparen_offscreen = {}
-
-" Additional text objects and motions
-Plug 'wellle/targets.vim'
-
-Plug 'bkad/CamelCaseMotion'
-let g:camelcasemotion_key = ','
-
-" Makes it easier to manipulate brace/bracket/quote pairs by providing commands to do common
-" operations like change pair, remove pair, etc.
-Plug 'tpope/vim-surround'
-
-" For swapping two pieces of text
-Plug 'tommcdo/vim-exchange'
-
-" Commands/mappings for working with variants of words:
-" - A command for performing substitutions. More features than vim's builtin :substitution
-" - A command for creating abbreviations. More features than vim's builtin :iabbrev
-" - Mappings for case switching e.g. mixed-case, title-case, etc.
-Plug 'tpope/vim-abolish'
-
-Plug 'tpope/vim-commentary'
-
-" Text object for text at the same level of indentation
-Plug 'michaeljsmith/vim-indent-object'
-" Make 'ai' and 'ii' behave like 'aI' and 'iI' respectively
-function! ChangeVimIndentObjectMappings()
-  omap ai aI
-  vmap ai aI
-
-  omap ii iI
-  vmap ii iI
-endfunction
-augroup VimIndentObject
-  autocmd!
-  autocmd VimEnter * call ChangeVimIndentObjectMappings()
-augroup END
