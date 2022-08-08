@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# exit the script if any command returns a non-zero exit code
+set -e
+
 echo "Are you sure want to install the smart-plug service? (y/n): "
 read response
 if [ "$response" = "n" ]; then
@@ -10,13 +13,13 @@ elif [ "$response" != "y" ] # invalid input
 fi
 
 # Copy the source folder, excluding the .venv since the virtual environment will be recreated in the target directory
-sudo rsync -arhP --exclude='.venv' smart-plug-daemon.d /opt/
+sudo rsync -arhP --exclude='.venv' ~/.dotfiles/smart-plug/smart-plug-daemon.d /opt/
 cd /opt/smart-plug-daemon.d
 # Creating this folder so that pipenv stores the virtual environment in it
 mkdir .venv
-pipenv install
+pipenv sync
 cd -
 
-sudo cp smart-plug-daemon.service /etc/systemd/system/
+sudo cp ~/.dotfiles/smart-plug/smart-plug-daemon.service /etc/systemd/system/
 sudo systemctl enable smart-plug-daemon.service
 sudo systemctl start smart-plug-daemon.service
