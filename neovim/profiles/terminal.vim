@@ -960,7 +960,23 @@ Plug 'hrsh7th/nvim-cmp'
     cmp.setup({
       mapping = cmp.mapping.preset.insert({
         ['<C-a>'] = cmp.mapping.complete(),
-        ['<CR>'] = cmp.mapping.confirm({ select = false }),
+        ['<CR>'] = function(fallback)
+          -- TODO: Don't block <CR> if signature help is active
+          -- https://github.com/hrsh7th/cmp-nvim-lsp-signature-help/issues/13
+          if not cmp.visible()
+              or not cmp.get_selected_entry()
+              or cmp.get_selected_entry().source.name == 'nvim_lsp_signature_help'
+              then
+            fallback()
+          else
+            cmp.confirm({
+              -- Replace word if completing in the middle of a word
+              behavior = cmp.ConfirmBehavior.Replace,
+              -- Don't select first item on CR if nothing was selected
+              select = false,
+            })
+          end
+        end,
         ["<Tab>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_next_item()
