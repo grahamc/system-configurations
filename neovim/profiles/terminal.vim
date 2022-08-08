@@ -208,7 +208,7 @@ set fillchars+=foldsep:\ ,foldclose:›,foldopen:⌄,fold:\
 set foldenable
 set foldlevelstart=99
 " Set max number of nested folds when 'foldmethod' is 'syntax' or 'indent'
-set foldnestmax=2
+set foldnestmax=1
 " Minimum number of lines a fold must have to be able to be closed
 set foldminlines=1
 " Fold visually selected lines. 'foldmethod' must be set to 'manual' for this work.
