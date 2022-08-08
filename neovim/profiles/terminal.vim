@@ -1269,7 +1269,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight! link LineNrBelow LineNrAbove
     highlight WordUnderCursor ctermbg=8
     highlight! link IncSearch Search
-    highlight TabLine ctermbg=8 ctermfg=7
+    highlight TabLine ctermbg=8 ctermfg=15
     highlight TabLineSel ctermbg=NONE ctermfg=7
     highlight TabLineFill ctermbg=8
     highlight TabLineSeparator ctermbg=NONE ctermfg=14
