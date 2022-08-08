@@ -351,7 +351,7 @@ function! MyStatusLine()
   else
     let modified_indicator = ''
   endif
-  let file_info = '%#StatusLine#%y %t' . modified_indicator . '%w%q'
+  let file_info = '%#StatusLine#%y %f' . modified_indicator . '%w%q'
 
   if &fileformat !=# 'unix'
     let fileformat = printf('%%#StatusLineStandoutText#[%s]', &fileformat)
