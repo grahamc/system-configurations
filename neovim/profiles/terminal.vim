@@ -550,12 +550,7 @@ Plug('inkarkat/vim-CursorLineCurrentWindow')
 
 Plug('farmergreg/vim-lastplace')
 
-Plug('tweekmonster/startuptime.vim')
-
--- Expands Emmet abbreviations to write HTML more quickly
-Plug('mattn/emmet-vim')
-vim.g.user_emmet_expandabbr_key = '<Leader>e'
-vim.g.user_emmet_mode = 'n'
+Plug('dstein64/vim-startuptime')
 
 -- Opens the OS color picker and inserts the chosen color into the buffer.
 Plug('KabbAmine/vCoolor.vim')
@@ -964,6 +959,11 @@ Plug 'hrsh7th/nvim-cmp'
     end
 
     cmp.setup({
+      snippet = {
+        expand = function(args)
+          require('snippy').expand_snippet(args.body)
+        end,
+      },
       mapping = cmp.mapping.preset.insert({
         ['<C-a>'] = cmp.mapping.complete(),
         ['<CR>'] = function(fallback)
@@ -1088,6 +1088,9 @@ EOF
   autocmd VimEnter * call SetupCmpDictionary()
 
 Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
+
+Plug 'dcampos/nvim-snippy'
+Plug 'dcampos/cmp-snippy'
 " }}}
 
 " Tool Manager {{{
