@@ -53,9 +53,11 @@ xnoremap <C-z> <Cmd>suspend<CR>
 
 " Decide which actions to take when the enter key is pressed.
 function! GetEnterKeyActions()
-  " The existence check ensures that the plugin delimitmate was loaded
-  if exists('*delimitMate#WithinEmptyPair') && delimitMate#WithinEmptyPair()
-    return "\<C-R>=delimitMate#ExpandReturn()\<CR>"
+  let autopairs_keys = v:lua.MPairs.autopairs_cr()
+  " If only the enter key is returned, that means we aren't inside a pair.
+  let isCursorInEmptyPair = v:lua.vim.inspect(autopairs_keys) !=# '"\r"'
+  if isCursorInEmptyPair
+    return autopairs_keys
   endif
 
   " The existence check ensures that the plugin vim-endwise was loaded
@@ -65,7 +67,7 @@ function! GetEnterKeyActions()
 
   return "\<CR>"
 endfunction
-imap <expr> <CR> GetEnterKeyActions()
+inoremap <expr> <CR> GetEnterKeyActions()
 
 set colorcolumn=120
 " }}}
@@ -507,17 +509,25 @@ Plug 'mhinz/vim-signify'
   let g:signify_sign_change            = '│'
   let g:signify_sign_show_count = 0
 
-" Automatically insert closing braces/quotes
-Plug 'Raimondi/delimitMate'
-  " Given the following line (where | represents the cursor):
-  "   function foo(bar) {|}
-  " Pressing enter will result in:
-  " function foo(bar) {
-  "   |
-  " }
-  let g:delimitMate_expand_cr = 0
-
 lua << EOF
+Plug(
+  'windwp/nvim-autopairs',
+  {
+    config = function()
+      require("nvim-autopairs").setup({
+        -- Before        Input         After
+        -- ------------------------------------
+        -- {|}           <CR>          {
+        --                                 |
+        --                             }
+        -- ------------------------------------
+        -- Disabling this mapping since I will add it through nvim-cmp.
+        map_cr = false,
+      })
+    end
+  }
+)
+
 -- Seamless movement between vim windows and tmux panes.
 Plug(
   'christoomey/vim-tmux-navigator',
