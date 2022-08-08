@@ -331,11 +331,6 @@ augroup END
 " Statusline {{{
 set laststatus=3
 
-function! OpenDiagnosticWindow(minimum_width, mouse_click_count, mouse_button, modifiers)
-  if exists(':TroubleToggle')
-    TroubleToggle
-  endif
-endfunction
 function! GetDiagnosticCountForSeverity(severity)
   return v:lua.vim.diagnostic.get(0, {'severity': a:severity})->len()
 endfunction
@@ -390,7 +385,6 @@ function! MyStatusLine()
   endif
   if !empty(diagnostic_list)
     let diagnostics = diagnostic_list->join(' ')
-    let diagnostics = '%@OpenDiagnosticWindow@' . diagnostics . '%X'
   endif
 
   let left_side_items = [file_info]
@@ -1187,32 +1181,6 @@ Plug 'neovim/nvim-lspconfig'
   autocmd VimEnter * call SetupNvimLspconfig()
 
 Plug 'b0o/schemastore.nvim'
-" }}}
-
-" Diagnostics {{{
-Plug 'folke/trouble.nvim'
-  function! SetupTrouble()
-    lua << EOF
-    require("trouble").setup({
-      icons = false,
-      mode = "document_diagnostics",
-      fold_open = "⌄",
-      fold_closed = "›",
-      indent_lines = false,
-      auto_close = true,
-      auto_preview = false,
-      signs = {
-        error = "error:",
-        warning = "warning:",
-        hint = "hint:",
-        information = "info:",
-        other = "other:"
-      },
-      use_diagnostic_signs = false
-    })
-EOF
-  endfunction
-  autocmd VimEnter * call SetupTrouble()
 " }}}
 
 " CLI -> LSP {{{
