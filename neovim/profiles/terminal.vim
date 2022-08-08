@@ -544,7 +544,17 @@ Plug('inkarkat/vim-CursorLineCurrentWindow')
 
 Plug('farmergreg/vim-lastplace')
 
-Plug('dstein64/vim-startuptime')
+Plug(
+  'dstein64/vim-startuptime',
+  {
+    config = function()
+      vim.cmd([[
+        cnoreabbrev <expr> StartupTime getcmdtype() == ":" && getcmdline() == 'StartupTime' ? 'tab StartupTime' : 'StartupTime'
+      ]])
+    end,
+  }
+)
+vim.g.startuptime_tries = 100
 
 -- Opens the OS color picker and inserts the chosen color into the buffer.
 Plug('KabbAmine/vCoolor.vim')
