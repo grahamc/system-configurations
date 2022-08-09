@@ -162,7 +162,14 @@ vim.g.camelcasemotion_key = ','
 
 -- Makes it easier to manipulate brace/bracket/quote pairs by providing commands to do common
 -- operations like change pair, remove pair, etc.
-Plug('tpope/vim-surround')
+Plug(
+  'kylechui/nvim-surround',
+  {
+    config = function()
+      require("nvim-surround").setup()
+    end,
+  }
+)
 
 -- For swapping two pieces of text
 Plug('tommcdo/vim-exchange')
