@@ -1379,11 +1379,11 @@ Plug 'arcticicestudio/nord-vim'
     highlight! link VirtColumn VertSplit
     highlight DiagnosticSignError ctermfg=1 ctermbg=NONE
     highlight DiagnosticSignWarn ctermfg=3 ctermbg=NONE
-    highlight DiagnosticSignInfo ctermfg=1 ctermbg=NONE
+    highlight DiagnosticSignInfo ctermfg=4 ctermbg=NONE
     highlight DiagnosticSignHint ctermfg=5 ctermbg=NONE
     highlight! link DiagnosticUnderlineError Error
     highlight! link DiagnosticUnderlineWarn Warning
-    highlight DiagnosticUnderlineInfo ctermfg=1 ctermbg=NONE cterm=undercurl
+    highlight DiagnosticUnderlineInfo ctermfg=4 ctermbg=NONE cterm=undercurl
     highlight DiagnosticUnderlineHint ctermfg=5 ctermbg=NONE cterm=undercurl
     highlight! CmpItemAbbrMatch ctermbg=NONE ctermfg=6
     highlight! link CmpItemAbbrMatchFuzzy CmpItemAbbrMatch
