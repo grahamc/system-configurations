@@ -756,20 +756,14 @@ Plug(
 )
 
 Plug(
-  'b3nj5m1n/kommentary',
+  'terrortylor/nvim-comment',
   {
     config = function()
-      require('kommentary.config').configure_language(
-        "default",
-        {
-          prefer_single_line_comments = true,
-          single_line_comment_string = 'auto',
-          multi_line_comment_strings = 'auto',
-          hook_function = function()
-            require('ts_context_commentstring.internal').update_commentstring()
-          end,
-        }
-      )
+      require('nvim_comment').setup({
+        hook = function()
+          require("ts_context_commentstring.internal").update_commentstring()
+        end,
+      })
     end,
   }
 )
@@ -793,6 +787,26 @@ Plug(
 Plug('windwp/nvim-ts-autotag')
 
 Plug('JoosepAlviste/nvim-ts-context-commentstring')
+
+-- This plugin does two things:
+-- 1. fix 'CursorHold' and 'CursorHoldI' autocmd events
+-- bug: https://github.com/neovim/neovim/issues/12587
+-- 2. decouple 'updatetime' from 'CursorHold' and 'CursorHoldI'
+Plug('antoinemadec/FixCursorHold.nvim')
+vim.g.cursorhold_updatetime = 500
+
+Plug(
+  'kosayoda/nvim-lightbulb',
+  {
+    config = function()
+      require('nvim-lightbulb').setup({
+        autocmd = {enabled = true},
+        -- Giving it a higher priority than diagnostics and vcs changes
+        sign = {priority = 15},
+      })
+    end,
+  }
+)
 -- }}}
 EOF
 
