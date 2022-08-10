@@ -30,9 +30,6 @@ augroup Miscellaneous
   autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
   " highlight trailing whitespace
   autocmd ColorScheme * highlight! link ExtraWhitespace Warning | execute 'match ExtraWhitespace /\s\+$/'
-  " Start syntax highlighting from the beginning of the file. Unless it's a large file, in which case
-  " don't highlight at all.
-  autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | else | syntax sync fromstart | endif
   autocmd OptionSet readonly if v:option_new | setlocal colorcolumn= | endif
   autocmd FileType qf,help setlocal colorcolumn=
 augroup END
@@ -101,22 +98,15 @@ function! OverrideVimsDefaultFiletypePlugins()
     autocmd!
     " Use vim help pages for keywordprg in vim files
     autocmd FileType vim setlocal keywordprg=:tab\ help
-    " Set a default omnifunc
-    autocmd FileType * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
     autocmd FileType * setlocal textwidth=0
     autocmd FileType * setlocal wrapmargin=0
     autocmd FileType * setlocal formatoptions-=t formatoptions-=l
   augroup END
 endfunction
 
-function! OverridePolyglot()
-  setlocal textwidth=0
-endfunction
-
 augroup Overrides
   autocmd!
   autocmd VimEnter * call OverrideVimsDefaultFiletypePlugins()
-  autocmd VimEnter * call OverridePolyglot()
 augroup END
 " }}}
 
@@ -465,11 +455,11 @@ augroup Cursor
   autocmd VimSuspend * call ResetCursor()
   autocmd VimResume * call SetCursor()
 augroup END
-" }}}
-
-" }}}
-
 lua << EOF
+-- }}}
+
+-- }}}
+
 -- Diagnostics {{{
 vim.diagnostic.config({
   virtual_text = false,
@@ -563,13 +553,6 @@ vim.g.vcoolor_disable_mappings = 1
 -- To get the vim help pages for vim-plug itself, you need to add it as a plugin
 Plug('junegunn/vim-plug')
 
--- Syntax plugins for practically any language
-Plug('sheerun/vim-polyglot')
-vim.g.polyglot_disabled = {'ftdetect'}
-
--- Automatically close html tags
-Plug('alvan/vim-closetag')
-
 -- TODO: Using this so that substitutions made by vim-abolish get highlighted as I type them.
 -- Won't be necessary if vim-abolish adds support for neovim's `inccommand`.
 -- issue for `inccommand` support: https://github.com/tpope/vim-abolish/issues/107
@@ -578,7 +561,7 @@ vim.g.traces_abolish_integration = 1
 
 -- Automatically add closing keywords (e.g. function/endfunction in vimscript)
 Plug(
-  'tpope/vim-endwise',
+  'RRethy/nvim-treesitter-endwise',
   {
     config = function()
       -- this way endwise triggers on 'o'
@@ -586,7 +569,6 @@ Plug(
     end
   }
 )
-vim.g.endwise_no_mappings = 1
 
 -- Use the ANSI OSC52 sequence to copy text to the system clipboard
 Plug(
@@ -698,6 +680,118 @@ Plug(
 Plug('gpanders/editorconfig.nvim')
 
 Plug('tpope/vim-repeat')
+
+Plug(
+  'nvim-treesitter/nvim-treesitter',
+  {
+    config = function()
+      require('nvim-treesitter.configs').setup({
+        auto_install = false,
+        highlight = {
+          enable = true,
+          additional_vim_regex_highlighting = false,
+        },
+        incremental_selection = {
+          enable = false,
+        },
+        indent = {
+          enable = false,
+        },
+        matchup = {
+          enable = true,
+          disable_virtual_text = true,
+          include_match_words = true,
+        },
+        endwise = {
+          enable = true,
+        },
+        autotag = {
+          enable = true,
+        },
+        context_commentstring = {
+          enable = true,
+          enable_autocmd = false,
+        },
+      })
+
+      _G.MaybeSetTreeSitterFoldmethod = function()
+        is_foldmethod_overridable = foldmethod ~= 'manual'
+          and foldmethod ~= 'marker'
+          and foldmethod ~= 'diff'
+          and foldmethod ~= 'expr'
+        if require('nvim-treesitter.parsers').has_parser() and is_foldmethod_overridable then
+          vim.o.foldmethod = 'expr'
+          vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
+        end
+      end
+      vim.cmd([[
+        augroup NvimTreeSitter
+          autocmd!
+          autocmd FileType * lua MaybeSetTreeSitterFoldmethod()
+        augroup END
+      ]])
+
+      -- Install missing parsers
+      local install_info = vim.fn.execute('TSInstallInfo')
+      local uninstalled_parsers_count = vim.fn.count(install_info, 'not installed')
+      if uninstalled_parsers_count > 0 then
+        local install_prompt = string.format(
+          '%s Tree-sitter parsers are not installed, would you like to install them now? (Warning: It might take a while.)',
+          uninstalled_parsers_count
+        )
+
+        local should_install = vim.fn.confirm(install_prompt, "yes\nno") == 1
+        if should_install then
+          vim.cmd('TSInstall all')
+        else
+          vim.cmd([[
+            echomsg 'No problem, you can always do it later by running `:TSInstall all`.'
+          ]])
+        end
+      end
+    end,
+    ['do'] = vim.cmd.TSUpdateSync,
+  }
+)
+
+Plug(
+  'b3nj5m1n/kommentary',
+  {
+    config = function()
+      require('kommentary.config').configure_language(
+        "default",
+        {
+          prefer_single_line_comments = true,
+          single_line_comment_string = 'auto',
+          multi_line_comment_strings = 'auto',
+          hook_function = function()
+            require('ts_context_commentstring.internal').update_commentstring()
+          end,
+        }
+      )
+    end,
+  }
+)
+
+Plug('tpope/vim-sleuth')
+
+Plug(
+  'blankname/vim-fish',
+  {
+    config = function()
+      vim.cmd([[
+        augroup VimFish
+          autocmd!
+          autocmd FileType fish setlocal foldmethod=expr
+        augroup END
+      ]])
+    end,
+  }
+)
+
+Plug('windwp/nvim-ts-autotag')
+
+Plug('JoosepAlviste/nvim-ts-context-commentstring')
 -- }}}
 EOF
 
@@ -1140,7 +1234,9 @@ Plug 'williamboman/mason-lspconfig.nvim'
       keymap_opts = { noremap = true, silent = true }
 
       foldmethod = vim.o.foldmethod
-      isFoldmethodOverridable = foldmethod ~= 'manual' and foldmethod ~= 'marker' and foldmethod ~= 'diff'
+      isFoldmethodOverridable = foldmethod ~= 'manual'
+        and foldmethod ~= 'marker'
+        and foldmethod ~= 'diff'
       if capabilities.foldingRangeProvider and isFoldmethodOverridable then
         require('folding').on_attach()
       end

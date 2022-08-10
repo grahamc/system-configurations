@@ -45,3 +45,8 @@ nnoremap [<Tab> :call VSCodeNotify('editor.gotoPreviousFold')<CR>
 nnoremap ]<Tab> :call VSCodeNotify('editor.gotoNextFold')<CR>
 xnoremap [<Tab> :call VSCodeNotify('editor.gotoPreviousFold')<CR>
 xnoremap ]<Tab> :call VSCodeNotify('editor.gotoNextFold')<CR>
+
+xmap gc  <Plug>VSCodeCommentary
+nmap gc  <Plug>VSCodeCommentary
+omap gc  <Plug>VSCodeCommentary
+nmap gcc <Plug>VSCodeCommentaryLine
