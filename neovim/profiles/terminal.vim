@@ -309,7 +309,7 @@ set cursorline cursorlineopt=number,screenline
 set showtabline=1
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
-set signcolumn=yes " always show the sign column
+set signcolumn=auto:4
 set fillchars+=vert:┃,eob:\ ,horiz:━,horizup:┻,horizdown:┳,vertleft:┫,vertright:┣,verthoriz:╋
 augroup SetColorscheme
   autocmd!
@@ -468,6 +468,7 @@ vim.diagnostic.config({
     priority = 11,
   },
   update_in_insert = true,
+  -- With this enabled, sign priorities will become: hint=11, info=12, warn=13, error=14
   severity_sort = true,
   float = {
     source = "if_many",
