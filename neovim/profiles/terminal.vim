@@ -1387,8 +1387,8 @@ Plug 'arcticicestudio/nord-vim'
     highlight Search ctermfg=DarkYellow ctermbg=NONE cterm=reverse
     " Parentheses
     highlight Delimiter ctermfg=NONE ctermbg=NONE
-    highlight ErrorMsg ctermfg=1 ctermbg=NONE cterm=bold
-    highlight WarningMsg ctermfg=3 ctermbg=NONE cterm=bold
+    highlight ErrorMsg ctermfg=1 ctermbg=NONE
+    highlight WarningMsg ctermfg=3 ctermbg=NONE
     highlight Error ctermfg=1 ctermbg=NONE cterm=undercurl
     highlight Warning ctermfg=3 ctermbg=NONE cterm=undercurl
     highlight! link SpellBad Error
