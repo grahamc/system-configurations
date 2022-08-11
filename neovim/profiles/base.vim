@@ -199,7 +199,7 @@ Plug(
       vim.keymap.set('x', 'ai', 'aI', {remap = true})
       vim.keymap.set('o', 'ii', 'iI', {remap = true})
       vim.keymap.set('x', 'ii', 'iI', {remap = true})
-    end
+    end,
   }
 )
 
