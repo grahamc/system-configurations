@@ -209,12 +209,29 @@ Plug(
   {
     config = function()
       local augend = require("dial.augend")
+
+      local function words(...)
+        return augend.constant.new({
+          elements = {...},
+          word = true,
+          cyclic = true,
+        })
+      end
+
+      local function symbols(...)
+        return augend.constant.new({
+          elements = {...},
+          word = false,
+          cyclic = true,
+        })
+      end
+
       require('dial.config').augends:register_group({
         default = {
-          -- color: #FFFFFF
-          augend.hexcolor.new({
-            case = 'upper',
-          }),
+          -- color: #ffffff
+          -- NOTE: If the cursor is over one of the two digits in the red, green, or blue value, it only increments
+          -- that color of the hex. To increment the red, green, and blue portions, the cursor must be over the '#'.
+          augend.hexcolor.new({}),
           -- time: 14:30:00
           augend.date.alias["%H:%M:%S"],
           -- time: 14:30
@@ -233,41 +250,13 @@ Plug(
           augend.constant.alias.Alpha,
           -- lowercase letter: a
           augend.constant.alias.alpha,
-          augend.constant.new({
-            elements = {'and', 'or'},
-            word = true,
-            cyclic = true,
-          }),
-          augend.constant.new({
-            elements = {'public', 'private'},
-            word = true,
-            cyclic = true,
-          }),
-          augend.constant.new({
-            elements = {'true', 'false'},
-            word = true,
-            cyclic = true,
-          }),
-          augend.constant.new({
-            elements = {'&&', '||'},
-            word = false,
-            cyclic = true,
-          }),
-          augend.constant.new({
-            elements = {'!=', '=='},
-            word = false,
-            cyclic = true,
-          }),
-          augend.constant.new({
-            elements = {'<', '>'},
-            word = false,
-            cyclic = true,
-          }),
-          augend.constant.new({
-            elements = {'<=', '>='},
-            word = false,
-            cyclic = true,
-          }),
+          words('and', 'or'),
+          words('public', 'private'),
+          words('true', 'false'),
+          symbols('&&', '||'),
+          symbols('!=', '=='),
+          symbols('<', '>'),
+          symbols('<=', '>='),
         },
       })
 
