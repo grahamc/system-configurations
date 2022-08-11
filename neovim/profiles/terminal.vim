@@ -533,7 +533,14 @@ vim.g.tmux_navigator_no_mappings = 1
 
 Plug('inkarkat/vim-CursorLineCurrentWindow')
 
-Plug('farmergreg/vim-lastplace')
+Plug(
+  'ethanholz/nvim-lastplace',
+  {
+    config = function()
+      require('nvim-lastplace').setup({})
+    end,
+  }
+)
 
 Plug(
   'dstein64/vim-startuptime',

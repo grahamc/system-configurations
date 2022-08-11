@@ -133,6 +133,15 @@ vnoremap <silent> # :<C-U>
 
 lua << EOF
 -- Plugins {{{
+Plug('lewis6991/impatient.nvim')
+-- This needs to be called before any lua plugins call their setup() functions
+vim.cmd([[
+  augroup ImpatientNvim
+    autocmd!
+    autocmd User PlugEndPost lua pcall(require, 'impatient')
+  augroup END
+]])
+
 -- Motions for levels of indentation
 Plug(
   'jeetsukumaran/vim-indentwise',
@@ -191,6 +200,85 @@ Plug(
       vim.keymap.set('o', 'ii', 'iI', {remap = true})
       vim.keymap.set('x', 'ii', 'iI', {remap = true})
     end
+  }
+)
+
+-- Extend the types of text that can be incremented/decremented
+Plug(
+  'monaqa/dial.nvim',
+  {
+    config = function()
+      local augend = require("dial.augend")
+      require('dial.config').augends:register_group({
+        default = {
+          -- color: #FFFFFF
+          augend.hexcolor.new({
+            case = 'upper',
+          }),
+          -- time: 14:30:00
+          augend.date.alias["%H:%M:%S"],
+          -- time: 14:30
+          augend.date.alias["%H:%M"],
+          -- decimal integer: 0, 4, -123
+          augend.integer.alias.decimal_int,
+          -- hex: 0x00
+          augend.integer.alias.hex,
+          -- binary: 0b0101
+          augend.integer.alias.binary,
+          -- octal: 0o00
+          augend.integer.alias.octal,
+          -- semver: 1.22.1
+          augend.semver.alias.semver,
+          -- uppercase letter: A
+          augend.constant.alias.Alpha,
+          -- lowercase letter: a
+          augend.constant.alias.alpha,
+          augend.constant.new({
+            elements = {'and', 'or'},
+            word = true,
+            cyclic = true,
+          }),
+          augend.constant.new({
+            elements = {'public', 'private'},
+            word = true,
+            cyclic = true,
+          }),
+          augend.constant.new({
+            elements = {'true', 'false'},
+            word = true,
+            cyclic = true,
+          }),
+          augend.constant.new({
+            elements = {'&&', '||'},
+            word = false,
+            cyclic = true,
+          }),
+          augend.constant.new({
+            elements = {'!=', '=='},
+            word = false,
+            cyclic = true,
+          }),
+          augend.constant.new({
+            elements = {'<', '>'},
+            word = false,
+            cyclic = true,
+          }),
+          augend.constant.new({
+            elements = {'<=', '>='},
+            word = false,
+            cyclic = true,
+          }),
+        },
+      })
+
+      local dial_map = require('dial.map')
+      vim.keymap.set("n", "<C-a>", dial_map.inc_normal())
+      vim.keymap.set("n", "<C-x>", dial_map.dec_normal())
+      vim.keymap.set("v", "<C-a>", dial_map.inc_visual())
+      vim.keymap.set("v", "<C-x>", dial_map.dec_visual())
+      vim.keymap.set("v", "g<C-a>", dial_map.inc_gvisual())
+      vim.keymap.set("v", "g<C-x>", dial_map.dec_gvisual())
+    end,
   }
 )
 EOF
