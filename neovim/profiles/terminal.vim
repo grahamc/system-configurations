@@ -310,7 +310,7 @@ set showtabline=1
 set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=auto:4
-set fillchars+=vert:┃,eob:\ ,horiz:━,horizup:┻,horizdown:┳,vertleft:┫,vertright:┣,verthoriz:╋
+set fillchars+=eob:\ 
 augroup SetColorscheme
   autocmd!
   " use nested so my colorscheme changes are loaded
