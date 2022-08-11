@@ -431,6 +431,7 @@ function! Tabline()
   let last_tab_number = tab_count
   let last_separator_highlight = (last_tab_number == tabpagenr() ? '%#TabLineLastSeparator#' : '%#TabLineLastSeparatorNC#')
   let tabline .= last_separator_highlight . right_divider_char . '%#TabLineFill#'
+  let tabline = '%=' . tabline . '%='
 
   return tabline
 endfunction
@@ -1368,12 +1369,12 @@ Plug 'arcticicestudio/nord-vim'
     highlight WordUnderCursor ctermbg=8
     highlight! link IncSearch Search
     highlight TabLine ctermbg=8 ctermfg=15
-    highlight TabLineSel ctermbg=NONE ctermfg=7
+    highlight TabLineSel ctermbg=8 ctermfg=7 cterm=italic
     highlight TabLineFill ctermbg=8
-    highlight TabLineSeparator ctermbg=NONE ctermfg=14
-    highlight TabLineSeparatorNC ctermbg=8 ctermfg=15
-    highlight TabLineLastSeparator ctermbg=NONE ctermfg=15
-    highlight TabLineLastSeparatorNC ctermbg=8 ctermfg=15
+    highlight TabLineSeparator ctermbg=8 ctermfg=8
+    highlight TabLineSeparatorNC ctermbg=8 ctermfg=8
+    highlight TabLineLastSeparator ctermbg=8 ctermfg=8
+    highlight TabLineLastSeparatorNC ctermbg=8 ctermfg=8
     highlight Comment ctermfg=15 ctermbg=NONE
     " This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
     " By unsetting this, I ensure that terminals opened in vim will use the colors from the color palette of the
