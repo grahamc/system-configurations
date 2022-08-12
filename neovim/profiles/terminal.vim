@@ -727,7 +727,6 @@ Plug(
         is_foldmethod_overridable = foldmethod ~= 'manual'
           and foldmethod ~= 'marker'
           and foldmethod ~= 'diff'
-          and foldmethod ~= 'expr'
         if require('nvim-treesitter.parsers').has_parser() and is_foldmethod_overridable then
           vim.o.foldmethod = 'expr'
           vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
@@ -1263,6 +1262,7 @@ Plug 'williamboman/mason-lspconfig.nvim'
       isFoldmethodOverridable = foldmethod ~= 'manual'
         and foldmethod ~= 'marker'
         and foldmethod ~= 'diff'
+        and foldmethod ~= 'expr'
       if capabilities.foldingRangeProvider and isFoldmethodOverridable then
         require('folding').on_attach()
       end
