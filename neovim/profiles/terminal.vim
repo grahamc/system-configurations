@@ -647,6 +647,13 @@ Plug(
           },
         },
       })
+
+      vim.cmd([[
+        augroup TelescopeNvim
+          autocmd!
+          autocmd FileType TelescopePrompt setlocal nocursorline
+        augroup END
+      ]])
     end,
   }
 )
@@ -1089,6 +1096,12 @@ Plug 'hrsh7th/nvim-cmp'
           require('snippy').expand_snippet(args.body)
         end,
       },
+      window = {
+        documentation = {
+          winhighlight = 'NormalFloat:Pmenu,FloatBorder:Pmenu',
+          border = {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',},
+        },
+      },
       mapping = cmp.mapping.preset.insert({
         ['<C-a>'] = cmp.mapping.complete(),
         ['<CR>'] = function(fallback)
@@ -1360,7 +1373,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight StatusLineStandoutText ctermfg=3 ctermbg=8
     " autocomplete popupmenu
     highlight PmenuSel ctermfg=14 ctermbg=NONE cterm=reverse
-    highlight Pmenu ctermfg=NONE ctermbg=8
+    highlight Pmenu ctermfg=NONE ctermbg=24
     highlight PmenuThumb ctermfg=NONE ctermbg=15
     highlight PmenuSbar ctermbg=8
     highlight CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
@@ -1398,7 +1411,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight Warning ctermfg=3 ctermbg=NONE cterm=undercurl
     highlight! link SpellBad Error
     highlight! link NvimInternalError ErrorMsg
-    highlight Folded ctermfg=15 ctermbg=8 cterm=NONE
+    highlight Folded ctermfg=15 ctermbg=24 cterm=NONE
     highlight FoldColumn ctermfg=15 ctermbg=NONE
     highlight SpecialKey ctermfg=13 ctermbg=NONE
     highlight NonText ctermfg=15 ctermbg=NONE
@@ -1416,16 +1429,22 @@ Plug 'arcticicestudio/nord-vim'
     highlight! link CmpItemAbbrMatchFuzzy CmpItemAbbrMatch
     highlight! CmpItemKind ctermbg=NONE ctermfg=15
     highlight! link CmpItemMenu CmpItemKind
-    highlight! TelescopeBorder ctermbg=NONE ctermfg=0
-    highlight! TelescopePromptTitle ctermbg=NONE ctermfg=5 cterm=reverse,bold
+    highlight! TelescopeBorder ctermbg=16 ctermfg=16
+    highlight! TelescopePromptTitle ctermbg=24 ctermfg=5 cterm=reverse,bold,nocombine
     highlight! TelescopeMatching ctermbg=NONE ctermfg=6
     highlight! TelescopeSelectionCaret ctermbg=8 ctermfg=8
+    highlight! TelescopeNormal ctermbg=16
+    highlight! TelescopePromptNormal ctermbg=24
+    highlight! TelescopePromptBorder ctermbg=24 ctermfg=24
+    highlight! TelescopePromptPrefix ctermbg=24 ctermfg=5
     highlight MasonHeader ctermbg=NONE ctermfg=4 cterm=reverse,bold
     highlight MasonHighlight ctermbg=NONE ctermfg=6
     highlight MasonHighlightBlockBold ctermbg=NONE ctermfg=6 cterm=reverse,bold
     highlight MasonMuted ctermbg=NONE ctermfg=NONE
     highlight MasonMutedBlock ctermbg=NONE ctermfg=15 cterm=reverse
     highlight MasonError ctermbg=NONE ctermfg=1
+    highlight WhichKeyFloat ctermbg=24
+    highlight NormalFloat ctermbg=32
   endfunction
   augroup NordColorschemeOverrides
     autocmd!

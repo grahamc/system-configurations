@@ -57,6 +57,7 @@
     ~/.config/pipr/pipr.toml: pipr/pipr.toml
     ~/.config/brewfile/Brewfile: brew/Brewfile
     ~/.config/pipx/pipx-packages: pipx/pipx-packages
+    ~/.local/bin/delta-with-fallback-to-less: git/delta-with-fallback-to-less
     ~/.config/viddy.toml: viddy/viddy.toml
 
 # Using another link directive since I have multiple links to this directory and you can't have
