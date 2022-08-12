@@ -207,6 +207,7 @@ Plug(
 Plug(
   'monaqa/dial.nvim',
   {
+    on = {'<Plug>(dial-increment)', '<Plug>(dial-decrement)'},
     config = function()
       local augend = require("dial.augend")
 
@@ -259,15 +260,13 @@ Plug(
           symbols('<=', '>='),
         },
       })
-
-      local dial_map = require('dial.map')
-      vim.keymap.set("n", "<C-a>", dial_map.inc_normal())
-      vim.keymap.set("n", "<C-x>", dial_map.dec_normal())
-      vim.keymap.set("v", "<C-a>", dial_map.inc_visual())
-      vim.keymap.set("v", "<C-x>", dial_map.dec_visual())
-      vim.keymap.set("v", "g<C-a>", dial_map.inc_gvisual())
-      vim.keymap.set("v", "g<C-x>", dial_map.dec_gvisual())
     end,
   }
 )
+vim.keymap.set("n", "<C-a>", '<Plug>(dial-increment)')
+vim.keymap.set("n", "<C-x>", '<Plug>(dial-decrement)')
+vim.keymap.set("v", "<C-a>", '<Plug>(dial-increment)')
+vim.keymap.set("v", "<C-x>", '<Plug>(dial-decrement)')
+vim.keymap.set("v", "g<C-a>", 'g<Plug>(dial-increment)')
+vim.keymap.set("v", "g<C-x>", 'g<Plug>(dial-decrement)')
 EOF
