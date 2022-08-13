@@ -113,9 +113,6 @@ augroup END
 " }}}
 
 " Utilities {{{
-" Display all highlight groups in a new window
-command! HighlightTest so $VIMRUNTIME/syntax/hitest.vim
-
 " Sets options to the specified new values and returns their old values.
 " Useful for when you want to change an option and then restore its old value later on.
 function! SetOptions(new_option_values)
@@ -661,6 +658,9 @@ Plug(
       vim.keymap.set('n', '<Leader>k', '<Cmd>Telescope help_tags<CR>')
       vim.keymap.set('n', '<Leader>g', '<Cmd>Telescope live_grep<CR>')
       vim.keymap.set('n', '<Leader>f', '<Cmd>Telescope find_files<CR>')
+      vim.cmd([[
+        command! HighlightTest Telescope highlights
+      ]])
     end,
   }
 )
