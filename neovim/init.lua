@@ -46,10 +46,18 @@ local configs = {
   immediate = {},
   lazy = {},
 }
-local plug_begin = vim.fn['plug#begin']
+local original_plug_begin = vim.fn['plug#begin']
+local function plug_begin()
+  original_plug_begin()
+  Plug('lewis6991/impatient.nvim')
+end
 local original_plug_end = vim.fn['plug#end']
 local function plug_end()
   original_plug_end()
+
+  -- This needs to be called before any lua plugins call their setup() functions
+  pcall(require, 'impatient')
+
   vim.cmd([[
     call timer_start(0, { -> execute('lua PlugWrapperApplyImmediateConfigs()')})
   ]])

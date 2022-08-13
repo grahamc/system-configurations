@@ -135,15 +135,6 @@ vnoremap <silent> # :<C-U>
 
 lua << EOF
 -- Plugins {{{
-Plug('lewis6991/impatient.nvim')
--- This needs to be called before any lua plugins call their setup() functions
-vim.cmd([[
-  augroup ImpatientNvim
-    autocmd!
-    autocmd User PlugEndPost lua pcall(require, 'impatient')
-  augroup END
-]])
-
 -- Motions for levels of indentation
 Plug(
   'jeetsukumaran/vim-indentwise',
