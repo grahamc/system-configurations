@@ -49,7 +49,7 @@ local configs = {
 vim.cmd([[
   augroup PlugWrapper
     autocmd!
-    autocmd VimEnter * lua PlugWrapperApplyImmediateConfigs()
+    autocmd VimEnter * call timer_start(0, { -> execute('lua PlugWrapperApplyImmediateConfigs()')})
   augroup END
 ]])
 local plug_begin = vim.fn['plug#begin']
