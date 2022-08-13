@@ -30,9 +30,6 @@
 	tool = smerge
 [diff]
   colorMoved = default
-[mergetool "smartsynchronize"]
-  cmd = smartsynchronize "$LOCAL" "$REMOTE" "$MERGED"
-  trustExitCode = false
 [interactive]
   diffFilter = delta-with-fallback-to-less --color-only
 [delta]
