@@ -654,6 +654,13 @@ Plug(
           autocmd FileType TelescopePrompt setlocal nocursorline
         augroup END
       ]])
+
+      vim.keymap.set('n', '<Leader>h', '<Cmd>Telescope command_history<CR>')
+      vim.keymap.set('n', '<Leader>b', '<Cmd>Telescope buffers<CR>')
+      vim.keymap.set('n', '<Leader>/', '<Cmd>Telescope commands<CR>')
+      vim.keymap.set('n', '<Leader>k', '<Cmd>Telescope help_tags<CR>')
+      vim.keymap.set('n', '<Leader>g', '<Cmd>Telescope live_grep<CR>')
+      vim.keymap.set('n', '<Leader>f', '<Cmd>Telescope find_files<CR>')
     end,
   }
 )
@@ -914,68 +921,6 @@ Plug 'junegunn/goyo.vim'
     " Auto activate for files ending in '.txt'
     autocmd VimEnter * if @% =~# '.txt$' | execute 'Goyo' | endif
   augroup END
-" }}}
-
-" Fzf integration {{{
-Plug 'junegunn/fzf'
-  let g:fzf_layout = { 'window': 'tabnew' }
-  function! LoadFzfConfig()
-    " In terminals you have to press <C-\> twice to send it to the terminal.
-    " This mapping makes it so that I only have to press it once.
-    " This way, I can use a <C-\> keybind more easily.
-    tnoremap <buffer> <C-\> <C-\><C-\>
-
-    " Prevent entering normal mode in the terminal
-    autocmd ModeChanged <buffer> if mode(1) =~# '\v^nt' | startinsert | endif
-
-    " If fzf is the only window in the current tab, hide all ui elements, otherwise customize them.
-    if tabpagewinnr(tabpagenr(), '$') == 1
-      " Hide all ui elements
-      let g:fzf_old_option_values = SetOptions({
-            \ '&laststatus': 0,
-            \ '&showmode': 0,
-            \ '&ruler': 0,
-            \ '&number': 0,
-            \ '&relativenumber': 0,
-            \ '&showtabline': 0,
-            \ '&cmdheight': 0,
-            \ '&winbar': '',
-            \ '&colorcolumn': '',
-            \ })
-
-      " Restore old option values after leaving fzf
-      autocmd BufLeave <buffer> call SetOptions(g:fzf_old_option_values)
-    else
-      autocmd! User FzfStatusLine setlocal statusline=%#StatusLine#\ fzf
-    endif
-  endfunction
-  augroup Fzf
-    autocmd!
-    autocmd FileType fzf call LoadFzfConfig()
-  augroup END
-  " Collection of fzf-based commands
-  Plug 'junegunn/fzf.vim'
-    nnoremap <silent> <Leader>h <Cmd>History:<CR>
-    nnoremap <silent> <Leader>b <Cmd>Buffers<CR>
-    nnoremap <silent> <Leader>/ <Cmd>Commands<CR>
-    nnoremap <silent> <Leader>k <Cmd>Helptags<CR>
-    " recursive grep
-    function! RipgrepFzf(query, fullscreen)
-      let command_fmt = 'rg --hidden --column --line-number --fixed-strings --no-heading --color=always --smart-case -- %s || true'
-      let initial_command = printf(command_fmt, shellescape(a:query))
-      let reload_command = printf(command_fmt, '{q}')
-      let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:first+reload:'.reload_command, '--prompt', 'lines: ', '--preview', 'bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {1} --highlight-line {2} | tail -n +2 | head -n -1']}
-      call fzf#vim#grep(initial_command, 1, spec, a:fullscreen)
-    endfunction
-    command! -nargs=* -bang FindLine call RipgrepFzf(<q-args>, <bang>0)
-    nnoremap <Leader>g <Cmd>FindLine<CR>
-    " recursive file search
-    command! -bang -nargs=* FindFile call
-        \ fzf#run(fzf#wrap({
-        \ 'source': 'fd --hidden --strip-cwd-prefix --type file --type symlink | tr -d "\017"',
-        \ 'sink': 'edit',
-        \ 'options': '--ansi --preview "bat --style=numbers,grid --paging=never --terminal-width (math \$FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --prompt="' . substitute(getcwd(), $HOME, '~', "") .'/" --keep-right'}))
-    nnoremap <Leader>f <Cmd>FindFile<CR>
 " }}}
 
 " File explorer {{{
