@@ -46,16 +46,13 @@ local configs = {
   immediate = {},
   lazy = {},
 }
-vim.cmd([[
-  augroup PlugWrapper
-    autocmd!
-    autocmd VimEnter * call timer_start(0, { -> execute('lua PlugWrapperApplyImmediateConfigs()')})
-  augroup END
-]])
 local plug_begin = vim.fn['plug#begin']
 local original_plug_end = vim.fn['plug#end']
 local function plug_end()
   original_plug_end()
+  vim.cmd([[
+    call timer_start(0, { -> execute('lua PlugWrapperApplyImmediateConfigs()')})
+  ]])
 end
 _G.PlugWrapperApplyLazyConfig = function(plugin_name)
   local config = configs.lazy[plugin_name]
