@@ -327,11 +327,6 @@ set wrap
 set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
 set signcolumn=yes:2
 set fillchars+=eob:\ 
-augroup SetColorscheme
-  autocmd!
-  " use nested so my colorscheme changes are loaded
-  autocmd VimEnter * ++nested colorscheme nord
-augroup END
 " }}}
 
 " Statusline {{{
@@ -1458,7 +1453,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight NormalFloat ctermbg=32
     highlight LuaSnipNode ctermfg=11
   endfunction
-  augroup NordColorschemeOverrides
+  augroup NordVim
     autocmd!
     autocmd ColorScheme nord call SetNordOverrides()
     " The highlight I use for the word under the cursor and text selected in visual mode is the same.
@@ -1471,6 +1466,8 @@ Plug 'arcticicestudio/nord-vim'
       endif
     endfunction
     autocmd ModeChanged * call DisableWordUnderCursorHighlight()
+    " use nested so my colorscheme changes are loaded
+    autocmd User PlugEndPost ++nested lua pcall(function() vim.cmd.colorscheme('nord') end)
   augroup END
 " }}}
 
