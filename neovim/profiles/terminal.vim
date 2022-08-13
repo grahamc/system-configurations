@@ -153,7 +153,24 @@ nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':exe "q" <Bar> silent! ta
 " tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
 "
 " maximize a window by opening it in a new tab
-nnoremap <silent><Leader>m <Cmd>if winnr('$') > 1 <Bar> tab sp <Bar> endif<CR>
+lua << EOF
+local function toggle_maximize()
+  if vim.w.is_maximized then
+    vim.cmd.q()
+    return
+  end
+
+  if vim.fn.winnr('$') == 1 then
+    return
+  end
+
+  vim.cmd([[
+    tab split
+  ]])
+  vim.w.is_maximized = true
+end
+vim.keymap.set('n', '<Leader>m', toggle_maximize)
+EOF
 
 augroup Window
   autocmd!
@@ -1237,6 +1254,13 @@ Plug 'williamboman/mason.nvim'
       },
       log_level = vim.log.levels.DEBUG,
     })
+
+    vim.cmd([[
+      augroup MasonNvim
+        autocmd!
+        autocmd FileType mason.nvim highlight clear WordUnderCursor
+      augroup END
+    ]])
 EOF
   endfunction
   autocmd VimEnter * call SetupMason()
