@@ -1523,30 +1523,9 @@ function! InstallMissingPlugins()
   endif
 endfunction
 
-" If it's been more than a month, update plugins
-function! MonthlyPluginUpdate()
-  if !filereadable(g:snapshot_file)
-    return
-  endif
-
-  let last_modified_time = system(printf('date --reference %s +%%s', g:snapshot_file))
-  let current_time = system('date +%s')
-  let time_since_last_update = current_time - last_modified_time
-  if time_since_last_update < 2592000
-    return
-  endif
-
-  let update_prompt = "You haven't updated your plugins in over a month, would you like to update them now?"
-  let should_update = confirm(update_prompt, "yes\nno") == 1
-  if should_update
-    PlugUpgrade
-    call UpdateAndSnapshotSync()
-  endif
-endfunction
-
 augroup PostPluginLoadOperations
   autocmd!
-  autocmd User PlugEndPost call InstallMissingPlugins() | call MonthlyPluginUpdate()
+  autocmd User PlugEndPost call InstallMissingPlugins()
 augroup END
 " }}}
 
