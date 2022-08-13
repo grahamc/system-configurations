@@ -1036,6 +1036,7 @@ Plug 'hrsh7th/nvim-cmp'
   function! SetupNvimCmp()
     lua << EOF
     local cmp = require("cmp")
+    local luasnip = require('luasnip')
 
     -- sources
     local buffer = {
@@ -1075,6 +1076,10 @@ Plug 'hrsh7th/nvim-cmp'
       keyword_length = 2,
     }
     local lsp_signature = { name = 'nvim_lsp_signature_help' }
+    local luasnip_source = {
+      name = 'luasnip',
+      option = {use_show_condition = false},
+    }
 
     -- views
     local wildmenu = {
@@ -1093,7 +1098,7 @@ Plug 'hrsh7th/nvim-cmp'
     cmp.setup({
       snippet = {
         expand = function(args)
-          require('snippy').expand_snippet(args.body)
+          luasnip.lsp_expand(args.body)
         end,
       },
       window = {
@@ -1139,9 +1144,24 @@ Plug 'hrsh7th/nvim-cmp'
         end, { 'i', 's' }),
         ['<C-k>'] = cmp.mapping.scroll_docs(-4),
         ['<C-j>'] = cmp.mapping.scroll_docs(4),
+        ["<C-h>"] = cmp.mapping(function(fallback)
+          if luasnip.jumpable(-1) then
+            luasnip.jump(-1)
+          else
+            fallback()
+          end
+        end, { 'i', 's' }),
+        ["<C-l>"] = cmp.mapping(function(fallback)
+          if luasnip.jumpable(1) then
+            luasnip.jump(1)
+          else
+            fallback()
+          end
+        end, { 'i', 's' }),
       }),
       sources = cmp.config.sources(
         {
+          luasnip_source,
           nvim_lsp,
           buffer,
           omni,
@@ -1229,8 +1249,30 @@ EOF
 
 Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
 
-Plug 'dcampos/nvim-snippy'
-Plug 'dcampos/cmp-snippy'
+Plug 'L3MON4D3/LuaSnip'
+  function! SetupLuaSnip()
+    lua << EOF
+    local types = require("luasnip.util.types")
+    require('luasnip').config.set_config({
+      history = true,
+      delete_check_events = "TextChanged",
+      ext_opts = {
+        [types.insertNode] = {
+          passive = {
+            virt_text = {{'⮜', 'LuaSnipNode'}},
+            hl_group = "LuaSnipNode",
+          },
+        },
+      },
+    })
+    require('luasnip.loaders.from_vscode').lazy_load()
+EOF
+  endfunction
+  autocmd VimEnter * call SetupLuaSnip()
+
+Plug 'saadparwaiz1/cmp_luasnip'
+
+Plug 'rafamadriz/friendly-snippets'
 " }}}
 
 " Tool Manager {{{
@@ -1445,6 +1487,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight MasonError ctermbg=NONE ctermfg=1
     highlight WhichKeyFloat ctermbg=24
     highlight NormalFloat ctermbg=32
+    highlight LuaSnipNode ctermfg=11
   endfunction
   augroup NordColorschemeOverrides
     autocmd!
