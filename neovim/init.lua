@@ -58,9 +58,7 @@ local function plug_end()
   -- This needs to be called before any lua plugins call their setup() functions
   pcall(require, 'impatient')
 
-  vim.cmd([[
-    call timer_start(0, { -> execute('lua PlugWrapperApplyImmediateConfigs()')})
-  ]])
+  PlugWrapperApplyImmediateConfigs()
 end
 _G.PlugWrapperApplyLazyConfig = function(plugin_name)
   local config = configs.lazy[plugin_name]
