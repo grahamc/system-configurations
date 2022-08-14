@@ -712,6 +712,13 @@ Plug(
           scroll_down = '<c-j>',
           scroll_up = '<c-k>',
         },
+        -- hide mapping boilerplate
+        hidden = {"<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ ", "<Plug>", "<plug>"}, 
+        layout = {
+          height = {
+            max = math.floor(vim.o.lines * .30),
+          },
+        },
       })
     end,
   }
