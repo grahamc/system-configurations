@@ -264,6 +264,7 @@ set complete=.,w,b,u
 " - show the completion menu even if there is only one suggestion
 " - when autocomplete gets triggered, no suggestion is selected
 set completeopt=menu,menuone,noselect
+set pumheight=6
 " }}}
 
 " Command line {{{
