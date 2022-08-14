@@ -1,3 +1,4 @@
+-- vim:foldmethod=marker
 -- Disable unused builtin plugins.
 local plugins_to_disable = {
   "netrw",
