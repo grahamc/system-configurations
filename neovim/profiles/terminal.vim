@@ -1028,7 +1028,6 @@ Plug 'hrsh7th/nvim-cmp'
         end,
       },
     }
-    local nvim_lua = { name = 'nvim_lua' }
     local tmux = {
       name = 'tmux',
       option = { all_panes = true },
@@ -1134,7 +1133,6 @@ Plug 'hrsh7th/nvim-cmp'
           buffer,
           omni,
           path,
-          nvim_lua,
           tmux,
           dictionary,
           lsp_signature,
@@ -1192,8 +1190,6 @@ Plug 'hrsh7th/cmp-cmdline'
 Plug 'dmitmel/cmp-cmdline-history'
 
 Plug 'andersevenrud/cmp-tmux'
-
-Plug 'hrsh7th/cmp-nvim-lua'
 
 Plug 'hrsh7th/cmp-buffer'
 
@@ -1316,6 +1312,7 @@ Plug 'williamboman/mason-lspconfig.nvim'
       function (server_name)
         lspconfig[server_name].setup(default_server_config)
       end,
+
       ["jsonls"] = function()
         lspconfig.jsonls.setup(
           vim.tbl_deep_extend(
@@ -1326,6 +1323,37 @@ Plug 'williamboman/mason-lspconfig.nvim'
                 json = {
                   schemas = require('schemastore').json.schemas(),
                   validate = { enable = true },
+                },
+              },
+            }
+          )
+        )
+      end,
+ 
+      ["sumneko_lua"] = function()
+        lspconfig.sumneko_lua.setup(
+          vim.tbl_deep_extend(
+            'force',
+            default_server_config,
+            {
+              settings = {
+                Lua = {
+                  runtime = {
+                    -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+                    version = 'LuaJIT',
+                  },
+                  diagnostics = {
+                    -- Get the language server to recognize the `vim` global
+                    globals = {'vim'},
+                  },
+                  workspace = {
+                    -- Make the server aware of Neovim runtime files
+                    library = vim.api.nvim_get_runtime_file("", true),
+                  },
+                  telemetry = {
+                    -- Do not send telemetry data containing a randomized but unique identifier
+                    enable = false,
+                  },
                 },
               },
             }

@@ -262,4 +262,6 @@ vim.keymap.set("v", "+", '<Plug>(dial-increment)')
 vim.keymap.set("v", "-", '<Plug>(dial-decrement)')
 vim.keymap.set("v", "g+", 'g<Plug>(dial-increment)')
 vim.keymap.set("v", "g-", 'g<Plug>(dial-decrement)')
+
+Plug 'arthurxavierx/vim-caser'
 EOF
