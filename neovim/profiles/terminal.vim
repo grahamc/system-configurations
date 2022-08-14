@@ -764,28 +764,32 @@ Plug(
         augroup NvimTreeSitter
           autocmd!
           autocmd FileType * lua MaybeSetTreeSitterFoldmethod()
+          autocmd VimEnter * lua InstallMissingParsers()
         augroup END
       ]])
 
       -- Install missing parsers
-      local install_info = vim.fn.execute('TSInstallInfo')
-      local uninstalled_parsers_count = vim.fn.count(install_info, 'not installed')
-      if uninstalled_parsers_count > 0 then
-        local install_prompt = string.format(
-          '%s Tree-sitter parsers are not installed, would you like to install them now?',
-          uninstalled_parsers_count
-        )
-        if uninstalled_parsers_count > 20 then
-          install_prompt = install_prompt .. ' (Warning: It might take a while.)'
-        end
+      -- TODO: treesitter commands don't seem to be available until 'VimEnter' so I'll call this function then.
+      _G.InstallMissingParsers = function()
+        local install_info = vim.fn.execute('TSInstallInfo')
+        local uninstalled_parsers_count = vim.fn.count(install_info, 'not installed')
+        if uninstalled_parsers_count > 0 then
+          local install_prompt = string.format(
+            '%s Tree-sitter parsers are not installed, would you like to install them now?',
+            uninstalled_parsers_count
+          )
+          if uninstalled_parsers_count > 20 then
+            install_prompt = install_prompt .. ' (Warning: It might take a while.)'
+          end
 
-        local should_install = vim.fn.confirm(install_prompt, "yes\nno") == 1
-        if should_install then
-          vim.cmd('TSInstall all')
-        else
-          vim.cmd([[
-            echomsg 'No problem, you can always do it later by running `:TSInstall all`.'
-          ]])
+          local should_install = vim.fn.confirm(install_prompt, "yes\nno") == 1
+          if should_install then
+            vim.cmd('TSInstall all')
+          else
+            vim.cmd([[
+              echomsg 'No problem, you can always do it later by running `:TSInstall all`.'
+            ]])
+          end
         end
       end
     end,
