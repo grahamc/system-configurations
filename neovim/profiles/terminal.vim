@@ -1065,8 +1065,12 @@ Plug 'hrsh7th/nvim-cmp'
       },
       window = {
         documentation = {
-          winhighlight = 'NormalFloat:Pmenu,FloatBorder:Pmenu',
-          border = {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',},
+          winhighlight = 'NormalFloat:CmpNormal,FloatBorder:CmpBorder',
+          border = 'rounded',
+        },
+        completion = {
+          winhighlight = 'NormalFloat:CmpNormal,FloatBorder:CmpBorder,CursorLine:CmpCursorLine,PmenuThumb:CmpThumb',
+          border = 'rounded',
         },
       },
       mapping = cmp.mapping.preset.insert({
@@ -1436,10 +1440,15 @@ Plug 'arcticicestudio/nord-vim'
     highlight! link DiagnosticUnderlineWarn Warning
     highlight DiagnosticUnderlineInfo ctermfg=4 ctermbg=NONE cterm=undercurl
     highlight DiagnosticUnderlineHint ctermfg=5 ctermbg=NONE cterm=undercurl
-    highlight! CmpItemAbbrMatch ctermbg=NONE ctermfg=6
+    highlight! CmpItemAbbrMatch ctermbg=NONE ctermfg=14
     highlight! link CmpItemAbbrMatchFuzzy CmpItemAbbrMatch
     highlight! CmpItemKind ctermbg=NONE ctermfg=15
     highlight! link CmpItemMenu CmpItemKind
+    highlight CmpNormal ctermbg=NONE ctermfg=NONE
+    highlight CmpBorder ctermbg=NONE ctermfg=15
+    highlight! link CmpDocumentationNormal CmpNormal
+    highlight! link CmpDocumentationBorder CmpBorder
+    highlight CmpCursorLine ctermfg=14 ctermbg=NONE cterm=reverse
     highlight! TelescopeBorder ctermbg=16 ctermfg=16
     highlight! TelescopePromptTitle ctermbg=24 ctermfg=5 cterm=reverse,bold,nocombine
     highlight! TelescopeMatching ctermbg=NONE ctermfg=6
