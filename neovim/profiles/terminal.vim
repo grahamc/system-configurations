@@ -1071,7 +1071,7 @@ Plug 'hrsh7th/nvim-cmp'
           border = 'rounded',
         },
         completion = {
-          winhighlight = 'NormalFloat:CmpNormal,FloatBorder:CmpBorder,CursorLine:CmpCursorLine,PmenuThumb:CmpThumb',
+          winhighlight = 'NormalFloat:CmpNormal,FloatBorder:CmpBorder,CursorLine:CmpCursorLine',
           border = 'rounded',
         },
       },
