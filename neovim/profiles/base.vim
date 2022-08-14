@@ -256,10 +256,10 @@ Plug(
     end,
   }
 )
-vim.keymap.set("n", "<C-a>", '<Plug>(dial-increment)')
-vim.keymap.set("n", "<C-x>", '<Plug>(dial-decrement)')
-vim.keymap.set("v", "<C-a>", '<Plug>(dial-increment)')
-vim.keymap.set("v", "<C-x>", '<Plug>(dial-decrement)')
-vim.keymap.set("v", "g<C-a>", 'g<Plug>(dial-increment)')
-vim.keymap.set("v", "g<C-x>", 'g<Plug>(dial-decrement)')
+vim.keymap.set("n", "+", '<Plug>(dial-increment)')
+vim.keymap.set("n", "-", '<Plug>(dial-decrement)')
+vim.keymap.set("v", "+", '<Plug>(dial-increment)')
+vim.keymap.set("v", "-", '<Plug>(dial-decrement)')
+vim.keymap.set("v", "g+", 'g<Plug>(dial-increment)')
+vim.keymap.set("v", "g-", 'g<Plug>(dial-decrement)')
 EOF
