@@ -156,7 +156,7 @@ nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':exe "q" <Bar> silent! ta
 lua << EOF
 local function toggle_maximize()
   if vim.w.is_maximized then
-    vim.cmd.q()
+    vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Leader>', true, false, true) .. 'q')
     return
   end
 
