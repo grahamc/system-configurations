@@ -69,6 +69,8 @@ inoremap <expr> <CR> GetEnterKeyActions()
 set colorcolumn=120
 
 set shell=sh
+
+nnoremap <BS> <C-^>
 " }}}
 
 " Autoreload {{{
