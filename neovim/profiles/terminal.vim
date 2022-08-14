@@ -341,8 +341,8 @@ endfunction
 function! MyStatusLine()
   let item_separator = '%#StatusLineSeparator# ∙ '
 
-  let line = '%#StatusLine#Ln %l/%L'
-  let column = '%#StatusLine#Col %c/%{execute("echon col(\"$\") - 1")}'
+  let line = '%#StatusLine#Ln %l'
+  let column = '%#StatusLine#Col %c'
   let position = line . ', ' . column
 
   if getbufvar(bufnr('%'), "&mod")
