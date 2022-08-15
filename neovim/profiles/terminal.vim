@@ -187,6 +187,13 @@ augroup END
 nnoremap <silent> <Leader>t <Cmd>$tabnew<CR>
 nnoremap <silent> <C-h> <Cmd>tabprevious<CR>
 nnoremap <silent> <C-l> <Cmd>tabnext<CR>
+
+lua << EOF
+-- Switch tabs with <Leader><tab number>
+for window_index=1,9 do
+  vim.keymap.set('n', '<Leader>' .. window_index, function() vim.cmd.tabnext(tostring(window_index)) end)
+end
+EOF
 " }}}
 
 " Indentation {{{
@@ -423,6 +430,8 @@ function! Tabline()
     else
       let bufname = '[No Name]'
     endif
+    let bufname = tab . ' ' . bufname
+
 
     let tabline .= '%' . tab . 'T'
     let highlight = (tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#')
