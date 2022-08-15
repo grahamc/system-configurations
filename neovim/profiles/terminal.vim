@@ -187,8 +187,6 @@ augroup END
 nnoremap <silent> <Leader>t <Cmd>$tabnew<CR>
 nnoremap <silent> <C-h> <Cmd>tabprevious<CR>
 nnoremap <silent> <C-l> <Cmd>tabnext<CR>
-inoremap <silent> <C-h> <Cmd>tabprevious<CR>
-inoremap <silent> <C-l> <Cmd>tabnext<CR>
 " }}}
 
 " Indentation {{{
@@ -1113,15 +1111,11 @@ Plug 'hrsh7th/nvim-cmp'
         ["<C-h>"] = cmp.mapping(function(fallback)
           if luasnip.jumpable(-1) then
             luasnip.jump(-1)
-          else
-            fallback()
           end
         end, { 'i', 's' }),
         ["<C-l>"] = cmp.mapping(function(fallback)
           if luasnip.jumpable(1) then
             luasnip.jump(1)
-          else
-            fallback()
           end
         end, { 'i', 's' }),
       }),
