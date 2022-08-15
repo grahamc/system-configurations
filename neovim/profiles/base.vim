@@ -247,10 +247,12 @@ Plug(
           words('and', 'or'),
           words('public', 'private'),
           words('true', 'false'),
+          words('yes', 'no'),
           symbols('&&', '||'),
           symbols('!=', '=='),
           symbols('<', '>'),
           symbols('<=', '>='),
+          symbols('+=', '-='),
         },
       })
     end,
