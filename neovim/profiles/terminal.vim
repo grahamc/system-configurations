@@ -149,7 +149,7 @@ nnoremap <Leader>- <Cmd>split<CR>
 
 " close a window, quit if last window
 " also when closing a tab, go to the previously opened tab
-nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':exe "q" <Bar> silent! tabn '.g:lasttab.'<CR>' : ':close<CR>'
+nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':let g:last_tab = tabpagenr("#") <Bar> execute "q" <Bar> silent! execute "tabnext " . g:last_tab<CR>' : ':close<CR>'
 
 " TODO: When tmux is able to differentiate between enter and ctrl+m this mapping should be updated.
 " tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
@@ -189,14 +189,6 @@ nnoremap <silent> <C-h> <Cmd>tabprevious<CR>
 nnoremap <silent> <C-l> <Cmd>tabnext<CR>
 inoremap <silent> <C-h> <Cmd>tabprevious<CR>
 inoremap <silent> <C-l> <Cmd>tabnext<CR>
-" track which tab last opened
-if !exists('g:lasttab')
-  let g:lasttab = 1
-endif
-augroup LastTab
-  autocmd!
-  autocmd TabLeave * let g:lasttab = tabpagenr()
-augroup END
 " }}}
 
 " Indentation {{{
