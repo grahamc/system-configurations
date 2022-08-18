@@ -32,6 +32,7 @@ local profile_directory = vim.fn.expand('<sfile>:h') .. '/profiles'
 if vim.fn.isdirectory(profile_directory) then
   vim.g.profiles = vim.fn.split(vim.fn.globpath(profile_directory, '*'), '\n')
 end
+_G.is_nerdfont_enabled = os.getenv('NERDFONT_ENABLE') == '1'
 
 -- Install vim-plug if not found
 local vim_plug_plugin_file = vim.g.data_path .. '/site/autoload/plug.vim'

@@ -2,7 +2,7 @@
 
 " Miscellaneous {{{
 set nrformats-=octal
-set ttimeout ttimeoutlen=500
+set timeout timeoutlen=500
 set updatetime=500
 set noswapfile
 set fileformats=unix,dos,mac
@@ -266,4 +266,5 @@ vim.keymap.set("v", "g+", 'g<Plug>(dial-increment)')
 vim.keymap.set("v", "g-", 'g<Plug>(dial-decrement)')
 
 Plug 'arthurxavierx/vim-caser'
+-- }}}
 EOF

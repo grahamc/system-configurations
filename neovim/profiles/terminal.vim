@@ -71,6 +71,13 @@ set colorcolumn=120
 set shell=sh
 
 nnoremap <BS> <C-^>
+
+augroup DarkFloats
+  autocmd!
+  autocmd FileType lspinfo,mason.nvim set winhighlight=NormalFloat:DarkFloatNormal
+augroup END
+
+set ttimeout ttimeoutlen=50
 " }}}
 
 " Autoreload {{{
@@ -331,127 +338,189 @@ set signcolumn=yes:2
 set fillchars+=eob:\ 
 " }}}
 
-" Statusline {{{
-set laststatus=3
+lua << EOF
+-- Statusline {{{
+_G.GetDiagnosticCountForSeverity = function(severity)
+  return #vim.diagnostic.get(0, {severity = severity})
+end
+_G.StatusLine = function()
+  local item_separator = '%#StatusLineSeparator# ∙ '
 
-function! GetDiagnosticCountForSeverity(severity)
-  return v:lua.vim.diagnostic.get(0, {'severity': a:severity})->len()
-endfunction
-function! MyStatusLine()
-  let item_separator = '%#StatusLineSeparator# ∙ '
+  local line = '%#StatusLine#Ln %l'
+  local column = '%#StatusLine#Col %c'
+  local position = line .. ', ' .. column
 
-  let line = '%#StatusLine#Ln %l'
-  let column = '%#StatusLine#Col %c'
-  let position = line . ', ' . column
+  local modified_indicator = ''
+  if vim.fn.getbufvar(vim.fn.bufnr('%'), '&mod') ~= 0 then
+    modified_indicator = '*'
+  end
+  local file_info = '%#StatusLine#%y %f' .. modified_indicator .. '%w%q'
 
-  if getbufvar(bufnr('%'), "&mod")
-    let modified_indicator = '*'
-  else
-    let modified_indicator = ''
-  endif
-  let file_info = '%#StatusLine#%y %f' . modified_indicator . '%w%q'
+  local fileformat = nil
+  if vim.o.fileformat ~= 'unix' then
+    fileformat = string.format('%%#StatusLineStandoutText#[%s]', vim.o.fileformat)
+  end
 
-  if &fileformat !=# 'unix'
-    let fileformat = printf('%%#StatusLineStandoutText#[%s]', &fileformat)
-  endif
+  local readonly = nil
+  if vim.o.readonly then
+    local indicator = '[RO]'
+    if is_nerdfont_enabled then
+      indicator = vim.fn.execute([[echon "\uf840"]])
+    end
 
-  if &readonly
-    let readonly = '%#StatusLineStandoutText#[RO]'
-  endif
+    readonly = '%#StatusLineStandoutText#' .. indicator
+  end
 
-  let diagnostic_count = {
-        \ 'warning': GetDiagnosticCountForSeverity('warn'),
-        \ 'error': GetDiagnosticCountForSeverity('error'),
-        \ 'info': GetDiagnosticCountForSeverity('info'),
-        \ 'hint': GetDiagnosticCountForSeverity('hint')
-        \ }
-  let diagnostic_list = []
-  let error_count = diagnostic_count.error
-  if (error_count > 0)
-    let error = '%#StatusLineErrorText#' . 'ⓧ '. error_count
-    call add(diagnostic_list, error)
-  endif
-  let warning_count = diagnostic_count.warning
-  if (warning_count > 0)
-    let warning = '%#StatusLineWarningText#' . 'ⓦ ' . warning_count
-    call add(diagnostic_list, warning)
-  endif
-  let info_count = diagnostic_count.info
-  if (info_count > 0)
-    let info = '%#StatusLineInfoText#' . 'ⓘ ' . info_count
-    call add(diagnostic_list, info)
-  endif
-  let hint_count = diagnostic_count.hint
-  if (hint_count > 0)
-    let hint = '%#StatusLineHintText#' . 'ⓗ ' . hint_count
-    call add(diagnostic_list, hint)
-  endif
-  if !empty(diagnostic_list)
-    let diagnostics = diagnostic_list->join(' ')
-  endif
+  local diagnostic_count = {
+    warning = GetDiagnosticCountForSeverity('warn'),
+    error = GetDiagnosticCountForSeverity('error'),
+    info = GetDiagnosticCountForSeverity('info'),
+    hint = GetDiagnosticCountForSeverity('hint'),
+  }
+  local diagnostic_list = {}
+  local error_count = diagnostic_count.error
+  if error_count > 0 then
+    local icon = 'ⓧ '
+    if is_nerdfont_enabled then
+      icon = vim.fn.execute([[echon "\uf659 "]])
+    end
+    local error = '%#StatusLineErrorText#' .. icon .. error_count
+    table.insert(diagnostic_list, error)
+  end
+  local warning_count = diagnostic_count.warning
+  if warning_count > 0 then
+    local icon = 'ⓦ '
+    if is_nerdfont_enabled then
+      icon = vim.fn.execute([[echon "\ufad5 "]])
+    end
+    local warning = '%#StatusLineWarningText#' .. icon  .. warning_count
+    table.insert(diagnostic_list, warning)
+  end
+  local info_count = diagnostic_count.info
+  if info_count > 0 then
+    local icon = 'ⓘ '
+    if is_nerdfont_enabled then
+      icon = vim.fn.execute([[echon "\uf7fc "]])
+    end
+    local info = '%#StatusLineInfoText#' .. icon  .. info_count
+    table.insert(diagnostic_list, info)
+  end
+  local hint_count = diagnostic_count.hint
+  if hint_count > 0 then
+    local icon = 'ⓗ '
+    if is_nerdfont_enabled then
+      -- TODO: Find a good nerdfont symbol for hints
+      icon = vim.fn.execute([[echon "\uf7fc "]])
+    end
+    local hint = '%#StatusLineHintText#' .. icon  .. hint_count
+    table.insert(diagnostic_list, hint)
+  end
+  local diagnostics = nil
+  if #diagnostic_list > 0 then
+    diagnostics = table.concat(diagnostic_list, ' ')
+  end
 
-  let left_side_items = [file_info]
-  if exists('fileformat')
-    call add(left_side_items, fileformat)
-  endif
-  if exists('readonly')
-    call add(left_side_items, readonly)
-  endif
-  let left_side = left_side_items->join(' ')
+  local left_side_items = {file_info}
+  if fileformat then
+    table.insert(left_side_items, fileformat)
+  end
+  if readonly then
+    table.insert(left_side_items, readonly)
+  end
+  local left_side = table.concat(left_side_items, ' ')
 
-  let right_side_items = [position]
-  if exists('diagnostics')
-    call add(right_side_items, diagnostics)
-  endif
-  let right_side = right_side_items->join(item_separator)
+  local right_side_items = {position}
+  if diagnostics then
+    table.insert(right_side_items, diagnostics)
+  end
+  local right_side = table.concat(right_side_items, item_separator)
 
-  let statusline_separator = '%#StatusLine#%='
-  let padding = '%#StatusLine# '
+  local statusline_separator = '%#StatusLine#%='
+  local padding = '%#StatusLine# '
 
-  return padding . left_side . statusline_separator . right_side . padding
-endfunction
-set statusline=%{%MyStatusLine()%}
-" }}}
+  local statusline = padding .. left_side .. statusline_separator .. right_side .. padding
 
-" Tabline {{{
-function! Tabline()
-  let tab_count = tabpagenr('$')
-  let tabline = ''
-  let left_divider_char = '▎'
-  let right_divider_char = '🮇'
+  return statusline
+end
 
-  for i in range(tab_count)
-    let tab = i + 1
-    let winnr = tabpagewinnr(tab)
-    let buflist = tabpagebuflist(tab)
-    let bufnr = buflist[winnr - 1]
+vim.o.laststatus = 3
+vim.o.statusline = '%!v:lua.StatusLine()'
+-- }}}
 
-    let bufname = bufname(bufnr)
-    if bufname != ''
-      let bufname = fnamemodify(bufname, ':t')
+-- Tabline {{{
+_G.Tabline = function()
+  local tabline = ''
+
+  local current_tab_index = vim.fn.tabpagenr()
+  for tab_index=1,vim.fn.tabpagenr('$') do
+    local is_current_tab = tab_index == current_tab_index
+
+    local char_highlight = '%#TabLineChar#'
+    if is_current_tab then
+      char_highlight = '%#TabLineCharSel#'
+    end
+
+    local left_char = char_highlight .. ' '
+    local right_char = left_char
+    if is_current_tab then
+      if is_nerdfont_enabled then
+        left_char = char_highlight .. vim.fn.execute([[echon "\ue0ba"]])
+        right_char = char_highlight .. vim.fn.execute([[echon "\ue0bc"]])
+      else
+        left_char = char_highlight .. vim.fn.execute([[echon "\u2588"]])
+        right_char = char_highlight .. vim.fn.execute([[echon "\u2588"]])
+      end
+    end
+
+    local tab_index_highlight = '%#TabLineIndex#'
+    if is_current_tab then
+      tab_index_highlight = '%#TabLineIndexSel#'
+    end
+
+    local window_number = vim.fn.tabpagewinnr(tab_index)
+    local buffer_list = vim.fn.tabpagebuflist(tab_index)
+    local buffer_number = buffer_list[window_number]
+    local buffer_name = vim.fn.bufname(buffer_number)
+    if buffer_name == '' then
+      buffer_name = '[No Name]'
     else
-      let bufname = '[No Name]'
-    endif
-    let bufname = tab . ' ' . bufname
+      buffer_name = vim.fn.fnamemodify(buffer_name, ':t')
+    end
+    local buffer_name_highlight = '%#TabLine#'
+    if is_current_tab then
+      buffer_name_highlight = '%#TabLineSel#'
+    end
+    local maximized_indicator = ''
+    if is_current_tab and vim.fn.gettabwinvar(tab_index, window_number, 'is_maximized', false) then
+      maximized_indicator = '%#TabLineMaximizedIndicator#'
+      if is_nerdfont_enabled then
+        maximized_indicator = maximized_indicator .. vim.fn.execute([[echon " \uf792"]])
+      else
+        maximized_indicator = maximized_indicator .. ' [MAX]'
+      end
+    end
+    buffer_name = buffer_name_highlight .. '  ' .. tab_index_highlight .. tab_index .. buffer_name_highlight .. ' ' .. buffer_name .. maximized_indicator .. buffer_name_highlight .. '  '
 
+    local tab_marker = '%' .. tab_index .. 'T'
 
-    let tabline .= '%' . tab . 'T'
-    let highlight = (tab == tabpagenr() ? '%#TabLineSel#' : '%#TabLine#')
-    let separator_highlight = (tab == tabpagenr() ? '%#TabLineSeparator#' : '%#TabLineSeparatorNC#')
-    let tabline .= separator_highlight . left_divider_char . '  ' . highlight . bufname . '  '
-    if i < tab_count - 1
-      let tabline .= ' %#StatusLineSeparator#' . highlight
-    endif
-  endfor
-  let last_tab_number = tab_count
-  let last_separator_highlight = (last_tab_number == tabpagenr() ? '%#TabLineLastSeparator#' : '%#TabLineLastSeparatorNC#')
-  let tabline .= last_separator_highlight . right_divider_char . '%#TabLineFill#'
-  let tabline = '%=' . tabline . '%='
+    local tab = tab_marker .. left_char .. buffer_name .. right_char
+
+    tabline = tabline .. tab
+  end
+
+  tabline = tabline .. '%#TabLineFill#%='
+
+  -- if string.find(vim.fn.bufname(vim.fn.winbufnr(1)), 'NERD_tree_%d+') then
+  --   local icon = vim.fn.execute([[echon "\u25A0"]])
+  --   local nerdtree_title = ' ' .. icon .. ' File Explorer'
+  --   tabline = '%#NerdTreeTabLine#' .. nerdtree_title .. string.rep(' ', vim.fn.winwidth(1) - string.len(nerdtree_title) - 2) .. tabline
+  -- end
 
   return tabline
-endfunction
-set tabline=%!Tabline()
-" }}}
+end
+vim.o.tabline = '%!v:lua.Tabline()'
+-- }}}
+EOF
 
 " Cursor {{{
 function! SetCursor()
@@ -488,6 +557,8 @@ vim.diagnostic.config({
   severity_sort = true,
   float = {
     source = "if_many",
+    border = 'rounded',
+    focusable = false,
   },
 })
 
@@ -658,6 +729,7 @@ Plug(
               ["<C-n>"] = actions.cycle_history_next,
             },
           },
+          prompt_prefix = is_nerdfont_enabled and vim.fn.execute([[echon "\uf002  "]]) or '> ',
         },
       })
 
@@ -717,8 +789,11 @@ Plug(
         hidden = {"<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ ", "<Plug>", "<plug>"}, 
         layout = {
           height = {
-            max = math.floor(vim.o.lines * .30),
+            max = vim.o.scrolloff > 5 and vim.o.scrolloff - 2 or 8
           },
+        },
+        window = {
+          border = 'rounded',
         },
       })
     end,
@@ -998,7 +1073,7 @@ Plug 'preservim/nerdtree', {'on': []}
     " open/close directories with 'h' and 'l'
     autocmd FileType nerdtree nmap <buffer> l o
     autocmd FileType nerdtree nmap <buffer> h o
-    autocmd FileType nerdtree setlocal winbar=%#NerdTreeWinBar#%=Press\ ?\ for\ help%=
+    autocmd FileType nerdtree setlocal winbar=%#NerdTreeWinBar#\ Press\ ?\ for\ help
     autocmd BufEnter * call CloseIfOnlyNerdtreeLeft()
   augroup END
 " }}}
@@ -1303,6 +1378,15 @@ Plug 'williamboman/mason-lspconfig.nvim'
       isKeywordprgOverridable = filetype ~= 'vim' and filetype ~= 'sh'
       if capabilities.hoverProvider and isKeywordprgOverridable then
         buffer_keymap(buffer_number, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", keymap_opts)
+
+        -- Change border of documentation hover window, See https://github.com/neovim/neovim/pull/13998.
+        vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+          vim.lsp.handlers.hover,
+          {
+            border = "rounded",
+            focusable = false,
+          }
+        )
       end
     end
 
@@ -1435,13 +1519,14 @@ Plug 'arcticicestudio/nord-vim'
     highlight! link LineNrBelow LineNrAbove
     highlight WordUnderCursor ctermbg=8
     highlight! link IncSearch Search
-    highlight TabLine ctermbg=8 ctermfg=15
-    highlight TabLineSel ctermbg=8 ctermfg=7 cterm=italic
-    highlight TabLineFill ctermbg=8
-    highlight TabLineSeparator ctermbg=8 ctermfg=8
-    highlight TabLineSeparatorNC ctermbg=8 ctermfg=8
-    highlight TabLineLastSeparator ctermbg=8 ctermfg=8
-    highlight TabLineLastSeparatorNC ctermbg=8 ctermfg=8
+    highlight TabLine ctermbg=NONE ctermfg=15
+    highlight TabLineSel ctermbg=8 ctermfg=NONE
+    highlight TabLineFill ctermbg=NONE
+    highlight TabLineCharSel ctermbg=NONE ctermfg=8
+    highlight! link TabLineChar TabLineCharSel
+    highlight TabLineIndexSel ctermbg=8 ctermfg=14
+    highlight! link TabLineIndex TabLine
+    highlight TabLineMaximizedIndicator ctermbg=8 ctermfg=3
     highlight Comment ctermfg=15 ctermbg=NONE
     " This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
     " By unsetting this, I ensure that terminals opened in vim will use the colors from the color palette of the
@@ -1465,6 +1550,8 @@ Plug 'arcticicestudio/nord-vim'
     highlight SpecialKey ctermfg=13 ctermbg=NONE
     highlight NonText ctermfg=15 ctermbg=NONE
     highlight NerdTreeWinBar ctermfg=15 ctermbg=NONE cterm=italic
+    highlight NerdTreeTabLine ctermfg=13 ctermbg=NONE
+    highlight NerdTreeStatusLine ctermbg=NONE
     highlight! link VirtColumn VertSplit
     highlight DiagnosticSignError ctermfg=1 ctermbg=NONE
     highlight DiagnosticSignWarn ctermfg=3 ctermbg=NONE
@@ -1497,9 +1584,12 @@ Plug 'arcticicestudio/nord-vim'
     highlight MasonMuted ctermbg=NONE ctermfg=NONE
     highlight MasonMutedBlock ctermbg=NONE ctermfg=15 cterm=reverse
     highlight MasonError ctermbg=NONE ctermfg=1
-    highlight WhichKeyFloat ctermbg=24
     highlight NormalFloat ctermbg=32
     highlight LuaSnipNode ctermfg=11
+    highlight NormalFloat ctermbg=NONE ctermfg=NONE
+    highlight FloatBorder ctermbg=NONE ctermfg=15
+    highlight WhichKeyFloat ctermbg=0
+    highlight DarkFloatNormal ctermbg=32 ctermfg=NONE
   endfunction
   augroup NordVim
     autocmd!
@@ -1528,12 +1618,12 @@ function! CreateSnapshotSync()
   " Edit the snapshot file so that it updates plugins synchronously
   execute "silent! !sed --in-place --follow-symlinks 's/PlugUpdate\\!/PlugUpdate\\! --sync/g' " . g:snapshot_file
 endfunction
-command! PlugSnapshotSync call CreateSnapshotSync()
+command! PlugSnapshot call CreateSnapshotSync()
 function! UpdateAndSnapshotSync()
   PlugUpdate --sync
   call CreateSnapshotSync()
 endfunction
-command! PlugUpdateAndSnapshot call UpdateAndSnapshotSync()
+command! PlugUpdate call UpdateAndSnapshotSync()
 function! PlugRestore()
   if !filereadable(g:snapshot_file)
     echoerr printf("Restore failed. Unable to read the snapshot file '%s'", g:snapshot_file)
