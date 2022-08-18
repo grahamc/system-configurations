@@ -183,18 +183,18 @@ augroup Window
 augroup END
 " }}}
 
-" Tab pages {{{
-nnoremap <silent> <Leader>t <Cmd>$tabnew<CR>
-nnoremap <silent> <C-h> <Cmd>tabprevious<CR>
-nnoremap <silent> <C-l> <Cmd>tabnext<CR>
-
 lua << EOF
+-- Tab pages {{{
+vim.keymap.set('n', '<Leader>t', function() vim.cmd('$tabnew') end, {silent = true})
+vim.keymap.set('n', '<C-h>', vim.cmd.tabprevious, {silent = true})
+vim.keymap.set('n', '<C-l>', vim.cmd.tabnext, {silent = true})
+
 -- Switch tabs with <Leader><tab number>
 for window_index=1,9 do
-  vim.keymap.set('n', '<Leader>' .. window_index, function() vim.cmd.tabnext(tostring(window_index)) end)
+  vim.keymap.set('n', '<Leader>' .. window_index, function() vim.cmd('silent! tabnext ' .. tostring(window_index)) end)
 end
+-- }}}
 EOF
-" }}}
 
 " Indentation {{{
 set expandtab
