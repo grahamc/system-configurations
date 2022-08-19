@@ -23,6 +23,7 @@ augroup Miscellaneous
         \ if &ft ==# 'help' && (&columns * 10) / &lines > 31 | wincmd L | endif
   autocmd FileType sh setlocal keywordprg=man
   autocmd CursorHold * execute printf('silent! 2match WordUnderCursor /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+  autocmd WinLeave * 2match none
   " After a quickfix command is run, open the quickfix window , if there are results
   autocmd QuickFixCmdPost [^l]* cwindow
   autocmd QuickFixCmdPost l*    lwindow
@@ -148,27 +149,45 @@ function! SetOptions(new_option_values)
 endfunction
 " }}}
 
-" Windows {{{
-" open new horizontal and vertical panes to the right and bottom respectively
-set splitright splitbelow
-nnoremap <Leader><Bar> <Cmd>vsplit<CR>
-nnoremap <Leader>- <Cmd>split<CR>
-
-" close a window, quit if last window
-" also when closing a tab, go to the previously opened tab
-nnoremap <silent> <expr> <leader>q  winnr('$') == 1 ? ':let g:last_tab = tabpagenr("#") <Bar> execute "q" <Bar> silent! execute "tabnext " . g:last_tab<CR>' : ':close<CR>'
-
-" TODO: When tmux is able to differentiate between enter and ctrl+m this mapping should be updated.
-" tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
-"
-" maximize a window by opening it in a new tab
 lua << EOF
-local function toggle_maximize()
-  if vim.w.is_maximized then
-    vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Leader>', true, false, true) .. 'q')
+-- Windows {{{
+-- open new horizontal and vertical panes to the right and bottom respectively
+vim.o.splitright = true
+vim.o.splitbelow = true
+vim.keymap.set('n', '<Leader><Bar>', '<Cmd>vsplit<CR>')
+vim.keymap.set('n', '<Leader>-', '<Cmd>split<CR>')
+
+-- close a window, quit if last window
+-- also when closing a tab, go to the previously opened tab
+local function close()
+  if vim.fn.winnr('$') > 1 then
+    vim.cmd.close()
     return
   end
 
+  local last_tab = vim.fn.tabpagenr('#')
+  vim.cmd.execute([['q']])
+  vim.cmd(string.format(
+    [[
+      silent! tabnext %s
+    ]],
+    last_tab
+  ))
+end
+vim.keymap.set(
+  'n',
+  '<Leader>q',
+  close,
+  {
+    silent = true,
+  }
+)
+
+-- TODO: When tmux is able to differentiate between enter and ctrl+m this mapping should be updated.
+-- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
+--
+-- maximize a window by opening it in a new tab
+local function maximize()
   if vim.fn.winnr('$') == 1 then
     return
   end
@@ -176,21 +195,22 @@ local function toggle_maximize()
   vim.cmd([[
     tab split
   ]])
-  vim.w.is_maximized = true
 end
-vim.keymap.set('n', '<Leader>m', toggle_maximize)
-EOF
+vim.keymap.set('n', '<Leader>m', maximize)
 
-augroup Window
-  autocmd!
+local group_id = vim.api.nvim_create_augroup('Window', {})
+-- Automatically resize all splits to make them equal when the vim window is resized or a new window is created/closed.
+vim.api.nvim_create_autocmd(
+  {'VimResized', 'WinNew', 'WinClosed', 'TabEnter',},
+  {
+    callback = function()
+      vim.cmd.wincmd('=')
+    end,
+    group = group_id,
+  }
+)
+-- }}}
 
-  " Automatically resize all splits to make them equal when the vim window is
-  " resized or a new window is created/closed
-  autocmd VimResized,WinNew,WinClosed,TabEnter * wincmd =
-augroup END
-" }}}
-
-lua << EOF
 -- Tab pages {{{
 vim.keymap.set('n', '<Leader>t', function() vim.cmd('$tabnew') end, {silent = true})
 vim.keymap.set('n', '<C-h>', vim.cmd.tabprevious, {silent = true})
@@ -201,18 +221,20 @@ for window_index=1,9 do
   vim.keymap.set('n', '<Leader>' .. window_index, function() vim.cmd('silent! tabnext ' .. tostring(window_index)) end)
 end
 -- }}}
-EOF
 
-" Indentation {{{
-set expandtab
-set autoindent smartindent
-set smarttab
-set shiftround " Round indent to multiple of shiftwidth (applies to < and >)
-let s:tab_width = 2
-let &tabstop = s:tab_width
-let &shiftwidth = s:tab_width
-let &softtabstop = s:tab_width
-" }}}
+-- Indentation {{{
+vim.o.expandtab = true
+vim.o.autoindent = true
+vim.o.smartindent = true
+vim.o.smarttab = true
+-- Round indent to multiple of shiftwidth (applies to < and >)
+vim.o.shiftround = true
+local tab_width = 2
+vim.o.tabstop = tab_width
+vim.o.shiftwidth = tab_width
+vim.o.softtabstop = tab_width
+-- }}}
+EOF
 
 " Folds {{{
 set fillchars+=foldsep:\ ,foldclose:›,foldopen:⌄,fold:\ 
@@ -265,80 +287,113 @@ function! FoldText()
 endfunction
 " }}}
 
-" Autocomplete {{{
-set complete=.,w,b,u
-" - show the completion menu even if there is only one suggestion
-" - when autocomplete gets triggered, no suggestion is selected
-set completeopt=menu,menuone,noselect
 lua << EOF
-  vim.o.pumheight = vim.o.scrolloff > 5 and vim.o.scrolloff - 2 or 5
-EOF
-" }}}
+-- Autocomplete {{{
+vim.o.complete = '.,w,b,u'
+-- - show the completion menu even if there is only one suggestion
+-- - when autocomplete gets triggered, no suggestion is selected
+vim.o.completeopt = 'menu,menuone,noselect'
+vim.o.pumheight = vim.o.scrolloff > 5 and vim.o.scrolloff - 2 or 5
+-- }}}
 
-" Command line {{{
-" on first wildchar press (<Tab>), show all matches and complete the longest common substring among them.
-" on subsequent wildchar presses, cycle through matches
-set wildmode=longest:full,full
-set wildoptions=pum
-set cmdheight=1
-cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
-" }}}
+-- Command line {{{
+-- on first wildchar press (<Tab>), show all matches and complete the longest common substring among them.
+-- on subsequent wildchar presses, cycle through matches
+vim.o.wildmode = 'longest:full,full'
+vim.o.wildoptions = 'pum'
+vim.o.cmdheight = 1
+vim.cmd([[
+  cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
+]])
+-- }}}
 
-" Search {{{
-set nohlsearch
-" show match position in command window, don't show 'Search hit BOTTOM/TOP'
-set shortmess-=S shortmess+=s
-" toggle search highlighting
-nnoremap <silent> \ <Cmd>set hlsearch!<CR>
-" }}}
+-- Search {{{
+vim.o.hlsearch = false
+-- show match position in command window, don't show 'Search hit BOTTOM/TOP'
+vim.opt.shortmess:remove('S')
+vim.opt.shortmess:append('s')
+-- toggle search highlighting
+vim.keymap.set('n', [[\]], '<Cmd>set hlsearch!<CR>', {silent = true})
+-- }}}
 
-" Sessions {{{
-set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages sessionoptions+=folds
-let s:session_dir = g:data_path . '/sessions'
-call mkdir(s:session_dir, "p")
+-- Sessions {{{
+vim.opt.sessionoptions:remove('blank')
+vim.opt.sessionoptions:remove('options')
+vim.opt.sessionoptions:append('tabpages')
+vim.opt.sessionoptions:append('folds')
+local session_dir = vim.g.data_path .. '/sessions'
+vim.fn.mkdir(session_dir, 'p')
 
-function! RestoreOrCreateSession()
-  " We omit the first element in the list since that will always be the path to the vim executable
-  if v:argv[1:]->empty()
-    let session_name =  substitute($PWD, '/', '%', 'g') . '%vim'
-    let session_full_path = s:session_dir . '/' . session_name
-    let session_cmd = filereadable(session_full_path) ? "source " : "mksession! "
-    execute session_cmd . fnameescape(session_full_path)
-    let s:session_active = 1
-  endif
-endfunction
+local function restore_or_create_session()
+  -- We only want to restore/create a session if neovim was called with no arguments. The first element in vim.v.argv
+  -- will always be the path to the vim executable so if no arguments were passed to neovim, the size of vim.v.argv
+  -- will be one.
+  local is_neovim_called_with_no_arguments = #vim.v.argv == 1
+  if is_neovim_called_with_no_arguments then
+    local session_name = string.gsub(os.getenv('PWD'), '/', '%%') .. '%vim'
+    local session_full_path = session_dir .. '/' .. session_name
+    local session_full_path_escaped = vim.fn.fnameescape(session_full_path)
+    if vim.fn.filereadable(session_full_path) ~= 0 then
+      vim.cmd.source(session_full_path_escaped)
+    else
+      vim.cmd({
+        cmd = 'mksession',
+        args = {session_full_path_escaped},
+        bang = true,
+      })
+    end
+    vim.g.session_active = true
+  end
+end
 
-function! SaveSession()
-  if exists("s:session_active") && !empty(v:this_session)
-    execute 'mksession! ' . fnameescape(v:this_session)
-  endif
-endfunction
+local function save_session()
+  if vim.g.session_active and string.len(vim.v.this_session) > 0 then
+    vim.cmd({
+      cmd = 'mksession',
+      args = {vim.fn.fnameescape(vim.v.this_session)},
+      bang = true,
+    })
+  end
+end
 
-augroup SaveAndRestoreSettings
-  autocmd!
-  " Restore session after vim starts. The 'nested' keyword tells vim to fire events
-  " normally while this autocmd is executing. By default, no events are fired
-  " during the execution of an autocmd to prevent infinite loops.
-  autocmd VimEnter * ++nested call RestoreOrCreateSession()
-  " save session before vim exits
-  autocmd VimLeavePre * call SaveSession()
-augroup END
-" }}}
+local group_id = vim.api.nvim_create_augroup('SaveAndRestoreSettings', {})
+-- Restore session after vim starts.
+vim.api.nvim_create_autocmd(
+  {'VimEnter',},
+  {
+    callback = restore_or_create_session,
+    group = group_id,
+    -- The 'nested' option tells vim to fire events normally while this autocommand is executing. By default, no events
+    -- are fired during the execution of an autocommand to prevent infinite loops.
+    nested = true,
+  }
+)
+-- save session before vim exits
+vim.api.nvim_create_autocmd(
+  {'VimLeavePre',},
+  {
+    callback = save_session,
+    group = group_id,
+  }
+)
+-- }}}
 
-" Aesthetics {{{
+-- Aesthetics {{{
 
-" Miscellaneous {{{
-set linebreak
-set number relativenumber
-set cursorline cursorlineopt=number,screenline
-set showtabline=1
-set wrap
-set listchars=tab:¬-,space:· " chars to represent tabs and spaces when 'setlist' is enabled
-set signcolumn=yes:2
-set fillchars+=eob:\ 
-" }}}
+-- Miscellaneous {{{
+vim.o.linebreak = true
+vim.o.number = true
+vim.o.relativenumber = true
+vim.o.cursorline = true
+vim.o.cursorlineopt = 'number,screenline'
+vim.o.showtabline = 1
+vim.o.wrap = true
+-- chars to represent tabs and spaces when 'setlist' is enabled
+vim.o.listchars = 'tab:¬-,space:·'
+vim.o.signcolumn = 'yes:2'
+vim.opt.fillchars:append('eob: ')
+-- }}}
 
-lua << EOF
 -- Statusline {{{
 _G.GetDiagnosticCountForSeverity = function(severity)
   return #vim.diagnostic.get(0, {severity = severity})
@@ -435,7 +490,7 @@ _G.StatusLine = function()
   end
   local right_side = table.concat(right_side_items, item_separator)
 
-  local statusline_separator = '%#StatusLine#%='
+  local statusline_separator = '%#StatusLine#%=     '
   local padding = '%#StatusLine# '
 
   local statusline = padding .. left_side .. statusline_separator .. right_side .. padding
@@ -448,6 +503,19 @@ vim.o.statusline = '%!v:lua.StatusLine()'
 -- }}}
 
 -- Tabline {{{
+_G.superscript_numbers = {
+  ["0"] = "⁰",
+  ["1"] = "¹",
+  ["2"] = "²",
+  ["3"] = "³",
+  ["4"] = "⁴",
+  ["5"] = "⁵",
+  ["6"] = "⁶",
+  ["7"] = "⁷",
+  ["8"] = "⁸",
+  ["9"] = "⁹",
+}
+
 _G.Tabline = function()
   local tabline = ''
 
@@ -490,16 +558,11 @@ _G.Tabline = function()
     if is_current_tab then
       buffer_name_highlight = '%#TabLineSel#'
     end
-    local maximized_indicator = ''
-    if is_current_tab and vim.fn.gettabwinvar(tab_index, window_number, 'is_maximized', false) then
-      maximized_indicator = '%#TabLineMaximizedIndicator#'
-      if is_nerdfont_enabled then
-        maximized_indicator = maximized_indicator .. vim.fn.execute([[echon " \uf792"]])
-      else
-        maximized_indicator = maximized_indicator .. ' [MAX]'
-      end
+    local superscipt_tab_index = ''
+    for digit in tostring(tab_index):gmatch('.') do
+      superscipt_tab_index = superscipt_tab_index .. superscript_numbers[digit]
     end
-    buffer_name = buffer_name_highlight .. '  ' .. tab_index_highlight .. tab_index .. buffer_name_highlight .. ' ' .. buffer_name .. maximized_indicator .. buffer_name_highlight .. '  '
+    buffer_name = buffer_name_highlight .. ' ' .. tab_index_highlight .. superscipt_tab_index .. buffer_name_highlight .. ' ' .. buffer_name .. buffer_name_highlight .. '  '
 
     local tab_marker = '%' .. tab_index .. 'T'
 
@@ -508,39 +571,55 @@ _G.Tabline = function()
     tabline = tabline .. tab
   end
 
-  tabline = tabline .. '%#TabLineFill#%='
+  tabline = '%#TabLineFill# ' .. tabline .. '%#TabLineFill#'
 
-  -- if string.find(vim.fn.bufname(vim.fn.winbufnr(1)), 'NERD_tree_%d+') then
-  --   local icon = vim.fn.execute([[echon "\u25A0"]])
-  --   local nerdtree_title = ' ' .. icon .. ' File Explorer'
-  --   tabline = '%#NerdTreeTabLine#' .. nerdtree_title .. string.rep(' ', vim.fn.winwidth(1) - string.len(nerdtree_title) - 2) .. tabline
-  -- end
+  if string.find(vim.fn.bufname(vim.fn.winbufnr(1)), 'NERD_tree_%d+') then
+    local icon = vim.fn.execute([[echon "\u25A0"]])
+    local nerdtree_title = ' ' .. icon .. ' File Explorer'
+
+    local nerdtree_title_length = string.len(nerdtree_title)
+    local remaining_spaces_count = (vim.fn.winwidth(1) - nerdtree_title_length) + 2
+    local left_pad_length = math.floor(remaining_spaces_count / 2)
+    local right_pad_length = left_pad_length
+    if remaining_spaces_count % 2 == 1 then
+      right_pad_length = right_pad_length + 1
+    end
+
+    tabline = '%#NerdTreeTabLine#' .. string.rep(' ', left_pad_length) .. nerdtree_title .. string.rep(' ', right_pad_length) .. '%#VertSplit#' .. (vim.opt.fillchars:get().vert or '│') .. '%<' .. tabline
+  end
 
   return tabline
 end
 vim.o.tabline = '%!v:lua.Tabline()'
 -- }}}
-EOF
 
-" Cursor {{{
-function! SetCursor()
-  " Block cursor in normal mode, thin line in insert mode, and underline in replace mode
-  set guicursor=n-v:block-blinkon0,o:block-blinkwait0-blinkon200-blinkoff200,i-c:ver25-blinkwait0-blinkon200-blinkoff200,r:hor20-blinkwait0-blinkon200-blinkoff200
-endfunction
-call SetCursor()
+-- Cursor {{{
+local function set_cursor()
+  -- Block cursor in normal mode, thin line in insert mode, and underline in replace mode
+  vim.o.guicursor = 'n-v:block-blinkon0,o:block-blinkwait0-blinkon200-blinkoff200,i-c:ver25-blinkwait0-blinkon200-blinkoff200,r:hor20-blinkwait0-blinkon200-blinkoff200'
+end
+set_cursor()
 
-function! ResetCursor()
-  " reset terminal cursor to blinking bar
-  set guicursor=a:ver25-blinkwait0-blinkon200-blinkoff200
-endfunction
+local function reset_cursor()
+  -- reset terminal cursor to blinking bar
+  vim.o.guicursor = 'a:ver25-blinkwait0-blinkon200-blinkoff200'
+end
 
-augroup Cursor
-  autocmd!
-  autocmd VimLeave * call ResetCursor()
-  autocmd VimSuspend * call ResetCursor()
-  autocmd VimResume * call SetCursor()
-augroup END
-lua << EOF
+local group_id = vim.api.nvim_create_augroup('Cursor', {})
+vim.api.nvim_create_autocmd(
+  {'VimLeave', 'VimSuspend',},
+  {
+    callback = reset_cursor,
+    group = group_id,
+  }
+)
+vim.api.nvim_create_autocmd(
+  {'VimResume',},
+  {
+    callback = set_cursor,
+    group = group_id,
+  }
+)
 -- }}}
 
 -- }}}
@@ -746,8 +825,10 @@ Plug(
       vim.keymap.set('n', '<Leader>k', '<Cmd>Telescope help_tags<CR>')
       vim.keymap.set('n', '<Leader>g', '<Cmd>Telescope live_grep<CR>')
       vim.keymap.set('n', '<Leader>f', '<Cmd>Telescope find_files<CR>')
+      vim.keymap.set('n', '<Leader>j', '<Cmd>Telescope jumplist<CR>')
       vim.cmd([[
         command! HighlightTest Telescope highlights
+        command! Autocmd Telescope autocommands
       ]])
     end,
   }
@@ -921,7 +1002,7 @@ Plug('JoosepAlviste/nvim-ts-context-commentstring')
 -- bug: https://github.com/neovim/neovim/issues/12587
 -- 2. decouple 'updatetime' from 'CursorHold' and 'CursorHoldI'
 Plug('antoinemadec/FixCursorHold.nvim')
-vim.g.cursorhold_updatetime = 500
+vim.g.cursorhold_updatetime = 200
 
 Plug(
   'kosayoda/nvim-lightbulb',
@@ -1073,7 +1154,8 @@ Plug 'preservim/nerdtree', {'on': []}
     " open/close directories with 'h' and 'l'
     autocmd FileType nerdtree nmap <buffer> l o
     autocmd FileType nerdtree nmap <buffer> h o
-    autocmd FileType nerdtree setlocal winbar=%#NerdTreeWinBar#\ Press\ ?\ for\ help
+    autocmd FileType nerdtree setlocal winbar=%#Normal#%=\ Press\ %#NerdTreeWinBar#?%#Normal#\ for\ help%=
+    autocmd FileType nerdtree setlocal winhighlight=Normal:NerdTreeNormal
     autocmd BufEnter * call CloseIfOnlyNerdtreeLeft()
   augroup END
 " }}}
@@ -1325,9 +1407,9 @@ Plug 'williamboman/mason.nvim'
     require("mason").setup({
       ui = {
         icons = {
-          package_installed = "●",
-          package_pending = "⧖",
-          package_uninstalled = "○"
+          package_installed = is_nerdfont_enabled and vim.fn.execute([[echon "\uf632  "]]) or '●',
+          package_pending = is_nerdfont_enabled and vim.fn.execute([[echon "\uf251  "]]) or '⧖',
+          package_uninstalled = is_nerdfont_enabled and vim.fn.execute([[echon "\uf62f  "]]) or '○'
         },
         keymaps = {
           toggle_package_expand = "<Tab>",
@@ -1549,9 +1631,9 @@ Plug 'arcticicestudio/nord-vim'
     highlight FoldColumn ctermfg=15 ctermbg=NONE
     highlight SpecialKey ctermfg=13 ctermbg=NONE
     highlight NonText ctermfg=15 ctermbg=NONE
-    highlight NerdTreeWinBar ctermfg=15 ctermbg=NONE cterm=italic
+    highlight NerdTreeWinBar ctermfg=13 ctermbg=NONE cterm=italic
     highlight NerdTreeTabLine ctermfg=13 ctermbg=NONE
-    highlight NerdTreeStatusLine ctermbg=NONE
+    highlight NerdTreeNormal ctermbg=NONE
     highlight! link VirtColumn VertSplit
     highlight DiagnosticSignError ctermfg=1 ctermbg=NONE
     highlight DiagnosticSignWarn ctermfg=3 ctermbg=NONE
