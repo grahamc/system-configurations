@@ -60,8 +60,8 @@ noremap gV `[v`]
 
 " Prevents inserting two spaces after punctuation on a join (J)
 set nojoinspaces
-" Delete comment character when joining commented lines
-set formatoptions+=j
+
+set formatoptions=
 
 set matchpairs+=<:>
 " move ten lines at a time by holding ctrl and a directional key

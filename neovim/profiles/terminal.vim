@@ -79,6 +79,12 @@ augroup DarkFloats
 augroup END
 
 set ttimeout ttimeoutlen=50
+
+lua << EOF
+-- Delete comment character when joining commented lines
+vim.opt.formatoptions:append('j')
+vim.opt.formatoptions:append('r')
+EOF
 " }}}
 
 " Autoreload {{{
