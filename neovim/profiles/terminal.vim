@@ -1087,6 +1087,14 @@ Plug(
         -- Giving it a higher priority than diagnostics and vcs changes
         sign = {priority = 15},
       })
+
+      vim.fn.sign_define(
+        'LightBulbSign',
+        {
+          text = is_nerdfont_enabled and unicode('f834') or '💡',
+          texthl = 'CodeActionSign',
+        }
+      )
     end,
   }
 )
@@ -1741,6 +1749,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight FloatBorder ctermbg=NONE ctermfg=15
     highlight WhichKeyFloat ctermbg=0
     highlight DarkFloatNormal ctermbg=32 ctermfg=NONE
+    highlight CodeActionSign ctermbg=NONE ctermfg=3
   endfunction
   augroup NordVim
     autocmd!
