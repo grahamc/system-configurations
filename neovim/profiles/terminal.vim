@@ -210,6 +210,55 @@ vim.api.nvim_create_autocmd(
     group = group_id,
   }
 )
+
+local function per_window(callable)
+  return function()
+    -- I can't call a local function with 'windo' so I'll assign the function to a global variable.
+    _G.per_window_function = callable
+
+    local current_window_number = vim.fn.winnr()
+    vim.cmd([[
+      windo lua per_window_function()
+    ]])
+    vim.cmd(string.format(
+      [[
+        silent! %swincmd w
+      ]],
+      current_window_number
+    ))
+  end
+end
+local function set_tabline_margin()
+  if vim.w.disable_tabline_margin then
+    return
+  end
+
+  local window_id = vim.fn.win_getid()
+  local is_tabline_visible = vim.o.showtabline == 2 or (vim.o.showtabline == 1 and vim.fn.tabpagenr('$') > 1)
+  local is_window_bordering_tabline = vim.fn.screenpos(window_id, 1, 1).row <= 2
+  if is_tabline_visible and is_window_bordering_tabline then
+    vim.wo.winbar = '%#VertSplit#'
+    vim.opt_local.fillchars:append(
+      vim.tbl_extend(
+        'force',
+        vim.opt.fillchars:get(),
+        vim.opt_local.fillchars:get(),
+        {wbr = ' '}
+      )
+    )
+  else
+    vim.wo.winbar = ''
+
+  end
+end
+local set_tabline_margin_per_window = per_window(set_tabline_margin)
+vim.api.nvim_create_autocmd(
+  {'WinEnter', 'TabNewEntered', 'VimEnter',},
+  {
+    callback = set_tabline_margin_per_window,
+    group = group_id,
+  }
+)
 -- }}}
 
 -- Tab pages {{{
