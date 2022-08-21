@@ -58,11 +58,6 @@ function! GetEnterKeyActions()
     return autopairs_keys
   endif
 
-  " The existence check ensures that the plugin vim-endwise was loaded
-  if exists('g:loaded_endwise')
-    return "\<CR>\<Plug>DiscretionaryEnd"
-  endif
-
   return "\<CR>"
 endfunction
 inoremap <expr> <CR> GetEnterKeyActions()
