@@ -685,7 +685,7 @@ vim.api.nvim_create_autocmd(
 
 -- }}}
 
--- Diagnostics {{{
+-- LSP {{{
 vim.diagnostic.config({
   virtual_text = false,
   signs = {
@@ -708,6 +708,19 @@ for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type
   vim.fn.sign_define(hl, { text = icon, texthl = hl})
 end
+
+vim.keymap.set('n', 'ga', vim.lsp.buf.code_action, {desc = 'Choose code action'})
+vim.keymap.set('v', 'ga', vim.lsp.buf.range_code_action, {desc = 'Choose code action'})
+vim.keymap.set('n', 'gl', vim.diagnostic.open_float, {desc = 'Show diagnostics'})
+vim.keymap.set('n', '[l', vim.diagnostic.goto_prev, {desc = "Go to previous diagnostic"})
+vim.keymap.set('n', ']l', vim.diagnostic.goto_next, {desc = "Go to next diagnostic"})
+vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {desc = "Go to implementation"})
+vim.keymap.set('n', 'gk', vim.lsp.buf.signature_help, {desc = "Show signature help"})
+vim.keymap.set('n', 'gr', vim.lsp.buf.references, {desc = "Go to reference"})
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {desc = "Go to definition"})
+vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {desc = "Go to declaration"})
+vim.keymap.set('n', 'gci', vim.lsp.buf.incoming_calls, {desc = "Show incoming calls"})
+vim.keymap.set('n', 'gco', vim.lsp.buf.outgoing_calls, {desc = "Show outgoing calls"})
 -- }}}
 
 -- Plugins {{{
