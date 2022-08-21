@@ -148,6 +148,17 @@ function! SetOptions(new_option_values)
 
   return old_option_values
 endfunction
+
+lua << EOF
+_G.unicode = function(hex)
+  return vim.fn.execute(
+    string.format(
+      [[echon "\u%s"]],
+      hex
+    )
+  )
+end
+EOF
 " }}}
 
 lua << EOF
@@ -470,7 +481,7 @@ _G.StatusLine = function()
   if vim.o.readonly then
     local indicator = '[RO]'
     if is_nerdfont_enabled then
-      indicator = vim.fn.execute([[echon "\uf840"]])
+      indicator = unicode('f840')
     end
 
     readonly = '%#StatusLineStandoutText#' .. indicator
@@ -487,7 +498,7 @@ _G.StatusLine = function()
   if error_count > 0 then
     local icon = 'ⓧ '
     if is_nerdfont_enabled then
-      icon = vim.fn.execute([[echon "\uf659 "]])
+      icon = unicode('f659') .. ' '
     end
     local error = '%#StatusLineErrorText#' .. icon .. error_count
     table.insert(diagnostic_list, error)
@@ -496,7 +507,7 @@ _G.StatusLine = function()
   if warning_count > 0 then
     local icon = 'ⓦ '
     if is_nerdfont_enabled then
-      icon = vim.fn.execute([[echon "\ufad5 "]])
+      icon = unicode('fad5') .. ' '
     end
     local warning = '%#StatusLineWarningText#' .. icon  .. warning_count
     table.insert(diagnostic_list, warning)
@@ -505,7 +516,7 @@ _G.StatusLine = function()
   if info_count > 0 then
     local icon = 'ⓘ '
     if is_nerdfont_enabled then
-      icon = vim.fn.execute([[echon "\uf7fc "]])
+      icon = unicode('f7fc') .. ' '
     end
     local info = '%#StatusLineInfoText#' .. icon  .. info_count
     table.insert(diagnostic_list, info)
@@ -515,7 +526,7 @@ _G.StatusLine = function()
     local icon = 'ⓗ '
     if is_nerdfont_enabled then
       -- TODO: Find a good nerdfont symbol for hints
-      icon = vim.fn.execute([[echon "\uf7fc "]])
+      icon = unicode('f7fc') .. ' '
     end
     local hint = '%#StatusLineHintText#' .. icon  .. hint_count
     table.insert(diagnostic_list, hint)
@@ -582,11 +593,11 @@ _G.Tabline = function()
     local right_char = left_char
     if is_current_tab then
       if is_nerdfont_enabled then
-        left_char = char_highlight .. vim.fn.execute([[echon "\ue0ba"]])
-        right_char = char_highlight .. vim.fn.execute([[echon "\ue0bc"]])
+        left_char = char_highlight .. unicode('e0ba')
+        right_char = char_highlight .. unicode('e0bc')
       else
-        left_char = char_highlight .. vim.fn.execute([[echon "\u2588"]])
-        right_char = char_highlight .. vim.fn.execute([[echon "\u2588"]])
+        left_char = char_highlight .. unicode('2588')
+        right_char = char_highlight .. unicode('2588')
       end
     end
 
@@ -624,7 +635,7 @@ _G.Tabline = function()
   tabline = '%#TabLineFill# ' .. tabline .. '%#TabLineFill#'
 
   if string.find(vim.fn.bufname(vim.fn.winbufnr(1)), 'NERD_tree_%d+') then
-    local icon = vim.fn.execute([[echon "\u25A0"]])
+    local icon = unicode('25A0')
     local nerdtree_title = ' ' .. icon .. ' File Explorer'
 
     local nerdtree_title_length = string.len(nerdtree_title)
@@ -858,7 +869,7 @@ Plug(
               ["<C-n>"] = actions.cycle_history_next,
             },
           },
-          prompt_prefix = is_nerdfont_enabled and vim.fn.execute([[echon "\uf002  "]]) or '> ',
+          prompt_prefix = is_nerdfont_enabled and unicode('f002') .. '  ' or '> ',
         },
       })
 
@@ -1457,9 +1468,9 @@ Plug 'williamboman/mason.nvim'
     require("mason").setup({
       ui = {
         icons = {
-          package_installed = is_nerdfont_enabled and vim.fn.execute([[echon "\uf632  "]]) or '●',
-          package_pending = is_nerdfont_enabled and vim.fn.execute([[echon "\uf251  "]]) or '⧖',
-          package_uninstalled = is_nerdfont_enabled and vim.fn.execute([[echon "\uf62f  "]]) or '○'
+          package_installed = is_nerdfont_enabled and unicode('f632') .. '  ' or '●',
+          package_pending = is_nerdfont_enabled and unicode('f251') .. '  ' or '⧖',
+          package_uninstalled = is_nerdfont_enabled and unicode('f62f') .. '  ' or '○'
         },
         keymaps = {
           toggle_package_expand = "<Tab>",
