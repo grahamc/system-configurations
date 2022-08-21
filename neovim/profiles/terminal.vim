@@ -646,7 +646,7 @@ vim.o.tabline = '%!v:lua.Tabline()'
 -- Cursor {{{
 local function set_cursor()
   -- Block cursor in normal mode, thin line in insert mode, and underline in replace mode
-  vim.o.guicursor = 'n-v:block-blinkon0,o:block-blinkwait0-blinkon200-blinkoff200,i-c:ver25-blinkwait0-blinkon200-blinkoff200,r:hor20-blinkwait0-blinkon200-blinkoff200'
+  vim.o.guicursor = 'n-v:block-blinkon0,i-c-ci-ve:ver25-blinkwait0-blinkon200-blinkoff200,r-cr-o:hor20-blinkwait0-blinkon200-blinkoff200'
 end
 set_cursor()
 
