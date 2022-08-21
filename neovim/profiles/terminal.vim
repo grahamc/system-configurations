@@ -1230,6 +1230,8 @@ Plug 'preservim/nerdtree', {'on': []}
     autocmd FileType nerdtree nmap <buffer> h o
     autocmd FileType nerdtree setlocal winbar=%#Normal#%=\ Press\ %#NerdTreeWinBar#?%#Normal#\ for\ help%=
     autocmd FileType nerdtree setlocal winhighlight=Normal:NerdTreeNormal
+    autocmd FileType nerdtree let w:disable_tabline_margin = v:true
+    autocmd FileType nerdtree setlocal signcolumn=yes:1
     autocmd BufEnter * call CloseIfOnlyNerdtreeLeft()
   augroup END
 " }}}
@@ -1698,7 +1700,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight FoldColumn ctermfg=15 ctermbg=NONE
     highlight SpecialKey ctermfg=13 ctermbg=NONE
     highlight NonText ctermfg=15 ctermbg=NONE
-    highlight NerdTreeWinBar ctermfg=13 ctermbg=NONE cterm=italic
+    highlight NerdTreeWinBar ctermfg=13 ctermbg=NONE
     highlight NerdTreeTabLine ctermfg=13 ctermbg=NONE
     highlight NerdTreeNormal ctermbg=NONE
     highlight! link VirtColumn VertSplit
