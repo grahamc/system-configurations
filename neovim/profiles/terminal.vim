@@ -1451,18 +1451,9 @@ Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
 Plug 'L3MON4D3/LuaSnip'
   function! SetupLuaSnip()
     lua << EOF
-    local types = require("luasnip.util.types")
     require('luasnip').config.set_config({
       history = true,
       delete_check_events = "TextChanged",
-      ext_opts = {
-        [types.insertNode] = {
-          passive = {
-            virt_text = {{'⮜', 'LuaSnipNode'}},
-            hl_group = "LuaSnipNode",
-          },
-        },
-      },
     })
     require('luasnip.loaders.from_vscode').lazy_load()
 EOF
