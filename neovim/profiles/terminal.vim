@@ -1455,7 +1455,9 @@ Plug 'L3MON4D3/LuaSnip'
       history = true,
       delete_check_events = "TextChanged",
     })
-    require('luasnip.loaders.from_vscode').lazy_load()
+    vim.cmd([[
+      call timer_start(0, { -> v:lua.require('luasnip.loaders.from_vscode').load()})
+    ]])
 EOF
   endfunction
   autocmd VimEnter * call SetupLuaSnip()
