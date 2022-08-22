@@ -566,16 +566,15 @@ vim.o.statusline = '%!v:lua.StatusLine()'
 
 -- Tabline {{{
 _G.superscript_numbers = {
-  ["0"] = "⁰",
-  ["1"] = "¹",
-  ["2"] = "²",
-  ["3"] = "³",
-  ["4"] = "⁴",
-  ["5"] = "⁵",
-  ["6"] = "⁶",
-  ["7"] = "⁷",
-  ["8"] = "⁸",
-  ["9"] = "⁹",
+  "¹",
+  "²",
+  "³",
+  "⁴",
+  "⁵",
+  "⁶",
+  "⁷",
+  "⁸",
+  "⁹",
 }
 
 _G.Tabline = function()
@@ -620,9 +619,9 @@ _G.Tabline = function()
     if is_current_tab then
       buffer_name_highlight = '%#TabLineSel#'
     end
-    local superscipt_tab_index = ''
-    for digit in tostring(tab_index):gmatch('.') do
-      superscipt_tab_index = superscipt_tab_index .. superscript_numbers[digit]
+    local superscipt_tab_index = '⁺'
+    if tab_index <= 9 then
+      superscipt_tab_index = superscript_numbers[tab_index]
     end
     buffer_name = buffer_name_highlight .. ' ' .. tab_index_highlight .. superscipt_tab_index .. buffer_name_highlight .. ' ' .. buffer_name .. buffer_name_highlight .. '  '
 
