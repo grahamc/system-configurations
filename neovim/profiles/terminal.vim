@@ -708,13 +708,16 @@ vim.keymap.set('v', 'ga', vim.lsp.buf.range_code_action, {desc = 'Choose code ac
 vim.keymap.set('n', 'gl', vim.diagnostic.open_float, {desc = 'Show diagnostics'})
 vim.keymap.set('n', '[l', vim.diagnostic.goto_prev, {desc = "Go to previous diagnostic"})
 vim.keymap.set('n', ']l', vim.diagnostic.goto_next, {desc = "Go to next diagnostic"})
-vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {desc = "Go to implementation"})
-vim.keymap.set('n', 'gk', vim.lsp.buf.signature_help, {desc = "Show signature help"})
-vim.keymap.set('n', 'gr', vim.lsp.buf.references, {desc = "Go to reference"})
-vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {desc = "Go to definition"})
+vim.keymap.set('n', 'gd', function() require('telescope.builtin').lsp_implementations() end, {desc = "Go to implementation"})
+vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, {desc = "Show signature help"})
+vim.keymap.set('n', 'gr', function() require('telescope.builtin').lsp_references() end, {desc = "Go to reference"})
+vim.keymap.set('n', 'gt', function() require('telescope.builtin').lsp_type_definitions() end, {desc = "Go to type definition"})
+vim.keymap.set('n', 'gd', function() require('telescope.builtin').lsp_definitions() end, {desc = "Go to definition"})
 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {desc = "Go to declaration"})
 vim.keymap.set('n', 'gci', vim.lsp.buf.incoming_calls, {desc = "Show incoming calls"})
 vim.keymap.set('n', 'gco', vim.lsp.buf.outgoing_calls, {desc = "Show outgoing calls"})
+vim.keymap.set('n', 'gn', vim.lsp.buf.rename, {desc = "Rename"})
+
 local border = {
       {" ", "FloatBorder"},
       {" ", "FloatBorder"},
