@@ -219,6 +219,12 @@ vim.api.nvim_create_autocmd(
 
 local function per_window(callable)
   return function()
+    local window_id = vim.fn.win_getid()
+    local is_floating_window = vim.api.nvim_win_get_config(window_id).relative ~= ''
+    if is_floating_window then
+      return
+    end
+
     -- I can't call a local function with 'windo' so I'll assign the function to a global variable.
     _G.per_window_function = callable
 
@@ -259,7 +265,7 @@ local function set_tabline_margin()
 end
 local set_tabline_margin_per_window = per_window(set_tabline_margin)
 vim.api.nvim_create_autocmd(
-  {'WinEnter', 'TabNewEntered', 'VimEnter',},
+  {'WinEnter', 'TabNewEntered', 'VimEnter', 'SessionLoadPost'},
   {
     callback = set_tabline_margin_per_window,
     group = group_id,
