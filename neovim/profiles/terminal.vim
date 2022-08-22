@@ -663,7 +663,9 @@ end
 set_cursor()
 
 local function reset_cursor()
-  -- reset terminal cursor to blinking bar
+  -- Reset terminal cursor to blinking bar.
+  -- TODO: This won't be necessary once neovim starts doing this automatically.
+  -- Issue: https://github.com/neovim/neovim/issues/4396
   vim.o.guicursor = 'a:ver25-blinkwait0-blinkon200-blinkoff200'
 end
 
