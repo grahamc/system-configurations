@@ -726,23 +726,19 @@ vim.keymap.set('n', 'ghi', vim.lsp.buf.incoming_calls, {desc = "Show incoming ca
 vim.keymap.set('n', 'gho', vim.lsp.buf.outgoing_calls, {desc = "Show outgoing calls"})
 vim.keymap.set('n', 'gn', vim.lsp.buf.rename, {desc = "Rename"})
 
+-- Create highlight groups for border and background
+-- Set border
 local border = {
-      {" ", "FloatBorder"},
-      {" ", "FloatBorder"},
-      {" ", "FloatBorder"},
-      {" ", "FloatBorder"},
-      {" ", "FloatBorder"},
-      {" ", "FloatBorder"},
-      {" ", "FloatBorder"},
-      {" ", "FloatBorder"},
+  {" ", "LspFloatBorder"},
 }
-
--- To instead override globally
 local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
 function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
   opts = opts or {}
   opts.border = opts.border or border
-  return orig_util_open_floating_preview(contents, syntax, opts, ...)
+  local original_return_value = {orig_util_open_floating_preview(contents, syntax, opts, ...)}
+  local window_number = original_return_value[2]
+  vim.fn.setwinvar(window_number, '&winhighlight', 'NormalFloat:LspFloatNormal')
+  return unpack(original_return_value)
 end
 -- }}}
 
@@ -953,6 +949,7 @@ Plug(
   {
     config = function()
       require('dressing').setup({
+        input = {enabled = false,},
         select = {
           telescope = require("telescope.themes").get_cursor({
             border = false,
@@ -965,6 +962,7 @@ Plug(
               return {
                 telescope = {
                   layout_strategy = 'center',
+                  border = true,
                   layout_config = {
                     width = 0.6,
                     height = 0.6,
@@ -1002,6 +1000,30 @@ Plug(
           border = 'rounded',
         },
       })
+
+      -- Add a highlight group for the border
+      local group_id = vim.api.nvim_create_augroup('WhichKeyNvim', {})
+      vim.api.nvim_create_autocmd(
+        {'FileType',},
+        {
+          pattern = {'WhichKey'},
+          callback = function()
+            vim.opt_local.winhighlight:append(',FloatBorder:WhichKeyBorder')
+            vim.api.nvim_create_autocmd(
+              {'OptionSet'},
+              {
+                group = group_id,
+                pattern = {'winhighlight'},
+                once = true,
+                callback = function()
+                  vim.opt_local.winhighlight:append(',FloatBorder:WhichKeyBorder')
+                end,
+              }
+            )
+          end,
+          group = group_id,
+        }
+      )
     end,
   }
 )
@@ -1357,7 +1379,6 @@ Plug 'hrsh7th/nvim-cmp'
       local line, col = unpack(vim.api.nvim_win_get_cursor(0))
       return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
     end
-    local border = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', }
 
     cmp.setup({
       snippet = {
@@ -1368,10 +1389,10 @@ Plug 'hrsh7th/nvim-cmp'
       window = {
         documentation = {
           winhighlight = 'NormalFloat:CmpDocumentationNormal,FloatBorder:CmpDocumentationBorder',
-          border = border,
+          border = 'solid',
         },
         completion = {
-          winhighlight = 'NormalFloat:CmpNormal,FloatBorder:CmpBorder,CursorLine:CmpCursorLine,PmenuSbar:CmpScrollbar',
+          winhighlight = 'NormalFloat:CmpNormal,Pmenu:CmpNormal,CursorLine:CmpCursorLine,PmenuSbar:CmpScrollbar',
           border = 'none',
         },
       },
@@ -1714,17 +1735,13 @@ Plug 'arcticicestudio/nord-vim'
     highlight StatusLineInfoText ctermfg=4 ctermbg=8
     highlight StatusLineHintText ctermfg=5 ctermbg=8
     highlight StatusLineStandoutText ctermfg=3 ctermbg=8
-    " autocomplete popupmenu
-    highlight PmenuSel ctermfg=14 ctermbg=NONE cterm=reverse
-    highlight Pmenu ctermfg=NONE ctermbg=24
-    highlight PmenuThumb ctermfg=NONE ctermbg=8
     highlight CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
     " transparent background
     highlight Normal ctermbg=NONE
     highlight EndOfBuffer ctermbg=NONE
     " relative line numbers
     highlight LineNr ctermfg=15
-    highlight LineNrAbove ctermfg=15
+    highlight! link LineNrAbove LineNr
     highlight! link LineNrBelow LineNrAbove
     highlight WordUnderCursor ctermbg=8
     highlight! link IncSearch Search
@@ -1733,7 +1750,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight TabLineFill ctermbg=NONE
     highlight TabLineCharSel ctermbg=NONE ctermfg=8
     highlight! link TabLineChar TabLineCharSel
-    highlight TabLineIndexSel ctermbg=8 ctermfg=14
+    highlight TabLineIndexSel ctermbg=8 ctermfg=6
     highlight! link TabLineIndex TabLine
     highlight TabLineMaximizedIndicator ctermbg=8 ctermfg=3
     highlight Comment ctermfg=15 ctermbg=NONE
@@ -1761,7 +1778,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight NerdTreeWinBar ctermfg=13 ctermbg=NONE
     highlight NerdTreeTabLine ctermfg=13 ctermbg=NONE
     highlight NerdTreeNormal ctermbg=NONE
-    highlight! link VirtColumn VertSplit
+    highlight VirtColumn ctermfg=24
     highlight DiagnosticSignError ctermfg=1 ctermbg=NONE
     highlight DiagnosticSignWarn ctermfg=3 ctermbg=NONE
     highlight DiagnosticSignInfo ctermfg=4 ctermbg=NONE
@@ -1772,40 +1789,56 @@ Plug 'arcticicestudio/nord-vim'
     highlight DiagnosticUnderlineHint ctermfg=5 ctermbg=NONE cterm=undercurl
     highlight! link DiagnosticInfo DiagnosticSignInfo
     highlight! link DiagnosticHint DiagnosticSignHint
-    highlight! CmpItemAbbrMatch ctermbg=NONE ctermfg=14
+    highlight! CmpItemAbbrMatch ctermbg=NONE ctermfg=6
     highlight! link CmpItemAbbrMatchFuzzy CmpItemAbbrMatch
     highlight! CmpItemKind ctermbg=NONE ctermfg=15
     highlight! link CmpItemMenu CmpItemKind
-    highlight CmpNormal ctermbg=16 ctermfg=NONE
-    highlight! link CmpBorder CmpNormal
-    highlight CmpDocumentationNormal ctermbg=32
+    highlight! link CmpNormal Float2Normal
+    highlight! link CmpDocumentationNormal Float3Normal
     highlight! link CmpDocumentationBorder CmpDocumentationNormal
-    highlight CmpCursorLine ctermfg=14 ctermbg=NONE cterm=reverse
+    highlight CmpCursorLine ctermfg=6 ctermbg=NONE cterm=reverse
+    " autocomplete popupmenu
+    highlight PmenuSel ctermfg=6 ctermbg=NONE cterm=reverse
+    highlight Pmenu ctermfg=NONE ctermbg=24
+    highlight PmenuThumb ctermfg=NONE ctermbg=15
     highlight! link PmenuSbar CmpNormal
-    highlight! TelescopeBorder ctermbg=24 ctermfg=24
+    " List of telescope highlight groups:
+    " https://github.com/nvim-telescope/telescope.nvim/blob/master/plugin/telescope.lua
+    highlight! TelescopePromptNormal ctermbg=24 cterm=underline
+    highlight! TelescopePromptBorder ctermbg=24 ctermfg=24
+    highlight! TelescopePromptTitle ctermbg=24 ctermfg=5 cterm=reverse,bold,nocombine
+    highlight! TelescopePreviewNormal ctermbg=16
     highlight! TelescopePreviewBorder ctermbg=16 ctermfg=16
-    highlight! TelescopePromptBorder ctermbg=16 ctermfg=16
-    highlight! TelescopePreviewTitle ctermbg=16 ctermfg=5 cterm=reverse,bold,nocombine
-    highlight! TelescopePromptTitle ctermbg=16 ctermfg=5 cterm=reverse,bold,nocombine
+    highlight! TelescopePreviewTitle ctermbg=16 ctermfg=16
+    highlight! TelescopeResultsNormal ctermbg=24
+    highlight! TelescopeResultsBorder ctermbg=24 ctermfg=24
     highlight! TelescopeResultsTitle ctermbg=24 ctermfg=24
+    highlight! TelescopePromptPrefix ctermbg=24 ctermfg=5 cterm=none,nocombine
     highlight! TelescopeMatching ctermbg=NONE ctermfg=6
     highlight! TelescopeSelectionCaret ctermbg=8 ctermfg=8
-    highlight! TelescopeNormal ctermbg=24
-    highlight! TelescopePromptNormal ctermbg=16
-    highlight! TelescopePreviewNormal ctermbg=16
-    highlight! TelescopeResultsNormal ctermbg=24
-    highlight! TelescopePromptPrefix ctermbg=16 ctermfg=5
+    highlight TelescopePromptCounter ctermfg=15 cterm=none,nocombine
     highlight MasonHeader ctermbg=NONE ctermfg=4 cterm=reverse,bold
     highlight MasonHighlight ctermbg=NONE ctermfg=6
     highlight MasonHighlightBlockBold ctermbg=NONE ctermfg=6 cterm=reverse,bold
     highlight MasonMuted ctermbg=NONE ctermfg=NONE
     highlight MasonMutedBlock ctermbg=NONE ctermfg=15 cterm=reverse
     highlight MasonError ctermbg=NONE ctermfg=1
-    highlight NormalFloat ctermbg=32 ctermfg=NONE
-    highlight! link FloatBorder NormalFloat
+    highlight! link NormalFloat Float1Normal
+    highlight! link FloatBorder Float1Border
     highlight LuaSnipNode ctermfg=11
-    highlight WhichKeyFloat ctermbg=0
+    highlight! link WhichKeyFloat Float4Normal
+    highlight! link WhichKeyBorder Float4Border
     highlight CodeActionSign ctermbg=NONE ctermfg=3
+    highlight! link LspFloatNormal Float2Normal
+    highlight! link LspFloatBorder Float2Border
+    highlight Float1Normal ctermbg=32
+    highlight! link Float1Border Float1Normal
+    highlight Float2Normal ctermbg=24
+    highlight! link Float2Border Float2Normal
+    highlight Float3Normal ctermbg=8
+    highlight! link Float3Border Float3Normal
+    highlight Float4Normal ctermbg=0
+    highlight Float4Border ctermbg=0 ctermfg=15
   endfunction
   augroup NordVim
     autocmd!
