@@ -932,8 +932,9 @@ Plug(
       vim.keymap.set('n', '<Leader>f', '<Cmd>Telescope find_files<CR>')
       vim.keymap.set('n', '<Leader>j', '<Cmd>Telescope jumplist<CR>')
       vim.cmd([[
-        command! HighlightTest Telescope highlights
-        command! Autocmd Telescope autocommands
+        command! Highlights Telescope highlights
+        command! Autocommands Telescope autocommands
+        command! Mappings Telescope keymaps
       ]])
     end,
   }
