@@ -68,11 +68,6 @@ set shell=sh
 
 nnoremap <BS> <C-^>
 
-augroup DarkFloats
-  autocmd!
-  autocmd FileType lspinfo,mason.nvim set winhighlight=NormalFloat:DarkFloatNormal
-augroup END
-
 set ttimeout ttimeoutlen=50
 
 lua << EOF
@@ -697,7 +692,6 @@ vim.diagnostic.config({
   severity_sort = true,
   float = {
     source = "if_many",
-    border = 'rounded',
     focusable = false,
   },
 })
@@ -721,6 +715,24 @@ vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {desc = "Go to definition"})
 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {desc = "Go to declaration"})
 vim.keymap.set('n', 'gci', vim.lsp.buf.incoming_calls, {desc = "Show incoming calls"})
 vim.keymap.set('n', 'gco', vim.lsp.buf.outgoing_calls, {desc = "Show outgoing calls"})
+local border = {
+      {" ", "FloatBorder"},
+      {" ", "FloatBorder"},
+      {" ", "FloatBorder"},
+      {" ", "FloatBorder"},
+      {" ", "FloatBorder"},
+      {" ", "FloatBorder"},
+      {" ", "FloatBorder"},
+      {" ", "FloatBorder"},
+}
+
+-- To instead override globally
+local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+  opts = opts or {}
+  opts.border = opts.border or border
+  return orig_util_open_floating_preview(contents, syntax, opts, ...)
+end
 -- }}}
 
 -- Plugins {{{
@@ -870,6 +882,7 @@ Plug(
     config = function()
       telescope = require('telescope')
       actions = require('telescope.actions')
+      resolve = require('telescope.config.resolve')
 
       telescope.setup({
         defaults = {
@@ -883,6 +896,21 @@ Plug(
             },
           },
           prompt_prefix = is_nerdfont_enabled and unicode('f002') .. '  ' or '> ',
+          sorting_strategy = 'ascending',
+          layout_strategy = 'vertical',
+          layout_config = {
+            vertical = {
+              height = .90,
+              width = .90,
+              mirror = true,
+              prompt_position = 'top',
+              preview_cutoff = 5,
+              preview_height = resolve.resolve_height(.60),
+            },
+          },
+        },
+        pickers = {
+
         },
       })
 
@@ -914,14 +942,25 @@ Plug(
     config = function()
       require('dressing').setup({
         select = {
-          telescope = {
+          telescope = require("telescope.themes").get_cursor({
+            border = false,
             layout_config = {
-              width = 0.6,
-              height = 0.6,
+              height = 4,
             },
-            layout_strategy = 'center',
-            sorting_strategy = 'ascending',
-          },
+          }),
+          get_config = function(options)
+            if options.kind == 'mason.ui.language-filter' then
+              return {
+                telescope = {
+                  layout_strategy = 'center',
+                  layout_config = {
+                    width = 0.6,
+                    height = 0.6,
+                  },
+                },
+              }
+            end
+          end,
         },
       })
     end,
@@ -1306,6 +1345,7 @@ Plug 'hrsh7th/nvim-cmp'
       local line, col = unpack(vim.api.nvim_win_get_cursor(0))
       return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
     end
+    local border = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', }
 
     cmp.setup({
       snippet = {
@@ -1315,12 +1355,12 @@ Plug 'hrsh7th/nvim-cmp'
       },
       window = {
         documentation = {
-          winhighlight = 'NormalFloat:CmpNormal,FloatBorder:CmpBorder',
-          border = 'rounded',
+          winhighlight = 'NormalFloat:CmpDocumentationNormal,FloatBorder:CmpDocumentationBorder',
+          border = border,
         },
         completion = {
-          winhighlight = 'NormalFloat:CmpNormal,FloatBorder:CmpBorder,CursorLine:CmpCursorLine',
-          border = 'rounded',
+          winhighlight = 'NormalFloat:CmpNormal,FloatBorder:CmpBorder,CursorLine:CmpCursorLine,PmenuSbar:CmpScrollbar',
+          border = 'none',
         },
       },
       mapping = cmp.mapping.preset.insert({
@@ -1542,7 +1582,6 @@ Plug 'williamboman/mason-lspconfig.nvim'
         vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
           vim.lsp.handlers.hover,
           {
-            border = "rounded",
             focusable = false,
           }
         )
@@ -1666,8 +1705,7 @@ Plug 'arcticicestudio/nord-vim'
     " autocomplete popupmenu
     highlight PmenuSel ctermfg=14 ctermbg=NONE cterm=reverse
     highlight Pmenu ctermfg=NONE ctermbg=24
-    highlight PmenuThumb ctermfg=NONE ctermbg=15
-    highlight PmenuSbar ctermbg=8
+    highlight PmenuThumb ctermfg=NONE ctermbg=8
     highlight CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
     " transparent background
     highlight Normal ctermbg=NONE
@@ -1720,35 +1758,41 @@ Plug 'arcticicestudio/nord-vim'
     highlight! link DiagnosticUnderlineWarn Warning
     highlight DiagnosticUnderlineInfo ctermfg=4 ctermbg=NONE cterm=undercurl
     highlight DiagnosticUnderlineHint ctermfg=5 ctermbg=NONE cterm=undercurl
+    highlight! link DiagnosticInfo DiagnosticSignInfo
+    highlight! link DiagnosticHint DiagnosticSignHint
     highlight! CmpItemAbbrMatch ctermbg=NONE ctermfg=14
     highlight! link CmpItemAbbrMatchFuzzy CmpItemAbbrMatch
     highlight! CmpItemKind ctermbg=NONE ctermfg=15
     highlight! link CmpItemMenu CmpItemKind
-    highlight CmpNormal ctermbg=NONE ctermfg=NONE
-    highlight CmpBorder ctermbg=NONE ctermfg=15
-    highlight! link CmpDocumentationNormal CmpNormal
-    highlight! link CmpDocumentationBorder CmpBorder
+    highlight CmpNormal ctermbg=16 ctermfg=NONE
+    highlight! link CmpBorder CmpNormal
+    highlight CmpDocumentationNormal ctermbg=32
+    highlight! link CmpDocumentationBorder CmpDocumentationNormal
     highlight CmpCursorLine ctermfg=14 ctermbg=NONE cterm=reverse
-    highlight! TelescopeBorder ctermbg=16 ctermfg=16
-    highlight! TelescopePromptTitle ctermbg=24 ctermfg=5 cterm=reverse,bold,nocombine
+    highlight! link PmenuSbar CmpNormal
+    highlight! TelescopeBorder ctermbg=24 ctermfg=24
+    highlight! TelescopePreviewBorder ctermbg=16 ctermfg=16
+    highlight! TelescopePromptBorder ctermbg=16 ctermfg=16
+    highlight! TelescopePreviewTitle ctermbg=16 ctermfg=5 cterm=reverse,bold,nocombine
+    highlight! TelescopePromptTitle ctermbg=16 ctermfg=5 cterm=reverse,bold,nocombine
+    highlight! TelescopeResultsTitle ctermbg=24 ctermfg=24
     highlight! TelescopeMatching ctermbg=NONE ctermfg=6
     highlight! TelescopeSelectionCaret ctermbg=8 ctermfg=8
-    highlight! TelescopeNormal ctermbg=16
-    highlight! TelescopePromptNormal ctermbg=24
-    highlight! TelescopePromptBorder ctermbg=24 ctermfg=24
-    highlight! TelescopePromptPrefix ctermbg=24 ctermfg=5
+    highlight! TelescopeNormal ctermbg=24
+    highlight! TelescopePromptNormal ctermbg=16
+    highlight! TelescopePreviewNormal ctermbg=16
+    highlight! TelescopeResultsNormal ctermbg=24
+    highlight! TelescopePromptPrefix ctermbg=16 ctermfg=5
     highlight MasonHeader ctermbg=NONE ctermfg=4 cterm=reverse,bold
     highlight MasonHighlight ctermbg=NONE ctermfg=6
     highlight MasonHighlightBlockBold ctermbg=NONE ctermfg=6 cterm=reverse,bold
     highlight MasonMuted ctermbg=NONE ctermfg=NONE
     highlight MasonMutedBlock ctermbg=NONE ctermfg=15 cterm=reverse
     highlight MasonError ctermbg=NONE ctermfg=1
-    highlight NormalFloat ctermbg=32
+    highlight NormalFloat ctermbg=32 ctermfg=NONE
+    highlight! link FloatBorder NormalFloat
     highlight LuaSnipNode ctermfg=11
-    highlight NormalFloat ctermbg=NONE ctermfg=NONE
-    highlight FloatBorder ctermbg=NONE ctermfg=15
     highlight WhichKeyFloat ctermbg=0
-    highlight DarkFloatNormal ctermbg=32 ctermfg=NONE
     highlight CodeActionSign ctermbg=NONE ctermfg=3
   endfunction
   augroup NordVim
