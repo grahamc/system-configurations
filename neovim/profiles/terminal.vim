@@ -1905,7 +1905,7 @@ function! UpdateAndSnapshotSync()
   PlugUpdate --sync
   call CreateSnapshotSync()
 endfunction
-command! PlugUpdate call UpdateAndSnapshotSync()
+command! MyPlugUpdate call UpdateAndSnapshotSync()
 function! PlugRestore()
   if !filereadable(g:snapshot_file)
     echoerr printf("Restore failed. Unable to read the snapshot file '%s'", g:snapshot_file)
