@@ -1208,6 +1208,11 @@ Plug(
             )
           end,
         },
+        sources = {
+          ['null-ls'] = {
+            ignore = true,
+          },
+        },
       })
     end,
   }
