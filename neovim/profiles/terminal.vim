@@ -385,6 +385,18 @@ vim.opt.sessionoptions:append('tabpages')
 vim.opt.sessionoptions:append('folds')
 local session_dir = vim.g.data_path .. '/sessions'
 vim.fn.mkdir(session_dir, 'p')
+local group_id = vim.api.nvim_create_augroup('SaveAndRestoreSettings', {})
+
+local function save_session()
+  local has_active_session = string.len(vim.v.this_session) > 0
+  if has_active_session then
+    vim.cmd({
+      cmd = 'mksession',
+      args = {vim.fn.fnameescape(vim.v.this_session)},
+      bang = true,
+    })
+  end
+end
 
 local function restore_or_create_session()
   -- We only want to restore/create a session if neovim was called with no arguments. The first element in vim.v.argv
@@ -404,22 +416,28 @@ local function restore_or_create_session()
         bang = true,
       })
     end
-    vim.g.session_active = true
+
+    -- Save the session whenever the window layout or active window changes
+    vim.api.nvim_create_autocmd(
+      {'BufEnter',},
+      {
+        callback = save_session,
+        group = group_id,
+      }
+    )
+
+    -- save session before vim exits
+    vim.api.nvim_create_autocmd(
+      {'VimLeavePre',},
+      {
+        callback = save_session,
+        group = group_id,
+      }
+    )
   end
 end
 
-local function save_session()
-  if vim.g.session_active and string.len(vim.v.this_session) > 0 then
-    vim.cmd({
-      cmd = 'mksession',
-      args = {vim.fn.fnameescape(vim.v.this_session)},
-      bang = true,
-    })
-  end
-end
-
-local group_id = vim.api.nvim_create_augroup('SaveAndRestoreSettings', {})
--- Restore session after vim starts.
+-- Restore/create session after vim starts.
 vim.api.nvim_create_autocmd(
   {'VimEnter',},
   {
@@ -428,14 +446,6 @@ vim.api.nvim_create_autocmd(
     -- The 'nested' option tells vim to fire events normally while this autocommand is executing. By default, no events
     -- are fired during the execution of an autocommand to prevent infinite loops.
     nested = true,
-  }
-)
--- save session before vim exits
-vim.api.nvim_create_autocmd(
-  {'VimLeavePre',},
-  {
-    callback = save_session,
-    group = group_id,
   }
 )
 -- }}}
