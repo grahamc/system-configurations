@@ -1870,8 +1870,8 @@ Plug 'arcticicestudio/nord-vim'
     highlight! link Float3Border Float3Normal
     highlight Float4Normal ctermbg=0
     highlight Float4Border ctermbg=0 ctermfg=15
-    highlight FidgetTitle ctermbg=0 ctermfg=5
-    highlight FidgetTask ctermbg=0 ctermfg=5
+    highlight FidgetTitle ctermbg=0 ctermfg=5 cterm=italic
+    highlight FidgetTask ctermbg=0 ctermfg=5 cterm=italic
   endfunction
   augroup NordVim
     autocmd!
