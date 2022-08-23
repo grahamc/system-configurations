@@ -888,6 +888,10 @@ Plug(
     ['do'] = function()
       vim.fn['mkdp#util#install']()
     end,
+    -- Add 'vim-plug' to the filetype list so that the plugin will be loaded before vim-plug runs the 'do' command.
+    -- This is necessary since the 'do' command calls a function from this plugin.
+    -- source: https://github.com/iamcco/markdown-preview.nvim/issues/50
+    ['for'] = {'markdown', 'vim-plug'},
   }
 )
 
