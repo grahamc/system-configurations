@@ -1383,13 +1383,20 @@ Plug 'hrsh7th/nvim-cmp'
       option = {
         keyword_length = 2,
         get_bufnrs = function()
-          local buf = vim.api.nvim_get_current_buf()
-          local byte_size = vim.api.nvim_buf_get_offset(buf, vim.api.nvim_buf_line_count(buf))
-          if byte_size > 1024 * 1024 then -- 1 Megabyte max
-            return {}
+          local filtered_buffer_numbers = {}
+          local all_buffer_numbers = vim.api.nvim_list_bufs()
+          for _, buffer_number in ipairs(all_buffer_numbers) do
+            local is_buffer_loaded = vim.api.nvim_buf_is_loaded(buffer_number)
+            -- 5 megabyte max
+            local is_buffer_under_max_size =
+              vim.api.nvim_buf_get_offset(buffer_number, vim.api.nvim_buf_line_count(buffer_number)) < 1024 * 1024 * 5
+
+            if is_buffer_loaded and is_buffer_under_max_size then
+              table.insert(filtered_buffer_numbers, buffer_number)
+            end
           end
 
-          return { buf }
+          return filtered_buffer_numbers
         end,
       },
     }
