@@ -1116,7 +1116,7 @@ Plug(
         end
       end
     end,
-    ['do'] = vim.cmd.TSUpdateSync,
+    ['do'] = ':lua vim.cmd.TSUpdateSync()',
   }
 )
 
