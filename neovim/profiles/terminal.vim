@@ -385,7 +385,6 @@ vim.opt.sessionoptions:append('tabpages')
 vim.opt.sessionoptions:append('folds')
 local session_dir = vim.g.data_path .. '/sessions'
 vim.fn.mkdir(session_dir, 'p')
-local group_id = vim.api.nvim_create_augroup('SaveAndRestoreSettings', {})
 
 local function save_session()
   local has_active_session = string.len(vim.v.this_session) > 0
@@ -417,6 +416,8 @@ local function restore_or_create_session()
       })
     end
 
+    local group_id = vim.api.nvim_create_augroup('SaveSession', {})
+
     -- Save the session whenever the window layout or active window changes
     vim.api.nvim_create_autocmd(
       {'BufEnter',},
@@ -438,6 +439,7 @@ local function restore_or_create_session()
 end
 
 -- Restore/create session after vim starts.
+local group_id = vim.api.nvim_create_augroup('RestoreOrCreateSession', {})
 vim.api.nvim_create_autocmd(
   {'VimEnter',},
   {
