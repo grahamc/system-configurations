@@ -1910,7 +1910,7 @@ function! CreateSnapshotSync()
   " Edit the snapshot file so that it updates plugins synchronously
   execute "silent! !sed --in-place --follow-symlinks 's/PlugUpdate\\!/PlugUpdate\\! --sync/g' " . g:snapshot_file
 endfunction
-command! PlugSnapshot call CreateSnapshotSync()
+command! MyPlugSnapshot call CreateSnapshotSync()
 function! UpdateAndSnapshotSync()
   PlugUpdate --sync
   call CreateSnapshotSync()
