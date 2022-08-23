@@ -1414,13 +1414,14 @@ Plug 'hrsh7th/nvim-cmp'
     }
     local tmux = {
       name = 'tmux',
-      option = { all_panes = true },
+      option = { all_panes = true, label = 'Tmux', },
     }
+
     local cmdline = { name = 'cmdline' }
-    local cmdline_history = { name = 'cmdline_history' }
     local dictionary = {
       name = 'dictionary',
       keyword_length = 2,
+      keyword_pattern = [[\a\+]],
     }
     local lsp_signature = { name = 'nvim_lsp_signature_help' }
     local luasnip_source = {
@@ -1506,8 +1507,10 @@ Plug 'hrsh7th/nvim-cmp'
           omni,
           path,
           tmux,
-          dictionary,
           lsp_signature,
+        },
+        {
+          dictionary,
         }
       )
     })
@@ -1525,13 +1528,29 @@ Plug 'hrsh7th/nvim-cmp'
     cmp.setup.cmdline(
       ':',
       {
+        formatting = {
+          fields = {'abbr', 'menu'},
+          format = function(entry, vim_item)
+            vim_item.menu = ({
+              cmdline = 'Commandline',
+              cmdline_history = 'History',
+              buffer = 'Buffer',
+              path = 'Path'
+            })[entry.source.name]
+            vim.g.test = vim_item
+            return vim_item
+          end,
+        },
         mapping = cmp.mapping.preset.cmdline(),
         sources = cmp.config.sources(
           {
-            path,
             cmdline,
+            {
+              name = 'cmdline_history',
+              max_item_count = 2,
+            },
+            path,
             buffer,
-            cmdline_history,
           }
         )
       }
@@ -1573,6 +1592,7 @@ Plug 'uga-rosa/cmp-dictionary'
       dic = {
         ['*'] = { '/usr/share/dict/words' },
       },
+      first_case_insensitive = true,
     })
 EOF
 
