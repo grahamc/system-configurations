@@ -5,7 +5,7 @@ set connectbar_down \u250C
 set connectbar_middle \u251C
 # The reason for all the 'set_color normal' commands is to undo any attributes set like '--bold'
 set fish_prompt_color_text (set_color normal; set_color cyan)
-set fish_prompt_color_standout_text (set_color normal; set_color bryellow)
+set fish_prompt_color_standout_text (set_color normal; set_color yellow)
 set fish_prompt_color_error_text (set_color normal; set_color red)
 set fish_prompt_color_normal (set_color normal)
 set fish_prompt_color_border (set_color normal; set_color brwhite)
