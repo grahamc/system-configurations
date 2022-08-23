@@ -76,6 +76,9 @@ function upgrade-all
 
     type --query fisher
     and upgrade-fisher
+
+    type --query nvim
+    and upgrade-nvim
 end
 function upgrade-debian
     echo
@@ -148,6 +151,16 @@ function upgrade-pipx
     echo -s (set_color blue) 'PIPX' (set_color normal)
     echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
     pipx upgrade-all --include-injected
+end
+function upgrade-nvim
+    echo
+    echo -s (set_color blue) 'NEOVIM' (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+
+    read --prompt-str 'Would you like to update? (y/n): ' --nchars 1 response
+    if test $response = 'y'
+        nvim -c 'autocmd VimEnter * MyPlugUpdate'
+    end
 end
 
 # sudo
