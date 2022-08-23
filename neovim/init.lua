@@ -57,6 +57,9 @@ local original_plug_end = vim.fn['plug#end']
 local function plug_end()
   original_plug_end()
 
+  -- This way the profiles can run code after plugins are loaded, but before 'VimEnter'
+  vim.cmd('doautocmd User PlugEndPost')
+
   -- This needs to be called before any lua plugins call their setup() functions
   pcall(require, 'impatient')
 
@@ -109,6 +112,3 @@ end
 
 -- Calling this after I load the profiles so I can register plugins inside them
 plug_end()
-
--- This way the profiles can run code after plugins are loaded, but before 'VimEnter'
-vim.cmd('doautocmd User PlugEndPost')

@@ -1912,7 +1912,20 @@ function! CreateSnapshotSync()
 endfunction
 command! MyPlugSnapshot call CreateSnapshotSync()
 function! UpdateAndSnapshotSync()
+  let g:plug_window = 'enew'
+
+  PlugUpgrade
+
+  if exists(':TSDisable')
+    TSDisable highlight
+  endif
+  0tabnew
   PlugUpdate --sync
+  if exists(':TSEnable')
+    TSEnable highlight
+  endif
+
+  0tabnew
   call CreateSnapshotSync()
 endfunction
 command! MyPlugUpdate call UpdateAndSnapshotSync()
