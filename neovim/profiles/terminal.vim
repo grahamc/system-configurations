@@ -885,9 +885,9 @@ Plug('nvim-lua/plenary.nvim')
 Plug(
   'iamcco/markdown-preview.nvim',
   {
-    ['do'] = function()
-      vim.fn['mkdp#util#install']()
-    end,
+    -- TODO: This won't work until this bug in neovim is fixed.
+    -- issue: https://github.com/neovim/neovim/issues/18822
+    ['do'] = ":call mkdp#util#install()",
     -- Add 'vim-plug' to the filetype list so that the plugin will be loaded before vim-plug runs the 'do' command.
     -- This is necessary since the 'do' command calls a function from this plugin.
     -- source: https://github.com/iamcco/markdown-preview.nvim/issues/50
@@ -1096,7 +1096,10 @@ Plug(
       ]])
 
       -- Install missing parsers
+      --
       -- TODO: treesitter commands don't seem to be available until 'VimEnter' so I'll call this function then.
+      -- I think this bug in neovim might be the reason for this.
+      -- issue: https://github.com/neovim/neovim/issues/18822
       _G.InstallMissingParsers = function()
         local install_info = vim.fn.execute('TSInstallInfo')
         local uninstalled_parsers_count = vim.fn.count(install_info, 'not installed')
