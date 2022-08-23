@@ -1426,14 +1426,6 @@ Plug 'hrsh7th/nvim-cmp'
       option = {use_show_condition = false},
     }
 
-    -- views
-    local wildmenu = {
-      entries = {
-        name = 'wildmenu',
-        separator = '|',
-      },
-    }
-
     -- helpers
     local is_cursor_preceded_by_nonblank_character = function()
       local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -1521,7 +1513,6 @@ Plug 'hrsh7th/nvim-cmp'
     cmp.setup.cmdline(
       '/',
       {
-        view = wildmenu,
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
           buffer,
@@ -1532,7 +1523,6 @@ Plug 'hrsh7th/nvim-cmp'
     cmp.setup.cmdline(
       ':',
       {
-        view = wildmenu,
         mapping = cmp.mapping.preset.cmdline(),
         sources = cmp.config.sources(
           {
@@ -1547,7 +1537,6 @@ Plug 'hrsh7th/nvim-cmp'
     cmp.setup.cmdline(
       '?',
       {
-        view = wildmenu,
         mapping = cmp.mapping.preset.cmdline(),
         sources = cmp.config.sources(
           {
