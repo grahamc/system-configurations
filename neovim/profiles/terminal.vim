@@ -92,32 +92,6 @@ execute printf(
       \ )
 " }}}
 
-" Option overrides {{{
-function! OverrideVimsDefaultFiletypePlugins()
-  " Vim's default filetype plugins get run after filetype detection is
-  " performed (i.e. ':filetype plugin on'). So in order to override
-  " settings from vim's filetype plugins, the FileType autocommands
-  " need to be registered after filetype detection.
-  " Since this function gets called on the VimEnter event, we're
-  " certain that filetype detection has already
-  " happened because filetype detection gets triggered when the
-  " plugin manager, vim-plug, finishes loading plugins.
-  augroup OverrideFiletypePlugins
-    autocmd!
-    " Use vim help pages for keywordprg in vim files
-    autocmd FileType vim setlocal keywordprg=:tab\ help
-    autocmd FileType * setlocal textwidth=0
-    autocmd FileType * setlocal wrapmargin=0
-    autocmd FileType * setlocal formatoptions-=t formatoptions-=l
-  augroup END
-endfunction
-
-augroup Overrides
-  autocmd!
-  autocmd VimEnter * call OverrideVimsDefaultFiletypePlugins()
-augroup END
-" }}}
-
 " Utilities {{{
 " Sets options to the specified new values and returns their old values.
 " Useful for when you want to change an option and then restore its old value later on.

@@ -114,6 +114,30 @@ nnoremap Q <Nop>
 xnoremap @ :normal @
 " }}}
 
+" Option overrides {{{
+function! OverrideVimsDefaultFiletypePlugins()
+  " Vim's default filetype plugins get run when filetype detection is enabled (i.e. ':filetype plugin on').
+  " So in order to override settings from vim's filetype plugins, these FileType autocommands need to be registered
+  " after filetype detection is enabled. Filetype detection is turned on in plug_end() so this function gets called at
+  " PlugEndPost, which is right after plug_end() is called.
+  augroup OverrideFiletypePlugins
+    autocmd!
+
+    " Use vim help pages for keywordprg in vim files
+    autocmd FileType vim setlocal keywordprg=:tab\ help
+
+    " Don't automatically hard-wrap text
+    autocmd FileType * setlocal textwidth=0
+    autocmd FileType * setlocal wrapmargin=0
+  augroup END
+endfunction
+
+augroup Overrides
+  autocmd!
+  autocmd User PlugEndPost call OverrideVimsDefaultFiletypePlugins()
+augroup END
+" }}}
+
 " Searching {{{
 " searching is only case sensitive when the query contains an uppercase letter
 set ignorecase smartcase
