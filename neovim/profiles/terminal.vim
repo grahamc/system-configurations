@@ -305,6 +305,9 @@ vnoremap <Tab> zf
 " Toggle opening and closing all folds
 nnoremap <silent> <expr> <S-Tab> &foldlevel ? 'zM' : 'zR'
 " auto-resize the fold column
+" 
+" TODO: When this issue is resolved, I can set foldcolumn to 1 and remove the digits that signify a nested fold.
+" issue: https://github.com/neovim/neovim/pull/17446
 set foldcolumn=auto:9
 " Jump to the top and bottom of the current fold, without adding to the jump list
 nnoremap [<Tab> [z
