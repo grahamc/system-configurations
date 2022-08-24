@@ -758,6 +758,9 @@ vim.keymap.set('n', 'gn', vim.lsp.buf.rename, {desc = "Rename"})
 
 -- Create highlight groups for border and background
 -- Set border
+--
+-- TODO: When this issue is resolved, there will be an option to configure the border.
+-- issue: https://github.com/neovim/nvim-lspconfig/issues/2068
 local border = {
   {" ", "LspFloatBorder"},
 }
