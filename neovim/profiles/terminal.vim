@@ -153,6 +153,48 @@ _G.unicode = function(hex)
     )
   )
 end
+
+_G.per_window_in_current_tab = function(callable)
+  return function()
+    local window_id = vim.fn.win_getid()
+    local is_floating_window = vim.api.nvim_win_get_config(window_id).relative ~= ''
+    if is_floating_window then
+      return
+    end
+
+    -- I can't call a local function with 'windo' so I'll assign the function to a global variable.
+    _G.per_window_in_current_tab_function = callable
+
+    local current_window_number = vim.fn.winnr()
+    vim.cmd([[
+      windo lua per_window_in_current_tab_function()
+    ]])
+    vim.cmd(string.format(
+      [[
+        silent! %swincmd w
+      ]],
+      current_window_number
+    ))
+  end
+end
+
+_G.per_tab = function(callable)
+  return function()
+    -- I can't call a local function with 'tabdo' so I'll assign the function to a global variable.
+    _G.per_tab_function = callable
+
+    local current_tab_number = vim.fn.tabpagenr()
+    vim.cmd([[
+      tabdo lua per_tab_function()
+    ]])
+    vim.cmd(string.format(
+      [[
+        silent! tabnext %s
+      ]],
+      current_tab_number
+    ))
+  end
+end
 EOF
 " }}}
 
@@ -217,29 +259,6 @@ vim.api.nvim_create_autocmd(
   }
 )
 
-local function per_window(callable)
-  return function()
-    local window_id = vim.fn.win_getid()
-    local is_floating_window = vim.api.nvim_win_get_config(window_id).relative ~= ''
-    if is_floating_window then
-      return
-    end
-
-    -- I can't call a local function with 'windo' so I'll assign the function to a global variable.
-    _G.per_window_function = callable
-
-    local current_window_number = vim.fn.winnr()
-    vim.cmd([[
-      windo lua per_window_function()
-    ]])
-    vim.cmd(string.format(
-      [[
-        silent! %swincmd w
-      ]],
-      current_window_number
-    ))
-  end
-end
 local function set_tabline_margin()
   if vim.w.disable_tabline_margin then
     return
@@ -263,11 +282,11 @@ local function set_tabline_margin()
 
   end
 end
-local set_tabline_margin_per_window = per_window(set_tabline_margin)
+local set_tabline_margin_per_window_in_current_tab = per_window_in_current_tab(set_tabline_margin)
 vim.api.nvim_create_autocmd(
   {'WinEnter', 'TabNewEntered', 'VimEnter', 'SessionLoadPost'},
   {
-    callback = set_tabline_margin_per_window,
+    callback = set_tabline_margin_per_window_in_current_tab,
     group = group_id,
   }
 )
@@ -1671,12 +1690,24 @@ EOF
   endfunction
   autocmd VimEnter * call SetupMasonLspConfig()
 
-Plug 'neovim/nvim-lspconfig'
-  function! SetupNvimLspconfig()
-    LspStart
-    autocmd WinEnter * LspStart
-  endfunction
-  autocmd VimEnter * call SetupNvimLspconfig()
+lua << EOF
+Plug('neovim/nvim-lspconfig')
+
+-- TODO: Language servers are not starting automatically on FileType for files opened before VimEnter. For example,
+-- files specified on the commandline or files restored from a session. This autocommand retriggers the FileType
+-- event for those files.
+local group_id = vim.api.nvim_create_augroup('RetriggerFiletype', {})
+local trigger_filetype_event = function() vim.o.filetype = vim.o.filetype end
+local callback = per_tab(per_window_in_current_tab(trigger_filetype_event))
+vim.api.nvim_create_autocmd(
+  {'VimEnter',},
+  {
+    callback = function() vim.fn.timer_start(0, callback) end,
+    group = group_id,
+    nested = true,
+  }
+)
+EOF
 
 Plug 'b0o/schemastore.nvim'
 " }}}
