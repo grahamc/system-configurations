@@ -1864,6 +1864,7 @@ function! UpdateAndSnapshotSync()
   endif
   0tabnew
   PlugUpdate --sync
+  PlugDiff
   if exists(':TSEnable')
     TSEnable highlight
   endif
