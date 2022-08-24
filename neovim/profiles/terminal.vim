@@ -1559,157 +1559,148 @@ Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'rafamadriz/friendly-snippets'
 " }}}
 
-" Tool Manager {{{
-Plug 'williamboman/mason.nvim'
-  function! SetupMason()
-    lua << EOF
-    require("mason").setup({
-      ui = {
-        icons = {
-          package_installed = is_nerdfont_enabled and unicode('f632') .. '  ' or '●',
-          package_pending = is_nerdfont_enabled and unicode('f251') .. '  ' or '⧖',
-          package_uninstalled = is_nerdfont_enabled and unicode('f62f') .. '  ' or '○'
+lua << EOF
+-- Tool Manager {{{
+Plug(
+  'williamboman/mason.nvim',
+  {
+    config = function()
+      require("mason").setup({
+        ui = {
+          icons = {
+            package_installed = is_nerdfont_enabled and unicode('f632') .. '  ' or '●',
+            package_pending = is_nerdfont_enabled and unicode('f251') .. '  ' or '⧖',
+            package_uninstalled = is_nerdfont_enabled and unicode('f62f') .. '  ' or '○'
+          },
+          keymaps = {
+            toggle_package_expand = "<Tab>",
+          },
         },
-        keymaps = {
-          toggle_package_expand = "<Tab>",
-        },
-      },
-      log_level = vim.log.levels.DEBUG,
-    })
+        log_level = vim.log.levels.DEBUG,
+      })
 
-    vim.cmd([[
-      augroup MasonNvim
-        autocmd!
-        autocmd FileType mason.nvim highlight clear WordUnderCursor
-      augroup END
-    ]])
+      vim.cmd([[
+        augroup MasonNvim
+          autocmd!
+          autocmd FileType mason.nvim highlight clear WordUnderCursor
+        augroup END
+      ]])
+    end,
+  }
+)
 EOF
-  endfunction
-  autocmd VimEnter * call SetupMason()
 
-Plug 'williamboman/mason-lspconfig.nvim'
-  function! SetupMasonLspConfig()
-    lua << EOF
-    require("mason-lspconfig").setup()
+lua << EOF
+Plug(
+  'williamboman/mason-lspconfig.nvim',
+  {
+    config = function()
+      require("mason-lspconfig").setup()
 
-    local lspconfig = require('lspconfig')
+      local lspconfig = require('lspconfig')
 
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
-    capabilities.textDocument.foldingRange = {
-      dynamicRegistration = false,
-      lineFoldingOnly = true,
-    }
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+      capabilities.textDocument.foldingRange = {
+        dynamicRegistration = false,
+        lineFoldingOnly = true,
+      }
 
-    local on_attach = function(client, buffer_number)
-      capabilities = client.server_capabilities
-      buffer_keymap = vim.api.nvim_buf_set_keymap
-      keymap_opts = { noremap = true, silent = true }
+      local on_attach = function(client, buffer_number)
+        capabilities = client.server_capabilities
+        buffer_keymap = vim.api.nvim_buf_set_keymap
+        keymap_opts = { noremap = true, silent = true }
 
-      foldmethod = vim.o.foldmethod
-      isFoldmethodOverridable = foldmethod ~= 'manual'
-        and foldmethod ~= 'marker'
-        and foldmethod ~= 'diff'
-        and foldmethod ~= 'expr'
-      if capabilities.foldingRangeProvider and isFoldmethodOverridable then
-        require('folding').on_attach()
-      end
+        foldmethod = vim.o.foldmethod
+        isFoldmethodOverridable = foldmethod ~= 'manual'
+          and foldmethod ~= 'marker'
+          and foldmethod ~= 'diff'
+          and foldmethod ~= 'expr'
+        if capabilities.foldingRangeProvider and isFoldmethodOverridable then
+          require('folding').on_attach()
+        end
 
-      filetype = vim.o.filetype
-      isKeywordprgOverridable = filetype ~= 'vim' and filetype ~= 'sh'
-      if capabilities.hoverProvider and isKeywordprgOverridable then
-        buffer_keymap(buffer_number, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", keymap_opts)
+        filetype = vim.o.filetype
+        isKeywordprgOverridable = filetype ~= 'vim' and filetype ~= 'sh'
+        if capabilities.hoverProvider and isKeywordprgOverridable then
+          buffer_keymap(buffer_number, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", keymap_opts)
 
-        -- Change border of documentation hover window, See https://github.com/neovim/neovim/pull/13998.
-        vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-          vim.lsp.handlers.hover,
-          {
-            focusable = false,
-          }
-        )
-      end
-    end
-
-    local default_server_config = {
-      capabilities = capabilities,
-      on_attach = on_attach,
-    }
-
-    require("mason-lspconfig").setup_handlers({
-      -- Default handler to be called for each installed server that doesn't have a dedicated handler.
-      function (server_name)
-        lspconfig[server_name].setup(default_server_config)
-      end,
-
-      ["jsonls"] = function()
-        lspconfig.jsonls.setup(
-          vim.tbl_deep_extend(
-            'force',
-            default_server_config,
+          -- Change border of documentation hover window, See https://github.com/neovim/neovim/pull/13998.
+          vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+            vim.lsp.handlers.hover,
             {
-              settings = {
-                json = {
-                  schemas = require('schemastore').json.schemas(),
-                  validate = { enable = true },
-                },
-              },
+              focusable = false,
             }
           )
-        )
-      end,
- 
-      ["sumneko_lua"] = function()
-        lspconfig.sumneko_lua.setup(
-          vim.tbl_deep_extend(
-            'force',
-            default_server_config,
-            {
-              settings = {
-                Lua = {
-                  runtime = {
-                    -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-                    version = 'LuaJIT',
-                  },
-                  diagnostics = {
-                    -- Get the language server to recognize the `vim` global
-                    globals = {'vim'},
-                  },
-                  workspace = {
-                    -- Make the server aware of Neovim runtime files
-                    library = vim.api.nvim_get_runtime_file("", true),
-                  },
-                  telemetry = {
-                    -- Do not send telemetry data containing a randomized but unique identifier
-                    enable = false,
+        end
+      end
+
+      local default_server_config = {
+        capabilities = capabilities,
+        on_attach = on_attach,
+      }
+
+      require("mason-lspconfig").setup_handlers({
+        -- Default handler to be called for each installed server that doesn't have a dedicated handler.
+        function (server_name)
+          lspconfig[server_name].setup(default_server_config)
+        end,
+
+        ["jsonls"] = function()
+          lspconfig.jsonls.setup(
+            vim.tbl_deep_extend(
+              'force',
+              default_server_config,
+              {
+                settings = {
+                  json = {
+                    schemas = require('schemastore').json.schemas(),
+                    validate = { enable = true },
                   },
                 },
-              },
-            }
+              }
+            )
           )
-        )
-      end,
-    })
+        end,
+
+        ["sumneko_lua"] = function()
+          lspconfig.sumneko_lua.setup(
+            vim.tbl_deep_extend(
+              'force',
+              default_server_config,
+              {
+                settings = {
+                  Lua = {
+                    runtime = {
+                      -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+                      version = 'LuaJIT',
+                    },
+                    diagnostics = {
+                      -- Get the language server to recognize the `vim` global
+                      globals = {'vim'},
+                    },
+                    workspace = {
+                      -- Make the server aware of Neovim runtime files
+                      library = vim.api.nvim_get_runtime_file("", true),
+                    },
+                    telemetry = {
+                      -- Do not send telemetry data containing a randomized but unique identifier
+                      enable = false,
+                    },
+                  },
+                },
+              }
+            )
+          )
+        end,
+      })
+    end,
+  }
+)
 EOF
-  endfunction
-  autocmd VimEnter * call SetupMasonLspConfig()
 
 lua << EOF
 Plug('neovim/nvim-lspconfig')
-
--- TODO: Language servers are not starting automatically on FileType for files opened before VimEnter. For example,
--- files specified on the commandline or files restored from a session. This autocommand retriggers the FileType
--- event for those files.
-local group_id = vim.api.nvim_create_augroup('RetriggerFiletype', {})
-local trigger_filetype_event = function() vim.o.filetype = vim.o.filetype end
-local callback = per_tab(per_window_in_current_tab(trigger_filetype_event))
-vim.api.nvim_create_autocmd(
-  {'VimEnter',},
-  {
-    callback = function() vim.fn.timer_start(0, callback) end,
-    group = group_id,
-    nested = true,
-  }
-)
 EOF
 
 Plug 'b0o/schemastore.nvim'
