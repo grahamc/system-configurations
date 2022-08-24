@@ -79,7 +79,7 @@ EOF
 
 " Autoreload {{{
 " neovim config files
-let config_files = ['init.vim']
+let config_files = [$MYVIMRC->split('/', 0)[-1]]
 for profile in g:profiles
   let last_filename_segment = profile->split('/', 0)[-1]
   call add(config_files, last_filename_segment)
