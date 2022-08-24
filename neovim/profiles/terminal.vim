@@ -1349,6 +1349,7 @@ Plug 'hrsh7th/nvim-cmp'
     end
 
     cmp.setup({
+      fields = {'abbr', 'kind'},
       snippet = {
         expand = function(args)
           luasnip.lsp_expand(args.body)
@@ -1362,6 +1363,8 @@ Plug 'hrsh7th/nvim-cmp'
         completion = {
           winhighlight = 'NormalFloat:CmpNormal,Pmenu:CmpNormal,CursorLine:CmpCursorLine,PmenuSbar:CmpScrollbar',
           border = 'none',
+          side_padding = 1,
+          col_offset = 4,
         },
       },
       mapping = cmp.mapping.preset.insert({
