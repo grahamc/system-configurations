@@ -74,11 +74,12 @@ function upgrade-all
     type --query pipx
     and upgrade-pipx
 
-    type --query fisher
-    and upgrade-fisher
-
     type --query nvim
     and upgrade-nvim
+
+    # keep last because of autoreload issue
+    type --query fisher
+    and upgrade-fisher
 end
 function upgrade-debian
     echo
