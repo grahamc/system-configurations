@@ -323,8 +323,10 @@ xnoremap ]<Tab> ]z
 nnoremap <silent> <Tab> za
 augroup Fold
   autocmd!
-  autocmd FileType * setlocal foldmethod=indent
+  " autocmd FileType * setlocal foldmethod=indent
 augroup END
+lua << EOF
+EOF
 
 set foldtext=FoldText()
 function! FoldText()
@@ -657,19 +659,19 @@ _G.Tabline = function()
 
   tabline = '%#TabLineFill# ' .. tabline .. '%#TabLineFill#'
 
-  if string.find(vim.fn.bufname(vim.fn.winbufnr(1)), 'NERD_tree_%d+') then
+  if is_explorer_open then
     local icon = unicode('25A0')
-    local nerdtree_title = ' ' .. icon .. ' File Explorer'
-
-    local nerdtree_title_length = string.len(nerdtree_title)
-    local remaining_spaces_count = (vim.fn.winwidth(1) - nerdtree_title_length) + 2
+    local title = ' ' .. icon .. ' File Explorer'
+  
+    local title_length = string.len(title)
+    local remaining_spaces_count = (vim.fn.winwidth(1) - title_length) + 2
     local left_pad_length = math.floor(remaining_spaces_count / 2)
     local right_pad_length = left_pad_length
     if remaining_spaces_count % 2 == 1 then
       right_pad_length = right_pad_length + 1
     end
-
-    tabline = '%#NerdTreeTabLine#' .. string.rep(' ', left_pad_length) .. nerdtree_title .. string.rep(' ', right_pad_length) .. '%#VertSplit#' .. (vim.opt.fillchars:get().vert or '│') .. '%<' .. tabline
+  
+    tabline = '%#ExplorerTabLine#' .. string.rep(' ', left_pad_length) .. title .. string.rep(' ', right_pad_length) .. '%#VertSplit#' .. (vim.opt.fillchars:get().vert or '│') .. '%<' .. tabline
   end
 
   return tabline
@@ -1244,317 +1246,395 @@ Plug(
   }
 )
 -- }}}
-EOF
 
-" File explorer {{{
-Plug 'preservim/nerdtree', {'on': []}
-  let g:NERDTreeMouseMode = 2
-  let g:NERDTreeShowHidden = 1
-  let g:NERDTreeStatusline = -1
-  let g:NERDTreeMinimalUI=1
-  let g:NERDTreeAutoDeleteBuffer=0
-  let g:NERDTreeHijackNetrw=1
-  function! NerdTreeToggle()
-    " Lazyload NERDTree
-    if !exists('s:loaded_nerdtree')
-      call plug#load('nerdtree')
-      let s:loaded_nerdtree = 1
-    endif
-
-    " NERDTree is open so close it.
-    if g:NERDTree.IsOpen()
-      silent execute 'NERDTreeToggle'
-      return
-    endif
-
-    " If NERDTree can't find the current file, it prints an error and doesn't open NERDTree.
-    " In which case, I'll call 'NERDTree' which opens NERDTree to the current directory.
-    silent execute 'NERDTreeFind'
-    if !g:NERDTree.IsOpen()
-      silent execute 'NERDTree'
-    endif
-  endfunction
-  nnoremap <silent> <M-e> <Cmd>call NerdTreeToggle()<CR>
-  function! CloseIfOnlyNerdtreeLeft()
-    if !exists('b:NERDTree')
-      return
-    endif
-    if tabpagewinnr(tabpagenr(), '$') != 1
-      return
-    endif
-
-    if tabpagenr('$') > 1
-      tabclose
-    else
-      execute 'q'
-    endif
-  endfunction
-  augroup NerdTree
-    autocmd!
-    " open/close directories with 'h' and 'l'
-    autocmd FileType nerdtree nmap <buffer> l o
-    autocmd FileType nerdtree nmap <buffer> h o
-    autocmd FileType nerdtree setlocal winbar=%#Normal#%=\ Press\ %#NerdTreeWinBar#?%#Normal#\ for\ help%=
-    autocmd FileType nerdtree setlocal winhighlight=Normal:NerdTreeNormal
-    autocmd FileType nerdtree let w:disable_tabline_margin = v:true
-    autocmd FileType nerdtree setlocal signcolumn=yes:1
-    autocmd BufEnter * call CloseIfOnlyNerdtreeLeft()
-  augroup END
-" }}}
-
-" Autocomplete {{{
-Plug 'hrsh7th/nvim-cmp'
-  function! SetupNvimCmp()
-    lua << EOF
-    local cmp = require("cmp")
-    local luasnip = require('luasnip')
-
-    -- sources
-    local buffer = {
-      name = 'buffer',
-      option = {
-        keyword_length = 2,
-        get_bufnrs = function()
-          local filtered_buffer_numbers = {}
-          local all_buffer_numbers = vim.api.nvim_list_bufs()
-          for _, buffer_number in ipairs(all_buffer_numbers) do
-            local is_buffer_loaded = vim.api.nvim_buf_is_loaded(buffer_number)
-            -- 5 megabyte max
-            local is_buffer_under_max_size =
-              vim.api.nvim_buf_get_offset(buffer_number, vim.api.nvim_buf_line_count(buffer_number)) < 1024 * 1024 * 5
-
-            if is_buffer_loaded and is_buffer_under_max_size then
-              table.insert(filtered_buffer_numbers, buffer_number)
-            end
-          end
-
-          return filtered_buffer_numbers
-        end,
-      },
-    }
-    local nvim_lsp = { name = 'nvim_lsp' }
-    local omni = { name = 'omni' }
-    local path = {
-      name = 'path',
-      option = {
-        get_cwd = function(params)
-          return vim.fn.getcwd()
-        end,
-      },
-    }
-    local tmux = {
-      name = 'tmux',
-      option = { all_panes = true, label = 'Tmux', },
-    }
-
-    local cmdline = { name = 'cmdline' }
-    local dictionary = {
-      name = 'dictionary',
-      keyword_length = 2,
-      keyword_pattern = [[\a\+]],
-    }
-    local lsp_signature = { name = 'nvim_lsp_signature_help' }
-    local luasnip_source = {
-      name = 'luasnip',
-      option = {use_show_condition = false},
-    }
-
-    -- helpers
-    local is_cursor_preceded_by_nonblank_character = function()
-      local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-      return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
-    end
-
-    cmp.setup({
-      fields = {'abbr', 'kind'},
-      snippet = {
-        expand = function(args)
-          luasnip.lsp_expand(args.body)
-        end,
-      },
-      window = {
-        documentation = {
-          winhighlight = 'NormalFloat:CmpDocumentationNormal,FloatBorder:CmpDocumentationBorder',
-          border = 'solid',
+-- File Explorer {{{
+Plug(
+  'kyazdani42/nvim-tree.lua',
+  {
+    config = function()
+      require('nvim-tree').setup({
+        create_in_closed_folder = true,
+        hijack_cursor = true,
+        sync_root_with_cwd = true,
+        update_focused_file = {
+          enable = true,
         },
-        completion = {
-          winhighlight = 'NormalFloat:CmpNormal,Pmenu:CmpNormal,CursorLine:CmpCursorLine,PmenuSbar:CmpScrollbar',
-          border = 'none',
-          side_padding = 1,
-          col_offset = 4,
+        git = {
+          enable = false,
         },
-      },
-      mapping = cmp.mapping.preset.insert({
-        ['<C-a>'] = cmp.mapping.complete(),
-        ['<CR>'] = function(fallback)
-          -- TODO: Don't block <CR> if signature help is active
-          -- https://github.com/hrsh7th/cmp-nvim-lsp-signature-help/issues/13
-          if not cmp.visible()
-              or not cmp.get_selected_entry()
-              or cmp.get_selected_entry().source.name == 'nvim_lsp_signature_help'
-              then
-            fallback()
-          else
-            cmp.confirm({
-              -- Replace word if completing in the middle of a word
-              behavior = cmp.ConfirmBehavior.Replace,
-              -- Don't select first item on CR if nothing was selected
-              select = false,
-            })
-          end
+        view = {
+          signcolumn = 'yes',
+        },
+        renderer = {
+          indent_markers = {
+            enable = true,
+            icons = {
+              corner = '│',
+            },
+          },
+          icons = {
+            show = {
+              file = false,
+              folder = false,
+            },
+          },
+        },
+        actions = {
+          change_dir = {
+            enable = false,
+          },
+          open_file = {
+            window_picker = {
+              enable = false,
+            },
+          },
+        },
+        on_attach = function(buffer_number)
+          local inject_node = require("nvim-tree.utils").inject_node
+          vim.keymap.set('n', 'h', '<BS>', {buffer = buffer_number, remap = true})
+          vim.keymap.set('n', 'l', '<CR>', {buffer = buffer_number, remap = true})
         end,
-        ["<Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_next_item()
-          elseif is_cursor_preceded_by_nonblank_character() then
-            cmp.complete()
-          else
-            fallback()
-          end
-        end, { 'i', 's' }),
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_prev_item()
-          else
-            fallback()
-          end
-        end, { 'i', 's' }),
-        ['<C-k>'] = cmp.mapping.scroll_docs(-4),
-        ['<C-j>'] = cmp.mapping.scroll_docs(4),
-        ["<C-h>"] = cmp.mapping(function(fallback)
-          if luasnip.jumpable(-1) then
-            luasnip.jump(-1)
-          end
-        end, { 'i', 's' }),
-        ["<C-l>"] = cmp.mapping(function(fallback)
-          if luasnip.jumpable(1) then
-            luasnip.jump(1)
-          end
-        end, { 'i', 's' }),
-      }),
-      sources = cmp.config.sources(
+      })
+
+      local function close_tree()
+        require('nvim-tree.api').tree.close()
+      end
+      local function open_tree()
+        require('nvim-tree.api').tree.toggle(true)
+      end
+      local function toggle_tree()
+        local is_tree_visible = require('nvim-tree.view').is_visible()
+        if is_tree_visible then
+          close_tree()
+          _G.is_explorer_open = false
+        else
+          open_tree()
+          _G.is_explorer_open = true
+        end
+      end
+      vim.keymap.set("n", "<M-e>", toggle_tree, {silent = true})
+
+      -- nvim-tree has an augroup named 'NvimTree' so I have to use a different name
+      local group_id = vim.api.nvim_create_augroup('__NvimTree', {})
+      local function configure_nvim_tree_window()
+        if vim.o.filetype ~= 'NvimTree' then
+          return
+        end
+
+        vim.w.disable_tabline_margin = true
+        vim.opt_local.winbar = '%#Normal#%= Press %#NvimTreeWinBar#g?%#Normal# for help%='
+      end
+      vim.api.nvim_create_autocmd(
+        {'BufWinEnter',},
         {
-          luasnip_source,
-          nvim_lsp,
-          buffer,
-          omni,
-          path,
-          tmux,
-          lsp_signature,
-        },
-        {
-          dictionary,
+          callback = configure_nvim_tree_window,
+          group = group_id,
         }
       )
-    })
+      local function close_if_only_nvim_tree_left()
+        local window_count = 0
+        for window_number=1,vim.fn.winnr('$') do
+          local window_id = vim.fn.win_getid(window_number)
+          local is_floating_window = vim.api.nvim_win_get_config(window_id).relative ~= ''
+          if not is_floating_window then
+            window_count = window_count + 1
+          end
+        end
 
-    cmp.setup.cmdline(
-      '/',
-      {
+        local will_be_last_window_in_tab = window_count == 2
+        if not will_be_last_window_in_tab then
+          return
+        end
+
+        local function close_if_nvim_tree()
+          if vim.o.filetype ~= 'NvimTree' then
+            return
+          end
+
+          local is_last_tab = vim.fn.tabpagenr('$') == 1
+          if is_last_tab then
+            vim.cmd.q()
+          else
+            vim.cmd.tabclose()
+          end
+        end
+
+        vim.api.nvim_create_autocmd(
+          {'WinEnter',},
+          {
+            callback = close_if_nvim_tree,
+            once = true,
+          }
+        )
+      end
+      vim.api.nvim_create_autocmd(
+        {'WinClosed',},
+        {
+          callback = close_if_only_nvim_tree_left,
+          group = group_id,
+        }
+      )
+    end,
+  }
+)
+-- }}}
+
+-- Autocomplete {{{
+Plug('hrsh7th/cmp-omni')
+
+Plug('hrsh7th/cmp-cmdline')
+
+Plug('dmitmel/cmp-cmdline-history')
+
+Plug('andersevenrud/cmp-tmux')
+
+Plug('hrsh7th/cmp-buffer')
+
+Plug('hrsh7th/cmp-nvim-lsp')
+
+Plug('hrsh7th/cmp-path')
+
+Plug('hrsh7th/cmp-nvim-lsp-signature-help')
+
+Plug(
+  'uga-rosa/cmp-dictionary',
+  {
+    -- TODO: This plugin updates dictionaries on BufEnter. This BufEnter autocommand is registered in the setup function.
+    -- Since this operation is slow I want to run it in the background, but the 'async' option provided by the plugin
+    -- still results in noticeable lag when the first buffer is opened. To prevent this lag, I call setup() after I've
+    -- already updated the dictionaries in the background. This way when the BufEnter autocommand runs, the dictionaries
+    -- are already cached. Ideally, there would be an option to disable this autocommand.
+    config = function()
+      local function callback(_)
+        require("cmp_dictionary").update()
+
+        require("cmp_dictionary").setup({
+          dic = {
+            ['*'] = { '/usr/share/dict/words' },
+          },
+          first_case_insensitive = true,
+        })
+      end
+      vim.fn.timer_start(0, callback)
+    end,
+  }
+)
+
+Plug(
+  'L3MON4D3/LuaSnip',
+  {
+    config = function()
+      require('luasnip').config.set_config({
+        history = true,
+        delete_check_events = "TextChanged",
+      })
+      local function callback(_)
+        require('luasnip.loaders.from_vscode').load()
+      end
+      vim.fn.timer_start(0, callback)
+    end
+  }
+)
+
+Plug('saadparwaiz1/cmp_luasnip')
+
+Plug('rafamadriz/friendly-snippets')
+
+Plug(
+  'hrsh7th/nvim-cmp',
+  {
+    config = function()
+      local cmp = require("cmp")
+      local luasnip = require('luasnip')
+
+      -- sources
+      local buffer = {
+        name = 'buffer',
+        option = {
+          keyword_length = 2,
+          get_bufnrs = function()
+            local filtered_buffer_numbers = {}
+            local all_buffer_numbers = vim.api.nvim_list_bufs()
+            for _, buffer_number in ipairs(all_buffer_numbers) do
+              local is_buffer_loaded = vim.api.nvim_buf_is_loaded(buffer_number)
+              -- 5 megabyte max
+              local is_buffer_under_max_size =
+                vim.api.nvim_buf_get_offset(buffer_number, vim.api.nvim_buf_line_count(buffer_number)) < 1024 * 1024 * 5
+
+              if is_buffer_loaded and is_buffer_under_max_size then
+                table.insert(filtered_buffer_numbers, buffer_number)
+              end
+            end
+
+            return filtered_buffer_numbers
+          end,
+        },
+      }
+      local nvim_lsp = { name = 'nvim_lsp' }
+      local omni = { name = 'omni' }
+      local path = {
+        name = 'path',
+        option = {
+          get_cwd = function(params)
+            return vim.fn.getcwd()
+          end,
+        },
+      }
+      local tmux = {
+        name = 'tmux',
+        option = { all_panes = true, label = 'Tmux', },
+      }
+      local cmdline = { name = 'cmdline' }
+      local cmdline_history = {
+        name = 'cmdline_history',
+        max_item_count = 2,
+      }
+      local dictionary = {
+        name = 'dictionary',
+        keyword_length = 2,
+        keyword_pattern = [[\a\+]],
+      }
+      local lsp_signature = { name = 'nvim_lsp_signature_help' }
+      local luasnip_source = {
+        name = 'luasnip',
+        option = {use_show_condition = false},
+      }
+
+      -- helpers
+      local is_cursor_preceded_by_nonblank_character = function()
+        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
+      end
+      local cmdline_search_config = {
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
           buffer,
           cmdline_history,
         }
       }
-    )
-    cmp.setup.cmdline(
-      ':',
-      {
+
+      cmp.setup({
         formatting = {
-          fields = {'abbr', 'menu'},
+          fields = {'abbr', 'kind'},
           format = function(entry, vim_item)
-            vim_item.menu = ({
-              cmdline = 'Commandline',
-              cmdline_history = 'History',
-              buffer = 'Buffer',
-              path = 'Path'
-            })[entry.source.name]
-            vim.g.test = vim_item
+            vim_item.menu = nil
             return vim_item
           end,
         },
-        mapping = cmp.mapping.preset.cmdline(),
+        snippet = {
+          expand = function(args)
+            luasnip.lsp_expand(args.body)
+          end,
+        },
+        window = {
+          documentation = {
+            winhighlight = 'NormalFloat:CmpDocumentationNormal,FloatBorder:CmpDocumentationBorder',
+            border = 'solid',
+          },
+          completion = {
+            winhighlight = 'NormalFloat:CmpNormal,Pmenu:CmpNormal,CursorLine:CmpCursorLine,PmenuSbar:CmpScrollbar',
+            border = 'none',
+            side_padding = 1,
+            col_offset = 4,
+          },
+        },
+        mapping = cmp.mapping.preset.insert({
+          ['<C-a>'] = cmp.mapping.complete(),
+          ['<CR>'] = function(fallback)
+            -- TODO: Don't block <CR> if signature help is active
+            -- https://github.com/hrsh7th/cmp-nvim-lsp-signature-help/issues/13
+            if not cmp.visible()
+                or not cmp.get_selected_entry()
+                or cmp.get_selected_entry().source.name == 'nvim_lsp_signature_help'
+                then
+              fallback()
+            else
+              cmp.confirm({
+                -- Replace word if completing in the middle of a word
+                behavior = cmp.ConfirmBehavior.Replace,
+                -- Don't select first item on CR if nothing was selected
+                select = false,
+              })
+            end
+          end,
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            elseif is_cursor_preceded_by_nonblank_character() then
+              cmp.complete()
+            else
+              fallback()
+            end
+          end, { 'i', 's' }),
+          ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            else
+              fallback()
+            end
+          end, { 'i', 's' }),
+          ['<C-k>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-j>'] = cmp.mapping.scroll_docs(4),
+          ["<C-h>"] = cmp.mapping(function(fallback)
+            if luasnip.jumpable(-1) then
+              luasnip.jump(-1)
+            end
+          end, { 'i', 's' }),
+          ["<C-l>"] = cmp.mapping(function(fallback)
+            if luasnip.jumpable(1) then
+              luasnip.jump(1)
+            end
+          end, { 'i', 's' }),
+        }),
         sources = cmp.config.sources(
           {
-            cmdline,
-            {
-              name = 'cmdline_history',
-              max_item_count = 2,
-            },
+            luasnip_source,
+            nvim_lsp,
+            buffer,
+            omni,
             path,
-            buffer,
-          }
-        )
-      }
-    )
-    cmp.setup.cmdline(
-      '?',
-      {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources(
+            tmux,
+            lsp_signature,
+          },
           {
-            buffer,
-            cmdline_history,
+            dictionary,
           }
         )
-      }
-    )
-EOF
-  endfunction
-  autocmd VimEnter * call SetupNvimCmp()
+      })
 
-Plug 'hrsh7th/cmp-omni'
+      cmp.setup.cmdline('/', cmdline_search_config)
+      cmp.setup.cmdline('?', cmdline_search_config)
+      cmp.setup.cmdline(
+        ':',
+        {
+          formatting = {
+            fields = {'abbr', 'menu'},
+            format = function(entry, vim_item)
+              vim_item.menu = ({
+                cmdline = 'Commandline',
+                cmdline_history = 'History',
+                buffer = 'Buffer',
+                path = 'Path',
+              })[entry.source.name]
+              return vim_item
+            end,
+          },
+          mapping = cmp.mapping.preset.cmdline(),
+          sources = cmp.config.sources(
+            {
+              cmdline,
+              cmdline_history,
+              path,
+              buffer,
+            }
+          )
+        }
+      )
+    end
+  }
+)
+-- }}}
 
-Plug 'hrsh7th/cmp-cmdline'
-
-Plug 'dmitmel/cmp-cmdline-history'
-
-Plug 'andersevenrud/cmp-tmux'
-
-Plug 'hrsh7th/cmp-buffer'
-
-Plug 'hrsh7th/cmp-nvim-lsp'
-
-Plug 'hrsh7th/cmp-path'
-
-Plug 'uga-rosa/cmp-dictionary'
-  function! SetupCmpDictionary()
-    lua << EOF
-    require("cmp_dictionary").setup({
-      dic = {
-        ['*'] = { '/usr/share/dict/words' },
-      },
-      first_case_insensitive = true,
-    })
-EOF
-
-    call timer_start(0, { -> execute('CmpDictionaryUpdate')})
-  endfunction
-  autocmd VimEnter * call SetupCmpDictionary()
-
-Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
-
-Plug 'L3MON4D3/LuaSnip'
-  function! SetupLuaSnip()
-    lua << EOF
-    require('luasnip').config.set_config({
-      history = true,
-      delete_check_events = "TextChanged",
-    })
-    vim.cmd([[
-      call timer_start(0, { -> v:lua.require('luasnip.loaders.from_vscode').load()})
-    ]])
-EOF
-  endfunction
-  autocmd VimEnter * call SetupLuaSnip()
-
-Plug 'saadparwaiz1/cmp_luasnip'
-
-Plug 'rafamadriz/friendly-snippets'
-" }}}
-
-lua << EOF
 -- Tool Manager {{{
 Plug(
   'williamboman/mason.nvim',
@@ -1583,9 +1663,7 @@ Plug(
     end,
   }
 )
-EOF
 
-lua << EOF
 Plug(
   'williamboman/mason-lspconfig.nvim',
   {
@@ -1692,37 +1770,40 @@ Plug(
     end,
   }
 )
-EOF
 
-lua << EOF
 Plug('neovim/nvim-lspconfig')
-EOF
 
-Plug 'b0o/schemastore.nvim'
-" }}}
+Plug('b0o/schemastore.nvim')
 
-" CLI -> LSP {{{
-" A language server that acts as a bridge between neovim's language server client and commandline tools that don't
-" support the language server protocol. It does this by transforming the output of a commandline tool into the
-" format specified by the language server protocol.
-Plug 'jose-elias-alvarez/null-ls.nvim'
-  function! SetupNullLs()
-    lua << EOF
-    local null_ls = require('null-ls')
-    local builtins = null_ls.builtins
-    null_ls.setup({
-      sources = {
-        builtins.diagnostics.shellcheck.with({
-          filetypes = { 'sh', 'bash' }
-        }),
-        builtins.diagnostics.fish,
-        builtins.diagnostics.markdownlint,
-      }
-    })
+-- }}}
+
+-- CLI -> LSP {{{
+-- A language server that acts as a bridge between neovim's language server client and commandline tools that don't
+-- support the language server protocol. It does this by transforming the output of a commandline tool into the
+-- format specified by the language server protocol.
+Plug(
+  'jose-elias-alvarez/null-ls.nvim',
+  {
+    config = function()
+      local null_ls = require('null-ls')
+      local builtins = null_ls.builtins
+      null_ls.setup({
+        sources = {
+          builtins.diagnostics.shellcheck.with({
+            filetypes = { 'sh', 'bash' },
+          }),
+          builtins.code_actions.shellcheck.with({
+            filetypes = { 'sh', 'bash' },
+          }),
+          builtins.diagnostics.fish,
+          builtins.diagnostics.markdownlint,
+        },
+      })
+    end,
+  }
+)
+-- }}}
 EOF
-  endfunction
-  autocmd VimEnter * call SetupNullLs()
-" }}}
 
 " Colorscheme {{{
 Plug 'arcticicestudio/nord-vim'
@@ -1782,8 +1863,8 @@ Plug 'arcticicestudio/nord-vim'
     highlight FoldColumn ctermfg=15 ctermbg=NONE
     highlight SpecialKey ctermfg=13 ctermbg=NONE
     highlight NonText ctermfg=15 ctermbg=NONE
-    highlight NerdTreeWinBar ctermfg=13 ctermbg=NONE
-    highlight NerdTreeTabLine ctermfg=13 ctermbg=NONE
+    highlight NvimTreeWinBar ctermfg=13 ctermbg=NONE
+    highlight ExplorerTabLine ctermfg=13 ctermbg=NONE
     highlight NerdTreeNormal ctermbg=NONE
     highlight VirtColumn ctermfg=24
     highlight DiagnosticSignError ctermfg=1 ctermbg=NONE
@@ -1848,6 +1929,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight Float4Border ctermbg=0 ctermfg=15
     highlight FidgetTitle ctermbg=0 ctermfg=5 cterm=italic
     highlight FidgetTask ctermbg=0 ctermfg=5 cterm=italic
+    highlight NvimTreeIndentMarker ctermfg=15
   endfunction
   augroup NordVim
     autocmd!
