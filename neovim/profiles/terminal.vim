@@ -1023,7 +1023,7 @@ Plug(
         hidden = {"<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ ", "<Plug>", "<plug>"}, 
         layout = {
           height = {
-            max = vim.o.scrolloff > 5 and vim.o.scrolloff - 2 or 8
+            max = math.floor(vim.o.lines * .25),
           },
         },
         window = {
