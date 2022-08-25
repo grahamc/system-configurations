@@ -16,6 +16,7 @@ augroup ExtendIskeyword
         \ setlocal iskeyword+=-,?,!
   autocmd FileType vim setlocal iskeyword+=:,#
   autocmd FileType tmux setlocal iskeyword+=-
+  autocmd FileType txt setlocal iskeyword+=_
 augroup END
 
 inoremap jk <Esc>
