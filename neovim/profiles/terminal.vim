@@ -745,8 +745,8 @@ vim.keymap.set('n', 'gr', function() require('telescope.builtin').lsp_references
 vim.keymap.set('n', 'gt', function() require('telescope.builtin').lsp_type_definitions() end, {desc = "Go to type definition"})
 vim.keymap.set('n', 'gd', function() require('telescope.builtin').lsp_definitions() end, {desc = "Go to definition"})
 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {desc = "Go to declaration"})
-vim.keymap.set('n', 'ghi', vim.lsp.buf.incoming_calls, {desc = "Show incoming calls"})
-vim.keymap.set('n', 'gho', vim.lsp.buf.outgoing_calls, {desc = "Show outgoing calls"})
+vim.keymap.set('n', 'ghi', function() require('telescope.builtin').lsp_incoming_calls() end, {desc = "Show incoming calls"})
+vim.keymap.set('n', 'gho', function() require('telescope.builtin').lsp_outgoing_calls() end, {desc = "Show outgoing calls"})
 vim.keymap.set('n', 'gn', vim.lsp.buf.rename, {desc = "Rename"})
 
 -- Create highlight groups for border and background
