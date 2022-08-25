@@ -140,13 +140,16 @@ _G.per_window_in_current_tab = function(callable)
     _G.per_window_in_current_tab_function = callable
 
     local current_window_number = vim.fn.winnr()
+    local previous_window_number = vim.fn.winnr('#')
     vim.cmd([[
       windo lua per_window_in_current_tab_function()
     ]])
     vim.cmd(string.format(
       [[
         silent! %swincmd w
+        silent! %swincmd w
       ]],
+      previous_window_number,
       current_window_number
     ))
   end
@@ -158,13 +161,16 @@ _G.per_tab = function(callable)
     _G.per_tab_function = callable
 
     local current_tab_number = vim.fn.tabpagenr()
+    local previous_tab_number = vim.fn.tabpagenr('#')
     vim.cmd([[
       tabdo lua per_tab_function()
     ]])
     vim.cmd(string.format(
       [[
         silent! tabnext %s
+        silent! tabnext %s
       ]],
+      previous_tab_number,
       current_tab_number
     ))
   end
