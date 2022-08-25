@@ -481,11 +481,16 @@ _G.StatusLine = function()
   local column = '%#StatusLine#Col %c'
   local position = line .. ', ' .. column
 
+  local filetype = nil
+  if string.len(vim.o.filetype) > 0 then
+    filetype = '%#StatusLine#' .. vim.o.filetype
+  end
+
   local modified_indicator = ''
   if vim.fn.getbufvar(vim.fn.bufnr('%'), '&mod') ~= 0 then
     modified_indicator = '*'
   end
-  local file_info = '%#StatusLine#%y %f' .. modified_indicator .. '%w%q'
+  local file_info = '%#StatusLine#%f' .. modified_indicator .. '%w%q'
 
   local fileformat = nil
   if vim.o.fileformat ~= 'unix' then
@@ -551,7 +556,11 @@ _G.StatusLine = function()
     diagnostics = table.concat(diagnostic_list, ' ')
   end
 
-  local left_side_items = {file_info}
+  local left_side_items = {}
+  if filetype then
+    table.insert(left_side_items, filetype)
+  end
+  table.insert(left_side_items, file_info)
   if fileformat then
     table.insert(left_side_items, fileformat)
   end
