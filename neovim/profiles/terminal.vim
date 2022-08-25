@@ -733,8 +733,7 @@ for type, icon in pairs(signs) do
   vim.fn.sign_define(hl, { text = icon, texthl = hl})
 end
 
-vim.keymap.set('n', 'ga', vim.lsp.buf.code_action, {desc = 'Choose code action'})
-vim.keymap.set('v', 'ga', vim.lsp.buf.range_code_action, {desc = 'Choose code action'})
+vim.keymap.set({'n', 'v'}, 'ga', vim.lsp.buf.code_action, {desc = 'Choose code action'})
 vim.keymap.set('n', 'gl', vim.diagnostic.open_float, {desc = 'Show diagnostics'})
 vim.keymap.set('n', '[l', vim.diagnostic.goto_prev, {desc = "Go to previous diagnostic"})
 vim.keymap.set('n', ']l', vim.diagnostic.goto_next, {desc = "Go to next diagnostic"})
