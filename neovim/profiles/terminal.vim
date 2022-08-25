@@ -1096,6 +1096,7 @@ Plug(
       })
 
       _G.MaybeSetTreeSitterFoldmethod = function()
+        foldmethod = vim.o.foldmethod
         is_foldmethod_overridable = foldmethod ~= 'manual'
           and foldmethod ~= 'marker'
           and foldmethod ~= 'diff'
