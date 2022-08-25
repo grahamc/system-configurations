@@ -103,7 +103,9 @@ function Plug(repo, options)
 end
 
 -- Calling this before I load the profiles so I can register plugins inside them
-plug_begin()
+if not loaded_neovim_config then
+  plug_begin()
+end
 
 -- Load profiles
 for _, profile in pairs(vim.g.profiles) do
@@ -111,4 +113,8 @@ for _, profile in pairs(vim.g.profiles) do
 end
 
 -- Calling this after I load the profiles so I can register plugins inside them
-plug_end()
+if not loaded_neovim_config then
+  plug_end()
+end
+
+_G.loaded_neovim_config = true
