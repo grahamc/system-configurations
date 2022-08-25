@@ -883,13 +883,15 @@ Plug(
   {
     config = function()
       require("virt-column").setup({ char = "│" })
-      vim.cmd([[
-        execute 'VirtColumnRefresh!'
-        augroup VirtColumn
-          autocmd!
-          autocmd WinEnter,VimResized * VirtColumnRefresh!
-        augroup END
-      ]])
+
+      local group_id = vim.api.nvim_create_augroup('MyVirtColumn', {})
+      vim.api.nvim_create_autocmd(
+        {'BufWinEnter', 'VimResized',},
+        {
+          callback = function() vim.cmd.VirtColumnRefresh() end,
+          group = group_id,
+        }
+      )
     end,
   }
 )
