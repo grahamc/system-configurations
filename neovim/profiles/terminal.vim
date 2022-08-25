@@ -11,7 +11,7 @@ set confirm
 set mouse=a
 set display+=lastline
 let &clipboard = 'unnamedplus'
-set scrolloff=10
+set scrolloff=999
 set jumpoptions=stack
 
 " persist undo history to disk
