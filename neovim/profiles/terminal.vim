@@ -357,7 +357,7 @@ vim.o.complete = '.,w,b,u'
 -- - show the completion menu even if there is only one suggestion
 -- - when autocomplete gets triggered, no suggestion is selected
 vim.o.completeopt = 'menu,menuone,noselect'
-vim.o.pumheight = vim.o.scrolloff > 5 and vim.o.scrolloff - 2 or 5
+vim.o.pumheight = 6
 -- }}}
 
 -- Command line {{{
