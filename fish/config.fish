@@ -2,7 +2,7 @@ if not status is-interactive
     exit
 end
 
-abbr --add --global trash trash-put
+abbr --add --global trash 'gio trash'
 abbr --add --global t-sys sysz
 abbr --add --global r-asdf 'asdf reshim'
 abbr --add --global r-kitty reload-kitty
