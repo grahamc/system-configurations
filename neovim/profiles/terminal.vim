@@ -92,33 +92,8 @@ execute printf(
       \ )
 " }}}
 
-" Utilities {{{
-" Sets options to the specified new values and returns their old values.
-" Useful for when you want to change an option and then restore its old value later on.
-function! SetOptions(new_option_values)
-  let old_option_values = {}
-
-  for item in items(a:new_option_values)
-    let option_name = item[0]
-    let new_option_value = item[1]
-
-    " store old value
-    execute 'let old_option_value = ' . option_name
-    let old_option_values[option_name] = old_option_value
-
-    " set new value
-    if type(new_option_value) == type("")
-      " quote string values
-      execute printf('let %s = "%s"', option_name, new_option_value)
-    else
-      execute printf('let %s = %s', option_name, new_option_value)
-    endif
-  endfor
-
-  return old_option_values
-endfunction
-
 lua << EOF
+-- Utilities {{{
 _G.unicode = function(hex)
   return vim.fn.execute(
     string.format(
@@ -175,10 +150,8 @@ _G.per_tab = function(callable)
     ))
   end
 end
-EOF
-" }}}
+-- }}}
 
-lua << EOF
 -- Windows {{{
 -- open new horizontal and vertical panes to the right and bottom respectively
 vim.o.splitright = true
