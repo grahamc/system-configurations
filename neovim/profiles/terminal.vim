@@ -1299,10 +1299,35 @@ Plug(
       })
 
       local function close_tree()
-        require('nvim-tree.api').tree.close()
+        local close_nerd_tree_in_all_tabs = per_tab(require('nvim-tree.api').tree.close)
+        close_nerd_tree_in_all_tabs()
+
+        -- Stop opening the tree when a new tab is made
+        vim.api.nvim_del_augroup_by_name('MyNvimTreeNewTab')
       end
       local function open_tree()
-        require('nvim-tree.api').tree.toggle(true)
+        local function open_tree_and_go_to_previous_window()
+          require('nvim-tree.api').tree.open()
+
+          -- For all tabs besides the current one, I don't want to change the active window to the tree.
+          vim.cmd.wincmd('p')
+        end
+        local open_nerd_tree_in_all_tabs = per_tab(open_tree_and_go_to_previous_window)
+
+        open_nerd_tree_in_all_tabs()
+
+        -- For the active tab, I want the tree to be the active window.
+        vim.cmd.wincmd('p')
+
+        -- Open the tree when a new tab is made
+        local group_id = vim.api.nvim_create_augroup('MyNvimTreeNewTab', {})
+        vim.api.nvim_create_autocmd(
+          {'TabNewEntered',},
+          {
+            callback = open_tree_and_go_to_previous_window,
+            group = group_id,
+          }
+        )
       end
       local function toggle_tree()
         local is_tree_visible = require('nvim-tree.view').is_visible()
@@ -1333,7 +1358,7 @@ Plug(
           group = group_id,
         }
       )
-      local function close_if_only_nvim_tree_left()
+      local function get_window_count()
         local window_count = 0
         for window_number=1,vim.fn.winnr('$') do
           local window_id = vim.fn.win_getid(window_number)
@@ -1343,6 +1368,10 @@ Plug(
           end
         end
 
+        return window_count
+      end
+      local function close_if_only_nvim_tree_left()
+        local window_count = get_window_count()
         local will_be_last_window_in_tab = window_count == 2
         if not will_be_last_window_in_tab then
           return
@@ -1350,6 +1379,11 @@ Plug(
 
         local function close_if_nvim_tree()
           if vim.o.filetype ~= 'NvimTree' then
+            return
+          end
+
+          local is_last_window = get_window_count() == 1
+          if not is_last_window then
             return
           end
 
