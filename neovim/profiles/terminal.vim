@@ -1327,6 +1327,8 @@ Plug(
           {
             callback = open_tree_and_go_to_previous_window,
             group = group_id,
+            -- So that the 'BufWinEnter' event will fire when we create the new tree window and it will get configured.
+            nested = true,
           }
         )
       end
