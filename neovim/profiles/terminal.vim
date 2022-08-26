@@ -1299,6 +1299,8 @@ Plug(
         end,
       })
 
+      -- TODO: Remove my code for opening nvim-tree in all tabs once it gets added to the plugin.
+      -- issue: https://github.com/kyazdani42/nvim-tree.lua/issues/1493
       local function close_tree()
         local close_nerd_tree_in_all_tabs = per_tab(require('nvim-tree.api').tree.close)
         close_nerd_tree_in_all_tabs()
