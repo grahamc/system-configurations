@@ -246,7 +246,7 @@ local function set_tabline_margin()
 
   local window_id = vim.fn.win_getid()
   local is_tabline_visible = vim.o.showtabline == 2 or (vim.o.showtabline == 1 and vim.fn.tabpagenr('$') > 1)
-  local is_window_bordering_tabline = vim.fn.screenpos(window_id, 1, 1).row <= 2
+  local is_window_bordering_tabline = vim.fn.screenpos(window_id, 1, 1).row <= 3
   if is_tabline_visible and is_window_bordering_tabline then
     vim.wo.winbar = '%#VertSplit#'
     vim.opt_local.fillchars:append(
@@ -264,7 +264,7 @@ local function set_tabline_margin()
 end
 local set_tabline_margin_per_window_in_current_tab = per_window_in_current_tab(set_tabline_margin)
 vim.api.nvim_create_autocmd(
-  {'WinEnter', 'TabNewEntered', 'VimEnter', 'SessionLoadPost'},
+  {'WinEnter', 'BufWinEnter', 'TabNewEntered', 'VimEnter', 'SessionLoadPost'},
   {
     callback = set_tabline_margin_per_window_in_current_tab,
     group = group_id,
