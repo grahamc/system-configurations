@@ -659,6 +659,7 @@ _G.Tabline = function()
 
   tabline = '%#TabLineFill# ' .. tabline .. '%#TabLineFill#'
 
+  local is_explorer_open = vim.fn.getwinvar(1, 'is_explorer', false)
   if is_explorer_open then
     local icon = unicode('25A0')
     local title = ' ' .. icon .. ' File Explorer'
@@ -1333,10 +1334,8 @@ Plug(
         local is_tree_visible = require('nvim-tree.view').is_visible()
         if is_tree_visible then
           close_tree()
-          _G.is_explorer_open = false
         else
           open_tree()
-          _G.is_explorer_open = true
         end
       end
       vim.keymap.set("n", "<M-e>", toggle_tree, {silent = true})
@@ -1349,6 +1348,7 @@ Plug(
         end
 
         vim.w.disable_tabline_margin = true
+        vim.w.is_explorer = true
         vim.opt_local.winbar = '%#Normal#%= Press %#NvimTreeWinBar#g?%#Normal# for help%='
       end
       vim.api.nvim_create_autocmd(
