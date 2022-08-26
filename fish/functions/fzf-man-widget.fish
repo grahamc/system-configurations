@@ -5,7 +5,7 @@ function fzf-man-widget --description 'Search manpages'
          fzf-tmux-zoom  \
             --ansi \
             --no-clear \
-            --tiebreak=begin \
+            --tiebreak=chunk,begin,end \
             --prompt 'manpages: ' \
             # Setting a very large MANWIDTH so that man will not truncate lines and instead allow
             # them to wrap. This way if I increase the terminal window size, the lines will take

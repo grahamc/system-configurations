@@ -9,6 +9,7 @@ function fzf-apt-install-widget --description 'Install packages with apt'
             --bind "alt-enter:toggle,change:first" \
             --prompt 'apt install: ' \
             --preview "apt show {} 2>/dev/null | GREP_COLORS='$GREP_COLORS' grep --color=always -E '(^[a-z|A-Z|-]*:|^)' | less" \
+            --tiebreak=chunk,begin,end \
       )
   or return
 

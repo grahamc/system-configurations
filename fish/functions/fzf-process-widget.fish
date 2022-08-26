@@ -16,6 +16,7 @@ function fzf-process-widget --description 'Manage processes'
             # I 'echo' the fzf placeholder in the grep regex to get around the fact that fzf substitutions are single quoted and the quotes
             # would mess up the grep regex.
             --preview 'ps --pid {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree --hide-threads --long --show-pids --unicode --show-parents --arguments {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp "[^└|─]+,$(echo {2})( .*|\$)" --regexp "^"' \
+            --tiebreak=chunk,begin,end \
       )
   or begin
     # necessary since I'm using the --no-clear option in fzf

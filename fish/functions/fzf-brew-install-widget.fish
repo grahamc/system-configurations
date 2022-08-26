@@ -14,6 +14,7 @@ function fzf-brew-install-widget --description 'Install packages with brew'
             #
             # The grep command is to highlight the different section names in the output.
             --preview 'echo ""; printf "\033[2J"; HOMEBREW_COLOR=1 brew info {} | grep --color=always --extended-regexp --regexp "^.*:\ " --regexp "^"' \
+            --tiebreak=chunk,begin,end \
       )
   or return
 
