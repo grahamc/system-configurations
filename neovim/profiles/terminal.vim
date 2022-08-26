@@ -1213,7 +1213,8 @@ Plug(
   'j-hui/fidget.nvim',
   {
     config = function()
-      local margin = string.rep(' ', 3)
+      local margin = ' '
+      local border = ' ┃'
       require('fidget').setup({
         text = {
           spinner = 'dots',
@@ -1224,15 +1225,16 @@ Plug(
         },
         fmt = {
           fidget = function(fidget_name, spinner)
-            return string.format('%s%s %s│', margin, spinner, fidget_name)
+            return string.format('%s%s %s%s', margin, spinner, fidget_name, border)
           end,
           task = function(task_name, message, percentage)
             return string.format(
-              '%s%s%s [%s]│',
+              '%s%s%s [%s]%s',
               margin,
               message,
               percentage and string.format(' (%s%%)', percentage) or '',
-              task_name
+              task_name,
+              border
             )
           end,
         },
@@ -1927,8 +1929,8 @@ Plug 'arcticicestudio/nord-vim'
     highlight! link Float3Border Float3Normal
     highlight Float4Normal ctermbg=0
     highlight Float4Border ctermbg=0 ctermfg=15
-    highlight FidgetTitle ctermbg=0 ctermfg=5 cterm=italic
-    highlight FidgetTask ctermbg=0 ctermfg=5 cterm=italic
+    highlight FidgetTitle ctermbg=0 ctermfg=15 cterm=italic
+    highlight FidgetTask ctermbg=0 ctermfg=15 cterm=italic
     highlight NvimTreeIndentMarker ctermfg=15
   endfunction
   augroup NordVim
