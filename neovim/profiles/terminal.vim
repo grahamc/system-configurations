@@ -1448,6 +1448,7 @@ Plug(
     config = function()
       local cmp = require("cmp")
       local luasnip = require('luasnip')
+      local cmp_buffer = require('cmp_buffer')
 
       -- sources
       local buffer = {
@@ -1601,7 +1602,14 @@ Plug(
           {
             dictionary,
           }
-        )
+        ),
+        sorting = {
+          comparators = {
+            function(...)
+              return cmp_buffer:compare_locality(...)
+            end,
+          },
+        },
       })
 
       cmp.setup.cmdline('/', cmdline_search_config)
