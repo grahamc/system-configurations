@@ -112,7 +112,30 @@ let g:loaded_perl_provider = 0
 
 nnoremap Q <Nop>
 
-xnoremap @ :normal @
+lua << EOF
+local function get_char()
+  local ret_val, char_num = pcall(vim.fn.getchar)
+  -- Return nil if error (e.g. <C-c>) or for control characters
+  if not ret_val or char_num < 32 then
+      return nil
+  end
+  local char = vim.fn.nr2char(char_num)
+
+  return char
+end
+local function visual_macro()
+  local char = get_char()
+  if char == nil then
+    return ''
+  end
+
+  return string.format(
+    [[:'<,'>normal @%s<CR>]],
+    char
+  )
+end
+vim.keymap.set('x', '@', visual_macro, {expr = true})
+EOF
 " }}}
 
 " Option overrides {{{
