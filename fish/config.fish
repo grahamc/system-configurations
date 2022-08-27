@@ -77,6 +77,9 @@ function upgrade-all
     type --query nvim
     and upgrade-nvim
 
+    git -C ~/.dotfiles rev-parse --is-inside-work-tree
+    and upgrade-dotfiles
+
     # keep last because of autoreload issue
     type --query fisher
     and upgrade-fisher
@@ -161,6 +164,26 @@ function upgrade-nvim
     read --prompt-str 'Would you like to update? (y/n): ' --nchars 1 response
     if test $response = 'y'
         nvim -c 'autocmd VimEnter * MyPlugUpdate'
+    end
+end
+function upgrade-dotfiles
+    echo
+    echo -s (set_color blue) 'DOTFILES' (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+
+    # return if there is nothing to pull
+    git -C ~/.dotfiles fetch
+    if test -z "$(git -C ~/.dotfiles log HEAD..@{u} --oneline)"
+        echo 'Nothing to do.'
+        return
+    end
+
+    # if there are changes, warn the user in the prompt
+    set status_output "$(git -C ~/.dotfiles status --porcelain)"
+    set warning "$(not test -z \"$status_output\" && echo -s (set_color yellow) ' (WARNING: The working directory is not clean)' (set_color normal))"
+    read --prompt-str "Would you like to update$warning? (y/n): " --nchars 1 response
+    if test $response = 'y'
+        git -C ~/.dotfiles pull
     end
 end
 
