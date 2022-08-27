@@ -328,8 +328,6 @@ vim.opt.sessionoptions:remove('blank')
 vim.opt.sessionoptions:remove('options')
 vim.opt.sessionoptions:append('tabpages')
 vim.opt.sessionoptions:append('folds')
-local session_dir = vim.g.data_path .. '/sessions'
-vim.fn.mkdir(session_dir, 'p')
 
 local function save_session()
   local has_active_session = string.len(vim.v.this_session) > 0
@@ -349,6 +347,8 @@ local function restore_or_create_session()
   local is_neovim_called_with_no_arguments = #vim.v.argv == 1
   if is_neovim_called_with_no_arguments then
     local session_name = string.gsub(os.getenv('PWD'), '/', '%%') .. '%vim'
+    local session_dir = vim.g.data_path .. '/sessions'
+    vim.fn.mkdir(session_dir, 'p')
     local session_full_path = session_dir .. '/' .. session_name
     local session_full_path_escaped = vim.fn.fnameescape(session_full_path)
     if vim.fn.filereadable(session_full_path) ~= 0 then
