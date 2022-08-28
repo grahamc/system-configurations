@@ -103,52 +103,23 @@ _G.unicode = function(hex)
   )
 end
 
-_G.per_window_in_current_tab = function(callable)
-  return function()
-    local window_id = vim.fn.win_getid()
-    local is_floating_window = vim.api.nvim_win_get_config(window_id).relative ~= ''
-    if is_floating_window then
-      return
-    end
+_G.tabdo = function(_function)
+  -- I can't call a local function with 'tabdo' so I'll assign the function to a global variable.
+  _G.tabdo_function = _function
 
-    -- I can't call a local function with 'windo' so I'll assign the function to a global variable.
-    _G.per_window_in_current_tab_function = callable
-
-    local current_window_number = vim.fn.winnr()
-    local previous_window_number = vim.fn.winnr('#')
-    vim.cmd([[
-      windo lua per_window_in_current_tab_function()
-    ]])
-    vim.cmd(string.format(
-      [[
-        silent! %swincmd w
-        silent! %swincmd w
-      ]],
-      previous_window_number,
-      current_window_number
-    ))
-  end
-end
-
-_G.per_tab = function(callable)
-  return function()
-    -- I can't call a local function with 'tabdo' so I'll assign the function to a global variable.
-    _G.per_tab_function = callable
-
-    local current_tab_number = vim.fn.tabpagenr()
-    local previous_tab_number = vim.fn.tabpagenr('#')
-    vim.cmd([[
-      tabdo lua per_tab_function()
-    ]])
-    vim.cmd(string.format(
-      [[
-        silent! tabnext %s
-        silent! tabnext %s
-      ]],
-      previous_tab_number,
-      current_tab_number
-    ))
-  end
+  local current_tab_number = vim.fn.tabpagenr()
+  local previous_tab_number = vim.fn.tabpagenr('#')
+  vim.cmd([[
+    tabdo lua tabdo_function()
+  ]])
+  vim.cmd(string.format(
+    [[
+      silent! tabnext %s
+      silent! tabnext %s
+    ]],
+    previous_tab_number,
+    current_tab_number
+  ))
 end
 -- }}}
 
@@ -1243,8 +1214,7 @@ Plug(
       -- TODO: Remove my code for opening nvim-tree in all tabs once it gets added to the plugin.
       -- issue: https://github.com/kyazdani42/nvim-tree.lua/issues/1493
       local function close_tree()
-        local close_nerd_tree_in_all_tabs = per_tab(require('nvim-tree.api').tree.close)
-        close_nerd_tree_in_all_tabs()
+        tabdo(require('nvim-tree.api').tree.close)
 
         -- Stop opening the tree when a new tab is made
         vim.api.nvim_del_augroup_by_name('MyNvimTreeNewTab')
@@ -1259,9 +1229,7 @@ Plug(
             vim.cmd.wincmd('p')
           end
         end
-        local open_nerd_tree_in_all_tabs = per_tab(open_tree_and_go_to_previous_window)
-
-        open_nerd_tree_in_all_tabs()
+        tabdo(open_tree_and_go_to_previous_window)
 
         -- Open the tree when a new tab is made
         local group_id = vim.api.nvim_create_augroup('MyNvimTreeNewTab', {})
