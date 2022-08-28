@@ -1250,18 +1250,18 @@ Plug(
         vim.api.nvim_del_augroup_by_name('MyNvimTreeNewTab')
       end
       local function open_tree()
+        local current_tab = vim.fn.tabpagenr()
         local function open_tree_and_go_to_previous_window()
           require('nvim-tree.api').tree.open()
 
           -- For all tabs besides the current one, I don't want to change the active window to the tree.
-          vim.cmd.wincmd('p')
+          if vim.fn.tabpagenr() ~= current_tab then
+            vim.cmd.wincmd('p')
+          end
         end
         local open_nerd_tree_in_all_tabs = per_tab(open_tree_and_go_to_previous_window)
 
         open_nerd_tree_in_all_tabs()
-
-        -- For the active tab, I want the tree to be the active window.
-        vim.cmd.wincmd('p')
 
         -- Open the tree when a new tab is made
         local group_id = vim.api.nvim_create_augroup('MyNvimTreeNewTab', {})
