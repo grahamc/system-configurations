@@ -1292,7 +1292,6 @@ Plug(
           return
         end
 
-        vim.w.disable_tabline_margin = true
         vim.w.is_explorer = true
         vim.opt_local.winbar = '%#Normal#%= Press %#NvimTreeWinBar#g?%#Normal# for help%='
       end
