@@ -172,7 +172,7 @@ function upgrade-dotfiles
     echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
 
     # return if there is nothing to pull
-    git -C ~/.dotfiles fetch
+    chronic git -C ~/.dotfiles fetch
     if test -z "$(git -C ~/.dotfiles log HEAD..@{u} --oneline)"
         echo 'Nothing to do.'
         return
@@ -180,7 +180,11 @@ function upgrade-dotfiles
 
     # if there are changes, warn the user in the prompt
     set status_output "$(git -C ~/.dotfiles status --porcelain)"
-    set warning "$(not test -z \"$status_output\" && echo -s (set_color yellow) ' (WARNING: The working directory is not clean)' (set_color normal))"
+    if test -n "$status_output"
+        set warning "$(echo -s (set_color yellow) ' (WARNING: The working directory is not clean)' (set_color normal))"
+    else
+        set warning ''
+    end
     read --prompt-str "Would you like to update$warning? (y/n): " --nchars 1 response
     if test $response = 'y'
         git -C ~/.dotfiles pull
