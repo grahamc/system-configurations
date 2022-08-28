@@ -1848,7 +1848,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight Warning ctermfg=3 ctermbg=NONE cterm=undercurl
     highlight! link SpellBad Error
     highlight! link NvimInternalError ErrorMsg
-    highlight Folded ctermfg=15 ctermbg=NONE cterm=NONE
+    highlight Folded ctermfg=15 ctermbg=24 cterm=NONE
     highlight FoldColumn ctermfg=15 ctermbg=NONE
     highlight SpecialKey ctermfg=13 ctermbg=NONE
     highlight NonText ctermfg=15 ctermbg=NONE
