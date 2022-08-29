@@ -1231,6 +1231,10 @@ Plug(
         end
         tabdo(open_tree_and_go_to_previous_window)
 
+        -- So the current tab has the right file focused
+        vim.cmd.wincmd('p')
+        vim.cmd.wincmd('p')
+
         -- Open the tree when a new tab is made
         local group_id = vim.api.nvim_create_augroup('MyNvimTreeNewTab', {})
         vim.api.nvim_create_autocmd(
