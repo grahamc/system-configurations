@@ -1722,6 +1722,22 @@ Plug(
             )
           )
         end,
+
+        ["lemminx"] = function()
+          lspconfig.lemminx.setup(
+            vim.tbl_deep_extend(
+              'force',
+              default_server_config,
+              {
+                settings = {
+                  xml = {
+                    catalogs = {'/etc/xml/catalog'},
+                  },
+                },
+              }
+            )
+          )
+        end,
       })
     end,
   }
