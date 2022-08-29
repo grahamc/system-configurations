@@ -1258,6 +1258,7 @@ Plug(
           local inject_node = require("nvim-tree.utils").inject_node
           vim.keymap.set('n', 'h', '<BS>', {buffer = buffer_number, remap = true})
           vim.keymap.set('n', 'l', '<CR>', {buffer = buffer_number, remap = true})
+          vim.keymap.set('n', '<Tab>', '<CR>', {buffer = buffer_number, remap = true})
         end,
       })
 
