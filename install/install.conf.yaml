@@ -75,6 +75,9 @@
         description: Rebuild bat cache if my custom theme isn't listed
         command: bat --list-themes | grep --quiet base16-brighter || bat cache --build
     -
+        description: Link font config
+        command: fish ./fontconfig/install.fish
+    -
         description: Link watchman configs
         command: fish ./watchman/install.fish
     -
