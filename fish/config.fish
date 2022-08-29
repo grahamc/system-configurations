@@ -77,6 +77,7 @@ function upgrade-all
     type --query nvim
     and upgrade-nvim
 
+    # keep last because of autoreload issue
     git -C ~/.dotfiles rev-parse --is-inside-work-tree
     and upgrade-dotfiles
 
