@@ -299,6 +299,7 @@ vim.opt.sessionoptions:remove('blank')
 vim.opt.sessionoptions:remove('options')
 vim.opt.sessionoptions:append('tabpages')
 vim.opt.sessionoptions:append('folds')
+_G.session_dir = vim.g.data_path .. '/sessions'
 
 local function save_session()
   local has_active_session = string.len(vim.v.this_session) > 0
@@ -318,7 +319,6 @@ local function restore_or_create_session()
   local is_neovim_called_with_no_arguments = #vim.v.argv == 1
   if is_neovim_called_with_no_arguments then
     local session_name = string.gsub(os.getenv('PWD'), '/', '%%') .. '%vim'
-    local session_dir = vim.g.data_path .. '/sessions'
     vim.fn.mkdir(session_dir, 'p')
     local session_full_path = session_dir .. '/' .. session_name
     local session_full_path_escaped = vim.fn.fnameescape(session_full_path)
@@ -366,6 +366,56 @@ vim.api.nvim_create_autocmd(
     nested = true,
   }
 )
+
+local function delete_current_session()
+  local session = vim.v.this_session
+
+  local has_active_session = string.len(session) > 0
+  if not has_active_session then
+    vim.cmd.echoerr([['ERROR: No session is currently active.']])
+    return
+  end
+
+  -- Stop saving the current session
+  vim.api.nvim_del_augroup_by_name('SaveSession')
+
+  local exit_code = vim.fn.delete(session)
+  if exit_code == -1 then
+    vim.cmd.echoerr(string.format(
+      [["Failed to delete current session '%s'."]],
+      session
+    ))
+  end
+end
+local function delete_all_sessions()
+  -- Stop saving the current session, if there is one.
+  local has_active_session = string.len(vim.v.this_session) > 0
+  if has_active_session then
+    vim.api.nvim_del_augroup_by_name('SaveSession')
+  end
+
+  if not vim.fn.isdirectory(session_dir) then
+    vim.cmd.echoerr(string.format(
+      [["Unable to delete all sessions, '%s' is not a directory."]],
+      session_dir
+    ))
+    return
+  end
+
+  local sessions = vim.fn.split(vim.fn.globpath(session_dir, '*'), '\n')
+  for _, session in ipairs(sessions) do
+    local exit_code = vim.fn.delete(session)
+    if exit_code == -1 then
+      vim.cmd.echoerr(string.format(
+        [["Failed to delete session '%s'. Aborting the rest of the operation..."]],
+        session
+      ))
+      return
+    end
+  end
+end
+vim.api.nvim_create_user_command('DeleteCurrentSession', delete_current_session, {desc = 'Delete the current session'})
+vim.api.nvim_create_user_command('DeleteAllSessions', delete_all_sessions, {desc = 'Delete all sessions'})
 -- }}}
 
 -- Aesthetics {{{
