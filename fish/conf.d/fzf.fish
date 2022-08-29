@@ -4,6 +4,12 @@ end
 
 set _fzf_history_file "$HOME/.config/fzf/fzf-history.txt"
 
+if test "$NERDFONT_ENABLE" = "1"
+    set prompt \uf002'  '
+else
+    set prompt '> '
+end
+
 set --global --export FZF_DEFAULT_OPTS "
     --cycle
     --ellipsis='…'
@@ -13,8 +19,9 @@ set --global --export FZF_DEFAULT_OPTS "
     --color='16,fg+:-1:regular,bg+:-1,fg:dim,info:15,gutter:8,pointer:14:regular,prompt:14:regular,border:15:dim,query:-1:regular,marker:14:regular,header:15,spinner:yellow,hl:cyan:dim,hl+:regular:cyan'
     --margin=3%
     --height 100%
-    --prompt='> '
+    --prompt='$prompt'
     --tabstop=2
+    --info=inline
     --pointer='❯'
     --marker='❯'
     --history='$_fzf_history_file'
