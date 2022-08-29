@@ -331,8 +331,13 @@ abbr --add --global watch 'watch --no-title'
 # Make vscode run natively in Wayland, as opposed to using xwayland. This way the font won't be blurry on HiDPI screens.
 abbr --add --global code 'code --enable-features=UseOzonePlatform --ozone-platform=wayland'
 
+# fonts
 # Setting this to 1 means I use nerdfont glyphs, otherwise I use unicode.
 set --global --export NERDFONT_ENABLE '1'
+# For debugging. Launches a window displaying the specified character in the specified font. Also, prints a ton of
+# information to the console. The last font family listed in that output is probably the family being used to
+# render the specified character.
+abbr --add --global font-debug 'DISPLAY=:0 FC_DEBUG=4 pango-view --font=monospace -t ☺ | grep family:'
 
 # Ask the user to connect to tmux.
 # Wrapping this in a function so that I am able to exit early with 'return'
