@@ -1142,11 +1142,11 @@ Plug(
           end,
           task = function(task_name, message, percentage)
             return string.format(
-              '%s%s%s [%s]%s',
+              '%s%s%s%s%s',
               margin,
               message,
               percentage and string.format(' (%s%%)', percentage) or '',
-              task_name,
+              task_name and string.format(' [%s]', task_name) or '',
               border
             )
           end,
