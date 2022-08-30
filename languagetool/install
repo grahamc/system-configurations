@@ -1,14 +1,5 @@
 #!/bin/bash
 
-echo "Are you sure want to install the languagetool service? (y/n): "
-read response
-if [ "$response" = "n" ]; then
-    exit
-elif [ "$response" != "y" ] # invalid input
-  then
-    exit
-fi
-
 sudo cp ./languagetool.service /etc/systemd/system/
 sudo systemctl enable languagetool.service
 sudo systemctl start languagetool.service

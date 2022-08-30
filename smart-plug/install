@@ -3,15 +3,6 @@
 # exit the script if any command returns a non-zero exit code
 set -e
 
-echo "Are you sure want to install the smart-plug service? (y/n): "
-read response
-if [ "$response" = "n" ]; then
-    exit
-elif [ "$response" != "y" ] # invalid input
-  then
-    exit
-fi
-
 # Copy the source folder, excluding the .venv since the virtual environment will be recreated in the target directory
 sudo rsync -arhP --exclude='.venv' ~/.dotfiles/smart-plug/smart-plug-daemon.d /opt/
 cd /opt/smart-plug-daemon.d
