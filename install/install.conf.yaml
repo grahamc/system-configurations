@@ -93,3 +93,9 @@
     -
         description: Install .bashrc for the root user
         command: ./bash/install_bashrc_root
+    -
+        description: Install asdf tools
+        command: asdf install
+    -
+        description: Install pipx tools
+        command: xargs -I PACKAGE pipx install PACKAGE < "$pipx_packages"
