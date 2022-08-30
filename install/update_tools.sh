@@ -9,11 +9,10 @@ set -o errexit
 # Exit if an unset variable is referenced
 set -o nounset
 
-changed_filenames="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)"
 changed_filenames_with_status="$(git diff-tree -r --name-status ORIG_HEAD HEAD)"
 
 has_changes() {
-  echo "$changed_filenames" | grep --extended-regexp --quiet "$1"
+  echo "$changed_filenames_with_status" | grep --extended-regexp --quiet "$1"
 }
 
 has_added_file() {
