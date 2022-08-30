@@ -73,8 +73,8 @@
 
 - shell:
     -
-        description: Rebuild bat cache if my custom theme isn't listed
-        command: bat --list-themes | grep --quiet base16-brighter || bat cache --build
+        description: Build bat cache
+        command: bat cache --build
     -
         description: Link font config
         command: fish ./fontconfig/install.fish
