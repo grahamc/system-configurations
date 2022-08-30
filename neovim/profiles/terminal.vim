@@ -586,23 +586,6 @@ _G.Tabline = function()
   for tab_index=1,vim.fn.tabpagenr('$') do
     local is_current_tab = tab_index == current_tab_index
 
-    local char_highlight = '%#TabLineChar#'
-    if is_current_tab then
-      char_highlight = '%#TabLineCharSel#'
-    end
-
-    local left_char = char_highlight .. ' '
-    local right_char = left_char
-    if is_current_tab then
-      if is_nerdfont_enabled then
-        left_char = char_highlight .. unicode('e0ba')
-        right_char = char_highlight .. unicode('e0bc')
-      else
-        left_char = char_highlight .. unicode('2588')
-        right_char = char_highlight .. unicode('2588')
-      end
-    end
-
     local tab_index_highlight = '%#TabLineIndex#'
     if is_current_tab then
       tab_index_highlight = '%#TabLineIndexSel#'
@@ -629,18 +612,18 @@ _G.Tabline = function()
 
     local tab_marker = '%' .. tab_index .. 'T'
 
-    local tab = tab_marker .. left_char .. buffer_name .. right_char
+    local tab = tab_marker .. buffer_name
 
     tabline = tabline .. tab
   end
 
-  tabline = '%#TabLineFill# ' .. tabline .. '%#TabLineFill#'
+  tabline = '%#TabLineFill# ' .. tabline .. '%#TabLineFill#%='
 
   local is_explorer_open = vim.fn.getwinvar(1, 'is_explorer', false)
   if is_explorer_open then
     local icon = unicode('25A0')
     local title = ' ' .. icon .. ' File Explorer'
-  
+
     local title_length = string.len(title)
     local remaining_spaces_count = (vim.fn.winwidth(1) - title_length) + 2
     local left_pad_length = math.floor(remaining_spaces_count / 2)
@@ -648,7 +631,7 @@ _G.Tabline = function()
     if remaining_spaces_count % 2 == 1 then
       right_pad_length = right_pad_length + 1
     end
-  
+
     tabline = '%#ExplorerTabLine#' .. string.rep(' ', left_pad_length) .. title .. string.rep(' ', right_pad_length) .. '%#VertSplit#' .. (vim.opt.fillchars:get().vert or '│') .. '%<' .. tabline
   end
 
@@ -1894,14 +1877,11 @@ Plug 'arcticicestudio/nord-vim'
     highlight! link LineNrBelow LineNrAbove
     highlight WordUnderCursor ctermbg=8
     highlight! link IncSearch Search
-    highlight TabLine ctermbg=NONE ctermfg=15
+    highlight TabLine ctermbg=NONE ctermfg=NONE
     highlight TabLineSel ctermbg=8 ctermfg=NONE
-    highlight TabLineFill ctermbg=NONE
-    highlight TabLineCharSel ctermbg=NONE ctermfg=8
-    highlight! link TabLineChar TabLineCharSel
+    highlight TabLineFill ctermbg=0
     highlight TabLineIndexSel ctermbg=8 ctermfg=6
     highlight! link TabLineIndex TabLine
-    highlight TabLineMaximizedIndicator ctermbg=8 ctermfg=3
     highlight Comment ctermfg=15 ctermbg=NONE
     " This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
     " By unsetting this, I ensure that terminals opened in vim will use the colors from the color palette of the
