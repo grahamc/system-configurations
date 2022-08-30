@@ -1,5 +1,14 @@
 # dotfiles
+
 configs and whatnot
+
+## Setup
+
+1. Run the installation script. You can do so by entering the following command at the root of the repository.
+
+    ``` sh
+    ./install/install
+    ```
 
 ## Try it out
 
