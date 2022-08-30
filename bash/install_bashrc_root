@@ -1,3 +1,0 @@
-#!/bin/bash
-
-sudo install --compare --backup --suffix=.bak --owner=root --group=root --mode='u=rw,g=r,o=r' --verbose --no-target-directory bash/bashrc /root/.bashrc

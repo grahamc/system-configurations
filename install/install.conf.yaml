@@ -82,12 +82,6 @@
         description: Link watchman configs
         command: fish ./watchman/install.fish
     -
-        description: Install fish prompt for the root user
-        command: fish ./fish/install_fish_prompt_for_root.fish
-    -
-        description: Install .bashrc for the root user
-        command: ./bash/install_bashrc_root
-    -
         description: Install asdf tools
         command: asdf install
     -
