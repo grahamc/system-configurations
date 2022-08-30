@@ -6,9 +6,12 @@ function pipx --wraps pipx
   command pipx $argv
   set exit_code $status
 
-  # By backgrounding this command in a subshell, this shell won't be its parent, the subshell will.
-  # Now tmux-resurrect won't think that this backgrounded command is the command to resurrect.
-  fish -c 'flock --timeout 300 /tmp/pipx-package-tracker-lock --command "pipx list --short | string split --fields 1 \' \' > ~/.config/pipx/pipx-packages" &'
+  # All commands that should trigger a backup
+  set backup_commands install uninstall uninstall-all
+  set pipx_subcommand "$argv[1]"
+  if contains -- "$pipx_subcommand" $backup_commands
+    pipx list --short | string split --fields 1 ' ' > ~/.config/pipx/pipx-packages
+  end
 
   return $exit_code
 end
