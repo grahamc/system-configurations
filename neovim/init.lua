@@ -51,7 +51,17 @@ local configs = {
 local original_plug_begin = vim.fn['plug#begin']
 local function plug_begin()
   original_plug_begin()
-  Plug('lewis6991/impatient.nvim')
+
+  -- Loading this now so that it caches any lua modules that are required after this point.
+  Plug(
+    'lewis6991/impatient.nvim',
+    {
+      ['on'] = {},
+      ['for'] = {},
+    }
+  )
+  pcall(vim.fn['plug#load'], 'impatient.nvim')
+  pcall(require, 'impatient')
 end
 local original_plug_end = vim.fn['plug#end']
 local function plug_end()
@@ -59,9 +69,6 @@ local function plug_end()
 
   -- This way the profiles can run code after plugins are loaded, but before 'VimEnter'
   vim.cmd('doautocmd User PlugEndPost')
-
-  -- This needs to be called before any lua plugins call their setup() functions
-  pcall(require, 'impatient')
 
   PlugWrapperApplyImmediateConfigs()
 end
