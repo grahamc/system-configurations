@@ -960,7 +960,16 @@ Plug(
         command! Autocommands Telescope autocommands
         command! Mappings Telescope keymaps
       ]])
+
+      telescope.load_extension('fzf')
     end,
+  }
+)
+
+Plug(
+  'nvim-telescope/telescope-fzf-native.nvim',
+  {
+    ['do'] = 'make',
   }
 )
 
