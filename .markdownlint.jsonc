@@ -1,0 +1,9 @@
+{
+  // Disable line length
+  "MD013": false,
+
+  // Disable deprecated rules:
+  "MD002": false,
+  "MD006": false
+
+}
