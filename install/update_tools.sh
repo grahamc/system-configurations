@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Assign stdin, stdout, and stderr to the terminal
+exec </dev/tty >/dev/tty 2>/dev/tty
+
 # Exit if a command returns a non-zero exit code
 set -o errexit
 
@@ -30,54 +33,60 @@ has_deleted_file() {
 }
 
 confirm() {
-  read -r "$1 (y/n) " answer
+  printf "%s (y/n): " "$1"
+  read -r answer
   [ "$answer" = 'y' ]
+}
+
+# With this, even if a command fails the script will continue
+suppress_error() {
+  "$@" || true
 }
 
 if has_added_file || has_deleted_file; then
   if confirm 'A file has been added and/or deleted, would you like dotbot to relink?'; then
-    ./install/install --only clean link
+    suppress_error ./install/install --only clean link
   fi
 fi
 
 fish_plugins='fish/fish_plugins'
 if has_changes "$fish_plugins"; then
   if confirm "Changes have been made to $fish_plugins would you like fisher to update from it?"; then
-    fisher update
+    suppress_error fish -c 'source ~/.config/fish/functions/fisher.fish; fisher update'
   fi
 fi
 
 brewfile='brew/Brewfile'
 if has_changes "$brewfile"; then
   if confirm "Changes have been made to $brewfile would you like brew to update from it?"; then
-    brew bundle install --file "$brewfile"
+    suppress_error brew bundle install --file "$brewfile"
   fi
 fi
 
 vim_plug_snapshot='neovim/vim-plug-snapshot.vim'
 if has_changes "$vim_plug_snapshot"; then
   if confirm "Changes have been made to $vim_plug_snapshot would you like neovim to update from it?"; then
-    nvim -c 'autocmd VimEnter * PlugRestore'
+    suppress_error nvim -c 'autocmd VimEnter * PlugRestore'
   fi
 fi
 
 tool_versions='asdf/tool_versions'
 if has_changes "$tool_versions"; then
   if confirm "Changes have been made to $tool_versions would you like asdf to update from it?"; then
-    asdf install
+    suppress_error asdf install
   fi
 fi
 
 pipx_packages='pipx/pipx-packages'
 if has_changes "$pipx_packages"; then
   if confirm "Changes have been made to $pipx_packages would you like pipx to update from it?"; then
-    xargs -I PACKAGE pipx install PACKAGE < "$pipx_packages"
+    suppress_error xargs -I PACKAGE pipx install PACKAGE < "$pipx_packages"
   fi
 fi
 
 bat_theme_file_pattern='bat/.*\.tmTheme$'
 if has_added_file "$bat_theme_file_pattern" || has_deleted_file "$bat_theme_file_pattern"; then
   if confirm "A bat theme has been added/removed would you like to rebuild the bat cache?"; then
-    bat cache --build
+    suppress_error bat cache --build
   fi
 fi
