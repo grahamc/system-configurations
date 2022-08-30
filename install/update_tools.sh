@@ -40,6 +40,13 @@ if has_added_file || has_deleted_file; then
   fi
 fi
 
+fish_plugins='fish/fish_plugins'
+if has_changes "$fish_plugins"; then
+  if confirm "Changes have been made to $fish_plugins would you like fisher to update from it?"; then
+    fisher update
+  fi
+fi
+
 brewfile='brew/Brewfile'
 if has_changes "$brewfile"; then
   if confirm "Changes have been made to $brewfile would you like brew to update from it?"; then
@@ -72,13 +79,5 @@ bat_theme_file_pattern='bat/.*\.tmTheme$'
 if has_added_file "$bat_theme_file_pattern" || has_deleted_file "$bat_theme_file_pattern"; then
   if confirm "A bat theme has been added/removed would you like to rebuild the bat cache?"; then
     bat cache --build
-  fi
-fi
-
-# keep last because of autoreload issue
-fish_plugins='fish/fish_plugins'
-if has_changes "$fish_plugins"; then
-  if confirm "Changes have been made to $fish_plugins would you like fisher to update from it?"; then
-    fisher update
   fi
 fi

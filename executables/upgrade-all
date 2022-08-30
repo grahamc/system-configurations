@@ -1,0 +1,146 @@
+#!/bin/env fish
+
+source ~/.config/fish/functions/fisher.fish
+
+# upgrade/cleanup packages in all package managers
+function upgrade-all
+    type --query aptitude
+    and upgrade-debian
+
+    type --query brew
+    and upgrade-brew
+
+    type --query flatpak
+    and upgrade-flatpak
+
+    type --query asdf
+    and upgrade-asdf
+
+    type --query fisher
+    and upgrade-fisher
+
+    type --query pipx
+    and upgrade-pipx
+
+    type --query nvim
+    and upgrade-nvim
+
+    git -C ~/.dotfiles rev-parse --is-inside-work-tree >/dev/null 2>/dev/null
+    and upgrade-dotfiles
+end
+
+function upgrade-debian
+    echo
+    echo -s (set_color blue) 'DEBIAN' (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+    sudo aptitude update
+    if string match --regex --quiet '[1-9]\d* packages upgraded' (aptitude --simulate --assume-yes safe-upgrade)
+        set something_to_do
+        sudo aptitude safe-upgrade
+    end
+    if string match --regex --quiet '[1-9]\d* to remove' (aptitude --simulate --assume-yes -o Aptitude::Delete-Unused=1 install)
+        set something_to_do
+        sudo aptitude --assume-yes -o Aptitude::Delete-Unused=1 install
+    end
+
+    if not set --query something_to_do
+        echo 'Nothing to do.'
+    end
+end
+
+function upgrade-brew
+    echo
+    echo -s (set_color blue) 'HOMEBREW' (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+    brew update
+    if test -n "$(brew outdated)"
+        set something_to_do
+        brew outdated
+        read --prompt-str 'Would you like to upgrade? (y/n): ' --nchars 1 response
+        if test $response = 'y'
+            brew upgrade
+        end
+    end
+    if test -n "$(brew autoremove --dry-run)"
+        set something_to_do
+        brew autoremove
+    end
+    if test -n "$(brew cleanup --dry-run)"
+        set something_to_do
+        brew cleanup
+    end
+
+    if not set --query something_to_do
+        echo 'Nothing to do.'
+    end
+end
+
+function upgrade-flatpak
+    echo
+    echo -s (set_color blue) 'FLATPAK' (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+    flatpak update
+end
+
+function upgrade-fisher
+    echo
+    echo -s (set_color blue) 'FISHER' (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+
+    read --prompt-str 'Would you like to update? (y/n): ' --nchars 1 response
+    if test $response = 'y'
+        fisher update
+    end
+end
+
+function upgrade-asdf
+    echo
+    echo -s (set_color blue) 'ASDF' (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+    asdf plugin-update --all
+end
+
+function upgrade-pipx
+    echo
+    echo -s (set_color blue) 'PIPX' (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+    pipx upgrade-all --include-injected
+end
+
+function upgrade-nvim
+    echo
+    echo -s (set_color blue) 'NEOVIM' (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+
+    read --prompt-str 'Would you like to update? (y/n): ' --nchars 1 response
+    if test $response = 'y'
+        nvim -c 'autocmd VimEnter * MyPlugUpdate'
+    end
+end
+
+function upgrade-dotfiles
+    echo
+    echo -s (set_color blue) 'DOTFILES' (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+
+    # return if there is nothing to pull
+    chronic git -C ~/.dotfiles fetch
+    if test -z "$(git -C ~/.dotfiles log HEAD..@{u} --oneline)"
+        echo 'Nothing to do.'
+        return
+    end
+
+    # if there are changes, warn the user in the prompt
+    set status_output "$(git -C ~/.dotfiles status --porcelain)"
+    if test -n "$status_output"
+        set warning "$(echo -s (set_color yellow) ' (WARNING: The working directory is not clean)' (set_color normal))"
+    else
+        set warning ''
+    end
+    read --prompt-str "Would you like to update$warning? (y/n): " --nchars 1 response
+    if test $response = 'y'
+        git -C ~/.dotfiles pull
+    end
+end
+
+upgrade-all
