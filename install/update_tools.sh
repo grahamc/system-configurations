@@ -1,5 +1,11 @@
 #!/bin/sh
 
+# Exit if a command returns a non-zero exit code
+set -o errexit
+
+# Exit if an unset variable is referenced
+set -o nounset
+
 changed_filenames="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)"
 changed_filenames_with_status="$(git diff-tree -r --name-status ORIG_HEAD HEAD)"
 
@@ -8,11 +14,19 @@ has_changes() {
 }
 
 has_added_file() {
-  echo "$changed_filenames_with_status" | grep --extended-regexp --quiet "^A\s+$1"
+  if [ "$#" -eq 0 ]; then
+    echo "$changed_filenames_with_status" | grep --extended-regexp --quiet "^A"
+  else
+    echo "$changed_filenames_with_status" | grep --extended-regexp --quiet "^A\s+$1"
+  fi
 }
 
 has_deleted_file() {
-  echo "$changed_filenames_with_status" | grep --extended-regexp --quiet "^D\s+$1"
+  if [ "$#" -eq 0 ]; then
+    echo "$changed_filenames_with_status" | grep --extended-regexp --quiet "^D"
+  else
+    echo "$changed_filenames_with_status" | grep --extended-regexp --quiet "^D\s+$1"
+  fi
 }
 
 confirm() {
