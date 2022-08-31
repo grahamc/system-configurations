@@ -22,11 +22,14 @@ function upgrade-all
     type --query pipx
     and upgrade-pipx
 
-    type --query nvim
-    and upgrade-nvim
-
     git -C ~/.dotfiles rev-parse --is-inside-work-tree >/dev/null 2>/dev/null
     and upgrade-dotfiles
+
+    # NOTE: Do this after upgrading dotfiles. This way if the neovim plugin snapshot gets updated as a result of
+    # upgrading dotfiles, any potential snapshot updates from this upgrade will be applied on top of it,
+    # instead of causing a merge conflict.
+    type --query nvim
+    and upgrade-nvim
 end
 
 function upgrade-debian
