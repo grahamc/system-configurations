@@ -28,7 +28,7 @@ brew "ruby"
 brew "shellcheck"
 brew "subversion"
 brew "tealdeer"
-brew "tmux"
+brew "tmux", args: ["HEAD"]
 brew "tree"
 brew "viddy"
 brew "watchman"
