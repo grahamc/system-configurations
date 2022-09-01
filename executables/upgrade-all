@@ -56,12 +56,12 @@ function upgrade-brew
     echo -s (set_color blue) 'HOMEBREW' (set_color normal)
     echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
     brew update
-    if test -n "$(brew outdated)"
+    if test -n "$(brew outdated --fetch-HEAD)"
         set something_to_do
         brew outdated
         read --prompt-str 'Would you like to upgrade? (y/n): ' --nchars 1 response
         if test $response = 'y'
-            brew upgrade
+            brew upgrade --fetch-HEAD
         end
     end
     if test -n "$(brew autoremove --dry-run)"
