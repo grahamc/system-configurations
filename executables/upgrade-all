@@ -129,6 +129,11 @@ function upgrade-dotfiles
         echo 'Nothing to do.'
         return
     end
+    
+    # Show the new commits that would be pulled
+    echo 'Commits made since last pull:'
+    git -C ~/.dotfiles log ..@{u}
+    echo
 
     # if there are changes, warn the user in the prompt
     set status_output "$(git -C ~/.dotfiles status --porcelain)"
