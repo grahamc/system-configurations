@@ -60,6 +60,7 @@
     ~/.local/bin/delta-with-fallback-to-less: git/delta-with-fallback-to-less
     ~/.config/viddy.toml: viddy/viddy.toml
     ~/.dotfiles/.git/hooks/post-merge: install/update_tools.sh
+    ~/.markdownlint.jsonc: markdownlint/markdownlint.jsonc
 
 # Using another link directive since I have multiple links to this directory and you can't have
 # multiple keys with the same name in YAML
