@@ -1885,7 +1885,7 @@ Plug 'arcticicestudio/nord-vim'
     " By unsetting this, I ensure that terminals opened in vim will use the colors from the color palette of the
     " terminal in which vim is running
     if exists('g:terminal_ansi_colors') | unlet g:terminal_ansi_colors | endif
-    " Have vim only use the colors from the 16 color palette of the terminal in which it runs
+    " Have vim only use the colors from the color palette of the terminal in which it runs
     set t_Co=256
     highlight Visual ctermbg=8
     " Search hit
