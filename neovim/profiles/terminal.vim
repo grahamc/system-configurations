@@ -608,16 +608,14 @@ _G.Tabline = function()
     if tab_index <= 9 then
       superscipt_tab_index = superscript_numbers[tab_index]
     end
-    buffer_name = buffer_name_highlight .. ' ' .. tab_index_highlight .. superscipt_tab_index .. buffer_name_highlight .. ' ' .. buffer_name .. buffer_name_highlight .. '  '
+    buffer_name = buffer_name_highlight .. '  ' .. tab_index_highlight .. superscipt_tab_index .. buffer_name_highlight .. ' ' .. buffer_name .. buffer_name_highlight .. '   '
 
     local tab_marker = '%' .. tab_index .. 'T'
 
-    local tab = tab_marker .. buffer_name
+    local tab = tab_marker .. buffer_name .. '%#TabLineFill# '
 
     tabline = tabline .. tab
   end
-
-  tabline = '%#TabLineFill# ' .. tabline .. '%#TabLineFill#%='
 
   local is_explorer_open = vim.fn.getwinvar(1, 'is_explorer', false)
   if is_explorer_open then
@@ -1877,9 +1875,9 @@ Plug 'arcticicestudio/nord-vim'
     highlight! link LineNrBelow LineNrAbove
     highlight WordUnderCursor ctermbg=8
     highlight! link IncSearch Search
-    highlight TabLine ctermbg=NONE ctermfg=NONE
+    highlight TabLine ctermbg=8 ctermfg=15
     highlight TabLineSel ctermbg=8 ctermfg=NONE
-    highlight TabLineFill ctermbg=0
+    highlight TabLineFill ctermbg=8
     highlight TabLineIndexSel ctermbg=8 ctermfg=6
     highlight! link TabLineIndex TabLine
     highlight Comment ctermfg=15 ctermbg=NONE
