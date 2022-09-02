@@ -1,7 +1,7 @@
 function fzf-brew-uninstall-widget --description 'Uninstall packages with brew'
   set choices \
       ( \
-        FZF_DEFAULT_COMMAND='brew list' \
+        FZF_DEFAULT_COMMAND='brew leaves --installed-on-request' \
         FZF_HINTS='alt+enter: select multiple items' \
         fzf-tmux-zoom \
             --ansi \
