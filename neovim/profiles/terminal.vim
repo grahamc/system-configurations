@@ -1123,7 +1123,7 @@ Plug(
         end
       end
     end,
-    ['do'] = ':lua vim.cmd.TSUpdateSync()',
+    ['do'] = ':lua vim.cmd.TSUpdateSync();  vim.cmd.TSInstall("all")',
   }
 )
 
