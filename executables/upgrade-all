@@ -58,7 +58,7 @@ function upgrade-brew
     brew update
     if test -n "$(brew outdated --fetch-HEAD)"
         set something_to_do
-        brew outdated
+        brew outdated --fetch-HEAD
         read --prompt-str 'Would you like to upgrade? (y/n): ' --nchars 1 response
         if test $response = 'y'
             brew upgrade --fetch-HEAD
