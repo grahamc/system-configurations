@@ -206,7 +206,7 @@ set --global --export NERDFONT_ENABLE '1'
 # render the specified character.
 abbr --add --global font-debug 'DISPLAY=:0 FC_DEBUG=4 pango-view --font=monospace -t ☺ | grep family:'
 
-# Ask the user to connect to tmux.
+# Connect to tmux.
 # Wrapping this in a function so that I am able to exit early with 'return'
 function _tmux_connect
     if set --query TMUX_CONNECT_WAS_RUN
@@ -224,11 +224,6 @@ function _tmux_connect
         return
     end
 
-    # echo "Welcome back $USER, would you like to connect to tmux? (y/n):"
-    # read --prompt 'echo "> "' --nchars 1 response
-    # if test $response = y
-    #     tmux-attach-or-create
-    # end
     tmux-attach-or-create
 end
 if type --query tmux
