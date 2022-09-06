@@ -222,65 +222,91 @@ vim.o.tabstop = tab_width
 vim.o.shiftwidth = tab_width
 vim.o.softtabstop = tab_width
 -- }}}
-EOF
 
-" Folds {{{
-set fillchars+=foldsep:\ ,foldclose:›,foldopen:⌄,fold:\ 
-" Setting this so that the fold column gets displayed
-set foldenable
-set foldlevelstart=99
-" Set max number of nested folds when 'foldmethod' is 'syntax' or 'indent'
-set foldnestmax=1
-" Minimum number of lines a fold must have to be able to be closed
-set foldminlines=1
-" Fold visually selected lines. 'foldmethod' must be set to 'manual' for this work.
-vnoremap <Tab> zf
-" Toggle opening and closing all folds
-nnoremap <silent> <expr> <S-Tab> &foldlevel ? 'zM' : 'zR'
-" auto-resize the fold column
-" 
-" TODO: When this issue is resolved, I can set foldcolumn to 1 and remove the digits that signify a nested fold.
-" issue: https://github.com/neovim/neovim/pull/17446
-set foldcolumn=auto:9
-" Jump to the top and bottom of the current fold, without adding to the jump list
-nnoremap [<Tab> [z
-nnoremap ]<Tab> ]z
-xnoremap [<Tab> [z
-xnoremap ]<Tab> ]z
-nnoremap <silent> <Tab> za
-augroup Fold
-  autocmd!
-  " autocmd FileType * setlocal foldmethod=indent
-augroup END
-lua << EOF
-EOF
+-- Folds {{{
+vim.opt.fillchars:append('foldsep: ')
+vim.opt.fillchars:append('fold: ')
+vim.opt.fillchars:append('foldclose:›')
+vim.opt.fillchars:append('foldopen:⌄')
+vim.o.foldlevelstart = 99
+vim.keymap.set('n', '<Tab>', 'za', {silent = true})
 
-set foldtext=FoldText()
-function! FoldText()
-  let window_width = winwidth(0)
-  let gutter_width = getwininfo(win_getid())[0].textoff
-  let line_width = window_width - gutter_width
+-- Setting this so that the fold column gets displayed
+vim.o.foldenable = true
 
-  let fold_line_count = (v:foldend - v:foldstart) + 1
-  let fold_description = printf('(%s)', fold_line_count)
-  let fold_description_length = strdisplaywidth(fold_description)
+-- Set max number of nested folds when 'foldmethod' is 'syntax' or 'indent'
+vim.o.foldnestmax = 1
 
-  let separator_text = '⋯ '
-  let separator_text_length = 2
+-- Minimum number of lines a fold must have to be able to be closed
+vim.o.foldminlines = 1
 
-  let line_text = getline(v:foldstart)
-  " truncate if there isn't space for the fold description and separator text
-  let max_line_text_length = line_width - (fold_description_length + separator_text_length)
-  if strdisplaywidth(line_text) > max_line_text_length
-    let line_text = line_text[: max_line_text_length - 1]
-  endif
-  let line_text_length = strdisplaywidth(line_text)
+-- Fold visually selected lines. 'foldmethod' must be set to 'manual' for this work.
+vim.keymap.set('x', 'Tab', 'zf')
 
-  return line_text . separator_text . fold_description
-endfunction
-" }}}
+-- Toggle opening and closing all folds
+local function fold_toggle()
+  if vim.o.foldlevel > 0 then
+    return 'zM'
+  else
+    return 'zR'
+  end
+end
+vim.keymap.set('n', '<S-Tab>', fold_toggle, {silent = true, expr =true})
 
-lua << EOF
+-- auto-resize the fold column
+-- 
+-- TODO: When this issue is resolved, I can set foldcolumn to 1 and remove the digits that signify a nested fold.
+-- issue: https://github.com/neovim/neovim/pull/17446
+vim.o.foldcolumn = 'auto:9'
+
+-- Jump to the top and bottom of the current fold
+vim.keymap.set({'n', 'x'}, '[<Tab>', '[z')
+vim.keymap.set({'n', 'x'}, ']<Tab>', ']z')
+
+local function SetDefaultFoldMethod()
+  foldmethod = vim.o.foldmethod
+  isFoldmethodOverridable = foldmethod ~= 'manual'
+    and foldmethod ~= 'marker'
+    and foldmethod ~= 'diff'
+    and foldmethod ~= 'expr'
+  if isFoldmethodOverridable then
+    vim.o.foldmethod = 'indent'
+  end
+end
+local group_id = vim.api.nvim_create_augroup('SetDefaultFoldMethod', {})
+vim.api.nvim_create_autocmd(
+  'FileType',
+  {
+    callback = SetDefaultFoldMethod,
+    group = group_id,
+  }
+)
+
+_G.FoldText = function()
+  local window_width = vim.fn.winwidth(0)
+  local gutter_width = vim.fn.getwininfo(vim.fn.win_getid())[1].textoff
+  local line_width = window_width - gutter_width
+
+  local fold_line_count = (vim.v.foldend - vim.v.foldstart) + 1
+  local fold_description = string.format('(%s)', fold_line_count)
+  local fold_description_length = vim.fn.strdisplaywidth(fold_description)
+
+  local separator_text = '⋯ '
+  local separator_text_length = 2
+
+  local line_text = vim.fn.getline(vim.v.foldstart)
+  -- truncate if there isn't space for the fold description and separator text
+  local max_line_text_length = line_width - (fold_description_length + separator_text_length)
+  if vim.fn.strdisplaywidth(line_text) > max_line_text_length then
+    local line_text = string.sub(line_text, 1, max_line_text_length)
+  end
+  local line_text_length = vim.fn.strdisplaywidth(line_text)
+
+  return line_text .. separator_text .. fold_description
+end
+vim.o.foldtext = 'v:lua.FoldText()'
+-- }}}
+
 -- Autocomplete {{{
 vim.o.complete = '.,w,b,u'
 -- - show the completion menu even if there is only one suggestion
