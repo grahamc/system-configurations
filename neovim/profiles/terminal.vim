@@ -418,7 +418,7 @@ local function delete_current_session()
   end
 
   -- Stop saving the current session
-  vim.api.nvim_del_augroup_by_name('SaveSession')
+  pcall(vim.api.nvim_del_augroup_by_name, 'SaveSession')
 
   local exit_code = vim.fn.delete(session)
   if exit_code == -1 then
@@ -430,10 +430,7 @@ local function delete_current_session()
 end
 local function delete_all_sessions()
   -- Stop saving the current session, if there is one.
-  local has_active_session = string.len(vim.v.this_session) > 0
-  if has_active_session then
-    vim.api.nvim_del_augroup_by_name('SaveSession')
-  end
+  pcall(vim.api.nvim_del_augroup_by_name, 'SaveSession')
 
   if not vim.fn.isdirectory(session_dir) then
     vim.cmd.echoerr(string.format(
