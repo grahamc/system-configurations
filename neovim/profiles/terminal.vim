@@ -1012,30 +1012,6 @@ Plug(
           border = 'rounded',
         },
       })
-
-      -- Add a highlight group for the border
-      local group_id = vim.api.nvim_create_augroup('WhichKeyNvim', {})
-      vim.api.nvim_create_autocmd(
-        {'FileType',},
-        {
-          pattern = {'WhichKey'},
-          callback = function()
-            vim.opt_local.winhighlight:append(',FloatBorder:WhichKeyBorder')
-            vim.api.nvim_create_autocmd(
-              {'OptionSet'},
-              {
-                group = group_id,
-                pattern = {'winhighlight'},
-                once = true,
-                callback = function()
-                  vim.opt_local.winhighlight:append(',FloatBorder:WhichKeyBorder')
-                end,
-              }
-            )
-          end,
-          group = group_id,
-        }
-      )
     end,
   }
 )
