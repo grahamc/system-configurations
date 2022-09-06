@@ -112,6 +112,21 @@ function upgrade-nvim
     echo -s (set_color blue) 'NEOVIM' (set_color normal)
     echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
 
+    for plugin_directory in ~/.local/share/nvim/plugged/*
+        chronic git -C $plugin_directory fetch
+        if test -n "$(git -C $plugin_directory log HEAD..@{u} --oneline)"
+            set is_outdated
+            break
+        end
+    end
+    curl --silent --fail --location https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
+        | chronic diff - ~/.local/share/nvim/site/autoload/plug.vim
+    or set is_outdated
+    if not set --query is_outdated
+        echo 'Nothing to do.'
+        return
+    end
+
     read --prompt-str 'Would you like to update? (y/n): ' --nchars 1 response
     if test $response = 'y'
         nvim -c 'autocmd VimEnter * MyPlugUpdate'
