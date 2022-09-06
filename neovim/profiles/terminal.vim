@@ -1143,19 +1143,7 @@ Plug(
 
 Plug('tpope/vim-sleuth')
 
-Plug(
-  'blankname/vim-fish',
-  {
-    config = function()
-      vim.cmd([[
-        augroup VimFish
-          autocmd!
-          autocmd FileType fish setlocal foldmethod=expr
-        augroup END
-      ]])
-    end,
-  }
-)
+Plug('blankname/vim-fish')
 
 Plug('windwp/nvim-ts-autotag')
 
