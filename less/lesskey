@@ -4,6 +4,8 @@
 ? back-search ^W
 ^j forw-scroll
 ^k back-scroll
+^h prev-file
+^l next-file
 
 #env
 # Set default less options:
