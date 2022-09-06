@@ -640,6 +640,8 @@ _G.Tabline = function()
     tabline = tabline .. tab
   end
 
+  tabline = '%#TabLineFill#%=' .. tabline .. '%#TabLineFill#%='
+
   local is_explorer_open = vim.fn.getwinvar(1, 'is_explorer', false)
   if is_explorer_open then
     local icon = unicode('25A0')
