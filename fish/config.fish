@@ -57,6 +57,37 @@ bind \cr 'reset && exec fish && clear'
 abbr --add --global fv 'FZF_DEFAULT_COMMAND="set --names" fzf --preview "set --show {}"'
 # set terminal title
 echo -ne "\033]0;fish\007"
+# Use shift+tab to select an autocomplete entry with fzf
+function _fzf_complete
+    set choice \
+        ( \
+            # Calling complete with no argument will perform completion using the current commandline. However, when the
+            # commandline is 'cd ', I don't get results. I think the reason it doesn't work is because my cd is a function that
+            # calls zoxide. In any case, explicitly calling complete with the output of `commandline` fixes that.
+            complete --escape --do-complete (commandline) | uniq | \
+            fzf \
+            --with-nth '1' \
+            --preview 'echo {2}' \
+            --delimiter \t \
+            --preview-window=70%,border-top \
+            --height 30% \
+            --no-header \
+            --prompt 'Search: ' \
+            --info 'hidden' \
+            --bind 'backward-eof:abort' \
+            --no-sort \
+        )
+    or begin
+        commandline -f repaint
+        return
+    end
+
+    set word (string split -f1 -- \t $choice)
+    commandline --insert $word
+
+    commandline -f repaint
+end
+bind -k btab _fzf_complete
 
 # sudo
 abbr --add --global s sudo
