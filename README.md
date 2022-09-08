@@ -16,6 +16,14 @@ configs and whatnot
 
     b. Go to Gnome Tweaks and set the fonts to fontconfig aliases. This way Gnome will use the same fonts that are set in fontconfig. Settings: interface->sans, document->serif, monospace->monospace, and legacy->sans.
 
+3. cloudflared:
+
+    1. Put the following files in `~/.cloudflared/`:
+
+        - `cert.pem` - This file authenticates your instance of cloudflared, which allows you to perform  privileged actions like creating and deleting tunnels. Not needed to run a tunnel.
+
+        - tunnel credentials file -  A json file that allows you to use a particular tunnel.
+
 ## Try it out
 
 If you want to try out my dotfiles without modifying anything in your home directory you can do the following:
