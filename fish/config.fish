@@ -64,8 +64,14 @@ function _fzf_complete
             # Calling complete with no argument will perform completion using the current commandline. However, when the
             # commandline is 'cd ', I don't get results. I think the reason it doesn't work is because my cd is a function that
             # calls zoxide. In any case, explicitly calling complete with the output of `commandline` fixes that.
-            complete --escape --do-complete (commandline) | uniq | \
-            fzf \
+            complete --escape --do-complete (commandline) \
+            # Remove duplicates
+            | if type --query python
+                python -c 'import fileinput; lines = list(fileinput.input()); items = {line.split("\t")[0]: line for line in lines}; print("".join(items.values())[:-1]);'
+            else
+                cat
+            end \
+            | fzf \
             --with-nth '1' \
             --preview 'echo {2}' \
             --delimiter \t \
