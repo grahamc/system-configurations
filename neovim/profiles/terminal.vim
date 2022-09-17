@@ -2001,9 +2001,6 @@ function! UpdateAndSnapshotSync()
   0tabnew
   PlugUpdate --sync
   PlugDiff
-  if exists(':TSEnable')
-    TSEnable highlight
-  endif
 
   0tabnew
   call CreateSnapshotSync()
