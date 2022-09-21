@@ -113,6 +113,7 @@ let g:loaded_perl_provider = 0
 nnoremap Q <Nop>
 
 lua << EOF
+-- Execute macros more quickly by enabling lazyredraw and disabling events while the macro is running
 local function get_char()
   local ret_val, char_num = pcall(vim.fn.getchar)
   -- Return nil if error (e.g. <C-c>) or for control characters
@@ -123,18 +124,70 @@ local function get_char()
 
   return char
 end
-local function visual_macro()
-  local char = get_char()
-  if char == nil then
-    return ''
+_G.fast_macro = function()
+  mode = vim.fn.mode()
+  count = vim.v.count1
+  vim.cmd('execute "normal \\<Esc>"')
+
+  range = ''
+  for _, visual_mode in pairs({'v', 'V', ''}) do
+    if mode == visual_mode then
+      range = [['<,'>]]
+      break
+    end
   end
 
-  return string.format(
-    [[:'<,'>normal @%s<CR>]],
-    char
+  local register = get_char()
+  if register == nil then
+    return
+  end
+
+  vim.o.eventignore = 'all'
+  vim.o.lazyredraw = true
+  vim.cmd(
+    string.format(
+      [[%snormal! %s@%s]],
+      range,
+      count,
+      register
+    )
   )
+  vim.o.eventignore = ''
+  vim.o.lazyredraw = false
 end
-vim.keymap.set('x', '@', visual_macro, {expr = true})
+vim.keymap.set({'x', 'n'}, '@', '<Cmd>lua fast_macro()<CR>')
+local group_id = vim.api.nvim_create_augroup('FastMacro', {})
+vim.api.nvim_create_autocmd(
+  'RecordingEnter',
+  {
+    callback = function()
+      if vim.g.fast_macro_events == nil then
+        events = vim.fn.getcompletion('', 'event')
+
+        for index, event in ipairs(events) do
+          if event == 'RecordingLeave' then
+            table.remove(events, index)
+            break
+          end
+        end
+
+        vim.g.fast_macro_events = table.concat(events, ',')
+      end
+
+      vim.o.eventignore = vim.g.fast_macro_events
+    end,
+    group = group_id,
+  }
+)
+vim.api.nvim_create_autocmd(
+  'RecordingLeave',
+  {
+    callback = function()
+      vim.o.eventignore = ''
+    end,
+    group = group_id,
+  }
+)
 EOF
 " }}}
 
