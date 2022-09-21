@@ -25,6 +25,7 @@ brew "navi"
 brew "ncdu"
 brew "neovim", args: ["HEAD"]
 brew "pipx"
+brew "pkg-config", link: false
 brew "ripgrep"
 brew "ruby"
 brew "shellcheck"
