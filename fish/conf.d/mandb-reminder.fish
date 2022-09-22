@@ -12,6 +12,6 @@ function mandb-reminder --on-event fish_postexec
     if test "$command" = 'man'
             and test $last_interactive_status -eq 16
             and test (count $last_interactive_pipestatus) -eq 1
-        echo -e "\n$(set_color --bold yellow)TIP:$(set_color normal) Try running $(set_color yellow)'mandb'$(set_color normal) to update the manual page index cache" >/dev/stderr
+        echo -e "\n[$(set_color yellow)tip$(set_color normal)] Try running $(set_color yellow)'mandb'$(set_color normal) to update the manual page index cache" >/dev/stderr
     end
 end
