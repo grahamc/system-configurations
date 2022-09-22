@@ -208,7 +208,7 @@ set --global --export VIRTUAL_ENV_DISABLE_PROMPT 1
 set --global --export RIPGREP_CONFIG_PATH "$HOME/.ripgreprc"
 
 # zoxide
-set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'ls --classify -x {2}' --keep-right --bind='change:first'"
+set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'ls --classify -x {2}' --keep-right --bind='change:first' --height 40% --preview-window '50%' --info hidden"
 if type --query zoxide
     zoxide init --cmd cd fish | source
 end
