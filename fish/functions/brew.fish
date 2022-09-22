@@ -3,7 +3,7 @@ function brew --wraps brew
   set exit_code $status
 
   # All commands that should trigger a dump
-  set dump_commands install uninstall remove rm
+  set dump_commands install uninstall remove rm unlink link
   set brew_subcommand "$argv[1]"
   if contains -- "$brew_subcommand" $dump_commands
     command brew bundle dump --force --file ~/.config/brewfile/Brewfile
