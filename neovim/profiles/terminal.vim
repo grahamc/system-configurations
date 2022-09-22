@@ -1925,7 +1925,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight! link PmenuSbar CmpNormal
     " List of telescope highlight groups:
     " https://github.com/nvim-telescope/telescope.nvim/blob/master/plugin/telescope.lua
-    highlight! TelescopePromptNormal ctermbg=24 cterm=underline
+    highlight! TelescopePromptNormal ctermbg=24
     highlight! TelescopePromptBorder ctermbg=24 ctermfg=24
     highlight! TelescopePromptTitle ctermbg=24 ctermfg=5 cterm=reverse,bold,nocombine
     highlight! TelescopePreviewNormal ctermbg=16
