@@ -33,6 +33,7 @@ brew "shellcheck"
 brew "subversion"
 brew "tealdeer"
 brew "tmux", args: ["HEAD"]
+brew "trash-cli"
 brew "tree"
 brew "viddy"
 brew "watchman"
