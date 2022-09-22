@@ -936,6 +936,7 @@ Plug(
           sorting_strategy = 'ascending',
           layout_strategy = 'vertical',
           layout_config = {
+            scroll_speed = 1,
             vertical = {
               height = .90,
               width = .90,
