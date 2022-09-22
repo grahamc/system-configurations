@@ -1676,7 +1676,7 @@ Plug(
       vim.cmd([[
         augroup MasonNvim
           autocmd!
-          autocmd FileType mason.nvim highlight clear WordUnderCursor
+          autocmd FileType mason highlight clear WordUnderCursor
         augroup END
       ]])
     end,
