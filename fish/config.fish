@@ -170,7 +170,7 @@ abbr --add --global far 'fzf-apt-remove-widget'
 # brew
 abbr --add --global fbi 'fzf-brew-install-widget'
 abbr --add --global fbu 'fzf-brew-uninstall-widget'
-abbr --add --global bo 'brew outdated'
+abbr --add --global bo 'brew outdated --fetch-HEAD'
 set --global --export HOMEBREW_NO_INSTALL_UPGRADE 1
 set --global --export HOMEBREW_NO_INSTALL_CLEANUP 1
 set --global --export HOMEBREW_BUNDLE_NO_LOCK 1
