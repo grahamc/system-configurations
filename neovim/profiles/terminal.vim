@@ -460,6 +460,7 @@ vim.api.nvim_create_user_command('DeleteAllSessions', delete_all_sessions, {desc
 
 -- Miscellaneous {{{
 vim.o.linebreak = true
+vim.o.breakat = ' ^I'
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.cursorline = true
