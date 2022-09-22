@@ -260,6 +260,21 @@ set --global --export NERDFONT_ENABLE '1'
 # render the specified character.
 abbr --add --global font-debug 'DISPLAY=:0 FC_DEBUG=4 pango-view --font=monospace -t ☺ | grep family:'
 
+# Print banner
+if not set --query BANNER_WAS_PRINTED
+    set banner Fish Shell v(string split ' ' (fish --version) | tail -n 1)
+
+    set figlet_font "$HOME/.local/share/figlet/smblock.tlf"
+    if type --query figlet
+    and test -f $figlet_font
+        figlet -W -w (stty size | cut -d" " -f2) -f $figlet_font $banner
+    else
+        echo $banner
+    end
+
+    set --global --export BANNER_WAS_PRINTED
+end
+
 # Ask the user to connect to tmux.
 # Wrapping this in a function so that I am able to exit early with 'return'
 function _tmux_connect
