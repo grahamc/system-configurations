@@ -253,7 +253,7 @@ abbr --add --global watch 'watch --no-title --differences --interval 0.5'
 abbr --add --global code 'code --enable-features=UseOzonePlatform --ozone-platform=wayland'
 
 # fonts
-# Setting this to 1 means I use nerdfont glyphs, otherwise I use unicode.
+# Setting this to 1 means I can use nerdfont glyphs
 set --global --export NERDFONT_ENABLE '1'
 # For debugging. Launches a window displaying the specified character in the specified font. Also, prints a ton of
 # information to the console. The last font family listed in that output is probably the family being used to
