@@ -71,9 +71,24 @@ nmap <C-k> 10k
 xmap <C-j> 10j
 xmap <C-k> 10k
 
-" Always move by screen line, unless a count was specified.
-nnoremap <silent> <expr> j (v:count == 0) ? 'gj' : 'j'
-nnoremap <silent> <expr> k (v:count == 0) ? 'gk' : 'k'
+lua << EOF
+-- Always move by screen line, unless a count was specified or we're in a line-wise mode.
+function move_by_screen_line(direction)
+  mode = vim.fn.mode()
+  is_in_linewise_mode = mode == 'V' or mode == ''
+  if is_in_linewise_mode then
+    return direction
+  end
+
+  if vim.v.count > 0 then
+    return direction
+  end
+
+  return 'g' .. direction
+end
+vim.keymap.set({'n', 'x'}, 'j', function() return move_by_screen_line('j') end, {expr =true})
+vim.keymap.set({'n', 'x'}, 'k', function() return move_by_screen_line('k') end, {expr =true})
+EOF
 
 " Resizing panes
 nnoremap <silent> <C-Left> <Cmd>vertical resize +1<CR>
