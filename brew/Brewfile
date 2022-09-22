@@ -8,6 +8,7 @@ brew "bat"
 brew "btop"
 brew "bubblewrap"
 brew "cloudflared"
+brew "cmake", link: false
 brew "direnv"
 brew "docker"
 brew "entr"
