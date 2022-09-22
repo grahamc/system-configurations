@@ -59,37 +59,30 @@ abbr --add --global fv 'FZF_DEFAULT_COMMAND="set --names" fzf --preview "set --s
 echo -ne "\033]0;fish\007"
 # Use shift+tab to select an autocomplete entry with fzf
 function _fzf_complete
-    set preview_window '50%,border-top'
-    if test "$COLUMNS" -gt 100
-        set preview_window '60%,border-left,right'
-    end
-
     set choice \
         ( \
             # Calling complete with no argument will perform completion using the current commandline. However, when the
             # commandline is 'cd ', I don't get results. I think the reason it doesn't work is because my cd is a function that
             # calls zoxide. In any case, explicitly calling complete with the output of `commandline` fixes that.
-            complete --escape --do-complete (commandline) \
+            complete --escape --do-complete (commandline --cut-at-cursor) \
             | if type --query python
                 # Remove duplicates
-                # The [:-1] is to remove the last newline.
-                python -c "import fileinput; lines = list(line[:-1].split('\t') for line in fileinput.input()); items = {line[0]: line[0] + '\t(' + line[1] + ')' if len(line) == 2 else line[0] for line in lines}; print('\n'.join(items.values()));"
+                # The [:-1] is to remove the newline.
+                python -c "import fileinput; lines = list(line[:-1].split('\t') for line in fileinput.input()); items = {line[0]: line[0] + '\t(' + line[1].rstrip() + ')' if len(line) == 2 else line[0] for line in lines}; print('\n'.join(items.values()));"
             else
                 cat
             end \
             | fzf \
             --preview 'string sub --start 2 --end -1 -- {2}' \
             --delimiter \t \
-            --preview-window "$preview_window" \
+            --preview-window '50%' \
             --height 30% \
             --no-header \
-            --prompt 'Search: ' \
             --info 'hidden' \
             --bind 'backward-eof:abort' \
             --select-1 \
             --exit-0 \
-            --query (commandline --current-token) \
-            --ansi \
+            --query (commandline --current-token --cut-at-cursor) \
             --no-hscroll \
         )
     and begin
