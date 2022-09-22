@@ -5,7 +5,7 @@ end
 # Wrapping watch since viddy doesn't have autocomplete
 function watch --wraps watch
     if type --query viddy
-        viddy $argv
+        viddy --pty $argv
     else
         command watch $argv
     end

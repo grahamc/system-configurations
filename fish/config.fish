@@ -246,7 +246,7 @@ if type --query pipenv
 end
 
 # watch
-abbr --add --global watch 'watch --no-title'
+abbr --add --global watch 'watch --no-title --differences --interval 0.5'
 
 # vscode
 # Make vscode run natively in Wayland, as opposed to using xwayland. This way the font won't be blurry on HiDPI screens.
