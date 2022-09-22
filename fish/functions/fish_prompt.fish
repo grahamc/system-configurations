@@ -36,7 +36,7 @@ function fish_prompt --description 'Print the prompt'
         # issue: https://github.com/fish-shell/fish-shell/issues/8418
         printf \e\[0J
 
-        echo -n -s -e (fish_prompt_get_separator) "\n" (fish_prompt_get_arrow) $fish_prompt_color_normal
+        echo -n -s -e (fish_prompt_get_separator) "\n" $fish_prompt_color_text (fish_prompt_get_arrow) $fish_prompt_color_normal
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY
@@ -100,14 +100,14 @@ function fish_prompt_make_line --argument-names type
     if test "$type" = first
         echo -n -s $fish_prompt_color_border $connectbar_down
     else if test "$type" = last
-        echo -n -s $fish_prompt_color_border $connectbar_up (fish_prompt_get_arrow) $fish_prompt_color_normal
+        echo -n -s $fish_prompt_color_border $connectbar_up (set_color normal; set_color brwhite) (fish_prompt_get_arrow) $fish_prompt_color_normal
     else
         echo -n -s $fish_prompt_color_border $connectbar_middle
     end
 end
 
 function fish_prompt_get_arrow
-    echo -n -s (set_color normal; set_color brwhite) (string repeat -n $SHLVL '🢒')
+    echo -n -s (string repeat -n $SHLVL '🢒')
 end
 
 function fish_prompt_get_python_context
