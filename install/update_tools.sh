@@ -64,7 +64,7 @@ if has_changes "$fish_plugins"; then
 fi
 
 brewfile='brew/Brewfile'
-if has_changes "$brewfile"; then
+if has_changes "$brewfile" && ! chronic brew bundle check --file "$brewfile" >/dev/null; then
   if confirm "Changes have been made to $brewfile would you like brew to update from it?"; then
     suppress_error brew bundle install --file "$brewfile"
   fi
