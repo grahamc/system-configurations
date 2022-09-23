@@ -30,6 +30,9 @@ function upgrade-all
     # instead of causing a merge conflict.
     type --query nvim
     and upgrade-nvim
+
+    type --query kitty
+    and upgrade-kitty
 end
 
 function upgrade-debian
@@ -162,6 +165,23 @@ function upgrade-dotfiles
     read --prompt-str "Would you like to update$warning? (y/n): " --nchars 1 response
     if test $response = 'y'
         git -C ~/.dotfiles pull
+    end
+end
+
+function upgrade-kitty
+    echo
+    echo -s (set_color blue) 'KITTY' (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+    set latest_version "$(git ls-remote --refs --sort='version:refname' --tags 'https://github.com/kovidgoyal/kitty.git' | cut -d/ -f3- | tail -n 1 | cut -c 2-)"
+    set current_version "$(kitty -v | string match --regex --groups-only '(\d+\.\d+\.\d+)')"
+    if test "$latest_version" != "$current_version"
+        set prompt "There is a new version of kitty (current=$current_version, latest=$latest_version) would you like to update? (y/n):"
+        read --prompt-str $prompt --nchars 1 response
+        if test $response = 'y'
+            curl --location https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+        end
+    else
+        echo 'Nothing to do.'
     end
 end
 
