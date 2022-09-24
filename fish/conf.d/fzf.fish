@@ -43,7 +43,11 @@ bind \cf 'FZF_CTRL_T_OPTS="$FZF_CTRL_T_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-fil
 
 # use ctrl+h for history search instead of default ctrl+r
 bind --erase \cr
-bind \ch fzf-history-widget
+# If we chose an entry from the history widget, which is signified by an exit code of 0, then we set a flag
+# that tells fish-abbreviation-tips not to display a tip. This way, I won't get reminded about an abbreviation when
+# executing a command
+# from the history
+bind \ch 'fzf-history-widget && set -g __abbr_tips_used 1'
 
 # use alt+d for directory search instead of default alt+c
 bind --erase \ec
