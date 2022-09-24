@@ -89,6 +89,18 @@ vim.api.nvim_create_autocmd(
     group = group_id,
   }
 )
+
+-- Open link on mouse click. Works on urls that wrap on to the following line.
+_G.ClickLink = function()
+  cfile = vim.fn.expand('<cfile>')
+  is_url =
+    cfile:match("https?://(([%w_.~!*:@&+$/?%%#-]-)(%w[-.%w]*%.)(%w%w%w?%w?)(:?)(%d*)(/?)([%w_.~!*:@&+$/?%%#=-]*))")
+    or cfile:match("ftps?://(([%w_.~!*:@&+$/?%%#-]-)(%w[-.%w]*%.)(%w%w%w?%w?)(:?)(%d*)(/?)([%w_.~!*:@&+$/?%%#=-]*))")
+  if is_url then
+    vim.fn.jobstart({'xdg-open', cfile}, {detach = true})
+  end
+end
+vim.keymap.set('n', '<LeftMouse>', '<LeftMouse><Cmd>lua ClickLink()<CR>')
 EOF
 " }}}
 
