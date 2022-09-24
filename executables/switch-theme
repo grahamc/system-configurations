@@ -19,8 +19,11 @@ case $1 in
     ;;
 
   *)
-    echo 'invalid argument, use "day" or "night"'
-    exit 1
+    if realpath ~/.config/kitty/current-theme.conf | grep -q 'day'; then
+      mode='night'
+    else
+      mode='day'
+    fi
     ;;
 esac
 
