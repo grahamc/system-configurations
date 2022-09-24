@@ -62,6 +62,7 @@
     ~/.dotfiles/.git/hooks/post-merge: install/update_tools.sh
     ~/.markdownlint.jsonc: markdownlint/markdownlint.jsonc
     ~/.local/share/figlet/smblock.tlf: figlet/smblock.tlf
+    ~/.local/share/applications/firefox.desktop: firefox/firefox.desktop
 
 # Using another link directive since I have multiple links to this directory and you can't have
 # multiple keys with the same name in YAML
