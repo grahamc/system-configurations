@@ -2,7 +2,7 @@ function fzf-grep-widget --description 'Search by line, recursively, from curren
   set rg_command 'rg --hidden --fixed-strings --column --line-number --no-heading --color=always --smart-case --follow --'
   set choice \
       ( \
-        FZF_DEFAULT_COMMAND="$rg_command ''" \
+        FZF_DEFAULT_COMMAND="echo -n ''" \
         FZF_HINTS='ctrl+e: edit in neovim' \
         fzf-tmux-zoom \
             --ansi \
