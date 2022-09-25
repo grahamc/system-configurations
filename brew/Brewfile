@@ -31,6 +31,7 @@ brew "pkg-config", link: false
 brew "ripgrep"
 brew "ruby"
 brew "shellcheck"
+brew "sshfs"
 brew "subversion"
 brew "tealdeer"
 brew "tmux", args: ["HEAD"]
