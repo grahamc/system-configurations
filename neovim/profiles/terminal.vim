@@ -101,6 +101,8 @@ _G.ClickLink = function()
   end
 end
 vim.keymap.set('n', '<LeftMouse>', '<LeftMouse><Cmd>lua ClickLink()<CR>')
+
+vim.o.scroll = 1
 EOF
 " }}}
 
