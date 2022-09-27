@@ -960,6 +960,7 @@ Plug(
               preview_height = resolve.resolve_height(.60),
             },
           },
+          borderchars = {'─', ' ', ' ', ' ', '─', '─', ' ', ' ',}
         },
         pickers = {
 
@@ -1947,11 +1948,11 @@ Plug 'arcticicestudio/nord-vim'
     highlight! TelescopePromptBorder ctermbg=24 ctermfg=24
     highlight! TelescopePromptTitle ctermbg=24 ctermfg=5 cterm=reverse,bold,nocombine
     highlight! TelescopePreviewNormal ctermbg=16
-    highlight! TelescopePreviewBorder ctermbg=16 ctermfg=16
-    highlight! TelescopePreviewTitle ctermbg=16 ctermfg=16
-    highlight! TelescopeResultsNormal ctermbg=24
-    highlight! TelescopeResultsBorder ctermbg=24 ctermfg=24
-    highlight! TelescopeResultsTitle ctermbg=24 ctermfg=24
+    highlight! TelescopePreviewBorder ctermbg=16 ctermfg=8
+    highlight! TelescopePreviewTitle ctermbg=16 ctermfg=8 cterm=nocombine
+    highlight! TelescopeResultsNormal ctermbg=16
+    highlight! TelescopeResultsBorder ctermbg=16 ctermfg=16
+    highlight! TelescopeResultsTitle ctermbg=16 ctermfg=16
     highlight! TelescopePromptPrefix ctermbg=24 ctermfg=5 cterm=none,nocombine
     highlight! TelescopeMatching ctermbg=NONE ctermfg=6
     highlight! TelescopeSelectionCaret ctermbg=8 ctermfg=8
