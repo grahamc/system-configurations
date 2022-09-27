@@ -1444,6 +1444,8 @@ Plug(
   }
 )
 
+Plug('bydlw98/cmp-env')
+
 Plug(
   'L3MON4D3/LuaSnip',
   {
@@ -1524,6 +1526,7 @@ Plug(
         name = 'luasnip',
         option = {use_show_condition = false},
       }
+      local env = {name = 'env'}
 
       -- helpers
       local is_cursor_preceded_by_nonblank_character = function()
@@ -1618,6 +1621,7 @@ Plug(
             buffer,
             omni,
             path,
+            env,
             tmux,
             lsp_signature,
           },
