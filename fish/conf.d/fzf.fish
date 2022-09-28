@@ -26,7 +26,7 @@ set --global --export FZF_DEFAULT_OPTS "
     --marker='❯'
     --history='$_fzf_history_file'
     --header='(Press ctrl+/ for help)'
-    --preview='echo Current selection: {}'
+    --preview='echo {}'
     --preview-window=wrap,bottom,border-sharp,75%"
 
 set --global --export FZF_ALT_C_COMMAND 'test $dir = '.' && set _args "--strip-cwd-prefix" || set _args '.' $dir; fd $_args --hidden --type directory --type symlink'
