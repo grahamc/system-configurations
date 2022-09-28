@@ -353,7 +353,7 @@ vim.keymap.set('n', [[\]], '<Cmd>set hlsearch!<CR>', {silent = true})
 vim.opt.sessionoptions:remove('blank')
 vim.opt.sessionoptions:remove('options')
 vim.opt.sessionoptions:append('tabpages')
-vim.opt.sessionoptions:append('folds')
+vim.opt.sessionoptions:remove('folds')
 _G.session_dir = vim.g.data_path .. '/sessions'
 
 local function save_session()
