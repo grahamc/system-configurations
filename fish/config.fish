@@ -232,6 +232,12 @@ function __abbr_tips_history_backward
     commandline -f history-search-backward
 end
 bind \e\[A __abbr_tips_history_backward
+# This way, I won't get reminded about an abbreviation when executing the autosuggested command
+function __abbr_tips_forward_char
+    set -g __abbr_tips_used 1
+    commandline -f forward-char
+end
+bind \e\[C __abbr_tips_forward_char
 
 # pipr
 abbr --add --global pipr 'pipr --no-isolation'
