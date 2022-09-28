@@ -275,7 +275,7 @@ if not set --query BANNER_WAS_PRINTED
     set figlet_font "$HOME/.local/share/figlet/smblock.tlf"
     if type --query figlet
     and test -f $figlet_font
-        figlet -W -w (stty size | cut -d" " -f2) -f $figlet_font $banner
+        figlet -W -f $figlet_font $banner
     else
         echo $banner
     end
