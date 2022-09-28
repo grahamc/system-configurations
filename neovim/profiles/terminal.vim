@@ -722,7 +722,7 @@ vim.diagnostic.config({
   -- With this enabled, sign priorities will become: hint=11, info=12, warn=13, error=14
   severity_sort = true,
   float = {
-    source = "if_many",
+    source = true,
     focusable = false,
     format = function(diagnostic)
       local result = diagnostic.message
