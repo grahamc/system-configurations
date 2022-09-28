@@ -1,0 +1,2 @@
+# load the common customization script.
+. --autoload --no-alias initialization/common

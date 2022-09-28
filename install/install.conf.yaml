@@ -64,6 +64,7 @@
     ~/.local/share/figlet/smblock.tlf: figlet/smblock.tlf
     ~/.local/share/applications/firefox.desktop: firefox/firefox.desktop
     ~/.local/share/applications/code.desktop: vscode/code.desktop
+    ~/.yashrc: yash/yashrc
 
 # Using another link directive since I have multiple links to this directory and you can't have
 # multiple keys with the same name in YAML
