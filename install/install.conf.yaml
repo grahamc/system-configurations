@@ -65,6 +65,10 @@
     ~/.local/share/applications/firefox.desktop: firefox/firefox.desktop
     ~/.local/share/applications/code.desktop: vscode/code.desktop
     ~/.yashrc: yash/yashrc
+    ~/.ipython/profile_default/ipython_config.py: ipython/ipython_config.py
+    ~/.ipython/profile_default/startup/:
+        glob: true
+        path: ./ipython/startup/*
 
 # Using another link directive since I have multiple links to this directory and you can't have
 # multiple keys with the same name in YAML
