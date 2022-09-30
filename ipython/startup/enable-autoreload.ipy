@@ -1,6 +1,0 @@
-%autoreload 2
-yellow = '\x1b[33m'
-normal = '\x1b[0m'
-print(f"\n\
-[{yellow}WARNING{normal}] Module autoreload is enabled, disable it to improve performance\
-")

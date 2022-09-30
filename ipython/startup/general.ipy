@@ -1,0 +1,13 @@
+yellow = '\x1b[33m'
+blue = '\x1b[34m'
+normal = '\x1b[0m'
+
+# enable autoreload
+%autoreload 2
+print(f"\n\
+[{yellow}warning{normal}] Module autoreload is enabled, disable it to improve performance\
+")
+
+# enable verbose exception traces
+print(f'[{blue}info{normal}]', end=' ')
+%xmode Verbose
