@@ -103,6 +103,8 @@ end
 vim.keymap.set('n', '<LeftMouse>', '<LeftMouse><Cmd>lua ClickLink()<CR>')
 
 vim.o.scroll = 1
+
+vim.keymap.set('n', '|', '<Cmd>set list!<CR>', {silent = true})
 EOF
 " }}}
 
