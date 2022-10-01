@@ -365,6 +365,7 @@ Plug(
           words('and', 'or'),
           words('public', 'private'),
           words('true', 'false'),
+          words('True', 'False'),
           words('yes', 'no'),
           symbols('&&', '||'),
           symbols('!=', '=='),
