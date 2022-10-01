@@ -178,7 +178,6 @@ def _create_preview_fifos():
 
 
 def _create_fzf_process(initial_query, fifo_input_path, fifo_output_path):
-    # TODO: add a file for fzf search history.
     return subprocess.Popen([
         'fzf-tmux-zoom',
         '--no-sort',
@@ -186,6 +185,7 @@ def _create_fzf_process(initial_query, fifo_input_path, fifo_output_path):
         '-n3..,..',
         '--with-nth=4..',
         '--tiebreak=index',
+        f"--history={os.environ['HOME']}/.config/fzf/fzf-ipython-history.txt",
         '--ansi',
         '--bind=ctrl-r:toggle-sort',
         '--exact',
