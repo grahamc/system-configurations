@@ -61,9 +61,6 @@ echo -ne "\033]0;fish\007"
 function _fzf_complete
     set choice \
         ( \
-            # Calling complete with no argument will perform completion using the current commandline. However, when the
-            # commandline is 'cd ', I don't get results. I think the reason it doesn't work is because my cd is a function that
-            # calls zoxide. In any case, explicitly calling complete with the output of `commandline` fixes that.
             complete --escape --do-complete (commandline --cut-at-cursor) \
             | if type --query python
                 # Remove duplicates
@@ -210,7 +207,15 @@ set --global --export RIPGREP_CONFIG_PATH "$HOME/.ripgreprc"
 # zoxide
 set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'ls --classify -x {2}' --keep-right --bind='change:first' --height 40% --preview-window '50%' --info hidden"
 if type --query zoxide
-    zoxide init --cmd cd fish | source
+    zoxide init --no-cmd fish | source
+
+    function cd --wraps cd
+        # zoxide does not support the '--' argument
+        if set index (contains --index -- '--' $argv)
+            set --erase argv[$index]
+        end
+        __zoxide_z $argv
+    end
 end
 
 # direnv
