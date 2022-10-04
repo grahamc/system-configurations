@@ -14,12 +14,6 @@ set --global --export __fish_git_prompt_showdirtystate
 set --global --export __fish_git_prompt_showupstream informative
 set --global --export __fish_git_prompt_showuntrackedfiles
 
-# async prompt
-set --universal async_prompt_functions testing
-# function fish_prompt_get_git_context_loading_indicator
-#     echo -n -s $fish_prompt_color_text (set_color --dim) 'git: loading…'
-# end
-
 function fish_prompt --description 'Print the prompt'
     # pipestatus contains the exit code(s) of the last command that was executed
     # (there are multiple codes in the case of a pipeline). I want the value of the last command
@@ -59,7 +53,7 @@ function fish_prompt --description 'Print the prompt'
     set -l contexts \
         (fish_prompt_get_direnv_context) \
         (fish_prompt_get_python_context) \
-        (fish_prompt_get_git_context) \
+        (echo -n -s $fish_prompt_color_text (fish_prompt_get_git_context)) \
         (fish_prompt_get_job_context) \
         (fish_prompt_get_user_context) \
         (fish_prompt_get_path_context) \
@@ -193,43 +187,4 @@ function fish_prompt_get_direnv_context
     end
     # remove the '-' in the beginning
     echo -n -s $fish_prompt_color_text 'direnv: ' (basename (string sub --start 2 -- $DIRENV_DIR))
-end
-
-function fish_prompt_get_git_context
-    set --global __fish_git_prompt_char_upstream_ahead ',ahead:'
-    set --global __fish_git_prompt_char_upstream_behind ',behind:'
-    set --global __fish_git_prompt_char_untrackedfiles ',untracked'
-    set --global __fish_git_prompt_char_dirtystate ',dirty'
-    set --global __fish_git_prompt_char_stagedstate ',staged'
-    set --global __fish_git_prompt_char_invalidstate ',invalid'
-    set --global __fish_git_prompt_char_stateseparator ''
-
-    set git_context (fish_git_prompt)
-    if test -z $git_context
-        return
-    end
-
-    # DEBUG: Simulate increased latency when accessing the git remote. This way I can test
-    # the async prompt
-    # sleep 2
-
-    if test (string length --visible $git_context) -gt (math $columns - 10)
-        set --global --export __fish_git_prompt_char_upstream_ahead '↑'
-        set --global --export __fish_git_prompt_char_upstream_behind '↓'
-        set --global --export __fish_git_prompt_char_untrackedfiles '?'
-        set --global --export __fish_git_prompt_char_dirtystate '!'
-        set --global --erase __fish_git_prompt_char_stagedstate
-        set --global --erase __fish_git_prompt_char_invalidstate
-        set --global --export __fish_git_prompt_char_stateseparator ' '
-        set git_context (fish_git_prompt)
-    end
-
-    # remove parentheses and leading space e.g. ' (branch,dirty,untracked)' -> 'branch,dirty,untracked'
-    set --local formatted_context (string sub --start=3 --end=-1 $git_context)
-    # replace first comma with ' (' e.g. ',branch,dirty,untracked' -> ' (branch dirty,untracked'
-    set --local formatted_context (string replace ',' ' (' $formatted_context)
-    # only add the closing parenthese if we added the opening one
-    and set formatted_context (string join '' $formatted_context ')')
-
-    echo -n -s $fish_prompt_color_text 'git: ' $formatted_context
 end
