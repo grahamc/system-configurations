@@ -45,10 +45,6 @@ function fish_prompt --description 'Print the prompt'
         return
     end
 
-    # Get the number of columns for the terminal window or tmux pane. Setting this value now since it gets used in some
-    # of the context functions.
-    set --global --export columns (stty size | cut -d" " -f2)
-
     set -l lines
     set -l contexts \
         (fish_prompt_get_direnv_context) \
@@ -163,7 +159,7 @@ function fish_prompt_get_path_context
     set path (prompt_pwd)
 
     set dir_length 5
-    while test (string length --visible $path) -gt (math $columns - 10) -a $dir_length -ge 1
+    while test (string length --visible $path) -gt (math $COLUMNS - 10) -a $dir_length -ge 1
         set -g fish_prompt_pwd_dir_length $dir_length
         set path (prompt_pwd)
         set dir_length (math $dir_length - 1)
