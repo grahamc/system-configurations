@@ -22,6 +22,12 @@ cursor_y="$4"
 session_id="$5"
 window_id="$6"
 pane_id="$7"
+pane_pid="$8"
+
+# If the shell is running a program, do nothing
+if ps --ppid "$pane_pid" >/dev/null 2>&1; then
+  return
+fi
 
 # The mouse is over the cursor already, nowhere to move
 if [ "$mouse_x" = "$cursor_x" ] && [ "$mouse_y" = "$cursor_y" ]; then
