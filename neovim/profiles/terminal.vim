@@ -1917,8 +1917,8 @@ Plug 'arcticicestudio/nord-vim'
     highlight FoldColumn ctermfg=15 ctermbg=NONE
     highlight SpecialKey ctermfg=13 ctermbg=NONE
     highlight NonText ctermfg=15 ctermbg=NONE
-    highlight NvimTreeWinBar ctermfg=13 ctermbg=NONE
-    highlight ExplorerTabLine ctermfg=13 ctermbg=NONE
+    highlight NvimTreeWinBar ctermfg=6 ctermbg=NONE
+    highlight! link ExplorerTabLine NvimTreeWinBar
     highlight NerdTreeNormal ctermbg=NONE
     highlight VirtColumn ctermfg=24
     highlight DiagnosticSignError ctermfg=1 ctermbg=NONE
@@ -1948,16 +1948,17 @@ Plug 'arcticicestudio/nord-vim'
     " https://github.com/nvim-telescope/telescope.nvim/blob/master/plugin/telescope.lua
     highlight! TelescopePromptNormal ctermbg=24
     highlight! TelescopePromptBorder ctermbg=24 ctermfg=24
-    highlight! TelescopePromptTitle ctermbg=24 ctermfg=5 cterm=reverse,bold,nocombine
+    highlight! TelescopePromptTitle ctermbg=24 ctermfg=6 cterm=reverse,bold,nocombine
     highlight! TelescopePreviewNormal ctermbg=16
     highlight! TelescopePreviewBorder ctermbg=16 ctermfg=15
     highlight! TelescopePreviewTitle ctermbg=16 ctermfg=15 cterm=nocombine
     highlight! TelescopeResultsNormal ctermbg=16
     highlight! TelescopeResultsBorder ctermbg=16 ctermfg=16
     highlight! TelescopeResultsTitle ctermbg=16 ctermfg=16
-    highlight! TelescopePromptPrefix ctermbg=24 ctermfg=5 cterm=none,nocombine
+    highlight! TelescopePromptPrefix ctermbg=24 ctermfg=6 cterm=none,nocombine
     highlight! TelescopeMatching ctermbg=NONE ctermfg=6
-    highlight! TelescopeSelectionCaret ctermbg=8 ctermfg=8
+    highlight! TelescopeSelection ctermbg=24
+    highlight! TelescopeSelectionCaret ctermbg=24 ctermfg=24
     highlight TelescopePromptCounter ctermfg=15 cterm=none,nocombine
     highlight MasonHeader ctermbg=NONE ctermfg=4 cterm=reverse,bold
     highlight MasonHighlight ctermbg=NONE ctermfg=6
@@ -1984,6 +1985,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight FidgetTitle ctermbg=0 ctermfg=15 cterm=italic
     highlight FidgetTask ctermbg=0 ctermfg=15 cterm=italic
     highlight NvimTreeIndentMarker ctermfg=15
+    highlight String ctermfg=50
   endfunction
   augroup NordVim
     autocmd!
