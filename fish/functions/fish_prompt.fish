@@ -13,7 +13,7 @@ function fish_prompt --description 'Print the prompt'
     set last_pipestatus $pipestatus
 
     # TODO: This clears the text in the terminal after the cursor. If we don't do this, multiline
-    # transient prompts won't display properly.
+    # prompts might not display properly.
     # issue: https://github.com/fish-shell/fish-shell/issues/8418
     printf \e\[0J
 
@@ -57,7 +57,7 @@ function fish_prompt --description 'Print the prompt'
         set --append lines $middle_line
     end
     set --append lines (fish_prompt_make_line last)
-    # Use underline to visually separate commands
+    # Add another line to separate commands
     set --prepend lines (fish_prompt_get_separator)
     echo -e -n (string join '\n' $lines)
 end
