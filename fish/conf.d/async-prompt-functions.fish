@@ -40,5 +40,5 @@ function fish_prompt_get_git_context
     # only add the closing parenthese if we added the opening one
     and set formatted_context (string join '' $formatted_context ')')
 
-    echo -n -s $fish_prompt_color_text 'git: ' $formatted_context
+    echo -n -s 'git: ' $formatted_context
 end

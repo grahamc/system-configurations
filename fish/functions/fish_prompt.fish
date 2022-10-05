@@ -49,7 +49,7 @@ function fish_prompt --description 'Print the prompt'
     set -l contexts \
         (fish_prompt_get_direnv_context) \
         (fish_prompt_get_python_context) \
-        (echo -n -s $fish_prompt_color_text (fish_prompt_get_git_context)) \
+        (fish_prompt_get_git_context) \
         (fish_prompt_get_job_context) \
         (fish_prompt_get_user_context) \
         (fish_prompt_get_path_context) \
@@ -59,6 +59,9 @@ function fish_prompt --description 'Print the prompt'
         if test -z $context
             continue
         end
+
+        # apply default text color
+        set context (echo -n -s $fish_prompt_color_text $context)
 
         if not set --query lines[1]
             set --local first_line (string join '' (fish_prompt_make_line first) (fish_prompt_format_context $context))
