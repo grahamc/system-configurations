@@ -1,5 +1,4 @@
 set left_splitbar \u257C
-set right_splitbar \u257E
 set connectbar_up \u2514
 set connectbar_down \u250C
 set connectbar_middle \u251C
@@ -9,10 +8,6 @@ set fish_prompt_color_standout_text (set_color normal; set_color yellow)
 set fish_prompt_color_error_text (set_color normal; set_color red)
 set fish_prompt_color_normal (set_color normal)
 set fish_prompt_color_border (set_color normal; set_color brwhite)
-
-set --global --export __fish_git_prompt_showdirtystate
-set --global --export __fish_git_prompt_showupstream informative
-set --global --export __fish_git_prompt_showuntrackedfiles
 
 function fish_prompt --description 'Print the prompt'
     # pipestatus contains the exit code(s) of the last command that was executed
