@@ -68,16 +68,16 @@ function fish_prompt_get_separator
 end
 
 function fish_prompt_format_context --argument-names context
-    echo -n -s $fish_prompt_color_border ╼[ $context $fish_prompt_color_border ]
+    echo -n -s $fish_prompt_color_border '╼[' $context $fish_prompt_color_border ']'
 end
 
 function fish_prompt_make_line --argument-names type
     if test "$type" = first
-        echo -n -s $fish_prompt_color_border ┌
+        echo -n -s $fish_prompt_color_border '┌'
     else if test "$type" = last
-        echo -n -s $fish_prompt_color_border └ (set_color normal; set_color brwhite) (fish_prompt_get_arrow) $fish_prompt_color_normal
+        echo -n -s $fish_prompt_color_border '└' (set_color normal; set_color brwhite) (fish_prompt_get_arrow) $fish_prompt_color_normal
     else
-        echo -n -s $fish_prompt_color_border ├
+        echo -n -s $fish_prompt_color_border '├'
     end
 end
 
@@ -196,7 +196,7 @@ function fish_prompt_get_git_context
 end
 
 function fish_prompt_abbreviate_git_states --argument-names git_context
-    set long_states ahead: behind: untracked dirty staged invalid
+    set long_states 'ahead:' 'behind:' 'untracked' 'dirty' 'staged' 'invalid'
     set abbreviated_states '↑' '↓' '?' '!' '+' '#'
     for index in (seq (count $long_states))
         set long_state $long_states[$index]
