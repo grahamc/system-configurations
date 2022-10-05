@@ -55,9 +55,6 @@ function fish_prompt --description 'Print the prompt'
             continue
         end
 
-        # apply default text color
-        set context (echo -n -s $fish_prompt_color_text $context)
-
         if not set --query lines[1]
             set --local first_line (string join '' (fish_prompt_make_line first) (fish_prompt_format_context $context))
             set --append lines $first_line
@@ -181,4 +178,44 @@ function fish_prompt_get_direnv_context
     end
     # remove the '-' in the beginning
     echo -n -s $fish_prompt_color_text 'direnv: ' (basename (string sub --start 2 -- $DIRENV_DIR))
+end
+
+function fish_prompt_get_git_context
+    set git_context (__fish_prompt_get_git_context)
+    if test -z $git_context
+        return
+    end
+    if test "$git_context" = $git_loading_indicator
+        echo -n $git_context
+        return
+    end
+
+    # remove parentheses and leading space e.g. ' (branch,dirty,untracked)' -> 'branch,dirty,untracked'
+    set --local formatted_context (string sub --start=3 --end=-1 $git_context)
+    # replace first comma with ' (' e.g. ',branch,dirty,untracked' -> ' (branch dirty,untracked'
+    set --local formatted_context (string replace ',' ' (' $formatted_context)
+    # only add the closing parenthese if we added the opening one
+    and set formatted_context (string join '' $formatted_context ')')
+
+    if test (string length --visible $formatted_context) -gt (math $COLUMNS - 10)
+        set formatted_context (fish_prompt_abbreviate_git_states $formatted_context)
+    end
+
+    echo -n -s $fish_prompt_color_text 'git: ' $formatted_context
+end
+
+function fish_prompt_abbreviate_git_states --argument-names git_context
+    set long_states ahead: behind: untracked dirty staged invalid
+    set abbreviated_states '↑' '↓' '?' '!' '+' '#'
+    for index in (seq (count $long_states))
+        set long_state $long_states[$index]
+        set abbreviated_state $abbreviated_states[$index]
+        set git_context (string replace --regex "(\(.*)$long_state(.*\))" "\${1}$abbreviated_state\${2}" $git_context)
+    end
+
+    echo -n $git_context \
+        # remove the commas in between states
+        | string replace --all --regex '(\(.*),(.*\))' '${1}${2}' \
+        # remove the parentheses around the states
+        | string replace --all --regex '[\(,\)]'  ''
 end
