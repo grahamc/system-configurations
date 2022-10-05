@@ -1,7 +1,3 @@
-set left_splitbar \u257C
-set connectbar_up \u2514
-set connectbar_down \u250C
-set connectbar_middle \u251C
 # The reason for all the 'set_color normal' commands is to undo any attributes set like '--bold'
 set fish_prompt_color_text (set_color normal; set_color cyan)
 set fish_prompt_color_standout_text (set_color normal; set_color yellow)
@@ -72,16 +68,16 @@ function fish_prompt_get_separator
 end
 
 function fish_prompt_format_context --argument-names context
-    echo -n -s $fish_prompt_color_border $left_splitbar [ $context $fish_prompt_color_border ]
+    echo -n -s $fish_prompt_color_border ╼[ $context $fish_prompt_color_border ]
 end
 
 function fish_prompt_make_line --argument-names type
     if test "$type" = first
-        echo -n -s $fish_prompt_color_border $connectbar_down
+        echo -n -s $fish_prompt_color_border ┌
     else if test "$type" = last
-        echo -n -s $fish_prompt_color_border $connectbar_up (set_color normal; set_color brwhite) (fish_prompt_get_arrow) $fish_prompt_color_normal
+        echo -n -s $fish_prompt_color_border └ (set_color normal; set_color brwhite) (fish_prompt_get_arrow) $fish_prompt_color_normal
     else
-        echo -n -s $fish_prompt_color_border $connectbar_middle
+        echo -n -s $fish_prompt_color_border ├
     end
 end
 
