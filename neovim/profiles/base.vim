@@ -203,6 +203,8 @@ vim.api.nvim_create_autocmd(
     group = group_id,
   }
 )
+
+vim.o.clipboard = 'unnamedplus'
 EOF
 " }}}
 

@@ -10,7 +10,6 @@ endif
 set confirm
 set mouse=a
 set display+=lastline
-let &clipboard = 'unnamedplus'
 set scrolloff=999
 set jumpoptions=stack
 
