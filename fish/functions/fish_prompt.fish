@@ -177,7 +177,7 @@ function fish_prompt_get_git_context
         return
     end
     if test "$git_context" = $git_loading_indicator
-        echo -n $git_context
+        echo -n -s $fish_prompt_color_text 'git: ' $git_context
         return
     end
 

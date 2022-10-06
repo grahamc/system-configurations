@@ -7,7 +7,7 @@ set --global async_prompt_functions \
 
 # git
 # Leaving this a global variable since it will be accessed from my main prompt function
-set git_loading_indicator (echo -n -s 'git: ' (set_color --dim --italics) 'loading…')
+set git_loading_indicator (echo -n -s (set_color --dim --italics) 'loading…')
 function __fish_prompt_get_git_context_loading_indicator
     echo -n $git_loading_indicator
 end
