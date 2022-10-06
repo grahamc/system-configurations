@@ -1508,6 +1508,7 @@ Plug(
           get_cwd = function(params)
             return vim.fn.getcwd()
           end,
+          label_trailing_slash = false,
         },
       }
       local tmux = {
