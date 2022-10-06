@@ -104,6 +104,8 @@ vim.keymap.set('n', '<LeftMouse>', '<LeftMouse><Cmd>lua ClickLink()<CR>')
 vim.o.scroll = 1
 
 vim.keymap.set('n', '|', '<Cmd>set list!<CR>', {silent = true})
+
+vim.o.shortmess = 'filnxtToOFs'
 EOF
 " }}}
 
@@ -343,9 +345,6 @@ vim.cmd([[
 
 -- Search {{{
 vim.o.hlsearch = false
--- show match position in command window, don't show 'Search hit BOTTOM/TOP'
-vim.opt.shortmess:remove('S')
-vim.opt.shortmess:append('s')
 -- toggle search highlighting
 vim.keymap.set('n', [[\]], '<Cmd>set hlsearch!<CR>', {silent = true})
 -- }}}
