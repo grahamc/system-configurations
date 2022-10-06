@@ -75,7 +75,6 @@ function _fzf_complete
             --preview-window '50%' \
             --height 30% \
             --no-header \
-            --info 'hidden' \
             --bind 'backward-eof:abort' \
             --select-1 \
             --exit-0 \
