@@ -28,7 +28,7 @@ except (ImportError, ValueError):
     pass
 
 _ENCODED_NEWLINE = '↵'
-_ENCODED_NEWLINE_HIGHLIGHT = '\x1b[48;5;250m\x1b[38;5;255m'
+_ENCODED_NEWLINE_HIGHLIGHT = '\x1b[93m'
 _ENCODED_NEWLINE_HIGHLIGHT_RESET = '\x1b[0m'
 _HIGHLIGHTED_ENCODED_NEWLINE = '{}{}{}'.format(
     _ENCODED_NEWLINE_HIGHLIGHT, _ENCODED_NEWLINE,
@@ -179,7 +179,7 @@ def _create_preview_fifos():
 
 def _create_fzf_process(initial_query, fifo_input_path, fifo_output_path):
     return subprocess.Popen([
-        'fzf-tmux-zoom',
+        'fzf',
         '--no-sort',
         '--multi',
         '-n3..,..',
@@ -187,7 +187,6 @@ def _create_fzf_process(initial_query, fifo_input_path, fifo_output_path):
         '--tiebreak=index',
         f"--history={os.environ['HOME']}/.config/fzf/fzf-ipython-history.txt",
         '--ansi',
-        '--bind=ctrl-r:toggle-sort',
         '--exact',
         '--query={}'.format(initial_query),
         '--preview-window=35%',
