@@ -22,8 +22,8 @@ set --global --export FZF_DEFAULT_OPTS "
     --prompt='$prompt'
     --tabstop=2
     --info=inline
-    --marker='·'
     --pointer=' '
+    --marker='🢒'
     --history='$_fzf_history_file'
     --header='(Press ctrl+/ for help)'
     --preview='echo {}'
