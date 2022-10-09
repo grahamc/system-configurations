@@ -282,8 +282,7 @@ vim.keymap.set({'n', 'x'}, ']<Tab>', ']z')
 
 local function SetDefaultFoldMethod()
   foldmethod = vim.o.foldmethod
-  isFoldmethodOverridable = foldmethod ~= 'manual'
-    and foldmethod ~= 'marker'
+  isFoldmethodOverridable = foldmethod ~= 'marker'
     and foldmethod ~= 'diff'
     and foldmethod ~= 'expr'
   if isFoldmethodOverridable then
@@ -1725,8 +1724,7 @@ Plug(
         keymap_opts = { noremap = true, silent = true }
 
         foldmethod = vim.o.foldmethod
-        isFoldmethodOverridable = foldmethod ~= 'manual'
-          and foldmethod ~= 'marker'
+        isFoldmethodOverridable = foldmethod ~= 'marker'
           and foldmethod ~= 'diff'
           and foldmethod ~= 'expr'
         if capabilities.foldingRangeProvider and isFoldmethodOverridable then
