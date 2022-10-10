@@ -133,13 +133,16 @@ set --global --export GREP_COLORS 'ms=00;35'
 echo -ne '\033[5 q'
 
 # ls
-abbr --add --global ls 'ls -x --color=never --classify --hyperlink=auto'
+abbr --add --global ls 'ls'
 # include hidden files
-abbr --add --global la 'ls -x --color=never --classify --almost-all --hyperlink=auto'
-# use the long format and a more human-readable format for sizes e.g. 25M
-abbr --add --global ll 'ls -x --color=never --classify -l --human-readable --hyperlink=auto'
-# combination of the the two above
-abbr --add --global lal 'ls -x --color=never --classify --almost-all -l --human-readable --hyperlink=auto'
+abbr --add --global la 'ls --almost-all'
+# use the long format
+abbr --add --global ll 'ls -l'
+# combination of the two above
+abbr --add --global lal 'ls --almost-all -l'
+# broken symlinks or missing files (files that a symlink references, but don't exist) are colored red, everything
+# else is the normal color
+set --global --export LS_COLORS 'di=0:ln=0:so=0:pi=0:ex=0:bd=0:cd=0:su=0:sg=0:tw=0:ow=0:or=31:mi=31:no=37:*=37'
 
 # cd
 abbr --add --global -- - 'cd -'
@@ -204,7 +207,7 @@ set --global --export VIRTUAL_ENV_DISABLE_PROMPT 1
 set --global --export RIPGREP_CONFIG_PATH "$HOME/.ripgreprc"
 
 # zoxide
-set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'ls --classify -x {2}' --keep-right --bind='change:first' --height 40% --preview-window '50%' --info hidden"
+set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'type --query lsd; and lsd --icon=always {2}; or ls {2}' --keep-right --bind='change:first' --height 40% --preview-window '50%'"
 if type --query zoxide
     zoxide init --no-cmd fish | source
 

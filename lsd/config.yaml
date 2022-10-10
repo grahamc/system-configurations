@@ -1,0 +1,23 @@
+color:
+  when: always
+  theme: theme
+
+blocks:
+  - permission
+  - user
+  - group
+  - size
+  - date
+  - name
+
+date: relative
+
+icons:
+  theme: fancy
+  separator: ''
+
+total-size: true
+
+hyperlink: always
+
+symlink-arrow: "\uea9c " # 

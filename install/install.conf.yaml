@@ -71,6 +71,7 @@
     ~/.ipython/profile_default/startup/:
         glob: true
         path: ./ipython/startup/*
+    ~/.config/lsd: lsd
 
 # Using another link directive since I have multiple links to this directory and you can't have
 # multiple keys with the same name in YAML
