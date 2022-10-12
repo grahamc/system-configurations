@@ -53,7 +53,7 @@ def main():
     open_url(potential_url)
 
 def open_url(url):
-    subprocess.run(['xdg-open',url])
+    subprocess.run(['xdg-open', url], stdout=subprocess.DEVNULL, stdin=subprocess.DEVNULL)
 
 def expand(lines, start_x, start_y, left):
     result = []
