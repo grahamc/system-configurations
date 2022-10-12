@@ -214,8 +214,9 @@ set --global --export RIPGREP_CONFIG_PATH "$HOME/.ripgreprc"
 # zoxide
 set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'type --query lsd; and lsd --icon=always {2}; or ls {2}' --keep-right --bind='change:first' --height 40% --preview-window '50%'"
 if type --query zoxide
-    zoxide init --no-cmd fish | source
+    zoxide init --cmd cd fish | source
 
+    # overwrite the cd function that zoxide creates to handle the '--' argument
     function cd --wraps cd
         # zoxide does not support the '--' argument
         if set index (contains --index -- '--' $argv)
