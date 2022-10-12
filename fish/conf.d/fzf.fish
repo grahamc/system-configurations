@@ -47,7 +47,9 @@ bind --erase \cr
 # that tells fish-abbreviation-tips not to display a tip. This way, I won't get reminded about an abbreviation when
 # executing a command
 # from the history
-bind \ch 'fzf-history-widget && set -g __abbr_tips_used 1'
+#
+# I also merge the history so that the search will search across all fish sessions' histories.
+bind \ch 'history merge; fzf-history-widget && set -g __abbr_tips_used 1'
 
 # use alt+d for directory search instead of default alt+c
 bind --erase \ec

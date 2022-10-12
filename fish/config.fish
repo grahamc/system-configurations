@@ -97,6 +97,11 @@ function _fzf_complete_or_last_entry
 end
 # TODO: If you press shift+tab when the first entry is selected, it doesn't unselect it wraps around
 bind -k btab _fzf_complete_or_last_entry
+# Save command to history before executing it. This way long running commands, like ssh or watch, will show up in
+# the history immediately.
+function __save_history --on-event fish_preexec
+    history --save
+end
 
 # sudo
 abbr --add --global s sudo
