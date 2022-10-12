@@ -102,7 +102,7 @@ name:
   include: "\uf755 "
   init.el: ""
   known_hosts: ""
-  lib: ""
+  lib: "\uf755 "
   license: ""
   license.md: ""
   license.txt: ""
