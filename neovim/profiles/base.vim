@@ -189,6 +189,7 @@ vim.api.nvim_create_autocmd(
         vim.g.fast_macro_events = table.concat(events, ',')
       end
 
+      vim.g.old_eventignore = vim.o.eventignore
       vim.o.eventignore = vim.g.fast_macro_events
     end,
     group = group_id,
@@ -198,7 +199,7 @@ vim.api.nvim_create_autocmd(
   'RecordingLeave',
   {
     callback = function()
-      vim.o.eventignore = ''
+      vim.o.eventignore = vim.g.old_eventignore
     end,
     group = group_id,
   }
