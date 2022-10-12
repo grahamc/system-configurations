@@ -6,7 +6,7 @@ filetype:
   file: ""
   pipe: "\uea99 " # 
   socket: "\uebcb " # 
-  executable: "\uf085 " # 
+  executable: "\uf423 " # 
   symlink-dir: "\uf482 " # 
   symlink-file: "\uf481 " # 
   device-char: "\ue601 " # 
