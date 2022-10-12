@@ -11,6 +11,11 @@ else
 end
 
 function _autoreload_fish --on-variable _autoreload_indicator
+    if jobs --query
+        echo "$(set_color yellow)A configuration change was detected, but there are jobs running in the background so the shell will not reload.$(set_color normal)"
+        return
+    end
+
     # clear screen. taken from fish's default keybind for ctrl+l
     echo -n (clear | string replace \e\[3J "")
 
