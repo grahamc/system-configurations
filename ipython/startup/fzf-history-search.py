@@ -49,39 +49,42 @@ HistoryEntry = Tuple[datetime.datetime, str]
 def _load_pygments_objects():
     import pygments
     from pygments.style import Style
-    from pygments.token import (
-        Keyword,
-        Name,
-        Comment,
-        String,
-        Error,
-        Number,
-        Operator,
-        Punctuation,
-        Literal,
-        Token,
-    )
+    from pygments.token import Token
 
     class AnsiStyle(Style):
+        # TODO: These styles are copied from my 'ipython_config', but I should find a way to centralize the styles
         styles = {
-            Comment: 'ansiwhite',
-            Error: 'ansired',
-            String: 'ansigreen',
-            Keyword: 'ansicyan',
-            Literal: '',
-            Name: '',
-            Name.Decorator: 'ansicyan',
-            Name.Class: 'ansicyan',
-            Name.Function: 'ansicyan',
-            Name.Builtin: 'ansicyan',
-            Number: 'ansimagenta',
-            Operator: 'ansiblue',
-            Punctuation: '',
+            Token.Prompt: '',
+            Token.PromptNum: ' bold',
+            Token.OutPrompt: 'ansibrightyellow',
+            Token.OutPromptNum: 'ansibrightyellow bold',
+            Token.Comment: 'ansiwhite italic',
+            Token.CommentPreproc: 'noitalic',
+            Token.Error: 'ansired',
+            Token.String: 'ansigreen noitalic',
+            Token.String.Interpol: "nobold",
+            Token.String.Escape: "nobold",
+            Token.Keyword: 'ansicyan nobold',
+            Token.Literal: '',
+            Token.Name: '',
+            Token.Name.Decorator: 'ansicyan',
+            Token.Name.Class: 'ansicyan nobold',
+            Token.Name.Function: 'ansicyan',
+            Token.Name.Builtin: 'ansicyan',
+            Token.Name.Namespace: "nobold",
+            Token.Name.Exception: "nobold",
+            Token.Name.Entity: "nobold",
+            Token.Name.Tag: "nobold",
+            Token.Number: 'ansimagenta',
+            Token.Operator: 'ansiblue',
+            Token.Operator.Word: "nobold",
+            Token.Punctuation: '',
             Token.Escape: '',
             Token.ExecutingNode: '',
             Token.Generic: '',
             Token.Other: '',
             Token.Text: '',
+            Token.Token: '',
         }
 
     global _PYGMENTS_LEXER, _PYGMENTS_STYLE, _PYGMENTS_FORMATTER
