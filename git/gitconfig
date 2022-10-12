@@ -54,5 +54,5 @@
   cmd = smerge mergetool \"$BASE\" \"$LOCAL\" \"$REMOTE\" -o \"$MERGED\"
   trustExitCode = true
 [color "diff"]
-	oldMoved = normal 21 bold
-	newMoved = normal 22 bold
+	oldMoved = normal 21
+	newMoved = normal 22
