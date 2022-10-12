@@ -16,14 +16,14 @@ set --global --export FZF_DEFAULT_OPTS "
     --bind 'tab:down,shift-tab:up,ctrl-j:preview-down,ctrl-k:preview-up,change:first,alt-o:change-preview-window(right,60%|bottom,75%)+refresh-preview,ctrl-/:preview(fzf-help-preview)+preview-top,ctrl-\\:refresh-preview,enter:select+accept,ctrl-r:refresh-preview,ctrl-w:toggle-preview-wrap'
     --layout=reverse
     --border=none
-    --color='16,fg+:-1:regular,bg+:8,info:15,gutter:-1,pointer:6:regular,prompt:6:regular,border:15:dim,query:-1:regular,marker:6:regular,header:15,spinner:yellow,hl:cyan,hl+:regular:cyan'
+    --color='16,fg:dim,fg+:-1:regular::bold,bg+:-1,info:15,gutter:8,pointer:6:bold,prompt:6:regular,border:15:dim,query:-1:regular,marker:6:bold,header:15,spinner:yellow,hl:cyan:dim,hl+:regular:cyan::bold'
     --margin=3%
     --height 100%
     --prompt='$prompt'
     --tabstop=2
     --info=inline
-    --pointer=' '
-    --marker='🢒'
+    --pointer='>'
+    --marker='>'
     --history='$_fzf_history_file'
     --header='(Press ctrl+/ for help)'
     --preview='echo {}'
