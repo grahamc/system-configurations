@@ -12,6 +12,7 @@ brew "cmake", link: false
 brew "direnv"
 brew "docker"
 brew "doggo"
+brew "duf"
 brew "entr"
 brew "fd"
 brew "figlet"
