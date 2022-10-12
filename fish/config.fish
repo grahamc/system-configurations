@@ -277,7 +277,8 @@ abbr --add --global watch 'watch --no-title --differences --interval 0.5'
 
 # vscode
 # Make vscode run natively in Wayland, as opposed to using xwayland. This way the font won't be blurry on HiDPI screens.
-abbr --add --global code 'code --enable-features=UseOzonePlatform --ozone-platform=wayland'
+# Also clearing the $TMUX variable so that the integrated terminal in vscode won't think it's in TMUX.
+abbr --add --global code 'TMUX= code --enable-features=UseOzonePlatform --ozone-platform=wayland'
 
 # fonts
 # Setting this to 1 means I can use nerdfont glyphs
