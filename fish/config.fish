@@ -78,8 +78,8 @@ function _fzf_complete
             --bind 'backward-eof:abort' \
             --select-1 \
             --exit-0 \
-            --query (commandline --current-token --cut-at-cursor) \
             --no-hscroll \
+            --color 'gutter:-1' \
         )
     and begin
         set entry (string split -f1 -- \t $choice)
@@ -90,12 +90,13 @@ function _fzf_complete
 end
 function _fzf_complete_or_last_entry
     if commandline --paging-mode
+        # TODO: When the first entry is selected (in tab complete not fzf_complete) this doesn't unselect it,
+        # it wraps around
         commandline -f backward-char
     else
         _fzf_complete
     end
 end
-# TODO: If you press shift+tab when the first entry is selected, it doesn't unselect it wraps around
 bind -k btab _fzf_complete_or_last_entry
 # Save command to history before executing it. This way long running commands, like ssh or watch, will show up in
 # the history immediately.
