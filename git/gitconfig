@@ -21,15 +21,20 @@
   undocommit = reset "HEAD^"
   co = checkout
   ui = "!gitui"
-  gui = "!smerge ."
+  gui = "!env TMUX='' code --enable-features=UseOzonePlatform --ozone-platform=wayland ."
   l = log
 [init]
   defaultBranch = master
 [merge]
   conflictstyle = diff3
-	tool = smerge
+	tool = vscode
+[mergetool "vscode"]
+  cmd = env TMUX='' code --enable-features=UseOzonePlatform --ozone-platform=wayland --wait $MERGED
 [diff]
   colorMoved = default
+  tool = vscode
+[difftool "vscode"]
+  cmd = env TMUX='' code --enable-features=UseOzonePlatform --ozone-platform=wayland --wait --diff $LOCAL $REMOTE
 [interactive]
   diffFilter = delta-with-fallback-to-less --color-only
 [delta]
@@ -50,9 +55,6 @@
   plus-non-emph-style = "syntax 18"
   plus-emph-style = "syntax 26"
   zero-style = "syntax normal"
-[mergetool "smerge"]
-  cmd = smerge mergetool \"$BASE\" \"$LOCAL\" \"$REMOTE\" -o \"$MERGED\"
-  trustExitCode = true
 [color "diff"]
 	oldMoved = normal 21
 	newMoved = normal 22
