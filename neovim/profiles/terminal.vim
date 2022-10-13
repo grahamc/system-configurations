@@ -1899,7 +1899,7 @@ Plug 'arcticicestudio/nord-vim'
     if exists('g:terminal_ansi_colors') | unlet g:terminal_ansi_colors | endif
     " Have vim only use the colors from the color palette of the terminal in which it runs
     set t_Co=256
-    highlight Visual ctermbg=8
+    highlight Visual ctermbg=24
     " Search hit
     highlight Search ctermfg=DarkYellow ctermbg=NONE cterm=reverse
     " Parentheses
