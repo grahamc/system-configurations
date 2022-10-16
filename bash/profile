@@ -1,7 +1,17 @@
 # ~/.profile: executed by the command interpreter for login shells.
 
-# Initialize brew
+# Setup brew
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+# Setup asdf version manager
+#
+# NOTE: I have similar setup code in my interactive shell config.
+# The interactive shell needs it for the functions it defines.
+# This shell needs it to set the PATH.
+if command -v brew; then
+    _asdf_init_script="$(brew --prefix asdf)/libexec/asdf.sh"
+    test -e "$_asdf_init_script" && source "$_asdf_init_script"
+fi
 
 # Adding this to the PATH since this is where user-specific executables should go, per the
 # XDG Base Directory spec.
