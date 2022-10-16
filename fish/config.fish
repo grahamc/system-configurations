@@ -10,6 +10,7 @@ abbr --add --global g git
 abbr --add --global touchp touch-and-make-parent-dirs
 set --global --export PAGER less
 abbr --add --global ruhroh 'sudo truncate -s 0 /var/log/syslog'
+abbr --add --global x 'chmod +x'
 
 # reload the database used to search for applications
 abbr --add --global r-desktop-entries 'sudo update-desktop-database; update-desktop-database ~/.local/share/applications'
@@ -296,6 +297,9 @@ set --global --export NERDFONT_ENABLE '1'
 # information to the console. The last font family listed in that output is probably the family being used to
 # render the specified character.
 abbr --add --global font-debug 'DISPLAY=:0 FC_DEBUG=4 pango-view --font=monospace -t ☺ | grep family:'
+
+# ncdu
+abbr --add --global ncdu 'ncdu --color off'
 
 # Print banner
 if not set --query BANNER_WAS_PRINTED
