@@ -8,7 +8,7 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 # NOTE: I have similar setup code in my interactive shell config.
 # The interactive shell needs it for the functions it defines.
 # This shell needs it to set the PATH.
-if command -v brew; then
+if command -v brew >/dev/null 2>&1; then
     _asdf_init_script="$(brew --prefix asdf)/libexec/asdf.sh"
     test -e "$_asdf_init_script" && source "$_asdf_init_script"
 fi
