@@ -21,15 +21,19 @@ def main() -> None:
     if 'linux' not in sys.platform:
         abort('Sorry, the only supported platform is Linux.')
 
-    backup_config: Path = backup(get_profiles_config_file())
+    profiles_directory: Path = get_profiles_directory()
     print(
-        f'(Changes will be made to the profiles config file. If you notice any issues there is a backup in {backup_config.as_posix()})')
+        f'Changes will be made in the profiles directory ({profiles_directory.as_posix()}). A backup of the directory will be made in case there any problems with the cloning process.')
+    print('Creating backup...', end=' ')
+    backup_profiles_directory: Path = backup(profiles_directory)
+    print(f'finished. The backup is stored in {backup_profiles_directory.as_posix()}', end='\n\n')
 
     profiles_by_name: dict[str, Path] = get_profiles_by_name()
     profile_names: list[str] = list(profiles_by_name.keys())
 
     source_profile_name: str = choose(profile_names, 'Choose the profile to clone:')
     source_profile: Path = profiles_by_name[source_profile_name]
+    print()
 
     print('Enter the name for the new profile:', end=' ')
     while True:
