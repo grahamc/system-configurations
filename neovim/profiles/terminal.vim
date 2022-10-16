@@ -980,6 +980,8 @@ Plug(
       vim.keymap.set('n', '<Leader>g', '<Cmd>Telescope live_grep<CR>')
       vim.keymap.set('n', '<Leader>f', '<Cmd>Telescope find_files<CR>')
       vim.keymap.set('n', '<Leader>j', '<Cmd>Telescope jumplist<CR>')
+      vim.keymap.set('n', '<Leader><Leader>', '<Cmd>Telescope resume<CR>')
+      vim.keymap.set('n', '<Leader>s', '<Cmd>Telescope lsp_dynamic_workspace_symbols<CR>')
       vim.cmd([[
         command! Highlights Telescope highlights
         command! Autocommands Telescope autocommands
