@@ -29,3 +29,4 @@ esac
 
 # Change kitty theme
 ln -sf ~/.config/kitty/"$mode"-theme.conf ~/.config/kitty/current-theme.conf
+command -v reload-kitty >/dev/null 2>&1 && reload-kitty
