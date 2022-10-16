@@ -1993,6 +1993,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight FidgetTitle ctermbg=0 ctermfg=15 cterm=italic
     highlight FidgetTask ctermbg=0 ctermfg=15 cterm=italic
     highlight NvimTreeIndentMarker ctermfg=15
+    highlight String ctermfg=50
   endfunction
   augroup NordVim
     autocmd!
