@@ -20,9 +20,9 @@ configs and whatnot
 
     1. Put the following files in `~/.cloudflared/`:
 
-        - `cert.pem` - This file authenticates your instance of cloudflared, which allows you to perform  privileged actions like creating and deleting tunnels. Not needed to run a tunnel.
+        - `cert.pem` - This file authenticates your instance of cloudflared, which allows you to perform privileged actions like creating and deleting tunnels. Not needed to run a tunnel.
 
-        - tunnel credentials file -  A json file that allows you to use a particular tunnel.
+        - tunnel credentials file - A json file that allows you to use a particular tunnel.
 
 ## Try it out
 
