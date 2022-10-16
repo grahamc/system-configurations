@@ -9,7 +9,7 @@ import tempfile
 from configparser import ConfigParser, SectionProxy
 from logging import error, warning, critical
 from pathlib import Path
-from typing import Optional, Generator, TextIO, TypeVar
+from typing import Iterator, Optional, TextIO, TypeVar
 import re
 
 PATH_KEY: str = 'Path'
@@ -67,18 +67,18 @@ def register_profile(profile_name: str) -> Path:
 
 
 def deregister_profile(target_profile: Path) -> None:
-    profiles_config = get_profiles_config()
+    profiles_config: ConfigParser = get_profiles_config()
     target_section_name: Optional[str] = None
     for section_name in profiles_config.sections():
         if 'profile' not in section_name.lower():
             continue
 
-        profile_section = profiles_config[section_name]
+        profile_section: SectionProxy = profiles_config[section_name]
         if PATH_KEY not in profile_section:
             error(f'The profile section "{section_name}" does not have a "{PATH_KEY}" key')
             continue
 
-        profile_directory_basename = profile_section[PATH_KEY]
+        profile_directory_basename: str = profile_section[PATH_KEY]
         if profile_directory_basename == target_profile.name:
             target_section_name = section_name
             break
@@ -114,7 +114,9 @@ def get_profiles_by_name() -> dict[str, Path]:
             message: str = f'Profile basename does not have the format "<hash>.<profile name>". basename="{profile_basename}"'
             critical(message)
             abort(message)
-        profile_name: str = profile_basename[separator_index + 1:]
+        # Disabling the linter because separator_index is guaranteed to have a value since we abort the script
+        # otherwise
+        profile_name: str = profile_basename[separator_index + 1:]  # type: ignore
         profiles_by_name[profile_name] = profile
 
     return profiles_by_name
@@ -178,7 +180,7 @@ def clone_profile(source: Path, destination: Path) -> None:
     destination_basename: str = destination.name
     ignored_extensions: set[str] = {'jsonlz4', 'sqlite', 'lz4', 'db', 'mozlz4', 'so', 'files', 'final', 'sqlite-wal',
                                     'sqlite-shm', 'xpi'}
-    files: Generator[Path] = (file for file in destination.glob("**/*")
+    files: Iterator[Path] = (file for file in destination.glob("**/*")
                               if file.is_file and 'http' not in file.name and len(file.suffix) > 0 and file.suffix[
                                                                                                        1:] not in ignored_extensions)
     file: Path
