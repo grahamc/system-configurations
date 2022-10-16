@@ -1257,13 +1257,22 @@ Plug(
           indent_markers = {
             enable = true,
             icons = {
-              corner = '│',
+              corner = " ",
+              edge = " ",
+              item = " ",
+              bottom = " ",
             },
           },
           icons = {
             show = {
               file = false,
               folder = false,
+            },
+            glyphs = {
+              folder = {
+                arrow_closed = '›',
+                arrow_open = '⌄',
+              },
             },
           },
         },
