@@ -47,10 +47,12 @@ def main() -> None:
             continue
 
         break
-    destination_profile: Path = register_profile(destination_profile_name)
+    print()
 
     print('Cloning...')
+    destination_profile: Optional[Path] = None
     try:
+        destination_profile = register_new_profile(destination_profile_name)
         clone_profile(source_profile, destination_profile)
     except Exception as _:
         # cleanup
@@ -63,7 +65,7 @@ def main() -> None:
     print('Cloning successful!')
 
 
-def register_profile(profile_name: str) -> Path:
+def register_new_profile(profile_name: str) -> Path:
     profile: Path = create_profile(profile_name)
     delete(profile)
 
@@ -185,8 +187,7 @@ def clone_profile(source: Path, destination: Path) -> None:
     ignored_extensions: set[str] = {'jsonlz4', 'sqlite', 'lz4', 'db', 'mozlz4', 'so', 'files', 'final', 'sqlite-wal',
                                     'sqlite-shm', 'xpi'}
     files: Iterator[Path] = (file for file in destination.glob("**/*")
-                              if file.is_file and 'http' not in file.name and len(file.suffix) > 0 and file.suffix[
-                                                                                                       1:] not in ignored_extensions)
+                              if file.is_file and 'http' not in file.name and len(file.suffix) > 0 and file.suffix[1:] not in ignored_extensions)
     file: Path
     for file in files:
         try:
@@ -311,7 +312,7 @@ def setup_logging() -> None:
         encoding='utf=8',
         level=logging.DEBUG,
         format='%(asctime)s::%(levelname)s::%(message)s')
-    print(f'(logs for this clone will be stored in {logfile_path})\n')
+    print(f'(The logs for this clone will be stored in {logfile_path})\n')
 
 
 if __name__ == "__main__":
