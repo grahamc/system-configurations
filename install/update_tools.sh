@@ -50,6 +50,13 @@ suppress_error() {
   "$@" || true
 }
 
+blue='\e[34m'
+reset='\e[0m'
+banner_messsage='POST MERGE HOOK'
+banner_underline="$(printf %40s '' | sed 's/ /─/g')"
+printf "%b\n%s\n%s\n%b" "$blue" "$banner_messsage" "$banner_underline" "$reset"
+printf "Checking to see if any actions should be taken as a result of the merge:\n\n"
+
 if has_added_file || has_deleted_file; then
   if confirm 'A file has been added and/or deleted, would you like dotbot to relink?'; then
     suppress_error ./install/install --only clean link
