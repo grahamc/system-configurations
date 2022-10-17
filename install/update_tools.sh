@@ -119,3 +119,15 @@ if has_changes 'fontconfig/local.conf' || has_changes 'fontconfig/10-nerd-font-s
     suppress_error fish fontconfig/install.fish
   fi
 fi
+
+if has_changes 'bash/profile'; then
+  echo "Changes have been made to the login shell configuration. To apply these changes you can log out. Press enter to continue (This will not log you out)"
+
+  # To hide any keys the user may press before enter I disable echo. After prompting them, I re-enable it.
+  stty_original="$(stty -g)"
+  stty -echo
+  # I don't care if read mangles backslashes since I'm not using the input anyway.
+  # shellcheck disable=2162
+  read _unused
+  stty "$stty_original"
+fi
