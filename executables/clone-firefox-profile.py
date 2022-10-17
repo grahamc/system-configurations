@@ -56,9 +56,10 @@ def main() -> None:
         clone_profile(source_profile, destination_profile)
     except Exception as _:
         # cleanup
-        if destination_profile.exists():
-            delete(destination_profile)
-        deregister_profile(destination_profile)
+        if destination_profile is not None:
+            if destination_profile.exists():
+                delete(destination_profile)
+            deregister_profile(destination_profile)
 
         print('Failed to clone. Cause:')
         raise
@@ -187,7 +188,7 @@ def clone_profile(source: Path, destination: Path) -> None:
     ignored_extensions: set[str] = {'jsonlz4', 'sqlite', 'lz4', 'db', 'mozlz4', 'so', 'files', 'final', 'sqlite-wal',
                                     'sqlite-shm', 'xpi'}
     files: Iterator[Path] = (file for file in destination.glob("**/*")
-                              if file.is_file and 'http' not in file.name and len(file.suffix) > 0 and file.suffix[1:] not in ignored_extensions)
+                             if file.is_file() and 'http' not in file.name and len(file.suffix) > 0 and file.suffix[1:] not in ignored_extensions)
     file: Path
     for file in files:
         try:
@@ -202,7 +203,8 @@ def get_profiles_directory() -> Path:
     home_path: Optional[str] = os.getenv('HOME')
     if home_path is None:
         abort('The HOME environment variable is not defined')
-    home_directory: Path = Path(home_path)
+    # This is ok to ignore because if home_path is None, we will exit the script.
+    home_directory: Path = Path(home_path) # type: ignore
     assert_directory_exists(home_directory)
 
     profiles_directory: Path = home_directory / '.mozilla' / 'firefox'
