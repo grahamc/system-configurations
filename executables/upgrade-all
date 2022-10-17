@@ -38,7 +38,7 @@ end
 function upgrade-debian
     echo
     echo -s (set_color blue) 'DEBIAN' (set_color normal)
-    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 ─) (set_color normal)
     sudo aptitude update
     if string match --regex --quiet '[1-9]\d* packages upgraded' (aptitude --simulate --assume-yes safe-upgrade)
         set something_to_do
@@ -57,7 +57,7 @@ end
 function upgrade-brew
     echo
     echo -s (set_color blue) 'HOMEBREW' (set_color normal)
-    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 ─) (set_color normal)
     brew update
     if test -n "$(brew outdated --fetch-HEAD)"
         set something_to_do
@@ -84,14 +84,14 @@ end
 function upgrade-flatpak
     echo
     echo -s (set_color blue) 'FLATPAK' (set_color normal)
-    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 ─) (set_color normal)
     flatpak update
 end
 
 function upgrade-fisher
     echo
     echo -s (set_color blue) 'FISHER' (set_color normal)
-    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 ─) (set_color normal)
 
     fisher update
 end
@@ -99,21 +99,21 @@ end
 function upgrade-asdf
     echo
     echo -s (set_color blue) 'ASDF' (set_color normal)
-    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 ─) (set_color normal)
     asdf plugin-update --all
 end
 
 function upgrade-pipx
     echo
     echo -s (set_color blue) 'PIPX' (set_color normal)
-    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 ─) (set_color normal)
     pipx upgrade-all --include-injected
 end
 
 function upgrade-nvim
     echo
     echo -s (set_color blue) 'NEOVIM' (set_color normal)
-    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 ─) (set_color normal)
 
     # This way we don't check for updates in plugins that aren't being used
     nvim --headless -i NONE -c 'PlugClean!' -c 'qa'
@@ -141,7 +141,7 @@ end
 function upgrade-dotfiles
     echo
     echo -s (set_color blue) 'DOTFILES' (set_color normal)
-    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 ─) (set_color normal)
 
     # return if there is nothing to pull
     chronic git -C ~/.dotfiles fetch
@@ -171,7 +171,7 @@ end
 function upgrade-kitty
     echo
     echo -s (set_color blue) 'KITTY' (set_color normal)
-    echo -s (set_color blue) (string repeat --count 40 \u2015) (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 ─) (set_color normal)
     set latest_version "$(git ls-remote --refs --sort='version:refname' --tags 'https://github.com/kovidgoyal/kitty.git' | cut -d/ -f3- | tail -n 1 | cut -c 2-)"
     set current_version "$(kitty -v | string match --regex --groups-only '(\d+\.\d+\.\d+)')"
     if test "$latest_version" != "$current_version"
