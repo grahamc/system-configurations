@@ -24,7 +24,11 @@ def main() -> None:
     profiles_directory: Path = get_profiles_directory()
     print(
         f'Changes will be made in the profiles directory ({profiles_directory.as_posix()}). A backup of the directory will be made in case there any problems with the cloning process.')
-    print('Creating backup...', end=' ')
+    # By default, output to a terminal is buffered by line. This means output will not display until a newline
+    # character is encountered. This line doesn't end in a newline so you wouldn't see the message that a backup is
+    # being made until the next newline is printed, which is after the backup is made. So here I am explicitly
+    # flushing the buffer.
+    print('Creating backup...', end=' ', flush=True)
     backup_profiles_directory: Path = backup(profiles_directory)
     print(f'finished. The backup is stored in {backup_profiles_directory.as_posix()}', end='\n\n')
 
