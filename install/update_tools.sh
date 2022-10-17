@@ -103,19 +103,19 @@ fi
 
 bat_theme_file_pattern='bat/.*\.tmTheme$'
 if has_added_file "$bat_theme_file_pattern" || has_deleted_file "$bat_theme_file_pattern"; then
-  if confirm "A bat theme has been added/removed would you like to rebuild the bat cache?"; then
+  if confirm "A bat theme has been added or removed, would you like to rebuild the bat cache?"; then
     suppress_error bat cache --build
   fi
 fi
 
 if has_changes 'watchman/watchman.json'; then
-  if confirm "Changes have been made to the watchman configuration would you like to reinstall it (you may need to restart watchman for the changes to take effect)?"; then
+  if confirm "Changes have been made to the watchman configuration, would you like to reinstall it (you may need to restart watchman for the changes to take effect)?"; then
     suppress_error fish watchman/install.fish
   fi
 fi
 
 if has_changes 'fontconfig/local.conf' || has_changes 'fontconfig/10-nerd-font-symbols.conf'; then
-  if confirm "Changes have been made to the fontconfig configuration would you like to reinstall it (you may need to restart any application reading from fontconfig for the changes to take effect)?"; then
+  if confirm "Changes have been made to the fontconfig configuration, would you like to reinstall it (you may need to restart any application reading from fontconfig for the changes to take effect)?"; then
     suppress_error fish fontconfig/install.fish
   fi
 fi
