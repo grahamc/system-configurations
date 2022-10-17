@@ -75,28 +75,28 @@ fi
 
 fish_plugins='fish/fish_plugins'
 if has_changes "$fish_plugins"; then
-  if confirm "Changes have been made to $fish_plugins would you like fisher to update from it?"; then
+  if confirm "Changes have been made to fish plugin file, would you like fisher to update from it?"; then
     suppress_error fish -c 'source ~/.config/fish/functions/fisher.fish; fisher update'
   fi
 fi
 
 brewfile='brew/Brewfile'
 if has_changes "$brewfile" && ! chronic brew bundle check --file "$brewfile" >/dev/null; then
-  if confirm "Changes have been made to $brewfile would you like brew to update from it?"; then
+  if confirm "You are missing dependencies specified in your Brewfile, would you like to install them?"; then
     suppress_error brew bundle install --file "$brewfile"
   fi
 fi
 
 vim_plug_snapshot='neovim/vim-plug-snapshot.vim'
 if has_changes "$vim_plug_snapshot"; then
-  if confirm "Changes have been made to $vim_plug_snapshot would you like neovim to update from it?"; then
+  if confirm "Changes have been made to the neovim plugin snapshot, would you like neovim to update from it?"; then
     suppress_error nvim -c 'autocmd VimEnter * PlugRestore'
   fi
 fi
 
 pipx_packages='pipx/pipx-packages'
 if has_changes "$pipx_packages"; then
-  if confirm "Changes have been made to $pipx_packages would you like pipx to update from it?"; then
+  if confirm "Changes have been made to pipx packages file, would you like pipx to update from it?"; then
     suppress_error xargs -I PACKAGE pipx install PACKAGE < "$pipx_packages"
   fi
 fi
