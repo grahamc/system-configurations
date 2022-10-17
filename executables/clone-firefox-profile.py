@@ -300,7 +300,7 @@ def confirm(prompt: str) -> bool:
     while (response := input().lower()) not in choices:
         print(f'Please respond with "y" or "n".')
 
-    return True if response == 'y' else False
+    return response == 'y'
 
 
 def abort(message: str) -> None:
