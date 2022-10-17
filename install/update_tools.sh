@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Assign stdin, stdout, and stderr to the terminal
-exec </dev/tty >/dev/tty 2>/dev/tty
+exec </dev/tty >/dev/tty 2>&1
 
 # Exit if a command returns a non-zero exit code
 set -o errexit
