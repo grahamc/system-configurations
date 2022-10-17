@@ -81,8 +81,9 @@ function fish_prompt_make_line --argument-names type
     end
 end
 
+
 function fish_prompt_get_arrow
-    echo -n -s (string repeat -n $SHLVL '🢒')
+    echo -n -s (set_color --bold) (string repeat -n $SHLVL '>') ' '
 end
 
 function fish_prompt_get_python_context
