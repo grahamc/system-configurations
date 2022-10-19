@@ -181,7 +181,7 @@ local function close()
 end
 vim.keymap.set(
   'n',
-  '<Leader>q',
+  '<C-q>',
   close,
   {
     silent = true,
@@ -217,7 +217,7 @@ vim.api.nvim_create_autocmd(
 -- }}}
 
 -- Tab pages {{{
-vim.keymap.set('n', '<Leader>t', function() vim.cmd('$tabnew') end, {silent = true})
+vim.keymap.set('n', '<C-t>', function() vim.cmd('$tabnew') end, {silent = true})
 vim.keymap.set('n', '<C-h>', vim.cmd.tabprevious, {silent = true})
 vim.keymap.set('n', '<C-l>', vim.cmd.tabnext, {silent = true})
 
@@ -340,6 +340,7 @@ vim.o.cmdheight = 1
 vim.cmd([[
   cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
 ]])
+vim.keymap.set('c', '<C-a>', '<C-b>', {remap = true})
 -- }}}
 
 -- Search {{{
@@ -744,7 +745,7 @@ for type, icon in pairs(signs) do
 end
 
 vim.keymap.set({'n', 'v'}, 'ga', vim.lsp.buf.code_action, {desc = 'Choose code action'})
-vim.keymap.set('n', 'gl', vim.diagnostic.open_float, {desc = 'Show diagnostics'})
+vim.keymap.set('n', '<S-l>', vim.diagnostic.open_float, {desc = 'Show diagnostics'})
 vim.keymap.set('n', '[l', vim.diagnostic.goto_prev, {desc = "Go to previous diagnostic"})
 vim.keymap.set('n', ']l', vim.diagnostic.goto_next, {desc = "Go to next diagnostic"})
 vim.keymap.set('n', 'gi', function() require('telescope.builtin').lsp_implementations() end, {desc = "Go to implementation"})
@@ -784,7 +785,7 @@ Plug(
   'mhinz/vim-signify',
   {
     config = function()
-      vim.keymap.set('n', '<Leader>vk', '<Cmd>SignifyHunkDiff<CR>')
+      vim.keymap.set('n', 'zv', '<Cmd>SignifyHunkDiff<CR>')
     end,
   }
 )

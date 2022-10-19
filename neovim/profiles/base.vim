@@ -206,6 +206,12 @@ vim.api.nvim_create_autocmd(
 )
 
 vim.o.clipboard = 'unnamedplus'
+
+-- Move to beginning and end of line
+vim.keymap.set({'n'}, '<C-a>', '^')
+vim.keymap.set({'n'}, '<C-e>', '$')
+vim.keymap.set({'i'}, '<C-a>', '<ESC>^i')
+vim.keymap.set({'i'}, '<C-e>', '<ESC>$a')
 EOF
 " }}}
 

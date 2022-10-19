@@ -5,13 +5,17 @@ if !exists('g:vscode')
   finish
 endif
 
-nnoremap <Leader>x :Wqall<CR>
+nnoremap <silent> <Leader>x :call VSCodeNotify("workbench.action.quit")<CR>
 nnoremap <silent> <Leader>w :Wall<CR>
-nnoremap <silent> <Leader>q :Quit<CR>
-nmap <Leader><Bar> <C-w>v
-nmap <Leader>- <C-w>s
+
+" search
 nnoremap <silent> <Leader>f :Find<CR>
 nnoremap <silent> <Leader>g :call VSCodeNotify("workbench.action.findInFiles")<CR>
+nnoremap <silent> <Leader>s :call VSCodeNotify("workbench.action.showAllSymbols")<CR>
+
+" window
+nmap <Leader><Bar> <C-w>v
+nmap <Leader>- <C-w>s
 
 " Folds
 nnoremap <silent> <Tab> :call VSCodeNotify('editor.toggleFold')<CR>
@@ -19,8 +23,7 @@ function! FoldToggle()
   if !exists('g:is_folded')
     let g:is_folded = 0
   endif
-
-  if g:is_folded
+if g:is_folded
     call VSCodeNotify('editor.unfoldAll')
     let g:is_folded = 0
   else
@@ -46,7 +49,40 @@ nnoremap ]<Tab> :call VSCodeNotify('editor.gotoNextFold')<CR>
 xnoremap [<Tab> :call VSCodeNotify('editor.gotoPreviousFold')<CR>
 xnoremap ]<Tab> :call VSCodeNotify('editor.gotoNextFold')<CR>
 
+" comment
 xmap gc  <Plug>VSCodeCommentary
 nmap gc  <Plug>VSCodeCommentary
 omap gc  <Plug>VSCodeCommentary
 nmap gcc <Plug>VSCodeCommentaryLine
+
+" language server
+nnoremap [l :call VSCodeNotify('editor.action.marker.prev')<CR>
+nnoremap ]l :call VSCodeNotify('editor.action.marker.next')<CR>
+" Since vscode only has one hover action to show docs and lints I'll have my lint keybind also trigger hover
+nmap <S-l> <S-k>
+nnoremap ga :call VSCodeNotify('editor.action.quickFix')<CR>
+nnoremap gi :call VSCodeNotify('editor.action.goToImplementation')<CR>
+nnoremap gr :call VSCodeNotify('editor.action.goToReferences')<CR>
+nnoremap gn :call VSCodeNotify('editor.action.rename')<CR>
+nnoremap gt :call VSCodeNotify('editor.action.goToTypeDefinition')<CR>
+nnoremap gd :call VSCodeNotify('editor.action.revealDefinition')<CR>
+nnoremap gD :call VSCodeNotify('editor.action.revealDeclaration')<CR>
+nnoremap gh :call VSCodeNotify('references-view.showCallHierarchy')<CR>
+nnoremap ght :call VSCodeNotify('references-view.showTypeHierarchy')<CR>
+
+" version control
+nnoremap zv :call VSCodeNotify('editor.action.dirtydiff.next')<CR>
+nnoremap ]c :call VSCodeNotify('workbench.action.editor.nextChange')<CR>
+nnoremap [c :call VSCodeNotify('workbench.action.editor.previousChange')<CR>
+
+" right click
+nnoremap <Leader><Leader> :call VSCodeNotify('editor.action.showContextMenu')<CR>
+
+" move forward in the jumplist
+nnoremap <C-p> <C-i>
+
+" resize panes
+nnoremap <silent> <C-Left> :call VSCodeNotify('workbench.action.decreaseViewWidth')<CR>
+nnoremap <silent> <C-Right> :call VSCodeNotify('workbench.action.increaseViewWidth')<CR>
+nnoremap <silent> <C-Down> :call VSCodeNotify('workbench.action.decreaseViewHeight')<CR>
+nnoremap <silent> <C-Up> :call VSCodeNotify('workbench.action.increaseViewHeight')<CR>
