@@ -1721,15 +1721,6 @@ Plug(
     config = function()
       require("mason-lspconfig").setup()
 
-      local lspconfig = require('lspconfig')
-
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
-      capabilities.textDocument.foldingRange = {
-        dynamicRegistration = false,
-        lineFoldingOnly = true,
-      }
-
       local on_attach = function(client, buffer_number)
         capabilities = client.server_capabilities
         buffer_keymap = vim.api.nvim_buf_set_keymap
@@ -1758,11 +1749,27 @@ Plug(
         end
       end
 
+      cmp_lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+      folding_capabilities = {
+        textDocument = {
+          foldingRange = {
+            dynamicRegistration = false,
+            lineFoldingOnly = true,
+          },
+        },
+      }
+      capabilities = vim.tbl_deep_extend(
+        'error',
+        cmp_lsp_capabilities,
+        folding_capabilities
+      )
+
       local default_server_config = {
         capabilities = capabilities,
         on_attach = on_attach,
       }
 
+      local lspconfig = require('lspconfig')
       require("mason-lspconfig").setup_handlers({
         -- Default handler to be called for each installed server that doesn't have a dedicated handler.
         function (server_name)
