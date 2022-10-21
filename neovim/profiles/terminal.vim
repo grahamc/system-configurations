@@ -1646,8 +1646,6 @@ Plug(
             buffer_lines,
             tmux,
             lsp_signature,
-          },
-          {
             dictionary,
           }
         ),
