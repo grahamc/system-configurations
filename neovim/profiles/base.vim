@@ -57,7 +57,7 @@ xnoremap <silent> p <Esc>:execute 'normal gv<C-r><C-r>=VisualPaste()<CR>'<CR>
 nnoremap <silent> p p=`]
 
 " select the text that was just pasted
-noremap gV `[v`]
+noremap gp `[v`]
 
 " Prevents inserting two spaces after punctuation on a join (J)
 set nojoinspaces
