@@ -34,8 +34,10 @@ augroup Miscellaneous
   autocmd FileType qf,help setlocal colorcolumn=
 augroup END
 
-nnoremap <silent> <Leader>w <Cmd>wa<CR>
-nnoremap <Leader>x <Cmd>wqa<CR>
+lua << EOF
+vim.keymap.set('', '<C-s>', '<Cmd>wa<CR>')
+vim.keymap.set('', '<C-x>', '<Cmd>xa<CR>')
+EOF
 
 " TODO: When tmux is able to differentiate between tab and ctrl+i this mapping should be updated.
 " tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549

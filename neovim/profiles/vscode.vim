@@ -5,8 +5,10 @@ if !exists('g:vscode')
   finish
 endif
 
-nnoremap <silent> <Leader>x :call VSCodeNotify("workbench.action.quit")<CR>
-nnoremap <silent> <Leader>w :Wall<CR>
+lua << EOF
+vim.keymap.set('', '<C-s>', '<Cmd>xa<CR>')
+vim.keymap.set('', '<C-x>', '<Cmd>call VSCodeNotify("workbench.action.quit")<CR>')
+EOF
 
 " search
 nnoremap <silent> <Leader>f :Find<CR>
