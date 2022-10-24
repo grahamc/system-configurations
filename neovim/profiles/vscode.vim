@@ -75,9 +75,3 @@ nnoremap <Leader><Leader> :call VSCodeNotify('editor.action.showContextMenu')<CR
 
 " move forward in the jumplist
 nnoremap <C-p> <C-i>
-
-" resize panes
-nnoremap <silent> <C-Left> :call VSCodeNotify('workbench.action.decreaseViewWidth')<CR>
-nnoremap <silent> <C-Right> :call VSCodeNotify('workbench.action.increaseViewWidth')<CR>
-nnoremap <silent> <C-Down> :call VSCodeNotify('workbench.action.decreaseViewHeight')<CR>
-nnoremap <silent> <C-Up> :call VSCodeNotify('workbench.action.increaseViewHeight')<CR>
