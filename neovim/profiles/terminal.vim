@@ -39,12 +39,6 @@ vim.keymap.set('', '<C-s>', '<Cmd>wa<CR>')
 vim.keymap.set('', '<C-x>', '<Cmd>xa<CR>')
 EOF
 
-" TODO: When tmux is able to differentiate between tab and ctrl+i this mapping should be updated.
-" tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
-"
-" move forward in the jumplist
-nnoremap <C-p> <C-i>
-
 " suspend vim and start a new shell
 nnoremap <C-z> <Cmd>suspend<CR>
 inoremap <C-z> <Cmd>suspend<CR>

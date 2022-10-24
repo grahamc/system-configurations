@@ -212,6 +212,12 @@ vim.keymap.set({'n'}, '<C-a>', '^')
 vim.keymap.set({'n'}, '<C-e>', '$')
 vim.keymap.set({'i'}, '<C-a>', '<ESC>^i')
 vim.keymap.set({'i'}, '<C-e>', '<ESC>$a')
+
+-- TODO: When tmux is able to differentiate between tab and ctrl+i this mapping should be updated.
+-- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
+--
+-- move forward in the jumplist
+vim.keymap.set("n", "<C-p>", '<C-i>')
 EOF
 " }}}
 

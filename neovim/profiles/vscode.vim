@@ -72,6 +72,3 @@ nnoremap [c :call VSCodeNotify('workbench.action.editor.previousChange')<CR>
 
 " right click
 nnoremap <Leader><Leader> :call VSCodeNotify('editor.action.showContextMenu')<CR>
-
-" move forward in the jumplist
-nnoremap <C-p> <C-i>
