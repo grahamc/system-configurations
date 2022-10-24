@@ -1,0 +1,21 @@
+#!/bin/env sh
+# A wrapper for vscode to enable running natively in Wayland, instead of using xwayland, if the current session is
+# using Wayland. This way the font won't be blurry on HiDPI screens.
+# issue: https://github.com/microsoft/vscode/issues/109176
+
+# Full path for the current executable, meaning this wrapper.
+wrapper_executable="$0"
+# Find the real vscode executable. This is done by finding all the executables on the path with the name 'code'
+# and picking the first one that is not this wrapper.
+vscode_executable="$(which -a code | grep -v -E "^${wrapper_executable}\$" | head -1)"
+if [ -z "$vscode_executable" ]; then
+  echo 'ERROR: Unable to find the real vscode executable' >&2
+  exit 1
+fi
+
+session_type="$(loginctl show-session "$(loginctl | grep "$(whoami)" | awk '{print $1}')" -p Type)"
+if echo "$session_type" | grep -q -i 'wayland'; then
+  "$vscode_executable" --ozone-platform=wayland "$@"
+else
+  "$vscode_executable" "$@"
+fi
