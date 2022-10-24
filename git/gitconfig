@@ -56,5 +56,5 @@
   trustExitCode = true
   keepBackup = false
 [color "diff"]
-	oldMoved = normal 21
-	newMoved = normal 22
+  oldMoved = normal 21
+  newMoved = normal 22
