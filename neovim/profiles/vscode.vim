@@ -72,3 +72,4 @@ nnoremap [c :call VSCodeNotify('workbench.action.editor.previousChange')<CR>
 
 " right click
 nnoremap <Leader><Leader> :call VSCodeNotify('editor.action.showContextMenu')<CR>
+xnoremap <Leader><Leader> :call VSCodeNotify('editor.action.showContextMenu')<CR>
