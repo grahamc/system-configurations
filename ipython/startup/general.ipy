@@ -1,13 +1,17 @@
+import IPython
+import sys
+
 yellow = '\x1b[33m'
 blue = '\x1b[34m'
 normal = '\x1b[0m'
 code = '\x1b[35m\x1b[100m'
 
+# banner
+print(f'[{blue}info{normal}] Python v{".".join(str(x) for x in sys.version_info[:3])}, IPython v{".".join(str(x) for x in IPython.version_info[:3])}. Type {code} ? {normal} for help.')
+
 # enable autoreload
 %autoreload 2
-print(f"\n\
-[{yellow}warning{normal}] Module autoreload is enabled, this may impact performance. You can disable it with {code} %autoreload 0 {normal}\
-")
+print(f"[{yellow}warning{normal}] Module autoreload is enabled, this may impact performance. You can disable it with {code} %autoreload 0 {normal}")
 
 # enable verbose exception traces
 print(f'[{blue}info{normal}]', end=' ')
@@ -17,4 +21,4 @@ print(f'[{blue}info{normal}]', end=' ')
 from time import sleep
 
 # change cursor shape to a blinking bar
-print('\x1b[5 q')
+print('\x1b[5 q', end='')
