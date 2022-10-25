@@ -314,7 +314,7 @@ end
 # Ask the user to connect to tmux.
 # Wrapping this in a function so that I am able to exit early with 'return'
 function _tmux_connect
-    if set --query TMUX_CONNECT_WAS_RUN
+    if test -n "$TMUX_CONNECT_WAS_RUN"
         return
     end
     # We use this variable to tell if this function ran.
@@ -322,7 +322,7 @@ function _tmux_connect
     # open a terminal, so we use two flags to get that effect:
     # - We use the global flag so that it is run once per shell instance.
     # - We use the export flag so that it isn't run in child shells.
-    set --global --export TMUX_CONNECT_WAS_RUN
+    set --global --export TMUX_CONNECT_WAS_RUN 1
 
     # User is already in TMUX so no need to connect
     if test -n "$TMUX"
