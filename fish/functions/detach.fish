@@ -1,9 +1,9 @@
-# Launch a gui silently
+# Launch a program and detach from it. Meaning it will be disowned and its output will be suppressed
 
 # TODO: Have it wrap sudo so it autocompletes program names.
 # I should write my own completion script though since this will
 # also autocomplete sudo flags.
-function gui --wraps sudo
+function detach --wraps sudo
   # Redirecting the i/o files on the command itself still resulted in some output being sent to the
   # terminal, but putting the command in a block and redirecting the i/o files of the block does
   # the trick.
