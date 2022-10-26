@@ -171,7 +171,7 @@ vim.api.nvim_create_autocmd(
       vim.defer_fn(
         function()
           is_autosave_job_queued = false
-          vim.cmd.wall()
+          vim.cmd("silent! wall")
         end,
         500 -- time in milliseconds between saves
       )
