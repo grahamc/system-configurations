@@ -1347,7 +1347,7 @@ Plug(
         end
 
         vim.w.is_explorer = true
-        vim.opt_local.winbar = '%#Normal#%= Press %#NvimTreeWinBar#g?%#Normal# for help%='
+        vim.opt_local.winbar = '%#TabLineSel#%= Press %#NvimTreeWinBar#g?%#TabLineSel# for help%='
       end
       vim.api.nvim_create_autocmd(
         {'BufWinEnter',},
@@ -1949,7 +1949,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight FoldColumn ctermfg=15 ctermbg=NONE
     highlight SpecialKey ctermfg=13 ctermbg=NONE
     highlight NonText ctermfg=15 ctermbg=NONE
-    highlight NvimTreeWinBar ctermfg=6 ctermbg=NONE
+    highlight NvimTreeWinBar ctermfg=6 ctermbg=8
     highlight! link ExplorerTabLine NvimTreeWinBar
     highlight NerdTreeNormal ctermbg=NONE
     highlight VirtColumn ctermfg=24
