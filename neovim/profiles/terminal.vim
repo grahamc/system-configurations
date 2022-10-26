@@ -881,10 +881,10 @@ Plug(
   'christoomey/vim-tmux-navigator',
   {
     config = function()
-      vim.keymap.set('n', '<M-h>', '<Cmd>TmuxNavigateLeft<CR>', {silent = true})
-      vim.keymap.set('n', '<M-l>', '<Cmd>TmuxNavigateRight<CR>', {silent = true})
-      vim.keymap.set('n', '<M-j>', '<Cmd>TmuxNavigateDown<CR>', {silent = true})
-      vim.keymap.set('n', '<M-k>', '<Cmd>TmuxNavigateUp<CR>', {silent = true})
+      vim.keymap.set({'n', 'i'}, '<M-h>', '<Cmd>TmuxNavigateLeft<CR>', {silent = true})
+      vim.keymap.set({'n', 'i'}, '<M-l>', '<Cmd>TmuxNavigateRight<CR>', {silent = true})
+      vim.keymap.set({'n', 'i'}, '<M-j>', '<Cmd>TmuxNavigateDown<CR>', {silent = true})
+      vim.keymap.set({'n', 'i'}, '<M-k>', '<Cmd>TmuxNavigateUp<CR>', {silent = true})
     end
   }
 )
