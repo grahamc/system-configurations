@@ -151,6 +151,45 @@ _G.tabdo = function(_function)
 end
 -- }}}
 
+-- Autosave {{{
+_G.is_autosave_enabled = true
+_G.is_autosave_job_queued = false
+local group_id = vim.api.nvim_create_augroup('Autosave', {})
+vim.api.nvim_create_autocmd(
+  {"TextChanged", "TextChangedI",},
+  {
+    callback = function()
+      if not is_autosave_enabled then
+        return
+      end
+
+      if is_autosave_job_queued then
+        return
+      end
+
+      is_autosave_job_queued = true
+      vim.defer_fn(
+        function()
+          is_autosave_job_queued = false
+          vim.cmd.wall()
+        end,
+        500 -- time in milliseconds between saves
+      )
+    end,
+    group = group_id,
+  }
+)
+local function toggle_autosave()
+  is_autosave_enabled = not is_autosave_enabled
+
+  -- Save immediately when autosave is toggled on
+  if is_autosave_enabled then
+    vim.cmd.wall()
+  end
+end
+vim.api.nvim_create_user_command('ToggleAutosave', toggle_autosave, {desc = 'Toggle autosave'})
+-- }}}
+
 -- Windows {{{
 -- open new horizontal and vertical panes to the right and bottom respectively
 vim.o.splitright = true
@@ -487,6 +526,38 @@ vim.opt.fillchars:append('eob: ')
 _G.GetDiagnosticCountForSeverity = function(severity)
   return #vim.diagnostic.get(0, {severity = severity})
 end
+_G.modified_indicator = nil
+_G.SetModifiedIndicator = function(_)
+  local last_buffer_number = vim.fn.bufnr('$')
+  for buffer_number=1,last_buffer_number do
+    -- doesn't exist
+    if vim.fn.bufnr(buffer_number) == -1 then
+      goto continue
+    end
+
+    -- Not modifiable
+    if vim.fn.getbufvar(buffer_number, '&modifiable') ~= 1 then
+      goto continue
+    end
+
+    -- Buffer isn't linked to a file
+    if vim.fn.filereadable(vim.fn.bufname(buffer_number)) == 0 then
+      goto continue
+    end
+
+    if vim.fn.getbufvar(buffer_number, '&mod') ~= 0 then
+      modified_indicator = '%#StatusLineStandoutText#' .. unicode('2997') .. 'UNSAVED' .. unicode('2998')
+      return
+    end
+
+    ::continue::
+  end
+
+  modified_indicator = nil
+end
+if not loaded_neovim_config then
+  vim.fn.timer_start(1000, SetModifiedIndicator, {['repeat'] = -1})
+end
 _G.StatusLine = function()
   local item_separator = '%#StatusLineSeparator# ∙ '
 
@@ -499,11 +570,7 @@ _G.StatusLine = function()
     filetype = '%#StatusLine#' .. vim.o.filetype
   end
 
-  local modified_indicator = ''
-  if vim.fn.getbufvar(vim.fn.bufnr('%'), '&mod') ~= 0 then
-    modified_indicator = '*'
-  end
-  local file_info = '%#StatusLine#%f' .. modified_indicator .. '%w%q'
+  local file_info = '%#StatusLine#%f%w%q'
 
   local fileformat = nil
   if vim.o.fileformat ~= 'unix' then
@@ -586,11 +653,13 @@ _G.StatusLine = function()
   if diagnostics then
     table.insert(right_side_items, diagnostics)
   end
+  if modified_indicator then
+    table.insert(right_side_items, modified_indicator)
+  end
   local right_side = table.concat(right_side_items, item_separator)
 
   local statusline_separator = '%#StatusLine#%=     '
   local padding = '%#StatusLine# '
-
   local statusline = padding .. left_side .. statusline_separator .. right_side .. padding
 
   return statusline
