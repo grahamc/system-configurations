@@ -1456,8 +1456,6 @@ Plug(
 
 Plug('bydlw98/cmp-env')
 
-Plug('amarakon/nvim-cmp-buffer-lines')
-
 Plug(
   'L3MON4D3/LuaSnip',
   {
@@ -1540,10 +1538,6 @@ Plug(
         option = {use_show_condition = false},
       }
       local env = {name = 'env'}
-      local buffer_lines = {
-        name = 'buffer-lines',
-        option = {leading_whitespace = false},
-      }
 
       -- helpers
       local is_cursor_preceded_by_nonblank_character = function()
@@ -1639,7 +1633,6 @@ Plug(
             omni,
             path,
             env,
-            buffer_lines,
             tmux,
             lsp_signature,
             dictionary,
