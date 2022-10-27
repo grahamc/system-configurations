@@ -3,6 +3,10 @@
 # Setup brew
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
+# Setup nix
+_nix_profile_setup_script="$HOME/.nix-profile/etc/profile.d/nix.sh"
+if [ -e "$_nix_profile_setup_script" ]; then . "$_nix_profile_setup_script"; fi
+
 # Setup asdf version manager
 #
 # NOTE: I have similar setup code in my interactive shell config.
