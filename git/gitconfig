@@ -21,7 +21,7 @@
   undocommit = reset "HEAD^"
   co = checkout
   ui = "!gitui"
-  gui = "!smerge ."
+  gui = "!flatpak run com.jetpackduba.Gitnuro 1>/dev/null 2>&1 &"
   l = log
 [init]
   defaultBranch = master
