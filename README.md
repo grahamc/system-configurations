@@ -12,7 +12,7 @@ configs and whatnot
 
 2. Fonts:
 
-    1. Download the following fonts and put them in `~/.local/share/fonts`: [Source Code Pro](https://github.com/adobe-fonts/source-code-pro), [Source Serif](https://github.com/adobe-fonts/source-serif), [Source Sans](https://github.com/adobe-fonts/source-sans), [Source Han Mono](https://github.com/adobe-fonts/source-han-mono), [Source Han Serif](https://github.com/adobe-fonts/source-han-serif), [Source Han Sans](https://github.com/adobe-fonts/source-han-sans), and [Symbols Nerd Font](https://github.com/ryanoasis/nerd-fonts/releases) (Get both the 1000em-monospaced and 1000em-non-monospaced variants. Should be in `NerdFontsSymbolsOnly.zip`)
+    1. Download the following fonts and put them in `~/.local/share/fonts`: [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono), [Source Serif](https://github.com/adobe-fonts/source-serif), [Source Sans](https://github.com/adobe-fonts/source-sans), [Source Han Mono](https://github.com/adobe-fonts/source-han-mono), [Source Han Serif](https://github.com/adobe-fonts/source-han-serif), [Source Han Sans](https://github.com/adobe-fonts/source-han-sans), and [Symbols Nerd Font](https://github.com/ryanoasis/nerd-fonts/releases) (Get both the 1000em-monospaced and 1000em-non-monospaced variants. Should be in `NerdFontsSymbolsOnly.zip`)
 
     2. Go to Gnome Tweaks and set the fonts to fontconfig aliases. This way Gnome will use the same fonts that are set in fontconfig. Settings: interface->sans, document->serif, monospace->monospace, and legacy->sans.
 
