@@ -1297,6 +1297,7 @@ Plug(
         create_in_closed_folder = true,
         hijack_cursor = true,
         sync_root_with_cwd = true,
+        open_on_tab = true,
         update_focused_file = {
           enable = true,
         },
@@ -1346,52 +1347,7 @@ Plug(
           vim.keymap.set('n', '<Tab>', '<CR>', {buffer = buffer_number, remap = true})
         end,
       })
-
-      -- TODO: Remove my code for opening nvim-tree in all tabs once it gets added to the plugin.
-      -- issue: https://github.com/kyazdani42/nvim-tree.lua/issues/1493
-      local function close_tree()
-        tabdo(require('nvim-tree.api').tree.close)
-
-        -- Stop opening the tree when a new tab is made
-        vim.api.nvim_del_augroup_by_name('MyNvimTreeNewTab')
-      end
-      local function open_tree()
-        local current_tab = vim.fn.tabpagenr()
-        local function open_tree_and_go_to_previous_window()
-          require('nvim-tree.api').tree.open()
-
-          -- For all tabs besides the current one, I don't want to change the active window to the tree.
-          if vim.fn.tabpagenr() ~= current_tab then
-            vim.cmd.wincmd('p')
-          end
-        end
-        tabdo(open_tree_and_go_to_previous_window)
-
-        -- So the current tab has the right file focused
-        vim.cmd.wincmd('p')
-        vim.cmd.wincmd('p')
-
-        -- Open the tree when a new tab is made
-        local group_id = vim.api.nvim_create_augroup('MyNvimTreeNewTab', {})
-        vim.api.nvim_create_autocmd(
-          {'TabNewEntered',},
-          {
-            callback = open_tree_and_go_to_previous_window,
-            group = group_id,
-            -- So that the 'BufWinEnter' event will fire when we create the new tree window and it will get configured.
-            nested = true,
-          }
-        )
-      end
-      local function toggle_tree()
-        local is_tree_visible = require('nvim-tree.view').is_visible()
-        if is_tree_visible then
-          close_tree()
-        else
-          open_tree()
-        end
-      end
-      vim.keymap.set("n", "<M-e>", toggle_tree, {silent = true})
+      vim.keymap.set("n", "<M-e>", '<cmd>NvimTreeFindFileToggle<cr>', {silent = true})
 
       -- nvim-tree has an augroup named 'NvimTree' so I have to use a different name
       local group_id = vim.api.nvim_create_augroup('__NvimTree', {})
