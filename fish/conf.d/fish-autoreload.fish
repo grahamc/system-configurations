@@ -12,14 +12,14 @@ end
 
 function _autoreload_fish --on-variable _autoreload_indicator
     if jobs --query
-        echo "$(set_color yellow)A configuration change was detected, but there are jobs running in the background so the shell will not reload.$(set_color normal)"
+        echo (set_color --bold normal)'['(set_color yellow)'fish'(set_color --bold normal)'] '(set_color yellow)'Warning: A configuration change was detected, but there are jobs running in the background so the shell will not reload.'(set_color normal)
         return
     end
 
     # clear screen. taken from fish's default keybind for ctrl+l
     echo -n (clear | string replace \e\[3J "")
 
-    echo "$(set_color brwhite)Configuration change detected, reloading the shell...$(set_color normal)"
+    echo (set_color brwhite)'[fish] Configuration change detected, reloading the shell...'(set_color normal)
     exec fish
 end
 set fish_config_path "$xdg_config_home/fish"

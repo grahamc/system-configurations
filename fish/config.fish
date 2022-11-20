@@ -237,9 +237,9 @@ if type --query direnv
     direnv hook fish | source
 end
 # toggle activation/deactivation messages
-set --global --export DIRENV_LOG_FORMAT "$(set_color brwhite)%s$(set_color normal)"
+set --global --export DIRENV_LOG_FORMAT (set_color brwhite)'[direnv] %s'(set_color normal)
 abbr --add --global dirlog \
-    'set --query DIRENV_LOG_FORMAT; and set --erase DIRENV_LOG_FORMAT; or set --global --export DIRENV_LOG_FORMAT "$(set_color brwhite)%s$(set_color normal)"'
+    'set --query DIRENV_LOG_FORMAT; and set --erase DIRENV_LOG_FORMAT; or set --global --export DIRENV_LOG_FORMAT (set_color brwhite)"[direnv] %s"(set_color normal)'
 
 # fish-abbreviation-tips
 set --global --export ABBR_TIPS_PROMPT "\n[$(set_color yellow)tip$(set_color normal)] If you type $(set_color yellow)'{{ .abbr }}'$(set_color normal) it will expand to $(set_color yellow)'{{ .cmd }}'$(set_color normal)"
