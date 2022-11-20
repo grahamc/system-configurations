@@ -105,21 +105,6 @@ vim.o.shortmess = 'filnxtToOFs'
 EOF
 " }}}
 
-" Autoreload {{{
-" neovim config files
-let config_files = [$MYVIMRC->split('/', 0)[-1]]
-for profile in g:profiles
-  let last_filename_segment = profile->split('/', 0)[-1]
-  call add(config_files, last_filename_segment)
-endfor
-
-let config_file_pattern = config_files->join(',')
-execute printf(
-      \ 'autocmd! bufwritepost %s ++nested source $MYVIMRC | execute "colorscheme " . trim(execute("colorscheme"))',
-      \ config_file_pattern
-      \ )
-" }}}
-
 lua << EOF
 -- Utilities {{{
 _G.unicode = function(hex)
