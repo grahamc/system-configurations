@@ -1061,7 +1061,7 @@ Plug(
           telescope = require("telescope.themes").get_cursor({
             border = false,
             layout_config = {
-              height = 4,
+              height = 6,
             },
           }),
           get_config = function(options)
