@@ -1010,7 +1010,8 @@ Plug(
               preview_height = resolve.resolve_height(.60),
             },
           },
-          borderchars = {'─', ' ', ' ', ' ', '─', '─', ' ', ' ',}
+          borderchars = {'─', ' ', ' ', ' ', '─', '─', ' ', ' ',},
+          dynamic_preview_title = true,
         },
         pickers = {
 
