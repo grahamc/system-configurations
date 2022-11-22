@@ -1012,6 +1012,7 @@ Plug(
           },
           borderchars = {'─', ' ', ' ', ' ', '─', '─', ' ', ' ',},
           dynamic_preview_title = true,
+          results_title = '(C-q: quickfix, C-t: new tab, C-{v,h}: vertical/horizontal split)',
         },
         pickers = {
 
@@ -1997,7 +1998,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight! TelescopePreviewTitle ctermbg=16 ctermfg=15 cterm=nocombine
     highlight! TelescopeResultsNormal ctermbg=16
     highlight! TelescopeResultsBorder ctermbg=16 ctermfg=16
-    highlight! TelescopeResultsTitle ctermbg=16 ctermfg=16
+    highlight! TelescopeResultsTitle ctermbg=16 ctermfg=15 cterm=italic
     highlight! TelescopePromptPrefix ctermbg=24 ctermfg=6 cterm=none,nocombine
     highlight! TelescopeMatching ctermbg=NONE ctermfg=6
     highlight! TelescopeSelection ctermbg=24
