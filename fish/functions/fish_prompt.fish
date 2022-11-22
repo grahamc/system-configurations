@@ -3,7 +3,7 @@ set fish_prompt_color_text (set_color normal; set_color cyan)
 set fish_prompt_color_standout_text (set_color normal; set_color yellow)
 set fish_prompt_color_error_text (set_color normal; set_color red)
 set fish_prompt_color_normal (set_color normal)
-set fish_prompt_color_border (set_color normal; set_color --bold brwhite)
+set fish_prompt_color_border (set_color normal; set_color brwhite)
 
 function fish_prompt --description 'Print the prompt'
     # pipestatus contains the exit code(s) of the last command that was executed
@@ -83,7 +83,7 @@ end
 
 
 function fish_prompt_get_arrow
-    echo -n -s (set_color --bold) (string repeat -n $SHLVL '>') ' '
+    echo -n -s (string repeat -n $SHLVL '>') ' '
 end
 
 function fish_prompt_get_python_context
