@@ -12,3 +12,4 @@ commandline
 asdf
 IDE
 IDE's
+dbus
