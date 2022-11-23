@@ -1889,12 +1889,10 @@ Plug(
           builtins.diagnostics.vale.with({
             -- NOTE: This should reflect all of the programming languages listed here:
             -- https://vale.sh/docs/topics/scoping/#code-1
-            -- extra_filetypes = {
-            --   'c', 'cs', 'cpp', 'css', 'go', 'haskell', 'java', 'javascript', 'less', 'lua', 'perl', 'php',
-            --   'python', 'r', 'ruby', 'sass', 'scala', 'swift',
-            -- },
-
-            extra_filetypes = { 'gitcommit' },
+            extra_filetypes = {
+              'c', 'cs', 'cpp', 'css', 'go', 'haskell', 'java', 'javascript', 'less', 'lua', 'perl', 'php',
+              'python', 'r', 'ruby', 'sass', 'scala', 'swift', 'gitcommit', 'txt',
+            },
           }),
         },
       })
