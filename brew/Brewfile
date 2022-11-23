@@ -6,7 +6,7 @@ brew "autossh"
 brew "bash"
 brew "bat"
 brew "btop"
-brew "bubblewrap"
+brew "pkg-config", link: false
 brew "cloudflared"
 brew "cmake", link: false
 brew "direnv"
@@ -32,7 +32,6 @@ brew "navi"
 brew "ncdu"
 brew "neovim", args: ["HEAD"]
 brew "pipx"
-brew "pkg-config", link: false
 brew "ripgrep"
 brew "ruby"
 brew "shellcheck"
