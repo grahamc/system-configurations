@@ -81,6 +81,7 @@ function _fzf_complete
             --exit-0 \
             --no-hscroll \
             --color 'gutter:-1' \
+            --tiebreak=begin,chunk \
         )
     and begin
         set entry (string split -f1 -- \t $choice)
