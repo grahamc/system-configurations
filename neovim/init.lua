@@ -33,7 +33,6 @@ if vim.fn.isdirectory(profile_directory) then
   vim.g.profiles = vim.fn.split(vim.fn.globpath(profile_directory, '*'), '\n')
 end
 _G.is_nerdfont_enabled = os.getenv('NERDFONT_ENABLE') == '1'
-_G.loaded_neovim_config = false
 
 -- Install vim-plug if not found
 local vim_plug_plugin_file = vim.g.data_path .. '/site/autoload/plug.vim'
@@ -111,9 +110,7 @@ function Plug(repo, options)
 end
 
 -- Calling this before I load the profiles so I can register plugins inside them
-if not loaded_neovim_config then
-  plug_begin()
-end
+plug_begin()
 
 -- Load profiles
 for _, profile in pairs(vim.g.profiles) do
@@ -121,8 +118,4 @@ for _, profile in pairs(vim.g.profiles) do
 end
 
 -- Calling this after I load the profiles so I can register plugins inside them
-if not loaded_neovim_config then
-  plug_end()
-end
-
-loaded_neovim_config = true
+plug_end()

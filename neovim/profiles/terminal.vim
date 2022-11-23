@@ -540,9 +540,7 @@ _G.SetModifiedIndicator = function(_)
 
   modified_indicator = nil
 end
-if not loaded_neovim_config then
-  vim.fn.timer_start(1000, SetModifiedIndicator, {['repeat'] = -1})
-end
+vim.fn.timer_start(1000, SetModifiedIndicator, {['repeat'] = -1})
 _G.StatusLine = function()
   local item_separator = '%#StatusLineSeparator# ∙ '
 
