@@ -24,6 +24,7 @@
   gui = "!flatpak run com.jetpackduba.Gitnuro 1>/dev/null 2>&1 &"
   l = log
   mt = mergetool
+  dt = difftool
 [init]
   defaultBranch = master
 [merge]
@@ -31,6 +32,7 @@
   tool = vscode
 [diff]
   colorMoved = default
+  tool = vscode
 [interactive]
   diffFilter = delta-with-fallback-to-less --color-only
 [delta]
@@ -54,6 +56,8 @@
   map-styles = normal 21 => syntax 21, normal 22 => syntax 22
 [mergetool "vscode"]
   cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
+[difftool "vscode"]
+  cmd = code --wait --diff $LOCAL $REMOTE
 [color "diff"]
   oldMoved = normal 21
   newMoved = normal 22
