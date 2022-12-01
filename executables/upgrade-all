@@ -110,6 +110,10 @@ function upgrade-asdf
         and asdf install $tool $latest_version
         and asdf global $tool $latest_version
     end
+
+    # If any of the tools themselves have package managers, update their packages
+    pip --disable-pip-version-check list --outdated --format=json | python -c "import json, sys; print('\n'.join([x['name'] for x in json.load(sys.stdin)]))" | xargs -I PACKAGE pip install --upgrade PACKAGE
+    cargo install-update --all
 end
 
 function upgrade-pipx
