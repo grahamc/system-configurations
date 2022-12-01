@@ -101,6 +101,16 @@ function upgrade-asdf
     echo -s (set_color blue) 'ASDF' (set_color normal)
     echo -s (set_color blue) (string repeat --count 40 ─) (set_color normal)
     asdf plugin-update --all
+
+    set tools java golang nodejs python rust
+    set version_prefixes 'temurin-' '' '' '' ''
+    for index in (seq (count $tools))
+        set tool $tools[$index]
+        set version_prefix $version_prefixes[$index]
+        set latest_version (asdf latest $tool $version_prefix)
+        and asdf install $tool $latest_version
+        and asdf global $tool $latest_version
+    end
 end
 
 function upgrade-pipx
