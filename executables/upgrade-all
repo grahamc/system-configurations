@@ -101,6 +101,7 @@ function upgrade-asdf
 
     asdf plugin-update --all
 
+    # update tools
     set tools java golang nodejs python rust
     set version_prefixes 'temurin-' '' '' '' ''
     for index in (seq (count $tools))
