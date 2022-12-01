@@ -131,7 +131,7 @@ function upgrade-nvim
     nvim --headless -i NONE -c 'PlugClean!' -c 'qa'
     for plugin_directory in ~/.local/share/nvim/plugged/*
         chronic git -C $plugin_directory fetch
-        if test -n "$(git -C $plugin_directory log HEAD..@{u} --oneline)"
+        if test -n "$(git -C $plugin_directory log HEAD..origin/HEAD --oneline)"
             set is_outdated
             break
         end
