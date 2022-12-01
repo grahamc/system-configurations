@@ -1,8 +1,8 @@
 " vim:foldmethod=marker
 
-" Exit if vim is not running in a terminal. I detect this by checking if the input
-" to vim is coming from a terminal (also referred to as a tty).
-if !has('ttyin')
+" Exit if vim is not running in a terminal (also referred to as a tty). I detect this by
+" checking if the input to vim is coming from a terminal or vim is outputting to a terminal.
+if !has('ttyin') && !has('ttyout')
   finish
 endif
 
