@@ -1,6 +1,6 @@
-python 3.10.4
-nodejs 16.15.0
-golang 1.18.2
-rust 1.64.0
+python 3.11.0
+nodejs 19.2.0
+golang 1.19.3
+rust 1.65.0
 direnv system
-java temurin-17.0.3+7
+java temurin-jre-19.0.1+10
