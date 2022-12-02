@@ -144,13 +144,21 @@ function upgrade-nvim
     print_banner 'NEOVIM'
 
     # This way we don't check for updates in plugins that aren't being used
+    echo -n 'Removing unused plugins... '
     nvim --headless -i NONE -c 'PlugClean!' -c 'qa'
+    echo 'done'
+
+    set plugin_count (ls ~/.local/share/nvim/plugged | wc -l)
+    set current_plugin_number 1
     for plugin_directory in ~/.local/share/nvim/plugged/*
+        echo -n -e -s 'Checking plugins for updates: ' $current_plugin_number '/' $plugin_count \r
         chronic git -C $plugin_directory fetch
         if test -n "$(git -C $plugin_directory log HEAD..origin/HEAD --oneline)"
             set is_outdated
             break
         end
+
+        set current_plugin_number (math $current_plugin_number + 1)
     end
     curl --silent --fail --location https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
         | chronic diff - ~/.local/share/nvim/site/autoload/plug.vim
