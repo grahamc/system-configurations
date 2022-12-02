@@ -214,7 +214,15 @@ end
 
 function upgrade-pip
     print_banner 'PIP'
-    pip --disable-pip-version-check list --outdated --format=json | python -c "import json, sys; print('\n'.join([x['name'] for x in json.load(sys.stdin)]))" | xargs -I PACKAGE pip install --upgrade PACKAGE
+
+    set upgradable_packages (pip --disable-pip-version-check list --outdated --format=json | python -c "import json, sys; print('\n'.join([x['name'] for x in json.load(sys.stdin)]), end='')")
+    if test (count $upgradable_packages) -gt 0
+        for package in $upgradable_packages
+            pip install --upgrade $package
+        end
+    else
+        echo 'Nothing to do.'
+    end
 end
 
 function upgrade-cargo
