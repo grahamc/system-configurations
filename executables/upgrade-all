@@ -160,9 +160,13 @@ function upgrade-nvim
 
         set current_plugin_number (math $current_plugin_number + 1)
     end
+    # clear current line, which has the progress indicator
+    echo -e -n '\33[2K'
+
     curl --silent --fail --location https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
         | chronic diff - ~/.local/share/nvim/site/autoload/plug.vim
     or set is_outdated
+
     if not set --query is_outdated
         echo 'Nothing to do.'
         return
