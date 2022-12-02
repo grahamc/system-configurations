@@ -162,7 +162,9 @@ function upgrade-nvim
 
     read --prompt-str 'Would you like to update? (y/n): ' --nchars 1 response
     if test $response = 'y'
-        nvim -c 'autocmd VimEnter * MyPlugUpdate'
+        # I explicitly set the input file to the terminal in case this command is run in a pipeline.
+        # For exmaple: `yes | <this_script>`.
+        nvim -c 'autocmd VimEnter * MyPlugUpdate' </dev/tty
     end
 end
 
