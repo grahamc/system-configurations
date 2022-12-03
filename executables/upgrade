@@ -10,7 +10,7 @@ function print_banner --argument-names message
 end
 
 # upgrade/cleanup packages in all package managers
-function upgrade-all
+function upgrade
     # If arguments are passed, assume they are package manager names and only upgrade those ones
     if test (count $argv) -gt 0
         for package_manager in $argv
@@ -257,4 +257,4 @@ function upgrade-cargo
     and cargo install-update --all
 end
 
-upgrade-all $argv
+upgrade $argv
