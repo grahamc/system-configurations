@@ -11,6 +11,20 @@ end
 
 # upgrade/cleanup packages in all package managers
 function upgrade-all
+    # If arguments are passed, assume they are package manager names and only upgrade those ones
+    if test (count $argv) -gt 0
+        for package_manager in $argv
+            set function_name "upgrade-$package_manager"
+            if functions --query $function_name
+                eval $function_name
+            else
+                echo -e -s \n (set_color red) "error: No upgrader found for '$package_manager'"
+            end
+        end
+
+        return
+    end
+
     type --query aptitude
     and upgrade-debian
 
@@ -243,4 +257,4 @@ function upgrade-cargo
     and cargo install-update --all
 end
 
-upgrade-all
+upgrade-all $argv
