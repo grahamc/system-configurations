@@ -297,6 +297,16 @@ abbr --add --global font-debug 'DISPLAY=:0 FC_DEBUG=4 pango-view --font=monospac
 # ncdu
 abbr --add --global ncdu 'ncdu --color off'
 
+# ulimit
+#
+# Increase maxixmum number of open file descriptors that a single process can have. This applies to the current
+# process and its descendents.
+#
+# I hit the limit when installing a brew package. Brew won't address this since it is trivial to increase the file
+# limit and they feel the default (1024) is low to begin with.
+# issue: https://github.com/Homebrew/brew/issues/9120
+ulimit -Sn 10000
+
 # Print banner
 if not set --query BANNER_WAS_PRINTED
     set banner Fish Shell v(string split ' ' (fish --version) | tail -n 1)

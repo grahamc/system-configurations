@@ -25,16 +25,6 @@ fi
 # other executables.
 PATH="$HOME/.local/bin:$PATH"
 
-# Increase maxixmum number of open file descriptors that a single process can have. This applies to the current
-# process and its descendents.
-#
-# I hit the limit when installing a brew package. Brew won't address this since it is trivial to increase the file
-# limit and they feel the default (1024) is low to begin with.
-# issue: https://github.com/Homebrew/brew/issues/9120
-if command -v ulimit; then
-    ulimit -Sn 10000
-fi
-
 # switch to fbterm if we are running in a TTY
 # [ "$TERM" = "linux" ] && [[ $- == *i* ]] && command -v fbterm >/dev/null 2>&1 && FBTERM=1 exec fbterm
 
