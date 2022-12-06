@@ -15,6 +15,9 @@ date: relative
 icons:
   theme: fancy
   separator: ''
+  when: never
+
+indicators: true
 
 total-size: true
 
