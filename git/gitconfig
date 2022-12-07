@@ -40,7 +40,7 @@
   hyperlinks = true
   syntax-theme = base16-brighter
   tabs = 2
-  blame-palette = 0 8 32
+  blame-palette = 0 8
   file-decoration-style = "bright-white ul"
   file-style = "normal"
   hunk-header-decoration-style = "bright-white box"
