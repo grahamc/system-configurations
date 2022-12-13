@@ -1294,7 +1294,6 @@ Plug(
   {
     config = function()
       require('nvim-tree').setup({
-        create_in_closed_folder = true,
         hijack_cursor = true,
         sync_root_with_cwd = true,
         open_on_tab = true,
