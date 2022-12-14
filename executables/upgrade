@@ -137,11 +137,12 @@ function upgrade-asdf
     asdf plugin-update --all
 
     # update tools
-    set tools java golang nodejs python rust
-    set version_prefixes 'temurin-' '' '' '' ''
-    for index in (seq (count $tools))
-        set tool $tools[$index]
-        set version_prefix $version_prefixes[$index]
+    for tool in (asdf plugin-list)
+        set version_prefix ''
+        if test $tool = 'java'
+            set version_prefix 'temurin-'
+        end
+
         set current_version (asdf current $tool | string split --no-empty --fields 2 -- ' ')
         set latest_version (asdf latest $tool $version_prefix)
         and test $current_version != $latest_version
