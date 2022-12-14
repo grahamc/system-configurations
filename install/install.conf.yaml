@@ -58,6 +58,7 @@
     ~/.ignore: ignore
     ~/.default-cargo-crates: asdf/default-cargo-crates
     ~/.default-python-packages: asdf/default-python-packages
+    ~/.default-npm-packages: asdf/default-npm-packages
     ~/.config/pipr/pipr.toml: pipr/pipr.toml
     ~/.config/brewfile/Brewfile: brew/Brewfile
     ~/.config/pipx/pipx-packages: pipx/pipx-packages
