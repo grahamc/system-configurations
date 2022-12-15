@@ -1,6 +1,6 @@
 python 3.11.1
 nodejs 19.2.0
 golang 1.19.4
-rust 1.65.0
+rust 1.66.0
 direnv system
 java temurin-jre-19.0.1+10
