@@ -1849,7 +1849,7 @@ Plug(
               'force',
               default_server_config,
               {
-                filetypes = {'markdown', 'gitcommit',},
+                filetypes = {'markdown', 'gitcommit', 'text'},
               }
             )
           )
@@ -1890,7 +1890,7 @@ Plug(
             -- https://vale.sh/docs/topics/scoping/#code-1
             extra_filetypes = {
               'c', 'cs', 'cpp', 'css', 'go', 'haskell', 'java', 'javascript', 'less', 'lua', 'perl', 'php',
-              'python', 'r', 'ruby', 'sass', 'scala', 'swift', 'gitcommit', 'txt',
+              'python', 'r', 'ruby', 'sass', 'scala', 'swift', 'gitcommit', 'text',
             },
           }),
         },
