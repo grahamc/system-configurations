@@ -152,6 +152,7 @@ function upgrade-asdf
         and test $current_version != $latest_version
         and asdf install $tool $latest_version
         and asdf global $tool $latest_version
+        and asdf uninstall $tool $current_version
     end
 end
 
