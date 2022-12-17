@@ -144,11 +144,17 @@ function upgrade-asdf
         end
 
         set current_version (asdf current $tool | string split --no-empty --fields 2 -- ' ')
+        if test -z "$current_version"
+            continue # error
+        end
         if test $current_version = 'system'
             continue
         end
 
         set latest_version (asdf latest $tool $version_prefix)
+        if test -z "$latest_version"
+            continue # error
+        end
         and test $current_version != $latest_version
         and asdf install $tool $latest_version
         and asdf global $tool $latest_version
