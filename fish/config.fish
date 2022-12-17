@@ -94,7 +94,7 @@ function _fzf_complete_or_last_entry
     if commandline --paging-mode
         # TODO: When the first entry is selected (in tab complete not fzf_complete) this doesn't unselect it,
         # it wraps around
-        commandline -f backward-char
+        commandline -f complete-and-search
     else
         _fzf_complete
     end
