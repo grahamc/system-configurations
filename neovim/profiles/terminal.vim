@@ -2062,7 +2062,6 @@ function! UpdateAndSnapshotSync()
   if exists(':TSDisable')
     TSDisable highlight
   endif
-  0tabnew
   PlugUpdate --sync
   PlugDiff
 
@@ -2070,7 +2069,6 @@ function! UpdateAndSnapshotSync()
   call CreateSnapshotSync()
 
   " Close all windows except for the one that contains the changelog of updated plugins
-  q
   q
 endfunction
 command! MyPlugUpdate call UpdateAndSnapshotSync()
