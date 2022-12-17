@@ -2068,6 +2068,10 @@ function! UpdateAndSnapshotSync()
 
   0tabnew
   call CreateSnapshotSync()
+
+  " Close all windows except for the one that contains the changelog of updated plugins
+  q
+  q
 endfunction
 command! MyPlugUpdate call UpdateAndSnapshotSync()
 function! PlugRestore()
