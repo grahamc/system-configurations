@@ -38,7 +38,7 @@ brew "shellcheck"
 brew "sshfs"
 brew "subversion"
 brew "tealdeer"
-brew "tmux", args: ["HEAD"]
+brew "tmux"
 brew "trash-cli"
 brew "tree"
 brew "viddy"
