@@ -71,6 +71,6 @@ function __mark_output_end --on-event fish_postexec
     end
     set output_line_count (math \( $output_end - $output_begin \) + 1)
     if test $output_line_count -gt $LINES
-        echo -e "\n[$(set_color yellow)tip$(set_color normal)] View the output of the last command in $(set_color blue)less$(set_color normal) with $(set_color blue)ctrl+o$(set_color normal) or $(set_color magenta)fzf$(set_color normal) with $(set_color magenta)alt+o$(set_color normal)"
+        echo -e "\n$(set_color --reverse --bold yellow) TIP $(set_color normal) View the output of the last command in $(set_color blue)less$(set_color normal) with $(set_color blue)ctrl+o$(set_color normal) or $(set_color magenta)fzf$(set_color normal) with $(set_color magenta)alt+o$(set_color normal)"
     end
 end
