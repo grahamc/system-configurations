@@ -1,6 +1,9 @@
 import IPython
 import sys
 
+# common imports
+from time import sleep
+
 yellow = '\x1b[33;49;7;1m'
 blue = '\x1b[34;49;7;1m'
 normal = '\x1b[0m'
@@ -9,16 +12,13 @@ code = '\x1b[35m\x1b[100m'
 # banner
 print(f'{blue} INFO {normal} Python v{".".join(str(x) for x in sys.version_info[:3])}, IPython v{".".join(str(x) for x in IPython.version_info[:3])}. Type {code} ? {normal} for help.')
 
-# enable autoreload
-%autoreload 2
-print(f"{yellow} WARNING {normal} Module autoreload is enabled, this may impact performance. You can disable it with {code} %autoreload 0 {normal}")
-
 # enable verbose exception traces
 print(f'{blue} INFO {normal}', end=' ')
 %xmode Verbose
 
-# common imports
-from time import sleep
+# enable autoreload
+%autoreload 2
+print(f"{yellow} WARNING {normal} Module autoreload is enabled, this may impact performance. You can disable it with {code} %autoreload 0 {normal}")
 
 # change cursor shape to a blinking bar
 print('\x1b[5 q', end='')
