@@ -2,6 +2,8 @@
     selected_tab: Reset,
     command_fg: Reset,
     selection_bg: DarkGray,
+    selection_fg: Reset,
+    cmdbar_bg: DarkGray,
     cmdbar_extra_lines_bg: DarkGray,
     disabled_fg: White,
     diff_line_add: Green,
@@ -16,4 +18,6 @@
     danger_fg: Red,
     push_gauge_bg: Reset,
     push_gauge_fg: Reset,
+    tag_fg: Magenta,
+    branch_fg: Cyan
 )
