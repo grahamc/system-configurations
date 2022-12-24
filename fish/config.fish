@@ -252,6 +252,17 @@ function __abbr_tips_history_backward
     commandline -f history-search-backward
 end
 bind \e\[A __abbr_tips_history_backward
+# If the commandline contains the most recent item in the history, we assume that moving forward in the history
+# will exit the history. In this case, reenable abbreviation tips.
+function __abbr_tips_history_forward
+    set last_history_item (history --reverse | tail -1)
+    if test "$last_history_item" = "$(commandline)"
+        set -g __abbr_tips_used 0
+    end
+
+    commandline -f history-search-forward
+end
+bind \e\[B __abbr_tips_history_forward
 # This way, I won't get reminded about an abbreviation when executing the autosuggested command
 function __abbr_tips_forward_char
     set -g __abbr_tips_used 1
