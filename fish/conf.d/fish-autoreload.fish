@@ -11,6 +11,10 @@ else
 end
 
 function _autoreload_fish --on-variable _autoreload_indicator
+    if test "$_autoreload_disabled" -eq 1
+        return
+    end
+
     if jobs --query
         echo (set_color normal)'['(set_color yellow)'fish'(set_color normal)'] '(set_color yellow)'Warning: A configuration change was detected, but there are jobs running in the background so the shell will not reload.'(set_color normal)
         return

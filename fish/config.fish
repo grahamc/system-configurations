@@ -307,6 +307,10 @@ abbr --add --global ncdu 'ncdu --color off'
 # issue: https://github.com/Homebrew/brew/issues/9120
 ulimit -Sn 10000
 
+# fish autoreload
+# This can be annoying with autosave on so I'm disabling it
+set --universal _autoreload_disabled 1
+
 # Print banner
 if not set --query BANNER_WAS_PRINTED
     set banner Fish Shell v(string split ' ' (fish --version) | tail -n 1)
