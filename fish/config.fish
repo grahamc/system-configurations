@@ -324,6 +324,9 @@ ulimit -Sn 10000
 # This can be annoying with autosave on so I'm disabling it
 set --universal _autoreload_disabled 1
 
+# neovim
+abbr --add --global v vim
+
 # Print banner
 if not set --query BANNER_WAS_PRINTED
     set banner Fish Shell v(string split ' ' (fish --version) | tail -n 1)
