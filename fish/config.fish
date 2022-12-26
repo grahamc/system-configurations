@@ -105,6 +105,8 @@ bind -k btab _fzf_complete_or_last_entry
 function __save_history --on-event fish_preexec
     history --save
 end
+# I only want my functions loaded into an interactive shell so I add them to the function path here.
+set --global --prepend fish_function_path "$HOME/.config/fish/my-fish/functions"
 
 # sudo
 abbr --add --global s sudo

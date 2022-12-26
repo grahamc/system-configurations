@@ -44,9 +44,6 @@
     # watchman issue: https://github.com/facebook/watchman/issues/105
     ~/.config/fish/my-fish: fish
     ~/.config/fish/config.fish: ~/.config/fish/my-fish/config.fish
-    ~/.config/fish/functions/:
-        glob: true
-        path: ~/.config/fish/my-fish/functions/*
     ~/.config/fish/conf.d/:
         glob: true
         path: ~/.config/fish/my-fish/conf.d/*
