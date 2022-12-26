@@ -327,6 +327,15 @@ set --universal _autoreload_disabled 1
 # neovim
 abbr --add --global v vim
 
+# Initialize fish-abbreviation-tips. The plugin only runs init once when the plugin is installed so if I add new
+# abbreviations after that, the plugin won't give tips for them. This should be towards the end of this file so that
+# any abbreviations created in this file get loaded into fish-abbreviation-tips.
+#
+# TODO: I tried running this in the current shell, but that messed with my prompt colors so I run it in a
+# child shell instead. Since my abbreviations only get defined in an interactive shell, I load them into the child shell
+# using --init-command. Then I run it in the background so it doesn't impact load time.
+fish --init-command "source $(abbr | psub)" --command '__abbr_tips_init' & disown
+
 # Print banner
 if not set --query BANNER_WAS_PRINTED
     set banner Fish Shell v(string split ' ' (fish --version) | tail -n 1)
