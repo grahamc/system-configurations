@@ -83,11 +83,19 @@ class SmartPlugController(object):
     def _block_until_complete(self, awaitable: Awaitable):
         return asyncio.get_event_loop().run_until_complete(awaitable)
 
-def register_exit_handler(handler: Callable):
+def register_exit_handler(handler: Callable, listener: SleepWakeShutdownListener):
     atexit.register(handler)
     exit_signals = [signal.SIGTERM, signal.SIGINT]
     # the handler calls sys.exit so that the function registered via atexit get run
-    signal_handler = lambda signal_number, stack_frame: sys.exit()
+    def signal_handler(signal_number, stack_frame):
+        # TODO: Stopping the dbus listener here because if we raise SystemExit while a dbus message
+        # handler is running, dbus will swallow the exception and continue listening.
+        # Ideally, I'd want dbus to not catch SystemExit and let it keep bubbling up
+        # until the program exited, but there doesn't seem to be a way to configure that.
+        # The code that swallows SystemExit is in 'maybe_handle_message' in 'connection.py':
+        # https://gitlab.freedesktop.org/dbus/dbus-python/-/blob/master/dbus/connection.py#L222
+        listener.stop_listening()
+        sys.exit()
     for exit_signal in exit_signals:
         signal.signal(exit_signal, signal_handler)
 
@@ -127,10 +135,10 @@ if __name__ == '__main__':
     wait_for_network_online()
     plug_controller = SmartPlugController(plug_alias='plug')
     plug_controller.turn_on()
-    register_exit_handler(plug_controller.turn_off)
     turn_on_plug_after_network_is_online = lambda: call_after_network_is_online(plug_controller.turn_on)
     with SleepWakeShutdownListener(sleep_handler=plug_controller.turn_off,
                                    wake_handler=turn_on_plug_after_network_is_online,
                                    shutdown_handler=plug_controller.turn_off) as listener:
+        register_exit_handler(plug_controller.turn_off, listener)
         listener.listen()
 
