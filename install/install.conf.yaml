@@ -107,3 +107,6 @@
     -
         description: Link Firefox configs
         command: sh ./firefox/install.sh
+    -
+        description: Setup Linux
+        command: sh ./linux/setup

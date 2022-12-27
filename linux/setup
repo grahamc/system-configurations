@@ -1,0 +1,10 @@
+#!/bin/env sh
+
+# Exit if this OS is not Linux
+if uname | grep -q -i -v linux; then
+  exit
+fi
+
+# On apple keyboards, use media keys when a Function key is pressed without the Fn modifier key
+echo options hid_apple fnmode=1 | sudo tee -a /etc/modprobe.d/hid_apple.conf
+sudo update-initramfs -u -k all
