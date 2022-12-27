@@ -1,0 +1,5 @@
+#!/bin/env sh
+
+# Using this to delay the NetworkManager's disconnection. Should give my service enough time to run.
+
+sleep 1
