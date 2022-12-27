@@ -105,8 +105,5 @@
         description: Install pipx tools
         command: xargs -I PACKAGE pipx install PACKAGE < "pipx/pipx-packages"
     -
-        description: Link apt configs
-        command: fish ./apt/install.fish
-    -
         description: Link Firefox configs
         command: sh ./firefox/install.sh
