@@ -38,15 +38,14 @@
     ~/.cloudflared/config.yaml: cloudflared/config.yaml
     ~/.ripgreprc: ripgrep/ripgreprc
     ~/.config/gitui/theme.ron: gitui/theme.ron
-    # The reason I symlink the entire fish folder instead of linking
-    # the individual files is that watchman does not support change detection in symlinks.
-    # By symlinking the entire folder, the files themselves will not be symlinks.
-    # watchman issue: https://github.com/facebook/watchman/issues/105
     ~/.config/fish/my-fish: fish
-    ~/.config/fish/config.fish: ~/.config/fish/my-fish/config.fish
+    ~/.config/fish/config.fish: fish/config.fish
     ~/.config/fish/conf.d/:
         glob: true
-        path: ~/.config/fish/my-fish/conf.d/*
+        path: fish/conf.d/*
+    ~/.config/fish/my-functions/:
+        glob: true
+        path: fish/functions/*
     ~/.config/fish/fish_plugins: fish/fish_plugins
     ~/.config/bat/config: bat/config
     ~/.lesskey: less/lesskey

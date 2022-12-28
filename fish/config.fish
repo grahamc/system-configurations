@@ -106,7 +106,7 @@ function __save_history --on-event fish_preexec
     history --save
 end
 # I only want my functions loaded into an interactive shell so I add them to the function path here.
-set --global --prepend fish_function_path "$HOME/.config/fish/my-fish/functions"
+set --global --prepend fish_function_path "$__fish_config_dir/my-functions"
 
 # sudo
 abbr --add --global s sudo
@@ -319,10 +319,6 @@ abbr --add --global ncdu 'ncdu --color off'
 # limit and they feel the default (1024) is low to begin with.
 # issue: https://github.com/Homebrew/brew/issues/9120
 ulimit -Sn 10000
-
-# fish autoreload
-# This can be annoying with autosave on so I'm disabling it
-set --universal _autoreload_disabled 1
 
 # neovim
 abbr --add --global v vim
