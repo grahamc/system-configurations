@@ -279,12 +279,7 @@ bind \cp pipr-widget
 # pipenv
 if type --query pipenv
     # enable autocomplete
-    if set --query XDG_CONFIG_HOME
-        set xdg_config_home $XDG_CONFIG_HOME
-    else
-        set xdg_config_home "$HOME/.config"
-    end
-    set fish_config_path "$xdg_config_home/fish/conf.d"
+    set fish_config_path "$__fish_config_dir/conf.d"
     set pipenv_autocomplete "$fish_config_path/pipenv-autocomplete.fish"
     if not test -f $pipenv_autocomplete
         env _PIPENV_COMPLETE=fish_source pipenv > $pipenv_autocomplete
