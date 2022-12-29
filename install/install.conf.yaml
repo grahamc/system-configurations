@@ -38,7 +38,6 @@
     ~/.cloudflared/config.yaml: cloudflared/config.yaml
     ~/.ripgreprc: ripgrep/ripgreprc
     ~/.config/gitui/theme.ron: gitui/theme.ron
-    ~/.config/fish/my-fish: fish
     ~/.config/fish/config.fish: fish/config.fish
     ~/.config/fish/conf.d/:
         glob: true
