@@ -1920,6 +1920,7 @@ Plug 'arcticicestudio/nord-vim'
     highlight StatusLineHintText ctermfg=5 ctermbg=8
     highlight StatusLineStandoutText ctermfg=3 ctermbg=8
     highlight CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
+    highlight! link CursorLineNr CursorLine
     " transparent background
     highlight Normal ctermbg=NONE
     highlight EndOfBuffer ctermbg=NONE
