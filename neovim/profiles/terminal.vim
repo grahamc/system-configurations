@@ -37,12 +37,10 @@ augroup END
 lua << EOF
 vim.keymap.set('', '<C-s>', '<Cmd>wa<CR>')
 vim.keymap.set('', '<C-x>', '<Cmd>xa<CR>')
-EOF
 
-" suspend vim and start a new shell
-nnoremap <C-z> <Cmd>suspend<CR>
-inoremap <C-z> <Cmd>suspend<CR>
-xnoremap <C-z> <Cmd>suspend<CR>
+-- suspend vim and start a new shell
+vim.keymap.set({'n', 'i', 'x'}, '<C-z>', '<Cmd>suspend<CR>')
+EOF
 
 " Decide which actions to take when the enter key is pressed.
 function! GetEnterKeyActions()
