@@ -386,10 +386,10 @@ local function save_session()
 end
 
 local function restore_or_create_session()
-  -- We only want to restore/create a session if neovim was called with no arguments. The first element in vim.v.argv
-  -- will always be the path to the vim executable so if no arguments were passed to neovim, the size of vim.v.argv
-  -- will be one.
-  local is_neovim_called_with_no_arguments = #vim.v.argv == 1
+  -- We only want to restore/create a session only if no arguments were passed to neovim through the commandline. There
+  -- are two arguments that will always be present in vim.v.argv, the path to the vim executable and '--embed'. So if
+  -- no arguments were passed to neovim through the commandline, the size of vim.v.argv will be two.
+  local is_neovim_called_with_no_arguments = #vim.v.argv == 2
   if is_neovim_called_with_no_arguments then
     local session_name = string.gsub(os.getenv('PWD'), '/', '%%') .. '%vim'
     vim.fn.mkdir(session_dir, 'p')
