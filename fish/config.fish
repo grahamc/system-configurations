@@ -111,9 +111,6 @@ set --global --prepend fish_function_path "$__fish_config_dir/my-functions"
 # sudo
 abbr --add --global s sudo
 
-# cloudflared
-abbr --add --global tunnel cloudflared-tunnel
-
 # ps
 abbr --add --global fp fzf-process-widget
 

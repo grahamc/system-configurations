@@ -1,4 +1,4 @@
-function cloudflared-tunnel --description 'Connect my cloudflare tunnel to the specified port on localhost' --argument-names port
+function tunnel --description 'Connect my cloudflare tunnel to the specified port on localhost' --argument-names port
     if test (count $argv) -eq 0
         set function_name (status current-function)
         echo -s \
