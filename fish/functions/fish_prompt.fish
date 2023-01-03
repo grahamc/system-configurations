@@ -6,12 +6,6 @@ set fish_prompt_color_normal (set_color normal)
 set fish_prompt_color_border (set_color normal; set_color brwhite)
 
 function fish_prompt --description 'Print the prompt'
-    # pipestatus contains the exit code(s) of the last command that was executed
-    # (there are multiple codes in the case of a pipeline). I want the value of the last command
-    # executed on the command line so I will store the value of pipestatus
-    # now, before executing any commands.
-    set last_pipestatus $pipestatus
-
     # TODO: This clears the text in the terminal after the cursor. If we don't do this, multiline
     # prompts might not display properly.
     # issue: https://github.com/fish-shell/fish-shell/issues/8418
@@ -39,8 +33,7 @@ function fish_prompt --description 'Print the prompt'
         (fish_prompt_get_job_context) \
         (fish_prompt_get_user_context) \
         (fish_prompt_get_path_context) \
-        (fish_prompt_get_privilege_context) \
-        (fish_prompt_get_status_context $last_pipestatus)
+        (fish_prompt_get_privilege_context)
     for context in $contexts
         if test -z $context
             continue
@@ -153,15 +146,6 @@ function fish_prompt_get_path_context
     end
 
     echo -n -s $fish_prompt_color_text 'path: ' $path
-end
-
-function fish_prompt_get_status_context
-    # If there aren't any non-zero exit codes, i.e. failures, then we won't print anything
-    if not string match --quiet --invert 0 $argv
-        return
-    end
-    set --local pipestatus_formatted (fish_status_to_signal $argv | string join '|')
-    echo -n -s $fish_prompt_color_error_text 'status: ' $pipestatus_formatted
 end
 
 function fish_prompt_get_direnv_context

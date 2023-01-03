@@ -107,6 +107,18 @@ function __save_history --on-event fish_preexec
 end
 # I only want my functions loaded into an interactive shell so I add them to the function path here.
 set --global --prepend fish_function_path "$__fish_config_dir/my-functions"
+# Print an error message if the last command failed.
+function __print_error_message --on-event fish_postexec
+  set last_pipestatus $pipestatus
+  if string match --quiet --invert 0 $last_pipestatus
+    if test (count $last_pipestatus) -gt 1
+        set plural 's'
+    else
+        set plural ''
+    end
+    echo -e -s \n (set_color --bold --reverse red) ' ERROR ' (set_color normal) " Exited with code$plural " "$(set_color normal)(" (set_color red) (string join "$(set_color normal)|$(set_color red)" (fish_status_to_signal $last_pipestatus)) "$(set_color normal))"
+  end
+end
 
 # sudo
 abbr --add --global s sudo
