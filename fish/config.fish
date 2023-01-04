@@ -322,9 +322,6 @@ abbr --add --global ncdu 'ncdu --color off'
 # issue: https://github.com/Homebrew/brew/issues/9120
 ulimit -Sn 10000
 
-# neovim
-abbr --add --global v vim
-
 # Initialize fish-abbreviation-tips. The plugin only runs init once when the plugin is installed so if I add new
 # abbreviations after that, the plugin won't give tips for them. This should be towards the end of this file so that
 # any abbreviations created in this file get loaded into fish-abbreviation-tips. I run it in the background so it
