@@ -139,7 +139,7 @@ function __print_error_message --on-event fish_postexec --argument-names command
             end
         end
 
-        echo -e -s \n $red_bold' ERROR ' $normal" Exited with code$plural" $normal' [' (string join "$normal|" $pipestatus_formatted) $normal']'
+        echo -e -s \n $red_bold' ERROR ' $normal" Exited with code$plural" $normal' [' (string join "$normal, " $pipestatus_formatted) $normal']'
     end
 end
 
