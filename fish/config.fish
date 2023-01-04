@@ -124,7 +124,18 @@ function __print_error_message --on-event fish_postexec --argument-names command
     else
         set plural ''
     end
-    echo -e -s \n (set_color --bold --reverse red) ' ERROR ' (set_color normal) " Exited with code$plural " "$(set_color normal)(" (set_color red) (string join "$(set_color normal)|$(set_color red)" (fish_status_to_signal $last_pipestatus)) "$(set_color normal))"
+
+    set pipestatus_formatted
+    for code in $last_pipestatus
+        set signal (fish_status_to_signal $code)
+        if test "$code" != "$signal"
+            set --append pipestatus_formatted "$code($signal)"
+        else
+            set --append pipestatus_formatted "$code"
+        end
+    end
+
+    echo -e -s \n (set_color --bold --reverse red) ' ERROR ' (set_color normal) " Exited with code$plural " "$(set_color normal)" [ (set_color red) (string join "$(set_color normal)|$(set_color red)" $pipestatus_formatted) "$(set_color normal)" ]
   end
 end
 
