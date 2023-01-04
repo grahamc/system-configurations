@@ -4,10 +4,10 @@ if not status is-interactive
     exit
 end
 
-function mandb-reminder --on-event fish_postexec
+function mandb-reminder --on-event fish_postexec --argument-names commandline
     set last_interactive_status $status
     set last_interactive_pipestatus $pipestatus
-    set command (string split ' ' -- "$argv")[1]
+    set command (string split ' ' -- "$commandline")[1]
 
     if test "$command" = 'man'
             and test $last_interactive_status -eq 16

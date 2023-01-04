@@ -108,12 +108,12 @@ end
 # I only want my functions loaded into an interactive shell so I add them to the function path here.
 set --global --prepend fish_function_path "$__fish_config_dir/my-functions"
 # Print an error message if the last command failed.
-function __print_error_message --on-event fish_postexec
+function __print_error_message --on-event fish_postexec --argument-names commandline
   set last_pipestatus $pipestatus
 
   # For git log, git exits with 141 (SIGPIPE) if the pager doesn't consume all the text that git writes
   # to the pipe (i.e. scrolling to the bottom of the pager). I don't consider this an error so I'm ignoring it.
-  if string match --quiet --regex -- '^git l(og)?(\s|$)' "$argv"
+  if string match --quiet --regex -- '^git l(og)?(\s|$)' "$commandline"
   and test "$last_pipestatus" -eq '141'
       return
   end
