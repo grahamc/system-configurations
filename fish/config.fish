@@ -109,34 +109,34 @@ end
 set --global --prepend fish_function_path "$__fish_config_dir/my-functions"
 # Print an error message if the last command failed.
 function __print_error_message --on-event fish_postexec --argument-names commandline
-  set last_pipestatus $pipestatus
+    set last_pipestatus $pipestatus
 
-  # For git log, git exits with 141 (SIGPIPE) if the pager doesn't consume all the text that git writes
-  # to the pipe (i.e. scrolling to the bottom of the pager). I don't consider this an error so I'm ignoring it.
-  if string match --quiet --regex -- '^git l(og)?(\s|$)' "$commandline"
-  and test "$last_pipestatus" -eq '141'
-      return
-  end
-
-  if string match --quiet --invert 0 $last_pipestatus
-    if test (count $last_pipestatus) -gt 1
-        set plural 's'
-    else
-        set plural ''
+    # For git log, git exits with 141 (SIGPIPE) if the pager doesn't consume all the text that git writes
+    # to the pipe (i.e. scrolling to the bottom of the pager). I don't consider this an error so I'm ignoring it.
+    if string match --quiet --regex -- '^git l(og)?(\s|$)' "$commandline"
+        and test "$last_pipestatus" -eq '141'
+        return
     end
 
-    set pipestatus_formatted
-    for code in $last_pipestatus
-        set signal (fish_status_to_signal $code)
-        if test "$code" != "$signal"
-            set --append pipestatus_formatted "$code($signal)"
+    if string match --quiet --invert 0 $last_pipestatus
+        if test (count $last_pipestatus) -gt 1
+            set plural 's'
         else
-            set --append pipestatus_formatted "$code"
+            set plural ''
         end
-    end
 
-    echo -e -s \n (set_color --bold --reverse red) ' ERROR ' (set_color normal) " Exited with code$plural " "$(set_color normal)" [ (set_color red) (string join "$(set_color normal)|$(set_color red)" $pipestatus_formatted) "$(set_color normal)" ]
-  end
+        set pipestatus_formatted
+        for code in $last_pipestatus
+            set signal (fish_status_to_signal $code)
+            if test "$code" != "$signal"
+                set --append pipestatus_formatted "$code($signal)"
+            else
+                set --append pipestatus_formatted "$code"
+            end
+        end
+
+        echo -e -s \n (set_color --bold --reverse red) ' ERROR ' (set_color normal) " Exited with code$plural " "$(set_color normal)" [ (set_color red) (string join "$(set_color normal)|$(set_color red)" $pipestatus_formatted) "$(set_color normal)" ]
+    end
 end
 
 # sudo
