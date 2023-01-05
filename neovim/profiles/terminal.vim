@@ -1144,7 +1144,7 @@ Plug(
         },
       })
 
-      _G.MaybeSetTreeSitterFoldmethod = function()
+      _G.MaybeSetTreeSitterFoldmethod = function(_)
         foldmethod = vim.o.foldmethod
         is_foldmethod_overridable = foldmethod ~= 'manual'
           and foldmethod ~= 'marker'
@@ -1154,10 +1154,11 @@ Plug(
           vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
         end
       end
+      -- TODO: I can't get `MaybeSetTreeSitterFoldmethod` to work without `timer_start`.
       vim.cmd([[
-        augroup NvimTreeSitter
+        augroup MyNvimTreeSitter
           autocmd!
-          autocmd FileType * lua MaybeSetTreeSitterFoldmethod()
+          autocmd BufWinEnter * lua vim.fn.timer_start(0, MaybeSetTreeSitterFoldmethod)
           autocmd VimEnter * lua InstallMissingParsers()
         augroup END
       ]])
