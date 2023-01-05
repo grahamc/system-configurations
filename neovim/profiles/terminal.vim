@@ -1109,8 +1109,6 @@ Plug(
   }
 )
 
-Plug('gpanders/editorconfig.nvim')
-
 Plug('tpope/vim-repeat')
 
 Plug(
