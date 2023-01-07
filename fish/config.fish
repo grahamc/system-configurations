@@ -43,7 +43,7 @@ set --global --export fish_pager_color_secondary
 set --global --export fish_color_cancel black
 set --global --export fish_color_valid_path
 # reload this config file
-abbr --add --global r 'exec fish'
+abbr --add --global r 'reload-fish'
 # Don't print a greeting when a new interactive fish shell is started
 set --global --export fish_greeting ''
 # use ctrl+z to resume the most recently suspended job
