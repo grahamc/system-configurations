@@ -59,6 +59,9 @@ if has_changes "$tool_versions"; then
   fi
 fi
 
+# NOTE: This should be one of the first checks since other checks might depend on new files
+# being linked, or removed files being unlinked, in order to work. For example, if a new
+# bat theme is added, the theme needs to be linked before we can rebuild the bat cache.
 if has_added_file || has_deleted_file; then
   if confirm 'A file was added and/or deleted, would you like dotbot to relink?'; then
     suppress_error ./install/install --only clean link
