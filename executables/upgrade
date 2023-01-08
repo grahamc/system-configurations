@@ -1,7 +1,5 @@
 #!/bin/env fish
 
-source ~/.config/fish/functions/fisher.fish
-
 # helpers
 function print_banner --argument-names message
     echo
