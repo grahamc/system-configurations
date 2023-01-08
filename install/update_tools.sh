@@ -24,19 +24,11 @@ has_changes() {
 }
 
 has_added_file() {
-  if [ "$#" -eq 0 ]; then
-    echo "$changed_filenames_with_status" | grep --extended-regexp --quiet "^A"
-  else
-    echo "$changed_filenames_with_status" | grep --extended-regexp --quiet "^A\s+$1"
-  fi
+  echo "$changed_filenames_with_status" | grep --extended-regexp --quiet "^A"
 }
 
 has_deleted_file() {
-  if [ "$#" -eq 0 ]; then
-    echo "$changed_filenames_with_status" | grep --extended-regexp --quiet "^D"
-  else
-    echo "$changed_filenames_with_status" | grep --extended-regexp --quiet "^D\s+$1"
-  fi
+  echo "$changed_filenames_with_status" | grep --extended-regexp --quiet "^D"
 }
 
 confirm() {
@@ -102,8 +94,8 @@ if has_changes "$pipx_packages"; then
 fi
 
 bat_theme_file_pattern='bat/.*\.tmTheme$'
-if has_added_file "$bat_theme_file_pattern" || has_deleted_file "$bat_theme_file_pattern"; then
   if confirm "A bat theme has been added or removed, would you like to rebuild the bat cache?"; then
+if has_changes "$bat_theme_file_pattern" || has_changes "$bat_theme_file_pattern"; then
     suppress_error bat cache --build
   fi
 fi
