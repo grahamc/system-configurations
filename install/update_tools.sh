@@ -54,20 +54,20 @@ printf "Checking to see if any actions should be taken as a result of the merge:
 # these tools.
 tool_versions='asdf/tool-versions'
 if has_changes "$tool_versions"; then
-  if confirm "Changes have been made to asdf tool version file, would you like asdf to update from it?"; then
+  if confirm "The asdf tool version file has changed, would you like asdf to update from it?"; then
     suppress_error asdf install
   fi
 fi
 
 if has_added_file || has_deleted_file; then
-  if confirm 'A file has been added and/or deleted, would you like dotbot to relink?'; then
+  if confirm 'A file was added and/or deleted, would you like dotbot to relink?'; then
     suppress_error ./install/install --only clean link
   fi
 fi
 
 fish_plugins='fish/fish_plugins'
 if has_changes "$fish_plugins"; then
-  if confirm "Changes have been made to fish plugin file, would you like fisher to update from it?"; then
+  if confirm "The fish plugin file has changed, would you like fisher to update from it?"; then
     suppress_error fish -c 'source ~/.config/fish/functions/fisher.fish; fisher update'
   fi
 fi
@@ -81,39 +81,39 @@ fi
 
 vim_plug_snapshot='neovim/vim-plug-snapshot.vim'
 if has_changes "$vim_plug_snapshot"; then
-  if confirm "Changes have been made to the neovim plugin snapshot, would you like neovim to update from it?"; then
+  if confirm "The neovim plugin snapshot has changed, would you like neovim to update from it?"; then
     suppress_error nvim -c 'autocmd VimEnter * PlugRestore'
   fi
 fi
 
 pipx_packages='pipx/pipx-packages'
 if has_changes "$pipx_packages"; then
-  if confirm "Changes have been made to pipx packages file, would you like pipx to update from it?"; then
+  if confirm "The pipx packages file has changed, would you like pipx to update from it?"; then
     suppress_error xargs -I PACKAGE pipx install PACKAGE < "$pipx_packages"
   fi
 fi
 
 bat_theme_file_pattern='bat/.*\.tmTheme$'
-  if confirm "A bat theme has been added or removed, would you like to rebuild the bat cache?"; then
 if has_changes "$bat_theme_file_pattern" || has_changes "$bat_theme_file_pattern"; then
+  if confirm "A bat theme has changed, would you like to rebuild the bat cache?"; then
     suppress_error bat cache --build
   fi
 fi
 
 if has_changes 'watchman/watchman.json'; then
-  if confirm "Changes have been made to the watchman configuration, would you like to reinstall it (you may need to restart watchman for the changes to take effect)?"; then
+  if confirm "The watchman configuration has changed, would you like to reinstall it (you may need to restart watchman for the changes to take effect)?"; then
     suppress_error fish watchman/install.fish
   fi
 fi
 
 if has_changes 'fontconfig/local.conf' || has_changes 'fontconfig/10-nerd-font-symbols.conf'; then
-  if confirm "Changes have been made to the fontconfig configuration, would you like to reinstall it (you may need to restart any application reading from fontconfig for the changes to take effect)?"; then
+  if confirm "The fontconfig configuration has changed, would you like to reinstall it (you may need to restart any application reading from fontconfig for the changes to take effect)?"; then
     suppress_error fish fontconfig/install.fish
   fi
 fi
 
 if has_changes 'bash/profile'; then
-  echo "Changes have been made to the login shell configuration. To apply these changes you can log out. Press enter to continue (This will not log you out)"
+  echo "The bash profile has changed. To apply these changes you can log out. Press enter to continue (This will not log you out)"
 
   # To hide any keys the user may press before enter I disable echo. After prompting them, I re-enable it.
   stty_original="$(stty -g)"
