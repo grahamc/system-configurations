@@ -290,8 +290,6 @@ function make_commit_in_dotfiles
             git commit --message 'chore: upgrade tools'
         end
     end
-
-    popd
 end
 
 upgrade $argv
