@@ -27,8 +27,12 @@ function upgrade
     # that have already been performed on another machine and just need to be pulled in.
     # Also, if upgrading a tool results in a dotfile being changed, (e.g. neovim snapshot)
     # then pulling dotfiles afterwards might cause a merge conflict.
-    git -C ~/.dotfiles rev-parse --is-inside-work-tree >/dev/null 2>/dev/null
-    and upgrade-dotfiles
+    if pushd ~/.dotfiles
+        if git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null
+            upgrade-dotfiles
+        end
+        popd
+    end
 
     type --query aptitude
     and upgrade-debian
@@ -216,19 +220,19 @@ function upgrade-dotfiles
     print_banner 'DOTFILES'
 
     # return if there is nothing to pull
-    chronic git -C ~/.dotfiles fetch
-    if test -z "$(git -C ~/.dotfiles log HEAD..@{u} --oneline)"
+    chronic git fetch
+    if test -z "$(git log HEAD..@{u} --oneline)"
         echo 'Nothing to do.'
         return
     end
 
     # Show the new commits that would be pulled
     echo 'Commits made since last pull:'
-    git -C ~/.dotfiles log ..@{u}
+    git log ..@{u}
     echo
 
     # if there are changes, warn the user in the prompt
-    set status_output "$(git -C ~/.dotfiles status --porcelain)"
+    set status_output "$(git status --porcelain)"
     if test -n "$status_output"
         set warning "$(echo -s (set_color yellow) ' (WARNING: The working directory is not clean)' (set_color normal))"
     else
@@ -236,7 +240,7 @@ function upgrade-dotfiles
     end
     read --prompt-str "Would you like to update$warning? (y/n): " --nchars 1 response
     if test $response = 'y'
-        git -C ~/.dotfiles pull
+        git pull
     end
 end
 
