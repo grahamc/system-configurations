@@ -280,6 +280,7 @@ function upgrade-cargo
 end
 
 function make_commit_in_dotfiles
+    print_banner 'DOTFILES COMMIT'
 
     # check if there are changes to commit
     set status_output "$(git status --porcelain)"
@@ -289,6 +290,8 @@ function make_commit_in_dotfiles
             git add --all
             git commit --message 'chore: upgrade tools'
         end
+    else
+        echo 'Nothing to commit.'
     end
 end
 
