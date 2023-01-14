@@ -21,7 +21,7 @@
   undocommit = reset "HEAD^"
   co = checkout
   ui = "!gitui"
-  gui = "!smerge ."
+  gui = "!gitkraken -p $PWD -l /dev/null"
   l = log
   mt = mergetool
   dt = difftool
