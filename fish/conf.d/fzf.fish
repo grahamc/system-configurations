@@ -3,12 +3,7 @@ if not status is-interactive
 end
 
 set _fzf_history_file "$HOME/.config/fzf/fzf-history.txt"
-
-if test "$NERDFONT_ENABLE" = "1"
-    set prompt \uf002'  '
-else
-    set prompt '> '
-end
+set _magnifying_glass (echo -s \uf002 '  ')
 
 set --global --export FZF_DEFAULT_OPTS "
     --cycle
@@ -19,7 +14,7 @@ set --global --export FZF_DEFAULT_OPTS "
     --color='16,fg:dim,fg+:-1:regular:underline,bg+:-1,info:15,gutter:8,pointer:-1:bold,prompt:6:regular,border:15:dim,query:-1:regular,marker:-1:bold,header:15,spinner:yellow,hl:cyan:dim,hl+:regular:cyan:underline'
     --margin=3%
     --height 100%
-    --prompt='$prompt'
+    --prompt='$_magnifying_glass'
     --tabstop=2
     --info=inline
     --pointer='>'

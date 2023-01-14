@@ -560,11 +560,7 @@ _G.StatusLine = function()
 
   local readonly = nil
   if vim.o.readonly then
-    local indicator = '[RO]'
-    if is_nerdfont_enabled then
-      indicator = unicode('f840')
-    end
-
+    indicator = unicode('f840')
     readonly = '%#StatusLineStandoutText#' .. indicator
   end
 
@@ -577,38 +573,25 @@ _G.StatusLine = function()
   local diagnostic_list = {}
   local error_count = diagnostic_count.error
   if error_count > 0 then
-    local icon = 'ⓧ '
-    if is_nerdfont_enabled then
-      icon = unicode('f659') .. ' '
-    end
+    icon = unicode('f659') .. ' '
     local error = '%#StatusLineErrorText#' .. icon .. error_count
     table.insert(diagnostic_list, error)
   end
   local warning_count = diagnostic_count.warning
   if warning_count > 0 then
-    local icon = 'ⓦ '
-    if is_nerdfont_enabled then
-      icon = unicode('fad5') .. ' '
-    end
+    icon = unicode('fad5') .. ' '
     local warning = '%#StatusLineWarningText#' .. icon  .. warning_count
     table.insert(diagnostic_list, warning)
   end
   local info_count = diagnostic_count.info
   if info_count > 0 then
-    local icon = 'ⓘ '
-    if is_nerdfont_enabled then
-      icon = unicode('f7fc') .. ' '
-    end
+    icon = unicode('f7fc') .. ' '
     local info = '%#StatusLineInfoText#' .. icon  .. info_count
     table.insert(diagnostic_list, info)
   end
   local hint_count = diagnostic_count.hint
   if hint_count > 0 then
-    local icon = 'ⓗ '
-    if is_nerdfont_enabled then
-      -- TODO: Find a good nerdfont symbol for hints
-      icon = unicode('f7fc') .. ' '
-    end
+    icon = unicode('f7fc') .. ' '
     local hint = '%#StatusLineHintText#' .. icon  .. hint_count
     table.insert(diagnostic_list, hint)
   end
@@ -992,7 +975,7 @@ Plug(
               ["<C-j>"] = actions.preview_scrolling_down,
               ["<C-k>"] = actions.preview_scrolling_up},
           },
-          prompt_prefix = is_nerdfont_enabled and unicode('f002') .. '  ' or '> ',
+          prompt_prefix = unicode('f002') .. '  ',
           sorting_strategy = 'ascending',
           layout_strategy = 'vertical',
           layout_config = {
@@ -1237,7 +1220,7 @@ Plug(
       vim.fn.sign_define(
         'LightBulbSign',
         {
-          text = is_nerdfont_enabled and unicode('f834') or '💡',
+          text = unicode('f834'),
           texthl = 'CodeActionSign',
         }
       )
@@ -1694,9 +1677,9 @@ Plug(
       require("mason").setup({
         ui = {
           icons = {
-            package_installed = is_nerdfont_enabled and unicode('f632') .. '  ' or '●',
-            package_pending = is_nerdfont_enabled and unicode('f251') .. '  ' or '⧖',
-            package_uninstalled = is_nerdfont_enabled and unicode('f62f') .. '  ' or '○'
+            package_installed = unicode('f632') .. '  ',
+            package_pending = unicode('f251') .. '  ',
+            package_uninstalled = unicode('f62f') .. '  ',
           },
           keymaps = {
             toggle_package_expand = "<Tab>",
