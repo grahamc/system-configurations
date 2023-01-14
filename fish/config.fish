@@ -108,40 +108,9 @@ function __save_history --on-event fish_preexec
 end
 # I only want my functions loaded into an interactive shell so I add them to the function path here.
 set --global --prepend fish_function_path "$__fish_config_dir/my-functions"
-# Print an error message if the last command failed.
-function __print_error_message --on-event fish_postexec --argument-names commandline
-    set last_pipestatus $pipestatus
-
-    # For git log, git exits with 141 (SIGPIPE) if the pager doesn't consume all the text that git writes
-    # to the pipe (i.e. scrolling to the bottom of the pager). I don't consider this an error so I'm ignoring it.
-    if string match --quiet --regex -- '^git l(og)?(\s|$)' "$commandline"
-        and test "$last_pipestatus" -eq '141'
-        return
-    end
-
-    if string match --quiet --invert 0 $last_pipestatus
-        if test (count $last_pipestatus) -gt 1
-            set plural 's'
-        else
-            set plural ''
-        end
-
-        set red (set_color red)
-        set red_bold (set_color --bold --reverse red)
-        set normal (set_color normal)
-
-        set pipestatus_formatted
-        for code in $last_pipestatus
-            set signal (fish_status_to_signal $code)
-            if test "$code" != "$signal"
-                set --append pipestatus_formatted "$red$code($signal)"
-            else
-                set --append pipestatus_formatted "$red$code"
-            end
-        end
-
-        echo -e -s \n $red_bold' ERROR ' $normal" Exited with code$plural" $normal' [' (string join "$normal, " $pipestatus_formatted) $normal']'
-    end
+# Save the last commandline so I can reference it while building my prompt (see function: fish_prompt)
+function __save_last_commandline --on-event fish_postexec --argument-names commandline
+    set --global __last_commandline "$commandline"
 end
 
 # sudo
