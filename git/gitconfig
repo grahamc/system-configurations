@@ -21,7 +21,7 @@
   undocommit = reset "HEAD^"
   co = checkout
   ui = "!gitui"
-  gui = "!gitkraken -p $PWD -l /dev/null"
+  gui = "!gitkraken --path \"$(git rev-parse --show-toplevel)\" --log-file /dev/null --show-splash-screen false"
   l = log
   mt = mergetool
   dt = difftool
