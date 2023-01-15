@@ -1890,7 +1890,7 @@ Plug 'arcticicestudio/nord-vim'
   function! SetNordOverrides()
     highlight MatchParen ctermfg=blue cterm=underline ctermbg=NONE
     " Transparent vertical split
-    highlight VertSplit ctermbg=NONE ctermfg=8
+    highlight WinSeparator ctermbg=NONE ctermfg=8
     " statusline colors
     highlight StatusLine ctermbg=8 ctermfg=NONE
     highlight StatusLineSeparator ctermfg=8 ctermbg=NONE cterm=reverse,bold
