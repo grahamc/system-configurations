@@ -229,7 +229,7 @@ function fish_prompt_get_status_context
 
     set pipestatus_formatted
     for code in $argv
-        set color (set_color normal)
+        set color (set_color green)
         if contains "$code" $warning_codes
             set color "$yellow"
         else if test "$code" != '0'
@@ -244,14 +244,5 @@ function fish_prompt_get_status_context
         end
     end
 
-    set highest_severity_color "$yellow"
-    for code in $argv
-        if test "$code" != 0
-        and not contains "$code" $warning_codes
-            set highest_severity_color "$red"
-            break
-        end
-    end
-
-    echo -n -s $highest_severity_color 'status: '(string join "$normal, " $pipestatus_formatted)
+    echo -n -s $fish_prompt_color_text 'status: '(string join "$normal, " $pipestatus_formatted)
 end
