@@ -299,6 +299,7 @@ abbr --add --global code 'TMUX= code'
 # information to the console. The last font family listed in that output is probably the family being used to
 # render the specified character.
 abbr --add --global font-debug 'DISPLAY=:0 FC_DEBUG=4 pango-view --font=monospace -t ☺ | grep family:'
+abbr --add --global reload-fonts 'fc-cache -vr'
 
 # ncdu
 abbr --add --global ncdu 'ncdu --color off'
