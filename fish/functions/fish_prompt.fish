@@ -34,6 +34,7 @@ function fish_prompt --description 'Print the prompt'
     set -l lines
     set -l contexts \
         (fish_prompt_get_direnv_context) \
+        (fish_prompt_get_nix_context) \
         (fish_prompt_get_python_context) \
         (fish_prompt_get_git_context) \
         (fish_prompt_get_job_context) \
@@ -245,4 +246,12 @@ function fish_prompt_get_status_context
     end
 
     echo -n -s $fish_prompt_color_text 'status: '(string join "$normal, " $pipestatus_formatted)
+end
+
+function fish_prompt_get_nix_context
+    if not set --query IN_NIX_SHELL
+        return
+    end
+
+    echo -n -s $fish_prompt_color_text "nix shell: $IN_NIX_SHELL"
 end
