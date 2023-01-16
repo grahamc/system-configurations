@@ -289,6 +289,7 @@ function make_commit_in_dotfiles
         if test $response = 'y'
             git add --all
             git commit --message 'chore: upgrade tools'
+            git push
         end
     else
         echo 'Nothing to commit.'
