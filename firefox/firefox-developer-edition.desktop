@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Firefox Developer Edition
 GenericName=Web Browser
-Exec=firefox-dev --ProfileManager %u
+Exec=firefox-developer-edition --ProfileManager %u
 Icon=/opt/firefox/browser/chrome/icons/default/default128.png
 Terminal=false
 Type=Application
@@ -14,4 +14,4 @@ StartupWMClass=Firefox Developer Edition
 
 [Desktop Action new-window]
 Name=Open a New Window
-Exec=firefox-dev %u
+Exec=firefox-developer-edition %u

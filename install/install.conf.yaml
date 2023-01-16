@@ -62,7 +62,7 @@
     ~/.dotfiles/.git/hooks/post-merge: install/update_tools.sh
     ~/.markdownlint.jsonc: markdownlint/markdownlint.jsonc
     ~/.local/share/figlet/smblock.tlf: figlet/smblock.tlf
-    ~/.local/share/applications/firefox-dev.desktop: firefox/firefox-dev.desktop
+    ~/.local/share/applications/firefox-developer-edition.desktop: firefox/firefox-developer-edition.desktop
     ~/.local/share/applications/my-firefox.desktop: firefox/my-firefox.desktop
     ~/.local/share/applications/code.desktop: vscode/code.desktop
     ~/.yashrc: yash/yashrc

@@ -13,6 +13,6 @@ curl --location "https://download.mozilla.org/?product=firefox-devedition-latest
 
 sudo mv firefox /opt/
 
-ln -s /opt/firefox/firefox ~/.local/bin/firefox-dev
+ln -s /opt/firefox/firefox ~/.local/bin/firefox-developer-edition
 
 xdg-settings set default-web-browser my-firefox.desktop
