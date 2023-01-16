@@ -285,6 +285,7 @@ function make_commit_in_dotfiles
     # check if there are changes to commit
     set status_output "$(git status --porcelain)"
     if test -n "$status_output"
+        git status
         read --prompt-str "Do you want to make a commit to your dotfiles? (y/n): " --nchars 1 response
         if test $response = 'y'
             git add --all
