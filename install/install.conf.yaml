@@ -1,7 +1,6 @@
 - defaults:
     link:
       create: true
-      force: true
     shell:
       stdin: true
       stdout: true
