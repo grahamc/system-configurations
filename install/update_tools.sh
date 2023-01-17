@@ -78,7 +78,7 @@ fi
 brewfile='brew/Brewfile'
 if has_changes "$brewfile" && ! chronic brew bundle check --file "$brewfile" >/dev/null; then
   if confirm "You are missing dependencies specified in your Brewfile, would you like to install them?"; then
-    suppress_error brew bundle install --file "$brewfile"
+    suppress_error brew bundle install --no-upgrade --file "$brewfile"
   fi
 fi
 

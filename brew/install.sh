@@ -12,4 +12,4 @@ if ! command -v brew >/dev/null 2>&1; then
   fi
 fi
 
-brew bundle install --file ./brew/Brewfile
+brew bundle install --no-upgrade --file ./brew/Brewfile
