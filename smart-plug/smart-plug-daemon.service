@@ -3,7 +3,7 @@ Description=Smart Plug Daemon
 
 [Service]
 WorkingDirectory=/opt/smart-plug-daemon.d/
-ExecStart=/opt/smart-plug-daemon.d/.venv/bin/python smart-plug-daemon.py
+ExecStart=/home/biggs/.nix-profile/bin/nix-shell --pure --run 'python smart-plug-daemon.py'
 
 [Install]
 WantedBy=multi-user.target

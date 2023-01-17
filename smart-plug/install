@@ -4,12 +4,7 @@
 set -e
 
 # Copy the source folder, excluding the .venv since the virtual environment will be recreated in the target directory
-sudo rsync -arhP --exclude='.venv' ~/.dotfiles/smart-plug/smart-plug-daemon.d /opt/
-cd /opt/smart-plug-daemon.d
-# Creating this folder so that pipenv stores the virtual environment in it
-mkdir .venv
-pipenv sync
-cd -
+sudo rsync -arhP ~/.dotfiles/smart-plug/smart-plug-daemon.d /opt/
 
 sudo install --compare --backup --suffix=.bak --owner=root --group=root --mode='u=rwx,g=r,o=r' -D --verbose --no-target-directory ~/.dotfiles/smart-plug/wait-one-second /etc/NetworkManager/dispatcher.d/pre-down.d/wait-one-second
 sudo cp ~/.dotfiles/smart-plug/smart-plug-daemon.service /etc/systemd/system/
