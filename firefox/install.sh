@@ -1,3 +1,5 @@
+#!/bin/env sh
+
 # shellcheck shell=sh
 
 # Exit if a command returns a non-zero exit code

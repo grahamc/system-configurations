@@ -91,19 +91,19 @@
 - shell:
     -
         description: Setup brew
-        command: sh ./brew/install.sh
+        command: ./brew/install.sh
     -
         description: Setup nix
-        command: sh ./nix/install.sh
+        command: ./nix/install.sh
     -
         description: Build bat cache
         command: bat cache --build
     -
         description: Link font config
-        command: fish ./fontconfig/install.fish
+        command: ./fontconfig/install.fish
     -
         description: Link watchman configs
-        command: fish ./watchman/install.fish
+        command: ./watchman/install.fish
     -
         description: Install asdf tools
         command: asdf install
@@ -112,7 +112,7 @@
         command: xargs -I PACKAGE pipx install PACKAGE < "pipx/pipx-packages"
     -
         description: Link Firefox configs
-        command: sh ./firefox/install.sh
+        command: ./firefox/install.sh
     -
         description: Setup Linux
-        command: sh ./linux/setup
+        command: ./linux/setup
