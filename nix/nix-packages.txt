@@ -1,2 +1,3 @@
 any-nix-shell
 nix
+pipr
