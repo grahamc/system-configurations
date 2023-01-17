@@ -6,15 +6,15 @@ set -o errexit
 # Exit if an unset variable is referenced
 set -o nounset
 
-if ! [ -d ~/.dotfiles ]; then
-  git clone git@github.com:bigolu/dotfiles.git ~/.dotfiles
-  cd ~/.dotfiles
-fi
-
 # I only have a login shell profile for bash.
 if [ "$(basename "$SHELL")" != 'bash' ]; then
   echo 'Aborting since your default shell is not supported.' >&2
   exit 1
+fi
+
+if ! [ -d ~/.dotfiles ]; then
+  git clone git@github.com:bigolu/dotfiles.git ~/.dotfiles
+  cd ~/.dotfiles
 fi
 
 # Do the linking now, so that the login shell profile gets linked.
