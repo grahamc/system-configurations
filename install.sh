@@ -6,8 +6,10 @@ set -o errexit
 # Exit if an unset variable is referenced
 set -o nounset
 
-git clone git@github.com:bigolu/dotfiles.git ~/.dotfiles
-cd ~/.dotfiles
+if ! [ -d ~/.dotfiles ]; then
+  git clone git@github.com:bigolu/dotfiles.git ~/.dotfiles
+  cd ~/.dotfiles
+fi
 
 # I only have a login shell profile for bash.
 if [ "$(basename "$SHELL")" != 'bash' ]; then
