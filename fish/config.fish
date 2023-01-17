@@ -192,9 +192,11 @@ set --global --export HOMEBREW_BUNDLE_FILE '~/.config/brewfile/Brewfile'
 # NOTE: I have similar setup code in my login shell config.
 # The login shell needs it to set the PATH.
 # This shell needs it for the functions it defines.
-set _asdf_init_script "$(brew --prefix asdf)/libexec/asdf.fish"
-test -e $_asdf_init_script
-and source $_asdf_init_script
+if command -v brew
+    set _asdf_init_script "$(brew --prefix asdf)/libexec/asdf.fish"
+    test -e $_asdf_init_script
+    and source $_asdf_init_script
+end
 
 # fisher
 if not type --query fisher
