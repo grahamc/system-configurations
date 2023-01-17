@@ -7,7 +7,7 @@ if [ "$(basename "$SHELL")" != 'bash' ]; then
 fi
 
 # Do the linking now, so that the login shell profile gets linked.
-if ! ./install/install --only link; then
+if ! SHELL='sh' ./install/install --only link; then
   echo 'Aborting since the linking was not successful. Please address any issues and rerun this script.' >&2
   exit 1
 fi
@@ -19,6 +19,6 @@ fi
 # since the login shell profile adds their install paths to $PATH.
 #
 # I'm excluding the link directive since we did it before this.
-"$SHELL" -l -c './install/install --except link'
+"$SHELL" -l -c 'env SHELL=sh ./install/install --except link'
 
 printf 'Finished!\n\nNOTE: The current login session doesn'\''t have the settings in the newly linked login shell profile so you should relogin to apply those settings. Otherwise, you'\''ll have issues like not being able to use the tools installed by homebrew, nix, etc.\n'
