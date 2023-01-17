@@ -120,6 +120,10 @@ function fish_prompt_get_job_context
 end
 
 function fish_prompt_get_privilege_context
+    if not type --query sudo
+        return
+    end
+
     set privilege_context
     if test (id --user) -eq 0
         set privilege_context 'user has admin privileges'
