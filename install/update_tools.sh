@@ -82,6 +82,13 @@ if has_changes "$brewfile" && ! chronic brew bundle check --file "$brewfile" >/d
   fi
 fi
 
+nix_packages='nix/nix-packages.txt'
+if has_changes "$nix_packages"; then
+  if confirm "The nix packages file has changed, would you like nix to update from it?"; then
+    suppress_error xargs -I PACKAGE nix-env -i PACKAGE < "$nix_packages"
+  fi
+fi
+
 vim_plug_snapshot='neovim/vim-plug-snapshot.vim'
 if has_changes "$vim_plug_snapshot"; then
   if confirm "The neovim plugin snapshot has changed, would you like neovim to update from it?"; then
