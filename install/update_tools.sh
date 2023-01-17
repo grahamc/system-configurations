@@ -122,7 +122,7 @@ if has_changes 'fontconfig/local.conf' || has_changes 'fontconfig/10-nerd-font-s
   fi
 fi
 
-if has_changes 'bash/profile'; then
+if has_changes 'bash/bash_profile'; then
   echo "The bash profile has changed. To apply these changes you can log out. Press enter to continue (This will not log you out)"
 
   # To hide any keys the user may press before enter I disable echo. After prompting them, I re-enable it.
