@@ -91,6 +91,9 @@
 
 - shell:
     -
+        description: Setup brew
+        command: sh ./brew/install.sh
+    -
         description: Setup nix
         command: sh ./nix/install.sh
     -
