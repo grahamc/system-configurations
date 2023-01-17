@@ -4,7 +4,7 @@ Turns on a smart plug after the computer starts up or is woken up. Turns the plu
 
 ## Why
 
-If you leave studio monitors on while disconnecting the sound source, you will get a loud POP noise, which isn't good for the speakers. With this script, I can make sure that my monitors are always turned off before my computer, the source source, turns off.
+If you leave studio monitors on while turning off the sound source, you will get a loud POP noise, which [isn't good for the speakers](https://www.sweetwater.com/insync/power-power-off-sequence/). With this script, I can make sure that my monitors are always turned off before my computer, the source source, turns off.
 
 ## Requirements
 
