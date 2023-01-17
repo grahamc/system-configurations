@@ -3,6 +3,12 @@
 # using Wayland. This way the font won't be blurry on HiDPI screens.
 # issue: https://github.com/microsoft/vscode/issues/109176
 
+# Exit if a command returns a non-zero exit code
+set -o errexit
+
+# Exit if an unset variable is referenced
+set -o nounset
+
 # Full path for the current executable, meaning this wrapper.
 wrapper_executable="$0"
 # Find the real vscode executable. This is done by finding all the executables on the path with the name 'code'

@@ -1,5 +1,11 @@
 #!/bin/env sh
 
+# Exit if a command returns a non-zero exit code
+set -o errexit
+
+# Exit if an unset variable is referenced
+set -o nounset
+
 # Exit if this OS is not Linux
 if uname | grep -q -i -v linux; then
   exit
