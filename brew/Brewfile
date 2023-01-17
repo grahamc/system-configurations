@@ -28,7 +28,6 @@ brew "less"
 brew "lsd"
 brew "moreutils"
 brew "mosh"
-brew "navi"
 brew "ncdu"
 brew "neovim", args: ["HEAD"]
 brew "pipx"
