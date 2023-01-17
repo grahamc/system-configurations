@@ -257,5 +257,10 @@ function fish_prompt_get_nix_context
         return
     end
 
-    echo -n -s $fish_prompt_color_text "nix shell: $IN_NIX_SHELL"
+    set color (set_color green)
+    if test "$IN_NIX_SHELL" = 'impure'
+        set color (set_color yellow)
+    end
+
+    echo -n -s $fish_prompt_color_text "nix: $color$IN_NIX_SHELL"
 end
