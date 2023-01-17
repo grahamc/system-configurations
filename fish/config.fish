@@ -135,7 +135,7 @@ abbr --add --global fm fzf-man-widget
 # Since some programs just use the value in EDITOR without checking VISUAL, and vice-versa,
 # I set both to the same editor.
 # For more info: https://unix.stackexchange.com/questions/4859/visual-vs-editor-what-s-the-difference/302391#302391
-set --global --export VISUAL (which nvim)
+set --global --export VISUAL (command -v nvim)
 set --global --export EDITOR $VISUAL
 
 # Change the color grep uses for highlighting matches to magenta
