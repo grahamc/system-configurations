@@ -2,12 +2,12 @@
 
 configs and whatnot
 
-## Setup
+## Install
 
-1. Run the installation script. You can do so by entering the following command at the root of the repository.
+1. Run this command in your terminal:
 
     ``` sh
-    ./install.sh
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/install.sh)"
     ```
 
 2. Fonts:

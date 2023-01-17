@@ -1,5 +1,14 @@
 #!/bin/env sh
 
+# Exit if a command returns a non-zero exit code
+set -o errexit
+
+# Exit if an unset variable is referenced
+set -o nounset
+
+git clone git@github.com:bigolu/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+
 # I only have a login shell profile for bash.
 if [ "$(basename "$SHELL")" != 'bash' ]; then
   echo 'Aborting since your default shell is not supported.' >&2
