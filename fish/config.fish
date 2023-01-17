@@ -324,6 +324,11 @@ ulimit -Sn 10000
 # issue: https://github.com/fish-shell/fish-shell/issues/238
 fish --init-command "source $(abbr | psub)" --command '__abbr_tips_init' & disown
 
+# any-nix-shell
+if type --query any-nix-shell
+    any-nix-shell fish | source
+end
+
 # Print banner
 if not set --query BANNER_WAS_PRINTED
     set banner Fish Shell v(string split ' ' (fish --version) | tail -n 1)
