@@ -1,3 +1,5 @@
+# shellcheck shell=sh
+
 # ~/.profile: executed by the command interpreter for login shells.
 
 # Setup brew
@@ -14,7 +16,7 @@ if [ -e "$_nix_profile_setup_script" ]; then . "$_nix_profile_setup_script"; fi
 # This shell needs it to set the PATH.
 if command -v brew >/dev/null 2>&1; then
     _asdf_init_script="$(brew --prefix asdf)/libexec/asdf.sh"
-    test -e "$_asdf_init_script" && source "$_asdf_init_script"
+    test -e "$_asdf_init_script" && . "$_asdf_init_script"
 fi
 
 # Adding this to the PATH since this is where user-specific executables should go, per the
@@ -29,8 +31,3 @@ PATH="$HOME/.local/bin:$PATH"
 # [ "$TERM" = "linux" ] && [[ $- == *i* ]] && command -v fbterm >/dev/null 2>&1 && FBTERM=1 exec fbterm
 
 # [ "$TERM" = "linux" ] && [[ $- == *i* ]] && export LC_ALL=en_US.UTF-8 && FBTERM=1 exec fbterm --font-size=20 -i fbterm_ucimf
-
-# load bashrc
-if [ -f ~/.bashrc ]; then
-    . ~/.bashrc
-fi

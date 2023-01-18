@@ -24,8 +24,9 @@
     ~/.config/nvim/profiles: neovim/profiles
     ~/.local/share/nvim/vim-plug-snapshot.vim: neovim/vim-plug-snapshot.vim
     ~/.gitconfig: git/gitconfig
-    ~/.bashrc: bash/bashrc
-    ~/.bash_profile: bash/bash_profile
+    ~/.bashrc: login-shell/bashrc
+    ~/.bash_profile: login-shell/bash_profile
+    ~/.profile: login-shell/profile
     ~/.config/kitty: kitty
     ~/.config/kitty/current-theme.conf:
         path: ~/.config/kitty/night-theme.conf
