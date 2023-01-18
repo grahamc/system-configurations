@@ -14,8 +14,9 @@ fi
 
 if ! [ -d ~/.dotfiles ]; then
   git clone git@github.com:bigolu/dotfiles.git ~/.dotfiles
-  cd ~/.dotfiles
 fi
+
+cd ~/.dotfiles
 
 # Do the linking now, so that the login shell profile gets linked.
 if ! SHELL='sh' ./install/install --only link; then
