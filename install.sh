@@ -1,4 +1,7 @@
-#!/bin/env sh
+#!/bin/env bash
+
+# NOTE: Normally I'd use posix shell, since it's more portable, but it doesn't support `ulimit -Sn` so I'm using
+# bash instead.
 
 # Exit if a command returns a non-zero exit code
 set -o errexit
@@ -31,6 +34,9 @@ fi
 # since the login shell profile adds their install paths to $PATH.
 #
 # I'm excluding the link directive since we did it before this.
+#
+# Increasing the open file limit since brew install usually exceeds the default of 1024.
+ulimit -Sn 10000
 "$SHELL" -l -c 'env SHELL=sh ./install/install --except link'
 
 printf 'Finished!\n\nNOTE: The current login session doesn'\''t have the settings in the newly linked login shell profile so you should relogin to apply those settings. Otherwise, you'\''ll have issues like not being able to use the tools installed by homebrew, nix, etc.\n'
