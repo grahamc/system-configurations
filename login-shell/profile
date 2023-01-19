@@ -1,19 +1,25 @@
 # shellcheck shell=sh
 
-# ~/.profile: executed by the command interpreter for login shells.
-
 # Setup brew
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+#
+# DUPLICATE: brew-setup
+brew_executable="/home/linuxbrew/.linuxbrew/bin/brew"
+if [ -e "$brew_executable" ]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
 
 # Setup nix
+#
+# DUPLICATE: nix-setup
 _nix_profile_setup_script="$HOME/.nix-profile/etc/profile.d/nix.sh"
-if [ -e "$_nix_profile_setup_script" ]; then . "$_nix_profile_setup_script"; fi
+if [ -e "$_nix_profile_setup_script" ]; then
+  . "$_nix_profile_setup_script"
+fi
 
 # Setup asdf version manager
 #
-# NOTE: I have similar setup code in my interactive shell config.
-# The interactive shell needs it for the functions it defines.
-# This shell needs it to set the PATH.
+# DUPLICATE: asdf-setup
 if command -v brew >/dev/null 2>&1; then
     _asdf_init_script="$(brew --prefix asdf)/libexec/asdf.sh"
     test -e "$_asdf_init_script" && . "$_asdf_init_script"

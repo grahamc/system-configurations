@@ -90,30 +90,42 @@
     - ~/code
 
 - shell:
-    -
-        description: Setup brew
-        command: ./brew/install.sh
-    -
-        description: Setup nix
-        command: ./nix/install.sh
-    -
-        description: Build bat cache
-        command: bat cache --build
-    -
-        description: Link font config
-        command: ./fontconfig/install.fish
-    -
-        description: Link watchman configs
-        command: ./watchman/install.fish
-    -
-        description: Install asdf tools
-        command: asdf install
-    -
-        description: Install pipx tools
-        command: xargs -I PACKAGE pipx install PACKAGE < "pipx/pipx-packages"
-    -
-        description: Link Firefox configs
-        command: ./firefox/install.sh
-    -
-        description: Setup Linux
-        command: ./linux/setup
+    # Rather than use multiple command blocks, I'm using one so that they can all be executed in the same shell.
+    # This way any environment variables set by one script will be seen by all the following scripts.
+    -   
+        command: |
+            set -o errexit
+            set -o nounset
+
+            log() {
+                echo "Setting up $1"
+            }
+
+            # NOTE: This should be towards the top of the list since some of the tools below get installed by brew
+            log Homebrew
+            . ./brew/install.sh
+
+            # NOTE: This should be towards the top of the list since some of the tools below get installed by nix
+            log Nix
+            . ./nix/install.sh
+
+            log asdf
+            . ./asdf/install.sh
+
+            log bat
+            . ./bat/install.sh
+
+            log Fontconfig
+            . ./fontconfig/install.sh
+            
+            log Watchman
+            . ./watchman/install.sh
+
+            log pipx
+            . ./pipx/install.sh
+
+            log Firefox
+            . ./firefox/install.sh
+
+            log Linux
+            . ./linux/setup.sh

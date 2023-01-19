@@ -2,6 +2,13 @@
 
 configs and whatnot
 
+## Requirements
+
+- Debian-based Linux distribution (for example Ubuntu) -- for installing system dependencies with `apt-get`
+- POSIX shell (`sh`)
+- Bash -- for Dotbot
+- Python 3.8+ -- for Dotbot
+
 ## Install
 
 1. Run this command in your terminal:

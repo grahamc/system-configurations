@@ -189,9 +189,7 @@ set --global --export HOMEBREW_BUNDLE_FILE '~/.config/brewfile/Brewfile'
 
 # asdf version manager
 #
-# NOTE: I have similar setup code in my login shell config.
-# The login shell needs it to set the PATH.
-# This shell needs it for the functions it defines.
+# DUPLICATE: asdf-setup
 if command -v brew >/dev/null 2>&1
     set _asdf_init_script "$(brew --prefix asdf)/libexec/asdf.fish"
     test -e $_asdf_init_script
