@@ -2,7 +2,7 @@
 legacy_version_file = yes
 
 # After installing the direnv plugin, run the setup script
-post_asdf_plugin_add_direnv = echo -e "\033[01;34mSetting up asdf-direnv...\033[0m"; asdf direnv setup --shell "$(basename $SHELL)" --version system 
+post_asdf_plugin_add_direnv = echo -e "\033[01;34mSetting up asdf-direnv...\033[0m"; asdf direnv setup --shell fish --version system 
 
 # After installing a plugin, check if the user specified a version for that tool and that the version
 # is not installed. If this is true, install the specified version. This can be checked by checking
