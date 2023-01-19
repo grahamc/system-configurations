@@ -19,4 +19,4 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 # NOTE: POSIX shell doesn't support `ulimit -Sn` so to avoid adding a dependency on another shell, like bash, I'm
 # doing it in python since I already have python as a dependency. Since the new limit only applies to the current
 # process and its children, I need to launch brew from python as well.
-python -c 'import resource as res; res.setrlimit(res.RLIMIT_NOFILE, (10000, res.getrlimit(res.RLIMIT_NOFILE)[1])); import subprocess as sp; sp.run(["brew" "bundle" "install" "--no-upgrade" "--file" "./brew/Brewfile"])'
+python -c 'import resource as res; res.setrlimit(res.RLIMIT_NOFILE, (10000, res.getrlimit(res.RLIMIT_NOFILE)[1])); import subprocess as sp; sp.run(["brew", "bundle", "install", "--no-upgrade", "--file", "./brew/Brewfile"])'

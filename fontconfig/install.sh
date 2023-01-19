@@ -11,7 +11,10 @@ sudo install --compare --backup --suffix=.bak --owner=root --group=root --mode='
 sudo install --compare --backup --suffix=.bak --owner=root --group=root --mode='u=rw,g=r,o=r' -D --verbose --no-target-directory ./fontconfig/10-nerd-font-symbols.conf /etc/fonts/conf.d/10-nerd-font-symbols.conf
 
 # Enable the system configuration preset, this allows the files installed above to be read
-ln --symbolic --relative ../conf.avail/51-local.conf /etc/fonts/conf.d/51-local.conf
+SYSTEM_CONFIG_PRESET='/etc/fonts/conf.d/51-local.conf'
+if [ ! -f "$SYSTEM_CONFIG_PRESET" ]; then
+  ln --symbolic --relative ../conf.avail/51-local.conf "$SYSTEM_CONFIG_PRESET"
+fi
 
 # Register the fontconfig dtd in the xmlcatalog
 DTD='/usr/share/xml/fontconfig/fonts.dtd'
