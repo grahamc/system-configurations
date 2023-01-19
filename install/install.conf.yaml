@@ -78,6 +78,7 @@
     ~/.config/vale/styles/ignore.txt: vale/styles/ignore.txt
     ~/.config/nix/nix.conf: nix/nix.conf
     ~/.config/nix/nix-packages.txt: nix/nix-packages.txt
+    ~/.local/bin/asdf-hook-handler: ./asdf/asdf-hook-handler.sh
 
 # Using another link directive since I have multiple links to this directory and you can't have
 # multiple keys with the same name in YAML
