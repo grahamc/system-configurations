@@ -13,4 +13,5 @@ cd "${BASEDIR}"
 git -C "${DOTBOT_DIR}" submodule sync --quiet --recursive
 git submodule update --init --recursive "${DOTBOT_DIR}"
 
-"${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${REPO_ROOT_DIR}" -c "${CONFIG}" "${@}"
+# The shell commands that I run with Dotbot are in POSIX shell so I need to set my $SHELL to it.
+SHELL="$(command -v sh)" "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${REPO_ROOT_DIR}" -c "${CONFIG}" "${@}"
