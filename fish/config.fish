@@ -329,6 +329,11 @@ if type --query any-nix-shell
     any-nix-shell fish | source
 end
 
+# comma
+function , --wraps ,
+    FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --height 30% --no-preview --no-header" COMMA_PICKER=fzf command , $argv
+end
+
 # Print banner
 if not set --query BANNER_WAS_PRINTED
     set banner Fish Shell v(string split ' ' (fish --version) | tail -n 1)

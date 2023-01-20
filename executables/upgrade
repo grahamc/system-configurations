@@ -64,6 +64,10 @@ function upgrade
     type --query cargo
     and upgrade-cargo
 
+    type --query update-nix-index
+    and upgrade-nix
+
+    # NOTE: This should be last so that all changes produced by any upgrade are included in the commit.
     if pushd ~/.dotfiles
         if git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null
             make_commit_in_dotfiles
@@ -295,6 +299,13 @@ function make_commit_in_dotfiles
     else
         echo 'Nothing to commit.'
     end
+end
+
+function upgrade-nix
+    print_banner 'NIX'
+    echo -n 'Updating the Nix index... '
+    update-nix-index
+    echo 'Done!'
 end
 
 upgrade $argv
