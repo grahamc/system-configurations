@@ -19,7 +19,7 @@ icons:
 
 indicators: true
 
-total-size: true
+total-size: false
 
 hyperlink: always
 
