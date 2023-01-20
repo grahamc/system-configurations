@@ -203,8 +203,9 @@ function upgrade-nvim
     # clear current line, which has the progress indicator
     echo -e -n '\33[2K'
 
-    curl --silent --fail --location https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
-        | chronic diff - ~/.local/share/nvim/site/autoload/plug.vim
+    cmp --quiet \
+        ~/.local/share/nvim/site/autoload/plug.vim \
+        (curl --silent --fail --location https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim | psub)
     or set is_outdated
 
     if not set --query is_outdated
