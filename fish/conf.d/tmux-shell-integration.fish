@@ -29,6 +29,14 @@ function __view_last_command_output_in_fzf
 end
 bind \eo __view_last_command_output_in_fzf
 
+function __view_last_command_output_in_vim
+    vim '+set bt=nofile' (echo "$(__last_command_output)" | string replace -ra '\e\[[^m]*m' '' | string replace -ra '[^[:print:]]' '' | psub)
+
+    # this should be done whenever a binding produces output (see: man bind)
+    commandline -f repaint
+end
+bind \ev __view_last_command_output_in_vim
+
 function __get_last_pane_line
     set cursor_line (tmux display -p '#{cursor_y}')
     if test -z "$cursor_line"
@@ -71,6 +79,6 @@ function __mark_output_end --on-event fish_postexec
     end
     set output_line_count (math \( $output_end - $output_begin \) + 1)
     if test $output_line_count -gt $LINES
-        echo -e "\n$(set_color --reverse --bold blue) TIP $(set_color normal) View the output of the last command in $(set_color blue)less$(set_color normal) with $(set_color blue)ctrl+o$(set_color normal) or $(set_color magenta)fzf$(set_color normal) with $(set_color magenta)alt+o$(set_color normal)"
+        echo -e "\n$(set_color --reverse --bold blue) TIP $(set_color normal) View the output of the last command in $(set_color blue)less$(set_color normal) with $(set_color blue)ctrl+o$(set_color normal) or $(set_color magenta)fzf$(set_color normal) with $(set_color magenta)alt+o$(set_color normal) or $(set_color green)vim$(set_color normal) with $(set_color green)alt+v$(set_color normal)"
     end
 end
