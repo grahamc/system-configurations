@@ -331,7 +331,8 @@ end
 
 # comma
 function , --wraps ,
-    FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --height 30% --no-preview --no-header" COMMA_PICKER=fzf command , $argv
+    # The `--with-nth` to remove the '.out' extension from the entries.
+    FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --height 30% --no-preview --no-header --delimiter '.' --with-nth '..-5'" COMMA_PICKER=fzf command , $argv
 end
 
 # Print banner
