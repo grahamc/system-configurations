@@ -30,7 +30,6 @@ if [ "$TERM" = "linux" ]; then
     # [ -n "$FBTERM" ] && export TERM=fbterm
 fi
 
-# If the parent process is not fish, use fish in place of bash for an interactive shell.
-# This way if I'm in a fish shell and I need to enter a bash shell, I can just type `bash` instead of `bash --no-rc`.
+# If the current shell isn't fish, use fish in place of bash for an interactive shell.
 # WARNING: Keep this line at the bottom of the file since nothing after this line will be executed.
-ps --no-header --pid=$PPID --format=comm | grep -q -v fish && which fish >/dev/null 2>&1 && SHELL="$(which fish)" exec fish
+[ "$(basename "$SHELL")" != 'fish' ] && which fish >/dev/null 2>&1 && SHELL="$(which fish)" exec fish
