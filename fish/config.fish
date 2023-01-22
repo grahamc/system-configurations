@@ -192,8 +192,15 @@ set --global --export HOMEBREW_BUNDLE_FILE '~/.config/brewfile/Brewfile'
 # DUPLICATE: asdf-setup
 if command -v brew >/dev/null 2>&1
     set _asdf_init_script "$(brew --prefix asdf)/libexec/asdf.fish"
-    test -e $_asdf_init_script
-    and source $_asdf_init_script
+
+    if test -e $_asdf_init_script
+        # I don't need the PATH modifications done by this script, I already did them in my login shell. I only
+        # need the functions it defines. If I didn't restore the original PATH, it would move the asdf directories
+        # to the front. This could cause problems in a Nix shell since asdf programs would be used before Nix ones.
+        set original_path $PATH
+        source $_asdf_init_script
+        set PATH $original_path
+    end 
 end
 
 # fisher

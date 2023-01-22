@@ -22,7 +22,14 @@ fi
 # DUPLICATE: asdf-setup
 if command -v brew >/dev/null 2>&1; then
     _asdf_init_script="$(brew --prefix asdf)/libexec/asdf.sh"
-    test -e "$_asdf_init_script" && . "$_asdf_init_script"
+    if test -e "$_asdf_init_script"; then
+      # The asdf init script does not support posix shell so I'm running the script inside a bash shell and then
+      # exporting the environment variables from the bash shell in the currrent shell.
+      # The sed command will add 'export ' to the beginning of each line and enclose the environment variable values
+      # in double quotes.
+      BASH_ENVIRONMENT="$(bash -c ". $_asdf_init_script; printenv | sed 's/^/export /;s/=/=\"/;s/$/\"/'")"
+      eval "$BASH_ENVIRONMENT"
+    fi
 fi
 
 # Adding this to the PATH since this is where user-specific executables should go, per the
