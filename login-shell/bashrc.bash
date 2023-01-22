@@ -32,4 +32,4 @@ fi
 
 # If the current shell isn't fish, use fish in place of bash for an interactive shell.
 # WARNING: Keep this line at the bottom of the file since nothing after this line will be executed.
-[ "$(basename "$SHELL")" != 'fish' ] && which fish >/dev/null 2>&1 && SHELL="$(which fish)" exec fish
+[ "$(basename "$SHELL")" != 'fish' ] && command -v fish >/dev/null 2>&1 && SHELL="$(command -v fish)" exec fish
