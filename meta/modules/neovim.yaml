@@ -1,0 +1,11 @@
+- clean:
+    ~/.local/share/nvim: {}
+
+- link:
+    ~/.config/nvim/init.lua: neovim/init.lua
+    ~/.config/nvim/profiles: neovim/profiles
+    ~/.local/share/nvim/vim-plug-snapshot.vim: neovim/vim-plug-snapshot.vim
+
+- shell:
+    -
+        command: './neovim/install.sh'

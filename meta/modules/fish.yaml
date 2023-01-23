@@ -1,0 +1,9 @@
+- link:
+    ~/.config/fish/config.fish: fish/config.fish
+    ~/.config/fish/conf.d/:
+        glob: true
+        path: fish/conf.d/*
+    ~/.config/fish/my-functions/:
+        glob: true
+        path: fish/functions/*
+    ~/.config/fish/fish_plugins: fish/fish_plugins

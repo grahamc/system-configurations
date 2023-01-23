@@ -40,6 +40,10 @@ if vim.fn.empty(vim.fn.glob(vim_plug_plugin_file)) ~= 0 then
     [[silent execute '!curl -fLo %s --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim']],
     vim_plug_plugin_file
   ))
+  vim.cmd(string.format(
+    [[source %s]],
+    vim_plug_plugin_file
+  ))
 end
 
 -- Wrapper for vim-plug. Adds the option to specify a function to run after a plugin is loaded.

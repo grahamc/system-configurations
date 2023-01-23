@@ -10,7 +10,6 @@ brew "pkg-config", link: false
 brew "cloudflared"
 brew "cmake", link: false
 brew "direnv"
-brew "docker"
 brew "doggo"
 brew "duf"
 brew "entr"

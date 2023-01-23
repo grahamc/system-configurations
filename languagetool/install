@@ -1,5 +1,5 @@
 #!/bin/bash
 
-sudo cp ./languagetool.service /etc/systemd/system/
+sudo install --compare --backup --suffix=.bak --owner=root --group=root --mode='u=rw,g=r,o=r' -D --verbose --no-target-directory ./languagetool/languagetool.service /etc/systemd/system/languagetool.service
 sudo systemctl enable languagetool.service
 sudo systemctl start languagetool.service

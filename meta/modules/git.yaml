@@ -1,0 +1,6 @@
+- link:
+    ~/.gitconfig: git/gitconfig
+    ~/.local/bin/delta-with-fallback-to-less: git/delta-with-fallback-to-less
+    ~/.local/bin/:
+        glob: true
+        path: git/subcommands/*

@@ -1,0 +1,3 @@
+- shell:
+    -
+        command: '. ./fontconfig/install.sh'

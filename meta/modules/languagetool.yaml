@@ -1,0 +1,4 @@
+- shell:
+    -
+        command: '. ./languagetool/install'
+

@@ -1,0 +1,8 @@
+- link:
+    ~/.config/nix/nix.conf: nix/nix.conf
+    ~/.config/nix/nix-packages.txt: nix/nix-packages.txt
+    ~/.local/bin/update-nix-index: ./nix/update-nix-index.sh
+
+- shell:
+    -
+        command: '. ./nix/install.sh'

@@ -38,7 +38,7 @@ function fish_prompt --description 'Print the prompt'
         (fish_prompt_get_python_context) \
         (fish_prompt_get_git_context) \
         (fish_prompt_get_job_context) \
-        (fish_prompt_get_user_context) \
+        (fish_prompt_get_host_context) \
         (fish_prompt_get_path_context) \
         (fish_prompt_get_status_context $last_pipestatus) \
         (fish_prompt_get_privilege_context)
@@ -138,12 +138,53 @@ function fish_prompt_get_privilege_context
     echo -n -s $fish_prompt_color_standout_text $privilege_context
 end
 
-function fish_prompt_get_user_context
-    if not set --query SSH_TTY
+function fish_prompt_get_host_context
+    if set --query SSH_TTY
+        echo -n -s $fish_prompt_color_text "host: $USER on $(hostname) (ssh)"
         return
     end
 
-    echo -n -s $fish_prompt_color_text "user: $USER in $(hostname)"
+    set container_name (fish_prompt_get_container_name)
+    if test -n "$container_name"
+        echo -n -s $fish_prompt_color_text "host: $USER on $container_name (container)"
+        return
+    end
+
+
+    if test "$USER" != 'biggs'
+        echo -n -s $fish_prompt_color_text "host: $USER on $(hostname)"
+        return
+    end
+end
+
+# Taken from Starship Prompt: https://github.com/starship/starship/blob/master/src/modules/container.rs
+function fish_prompt_get_container_name
+    if test -e /proc/vz
+    and not test -e /proc/bc
+        echo 'OpenVZ'
+        return
+    end
+
+    if test -e /run/host/container-manager
+        echo 'OCI'
+        return
+    end
+
+    if test -e /run/.containerenv
+        # TODO: The image name is in this file, I should extract it and return that instead.
+        echo 'podman'
+        return
+    end
+
+    set systemd_container_path '/run/systemd/container'
+    if test -e "$systemd_container_path"
+        echo (cat "$systemd_container_path")
+    end
+
+    if test -e /.dockerenv
+        echo 'Docker'
+        return
+    end
 end
 
 function fish_prompt_get_path_context
@@ -164,8 +205,16 @@ function fish_prompt_get_direnv_context
     if not set --query DIRENV_DIR
         return
     end
+
     # remove the '-' in the beginning
-    echo -n -s $fish_prompt_color_text 'direnv: ' (basename (string sub --start 2 -- $DIRENV_DIR))
+    set directory (basename (string sub --start 2 -- $DIRENV_DIR))
+
+    set blocked ''
+    if direnv status | grep --ignore-case --quiet 'Found RC allowed false'
+        set blocked (echo -n -s (set_color red) ' (blocked)')
+    end
+
+    echo -n -s $fish_prompt_color_text 'direnv: ' "$directory" "$blocked"
 end
 
 function fish_prompt_get_git_context

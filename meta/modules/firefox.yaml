@@ -1,0 +1,7 @@
+- link:
+    ~/.local/share/applications/firefox-developer-edition.desktop: firefox/firefox-developer-edition.desktop
+    ~/.local/share/applications/my-firefox.desktop: firefox/my-firefox.desktop
+
+- shell:
+    -
+        command: '. ./firefox/install.sh'

@@ -1,0 +1,4 @@
+- link:
+    ~/.vale.ini: vale/vale.ini
+    ~/.config/vale/styles/base: vale/styles/base
+    ~/.config/vale/styles/ignore.txt: vale/styles/ignore.txt

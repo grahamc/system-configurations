@@ -1,0 +1,2 @@
+- link:
+    ~/.cloudflared/config.yaml: cloudflared/config.yaml

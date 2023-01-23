@@ -15,4 +15,5 @@ fi
 # DUPLICATE: nix-setup
 . "$HOME/.nix-profile/etc/profile.d/nix.sh"
 
-xargs -I PACKAGE nix-env -i PACKAGE < ./nix/nix-packages.txt
+# TODO: not working, need a declarative file or flakes
+# xargs -I PACKAGE nix-env -i PACKAGE < ./nix/nix-packages.txt

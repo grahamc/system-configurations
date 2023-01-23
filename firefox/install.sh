@@ -19,5 +19,5 @@ FIREFOX_EXECUTABLE="$HOME/.local/bin/firefox-developer-edition"
 if [ -f "$FIREFOX_EXECUTABLE" ]; then
   rm "$FIREFOX_EXECUTABLE"
 fi
-ln -s /opt/firefox/firefox "$FIREFOX_EXECUTABLE"
+ln --force --symbolic /opt/firefox/firefox "$FIREFOX_EXECUTABLE"
 xdg-settings set default-web-browser my-firefox.desktop

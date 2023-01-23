@@ -2,6 +2,10 @@ if not status is-interactive
     exit
 end
 
+if not type --query fzf-file-widget
+ eval "$(brew --prefix)/opt/fzf/install --key-bindings --update-rc --no-bash --no-zsh"
+end
+
 set _fzf_history_file "$HOME/.config/fzf/fzf-history.txt"
 set _magnifying_glass (echo -s \uf002 '  ')
 
@@ -24,10 +28,10 @@ set --global --export FZF_DEFAULT_OPTS "
     --preview='echo {}'
     --preview-window=wrap,bottom,border-sharp,75%"
 
-set --global --export FZF_ALT_C_COMMAND 'test $dir = '.' && set _args "--strip-cwd-prefix" || set _args '.' $dir; fd $_args --hidden --type directory --type symlink'
+set --global --export FZF_ALT_C_COMMAND 'test $dir = '.' && set _args "--strip-cwd-prefix" || set _args '.' $dir; fd $_args --follow --hidden --type directory --type symlink'
 set --global --export FZF_ALT_C_OPTS "--preview 'type --query lsd; and lsd {}; or ls {}' --keep-right --bind='change:first'"
 
-set --global --export FZF_CTRL_T_COMMAND 'test $dir = '.' && set _args "--strip-cwd-prefix" || set _args '.' $dir; fd $_args --hidden --type file --type symlink'
+set --global --export FZF_CTRL_T_COMMAND 'test $dir = '.' && set _args "--strip-cwd-prefix" || set _args '.' $dir; fd $_args --follow --hidden --type file --type symlink'
 set --global --export FZF_CTRL_T_OPTS '--multi --preview "bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --keep-right --bind="change:first"'
 
 set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}"'
