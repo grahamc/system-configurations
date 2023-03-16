@@ -80,13 +80,13 @@ function upgrade-debian
     print_banner 'DEBIAN'
 
     sudo aptitude update
-    if string match --regex --quiet '[1-9]\d* packages upgraded' (aptitude --simulate --assume-yes safe-upgrade)
+    if string match --regex --quiet '[1-9]\d* packages upgraded' (apt-get --just-print upgrade)
         set something_to_do
-        sudo aptitude safe-upgrade
+        sudo apt-get --assume-yes upgrade
     end
-    if string match --regex --quiet '[1-9]\d* to remove' (aptitude --simulate --assume-yes -o Aptitude::Delete-Unused=1 install)
+    if string match --regex --quiet '[1-9]\d* to remove' (apt-get --just-print autoremove)
         set something_to_do
-        sudo aptitude --assume-yes -o Aptitude::Delete-Unused=1 install
+        sudo apt-get --assume-yes autoremove
     end
 
     if not set --query something_to_do
