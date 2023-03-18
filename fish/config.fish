@@ -12,6 +12,7 @@ set --global --export PAGER less
 abbr --add --global ruhroh 'sudo truncate -s 0 /var/log/syslog'
 abbr --add --global x 'chmod +x'
 abbr --add --global r-initramfs 'sudo update-initramfs -u -k all'
+abbr --add --global logout-all 'sudo killall -u $USER'
 
 # reload the database used to search for applications
 abbr --add --global r-desktop-entries 'sudo update-desktop-database; update-desktop-database ~/.local/share/applications'
