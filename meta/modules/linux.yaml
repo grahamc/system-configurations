@@ -1,3 +1,6 @@
 - shell:
     -
         command: '. ./linux/install.sh'
+
+- link:
+    ~/.config/autostart: ./linux/night-theme-switcher-fix.sh
