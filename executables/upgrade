@@ -79,7 +79,7 @@ end
 function upgrade-debian
     print_banner 'DEBIAN'
 
-    sudo aptitude update
+    sudo apt update
     if string match --regex --quiet '[1-9]\d* packages upgraded' (apt-get --just-print upgrade)
         set something_to_do
         sudo apt-get --assume-yes upgrade
