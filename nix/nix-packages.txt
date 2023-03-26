@@ -1,5 +1,0 @@
-any-nix-shell-1.2.1
-comma-1.4.0
-nix-2.11.0
-nix-index-unstable-2022-03-07
-pipr-0.0.16
