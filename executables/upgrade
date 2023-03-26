@@ -37,9 +37,6 @@ function upgrade
     type --query aptitude
     and upgrade-debian
 
-    type --query brew
-    and upgrade-brew
-
     type --query flatpak
     and upgrade-flatpak
 
@@ -87,32 +84,6 @@ function upgrade-debian
     if string match --regex --quiet '[1-9]\d* to remove' (apt-get --just-print autoremove)
         set something_to_do
         sudo apt-get --assume-yes autoremove
-    end
-
-    if not set --query something_to_do
-        echo 'Nothing to do.'
-    end
-end
-
-function upgrade-brew
-    print_banner 'HOMEBREW'
-
-    brew update
-    if test -n "$(brew outdated --fetch-HEAD)"
-        set something_to_do
-        brew outdated --fetch-HEAD
-        read --prompt-str 'Would you like to upgrade? (y/n): ' --nchars 1 response
-        if test $response = 'y'
-            brew upgrade --fetch-HEAD
-        end
-    end
-    if test -n "$(brew autoremove --dry-run)"
-        set something_to_do
-        brew autoremove
-    end
-    if test -n "$(brew cleanup --dry-run)"
-        set something_to_do
-        brew cleanup
     end
 
     if not set --query something_to_do
