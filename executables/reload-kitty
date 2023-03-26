@@ -10,9 +10,9 @@ set -o nounset
 printf "\033[22;0t"
 
 if chronic pkill --signal SIGUSR1 --full "(^x\-terminal\-emulator|^kitty|^$(realpath "$(which kitty)"))"; then
-  new_title="${1}terminal reload successful"
+  new_title="${1:-}terminal reload successful"
 else
-  new_title="${1}terminal reload failed"
+  new_title="${1:-}terminal reload failed"
 fi
 printf "\033]0;%s\007" "$new_title"
 
