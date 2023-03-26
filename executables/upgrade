@@ -77,9 +77,11 @@ function upgrade-debian
     print_banner 'DEBIAN'
 
     sudo apt update
-    if string match --regex --quiet '[1-9]\d* packages upgraded' (apt-get --just-print upgrade)
+    set upgrade_text "$(apt-get --just-print --with-new-pkgs upgrade)"
+    if string match --regex --quiet '[1-9]\d* upgraded' "$upgrade_text"
+    or string match --regex --quiet '[1-9]\d* (newly )?installed' "$upgrade_text"
         set something_to_do
-        sudo apt-get --assume-yes upgrade
+        sudo apt-get --assume-yes --with-new-pkgs upgrade
     end
     if string match --regex --quiet '[1-9]\d* to remove' (apt-get --just-print autoremove)
         set something_to_do
