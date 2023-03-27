@@ -1,7 +1,7 @@
 function fzf-apt-remove-widget --description 'Remove packages with apt'
   set choices \
       ( \
-        FZF_DEFAULT_COMMAND='dpkg-query -W -f=\'${binary:Package}\n\'' \
+        FZF_DEFAULT_COMMAND='apt list --installed 2>/dev/null | string split --no-empty --fields 1 -- \'/\' | tail -n +2' \
         FZF_HINTS='alt+enter: select multiple items' \
         fzf-tmux-zoom \
             --ansi \
