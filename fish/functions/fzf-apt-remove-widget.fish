@@ -8,7 +8,7 @@ function fzf-apt-remove-widget --description 'Remove packages with apt'
             --multi \
             --bind "alt-enter:toggle,change:first" \
             --prompt 'apt remove: ' \
-            --preview "apt show {} 2>/dev/null | GREP_COLORS='$GREP_COLORS' grep --color=always -E '(^[a-z|A-Z|-]*:|^)' | less" \
+            --preview "echo -e \"\$(apt show {} 2>/dev/null)\n\$(apt-cache rdepends --installed --no-recommends --no-suggests {} | tail -n +2)\" | GREP_COLORS='$GREP_COLORS' grep --color=always -E '(^[a-z|A-Z|-]*:|^.*:\$|^)' | less" \
             --tiebreak=chunk,begin,end \
       )
   or return
