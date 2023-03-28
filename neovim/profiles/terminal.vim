@@ -528,11 +528,6 @@ _G.SetModifiedIndicator = function(_)
       goto continue
     end
 
-    if vim.fn.getbufvar(buffer_number, '&mod') ~= 0 then
-      modified_indicator = '%#StatusLineStandoutText#' .. unicode('2997') .. 'UNSAVED' .. unicode('2998')
-      return
-    end
-
     ::continue::
   end
 
