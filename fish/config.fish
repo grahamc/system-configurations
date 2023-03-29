@@ -49,7 +49,47 @@ abbr --add --global r 'reload-fish'
 # Don't print a greeting when a new interactive fish shell is started
 set --global --export fish_greeting ''
 # use ctrl+z to resume the most recently suspended job
-bind \cz 'jobs --query; and fg 2>/dev/null'
+function _resume_job
+    if not jobs --query
+        return
+    end
+
+    set job_count (jobs | wc -l)
+
+    if test "$job_count" -eq 1
+        fg 1>/dev/null 2>&1
+
+        # this should be done whenever a binding produces output (see: man bind)
+        commandline -f repaint
+
+        return
+    end
+
+    set entries
+    for job_pid in (jobs --pid)
+        set job_command (ps -o command= --pid "$job_pid")
+        set --append entries "$job_pid:$job_command"
+    end
+
+    set choice \
+        ( \
+            printf '%s\n' $entries | \
+            fzf  \
+            --delimiter ':' \
+            --with-nth '2..' \
+            --no-preview \
+            --height 30% \
+        )
+    and begin
+        set tokens (string split ':' "$choice")
+        set pid $tokens[1]
+        fg "$pid" 1>/dev/null 2>&1
+    end
+
+    # this should be done whenever a binding produces output (see: man bind)
+    commandline -f repaint
+end
+bind \cz '_resume_job'
 # use ctrl+right-arrow to accept the next suggested word
 bind \e\[1\;3C forward-word
 # use ctrl+b to jump to beginning of line
