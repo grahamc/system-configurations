@@ -81,7 +81,7 @@ function upgrade-debian
     if string match --regex --quiet '[1-9]\d* upgraded' "$upgrade_text"
     or string match --regex --quiet '[1-9]\d* (newly )?installed' "$upgrade_text"
         set something_to_do
-        sudo apt-get --assume-yes --with-new-pkgs upgrade
+        sudo apt-get --with-new-pkgs upgrade
     end
     if string match --regex --quiet '[1-9]\d* to remove' (apt-get --just-print autoremove)
         set something_to_do
