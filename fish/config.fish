@@ -89,7 +89,7 @@ function _resume_job
     # this should be done whenever a binding produces output (see: man bind)
     commandline -f repaint
 end
-bind \cz '_resume_job'
+bind-no-focus \cz '_resume_job'
 # use ctrl+right-arrow to accept the next suggested word
 bind \e\[1\;3C forward-word
 # use ctrl+b to jump to beginning of line
@@ -322,7 +322,7 @@ bind \e\[C __abbr_tips_forward_char
 
 # pipr
 abbr --add --global pipr 'pipr --no-isolation'
-bind \cp pipr-widget
+bind-no-focus \cp pipr-widget
 
 # pipenv
 if type --query pipenv

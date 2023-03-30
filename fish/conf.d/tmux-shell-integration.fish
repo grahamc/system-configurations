@@ -27,7 +27,7 @@ function __view_last_command_output_in_fzf
     # this should be done whenever a binding produces output (see: man bind)
     commandline -f repaint
 end
-bind \eo __view_last_command_output_in_fzf
+bind-no-focus \eo __view_last_command_output_in_fzf
 
 function __view_last_command_output_in_vim
     vim '+set bt=nofile' (echo "$(__last_command_output)" | string replace -ra '\e\[[^m]*m' '' | string replace -ra '[^[:print:]]' '' | psub)

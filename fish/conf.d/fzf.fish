@@ -38,7 +38,7 @@ set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}"'
 
 # use ctrl+f for file search instead of default ctrl+t
 bind --erase \ct
-bind \cf 'FZF_CTRL_T_OPTS="$FZF_CTRL_T_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-file-widget'
+bind-no-focus \cf 'FZF_CTRL_T_OPTS="$FZF_CTRL_T_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-file-widget'
 
 # use ctrl+h for history search instead of default ctrl+r
 bind --erase \cr
@@ -48,13 +48,13 @@ bind --erase \cr
 # from the history
 #
 # I also merge the history so that the search will search across all fish sessions' histories.
-bind \ch 'history merge; fzf-history-widget && set -g __abbr_tips_used 1'
+bind-no-focus \ch 'history merge; fzf-history-widget && set -g __abbr_tips_used 1'
 
 # use alt+d for directory search instead of default alt+c
 bind --erase \ec
-bind \ed 'FZF_ALT_C_OPTS="$FZF_ALT_C_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-cd-widget'
+bind-no-focus \ed 'FZF_ALT_C_OPTS="$FZF_ALT_C_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-cd-widget'
 
-bind \cg 'fzf-grep-widget'
+bind-no-focus \cg 'fzf-grep-widget'
 
 # Workaround to allow me to use fzf-tmux-zoom with the default widgets that come with fzf.
 # The default widgets use __fzfcmd to get the name of the fzf command to use so I am
