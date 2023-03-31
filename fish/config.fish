@@ -106,15 +106,10 @@ function _fzf_complete
     set choice \
         ( \
             complete --escape --do-complete (commandline --cut-at-cursor) \
-            | if type --query python
-                # Remove duplicates
-                # The [:-1] is to remove the newline.
-                python -c "import fileinput; lines = list(line[:-1].split('\t') for line in fileinput.input()); items = {line[0]: line[0] + '\t(' + line[1].rstrip() + ')' if len(line) == 2 else line[0] for line in lines}; print('\n'.join(items.values()));"
-            else
-                cat
-            end \
+            # remove duplicates
+            | sort | uniq -u \
             | fzf \
-            --preview 'string sub --start 2 --end -1 -- {2}' \
+            --preview 'echo {2}' \
             --delimiter \t \
             --preview-window '50%' \
             --height 30% \
