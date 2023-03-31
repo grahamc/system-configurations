@@ -9,6 +9,7 @@ case $1 in
     #   set_brightness up
     # done
     mode='day'
+    dconf write /org/gnome/shell/extensions/blur-my-shell/panel/color '(0.89666664600372314, 0.87873333692550659, 0.87873333692550659, 0.91666668653488159)'
     ;;
 
   "night")
@@ -16,6 +17,7 @@ case $1 in
     #   set_brightness down
     # done
     mode='night'
+    dconf write /org/gnome/shell/extensions/blur-my-shell/panel/color '(0.0, 0.0, 0.0, 0.5533333420753479)'
     ;;
 
   *)

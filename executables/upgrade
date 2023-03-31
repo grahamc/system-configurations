@@ -61,8 +61,8 @@ function upgrade
     type --query update-nix-index
     and upgrade-nix
 
-    test -d ~/.white-sur-theme
-    and upgrade-whitesur
+    test -d ~/.fluent-theme
+    and upgrade-fluent
 
     # NOTE: This should be last so that all changes produced by any upgrade are included in the commit.
     if pushd ~/.dotfiles
@@ -266,11 +266,11 @@ function upgrade-nix
     echo 'Done!'
 end
 
-function upgrade-whitesur
-    print_banner 'White Sur Theme'
+function upgrade-fluent
+    print_banner 'Fluent Theme'
 
     # TODO: If this gets removed, remove the popd below as well
-    if not pushd ~/.white-sur-theme
+    if not pushd ~/.fluent-theme
         return
     end
 
@@ -278,17 +278,12 @@ function upgrade-whitesur
         return
     end
 
-    if not type --query nix
-        echo 'ERROR: You need nix to update White Sur'
-        return
-    end
-
     chronic git fetch --tags
-    set latest_release "$(git ls-remote --refs --sort='version:refname' --tags 'https://github.com/vinceliuice/WhiteSur-gtk-theme.git' | cut -d/ -f3- | tail -n 1)"
+    set latest_release "$(git ls-remote --refs --sort='version:refname' --tags 'https://github.com/vinceliuice/Fluent-gtk-theme.git' | cut -d/ -f3- | tail -n 1)"
     set current_release "$(git describe --tags)"
     if test "$current_release" != "$latest_release"
         git checkout "$latest_release"
-        ./install.sh -N mojave --color Dark --color Light --theme blue --theme orange --icon gnome --libadwaita && ./tweaks.sh --flatpak --color Dark --theme orange
+        ./install.sh --theme all --icon popos --libadwaita --tweaks round
     else
         echo 'Nothing to do'
     end
