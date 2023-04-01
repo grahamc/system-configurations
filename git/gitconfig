@@ -6,6 +6,8 @@
   pager = delta-with-fallback-to-less
 [push]
   default = current
+[pull]
+  default = current
 [alias]
   all = add -A
   p = pull

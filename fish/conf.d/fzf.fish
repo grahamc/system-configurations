@@ -2,10 +2,6 @@ if not status is-interactive
     exit
 end
 
-if not type --query fzf-file-widget
- eval "$(brew --prefix)/opt/fzf/install --key-bindings --update-rc --no-bash --no-zsh"
-end
-
 set _fzf_history_file "$HOME/.config/fzf/fzf-history.txt"
 set _magnifying_glass (echo -s \uf002 '  ')
 

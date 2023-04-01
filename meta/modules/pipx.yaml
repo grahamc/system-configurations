@@ -1,6 +1,0 @@
-- link:
-    ~/.config/pipx/pipx-packages: pipx/pipx-packages
-
-- shell:
-    -
-        command: '. ./pipx/install.sh'

@@ -1,5 +1,0 @@
-- link:
-    ~/.local/bin/:
-        glob: true
-        path: executables/*
-    ~/.ignore: ignore

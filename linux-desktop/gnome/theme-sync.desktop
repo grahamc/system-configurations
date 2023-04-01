@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Theme Sync
+Comment=Fix issue with Night Theme Switcher GNOME extension
+Exec=night-theme-switcher-fix
+Terminal=false
+Type=Application
+StartupNotify=false

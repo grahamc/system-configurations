@@ -1,7 +1,0 @@
-- shell:
-    -
-        command: '. ./linux/install.sh'
-
-- link:
-    ~/.local/bin/night-theme-switcher-fix.sh: ./linux/night-theme-switcher-fix.sh
-    ~/.config/autostart/theme-sync.desktop: ./linux/theme-sync.desktop

@@ -1,9 +1,0 @@
-- clean:
-    ~/.ipython:
-        recursive: true
-
-- link:
-    ~/.ipython/profile_default/ipython_config.py: ipython/ipython_config.py
-    ~/.ipython/profile_default/startup/:
-        glob: true
-        path: ./ipython/startup/*

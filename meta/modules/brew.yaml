@@ -1,6 +1,0 @@
-- link:
-    ~/.config/brewfile/Brewfile: brew/Brewfile
-
-- shell:
-    -
-        command: '. ./brew/install.sh'

@@ -1,5 +1,0 @@
-- link:
-    ~/.config/kitty: kitty
-    ~/.config/kitty/current-theme.conf:
-        path: ~/.config/kitty/night-theme.conf
-        if: '[ ! -f ~/.config/kitty/current-theme.conf ]'

@@ -1,0 +1,250 @@
+#!/bin/env fish
+
+# helpers
+function print_banner --argument-names message
+    echo
+    echo -s (set_color blue) $message (set_color normal)
+    echo -s (set_color blue) (string repeat --count 40 ─) (set_color normal)
+end
+
+# upgrade/cleanup packages in all package managers
+function upgrade
+    # If arguments are passed, assume they are package manager names and only upgrade those ones
+    if test (count $argv) -gt 0
+        for package_manager in $argv
+            set function_name "upgrade-$package_manager"
+            if functions --query $function_name
+                eval $function_name
+            else
+                echo -e -s \n (set_color red) "error: No upgrader found for '$package_manager'"
+            end
+        end
+
+        return
+    end
+
+    # NOTE: Should be first because otherwise other tools might try to perform upgrades
+    # that have already been performed on another machine and just need to be pulled in.
+    # Also, if upgrading a tool results in a dotfile being changed, (e.g. neovim snapshot)
+    # then pulling dotfiles afterwards might cause a merge conflict.
+    if pushd ~/.dotfiles
+        if git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null
+            upgrade-dotfiles
+        end
+        popd
+    end
+
+    type --query nix
+    and upgrade nix
+
+    type --query home-manager
+    and upgrade-home-manager
+
+    # TODO: The Pop Shop is slow and doesn't have a progress indicator so I'll use the commandline for now.
+    type --query aptitude
+    and upgrade-debian
+    type --query flatpak
+    and upgrade-flatpak
+
+    type --query fisher
+    and upgrade-fisher
+
+    type --query nvim
+    and upgrade-nvim
+
+    test -d ~/.fluent-theme
+    and upgrade-fluent
+
+    # NOTE: This should be last so that all changes produced by any upgrade are included in the commit.
+    if pushd ~/.dotfiles
+        if git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null
+            make_commit_in_dotfiles
+        end
+        popd
+    end
+end
+
+function upgrade-debian
+    print_banner 'DEBIAN'
+
+    sudo apt update
+    set upgrade_text "$(apt-get --just-print --with-new-pkgs upgrade)"
+    if string match --regex --quiet '[1-9]\d* upgraded' "$upgrade_text"
+    or string match --regex --quiet '[1-9]\d* (newly )?installed' "$upgrade_text"
+        set something_to_do
+        sudo apt-get --with-new-pkgs upgrade
+    end
+    if string match --regex --quiet '[1-9]\d* to remove' (apt-get --just-print autoremove)
+        set something_to_do
+        sudo apt-get --assume-yes autoremove
+    end
+
+    if not set --query something_to_do
+        echo 'Nothing to do.'
+    end
+end
+
+function upgrade-flatpak
+    print_banner 'FLATPAK'
+
+    # TODO: When I do `yes | <this script>` instead of a 'y' being entered for the
+    # `flatpak update` prompt, an 'n' is entered. As a workaround, I am doing the prompting
+    # myself.
+    if test -n "$(flatpak remote-ls --updates 2>/dev/null)"
+        flatpak remote-ls --updates
+        read --prompt-str 'Would you like to upgrade? (y/n): ' --nchars 1 response
+        if test $response = 'y'
+            flatpak update --assumeyes
+        end
+    else
+        echo 'Nothing to do.'
+    end
+end
+
+function upgrade-fisher
+    print_banner 'FISHER'
+    # TODO: If I pipe the command `yes` into this script, the command below stalls for a while.
+    # Not sure what's going on, but for now I'll suppress standard input.
+    fisher update </dev/null
+end
+
+function upgrade-nvim
+    print_banner 'NEOVIM'
+
+    # This way we don't check for updates in plugins that aren't being used
+    echo -n 'Removing unused plugins... '
+    nvim --headless -i NONE -c 'PlugClean!' -c 'qa'
+    echo 'done'
+
+    set plugin_count (ls ~/.local/share/nvim/plugged | wc -l)
+    set current_plugin_number 1
+    for plugin_directory in ~/.local/share/nvim/plugged/*
+        echo -n -e -s 'Checking plugins for updates: ' $current_plugin_number '/' $plugin_count \r
+        chronic git -C $plugin_directory fetch
+        if test -n "$(git -C $plugin_directory log HEAD..origin/HEAD --oneline)"
+            set is_outdated
+            break
+        end
+
+        set current_plugin_number (math $current_plugin_number + 1)
+    end
+    # clear current line, which has the progress indicator
+    echo -e -n '\33[2K'
+
+    cmp --quiet \
+        ~/.local/share/nvim/site/autoload/plug.vim \
+        (curl --silent --fail --location https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim | psub)
+    or set is_outdated
+
+    if not set --query is_outdated
+        echo 'Nothing to do.'
+        return
+    end
+
+    read --prompt-str 'Would you like to update? (y/n): ' --nchars 1 response
+    if test $response = 'y'
+        # I explicitly set the input file to the terminal in case this command is run in a pipeline.
+        # For exmaple: `yes | <this_script>`.
+        nvim -c 'autocmd VimEnter * MyPlugUpdate' </dev/tty
+    end
+end
+
+function upgrade-dotfiles
+    print_banner 'DOTFILES'
+
+    # return if there is nothing to pull
+    chronic git fetch
+    if test -z "$(git log HEAD..@{u} --oneline)"
+        echo 'Nothing to do.'
+        return
+    end
+
+    # Show the new commits that would be pulled
+    echo 'Commits made since last pull:'
+    git log ..@{u}
+    echo
+
+    # if there are changes, warn the user in the prompt
+    set status_output "$(git status --porcelain)"
+    if test -n "$status_output"
+        set warning "$(echo -s (set_color yellow) ' (WARNING: The working directory is not clean)' (set_color normal))"
+    else
+        set warning ''
+    end
+    read --prompt-str "Would you like to update$warning? (y/n): " --nchars 1 response
+    if test $response = 'y'
+        git pull
+    end
+end
+
+function make_commit_in_dotfiles
+    print_banner 'DOTFILES COMMIT'
+
+    # check if there are changes to commit
+    set status_output "$(git status --porcelain)"
+    if test -n "$status_output"
+        git status
+        read --prompt-str "Do you want to make a commit to your dotfiles? (y/n): " --nchars 1 response
+        if test $response = 'y'
+            git add --all
+            git commit --message 'chore: upgrade tools'
+            git push
+        end
+    else
+        echo 'Nothing to commit.'
+    end
+end
+
+function upgrade-fluent
+    print_banner 'Fluent Theme'
+
+    # TODO: If this gets removed, remove the popd below as well
+    if not pushd ~/.fluent-theme
+        return
+    end
+
+    if not git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null
+        return
+    end
+
+    chronic git fetch --tags
+    set latest_release "$(git ls-remote --refs --sort='version:refname' --tags 'https://github.com/vinceliuice/Fluent-gtk-theme.git' | cut -d/ -f3- | tail -n 1)"
+    set current_release "$(git describe --tags)"
+    if test "$current_release" != "$latest_release"
+        git checkout "$latest_release"
+        ./install.sh --theme all --icon popos --libadwaita --tweaks round
+    else
+        echo 'Nothing to do'
+    end
+
+    # TODO: If this gets removed, remove the pushd above as well
+    popd
+end
+
+function upgrade-nix
+    print_banner 'Nix'
+
+    nix-channel --update
+    nix-env --upgrade '*'
+
+    nix-collect-garbage
+end
+
+function upgrade-home-manager
+    print_banner 'Home Manager'
+
+    home-manager switch --flake "$HOME/.dotfiles#$HOME_MANAGER_HOST_NAME" --impure --recreate-lock-file
+
+    # remove all generations besides the most recent 2
+    set generation_count (home-manager generations | wc -l)
+    if test "$generation_count" -gt 2
+        # Generation id's are integers given in increasing order with the first generation having 1. This means the ids
+        # of the generations to delete are the numbers from 1 to (number of generations to delete).
+        set generations_to_delete_count (math "$generation_count" - 2)
+        set generations_to_delete (seq "$generations_to_delete_count")
+        home-manager remove-generations $generations_to_delete
+    end
+    nix-collect-garbage
+end
+
+upgrade $argv

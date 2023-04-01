@@ -4,7 +4,6 @@ end
 
 abbr --add --global trash trash-put
 abbr --add --global t-sys sysz
-abbr --add --global r-asdf 'asdf reshim'
 abbr --add --global r-kitty reload-kitty
 abbr --add --global g git
 abbr --add --global touchp touch-and-make-parent-dirs
@@ -14,6 +13,8 @@ abbr --add --global x 'chmod +x'
 abbr --add --global r-initramfs 'sudo update-initramfs -u -k all'
 abbr --add --global logout-all 'sudo killall -u $USER'
 abbr --add --global r-icons 'sudo update-icon-caches /usr/share/icons/* ~/.local/share/icons/*'
+abbr --add --global du 'du -sh'
+abbr --add --global r-home-manager 'home-manager switch --flake "$HOME/.dotfiles#$HOME_MANAGER_HOST_NAME" --impure'
 
 # reload the database used to search for applications
 abbr --add --global r-desktop-entries 'sudo update-desktop-database; update-desktop-database ~/.local/share/applications'
@@ -112,32 +113,60 @@ function _fzf_complete
             --preview 'echo {2}' \
             --delimiter \t \
             --preview-window '50%' \
-            --height 30% \
+            --height 45% \
             --no-header \
             --bind 'backward-eof:abort' \
             --select-1 \
+            --prompt "$(commandline --current-token)" \
             --exit-0 \
             --no-hscroll \
-            --color 'gutter:-1' \
+            --color 'gutter:-1,prompt:6' \
             --tiebreak=begin,chunk \
         )
     and begin
-        set entry (string split -f1 -- \t $choice)
-        commandline --replace --current-token -- $entry
+        set entry "$(string split -f1 -- \t $choice)"
+
+        set space ' '
+        # Only add a space after the entry if it isn't an abbreviation.
+        #
+        # TODO: This assumes that an abbreviation can only be expanded if it's the first token in the commandline.
+        # However, with the flag '--position anywhere', abbreviations can be expanded anywhere in the commandline so
+        # I should check for that flag.
+        #
+        # TODO: Need to account for when the directory starts with tilde, gotta expand it
+        #
+        # We determine if the entry will be the first token by checking for an empty commandline.
+        # We trim spaces because spaces don't count as tokens.
+        set trimmed_commandline (string trim "$(commandline)")
+        if abbr --query -- "$entry"
+        and test -z "$trimmed_commandline"
+            set space ''
+        else if test -d "$entry"
+        and printf "$entry" | grep -q -E '\/$'
+            set space ''
+        else if test -d "$PWD/$entry"
+        and printf "$entry" | grep -q -E '\/$'
+            set space ''
+        end
+
+        commandline --replace --current-token -- "$entry$space"
     end
 
     commandline -f repaint
 end
-function _fzf_complete_or_last_entry
+function _fzf_complete_helper
     if commandline --paging-mode
-        # TODO: When the first entry is selected (in tab complete not fzf_complete) this doesn't unselect it,
-        # it wraps around
-        commandline -f complete-and-search
+        commandline -f forward-char
+        return
+    end
+
+    if not type --query fzf
+        commandline -f complete
     else
         _fzf_complete
     end
 end
-bind -k btab _fzf_complete_or_last_entry
+bind-no-focus -k btab _fzf_complete_helper
 # Save command to history before executing it. This way long running commands, like ssh or watch, will show up in
 # the history immediately.
 function __save_history --on-event fish_preexec
@@ -215,31 +244,6 @@ abbr --add --global alu 'apt list --upgradeable'
 abbr --add --global ap 'sudo apt purge'
 abbr --add --global fai 'fzf-apt-install-widget'
 abbr --add --global far 'fzf-apt-remove-widget'
-
-# brew
-abbr --add --global fbi 'fzf-brew-install-widget'
-abbr --add --global fbu 'fzf-brew-uninstall-widget'
-abbr --add --global bo 'brew outdated --fetch-HEAD'
-set --global --export HOMEBREW_NO_INSTALL_UPGRADE 1
-set --global --export HOMEBREW_NO_INSTALL_CLEANUP 1
-set --global --export HOMEBREW_BUNDLE_NO_LOCK 1
-set --global --export HOMEBREW_BUNDLE_FILE '~/.config/brewfile/Brewfile'
-
-# asdf version manager
-#
-# DUPLICATE: asdf-setup
-if command -v brew >/dev/null 2>&1
-    set _asdf_init_script "$(brew --prefix asdf)/libexec/asdf.fish"
-
-    if test -e $_asdf_init_script
-        # I don't need the PATH modifications done by this script, I already did them in my login shell. I only
-        # need the functions it defines. If I didn't restore the original PATH, it would move the asdf directories
-        # to the front. This could cause problems in a Nix shell since asdf programs would be used before Nix ones.
-        set original_path $PATH
-        source $_asdf_init_script
-        set PATH $original_path
-    end 
-end
 
 # fisher
 if not type --query fisher
@@ -321,17 +325,6 @@ bind \e\[C __abbr_tips_forward_char
 abbr --add --global pipr 'pipr --no-isolation'
 bind-no-focus \cp pipr-widget
 
-# pipenv
-if type --query pipenv
-    # enable autocomplete
-    set fish_config_path "$__fish_config_dir/conf.d"
-    set pipenv_autocomplete "$fish_config_path/pipenv-autocomplete.fish"
-    if not test -f $pipenv_autocomplete
-        env _PIPENV_COMPLETE=fish_source pipenv > $pipenv_autocomplete
-        source $pipenv_autocomplete
-    end
-end
-
 # watch
 abbr --add --global watch 'watch --no-title --differences --interval 0.5'
 
@@ -353,10 +346,6 @@ abbr --add --global ncdu 'ncdu --color off'
 #
 # Increase maxixmum number of open file descriptors that a single process can have. This applies to the current
 # process and its descendents.
-#
-# I hit the limit when installing a brew package. Brew won't address this since it is trivial to increase the file
-# limit and they feel the default (1024) is low to begin with.
-# issue: https://github.com/Homebrew/brew/issues/9120
 ulimit -Sn 10000
 
 # Initialize fish-abbreviation-tips. The plugin only runs init once when the plugin is installed so if I add new

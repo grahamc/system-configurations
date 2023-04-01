@@ -7,7 +7,7 @@ end
 function _reload_fish --on-variable _fish_reload_indicator
     if jobs --query
         echo -n -e "\n$(set_color --reverse --bold yellow) WARNING $(set_color normal) The shell will not reload since there are jobs running in the background.$(set_color normal)"
-        commandline -f execute
+        commandline -f repaint
         return
     end
 

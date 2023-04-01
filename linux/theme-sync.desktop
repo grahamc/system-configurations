@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=Theme Sync
-Comment=Fix issue with Night Theme Switcher GNOME extension
-Exec=/home/biggs/.dotfiles/linux/night-theme-switcher-fix.sh
-Terminal=false
-Type=Application
-StartupNotify=false

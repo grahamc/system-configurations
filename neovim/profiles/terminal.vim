@@ -248,7 +248,7 @@ end
 -- Indentation {{{
 vim.o.expandtab = true
 vim.o.autoindent = true
-vim.o.smartindent = true
+-- vim.o.smartindent = true
 vim.o.smarttab = true
 -- Round indent to multiple of shiftwidth (applies to < and >)
 vim.o.shiftround = true
@@ -386,11 +386,20 @@ local function save_session()
 end
 
 local function restore_or_create_session()
-  -- We only want to restore/create a session if neovim was called with no arguments. The first element in vim.v.argv
-  -- will always be the path to the vim executable so if no arguments were passed to neovim, the size of vim.v.argv
-  -- will be one.
-  local is_neovim_called_with_no_arguments = #vim.v.argv == 1
-  if is_neovim_called_with_no_arguments then
+  -- We only want to restore/create a session if neovim was called with no files.
+  local function is_flag(arg)
+    return string.sub(arg, 1, 1) == '-'
+  end
+  local file_given = false
+  if #vim.v.argv == 1 then
+    file_given = true
+  -- TODO: We assume a file was given if neither of the last two arguments to neovim are flags, but that isn't always
+  -- true e.g. `nvim -- <file>`.
+  elseif not is_flag(vim.v.argv[#vim.v.argv]) and not is_flag(vim.v.argv[#vim.v.argv - 1]) then
+    file_given = true
+  end
+
+  if not file_given then
     local session_name = string.gsub(os.getenv('PWD'), '/', '%%') .. '%vim'
     vim.fn.mkdir(session_dir, 'p')
     local session_full_path = session_dir .. '/' .. session_name
@@ -537,7 +546,7 @@ vim.fn.timer_start(1000, SetModifiedIndicator, {['repeat'] = -1})
 _G.StatusLine = function()
   local item_separator = '%#StatusLineSeparator# ∙ '
 
-  local line = '%#StatusLine#Ln %l'
+  local line = '%#StatusLine#Ln %l/%L'
   local column = '%#StatusLine#Col %c'
   local position = line .. ', ' .. column
 
@@ -989,7 +998,16 @@ Plug(
           results_title = '(C-q: quickfix, C-t: new tab, C-{v,h}: vertical/horizontal split)',
         },
         pickers = {
-
+          find_files = {
+            hidden = true,
+          },
+          live_grep = {
+            additional_args = {
+              '--hidden',
+              '--smart-case',
+              '--follow',
+            },
+          },
         },
       })
 
@@ -1020,12 +1038,7 @@ Plug(
   }
 )
 
-Plug(
-  'nvim-telescope/telescope-fzf-native.nvim',
-  {
-    ['do'] = 'make',
-  }
-)
+Plug('nvim-telescope/telescope-fzf-native.nvim')
 
 Plug(
   'stevearc/dressing.nvim',
@@ -1137,39 +1150,9 @@ Plug(
         augroup MyNvimTreeSitter
           autocmd!
           autocmd BufWinEnter * lua vim.fn.timer_start(0, MaybeSetTreeSitterFoldmethod)
-          autocmd VimEnter * lua InstallMissingParsers()
         augroup END
       ]])
-
-      -- Install missing parsers
-      --
-      -- TODO: treesitter commands don't seem to be available until 'VimEnter' so I'll call this function then.
-      -- I think this bug in neovim might be the reason for this.
-      -- issue: https://github.com/neovim/neovim/issues/18822
-      _G.InstallMissingParsers = function()
-        local install_info = vim.fn.execute('TSInstallInfo')
-        local uninstalled_parsers_count = vim.fn.count(install_info, 'not installed')
-        if uninstalled_parsers_count > 0 then
-          local install_prompt = string.format(
-            '%s Tree-sitter parsers are not installed, would you like to install them now?',
-            uninstalled_parsers_count
-          )
-          if uninstalled_parsers_count > 20 then
-            install_prompt = install_prompt .. ' (Warning: It might take a while.)'
-          end
-
-          local should_install = vim.fn.confirm(install_prompt, "yes\nno") == 1
-          if should_install then
-            vim.cmd('TSInstall all')
-          else
-            vim.cmd([[
-              echomsg 'No problem, you can always do it later by running `:TSInstall all`.'
-            ]])
-          end
-        end
-      end
     end,
-    ['do'] = ':lua vim.cmd.TSUpdateSync()',
   }
 )
 
@@ -1315,7 +1298,10 @@ Plug(
           },
         },
         on_attach = function(buffer_number)
-          local inject_node = require("nvim-tree.utils").inject_node
+          -- Set the default mappings
+          local api = require('nvim-tree.api')
+          api.config.mappings.default_on_attach(buffer_number)
+
           vim.keymap.set('n', 'h', '<BS>', {buffer = buffer_number, remap = true})
           vim.keymap.set('n', 'l', '<CR>', {buffer = buffer_number, remap = true})
           vim.keymap.set('n', '<Tab>', '<CR>', {buffer = buffer_number, remap = true})
@@ -1414,30 +1400,6 @@ Plug('hrsh7th/cmp-path')
 
 Plug('hrsh7th/cmp-nvim-lsp-signature-help')
 
-Plug(
-  'uga-rosa/cmp-dictionary',
-  {
-    -- TODO: This plugin updates dictionaries on BufEnter. This BufEnter autocommand is registered in the setup function.
-    -- Since this operation is slow I want to run it in the background, but the 'async' option provided by the plugin
-    -- still results in noticeable lag when the first buffer is opened. To prevent this lag, I call setup() after I've
-    -- already updated the dictionaries in the background. This way when the BufEnter autocommand runs, the dictionaries
-    -- are already cached. Ideally, there would be an option to disable this autocommand.
-    config = function()
-      local function callback(_)
-        require("cmp_dictionary").update()
-
-        require("cmp_dictionary").setup({
-          dic = {
-            ['*'] = { '/usr/share/dict/words' },
-          },
-          first_case_insensitive = true,
-        })
-      end
-      vim.fn.timer_start(0, callback)
-    end,
-  }
-)
-
 Plug('bydlw98/cmp-env')
 
 Plug(
@@ -1496,9 +1458,6 @@ Plug(
       local path = {
         name = 'path',
         option = {
-          get_cwd = function(params)
-            return vim.fn.getcwd()
-          end,
           label_trailing_slash = false,
         },
       }
@@ -1771,8 +1730,8 @@ Plug(
           )
         end,
 
-        ["sumneko_lua"] = function()
-          lspconfig.sumneko_lua.setup(
+        ["lua_ls"] = function()
+          lspconfig.lua_ls.setup(
             vim.tbl_deep_extend(
               'force',
               default_server_config,
@@ -1877,7 +1836,7 @@ Plug(
 EOF
 
 " Colorscheme {{{
-Plug 'arcticicestudio/nord-vim'
+Plug 'nordtheme/vim'
   let g:nord_bold = 1
   let g:nord_italic = 1
   let g:nord_italic_comments = 1
@@ -1885,7 +1844,7 @@ Plug 'arcticicestudio/nord-vim'
   function! SetNordOverrides()
     highlight MatchParen ctermfg=blue cterm=underline ctermbg=NONE
     " Transparent vertical split
-    highlight WinSeparator ctermbg=NONE ctermfg=8
+    highlight WinSeparator ctermbg=NONE ctermfg=15
     " statusline colors
     highlight StatusLine ctermbg=8 ctermfg=NONE
     highlight StatusLineSeparator ctermfg=8 ctermbg=NONE cterm=reverse,bold

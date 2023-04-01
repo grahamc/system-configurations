@@ -1,8 +1,0 @@
-# TODO: Using `ln` until dotbot has an option to prompt to overwrite.
-- shell:
-    -
-        command: 'ln --interactive --symbolic ~/.dotfiles/login-shell/profile.sh ~/.profile'
-    -
-        command: 'ln --interactive --symbolic ~/.dotfiles/login-shell/bash_profile.bash ~/.bash_profile'
-    -
-        command: 'ln --interactive --symbolic ~/.dotfiles/login-shell/bashrc.bash ~/.bashrc'

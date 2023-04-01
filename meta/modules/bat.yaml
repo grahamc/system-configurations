@@ -1,7 +1,0 @@
-- link:
-    ~/.config/bat/config: bat/config
-    ~/.config/bat/themes/base16-brighter.tmTheme: bat/base16-brighter.tmTheme
-
-- shell:
-    -
-        command: '. ./bat/install.sh'

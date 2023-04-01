@@ -1,8 +1,0 @@
-# Read version files used by other version managers (e.g. .ruby-version), if the plugin supports this
-legacy_version_file = yes
-
-post_asdf_plugin_add_direnv = asdf-hook-handler post_asdf_plugin_add_direnv "$@"
-
-post_asdf_plugin_add = asdf-hook-handler post_asdf_plugin_add "$@"
-
-disable_short_name_repository = yes
