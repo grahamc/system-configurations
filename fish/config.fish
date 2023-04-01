@@ -145,10 +145,6 @@ function __save_history --on-event fish_preexec
 end
 # I only want my functions loaded into an interactive shell so I add them to the function path here.
 set --global --prepend fish_function_path "$__fish_config_dir/my-functions"
-# Save the last commandline so I can reference it while building my prompt (see function: fish_prompt)
-function __save_last_commandline --on-event fish_postexec --argument-names commandline
-    set --global __last_commandline "$commandline"
-end
 # Taken from fish's default keybind for ctrl+l.
 function _clear_screen
     echo -n (clear | string replace \e\[3J "")

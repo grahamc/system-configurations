@@ -257,13 +257,6 @@ function fish_prompt_get_status_context
         return
     end
 
-    # For git log, git exits with 141 (SIGPIPE) if the pager doesn't consume all the text that git writes
-    # to the pipe (i.e. scrolling to the bottom of the pager). I don't consider this an error so I'm ignoring it.
-    if string match --quiet --regex -- '^git l(og)?(\s|$)' "$__last_commandline"
-        and test "$argv" -eq '141'
-        return
-    end
-
     if test (count $argv) -gt 1
         set plural 's'
     else
