@@ -11,9 +11,7 @@ function _reload_fish --on-variable _fish_reload_indicator
         return
     end
 
-    # clear screen. taken from fish's default keybind for ctrl+l
-    echo -n (clear | string replace \e\[3J "")
-
+    _clear_screen
     echo "$(set_color --reverse --bold brwhite) INFO $(set_color normal) Reloading the shell...$(set_color normal)"
     exec fish
 end
