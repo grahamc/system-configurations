@@ -1,5 +1,5 @@
 function fzf-process-widget --description 'Manage processes'
-  set reload_command 'echo "Last Refresh: $(date)"; ps -e --format user,pid,ppid,nice=NICE,start_time,etime,command --sort=-start_time'
+  set reload_command 'ps -e --format user,pid,ppid,nice=NICE,start_time,etime,command --sort=-start_time'
   set choice \
       ( \
         FZF_DEFAULT_COMMAND="$reload_command" \
@@ -11,7 +11,7 @@ function fzf-process-widget --description 'Manage processes'
             # only search on PID, PPID, and the command
             --nth '2,3,7..' \
             --bind "change:first,ctrl-alt-r:reload@$reload_command@+first,alt-enter:toggle" \
-            --header-lines=2 \
+            --header-lines=1 \
             --prompt 'processes: ' \
             # I 'echo' the fzf placeholder in the grep regex to get around the fact that fzf substitutions are single quoted and the quotes
             # would mess up the grep regex.
