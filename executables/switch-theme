@@ -9,7 +9,7 @@ case $1 in
     #   set_brightness up
     # done
     mode='day'
-    dconf write /org/gnome/shell/extensions/blur-my-shell/panel/color '(0.89666664600372314, 0.87873333692550659, 0.87873333692550659, 0.91666668653488159)'
+    dconf write /org/gnome/shell/extensions/blur-my-shell/panel/color '(0.94901961088180542, 0.94901961088180542, 0.94901961088180542, 0.91666668653488159)'
     ;;
 
   "night")
