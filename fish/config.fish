@@ -107,7 +107,7 @@ function _fzf_complete
         ( \
             complete --escape --do-complete (commandline --cut-at-cursor) \
             # remove duplicates
-            | sort | uniq -u \
+            | sort --unique \
             | fzf \
             --preview 'echo {2}' \
             --delimiter \t \
