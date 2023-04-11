@@ -13,6 +13,7 @@
         ../unit/tmux.nix
         ../unit/kitty.nix
         ../unit/wezterm.nix
+        ../unit/fbterm.nix
       ];
 
       home.packages = with pkgs; [

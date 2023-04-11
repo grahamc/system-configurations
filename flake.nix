@@ -33,36 +33,45 @@
             {
               packages.homeConfigurations.${hostName} = home-manager.lib.homeManagerConfiguration {
                 inherit pkgs;
-                modules = modules
-                  ++ [
-                    nix-index-database.hmModules.nix-index
-                    ./.meta/modules/host/common.nix
-                  ];
-                extraSpecialArgs = { inherit hostName isGui; };
+                modules = modules ++ [ ./.meta/modules/profile/common.nix ];
+                extraSpecialArgs = { inherit hostName isGui nix-index-database; };
               };
             }
         );
       configurationsPerHost = [
         (createConfigurations {
           hostName = "server";
-          modules = [ ./.meta/modules/host/server.nix ];
+          modules = [
+            ./.meta/modules/profile/application-development.nix
+          ];
           systems = (with flake-utils.lib.system; [ x86_64-linux ]);
         })
         (createConfigurations {
           hostName = "laptop";
-          modules = [ ./.meta/modules/host/laptop.nix ];
+          modules = [
+            ./.meta/modules/profile/application-development.nix
+            ./.meta/modules/profile/system-administration.nix
+            ./.meta/modules/profile/linux-desktop.nix
+          ];
           systems = (with flake-utils.lib.system; [ x86_64-linux ]);
           isGui = true;
         })
         (createConfigurations {
           hostName = "desktop";
-          modules = [ ./.meta/modules/host/desktop.nix ];
+          modules = [
+            ./.meta/modules/profile/application-development.nix
+            ./.meta/modules/profile/system-administration.nix
+            ./.meta/modules/profile/linux-desktop.nix
+          ];
           systems = (with flake-utils.lib.system; [ x86_64-linux ]);
           isGui = true;
         })
         (createConfigurations {
           hostName = "macbook";
-          modules = [ ./.meta/modules/host/macbook.nix ];
+          modules = [
+            ./.meta/modules/profile/application-development.nix
+            ./.meta/modules/profile/system-administration.nix
+          ];
           systems = (with flake-utils.lib.system; [ x86_64-darwin ]);
           isGui = true;
         })

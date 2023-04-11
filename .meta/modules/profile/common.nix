@@ -1,6 +1,6 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (specialArgs) hostName;
+    inherit (specialArgs) hostName nix-index-database;
     inherit (import ../util.nix {inherit config lib;}) makeOutOfStoreSymlink;
   in
     {
@@ -10,6 +10,7 @@
         ../unit/nix.nix
         ../unit/neovim.nix
         ../unit/general.nix
+        nix-index-database.hmModules.nix-index
       ];
 
       # Home Manager needs a bit of information about you and the
