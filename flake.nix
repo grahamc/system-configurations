@@ -38,15 +38,15 @@
               };
             }
         );
-      configurationsPerHost = [
-        (createConfigurations {
+      configurationsPerHost = map createConfigurations [
+        {
           hostName = "server";
           modules = [
             ./.meta/modules/profile/application-development.nix
           ];
           systems = (with flake-utils.lib.system; [ x86_64-linux ]);
-        })
-        (createConfigurations {
+        }
+        {
           hostName = "laptop";
           modules = [
             ./.meta/modules/profile/application-development.nix
@@ -55,8 +55,8 @@
           ];
           systems = (with flake-utils.lib.system; [ x86_64-linux ]);
           isGui = true;
-        })
-        (createConfigurations {
+        }
+        {
           hostName = "desktop";
           modules = [
             ./.meta/modules/profile/application-development.nix
@@ -65,8 +65,8 @@
           ];
           systems = (with flake-utils.lib.system; [ x86_64-linux ]);
           isGui = true;
-        })
-        (createConfigurations {
+        }
+        {
           hostName = "macbook";
           modules = [
             ./.meta/modules/profile/application-development.nix
@@ -74,7 +74,7 @@
           ];
           systems = (with flake-utils.lib.system; [ x86_64-darwin ]);
           isGui = true;
-        })
+        }
       ];
       # Recursively merges a list of attribute sets
       recursiveMerge = sets: nixpkgs.lib.lists.foldr nixpkgs.lib.recursiveUpdate {} sets;
