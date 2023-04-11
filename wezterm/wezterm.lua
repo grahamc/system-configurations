@@ -1,10 +1,12 @@
 local wezterm = require 'wezterm'
 
+local config = wezterm.config_builder()
+
 function scheme_for_appearance(appearance)
   if appearance:find 'Dark' then
-    return 'Builtin Solarized Dark'
+    return 'Nord (base16)'
   else
-    return 'Builtin Solarized Light'
+    return 'Night Owlish Light'
   end
 end
 
@@ -18,10 +20,8 @@ wezterm.on('window-config-reloaded', function(window, pane)
   end
 end)
 
-local config = wezterm.config_builder()
-
 config.window_background_opacity = 0.95
 
-config.automatically_reload_config = false
+config.window_close_confirmation = 'NeverPrompt'
 
 return config
