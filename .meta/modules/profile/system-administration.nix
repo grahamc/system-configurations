@@ -35,6 +35,7 @@
         viddy
         watchman
         zoxide
+        file
       ] ++ optionals isLinux [
         trash-cli
       ];

@@ -27,14 +27,11 @@ set --global --export FZF_DEFAULT_OPTS "
 set --global --export FZF_ALT_C_COMMAND 'test $dir = '.' && set _args "--strip-cwd-prefix" || set _args '.' $dir; fd $_args --follow --hidden --type directory --type symlink'
 set --global --export FZF_ALT_C_OPTS "--preview 'type --query lsd; and lsd {}; or ls {}' --keep-right --bind='change:first'"
 
-set --global --export FZF_CTRL_T_COMMAND 'test $dir = '.' && set _args "--strip-cwd-prefix" || set _args '.' $dir; fd $_args --follow --hidden --type file --type symlink'
-set --global --export FZF_CTRL_T_OPTS '--multi --preview "bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1" --keep-right --bind="change:first"'
-
 set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}"'
 
 # use ctrl+f for file search instead of default ctrl+t
 bind --erase \ct
-bind-no-focus \cf 'FZF_CTRL_T_OPTS="$FZF_CTRL_T_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-file-widget'
+bind-no-focus \cf 'my-fzf-file-widget'
 
 # use ctrl+h for history search instead of default ctrl+r
 bind --erase \cr
