@@ -18,6 +18,9 @@
           set --unexport __HM_SESS_VARS_SOURCED
           set --unexport __fish_home_manager_config_sourced
 
+          # Remove Home Manager's command-not-found handler
+          functions --erase __fish_command_not_found_handler
+
           source ${makeOutOfStoreSymlink "fish/config.fish"}
         '';
       };
