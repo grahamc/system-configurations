@@ -13,10 +13,6 @@
       "kitty/night-theme.conf".source = makeOutOfStoreSymlink "kitty/night-theme.conf";
     };
 
-    home.file = {
-      ".local/bin/reload-kitty".source = makeOutOfStoreSymlink "kitty/reload-kitty";
-    };
-
     home.activation.kittySetup = runAfterLinkGeneration ''
       if [ ! -f ${currentTheme} ]; then
         ln --symbolic --relative ./night-theme.conf ${currentTheme}

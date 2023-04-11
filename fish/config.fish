@@ -4,7 +4,6 @@ end
 
 abbr --add --global trash trash-put
 abbr --add --global t-sys sysz
-abbr --add --global r-kitty reload-kitty
 abbr --add --global g git
 abbr --add --global touchp touch-and-make-parent-dirs
 set --global --export PAGER less

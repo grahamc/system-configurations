@@ -16,6 +16,3 @@ else
     set xdg_config_home "$HOME/.config"
 end
 set kitty_config_path "$xdg_config_home/kitty"
-
-chronic flock --nonblock /tmp/kitty-autoreload-lock --command "chronic watchman-make --root '$kitty_config_path' --pattern '**/*' --run 'reload-kitty \"Configuration change detected, \" >/dev/tty'" &
-disown
