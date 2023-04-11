@@ -48,5 +48,12 @@ function fzf-process-widget --description 'Manage processes'
   end
 
   echo "Sending SIG$signal to the following processes: $(string join ', ' $process_ids_names)"
-  kill --signal $signal $process_ids
+  set sudo ''
+  for process_id in $process_ids
+    if test "$(ps -o user= -p $process_id)" = 'root'
+      set sudo 'sudo'
+      break
+    end
+  end
+  fish -c "$sudo kill --signal $signal $process_ids"
 end
