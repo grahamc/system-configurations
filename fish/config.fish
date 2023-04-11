@@ -171,8 +171,6 @@ bind-no-focus -k btab _fzf_complete_helper
 function __save_history --on-event fish_preexec
     history --save
 end
-# I only want my functions loaded into an interactive shell so I add them to the function path here.
-set --global --prepend fish_function_path "$__fish_config_dir/my-functions"
 # Taken from fish's default keybind for ctrl+l.
 function _clear_screen
     echo -n (clear | string replace \e\[3J "")

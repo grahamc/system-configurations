@@ -5,7 +5,7 @@
       makeOutOfStoreSymlink
       ;
 
-    fishFunctions = makeOutOfStoreSymlinksForTopLevelFiles "fish/functions" "fish/functions";
+    fishFunctions = makeOutOfStoreSymlinksForTopLevelFiles "fish/my-functions" "fish/functions";
     fishConfigs = makeOutOfStoreSymlinksForTopLevelFiles "fish/conf.d" "fish/conf.d";
   in
     {
