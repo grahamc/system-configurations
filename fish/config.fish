@@ -183,6 +183,10 @@ abbr --add --global s sudo
 # ps
 abbr --add --global fp fzf-process-widget
 
+# timg
+# timg doesn't detect Wezterm so I'll do it here
+alias timg 'env | grep -q WEZTERM && command timg -p kitty || command timg'
+
 # man
 # NOTE: Per the man manpage, spaces in $MANOPT must be escaped with a backslash
 set --global --export MANOPT '--no-hyphenation'
