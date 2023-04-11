@@ -12,6 +12,7 @@
         ../unit/git.nix
         ../unit/tmux.nix
         ../unit/kitty.nix
+        ../unit/wezterm.nix
       ];
 
       home.packages = with pkgs; [

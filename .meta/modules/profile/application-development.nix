@@ -12,6 +12,7 @@
         ../unit/firefox-developer-edition.nix
         ../unit/git.nix
         ../unit/kitty.nix
+        ../unit/wezterm.nix
         ../unit/vscode.nix
       ];
 
