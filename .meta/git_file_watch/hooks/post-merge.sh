@@ -9,4 +9,4 @@ set -o errexit
 # Exit if an unset variable is referenced
 set -o nounset
 
-./.meta/git_file_watch/file_watcher
+./.meta/git_file_watch/file_watcher.sh

@@ -13,4 +13,4 @@ if [ "$1" != 'rebase' ]; then
   exit
 fi
 
-./.meta/git_file_watch/file_watcher
+./.meta/git_file_watch/file_watcher.sh
