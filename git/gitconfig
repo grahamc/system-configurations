@@ -27,6 +27,7 @@
   l = log
   mt = mergetool
   dt = difftool
+  f = fetch
 [init]
   defaultBranch = master
 [merge]
