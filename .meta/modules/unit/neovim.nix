@@ -10,6 +10,7 @@
         plugins = with pkgs.vimPlugins; [
           nvim-treesitter.withAllGrammars
           telescope-fzf-native-nvim
+          vim-plug
         ];
         withRuby = false;
         withPython3 = false;
@@ -23,4 +24,6 @@
         "nvim/plugfile-lock.vim".source = makeOutOfStoreSymlink "neovim/plugfile-lock.vim";
         "nvim/profiles".source = makeOutOfStoreSymlink "neovim/profiles";
       };
+
+      xdg.dataFile."nvim/site/autoload/plug.vim".source = "${pkgs.vimPlugins.vim-plug}/plug.vim";
     }
