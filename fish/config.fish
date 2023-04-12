@@ -13,7 +13,6 @@ abbr --add --global r-initramfs 'sudo update-initramfs -u -k all'
 abbr --add --global logout-all 'sudo killall -u $USER'
 abbr --add --global r-icons 'sudo update-icon-caches /usr/share/icons/* ~/.local/share/icons/*'
 abbr --add --global du 'du -sh'
-abbr --add --global r-home-manager 'home-manager switch --flake "$HOME/.dotfiles#$HOME_MANAGER_HOST_NAME" --impure'
 
 # reload the database used to search for applications
 abbr --add --global r-desktop-entries 'sudo update-desktop-database; update-desktop-database ~/.local/share/applications'

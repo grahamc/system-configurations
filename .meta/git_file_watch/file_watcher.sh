@@ -52,7 +52,7 @@ printf "Checking to see if any actions should be taken as a result of the merge:
 # This should be the first check since other checks might depend on new files
 # being linked, or removed files being unlinked, in order to work. For example, if a new
 # bat theme is added, the theme needs to be linked before we can rebuild the bat cache.
-home-manager switch --flake ".#$HOME_MANAGER_HOST_NAME" --impure
+home-manager-switch
 
 # Sorting the files will allow me to control the order that the watches get run in.
 # For example, I can prefix a script with '00-' to make sure it gets run first.

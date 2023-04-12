@@ -1,7 +1,7 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
     inherit (specialArgs) hostName nix-index-database;
-    inherit (import ../util.nix {inherit config lib;}) makeSymlinkToRepo;
+    inherit (import ../util.nix {inherit config lib;}) makeSymlinkToRepo repo;
   in
     {
       imports = [
@@ -17,10 +17,6 @@
       # paths it should manage.
       home.username = "biggs";
       home.homeDirectory = "/home/biggs";
-
-      # This lets me know which configuration is currently active (e.g. laptop, desktop) so I can reference it in
-      # other programs. For example, I have a git hook that calls `switch` whenever any *.nix files change.
-      home.sessionVariables.HOME_MANAGER_HOST_NAME = hostName;
 
       # The `man` in nixpkgs is only intended to be used for NixOS, it doesn't work properly on other OS's so I'm disabling
       # it. Since I'm not using the nixpkgs man, I have any packages I install their man outputs so my
@@ -44,6 +40,14 @@
       home.file = {
         ".dotfiles/.git/hooks/post-merge".source = makeSymlinkToRepo ".meta/git_file_watch/hooks/post-merge.sh";
         ".dotfiles/.git/hooks/post-rewrite".source = makeSymlinkToRepo ".meta/git_file_watch/hooks/post-rewrite.sh";
+        ".local/bin/home-manager-switch" = {
+          text = '' home-manager switch --flake "${repo}#${hostName}" --impure '';
+          executable = true;
+        };
+        ".local/bin/home-manager-upgrade" = {
+          text = '' home-manager switch --flake "${repo}#${hostName}" --impure --recreate-lock-file '';
+          executable = true;
+        };
       };
 
       home.activation.printChanges = lib.hm.dag.entryAnywhere ''

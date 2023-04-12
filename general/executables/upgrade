@@ -205,7 +205,7 @@ end
 function upgrade-home-manager
     print_banner 'Home Manager'
 
-    home-manager switch --flake "$HOME/.dotfiles#$HOME_MANAGER_HOST_NAME" --impure --recreate-lock-file
+    home-manager-upgrade
 
     # remove all generations besides the most recent 2
     #
