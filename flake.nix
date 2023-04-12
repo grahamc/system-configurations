@@ -42,7 +42,7 @@
         {
           hostName = "server";
           modules = [
-            ./.meta/modules/profile/application-development.nix
+            ./.meta/modules/profile/system-administration.nix
           ];
           systems = (with flake-utils.lib.system; [ x86_64-linux ]);
         }
