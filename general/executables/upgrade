@@ -117,6 +117,8 @@ function upgrade-nvim
         # I explicitly set the input file to the terminal in case this command is run in a pipeline.
         # For exmaple: `yes | <this_script>`.
         nvim -c 'autocmd VimEnter * MyPlugUpdate' </dev/tty
+        # Remove the impatient.nvim cache. Sometimes treesitter requires this after a treesitter upgrage.
+        rm ~/.cache/nvim/luacache_*
     end
 end
 
