@@ -38,7 +38,7 @@
               };
             }
         );
-      configurationsPerHost = map createConfigurations [
+      hostConfigurations = map createConfigurations [
         {
           hostName = "server";
           modules = [
@@ -95,5 +95,5 @@
       #      };                               };                                      };
       #    };                               };                                      };
       #  }                                }                                       }
-      recursiveMerge configurationsPerHost;
+      recursiveMerge hostConfigurations;
 }
