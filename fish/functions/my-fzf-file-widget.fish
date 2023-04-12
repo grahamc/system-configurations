@@ -39,7 +39,7 @@ function my-fzf-file-widget --description 'Search by line, recursively, from cur
       )
   or return
 
-  commandline --insert $choice
+  commandline --current-token --replace $choice
 
   # this should be done whenever a binding produces output (see: man bind)
   commandline -f repaint
