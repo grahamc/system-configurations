@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
   let
     inherit (import ../util.nix {inherit config lib;})
-      makeOutOfStoreSymlink
+      makeSymlinkToRepo
       ;
   in
     {
@@ -16,13 +16,13 @@
         withPython3 = false;
       };
 
-      home.file.".dotfiles/.meta/git_file_watch/active_file_watches/neovim".source = makeOutOfStoreSymlink ".meta/git_file_watch/file_watches/neovim.sh";
+      home.file.".dotfiles/.meta/git_file_watch/active_file_watches/neovim".source = makeSymlinkToRepo ".meta/git_file_watch/file_watches/neovim.sh";
 
       xdg.configFile = {
-        "nvim/init.lua".source = makeOutOfStoreSymlink "neovim/init.lua";
-        "nvim/plugfile.vim".source = makeOutOfStoreSymlink "neovim/plugfile.vim";
-        "nvim/plugfile-lock.vim".source = makeOutOfStoreSymlink "neovim/plugfile-lock.vim";
-        "nvim/profiles".source = makeOutOfStoreSymlink "neovim/profiles";
+        "nvim/init.lua".source = makeSymlinkToRepo "neovim/init.lua";
+        "nvim/plugfile.vim".source = makeSymlinkToRepo "neovim/plugfile.vim";
+        "nvim/plugfile-lock.vim".source = makeSymlinkToRepo "neovim/plugfile-lock.vim";
+        "nvim/profiles".source = makeSymlinkToRepo "neovim/profiles";
       };
 
       xdg.dataFile."nvim/site/autoload/plug.vim".source = "${pkgs.vimPlugins.vim-plug}/plug.vim";

@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
   let
     inherit (import ../util.nix {inherit config lib;})
-      makeOutOfStoreSymlink
+      makeSymlinkToRepo
       ;
     inherit (lib.lists) optionals;
     inherit (pkgs.stdenv) isLinux;
@@ -42,26 +42,26 @@
 
       home.file = {
         # less
-        ".lesskey".source = makeOutOfStoreSymlink "less/lesskey";
+        ".lesskey".source = makeSymlinkToRepo "less/lesskey";
 
         # ripgrep
-        ".ripgreprc".source = makeOutOfStoreSymlink "ripgrep/ripgreprc";
+        ".ripgreprc".source = makeSymlinkToRepo "ripgrep/ripgreprc";
 
         # for any searchers e.g. ripgrep
-        ".ignore".source = makeOutOfStoreSymlink "search/ignore";
+        ".ignore".source = makeSymlinkToRepo "search/ignore";
       };
 
       xdg.configFile = {
         # lsd
-        "lsd".source = makeOutOfStoreSymlink "lsd";
+        "lsd".source = makeSymlinkToRepo "lsd";
 
         # pipr
-        "pipr/pipr.toml".source = makeOutOfStoreSymlink "pipr/pipr.toml";
+        "pipr/pipr.toml".source = makeSymlinkToRepo "pipr/pipr.toml";
 
         # viddy
-        "viddy.toml".source = makeOutOfStoreSymlink "viddy/viddy.toml";
+        "viddy.toml".source = makeSymlinkToRepo "viddy/viddy.toml";
 
         # watchman
-        "watchman/watchman.json".source = makeOutOfStoreSymlink "watchman/watchman.json";
+        "watchman/watchman.json".source = makeSymlinkToRepo "watchman/watchman.json";
       };
     }

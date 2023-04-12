@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
   let
     inherit (import ../util.nix {inherit config lib;})
-      makeOutOfStoreSymlink
+      makeSymlinkToRepo
       ;
   in
     {
@@ -10,8 +10,8 @@
       ];
 
       home.file = {
-        ".tmux.conf".source = makeOutOfStoreSymlink "tmux/tmux.conf";
-        ".local/bin/tmux-nest".source = makeOutOfStoreSymlink "tmux/tmux-nest";
-        ".local/bin/tmux-click-url.py".source = makeOutOfStoreSymlink "tmux/tmux-click-url.py";
+        ".tmux.conf".source = makeSymlinkToRepo "tmux/tmux.conf";
+        ".local/bin/tmux-nest".source = makeSymlinkToRepo "tmux/tmux-nest";
+        ".local/bin/tmux-click-url.py".source = makeSymlinkToRepo "tmux/tmux-click-url.py";
       };
     }

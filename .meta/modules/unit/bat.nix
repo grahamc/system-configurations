@@ -1,14 +1,14 @@
 { config, lib, pkgs, ... }:
   let
     inherit (import ../util.nix {inherit config lib;})
-      makeOutOfStoreSymlink
+      makeSymlinkToRepo
       runAfterLinkGeneration
       ;
   in
     {
       xdg.configFile = {
-        "bat/config".source = makeOutOfStoreSymlink "bat/config";
-        "bat/themes/base16-brighter.tmTheme".source = makeOutOfStoreSymlink "bat/base16-brighter.tmTheme";
+        "bat/config".source = makeSymlinkToRepo "bat/config";
+        "bat/themes/base16-brighter.tmTheme".source = makeSymlinkToRepo "bat/base16-brighter.tmTheme";
       };
 
       home.packages = with pkgs; [

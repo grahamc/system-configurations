@@ -1,9 +1,9 @@
 { config, lib, ... }:
   let
     inherit (import ../util.nix {inherit config lib;})
-      makeOutOfStoreSymlinksForTopLevelFiles
+      makeSymlinksToTopLevelFilesInRepo
       ;
   in
     {
-      home.file = makeOutOfStoreSymlinksForTopLevelFiles ".local/bin" "general/executables";
+      home.file = makeSymlinksToTopLevelFilesInRepo ".local/bin" "general/executables";
     }

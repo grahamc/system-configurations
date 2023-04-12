@@ -1,10 +1,10 @@
 { config, lib, pkgs, ... }:
   let
     inherit (import ../util.nix {inherit config lib;})
-      makeOutOfStoreSymlink
-      makeOutOfStoreSymlinksForTopLevelFiles
+      makeSymlinkToRepo
+      makeSymlinksToTopLevelFilesInRepo
       ;
-    ipythonConfigs = makeOutOfStoreSymlinksForTopLevelFiles ".ipython/profile_default/startup" "python/ipython/startup";
+    ipythonConfigs = makeSymlinksToTopLevelFilesInRepo ".ipython/profile_default/startup" "python/ipython/startup";
   in
     {
       imports = [
@@ -30,16 +30,16 @@
       ];
 
       home.file = {
-        ".ipython/profile_default/ipython_config.py".source = makeOutOfStoreSymlink "python/ipython/ipython_config.py";
-        ".yashrc".source = makeOutOfStoreSymlink "yash/yashrc";
-        ".cloudflared/config.yaml".source = makeOutOfStoreSymlink "cloudflared/config.yaml";
-        ".markdownlint.jsonc".source = makeOutOfStoreSymlink "markdownlint/markdownlint.jsonc";
-        ".vale.ini".source = makeOutOfStoreSymlink "vale/vale.ini";
+        ".ipython/profile_default/ipython_config.py".source = makeSymlinkToRepo "python/ipython/ipython_config.py";
+        ".yashrc".source = makeSymlinkToRepo "yash/yashrc";
+        ".cloudflared/config.yaml".source = makeSymlinkToRepo "cloudflared/config.yaml";
+        ".markdownlint.jsonc".source = makeSymlinkToRepo "markdownlint/markdownlint.jsonc";
+        ".vale.ini".source = makeSymlinkToRepo "vale/vale.ini";
       } // ipythonConfigs;
 
       xdg.configFile = {
-        "pip/pip.conf".source = makeOutOfStoreSymlink "python/pip/pip.conf";
-        "vale/styles/base".source = makeOutOfStoreSymlink "vale/styles/base";
-        "vale/styles/ignore.txt".source = makeOutOfStoreSymlink "vale/styles/ignore.txt";
+        "pip/pip.conf".source = makeSymlinkToRepo "python/pip/pip.conf";
+        "vale/styles/base".source = makeSymlinkToRepo "vale/styles/base";
+        "vale/styles/ignore.txt".source = makeSymlinkToRepo "vale/styles/ignore.txt";
       };
     }

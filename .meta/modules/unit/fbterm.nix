@@ -1,7 +1,7 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
     inherit (import ../util.nix {inherit config lib;})
-      makeOutOfStoreSymlink
+      makeSymlinkToRepo
       ;
     inherit (pkgs.stdenv) isLinux;
     inherit (specialArgs) isGui;
@@ -11,6 +11,6 @@
     ];
 
     home.file = {
-      ".fbtermrc".source = makeOutOfStoreSymlink "fbterm/fbtermrc";
+      ".fbtermrc".source = makeSymlinkToRepo "fbterm/fbtermrc";
     };
   }

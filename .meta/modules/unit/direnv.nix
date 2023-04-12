@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
   let
     inherit (import ../util.nix {inherit config lib;})
-      makeOutOfStoreSymlink
+      makeSymlinkToRepo
       ;
   in
     {
@@ -10,6 +10,6 @@
       ];
 
       xdg.configFile = {
-        "direnv/direnv.toml".source = makeOutOfStoreSymlink "direnv/direnv.toml";
+        "direnv/direnv.toml".source = makeSymlinkToRepo "direnv/direnv.toml";
       };
     }

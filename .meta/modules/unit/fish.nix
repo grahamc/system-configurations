@@ -1,12 +1,12 @@
 { config, lib, pkgs, ... }:
   let
     inherit (import ../util.nix {inherit config lib;})
-      makeOutOfStoreSymlinksForTopLevelFiles
-      makeOutOfStoreSymlink
+      makeSymlinksToTopLevelFilesInRepo
+      makeSymlinkToRepo
       ;
 
-    fishFunctions = makeOutOfStoreSymlinksForTopLevelFiles "fish/my-functions" "fish/functions";
-    fishConfigs = makeOutOfStoreSymlinksForTopLevelFiles "fish/conf.d" "fish/conf.d";
+    fishFunctions = makeSymlinksToTopLevelFilesInRepo "fish/my-functions" "fish/functions";
+    fishConfigs = makeSymlinksToTopLevelFilesInRepo "fish/conf.d" "fish/conf.d";
   in
     {
       # Using this so HM can include it's generated completion scripts
@@ -21,7 +21,7 @@
           # Remove Home Manager's command-not-found handler
           functions --erase __fish_command_not_found_handler
 
-          source ${makeOutOfStoreSymlink "fish/config.fish"}
+          source ${makeSymlinkToRepo "fish/config.fish"}
         '';
       };
 
@@ -29,13 +29,13 @@
         figlet
       ];
 
-      home.file.".dotfiles/.meta/git_file_watch/active_file_watches/fish".source = makeOutOfStoreSymlink ".meta/git_file_watch/file_watches/fish.sh";
+      home.file.".dotfiles/.meta/git_file_watch/active_file_watches/fish".source = makeSymlinkToRepo ".meta/git_file_watch/file_watches/fish.sh";
 
       xdg.configFile = {
-        "fish/fish_plugins".source = makeOutOfStoreSymlink "fish/fish_plugins";
+        "fish/fish_plugins".source = makeSymlinkToRepo "fish/fish_plugins";
       } // fishFunctions // fishConfigs;
 
       xdg.dataFile = {
-        "figlet/smblock.tlf".source = makeOutOfStoreSymlink "fish/figlet/smblock.tlf";
+        "figlet/smblock.tlf".source = makeSymlinkToRepo "fish/figlet/smblock.tlf";
       };
     }

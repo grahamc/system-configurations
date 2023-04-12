@@ -1,7 +1,7 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
     inherit (specialArgs) hostName nix-index-database;
-    inherit (import ../util.nix {inherit config lib;}) makeOutOfStoreSymlink;
+    inherit (import ../util.nix {inherit config lib;}) makeSymlinkToRepo;
   in
     {
       imports = [
@@ -42,8 +42,8 @@
       programs.home-manager.enable = true;
 
       home.file = {
-        ".dotfiles/.git/hooks/post-merge".source = makeOutOfStoreSymlink ".meta/git_file_watch/hooks/post-merge.sh";
-        ".dotfiles/.git/hooks/post-rewrite".source = makeOutOfStoreSymlink ".meta/git_file_watch/hooks/post-rewrite.sh";
+        ".dotfiles/.git/hooks/post-merge".source = makeSymlinkToRepo ".meta/git_file_watch/hooks/post-merge.sh";
+        ".dotfiles/.git/hooks/post-rewrite".source = makeSymlinkToRepo ".meta/git_file_watch/hooks/post-rewrite.sh";
       };
 
       home.activation.printChanges = lib.hm.dag.entryAnywhere ''

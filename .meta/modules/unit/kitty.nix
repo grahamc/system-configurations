@@ -1,16 +1,16 @@
 { config, lib, specialArgs, ... }:
   let
     inherit (import ../util.nix {inherit config lib;})
-      makeOutOfStoreSymlink
+      makeSymlinkToRepo
       runAfterLinkGeneration
       ;
     inherit (specialArgs) isGui;
     currentTheme = "${config.xdg.configHome}/kitty/current-theme.conf";
   in lib.mkIf isGui {
     xdg.configFile = {
-      "kitty/kitty.conf".source = makeOutOfStoreSymlink "kitty/kitty.conf";
-      "kitty/day-theme.conf".source = makeOutOfStoreSymlink "kitty/day-theme.conf";
-      "kitty/night-theme.conf".source = makeOutOfStoreSymlink "kitty/night-theme.conf";
+      "kitty/kitty.conf".source = makeSymlinkToRepo "kitty/kitty.conf";
+      "kitty/day-theme.conf".source = makeSymlinkToRepo "kitty/day-theme.conf";
+      "kitty/night-theme.conf".source = makeSymlinkToRepo "kitty/night-theme.conf";
     };
 
     home.activation.kittySetup = runAfterLinkGeneration ''

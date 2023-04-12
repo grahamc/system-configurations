@@ -1,13 +1,13 @@
 { config, lib, pkgs, ... }:
   let
     inherit (import ../util.nix {inherit config lib;})
-      makeOutOfStoreSymlink
+      makeSymlinkToRepo
       ;
   in
     {
       xdg.configFile = {
-        "nix/nix.conf".source = makeOutOfStoreSymlink "nix/nix.conf";
-        "fish/conf.d/nix-fzf.fish".source = makeOutOfStoreSymlink "nix/fzf.fish";
+        "nix/nix.conf".source = makeSymlinkToRepo "nix/nix.conf";
+        "fish/conf.d/nix-fzf.fish".source = makeSymlinkToRepo "nix/fzf.fish";
       };
 
       home.packages = with pkgs; [

@@ -2,7 +2,7 @@
   rec {
     repo = "${config.home.homeDirectory}/.dotfiles";
 
-    makeOutOfStoreSymlink = path:
+    makeSymlinkToRepo = path:
       let
         absolute_path = "${repo}/${path}";
       in
@@ -27,12 +27,12 @@
     #
     # TODO: I won't need this if Home Manager gets support for recursive symlinks.
     # issue: https://github.com/nix-community/home-manager/issues/3514
-    makeOutOfStoreSymlinksForTopLevelFiles = destination: source:
+    makeSymlinksToTopLevelFilesInRepo = destination: source:
       let
         absolute_source_path = "${repo}/${source}";
         files = builtins.readDir absolute_source_path;
         links = lib.attrsets.mapAttrs'
-          (name: value: lib.attrsets.nameValuePair "${destination}/${name}" { source = makeOutOfStoreSymlink "${source}/${name}"; })
+          (name: value: lib.attrsets.nameValuePair "${destination}/${name}" { source = makeSymlinkToRepo "${source}/${name}"; })
           files;
       in
         links;
