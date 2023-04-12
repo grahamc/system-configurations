@@ -1178,13 +1178,6 @@ Plug('windwp/nvim-ts-autotag')
 
 Plug('JoosepAlviste/nvim-ts-context-commentstring')
 
--- This plugin does two things:
--- 1. fix 'CursorHold' and 'CursorHoldI' autocmd events
--- bug: https://github.com/neovim/neovim/issues/12587
--- 2. decouple 'updatetime' from 'CursorHold' and 'CursorHoldI'
-Plug('antoinemadec/FixCursorHold.nvim')
-vim.g.cursorhold_updatetime = 200
-
 Plug(
   'kosayoda/nvim-lightbulb',
   {
