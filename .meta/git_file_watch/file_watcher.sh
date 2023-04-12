@@ -56,7 +56,7 @@ home-manager switch --flake ".#$HOME_MANAGER_HOST_NAME" --impure
 
 # Sorting the files will allow me to control the order that the watches get run in.
 # For example, I can prefix a script with '00-' to make sure it gets run first.
-for watch in $(find ./.meta/git_file_watch/active_file_watches -type f | sort); do
+for watch in $(find -L ./.meta/git_file_watch/active_file_watches -type f | sort); do
   # shellcheck disable=1090
   . "$watch"
 done
