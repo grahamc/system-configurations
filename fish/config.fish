@@ -229,7 +229,6 @@ abbr --add --global -- - 'cd -'
 # tmux
 abbr --add --global ta tmux-attach-or-create
 abbr --add --global r-tmux 'tmux source ~/.tmux.conf && tmux display-message "Reloaded TMUX..."'
-abbr --add --global r-tmux-plugins "$HOME/.tmux/plugins/tpm/bindings/install_plugins"
 abbr --add --global r-tmux-server reload-tmux-server
 
 # apt
