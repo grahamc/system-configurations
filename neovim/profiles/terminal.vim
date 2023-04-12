@@ -1981,7 +1981,7 @@ Plug 'nordtheme/vim'
 
 " Plugin Management {{{
 " Helpers
-let g:snapshot_file = g:data_path . '/vim-plug-snapshot.vim'
+let g:snapshot_file = g:config_path . '/plugfile-lock.vim'
 function! CreateSnapshotSync()
   execute printf('PlugSnapshot! %s', g:snapshot_file)
 
@@ -2016,10 +2016,11 @@ function! PlugRestore()
 endfunction
 command! PlugRestore call PlugRestore()
 
-" Install any plugins that have been registered, but aren't installed
+" Install any plugins that have been registered in the plugfile.vim, but aren't installed
 function! InstallMissingPlugins()
   let plugs = get(g:, 'plugs', {})
-  let missing_plugins = filter(deepcopy(plugs), {plugin_name, plugin_info -> !isdirectory(plugin_info.dir)})
+  " Plugins registered in plugfile.vim will be in g:registered_plugs
+  let missing_plugins = filter(deepcopy(plugs), {plugin_name, plugin_info -> !isdirectory(plugin_info.dir) && index(g:registered_plugs, plugin_name) != -1})
   if empty(missing_plugins)
     return
   endif

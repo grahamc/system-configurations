@@ -27,8 +27,9 @@ end
 -- Variables used across config files
 vim.g.mapleader = vim.api.nvim_replace_termcodes('<Space>', true, false, true)
 vim.g.data_path = vim.fn.stdpath('data')
+vim.g.config_path = vim.fn.stdpath('config')
 vim.g.profiles = {}
-local profile_directory = vim.fn.expand('<sfile>:h') .. '/profiles'
+local profile_directory = vim.g.config_path .. '/profiles'
 if vim.fn.isdirectory(profile_directory) then
   vim.g.profiles = vim.fn.split(vim.fn.globpath(profile_directory, '*'), '\n')
 end
@@ -114,6 +115,9 @@ end
 
 -- Calling this before I load the profiles so I can register plugins inside them
 plug_begin()
+
+-- Register Plugins
+vim.cmd('source ' .. vim.fn.expand('<sfile>:h') .. '/plugfile.vim')
 
 -- Load profiles
 for _, profile in pairs(vim.g.profiles) do

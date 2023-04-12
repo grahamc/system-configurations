@@ -19,8 +19,8 @@
 
       xdg.configFile = {
         "nvim/init.lua".source = makeOutOfStoreSymlink "neovim/init.lua";
+        "nvim/plugfile.vim".source = makeOutOfStoreSymlink "neovim/plugfile.vim";
+        "nvim/plugfile-lock.vim".source = makeOutOfStoreSymlink "neovim/plugfile-lock.vim";
         "nvim/profiles".source = makeOutOfStoreSymlink "neovim/profiles";
       };
-
-      xdg.dataFile."nvim/vim-plug-snapshot.vim".source = makeOutOfStoreSymlink "neovim/vim-plug-snapshot.vim";
     }

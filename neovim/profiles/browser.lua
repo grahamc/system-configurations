@@ -1,5 +1,13 @@
-lua << EOF
--- TODO: This way the plugins get registered even if we aren't in the browser
+-- Exit if we are not running inside a browser
+if vim.g.started_by_firenvim == nil then
+  return
+end
+
+-- disable statusline
+vim.o.laststatus = 0
+
+vim.keymap.set('n', '<C-x>', '<Cmd>wq<CR>')
+
 Plug(
   'glacambre/firenvim',
   {
@@ -21,16 +29,3 @@ Plug(
     end,
   }
 )
-EOF
-
-" Exit if we are not running inside a browser
-if !exists('g:started_by_firenvim')
-  finish
-endif
-
-lua << EOF
--- disable statusline
-vim.o.laststatus = 0
-
-vim.keymap.set('n', '<C-x>', '<Cmd>wq<CR>')
-EOF
