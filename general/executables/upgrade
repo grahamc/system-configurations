@@ -198,6 +198,7 @@ function upgrade-nix
     nix-channel --update
     nix-env --upgrade '*'
 
+    nix-env --delete-generations +2
     nix-collect-garbage
 end
 
@@ -207,6 +208,10 @@ function upgrade-home-manager
     home-manager switch --flake "$HOME/.dotfiles#$HOME_MANAGER_HOST_NAME" --impure --recreate-lock-file
 
     # remove all generations besides the most recent 2
+    #
+    # TODO: There's an issue for adding an option to specify the number of generations to keep, like
+    # `nix-env --delete-generations`.
+    # issue: https://github.com/nix-community/home-manager/issues/3325
     set generation_count (home-manager generations | wc -l)
     if test "$generation_count" -gt 2
         # Generation id's are integers given in increasing order with the first generation having 1. This means the ids
