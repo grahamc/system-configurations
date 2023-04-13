@@ -177,7 +177,8 @@ end
 bind \ec _clear_screen 'commandline -f repaint'
 
 # sudo
-abbr --add --global s sudo
+abbr --add --global s 'sudo --preserve-env=PATH'
+abbr --add --global sudo 'sudo --preserve-env=PATH'
 
 # ps
 abbr --add --global fp fzf-process-widget
