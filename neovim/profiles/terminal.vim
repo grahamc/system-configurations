@@ -1000,6 +1000,7 @@ Plug(
               '--hidden',
               '--smart-case',
               '--follow',
+              '--fixed-strings',
             },
           },
         },
