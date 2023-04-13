@@ -79,8 +79,6 @@ class LineWatcher:
         delta = time.monotonic() - self.start_time
         if delta < 1:
             return
-        # U+23F1 is a unicode stopwatch but doesn't render in Kitty.
-        # Alternatives from Nerd Font: 
         print(_italicize(_dim(f' {_format_timespan(delta)}')))
 
 

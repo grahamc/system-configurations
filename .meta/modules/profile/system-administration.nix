@@ -11,7 +11,6 @@
         ../unit/bat.nix
         ../unit/git.nix
         ../unit/tmux.nix
-        ../unit/kitty.nix
         ../unit/wezterm.nix
         ../unit/fbterm.nix
       ];

@@ -1,33 +1,15 @@
 #!/bin/bash
 
-mode=''
-
 case $1 in
 
   "day")
-    # for unused in {1..5}; do
-    #   set_brightness up
-    # done
-    mode='day'
     dconf write /org/gnome/shell/extensions/blur-my-shell/panel/color '(0.94901961088180542, 0.94901961088180542, 0.94901961088180542, 0.91666668653488159)'
     ;;
 
   "night")
-    # for unused in {1..5}; do
-    #   set_brightness down
-    # done
-    mode='night'
     dconf write /org/gnome/shell/extensions/blur-my-shell/panel/color '(0.0, 0.0, 0.0, 0.5533333420753479)'
     ;;
 
   *)
-    if realpath ~/.config/kitty/current-theme.conf | grep -q 'day'; then
-      mode='night'
-    else
-      mode='day'
-    fi
     ;;
 esac
-
-# Change kitty theme
-ln -sf ~/.config/kitty/"$mode"-theme.conf ~/.config/kitty/current-theme.conf

@@ -368,6 +368,9 @@ function , --wraps ,
     FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --height 30% --no-preview --no-header --delimiter '.' --with-nth '..-5'" COMMA_PICKER=fzf command , $argv
 end
 
+# wezterm
+alias wezterm 'flatpak run org.wezfurlong.wezterm'
+
 # Print banner
 if not set --query BANNER_WAS_PRINTED
     set banner Fish Shell v(string split ' ' (fish --version) | tail -n 1)
