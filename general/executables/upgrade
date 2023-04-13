@@ -207,6 +207,11 @@ end
 function upgrade-home-manager
     print_banner 'Home Manager'
 
+    read --prompt-str 'Would you like to update? (y/n): ' --nchars 1 response
+    if test $response != 'y'
+        return
+    end
+
     home-manager-upgrade
 
     # remove all generations besides the most recent 2
