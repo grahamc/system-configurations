@@ -697,7 +697,7 @@ _G.Tabline = function()
       right_pad_length = right_pad_length + 1
     end
 
-    tabline = '%#ExplorerTabLine#' .. string.rep(' ', left_pad_length) .. title .. string.rep(' ', right_pad_length) .. '%#VertSplit#' .. (vim.opt.fillchars:get().vert or '│') .. '%<' .. tabline
+    tabline = '%#ExplorerTabLine#' .. string.rep(' ', left_pad_length) .. title .. string.rep(' ', right_pad_length) .. '%#WinSeparator#' .. (vim.opt.fillchars:get().vert or '│') .. '%<' .. tabline
   end
 
   return tabline
@@ -1944,8 +1944,8 @@ Plug 'nordtheme/vim'
     highlight! link Float3Border Float3Normal
     highlight Float4Normal ctermbg=0
     highlight Float4Border ctermbg=0 ctermfg=15
-    highlight FidgetTitle ctermbg=0 ctermfg=15 cterm=italic
-    highlight FidgetTask ctermbg=0 ctermfg=15 cterm=italic
+    highlight FidgetTitle ctermbg=NONE ctermfg=15 cterm=italic
+    highlight FidgetTask ctermbg=NONE ctermfg=15 cterm=italic
     highlight NvimTreeIndentMarker ctermfg=15
     highlight String ctermfg=50
   endfunction
