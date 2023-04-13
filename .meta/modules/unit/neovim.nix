@@ -16,7 +16,21 @@
         withPython3 = false;
       };
 
-      home.file.".dotfiles/.meta/git_file_watch/active_file_watches/neovim".source = makeSymlinkToRepo ".meta/git_file_watch/file_watches/neovim.sh";
+      home.file = {
+        ".dotfiles/.meta/git_file_watch/active_file_watches/neovim".source = makeSymlinkToRepo ".meta/git_file_watch/file_watches/neovim.sh";
+        ".local/bin/nvim" = {
+          executable = true;
+          text = ''
+            #!/bin/bash
+
+            if test "$#" -eq 0; then
+              NEOVIM_FORCE_SESSION_MODE=1 ~/.nix-profile/bin/nvim "$@"
+            else
+              ~/.nix-profile/bin/nvim "$@"
+            fi
+          '';
+        };
+      };
 
       xdg.configFile = {
         "nvim/init.lua".source = makeSymlinkToRepo "neovim/init.lua";

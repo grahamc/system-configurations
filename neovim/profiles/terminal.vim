@@ -386,20 +386,14 @@ local function save_session()
 end
 
 local function restore_or_create_session()
-  -- We only want to restore/create a session if neovim was called with no files.
-  local function is_flag(arg)
-    return string.sub(arg, 1, 1) == '-'
-  end
-  local file_given = false
-  if #vim.v.argv == 1 then
-    file_given = true
-  -- TODO: We assume a file was given if neither of the last two arguments to neovim are flags, but that isn't always
-  -- true e.g. `nvim -- <file>`.
-  elseif not is_flag(vim.v.argv[#vim.v.argv]) and not is_flag(vim.v.argv[#vim.v.argv - 1]) then
-    file_given = true
-  end
+  -- We only want to restore/create a session if neovim was called with no arguments. The first element in vim.v.argv
+  -- will always be the path to the vim executable so if no arguments were passed to neovim, the size of vim.v.argv
+  -- will be one.
+  local is_neovim_called_with_no_arguments = #vim.v.argv == 1
 
-  if not file_given then
+  -- We will also restore/create the session if a certain environment variable is set.
+  local force_session_mode = os.getenv("NEOVIM_FORCE_SESSION_MODE") == '1'
+  if is_neovim_called_with_no_arguments or force_session_mode then
     local session_name = string.gsub(os.getenv('PWD'), '/', '%%') .. '%vim'
     vim.fn.mkdir(session_dir, 'p')
     local session_full_path = session_dir .. '/' .. session_name
