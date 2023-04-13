@@ -41,11 +41,19 @@
         ".dotfiles/.git/hooks/post-merge".source = makeSymlinkToRepo ".meta/git_file_watch/hooks/post-merge.sh";
         ".dotfiles/.git/hooks/post-rewrite".source = makeSymlinkToRepo ".meta/git_file_watch/hooks/post-rewrite.sh";
         ".local/bin/home-manager-switch" = {
-          text = '' home-manager switch --flake "${repo}#${hostName}" --impure '';
+          text = ''
+            #!/bin/bash
+
+            home-manager switch --flake "${repo}#${hostName}" --impure
+          '';
           executable = true;
         };
         ".local/bin/home-manager-upgrade" = {
-          text = '' home-manager switch --flake "${repo}#${hostName}" --impure --recreate-lock-file '';
+          text = ''
+            #!/bin/bash
+
+            home-manager switch --flake "${repo}#${hostName}" --impure --recreate-lock-file
+          '';
           executable = true;
         };
       };
