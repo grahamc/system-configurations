@@ -113,25 +113,6 @@ _G.unicode = function(hex)
     )
   )
 end
-
-_G.tabdo = function(_function)
-  -- I can't call a local function with 'tabdo' so I'll assign the function to a global variable.
-  _G.tabdo_function = _function
-
-  local current_tab_number = vim.fn.tabpagenr()
-  local previous_tab_number = vim.fn.tabpagenr('#')
-  vim.cmd([[
-    tabdo lua tabdo_function()
-  ]])
-  vim.cmd(string.format(
-    [[
-      silent! tabnext %s
-      silent! tabnext %s
-    ]],
-    previous_tab_number,
-    current_tab_number
-  ))
-end
 -- }}}
 
 -- Autosave {{{
