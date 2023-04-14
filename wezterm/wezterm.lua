@@ -8,7 +8,7 @@ local config = wezterm.config_builder()
 config.font = wezterm.font('JetBrains Mono NL')
 
 config.font_size = 10.5
-config.underline_position = -8
+config.underline_position = -9
 config.cell_width = 1.04
 config.line_height = 1.3
 config.hide_tab_bar_if_only_one_tab = true
