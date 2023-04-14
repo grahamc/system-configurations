@@ -101,16 +101,23 @@ local function create_color_schemes(colors_per_color_scheme)
 end
 
 config.color_schemes = create_color_schemes(my_colors_per_color_scheme)
+local light_color_scheme = 'Biggs Light Owl'
+local dark_color_scheme = 'Biggs Nord'
 
 -- Change color scheme automatically when the system changes
 local function scheme_for_appearance(appearance)
   if appearance:find 'Dark' then
-    return 'Biggs Nord'
+    return dark_color_scheme
   else
-    return 'Biggs Light Owl'
+    return light_color_scheme
   end
 end
 wezterm.on('window-config-reloaded', function(window)
+  if _G.reload_due_to_manual_color_scheme_toggle then
+    _G.reload_due_to_manual_color_scheme_toggle = false
+    return
+  end
+
   local overrides = window:get_config_overrides() or {}
   local appearance = window:get_appearance()
   local scheme = scheme_for_appearance(appearance)
@@ -119,5 +126,25 @@ wezterm.on('window-config-reloaded', function(window)
     window:set_config_overrides(overrides)
   end
 end)
+
+-- Toggle color scheme with alt+c
+wezterm.on('toggle-color-scheme', function(window)
+  local overrides = window:get_config_overrides() or {}
+  if overrides.color_scheme == dark_color_scheme then
+    overrides.color_scheme = light_color_scheme
+  else
+    overrides.color_scheme = dark_color_scheme
+  end
+
+  _G.reload_due_to_manual_color_scheme_toggle = true
+  window:set_config_overrides(overrides)
+end)
+config.keys = {
+  {
+    key = 'c',
+    mods = 'ALT',
+    action = wezterm.action.EmitEvent('toggle-color-scheme')
+  },
+}
 
 return config
