@@ -26,7 +26,7 @@
     tmuxPlugins = with pkgs.tmuxPlugins; [
       better-mouse-mode
       (resurrect.overrideAttrs (oldAttrs: {
-        version = "unstable-2023-05-06";
+        version = "unstable-2023-03-06";
         src = pkgs.fetchFromGitHub {
           owner = "tmux-plugins";
           repo = "tmux-resurrect";
