@@ -6,11 +6,11 @@ local config = wezterm.config_builder()
 -- can't access my font configuration file from their sandbox so for now I'll hardcode a font.
 -- issue: https://github.com/flatpak/flatpak/issues/1563
 config.font = wezterm.font('JetBrains Mono NL')
-
 config.font_size = 10.5
 config.underline_position = -9
 config.cell_width = 1.04
 config.line_height = 1.3
+config.underline_thickness = "210%"
 config.hide_tab_bar_if_only_one_tab = true
 config.window_background_opacity = .97
 config.window_close_confirmation = 'NeverPrompt'
