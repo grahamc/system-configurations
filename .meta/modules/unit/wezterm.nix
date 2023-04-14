@@ -1,7 +1,6 @@
 { config, lib, specialArgs, ... }:
   let
     inherit (import ../util.nix {inherit config lib;})
-      makeSymlinkToRepo
       runAfterLinkGeneration
       ;
     inherit (specialArgs) isGui;
@@ -10,9 +9,9 @@
     # For now I'll symlink directly into my dotfiles repo. Might have to do with the fact
     # that `makeSymlinkToRepo` links into the Nix store?
     home.activation.weztermSetup = runAfterLinkGeneration ''
-      wezterm_config='/home/biggs/.wezterm.lua'
+      wezterm_config='${config.home.homeDirectory}/.wezterm.lua'
       if [ ! -f $wezterm_config ]; then
-        ln --symbolic /home/biggs/.dotfiles/wezterm/wezterm.lua $wezterm_config
+        ln --symbolic ${config.home.homeDirectory}/.dotfiles/wezterm/wezterm.lua $wezterm_config
       fi
     '';
   }
