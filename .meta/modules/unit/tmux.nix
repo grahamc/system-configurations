@@ -72,5 +72,6 @@
       home.file = {
         ".local/bin/tmux-nest".source = makeSymlinkToRepo "tmux/tmux-nest";
         ".local/bin/tmux-click-url.py".source = makeSymlinkToRepo "tmux/tmux-click-url.py";
+        ".dotfiles/.meta/git_file_watch/active_file_watches/tmux".source = makeSymlinkToRepo ".meta/git_file_watch/file_watches/tmux.sh";
       };
     }
