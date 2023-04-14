@@ -15,8 +15,8 @@
 
       # Home Manager needs a bit of information about you and the
       # paths it should manage.
-      home.username = "biggs";
-      home.homeDirectory = "/home/biggs";
+      home.username = builtins.getEnv "USER";
+      home.homeDirectory = builtins.getEnv "HOME";
 
       # The `man` in nixpkgs is only intended to be used for NixOS, it doesn't work properly on other OS's so I'm disabling
       # it. Since I'm not using the nixpkgs man, I have any packages I install their man outputs so my
