@@ -24,13 +24,13 @@ local my_colors_per_color_scheme = {
     [8] = '#2e3440', [9] = '#BF616A', [10] = '#A3BE8C', [11] = '#d08770', [12] = '#81A1C1', [13] = '#B48EAD', [14] = '#8FBCBB', [15] = '#626f89',
     -- Floating windows in neovim
     [16] = '#12151f', [32] = '#1d2129',
-    -- For folded lines, should be darker than color 0
+    -- For folded lines
     [24] = '#2e3440',
-    -- Background color for the non-emphasized and emphasized part of a removed line in a git diff, respectively
+    -- Background color for the non-emphasized and emphasized part of a removed line in a git diff
     [17] = '#301a1f', [25] = '#803030',
-    -- Background color for the non-emphasized and emphasized part of an added line in a git diff, respectively
+    -- Background color for the non-emphasized and emphasized part of an added line in a git diff
     [18] = '#12261e', [26] = '#1d572c',
-    -- Background color for the source and destination moved line in a git diff, respectively
+    -- Background color for the source and destination of a moved line in a git diff
     [21] = '#60405a', [22] = '#306a7b',
     -- String in neovim
     [50] = '#A3BE8C',
@@ -43,11 +43,11 @@ local my_colors_per_color_scheme = {
     [16] = '#efefef', [32] = '#f1f3f5',
     -- For folded lines
     [24] = '#e5e5e5',
-    -- Background color for the non-emphasized and emphasized part of a removed line in a git diff, respectively
+    -- Background color for the non-emphasized and emphasized part of a removed line in a git diff
     [17] = '#FFD7D7', [25] = '#FFAFAF',
-    -- Background color for the non-emphasized and emphasized part of an added line in a git diff, respectively
+    -- Background color for the non-emphasized and emphasized part of an added line in a git diff
     [18] = '#D7FFD7', [26] = '#96D596',
-    -- Background color for the source and destination moved line in a git diff, respectively
+    -- Background color for the source and destination of a moved line in a git diff
     [21] = '#e99ac0', [22] = '#85dfd8',
     -- Strings in neovim
     [50] = '#c96765',
