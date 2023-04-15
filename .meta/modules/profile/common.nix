@@ -52,6 +52,9 @@
           text = ''
             #!/bin/bash
 
+            export PATH="${pkgs.update-nix-fetchgit}/bin:$PATH"
+
+            update-nix-fetchgit ${config.home.homeDirectory}/.dotfiles/.meta/modules/overlay.nix
             home-manager switch --flake "${repo}#${hostName}" --impure --recreate-lock-file
           '';
           executable = true;
