@@ -23,6 +23,14 @@
 
           source ${makeSymlinkToRepo "fish/config.fish"}
         '';
+        # TODO: Some plugins, such as fish-abbreviation-tips, expect an event that `fisher` emits whenever it
+        # installs a plugin, <plugin_name>_install, to do setup. Home manager doesn't emit that event so
+        # for now I'm manually calling the setup functions in my config.fish.
+        plugins = with pkgs.fishPlugins; [
+          {name = "fish-abbreviation-tips"; src = fish-abbreviation-tips;}
+          {name = "autopair-fish"; src = autopair-fish;}
+          {name = "async-prompt"; src = async-prompt;}
+        ];
       };
 
       home.packages = with pkgs; [
@@ -31,9 +39,7 @@
 
       home.file.".dotfiles/.meta/git_file_watch/active_file_watches/fish".source = makeSymlinkToRepo ".meta/git_file_watch/file_watches/fish.sh";
 
-      xdg.configFile = {
-        "fish/fish_plugins".source = makeSymlinkToRepo "fish/fish_plugins";
-      } // fishFunctions // fishConfigs;
+      xdg.configFile = fishFunctions // fishConfigs;
 
       xdg.dataFile = {
         "figlet/smblock.tlf".source = makeSymlinkToRepo "fish/figlet/smblock.tlf";

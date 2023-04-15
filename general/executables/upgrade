@@ -46,9 +46,6 @@ function upgrade
     type --query flatpak
     and upgrade-flatpak
 
-    type --query fisher
-    and upgrade-fisher
-
     type --query nvim
     and upgrade-nvim
 
@@ -75,13 +72,6 @@ end
 function upgrade-flatpak
     print_banner 'FLATPAK'
     flatpak update --assumeyes
-end
-
-function upgrade-fisher
-    print_banner 'FISHER'
-    # TODO: If I pipe the command `yes` into this script, the command below stalls for a while.
-    # Not sure what's going on, but for now I'll suppress standard input.
-    fisher update </dev/null
 end
 
 function upgrade-nvim

@@ -244,24 +244,6 @@ abbr --add --global ap 'sudo apt purge'
 abbr --add --global fai 'fzf-apt-install-widget'
 abbr --add --global far 'fzf-apt-remove-widget'
 
-# fisher
-if not type --query fisher
-    echo -s (set_color blue) "'fisher' was not found, installing now..."
-    curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source
-
-    # If installing fisher is successful, install the plugins from fish_plugins if the file exists.
-    # If it doesn't, just install the fisher plugin so it can manage itself.
-    and begin
-        set fish_plugins_path "$__fish_config_dir/fish_plugins"
-        if test -e $fish_plugins_path
-            echo -s (set_color blue) "fisher: Installing plugins from 'fish_plugins'"
-            fisher update
-        else
-            fisher install jorgebucaran/fisher
-        end
-    end
-end
-
 # python
 # Don't add the name of the virtual environment to my prompt. This way, I can add it myself
 # using the same formatting as the rest of my prompt.
@@ -352,10 +334,13 @@ ulimit -Sn 10000
 # any abbreviations created in this file get loaded into fish-abbreviation-tips. I run it in the background so it
 # doesn't impact load time.
 #
+# UPDATE: Because I install plugins through Nix Home Manager, the init is never run so I need this even more.
+# See the declaration of this plugin in HM for more info.
+#
 # TODO: Fish doesn't support running functions in the background so I run it in a child shell instead. Since my
 # abbreviations only get defined in an interactive shell, I load them into the child shell using --init-command.
 # issue: https://github.com/fish-shell/fish-shell/issues/238
-fish --init-command "source $(abbr | psub)" --command '__abbr_tips_init' & disown
+fish --init-command "source $(abbr | psub)" --command '__abbr_tips_install' & disown
 
 # any-nix-shell
 if type --query any-nix-shell
