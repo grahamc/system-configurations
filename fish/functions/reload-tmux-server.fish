@@ -37,5 +37,5 @@ function reload-tmux-server --description 'Reload tmux server'
         end
     end
 
-    tmux
+    tmux attach-session
 end

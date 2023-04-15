@@ -228,7 +228,7 @@ set --global --export LS_COLORS 'di=0:ln=0:so=0:pi=0:ex=0:bd=0:cd=0:su=0:sg=0:tw
 abbr --add --global -- - 'cd -'
 
 # tmux
-abbr --add --global ta tmux-attach-or-create
+abbr --add --global ta tmux attach-session
 abbr --add --global r-tmux-server reload-tmux-server
 
 # apt
@@ -393,7 +393,7 @@ function _tmux_connect
     set normal (set_color normal)
     read --prompt "echo -n -s 'Welcome back $USER, would you like to connect to tmux? (' '$accent' 'y' '$normal' '/' '$accent' 'n' '$normal' '): ';" --nchars 1 response
     if test $response = y
-        tmux-attach-or-create
+        tmux attach-session
     end
 end
 if type --query tmux
