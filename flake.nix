@@ -28,7 +28,10 @@
         systems
         (system:
           let
-            pkgs = nixpkgs.legacyPackages.${system};
+            pkgs = import nixpkgs {
+              inherit system;
+              overlays = [ (import ./.meta/modules/overlay.nix) ];
+            };
           in
             {
               packages.homeConfigurations.${hostName} = home-manager.lib.homeManagerConfiguration {
