@@ -1,3 +1,7 @@
+# TODO: The script in conf.d for the plugin 'jorgebucaran/autopair.fish' is deleting my ctrl+h keybind
+# that I define in here. As a workaround, I prefixed this file with 'zz-' so that it's the last script to run in
+# conf.d and autopair won't be able to delete its keybinds.
+
 if not status is-interactive
     exit
 end
