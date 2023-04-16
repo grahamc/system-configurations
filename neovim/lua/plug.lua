@@ -5,6 +5,9 @@ local original_plug_begin = vim.fn['plug#begin']
 local original_plug_end = vim.fn['plug#end']
 local original_plug = vim.fn['plug#']
 
+-- Plugins that have been added through `RegisterPlug`
+vim.g.registered_plugs = {}
+
 -- Functions to be called after a plugin is loaded to configure it.
 local configs = {
   immediate = {},
@@ -75,4 +78,13 @@ function Plug(repo, options)
       table.insert(configs.immediate, config)
     end
   end
+end
+
+-- This command only registers the plugin, but it won't be loaded. This way if I run PlugClean from one profile it
+-- won't delete all the plugins from the other profiles since all plugins get registered here.
+function RegisterPlug(repo)
+  original_plug(repo, {['on'] = {}, ['for'] = {},})
+
+  local plugin_name = repo:match("^[%w-]+/([%w-_.]+)$")
+  table.insert(vim.g.registered_plugs, plugin_name)
 end

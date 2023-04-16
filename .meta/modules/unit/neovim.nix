@@ -34,8 +34,8 @@
 
       xdg.configFile = {
         "nvim/init.lua".source = makeSymlinkToRepo "neovim/init.lua";
-        "nvim/plugfile.vim".source = makeSymlinkToRepo "neovim/plugfile.vim";
         "nvim/plugfile-lock.vim".source = makeSymlinkToRepo "neovim/plugfile-lock.vim";
+        "nvim/plugfile.lua".source = makeSymlinkToRepo "neovim/plugfile.lua";
         "nvim/profiles".source = makeSymlinkToRepo "neovim/profiles";
         "nvim/lua".source = makeSymlinkToRepo "neovim/lua";
       };
