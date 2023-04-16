@@ -37,6 +37,7 @@
         "nvim/plugfile.vim".source = makeSymlinkToRepo "neovim/plugfile.vim";
         "nvim/plugfile-lock.vim".source = makeSymlinkToRepo "neovim/plugfile-lock.vim";
         "nvim/profiles".source = makeSymlinkToRepo "neovim/profiles";
+        "nvim/lua".source = makeSymlinkToRepo "neovim/lua";
       };
 
       xdg.dataFile."nvim/site/autoload/plug.vim".source = "${pkgs.vimPlugins.vim-plug}/plug.vim";
