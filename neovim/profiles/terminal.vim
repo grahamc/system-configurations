@@ -1003,6 +1003,7 @@ Plug(
       vim.keymap.set('n', '<Leader>j', '<Cmd>Telescope jumplist<CR>')
       vim.keymap.set('n', '<Leader><Leader>', '<Cmd>Telescope resume<CR>')
       vim.keymap.set('n', '<Leader>s', '<Cmd>Telescope lsp_dynamic_workspace_symbols<CR>')
+      vim.keymap.set('n', '<Leader>l', '<Cmd>Telescope diagnostics<CR>')
       vim.cmd([[
         command! Highlights Telescope highlights
         command! Autocommands Telescope autocommands
