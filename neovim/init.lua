@@ -29,7 +29,6 @@ end
 
 -- Variables used across config files
 vim.g.mapleader = vim.api.nvim_replace_termcodes('<Space>', true, false, true)
-vim.g.data_path = vim.fn.stdpath('data')
 vim.g.config_path = vim.fn.stdpath('config')
 vim.g.profiles = {}
 local profile_directory = vim.g.config_path .. '/profiles'

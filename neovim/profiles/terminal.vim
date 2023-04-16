@@ -353,7 +353,7 @@ vim.opt.sessionoptions:remove('blank')
 vim.opt.sessionoptions:remove('options')
 vim.opt.sessionoptions:append('tabpages')
 vim.opt.sessionoptions:remove('folds')
-_G.session_dir = vim.g.data_path .. '/sessions'
+_G.session_dir = vim.fn.stdpath('data') .. '/sessions'
 
 local function save_session()
   local has_active_session = string.len(vim.v.this_session) > 0
