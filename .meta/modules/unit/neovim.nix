@@ -18,6 +18,8 @@
 
       home.file = {
         ".dotfiles/.meta/git_file_watch/active_file_watches/neovim".source = makeSymlinkToRepo ".meta/git_file_watch/file_watches/neovim.sh";
+        # The Home Manager nvim wrapper always passes a few args to nvim. To be able to tell when _I_ passed an
+        # argument, I made another wrapper.
         ".local/bin/nvim" = {
           executable = true;
           text = ''
