@@ -14,6 +14,5 @@
         any-nix-shell
         comma
         nix-tree
-        nix-prefetch-github
       ];
     }

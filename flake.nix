@@ -12,11 +12,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
+    my-overlay.url = "path:./.meta/modules/my-overlay";
   };
 
   # TODO: Waiting on a more concise way to define configurations per system.
   # issue: https://github.com/nix-community/home-manager/issues/3075
-  outputs = { nixpkgs, home-manager, nix-index-database, flake-utils, ... }:
+  outputs = { nixpkgs, home-manager, nix-index-database, flake-utils, my-overlay, ... }:
     let
       createConfigurations = {
         hostName,
@@ -30,7 +31,7 @@
           let
             pkgs = import nixpkgs {
               inherit system;
-              overlays = [ (import ./.meta/modules/overlay.nix) ];
+              overlays = [  my-overlay.overlays.default (import ./.meta/modules/overlay.nix) ];
             };
           in
             {

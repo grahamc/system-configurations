@@ -86,5 +86,8 @@ function RegisterPlug(repo)
   original_plug(repo, {['on'] = {}, ['for'] = {},})
 
   local plugin_name = repo:match("^[%w-]+/([%w-_.]+)$")
-  table.insert(vim.g.registered_plugs, plugin_name)
+
+  local temp = vim.g.registered_plugs
+  table.insert(temp, plugin_name)
+  vim.g.registered_plugs = temp
 end

@@ -371,10 +371,7 @@ local function restore_or_create_session()
   -- will always be the path to the vim executable so if no arguments were passed to neovim, the size of vim.v.argv
   -- will be one.
   local is_neovim_called_with_no_arguments = #vim.v.argv == 1
-
-  -- We will also restore/create the session if a certain environment variable is set.
-  local force_session_mode = os.getenv("NEOVIM_FORCE_SESSION_MODE") == '1'
-  if is_neovim_called_with_no_arguments or force_session_mode then
+  if is_neovim_called_with_no_arguments then
     local session_name = string.gsub(os.getenv('PWD'), '/', '%%') .. '%vim'
     vim.fn.mkdir(session_dir, 'p')
     local session_full_path = session_dir .. '/' .. session_name
@@ -923,9 +920,6 @@ Plug('nvim-lua/plenary.nvim')
 Plug(
   'iamcco/markdown-preview.nvim',
   {
-    -- TODO: This won't work until this bug in neovim is fixed.
-    -- issue: https://github.com/neovim/neovim/issues/18822
-    ['do'] = ":call mkdp#util#install()",
     -- Add 'vim-plug' to the filetype list so that the plugin will be loaded before vim-plug runs the 'do' command.
     -- This is necessary since the 'do' command calls a function from this plugin.
     -- source: https://github.com/iamcco/markdown-preview.nvim/issues/50
@@ -1766,7 +1760,7 @@ Plug(
 
 Plug('neovim/nvim-lspconfig')
 
-Plug('b0o/schemastore.nvim')
+Plug('b0o/SchemaStore.nvim')
 
 -- }}}
 
@@ -1951,42 +1945,6 @@ Plug 'nordtheme/vim'
 " }}}
 
 " Plugin Management {{{
-" Helpers
-let g:snapshot_file = g:config_path . '/plugfile-lock.vim'
-function! CreateSnapshotSync()
-  execute printf('PlugSnapshot! %s', g:snapshot_file)
-
-  " Edit the snapshot file so that it updates plugins synchronously
-  execute "silent! !sed --in-place --follow-symlinks 's/PlugUpdate\\!/PlugUpdate\\! --sync/g' " . g:snapshot_file
-endfunction
-command! MyPlugSnapshot call CreateSnapshotSync()
-function! UpdateAndSnapshotSync()
-  let g:plug_window = 'enew'
-
-  PlugUpgrade
-
-  if exists(':TSDisable')
-    TSDisable highlight
-  endif
-  PlugUpdate --sync
-  PlugDiff
-
-  0tabnew
-  call CreateSnapshotSync()
-
-  " Close all windows except for the one that contains the changelog of updated plugins
-  q
-endfunction
-command! MyPlugUpdate call UpdateAndSnapshotSync()
-function! PlugRestore()
-  if !filereadable(g:snapshot_file)
-    echoerr printf("Restore failed. Unable to read the snapshot file '%s'", g:snapshot_file)
-    return
-  endif
-  execute printf('source %s', g:snapshot_file)
-endfunction
-command! PlugRestore call PlugRestore()
-
 " Install any plugins that have been registered in the plugfile.vim, but aren't installed
 function! InstallMissingPlugins()
   let plugs = get(g:, 'plugs', {})
@@ -1999,20 +1957,7 @@ function! InstallMissingPlugins()
   let install_prompt = "The following plugins are not installed:\n" . join(keys(missing_plugins), ", ") . "\nWould you like to install them?"
   let should_install = confirm(install_prompt, "yes\nno") == 1
   if should_install
-    if filereadable(g:snapshot_file)
-      " Sourcing the snapshot will set plugins to the commit specified in the snapshot
-      " and install any missing ones.
-      execute printf('source %s', g:snapshot_file)
-
-      " Any plugins that don't have a commit specified must not be in the snapshot.
-      " In which case, we'll make a new snapshot.
-      let plugins_without_commit = filter(deepcopy(plugs), {plugin_name, plugin_info -> !has_key(plugin_info, 'commit')})
-      if !empty(plugins_without_commit)
-        call CreateSnapshotSync()
-      endif
-    else
-      PlugInstall --sync
-    endif
+    execute printf('PlugInstall --sync %s', join(keys(missing_plugins), " "))
   endif
 endfunction
 

@@ -20,6 +20,9 @@
     runAfterLinkGeneration = script:
       lib.hm.dag.entryAfter [ "linkGeneration" ] script;
 
+    runBeforeLinkGeneration = script:
+      lib.hm.dag.entryBefore [ "linkGeneration" ] script;
+
     # destination: path relative to $HOME
     # source: path relative to dotfiles repository
     #

@@ -44,7 +44,10 @@
           text = ''
             #!/bin/bash
 
-            home-manager switch --flake "${repo}#${hostName}" --impure --show-trace
+            # I update my overlay so that it always loads the latest version. There's an issue open for better ways
+            # to handle this.
+            # issue: https://github.com/NixOS/nix/issues/6352
+            home-manager switch --flake "${repo}#${hostName}" --impure --show-trace --update-input my-overlay
           '';
           executable = true;
         };

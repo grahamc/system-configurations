@@ -11,7 +11,6 @@ vim.keymap.set('n', '<C-x>', '<Cmd>wq<CR>')
 Plug(
   'glacambre/firenvim',
   {
-    ['do'] = ":call firenvim#install(0)",
     config = function()
       vim.g.firenvim_config =  {
         localSettings = {
