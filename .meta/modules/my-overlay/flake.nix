@@ -21,81 +21,105 @@
   };
 
   outputs = { ... }@repositories: {
-    overlays.default = final: prev:
+    overlays.default = currentNixpkgs: previousNixpkgs:
       let
-        makePrefixRemover = prefix:
-          repositories:
-            prev.lib.mapAttrs'
-              (repositoryName: repositorySourceCode:
-                prev.lib.nameValuePair
-                  (builtins.elemAt (builtins.match "${prefix}(.*)" repositoryName) 0)
-                  repositorySourceCode
-              )
-              repositories;
-
-        makePrefixFilter = prefix:
-          repositories:
-            prev.lib.attrsets.filterAttrs
-              (repositoryName: _ignored: (builtins.match "${prefix}.*" repositoryName) != null)
-              repositories;
-
+        # YYYYMMDDHHMMSS -> YYYY-MM-DD
         formatDate = date:
-          prev.lib.concatStringsSep
-            "-"
-            (builtins.match "(....)(..)(..).*" date);
-
-        makePackages = prefix: builder:
           let
-            filterForPrefix = makePrefixFilter prefix;
-            removePrefix = makePrefixRemover prefix;
-            callBuilderWithDate = repositories:
-              prev.lib.mapAttrs
+            yearMonthDayStrings = builtins.match "(....)(..)(..).*" date;
+          in
+            previousNixpkgs.lib.concatStringsSep
+              "-"
+              yearMonthDayStrings;
+
+        # repositoryPrefix:
+        # builder: (repositoryName: repositorySourceCode: date: derivation)
+        #
+        # returns: A set with the form {<repo name with `repositoryPrefix` removed> = derivation}
+        makePackages = repositoryPrefix: builder:
+          let
+            hasPrefix = string: (builtins.match "${repositoryPrefix}.*" string) != null;
+            filterRepositoriesForPrefix = repositories:
+              previousNixpkgs.lib.attrsets.filterAttrs
+                (repositoryName: _ignored: hasPrefix repositoryName)
+                repositories;
+            
+            removePrefix = string:
+              let
+                matches = builtins.match "${repositoryPrefix}(.*)" string;
+                stringWithoutPrefix = builtins.elemAt matches 0;
+              in
+                stringWithoutPrefix;
+            removePrefixFromRepositories = repositories:
+              previousNixpkgs.lib.mapAttrs'
                 (repositoryName: repositorySourceCode:
                   let
-                    date = formatDate repositorySourceCode.lastModifiedDate;
+                    repositoryNameWithoutPrefix = removePrefix repositoryName;
                   in
-                    (builder repositoryName repositorySourceCode date)
+                    previousNixpkgs.lib.nameValuePair
+                      repositoryNameWithoutPrefix
+                      repositorySourceCode
                 )
                 repositories;
-          in
-            prev.lib.trivial.pipe
-              repositories
-              [ filterForPrefix removePrefix callBuilderWithDate ];
 
+            buildPackage = repositoryName: repositorySourceCode:
+              let
+                date = formatDate repositorySourceCode.lastModifiedDate;
+              in
+                builder repositoryName repositorySourceCode date;
+            buildPackagesFromRepositories = repositories: previousNixpkgs.lib.mapAttrs buildPackage repositories;
+          in
+            previousNixpkgs.lib.trivial.pipe
+              repositories
+              [ filterRepositoriesForPrefix removePrefixFromRepositories buildPackagesFromRepositories ];
+        
+        vimPluginRepositoryPrefix = "vim-plugin-";
+        vimPluginBuilder = repositoryName: repositorySourceCode: date:
+          previousNixpkgs.vimUtils.buildVimPluginFrom2Nix {
+            pname = repositoryName;
+            version = date;
+            src = repositorySourceCode;
+          };
         newVimPlugins = makePackages
-          "vim-plugin-"
-          (repositoryName: repositorySourceCode: date:
-            (prev.vimUtils.buildVimPluginFrom2Nix {
-              pname = repositoryName;
-              version = date;
-              src = repositorySourceCode;
-            })
-          );
-        allVimPlugins = prev.vimPlugins // newVimPlugins;
+          vimPluginRepositoryPrefix
+          vimPluginBuilder;
+        allVimPlugins = previousNixpkgs.vimPlugins // newVimPlugins;
 
         rtpFilePathFixes = {
           "tmux-suspend" = "suspend.tmux";
           "tmux-volume" = "volume.tmux";
         };
+        applyRtpFilePathFix = tmuxPluginInfo:
+          let
+            pluginName = tmuxPluginInfo.pluginName;
+            hasFix = builtins.hasAttr pluginName rtpFilePathFixes;
+            getFix = pluginName: {rtpFilePath = builtins.getAttr pluginName rtpFilePathFixes;};
+          in
+            if hasFix
+              then tmuxPluginInfo // getFix pluginName
+              else tmuxPluginInfo;
+        tmuxPluginBuilder = repositoryName: repositorySourceCode: date:
+          let
+            pluginInfo = {
+              pluginName = repositoryName;
+              version = date;
+              src = repositorySourceCode;
+            };
+            pluginInfoWithFix = applyRtpFilePathFix pluginInfo;
+          in
+            previousNixpkgs.tmuxPlugins.mkTmuxPlugin pluginInfoWithFix;
+        tmuxPluginRepositoryPrefix = "tmux-plugin-";
         newTmuxPlugins = makePackages
-          "tmux-plugin-"
-          (repositoryName: repositorySourceCode: date:
-            (prev.tmuxPlugins.mkTmuxPlugin
-              ({
-                pluginName = repositoryName;
-                version = date;
-                src = repositorySourceCode;
-              } // prev.lib.attrsets.optionalAttrs (builtins.hasAttr repositoryName rtpFilePathFixes)  {
-                rtpFilePath = builtins.getAttr repositoryName rtpFilePathFixes;
-              })
-            )
-          );
-        allTmuxPlugins = prev.tmuxPlugins // newTmuxPlugins;
+          tmuxPluginRepositoryPrefix
+          tmuxPluginBuilder;
+        allTmuxPlugins = previousNixpkgs.tmuxPlugins // newTmuxPlugins;
 
+        fishPluginRepositoryPrefix = "fish-plugin-";
+        fishPluginBuilder = _ignored: repositorySourceCode: _ignored: repositorySourceCode;
         newFishPlugins = makePackages
-          "fish-plugin-"
-          (_ignored: repositorySourceCode: _ignored: repositorySourceCode);
-        allFishPlugins = prev.fishPlugins // newFishPlugins;
+          fishPluginRepositoryPrefix
+          fishPluginBuilder;
+        allFishPlugins = previousNixpkgs.fishPlugins // newFishPlugins;
       in
         {
           vimPlugins = allVimPlugins;
