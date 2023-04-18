@@ -209,6 +209,11 @@ vim.api.nvim_create_autocmd(
   {'VimResized', 'WinNew', 'WinClosed', 'TabEnter',},
   {
     callback = function()
+      -- Don't equalize splits if the new window is floating, it won't get resized anyway.
+      -- Don't equalize when vim is starting up or it will reset the window sizes from my session.
+      if vim.api.nvim_win_get_config(0).relative ~= '' or vim.fn.has('vim_starting') then
+        return
+      end
       vim.cmd.wincmd('=')
     end,
     group = group_id,
