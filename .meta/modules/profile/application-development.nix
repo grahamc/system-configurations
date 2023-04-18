@@ -34,6 +34,15 @@
         ".cloudflared/config.yaml".source = makeSymlinkToRepo "cloudflared/config.yaml";
         ".markdownlint.jsonc".source = makeSymlinkToRepo "markdownlint/markdownlint.jsonc";
         ".vale.ini".source = makeSymlinkToRepo "vale/vale.ini";
+        ".local/bin/pynix" = {
+          text = ''
+            #!/bin/bash
+
+            ${pkgs.any-nix-shell}/bin/.any-nix-shell-wrapper fish -p "python3.withPackages (ps: with ps; [ "$@" ])"
+          '';
+          executable = true;
+        };
+
       } // ipythonConfigs;
 
       xdg.configFile = {
