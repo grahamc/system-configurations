@@ -28,7 +28,7 @@ function reload-tmux-server --description 'Reload tmux server'
         #
         # To confirm the server is actually down after 'kill-server' returns, I poll the server until I don't get
         # a response.
-        tmux kill-server
+        tmux kill-server &>/dev/null
         set max_poll_attempts 5
         while is_tmux_running
         and test $max_poll_attempts -gt 0
