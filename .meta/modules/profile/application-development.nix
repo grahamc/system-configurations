@@ -36,9 +36,11 @@
         ".vale.ini".source = makeSymlinkToRepo "vale/vale.ini";
         ".local/bin/pynix" = {
           text = ''
-            #!/bin/bash
+            #!${pkgs.fish}/bin/fish
 
-            ${pkgs.any-nix-shell}/bin/.any-nix-shell-wrapper fish -p "python3.withPackages (ps: with ps; [ "$@" ])"
+            set packages (printf %s\n $argv | xargs -I PACKAGE printf "python3Packages.PACKAGE")
+            ${pkgs.any-nix-shell}/bin/.any-nix-shell-wrapper fish -p $packages
+
           '';
           executable = true;
         };
