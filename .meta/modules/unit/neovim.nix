@@ -56,10 +56,6 @@
         pkgs.neovim-unwrapped
       ];
 
-      home.file = {
-        ".dotfiles/.meta/git_file_watch/active_file_watches/neovim".source = makeSymlinkToRepo ".meta/git_file_watch/file_watches/neovim.sh";
-      };
-
       xdg.configFile = makeSymlinksToTopLevelFilesInRepo "nvim" "neovim";
 
       xdg.dataFile = {
