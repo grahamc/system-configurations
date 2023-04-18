@@ -73,14 +73,22 @@
           );
         allVimPlugins = prev.vimPlugins // newVimPlugins;
 
+        rtpFilePathFixes = {
+          "tmux-suspend" = "suspend.tmux";
+          "tmux-volume" = "volume.tmux";
+        };
         newTmuxPlugins = makePackages
           "tmux-plugin-"
           (repositoryName: repositorySourceCode: date:
-            (prev.tmuxPlugins.mkTmuxPlugin {
-              pluginName = repositoryName;
-              version = date;
-              src = repositorySourceCode;
-            })
+            (prev.tmuxPlugins.mkTmuxPlugin
+              ({
+                pluginName = repositoryName;
+                version = date;
+                src = repositorySourceCode;
+              } // prev.lib.attrsets.optionalAttrs (builtins.hasAttr repositoryName rtpFilePathFixes)  {
+                rtpFilePath = builtins.getAttr repositoryName rtpFilePathFixes;
+              })
+            )
           );
         allTmuxPlugins = prev.tmuxPlugins // newTmuxPlugins;
 
