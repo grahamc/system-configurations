@@ -31,7 +31,7 @@
           let
             pkgs = import nixpkgs {
               inherit system;
-              overlays = [  my-overlay.overlays.default (import ./.meta/modules/overlay.nix) ];
+              overlays = [ my-overlay.overlays.default ];
             };
           in
             {
