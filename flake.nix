@@ -42,44 +42,46 @@
               };
             }
         );
-      hostConfigurations = map createConfigurations [
-        {
-          hostName = "server";
-          modules = [
-            ./.meta/modules/profile/system-administration.nix
-          ];
-          systems = (with flake-utils.lib.system; [ x86_64-linux ]);
-        }
-        {
-          hostName = "laptop";
-          modules = [
-            ./.meta/modules/profile/application-development.nix
-            ./.meta/modules/profile/system-administration.nix
-            ./.meta/modules/profile/linux-desktop.nix
-          ];
-          systems = (with flake-utils.lib.system; [ x86_64-linux ]);
-          isGui = true;
-        }
-        {
-          hostName = "desktop";
-          modules = [
-            ./.meta/modules/profile/application-development.nix
-            ./.meta/modules/profile/system-administration.nix
-            ./.meta/modules/profile/linux-desktop.nix
-          ];
-          systems = (with flake-utils.lib.system; [ x86_64-linux ]);
-          isGui = true;
-        }
-        {
-          hostName = "macbook";
-          modules = [
-            ./.meta/modules/profile/application-development.nix
-            ./.meta/modules/profile/system-administration.nix
-          ];
-          systems = (with flake-utils.lib.system; [ x86_64-darwin ]);
-          isGui = true;
-        }
-      ];
+      hostConfigurations = with flake-utils.lib.system;
+        [
+          {
+            hostName = "server";
+            modules = [
+              ./.meta/modules/profile/system-administration.nix
+            ];
+            systems = [ x86_64-linux ];
+          }
+          {
+            hostName = "laptop";
+            modules = [
+              ./.meta/modules/profile/application-development.nix
+              ./.meta/modules/profile/system-administration.nix
+              ./.meta/modules/profile/linux-desktop.nix
+            ];
+            systems = [ x86_64-linux ];
+            isGui = true;
+          }
+          {
+            hostName = "desktop";
+            modules = [
+              ./.meta/modules/profile/application-development.nix
+              ./.meta/modules/profile/system-administration.nix
+              ./.meta/modules/profile/linux-desktop.nix
+            ];
+            systems = [ x86_64-linux ];
+            isGui = true;
+          }
+          {
+            hostName = "macbook";
+            modules = [
+              ./.meta/modules/profile/application-development.nix
+              ./.meta/modules/profile/system-administration.nix
+            ];
+            systems = [ x86_64-darwin ];
+            isGui = true;
+          }
+        ];
+      homeConfigurations = map createConfigurations hostConfigurations;
       # Recursively merges a list of attribute sets
       recursiveMerge = sets: nixpkgs.lib.lists.foldr nixpkgs.lib.recursiveUpdate {} sets;
     in
@@ -91,13 +93,7 @@
       #                                                                                     desktop = <derivation>;
       #        }                                }                                       }
       #      };                               };                                      };
-      #      aarch64-linux = {                aarch64-linux = {                       aarch64-linux = {
-      #        homeConfigurations = {           homeConfigurations = {                  homeConfigurations = {
-      #          laptop = <derivation>;            desktop = <derivation>;                   laptop = <derivation>;
-      #                                                                                    desktop = <derivation>;
-      #        }                                }                                       }
-      #      };                               };                                      };
       #    };                               };                                      };
       #  }                                }                                       }
-      recursiveMerge hostConfigurations;
+      recursiveMerge homeConfigurations;
 }
