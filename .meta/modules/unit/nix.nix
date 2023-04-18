@@ -23,7 +23,9 @@
 
             PATH="${pkgs.manix}/bin:$PATH"
 
-            manix "" | grep '^# ' | sed 's/^# \(.*\) (.*/\1/;s/ (.*//;s/^# //' | fzf --preview="manix '{}'" | xargs manix
+            # There's a bug in manix and certain options aren't being generated so I'm suppressing the errors printed
+            # issue: https://github.com/mlvzk/manix/issues/24
+            manix "" 2>/dev/null | grep '^# ' | sed 's/^# \(.*\) (.*/\1/;s/ (.*//;s/^# //' | fzf --preview="manix '{}' 2>/dev/null" | xargs manix 2>/dev/null
           '';
           executable = true;
         };
