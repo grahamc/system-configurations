@@ -298,5 +298,7 @@ function fish_prompt_get_nix_context
         set color (set_color yellow)
     end
 
-    echo -n -s $fish_prompt_color_text "nix: $color$IN_NIX_SHELL"
+    set packages (string split --no-empty ' ' "$ANY_NIX_SHELL_PKGS" | xargs -I PACKAGE fish -c 'string split --fields (count (string split \'.\' \'PACKAGE\')) \'.\' \'PACKAGE\'')
+
+    echo -n -s $fish_prompt_color_text "nix: $color$IN_NIX_SHELL $fish_prompt_color_text($packages)"
 end
