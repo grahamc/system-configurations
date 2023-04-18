@@ -1291,58 +1291,6 @@ Plug(
           group = group_id,
         }
       )
-      local function get_window_count()
-        local window_count = 0
-        for window_number=1,vim.fn.winnr('$') do
-          local window_id = vim.fn.win_getid(window_number)
-          local is_floating_window = vim.api.nvim_win_get_config(window_id).relative ~= ''
-          if not is_floating_window then
-            window_count = window_count + 1
-          end
-        end
-
-        return window_count
-      end
-      local function close_if_only_nvim_tree_left()
-        local window_count = get_window_count()
-        local will_be_last_window_in_tab = window_count == 2
-        if not will_be_last_window_in_tab then
-          return
-        end
-
-        local function close_if_nvim_tree()
-          if vim.o.filetype ~= 'NvimTree' then
-            return
-          end
-
-          local is_last_window = get_window_count() == 1
-          if not is_last_window then
-            return
-          end
-
-          local is_last_tab = vim.fn.tabpagenr('$') == 1
-          if is_last_tab then
-            vim.cmd.q()
-          else
-            vim.cmd.tabclose()
-          end
-        end
-
-        vim.api.nvim_create_autocmd(
-          {'WinEnter',},
-          {
-            callback = close_if_nvim_tree,
-            once = true,
-          }
-        )
-      end
-      vim.api.nvim_create_autocmd(
-        {'WinClosed',},
-        {
-          callback = close_if_only_nvim_tree_left,
-          group = group_id,
-        }
-      )
     end,
   }
 )
