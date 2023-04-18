@@ -1,4 +1,4 @@
-function my-fzf-file-widget --description 'Search by line, recursively, from current directory'
+function my-fzf-file-widget --description 'Search files'
   set dir "$(commandline -t)"
   if test "$(string sub --length 1 "$dir")" = '~'
     set dir (string replace '~' "$HOME" "$dir")
