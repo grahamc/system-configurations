@@ -15,4 +15,17 @@
         comma
         nix-tree
       ];
+
+      home.file = {
+        ".local/bin/manix" = {
+          text = ''
+            #!/bin/bash
+
+            PATH="${pkgs.manix}/bin:$PATH"
+
+            manix "" | grep '^# ' | sed 's/^# \(.*\) (.*/\1/;s/ (.*//;s/^# //' | fzf --preview="manix '{}'" | xargs manix
+          '';
+          executable = true;
+        };
+      };
     }
