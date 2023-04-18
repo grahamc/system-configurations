@@ -74,7 +74,7 @@
       # Before we symlink the plugins, remove everything in the plugin directory.
       home.activation.neovimSetup = runBeforeLinkGeneration ''
         if test -d "${pluginDirectory}" && test -n "$(ls -A "${pluginDirectory}")"; then
-          rm ${pluginDirectory}/*  
+          rm -rf ${pluginDirectory}/*  
         fi
       '';
     }
