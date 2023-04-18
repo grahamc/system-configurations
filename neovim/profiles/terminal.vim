@@ -164,6 +164,7 @@ vim.keymap.set('n', '<Leader>-', '<Cmd>split<CR>')
 -- close a window, quit if last window
 -- also when closing a tab, go to the previously opened tab
 local function close()
+  -- TODO: Filter out floating windows or else it will throw an error when one editor and one floating window are open.
   if vim.fn.winnr('$') > 1 then
     vim.cmd.close()
     return
