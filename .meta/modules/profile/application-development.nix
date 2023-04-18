@@ -38,7 +38,7 @@
           text = ''
             #!${pkgs.fish}/bin/fish
 
-            set packages (printf %s\n $argv | xargs -I PACKAGE printf "python3Packages.PACKAGE")
+            set packages (printf %s\n $argv | xargs -I PACKAGE echo "python3Packages.PACKAGE")
             ${pkgs.any-nix-shell}/bin/.any-nix-shell-wrapper fish -p $packages
 
           '';
