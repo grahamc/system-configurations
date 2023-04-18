@@ -5,6 +5,7 @@
       ;
     inherit (lib.lists) optionals;
     inherit (pkgs.stdenv) isLinux;
+    inherit (lib.attrsets) optionalAttrs;
   in
     {
       imports = [
@@ -48,6 +49,22 @@
 
         # for any searchers e.g. ripgrep
         ".ignore".source = makeSymlinkToRepo "search/ignore";
+      } // optionalAttrs isLinux {
+        ".local/bin/pbcopy".source = makeSymlinkToRepo "general/executables/osc-copy";
+        ".local/bin/pbpaste" = {
+          text = ''
+            #!${pkgs.fish}/bin/fish
+
+            if type --query wl-paste
+              wl-paste
+            else if type --query xclip
+              xclip -selection clipboard -out
+            else
+              echo "Error: Can't find a program to pasting clipboard contents" 1>/dev/stderr
+            end
+          '';
+          executable = true;
+        };
       };
 
       xdg.configFile = {
