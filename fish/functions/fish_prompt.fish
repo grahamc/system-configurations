@@ -47,6 +47,11 @@ function fish_prompt --description 'Print the prompt'
             continue
         end
 
+        set max_width (math $COLUMNS - 4)
+        if test "$(string length --visible "$context")" -gt "$max_width"
+            set context (string shorten --max "$max_width" "$context")
+        end
+
         if not set --query lines[1]
             set --local first_line (string join '' (fish_prompt_make_line first) (fish_prompt_format_context $context))
             set --append lines $first_line
