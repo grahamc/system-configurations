@@ -213,7 +213,6 @@ set --global --export GREP_COLORS 'ms=00;35'
 echo -ne '\033[5 q'
 
 # ls
-abbr --add --global ls 'ls'
 # include hidden files
 abbr --add --global la 'ls --almost-all'
 # use the long format
