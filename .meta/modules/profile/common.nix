@@ -44,8 +44,19 @@
           text = ''
             #!/bin/bash
 
-            # I update my overlay so that it always loads the latest version. There's an issue open for better ways
-            # to handle this.
+            # I need `--update-input my-overlay` for the following reasons:
+            #   - Without it, I get an error when trying to build home-manager on any machine where
+            # `my-overlay` has not been built before.
+            # More on this issue here: https://github.com/NixOS/nix/issues/3978#issuecomment-952418478
+            # Nix team is working on a fix:
+            # Where they said that: https://github.com/NixOS/nix/issues/3978#issuecomment-1510964326
+            # The fix: https://github.com/NixOS/nix/pull/6530
+            #   - Without it, when I run `home-manager switch`, I won't necessarily have the latest version of
+            # `my-overlay`. This happens because when I first ran `home-manager switch` with `my-overlay` as an input,
+            # the current version of `my-overlay` was stored in the flake.lock. So when I ran it again it continued
+            # to use the version in the flake.lock, despite the changes I made locally. To make sure I always have
+            # the latest version of `my-overlay` I have to use `--update-input my-overlay` before running
+            # `home-manager switch`. There's an issue open to improve on this workflow though:
             # issue: https://github.com/NixOS/nix/issues/6352
             home-manager switch --flake "${repo}#${hostName}" --impure --show-trace --update-input my-overlay
           '';
