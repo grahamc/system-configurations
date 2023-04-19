@@ -213,12 +213,8 @@ set --global --export GREP_COLORS 'ms=00;35'
 echo -ne '\033[5 q'
 
 # ls
-# include hidden files
-abbr --add --global la 'ls --almost-all'
 # use the long format
 abbr --add --global ll 'ls -l'
-# combination of the two above
-abbr --add --global lal 'ls --almost-all -l'
 # broken symlinks or missing files (files that a symlink references, but don't exist) are colored red, everything
 # else is the normal color
 set --global --export LS_COLORS 'di=0:ln=0:so=0:pi=0:ex=0:bd=0:cd=0:su=0:sg=0:tw=0:ow=0:or=31:mi=31:no=37:*=37'

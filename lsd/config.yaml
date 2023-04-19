@@ -24,3 +24,5 @@ total-size: false
 hyperlink: always
 
 symlink-arrow: "\uea9c " # 
+
+display: almost-all
