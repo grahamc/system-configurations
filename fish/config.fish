@@ -239,6 +239,9 @@ abbr --add --global ap 'sudo apt purge'
 abbr --add --global fai 'fzf-apt-install-widget'
 abbr --add --global far 'fzf-apt-remove-widget'
 
+# nix
+abbr --add --global 'nr' 'nix repl --file ~/.config/nix/repl-startup.nix'
+
 # python
 # Don't add the name of the virtual environment to my prompt. This way, I can add it myself
 # using the same formatting as the rest of my prompt.
