@@ -191,7 +191,9 @@ function fish_prompt_get_path_context
     set path (prompt_pwd)
 
     set dir_length 5
-    while test (string length --visible $path) -gt (math $COLUMNS - 10) -a $dir_length -ge 1
+    # 4 border chars + 'path: ' = 10
+    set max_width (math $COLUMNS - 10)
+    while test (string length --visible $path) -gt $max_width -a $dir_length -ge 1
         set -g fish_prompt_pwd_dir_length $dir_length
         set path (prompt_pwd)
         set dir_length (math $dir_length - 1)
