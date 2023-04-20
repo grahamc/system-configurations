@@ -184,8 +184,15 @@ abbr --add --global sudo 'sudo --preserve-env=PATH'
 abbr --add --global fp fzf-process-widget
 
 # timg
-# timg doesn't detect Wezterm so I'll do it here
-alias timg 'env | grep -q WEZTERM && command timg -p kitty || command timg'
+function timg --wraps timg
+    set pixelation_options
+    # timg doesn't detect Wezterm so I'll do it here
+    if env | grep -q WEZTERM
+        set pixelation_options '-p' 'kitty'
+    end
+
+    command timg $pixelation_options $argv
+end
 
 # man
 # NOTE: Per the man manpage, spaces in $MANOPT must be escaped with a backslash
