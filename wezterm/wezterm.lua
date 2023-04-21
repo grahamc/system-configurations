@@ -146,6 +146,11 @@ config.keys = {
     mods = 'ALT',
     action = wezterm.action.EmitEvent('toggle-color-scheme')
   },
+  {
+    key = 'v',
+    mods = 'CTRL|SHIFT',
+    action = wezterm.action.PasteFrom('Clipboard')
+  },
 }
 
 return config
