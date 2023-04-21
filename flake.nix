@@ -19,7 +19,7 @@
   # issue: https://github.com/nix-community/home-manager/issues/3075
   outputs = { nixpkgs, home-manager, nix-index-database, flake-utils, my-overlay, ... }:
     let
-      createConfigurations = {
+      createHomeManagerOutputs = {
         hostName,
         modules,
         systems,
@@ -81,8 +81,32 @@
             isGui = true;
           }
         ];
-      homeConfigurations = map createConfigurations hostConfigurations;
-      # Recursively merges a list of attribute sets
+      homeManagerOutputsPerHost = map createHomeManagerOutputs hostConfigurations;
+      activationPackagesBySystem = nixpkgs.lib.foldAttrs
+        (item: acc:
+          let
+            configs = builtins.attrValues item.homeConfigurations;
+            activationPackages = map (builtins.getAttr "activationPackage") configs;
+          in
+            acc ++ activationPackages
+        )
+        []
+        (map (builtins.getAttr "packages") homeManagerOutputsPerHost);
+      defaultOutputs = map
+        (system:
+          {
+            packages = {
+              "${system}" = {
+                default = (import nixpkgs {inherit system;}).symlinkJoin
+                  {
+                    name ="default";
+                    paths = activationPackagesBySystem.${system};
+                  };
+              };
+            };
+          }
+        )
+        (builtins.attrNames activationPackagesBySystem);
       recursiveMerge = sets: nixpkgs.lib.lists.foldr nixpkgs.lib.recursiveUpdate {} sets;
     in
       # For example, merging these two sets:                                    Would result in one set containing:
@@ -95,5 +119,5 @@
       #      };                               };                                      };
       #    };                               };                                      };
       #  }                                }                                       }
-      recursiveMerge homeConfigurations;
+      recursiveMerge (homeManagerOutputsPerHost ++ defaultOutputs);
 }
