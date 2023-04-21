@@ -29,13 +29,13 @@
       ] ++ tmuxPlugins;
 
       xdg.configFile."tmux/tmux.conf".text = ''
-        source-file ${makeSymlinkToRepo "tmux/tmux.conf"}
-
         # This is where my config expects plugins to be in order to access their scripts
         # My old tmux plugin manager, TPM, would set this environment variable to the path where plugins were stored.
         # Though I use Nix to manage my plugins now, this variable is referenced all over my tmux.conf so I'll
         # set the variable here to not break anything.
         set-environment -g "TMUX_PLUGIN_MANAGER_PATH" "${config.home.homeDirectory}/.nix-profile/share/tmux-plugins/"
+
+        source-file ${makeSymlinkToRepo "tmux/tmux.conf"}
 
         ${(lib.strings.concatMapStringsSep "\n\n" (p: ''
           # ${getPluginName p}
