@@ -87,6 +87,7 @@
           }
         ];
       homeManagerOutputsPerHost = map createHomeManagerOutputs hostConfigurations;
+      # e.g. {x86_64-linux = [<derivation>]; x86_64-darwin = [<derivation>];}
       activationPackagesBySystem = nixpkgs.lib.foldAttrs
         (item: acc:
           let
@@ -98,9 +99,10 @@
         []
         (map (builtins.getAttr "packages") homeManagerOutputsPerHost);
       # The default output is a `symlinkJoin` of all the Home Manager outputs. This way I can easily build
-      # all the Home Manager outputs in CI to populate my binary cache. There's an open issue for providing an
-      # easy way to build all packages.
+      # all the Home Manager outputs in CI to populate my binary cache. There are some open issues for providing an
+      # easier way to build all packages for CI.
       # issue: https://github.com/NixOS/nix/issues/7165
+      # issue: https://github.com/NixOS/nix/issues/7157
       defaultOutputs = map
         (system:
           {
