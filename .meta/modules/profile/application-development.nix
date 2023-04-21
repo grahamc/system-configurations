@@ -24,7 +24,6 @@
         go
         bashInteractive
         yash
-        languagetool # for vscode extension
         cloudflared
       ];
 
