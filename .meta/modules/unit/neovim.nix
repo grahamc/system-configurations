@@ -68,6 +68,9 @@
       };
 
       # Before we symlink the plugins, remove everything in the plugin directory.
+      # TODO: Because of this, HM will print out an error when it tries to clean up an orphan link. This is because
+      # the orphan link will have already been removed by this. So expect warning messages about orphan links
+      # being skipped whenever you remove a plugin from neovim.
       home.activation.neovimSetup = runBeforeLinkGeneration ''
         if test -d "${pluginDirectory}" && test -n "$(ls -A "${pluginDirectory}")"; then
           rm -rf ${pluginDirectory}/*  
