@@ -308,8 +308,6 @@ function fish_prompt_get_nix_context
     set packages (string split --no-empty ' ' "$ANY_NIX_SHELL_PKGS" | xargs -I PACKAGE fish -c 'string split --fields (count (string split \'.\' \'PACKAGE\')) \'.\' \'PACKAGE\'')
     if test -n "$packages"
         set packages " ($packages)"
-    else
-        set packages ''
     end
 
     echo -n -s $fish_prompt_color_text "nix: $color$IN_NIX_SHELL$fish_prompt_color_text$packages"
