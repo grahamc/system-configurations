@@ -15,6 +15,11 @@
     my-overlay.url = "path:./.meta/modules/my-overlay";
   };
 
+  nixConfig = {
+    extra-substituters = "https://bigolu.cachix.org";
+    extra-trusted-public-keys = "bigolu.cachix.org-1:AJELdgYsv4CX7rJkuGu5HuVaOHcqlOgR07ZJfihVTIw=";
+  };
+
   # TODO: Waiting on a more concise way to define configurations per system.
   # issue: https://github.com/nix-community/home-manager/issues/3075
   outputs = { nixpkgs, home-manager, nix-index-database, flake-utils, my-overlay, ... }:
