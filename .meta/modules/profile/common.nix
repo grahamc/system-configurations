@@ -44,6 +44,10 @@
           text = ''
             #!/bin/bash
 
+            # Add missing entries in sub-flake lock files so the top-level flake pulls them in when I do
+            # `--update-input` below.
+            nix flake lock '${repo}/.meta/modules/my-overlay'
+
             # I need `--update-input my-overlay` for the following reasons:
             #   - Without it, I get an error when trying to build home-manager on any machine where
             # `my-overlay` has not been built before.
@@ -65,6 +69,9 @@
         ".local/bin/home-manager-upgrade" = {
           text = ''
             #!/bin/bash
+
+            # Update inputs in sub-flakes so the top-level flake pulls them in.
+            nix flake update '${repo}/.meta/modules/my-overlay'
 
             home-manager switch --flake "${repo}#${hostName}" --impure --show-trace --recreate-lock-file
           '';
