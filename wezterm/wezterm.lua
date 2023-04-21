@@ -5,7 +5,7 @@ local config = wezterm.config_builder()
 -- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system, but Flatpak apps
 -- can't access my font configuration file from their sandbox so for now I'll hardcode a font.
 -- issue: https://github.com/flatpak/flatpak/issues/1563
-config.font = wezterm.font('JetBrains Mono NL')
+config.font = wezterm.font_with_fallback({'JetBrains Mono NL'})
 config.font_size = 10.5
 config.underline_position = -9
 config.cell_width = 1.04
