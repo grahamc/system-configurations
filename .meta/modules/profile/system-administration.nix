@@ -17,7 +17,6 @@
       ];
 
       home.packages = with pkgs; [
-        pipr
         timg
         autossh
         doggo
@@ -38,6 +37,7 @@
         file
       ] ++ optionals isLinux [
         trash-cli
+        pipr
       ];
 
       home.file = {
