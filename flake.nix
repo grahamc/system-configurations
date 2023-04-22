@@ -112,32 +112,41 @@
               systems = [ system ];
               installMethod = "copy";
             };
-            homeManagerConfiguration = homeManagerOutputs.packages.${system}.homeConfigurations.${hostName};
-            activationPackage = homeManagerConfiguration.activationPackage;
+            activationPackage = homeManagerOutputs.packages.${system}.homeConfigurations.${hostName}.activationPackage;
+            # TODO: I would rather this be an overlay that I pass to home manager, but that results in an infinite loop
+            # since the programs in here refer to the configuration files in home manager. Instead, I'll just
+            # put them earlier on the PATH than the home manager programs. This results in duplicates of whatever
+            # programs home manager and this have in common so I should find a way to remove those.
             sealedPackage = import ./.meta/modules/unit/sealed-packages.nix pkgs activationPackage;
-            fishWrapper = pkgs.symlinkJoin {
-              name = "biggie-fish";
-              paths = [ pkgs.fish ];
-              buildInputs = [ pkgs.makeWrapper ];
-              postBuild = ''
-                wrapProgram $out/bin/fish \
-                  --add-flags '--init-command' \
-                  --add-flags "'fish_add_path --global --prepend ${activationPackage}/home-files/.local/bin'" \
-                  --add-flags '--init-command' \
-                  --add-flags "'fish_add_path --global --prepend ${activationPackage}/home-path/bin'" \
-                  --add-flags '--init-command' \
-                  --add-flags "'fish_add_path --global --prepend ${sealedPackage}/bin'" \
-                  --add-flags '--init-command' \
-                  --add-flags "'fish_add_path --global --prepend $out/bin'" \
-                  --add-flags '--init-command' \
-                  --add-flags "'chronic bat cache --build'" \
+            # TODO: I'm avoiding using dollar signs in the fish script because I can't figure out how to stop
+            # Nix from interpreting them as the beginning of a Nix variable.
+            shellBootstrap = pkgs.writeScript "shell-bootstrap"
+              ''
+              #!${pkgs.fish}/bin/fish
+
+              fish_add_path --global --prepend ${activationPackage}/home-path/bin
+              fish_add_path --global --prepend ${sealedPackage}/bin
+              fish_add_path --global --prepend ${activationPackage}/home-files/.local/bin
+
+              # fish writes to its configuration directory so it needs to be mutable. So here I am copying
+              # all of its config files from the Nix store to a mutable directory.
+              set --global --export XDG_CONFIG_HOME (${pkgs.coreutils}/bin/mktemp --directory)
+              ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive ${activationPackage}/home-files/.config/fish (${pkgs.coreutils}/bin/printenv XDG_CONFIG_HOME)
+
+              # Compile my custom themes for bat.
+              chronic bat cache --build
+
+              
+              # TODO: I want to unexport XDG_CONFIG_HOME and XDG_DATA_HOME so host programs pick up the host's
+              # configs/data, but if I reload fish with `exec fish` then its XDG_CONFIG_HOME will be reset.
+              set --global --export XDG_DATA_HOME (${pkgs.coreutils}/bin/mktemp --directory)
+              SHELL=${pkgs.fish}/bin/fish exec ${pkgs.fish}/bin/fish
               '';
-            };
           in
             {
               apps.default = {
                 type = "app";
-                program = "${fishWrapper}/bin/fish";
+                program = builtins.toString shellBootstrap;
               };
             }
         );
