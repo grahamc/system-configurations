@@ -52,13 +52,6 @@
       hostConfigurations = with flake-utils.lib.system;
         [
           {
-            hostName = "server";
-            modules = [
-              ./.meta/modules/profile/system-administration.nix
-            ];
-            systems = [ x86_64-linux ];
-          }
-          {
             hostName = "laptop";
             modules = [
               ./.meta/modules/profile/application-development.nix
