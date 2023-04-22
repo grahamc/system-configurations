@@ -14,11 +14,11 @@
       ];
 
       home.file = {
-        ".gitconfig".source = makeSymlinkToRepo "git/gitconfig";
         ".local/bin/delta-with-fallback-to-less".source = makeSymlinkToRepo "git/delta-with-fallback-to-less";
       } // gitExecutables;
 
       xdg.configFile = {
         "gitui/theme.ron".source = makeSymlinkToRepo "git/gitui/theme.ron";
+        "git/config".source = makeSymlinkToRepo "git/gitconfig";
       };
     }
