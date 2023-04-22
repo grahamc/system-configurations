@@ -35,15 +35,15 @@
         watchman
         zoxide
         file
+        # This is on most machines by default, but not with the version I need. I need at least version 600 since
+        # that's where they added support for XDG Base Directories.
+        less
       ] ++ optionals isLinux [
         trash-cli
         pipr
       ];
 
       home.file = {
-        # less
-        ".lesskey".source = makeSymlinkToRepo "less/lesskey";
-
         # ripgrep
         ".ripgreprc".source = makeSymlinkToRepo "ripgrep/ripgreprc";
 
@@ -79,5 +79,8 @@
 
         # watchman
         "watchman/watchman.json".source = makeSymlinkToRepo "watchman/watchman.json";
+
+        # less
+        "lesskey".source = makeSymlinkToRepo "less/lesskey";
       };
     }
