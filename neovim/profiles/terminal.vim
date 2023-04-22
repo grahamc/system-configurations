@@ -1199,6 +1199,9 @@ Plug(
           ['null-ls'] = {
             ignore = true,
           },
+          ['ltex'] = {
+            ignore = true,
+          },
         },
       })
     end,
