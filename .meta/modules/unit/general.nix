@@ -5,5 +5,5 @@
       ;
   in
     {
-      home.file = makeSymlinksToTopLevelFilesInRepo ".local/bin" "general/executables";
+      home.file = makeSymlinksToTopLevelFilesInRepo ".local/bin" "general/executables" ../../../general/executables;
     }

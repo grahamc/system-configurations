@@ -56,7 +56,7 @@
         pkgs.neovim-unwrapped
       ];
 
-      xdg.configFile = makeSymlinksToTopLevelFilesInRepo "nvim" "neovim";
+      xdg.configFile = makeSymlinksToTopLevelFilesInRepo "nvim" "neovim" ../../../neovim;
 
       xdg.dataFile = {
         "nvim/site/autoload/plug.vim".source = "${pkgs.vimPlugins.vim-plug}/plug.vim";

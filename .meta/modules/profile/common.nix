@@ -1,6 +1,6 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (specialArgs) hostName nix-index-database;
+    inherit (specialArgs) hostName nix-index-database username homeDirectory;
     inherit (import ../util.nix {inherit config lib;}) makeSymlinkToRepo repo;
   in
     {
@@ -15,8 +15,8 @@
 
       # Home Manager needs a bit of information about you and the
       # paths it should manage.
-      home.username = builtins.getEnv "USER";
-      home.homeDirectory = builtins.getEnv "HOME";
+      home.username = username;
+      home.homeDirectory = homeDirectory;
 
       # The `man` in nixpkgs is only intended to be used for NixOS, it doesn't work properly on other OS's so I'm disabling
       # it. Since I'm not using the nixpkgs man, I have any packages I install their man outputs so my
@@ -62,7 +62,7 @@
             # the latest version of `my-overlay` I have to use `--update-input my-overlay` before running
             # `home-manager switch`. There's an issue open to improve on this workflow though:
             # issue: https://github.com/NixOS/nix/issues/6352
-            home-manager switch --flake "${repo}#${hostName}" --impure --show-trace --update-input my-overlay
+            home-manager switch --flake "${repo}#${hostName}" --show-trace --update-input my-overlay
           '';
           executable = true;
         };
@@ -73,7 +73,7 @@
             # Update inputs in sub-flakes so the top-level flake pulls them in.
             nix flake update '${repo}/.meta/modules/my-overlay'
 
-            home-manager switch --flake "${repo}#${hostName}" --impure --show-trace --recreate-lock-file
+            home-manager switch --flake "${repo}#${hostName}" --show-trace --recreate-lock-file
           '';
           executable = true;
         };

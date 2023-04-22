@@ -28,7 +28,9 @@
         hostName,
         modules,
         systems,
-        isGui ? false
+        isGui ? false,
+        username ? "biggs",
+        homeDirectory ? "/home/${username}"
       }:
         flake-utils.lib.eachSystem
         systems
@@ -43,7 +45,7 @@
               packages.homeConfigurations.${hostName} = home-manager.lib.homeManagerConfiguration {
                 inherit pkgs;
                 modules = modules ++ [ ./.meta/modules/profile/common.nix ];
-                extraSpecialArgs = { inherit hostName isGui nix-index-database; };
+                extraSpecialArgs = { inherit hostName isGui nix-index-database username homeDirectory; };
               };
             }
         );
@@ -84,6 +86,7 @@
             ];
             systems = [ x86_64-darwin ];
             isGui = true;
+            username = "bigmac";
           }
         ];
       homeManagerOutputsPerHost = map createHomeManagerOutputs hostConfigurations;

@@ -6,13 +6,7 @@
       let
         absolute_path = "${repo}/${path}";
       in
-        # Home Manager won't check if link source exists so I'll do it here.
-        # issue: https://github.com/nix-community/home-manager/issues/1808
-        if builtins.pathExists absolute_path
-          then
-            config.lib.file.mkOutOfStoreSymlink "${absolute_path}"
-          else
-            abort "Error: Cannot make out-of-store symlink, the source file does not exist '${absolute_path}'";
+        config.lib.file.mkOutOfStoreSymlink "${absolute_path}";
 
     runAfterWriteBoundary = script:
       lib.hm.dag.entryAfter [ "writeBoundary" ] script;
@@ -24,18 +18,20 @@
       lib.hm.dag.entryBefore [ "linkGeneration" ] script;
 
     # destination: path relative to $HOME
-    # source: path relative to dotfiles repository
-    #
-    # TODO: I should recurse into subdirectories
+    # sourceString: path string to the source, relative to the root dotfiles repository
+    # sourcePath: Path to the source
     #
     # TODO: I won't need this if Home Manager gets support for recursive symlinks.
     # issue: https://github.com/nix-community/home-manager/issues/3514
-    makeSymlinksToTopLevelFilesInRepo = destination: source:
+    makeSymlinksToTopLevelFilesInRepo = destination: sourceString: sourcePath:
       let
-        absolute_source_path = "${repo}/${source}";
-        files = builtins.readDir absolute_source_path;
+        files = builtins.readDir sourcePath;
         links = lib.attrsets.mapAttrs'
-          (name: value: lib.attrsets.nameValuePair "${destination}/${name}" { source = makeSymlinkToRepo "${source}/${name}"; })
+          (name: value:
+            lib.attrsets.nameValuePair
+              "${destination}/${name}"
+              { source = makeSymlinkToRepo "${sourceString}/${name}"; }
+          )
           files;
       in
         links;

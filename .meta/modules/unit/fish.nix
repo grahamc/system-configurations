@@ -5,8 +5,8 @@
       makeSymlinkToRepo
       ;
 
-    fishFunctions = makeSymlinksToTopLevelFilesInRepo "fish/my-functions" "fish/functions";
-    fishConfigs = makeSymlinksToTopLevelFilesInRepo "fish/conf.d" "fish/conf.d";
+    fishFunctions = makeSymlinksToTopLevelFilesInRepo "fish/my-functions" "fish/functions" ../../../fish/functions;
+    fishConfigs = makeSymlinksToTopLevelFilesInRepo "fish/conf.d" "fish/conf.d" ../../../fish/conf.d;
   in
     {
       # Using this so HM can include it's generated completion scripts

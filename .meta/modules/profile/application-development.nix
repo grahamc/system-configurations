@@ -4,7 +4,7 @@
       makeSymlinkToRepo
       makeSymlinksToTopLevelFilesInRepo
       ;
-    ipythonConfigs = makeSymlinksToTopLevelFilesInRepo ".ipython/profile_default/startup" "python/ipython/startup";
+    ipythonConfigs = makeSymlinksToTopLevelFilesInRepo ".ipython/profile_default/startup" "python/ipython/startup" ../../../python/ipython/startup;
   in
     {
       imports = [

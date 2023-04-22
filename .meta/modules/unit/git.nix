@@ -4,7 +4,7 @@
       makeSymlinkToRepo
       makeSymlinksToTopLevelFilesInRepo
       ;
-    gitExecutables = makeSymlinksToTopLevelFilesInRepo ".local/bin" "git/subcommands";
+    gitExecutables = makeSymlinksToTopLevelFilesInRepo ".local/bin" "git/subcommands" ../../../git/subcommands;
   in
     {
       home.packages = with pkgs; [
