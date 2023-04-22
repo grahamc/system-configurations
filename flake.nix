@@ -148,26 +148,31 @@
       defaultOutputs = map
         (system:
           let
+            pkgs = import nixpkgs {inherit system;};
             shellOutputsBySystem = shellOutputs.apps;
-            shell = (
+            shellStorePath =
               if builtins.hasAttr system shellOutputsBySystem
-              then [((import nixpkgs {inherit system;}).lib.strings.removeSuffix "/bin/fish" shellOutputsBySystem.${system}.default.program)]
-              else []
-            );
+              then [(pkgs.lib.strings.removeSuffix "/bin/fish" shellOutputsBySystem.${system}.default.program)]
+              else [];
+            homeManagerStorePaths =
+              if builtins.hasAttr system activationPackagesBySystem
+              then activationPackagesBySystem.${system}
+              else [];
+            allPaths = homeManagerStorePaths ++ shellStorePath;
           in
             {
               packages = {
                 "${system}" = {
-                  default = (import nixpkgs {inherit system;}).symlinkJoin
+                  default = pkgs.symlinkJoin
                     {
                       name ="default";
-                      paths = (activationPackagesBySystem.${system} ++ shell);
+                      paths = allPaths;
                     };
                 };
               };
             }
         )
-        (builtins.attrNames activationPackagesBySystem);
+        flake-utils.lib.allSystems;
       recursiveMerge = sets: nixpkgs.lib.lists.foldr nixpkgs.lib.recursiveUpdate {} sets;
     in
       # For example, merging these two sets:                                    Would result in one set containing:
