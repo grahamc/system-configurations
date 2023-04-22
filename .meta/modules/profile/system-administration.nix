@@ -71,9 +71,6 @@
         # lsd
         "lsd".source = makeSymlinkToRepo "lsd";
 
-        # pipr
-        "pipr/pipr.toml".source = makeSymlinkToRepo "pipr/pipr.toml";
-
         # viddy
         "viddy.toml".source = makeSymlinkToRepo "viddy/viddy.toml";
 
@@ -82,5 +79,8 @@
 
         # less
         "lesskey".source = makeSymlinkToRepo "less/lesskey";
+      } // optionalAttrs isLinux {
+        # pipr
+        "pipr/pipr.toml".source = makeSymlinkToRepo "pipr/pipr.toml";
       };
     }
