@@ -1,7 +1,3 @@
-# TODO: The script in conf.d for the plugin 'jorgebucaran/autopair.fish' is deleting my ctrl+h keybind
-# that I define in here. As a workaround, I prefixed this file with 'zz-' so that it's the last script to run in
-# conf.d and autopair won't be able to delete its keybinds.
-
 if not status is-interactive
     exit
 end
@@ -45,7 +41,15 @@ bind --erase \cr
 # from the history
 #
 # I also merge the history so that the search will search across all fish sessions' histories.
-bind-no-focus \ch 'history merge; fzf-history-widget && set -g __abbr_tips_used 1'
+#
+# TODO: The script in conf.d for the plugin 'jorgebucaran/autopair.fish' is deleting my ctrl+h keybind
+# that I define in here. As a workaround, I set this keybind when the first prompt is loaded which should be after
+# autopair is loaded.
+function __set_fzf_history_keybind --on-event fish_prompt
+    # I only want this to run once so delete the function.
+    functions -e (status current-function)
+    bind-no-focus \ch 'history merge; fzf-history-widget && set -g __abbr_tips_used 1'
+end
 
 # use alt+d for directory search instead of default alt+c
 bind --erase \ec
