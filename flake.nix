@@ -30,7 +30,9 @@
         systems,
         isGui ? false,
         username ? "biggs",
-        homeDirectory ? "/home/${username}"
+        homeDirectory ? "/home/${username}",
+        # copy or symlink
+        installMethod ? "symlink",
       }:
         flake-utils.lib.eachSystem
         systems
@@ -45,7 +47,7 @@
               packages.homeConfigurations.${hostName} = home-manager.lib.homeManagerConfiguration {
                 inherit pkgs;
                 modules = modules ++ [ ./.meta/modules/profile/common.nix ];
-                extraSpecialArgs = { inherit hostName isGui nix-index-database username homeDirectory; };
+                extraSpecialArgs = { inherit hostName isGui nix-index-database username homeDirectory installMethod; };
               };
             }
         );
@@ -103,11 +105,14 @@
               inherit system;
               overlays = [ my-overlay.overlays.default ];
             };
-            homeManagerConfiguration = home-manager.lib.homeManagerConfiguration {
-              inherit pkgs;
-              modules = [ ./.meta/modules/profile/common.nix ./.meta/modules/profile/system-administration.nix ];
-              extraSpecialArgs = { inherit nix-index-database; isGui = false; hostName = ""; };
+            hostName = "apps-default";
+            homeManagerOutputs = createHomeManagerOutputs {
+              inherit hostName;
+              modules = [ ./.meta/modules/profile/system-administration.nix ];
+              systems = [ system ];
+              installMethod = "copy";
             };
+            homeManagerConfiguration = homeManagerOutputs.packages.${system}.homeConfigurations.${hostName};
             activationPackage = homeManagerConfiguration.activationPackage;
             sealedPackage = import ./.meta/modules/unit/sealed-packages.nix pkgs activationPackage;
             fishWrapper = pkgs.symlinkJoin {

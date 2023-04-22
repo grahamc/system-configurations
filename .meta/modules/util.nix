@@ -1,12 +1,18 @@
-{ config, lib, ... }:
+{ config, lib, specialArgs, ... }:
   rec {
     repo = "${config.home.homeDirectory}/.dotfiles";
 
     makeSymlinkToRepo = path:
       let
         absolute_path = "${repo}/${path}";
+        inherit (specialArgs) installMethod;
       in
-        config.lib.file.mkOutOfStoreSymlink "${absolute_path}";
+        if installMethod == "symlink"
+          then config.lib.file.mkOutOfStoreSymlink "${absolute_path}"
+        else if installMethod == "copy"
+          then lib.path.append ../.. path
+        else
+          abort "Invalid installMethod";
 
     runAfterWriteBoundary = script:
       lib.hm.dag.entryAfter [ "writeBoundary" ] script;

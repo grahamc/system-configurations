@@ -1,6 +1,6 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (import ../util.nix {inherit config lib;})
+    inherit (import ../util.nix {inherit config lib specialArgs;})
       makeSymlinkToRepo
       ;
     tmuxPlugins = with pkgs.tmuxPlugins; [

@@ -1,6 +1,6 @@
-{ config, lib, ... }:
+{ config, lib, specialArgs, ... }:
   let
-    inherit (import ../util.nix {inherit config lib;})
+    inherit (import ../util.nix {inherit config lib specialArgs;})
       makeSymlinksToTopLevelFilesInRepo
       ;
   in

@@ -1,7 +1,7 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
     inherit (specialArgs) hostName nix-index-database username homeDirectory;
-    inherit (import ../util.nix {inherit config lib;}) makeSymlinkToRepo repo;
+    inherit (import ../util.nix {inherit config lib specialArgs;}) makeSymlinkToRepo repo;
   in
     {
       imports = [

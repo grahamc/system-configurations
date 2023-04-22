@@ -1,6 +1,6 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (import ../util.nix {inherit config lib;})
+    inherit (import ../util.nix {inherit config lib specialArgs;})
       makeSymlinkToRepo
       ;
     inherit (pkgs.stdenv) isLinux;
