@@ -124,6 +124,14 @@
               ''
               #!${pkgs.fish}/bin/fish
 
+              # My login shell .profile sets the LOCALE_ARCHIVE for me, but it sets it to
+              # ~/.nix-profile/lib/locale/locale-archive and I won't have that in a 'sealed' environment so instead
+              # I will source the Home Manager setup script because it sets the LOCALE_ARCHIVE to the path of the
+              # archive in the Nix store.
+              set --prepend fish_function_path ${pkgs.fishPlugins.foreign-env}/share/fish/vendor_functions.d
+              fenv source ${activationPackage}/home-path/etc/profile.d/hm-session-vars.sh >/dev/null
+              set -e fish_function_path[1]
+
               fish_add_path --global --prepend ${activationPackage}/home-path/bin
               fish_add_path --global --prepend ${sealedPackage}/bin
               fish_add_path --global --prepend ${activationPackage}/home-files/.local/bin
@@ -136,7 +144,6 @@
               # Compile my custom themes for bat.
               chronic bat cache --build
 
-              
               # TODO: I want to unexport XDG_CONFIG_HOME and XDG_DATA_HOME so host programs pick up the host's
               # configs/data, but if I reload fish with `exec fish` then its XDG_CONFIG_HOME will be reset.
               set --global --export XDG_DATA_HOME (${pkgs.coreutils}/bin/mktemp --directory)

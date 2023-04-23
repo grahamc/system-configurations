@@ -15,6 +15,7 @@
         any-nix-shell
         comma
         nix-tree
+        glibcLocales
       ];
 
       home.file = {

@@ -5,6 +5,7 @@ _nix_profile_setup_script="$HOME/.nix-profile/etc/profile.d/nix.sh"
 if [ -e "$_nix_profile_setup_script" ]; then
   . "$_nix_profile_setup_script"
 fi
+export LOCALE_ARCHIVE="$HOME/.nix-profile/lib/locale/locale-archive"
 
 # I want to keep a user-specific config so that I can manage it with Nix Home Manager
 export WATCHMAN_CONFIG_FILE="$HOME/.config/watchman/watchman.json"
