@@ -26,11 +26,9 @@
         let
           getPackageForPlugin = builtins.getAttr pluginName;
           formattedPluginName = (formatPluginName pluginName);
-          # TODO: make a changepackaegname function
           package = if builtins.hasAttr pluginName pkgs.vimPlugins
             then getPackageForPlugin pkgs.vimPlugins
             else if builtins.hasAttr formattedPluginName pkgs.vimPlugins
-            # TODO: name vs pname?
             then (builtins.getAttr "overrideAttrs" (builtins.getAttr formattedPluginName pkgs.vimPlugins)) (old: {pname = pluginName;})
             else abort "Failed to find vim plug ${pluginName}";
         in
