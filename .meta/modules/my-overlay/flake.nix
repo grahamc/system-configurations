@@ -23,6 +23,9 @@
   outputs = { ... }@repositories: {
     overlays.default = currentNixpkgs: previousNixpkgs:
       let
+        inherit (previousNixpkgs.stdenv) isLinux;
+        inherit (previousNixpkgs.lib.attrsets) optionalAttrs;
+
         # YYYYMMDDHHMMSS -> YYYY-MM-DD
         formatDate = date:
           let
@@ -120,11 +123,13 @@
           fishPluginRepositoryPrefix
           fishPluginBuilder;
         allFishPlugins = previousNixpkgs.fishPlugins // newFishPlugins;
-      in
-        {
+
+        crossPlatformPackages = {
           vimPlugins = allVimPlugins;
           tmuxPlugins = allTmuxPlugins;
           fishPlugins = allFishPlugins;
+        };
+        linuxOnlyPackages = optionalAttrs isLinux {
           clear = previousNixpkgs.symlinkJoin {
             name = "clear";
             paths = [previousNixpkgs.busybox];
@@ -136,5 +141,8 @@
             '';
           };
         };
+        allPackages = crossPlatformPackages // linuxOnlyPackages;
+      in
+        allPackages;
   };
 }
