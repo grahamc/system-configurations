@@ -112,7 +112,7 @@
               systems = [ system ];
               installMethod = "copy";
             };
-            activationPackage = homeManagerOutputs.packages.${system}.homeConfigurations.${hostName}.activationPackage;
+            inherit (homeManagerOutputs.packages.${system}.homeConfigurations.${hostName}) activationPackage;
             # TODO: I would rather this be an overlay that I pass to home manager, but that results in an infinite loop
             # since the programs in here refer to the configuration files in home manager. Instead, I'll just
             # put them earlier on the PATH than the home manager programs. This results in duplicates of whatever
