@@ -132,6 +132,8 @@
               fenv source ${activationPackage}/home-path/etc/profile.d/hm-session-vars.sh >/dev/null
               set -e fish_function_path[1]
 
+              set --global --export SHELL ${pkgs.fish}/bin/fish
+
               fish_add_path --global --prepend ${activationPackage}/home-path/bin
               fish_add_path --global --prepend ${sealedPackage}/bin
               fish_add_path --global --prepend ${activationPackage}/home-files/.local/bin
@@ -147,7 +149,7 @@
               # TODO: I want to unexport XDG_CONFIG_HOME and XDG_DATA_HOME so host programs pick up the host's
               # configs/data, but if I reload fish with `exec fish` then its XDG_CONFIG_HOME will be reset.
               set --global --export XDG_DATA_HOME (${pkgs.coreutils}/bin/mktemp --directory)
-              SHELL=${pkgs.fish}/bin/fish exec ${pkgs.fish}/bin/fish
+              exec ${pkgs.fish}/bin/fish
               '';
           in
             {
