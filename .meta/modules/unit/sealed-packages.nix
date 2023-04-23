@@ -3,11 +3,15 @@ nixpkgs: activationPackage:
     activationPackageHome = "${activationPackage}/home-files";
     makeSealedWrapper = {
       package,
-      binaryPath ? "bin/${package.pname}",
+      binaryPath ? null,
       environmentVariables ? {},
       flags ? []
     }:
       let
+        name = nixpkgs.lib.strings.getName package;
+        nonNullBinaryPath = if binaryPath == null
+          then "bin/${name}"
+          else binaryPath;
         defaultEnvironmentVariables = {
           XDG_CONFIG_HOME = "${activationPackageHome}/.config";
           XDG_DATA_HOME = "${activationPackageHome}/.local/share";
@@ -28,11 +32,11 @@ nixpkgs: activationPackage:
           (flag: "--add-flags ${flag}")
           flags;
         wrapper = nixpkgs.symlinkJoin {
-          name = "${package.pname}-wrapper";
+          name = "${name}-wrapper";
           paths = [ package ];
           buildInputs = [ nixpkgs.makeWrapper ];
           postBuild = ''
-            wrapProgram $out/${binaryPath} ${joinedFlags} ${joinedEnvironmentVariables}
+            wrapProgram $out/${nonNullBinaryPath} ${joinedFlags} ${joinedEnvironmentVariables}
           '';
         };
       in
