@@ -61,6 +61,7 @@ nixpkgs: activationPackage:
           FIGLET_FONTDIR = "${activationPackageHome}/.local/share/figlet";
         };
       })
+      (makeSealedWrapper { package = nixpkgs.nix; })
 
       # git
       (makeSealedWrapper { package = nixpkgs.git; })
