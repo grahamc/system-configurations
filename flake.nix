@@ -143,6 +143,20 @@
               set --global --export XDG_CONFIG_HOME (${pkgs.coreutils}/bin/mktemp --directory)
               ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive ${activationPackage}/home-files/.config/fish (${pkgs.coreutils}/bin/printenv XDG_CONFIG_HOME)
 
+              # neovim needs mutable directories as well
+              set -g mutable_bin (${pkgs.coreutils}/bin/mktemp --directory)
+              fish_add_path --global --prepend ''$mutable_bin
+              set -g state_dir (${pkgs.coreutils}/bin/mktemp --directory)
+              set -g config_dir (${pkgs.coreutils}/bin/mktemp --directory)
+              ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive ${activationPackage}/home-files/.config/nvim ''$config_dir
+              set -g data_dir (${pkgs.coreutils}/bin/mktemp --directory)
+              ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive ${activationPackage}/home-files/.local/share/nvim ''$data_dir
+              ${pkgs.coreutils}/bin/echo >''$mutable_bin/nvim "\
+                #!${pkgs.fish}/bin/fish
+                XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir ${pkgs.neovim-unwrapped}/bin/nvim
+                "
+              ${pkgs.coreutils}/bin/chmod +x ''$mutable_bin/nvim
+
               # Compile my custom themes for bat.
               chronic bat cache --build
 
