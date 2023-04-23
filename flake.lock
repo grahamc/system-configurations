@@ -106,7 +106,7 @@
       },
       "locked": {
         "lastModified": 1,
-        "narHash": "sha256-dAgn3biXwPjMlNCF6/UEgfR71T6IeYimU9th+6yVmHc=",
+        "narHash": "sha256-Lf1dnsP/6qP3ZUXlqJvMAOVgCYoY1PE8NS8IiJ4xijs=",
         "path": "./.meta/modules/my-overlay",
         "type": "path"
       },

@@ -38,6 +38,10 @@
         # This is on most machines by default, but not with the version I need. I need at least version 600 since
         # that's where they added support for XDG Base Directories.
         less
+
+        # These are on most machines by default, but they weren't in my docker container
+        gnused
+        clear
       ] ++ optionals isLinux [
         trash-cli
         pipr

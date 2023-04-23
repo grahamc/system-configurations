@@ -125,6 +125,16 @@
           vimPlugins = allVimPlugins;
           tmuxPlugins = allTmuxPlugins;
           fishPlugins = allFishPlugins;
+          clear = previousNixpkgs.symlinkJoin {
+            name = "clear";
+            paths = [previousNixpkgs.busybox];
+            buildInputs = [previousNixpkgs.makeWrapper];
+            # clear is a symlink to busybox so remove everything except those two.
+            postBuild = ''
+              cd $out
+              find . ! -name 'clear' ! -name 'busybox' -type f,l -exec rm -f {} +
+            '';
+          };
         };
   };
 }
