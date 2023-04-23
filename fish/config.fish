@@ -365,13 +365,10 @@ alias wezterm 'flatpak run org.wezfurlong.wezterm'
 if not set --query BANNER_WAS_PRINTED
     set banner Fish Shell v(string split ' ' (fish --version) | tail -n 1)
 
-    set figlet_font "$HOME/.local/share/figlet/smblock.tlf"
-    if type --query figlet
-    and test -f $figlet_font
-        figlet -W -f $figlet_font $banner
-    else
-        echo $banner
-    end
+    # If we don't have figlet, or the smblock font, fallback to echo. Doing it this way because I don't know how
+    # to check for the existence of a figlet font so I'll have to just let it fail.
+    figlet -W -f smblock $banner 2>/dev/null
+    or echo $banner
 
     set --global --export BANNER_WAS_PRINTED
 end

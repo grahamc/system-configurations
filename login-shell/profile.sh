@@ -17,6 +17,9 @@ export XML_CATALOG_FILES="/etc/xml/catalog $HOME/.local/share/xml/catalog"
 export GOPATH="$HOME/.local/share/go"
 export PATH="$GOPATH/bin:$PATH"
 
+# figlet
+export FIGLET_FONTDIR="$HOME/.local/share/figlet"
+
 # Adding this to the PATH since this is where user-specific executables should go, per the
 # XDG Base Directory spec.
 # More info: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html

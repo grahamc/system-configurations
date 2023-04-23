@@ -55,6 +55,12 @@ nixpkgs: activationPackage:
         };
       })
       (makeSealedWrapper { package = nixpkgs.less; })
+      (makeSealedWrapper {
+        package = nixpkgs.figlet;
+        environmentVariables = {
+          FIGLET_FONTDIR = "${activationPackageHome}/.local/share/figlet";
+        };
+      })
 
       # git
       (makeSealedWrapper { package = nixpkgs.git; })
