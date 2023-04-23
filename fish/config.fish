@@ -14,6 +14,11 @@ abbr --add --global logout-all 'sudo killall -u $USER'
 abbr --add --global r-icons 'sudo update-icon-caches /usr/share/icons/* ~/.local/share/icons/*'
 abbr --add --global du 'du -shL'
 
+# Set the terminal's color capability to 256 colors if it isn't already. 
+if not string match --regex --quiet -- '256' $TERM
+    set --global --export TERM xterm-256color
+end
+
 # reload the database used to search for applications
 abbr --add --global r-desktop-entries 'sudo update-desktop-database; update-desktop-database ~/.local/share/applications'
 
