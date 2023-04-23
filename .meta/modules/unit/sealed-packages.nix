@@ -41,40 +41,40 @@ nixpkgs: activationPackage:
         };
       in
         wrapper;
-    sealedPackages = [
-      (makeSealedWrapper { package = nixpkgs.bat; })
-      (makeSealedWrapper { package = nixpkgs.tmux; })
-      (makeSealedWrapper {
+    sealedPackageConfigurations = [
+      { package = nixpkgs.bat; }
+      { package = nixpkgs.tmux; }
+      { package = nixpkgs.nix; }
+      { package = nixpkgs.lsd; }
+      { package = nixpkgs.viddy; }
+      { package = nixpkgs.less; }
+      { package = nixpkgs.git; }
+      { package = nixpkgs.delta; }
+      { package = nixpkgs.gitui; }
+
+      {
         package = nixpkgs.ripgrep;
         binaryPath = "bin/rg";
         environmentVariables = {
           RIPGREP_CONFIG_PATH = "${activationPackageHome}/.ripgreprc";
         };
-      })
-      (makeSealedWrapper { package = nixpkgs.lsd; })
-      (makeSealedWrapper { package = nixpkgs.viddy; })
-      (makeSealedWrapper {
+      }
+      {
         package = nixpkgs.watchman;
         environmentVariables = {
           WATCHMAN_CONFIG_FILE = "${activationPackageHome}/.config/watchman/watchman.json";
         };
-      })
-      (makeSealedWrapper { package = nixpkgs.less; })
-      (makeSealedWrapper {
+      }
+      {
         package = nixpkgs.figlet;
         environmentVariables = {
           FIGLET_FONTDIR = "${activationPackageHome}/.local/share/figlet";
         };
-      })
-      (makeSealedWrapper { package = nixpkgs.nix; })
-
-      # git
-      (makeSealedWrapper { package = nixpkgs.git; })
-      (makeSealedWrapper { package = nixpkgs.delta; })
-      (makeSealedWrapper { package = nixpkgs.gitui; })
+      }
     ] ++ nixpkgs.lib.lists.optionals nixpkgs.stdenv.isLinux [
-      (makeSealedWrapper { package = nixpkgs.pipr; })
+      { package = nixpkgs.pipr; }
     ];
+    sealedPackages = map makeSealedWrapper sealedPackageConfigurations;
     joinedPackage = nixpkgs.symlinkJoin {
       name = "sealed-packages";
       paths = sealedPackages;
