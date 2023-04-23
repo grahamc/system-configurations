@@ -130,38 +130,47 @@
               fenv source ${activationPackage}/home-path/etc/profile.d/hm-session-vars.sh >/dev/null
               set -e fish_function_path[1]
 
-              set --global --export SHELL ${pkgs.fish}/bin/fish
-
               fish_add_path --global --prepend ${activationPackage}/home-path/bin
               fish_add_path --global --prepend ${sealedPackage}/bin
               fish_add_path --global --prepend ${activationPackage}/home-files/.local/bin
 
-              # fish writes to its configuration directory so it needs to be mutable. So here I am copying
-              # all of its config files from the Nix store to a mutable directory.
-              set --global --export XDG_CONFIG_HOME (${pkgs.coreutils}/bin/mktemp --directory)
-              ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive ${activationPackage}/home-files/.config/fish ''$XDG_CONFIG_HOME
-
-              # neovim needs mutable directories as well
+              # For packages that need one of its XDG Base directories to be mutable
               set -g mutable_bin (${pkgs.coreutils}/bin/mktemp --directory)
               fish_add_path --global --prepend ''$mutable_bin
               set -g state_dir (${pkgs.coreutils}/bin/mktemp --directory)
               set -g config_dir (${pkgs.coreutils}/bin/mktemp --directory)
-              ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive ${activationPackage}/home-files/.config/nvim ''$config_dir
               set -g data_dir (${pkgs.coreutils}/bin/mktemp --directory)
+
+              # fish writes to its configuration directory so it needs to be mutable. So here I am copying
+              # all of its config files from the Nix store to a mutable directory.
+              ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive ${activationPackage}/home-files/.config/fish ''$config_dir
+              # NOTE: The hashbang needs to be the first two bytes in the file for the kernel to recognize it so
+              # don't move it to its own line.
+              echo -s >''$mutable_bin/fish "#!${pkgs.fish}/bin/fish
+                # I unexport the XDG Base directories so host programs pick up the host's XDG directories.
+                XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir ${pkgs.fish}/bin/fish \
+                  --init-command 'set --unexport XDG_CONFIG_HOME' \
+                  --init-command 'set --unexport XDG_DATA_HOME' \
+                  --init-command 'set --unexport XDG_STATE_HOME'" ' ''$argv'
+              ${pkgs.coreutils}/bin/chmod +x ''$mutable_bin/fish
+
+              # neovim needs mutable directories as well
+              ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive ${activationPackage}/home-files/.config/nvim ''$config_dir
               ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive ${activationPackage}/home-files/.local/share/nvim ''$data_dir
-              ${pkgs.coreutils}/bin/echo >''$mutable_bin/nvim "\
-                #!${pkgs.fish}/bin/fish
+              # NOTE: The hashbang needs to be the first two bytes in the file for the kernel to recognize it so
+              # don't move it to its own line.
+              ${pkgs.coreutils}/bin/echo >''$mutable_bin/nvim "#!${pkgs.fish}/bin/fish
                 XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir ${pkgs.neovim-unwrapped}/bin/nvim
                 "
               ${pkgs.coreutils}/bin/chmod +x ''$mutable_bin/nvim
 
+              # Set fish as the default shell
+              set --global --export SHELL ''$mutable_bin/fish
+
               # Compile my custom themes for bat.
               chronic bat cache --build
 
-              # TODO: I want to unexport XDG_CONFIG_HOME and XDG_DATA_HOME so host programs pick up the host's
-              # configs/data, but if I reload fish with `exec fish` then its XDG_CONFIG_HOME will be reset.
-              set --global --export XDG_DATA_HOME (${pkgs.coreutils}/bin/mktemp --directory)
-              exec ${pkgs.fish}/bin/fish
+              exec ''$SHELL
               '';
           in
             {
