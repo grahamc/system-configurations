@@ -181,15 +181,17 @@
           let
             pkgs = import nixpkgs {inherit system;};
             shellOutputsBySystem = shellOutputs.apps;
-            shellStorePath =
+            # I want this script run by the shell output to be included in the build, but since it has no directory
+            # associated with it (it's just /nix/<hash>-<script-name>) I can't include it in the `paths` key
+            # of `symlinkJoin`. Instead, I copy it into the package created by `symlinkJoin` in the `postBuild` hook.
+            copyShellOutputToPackage =
               if builtins.hasAttr system shellOutputsBySystem
-              then [(pkgs.lib.strings.removeSuffix "/bin/fish" shellOutputsBySystem.${system}.default.program)]
-              else [];
+                then ''cp ${shellOutputsBySystem.${system}.default.program} $out/''
+                else "";
             homeManagerStorePaths =
               if builtins.hasAttr system activationPackagesBySystem
               then activationPackagesBySystem.${system}
               else [];
-            allPaths = homeManagerStorePaths ++ shellStorePath;
           in
             {
               packages = {
@@ -197,7 +199,8 @@
                   default = pkgs.symlinkJoin
                     {
                       name ="default";
-                      paths = allPaths;
+                      paths = homeManagerStorePaths;
+                      postBuild = copyShellOutputToPackage;
                     };
                 };
               };
