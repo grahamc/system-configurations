@@ -3,6 +3,8 @@
     inherit (import ../util.nix {inherit config lib specialArgs;})
       makeSymlinkToRepo
       ;
+    inherit (lib.lists) optionals;
+    inherit (pkgs.stdenv) isLinux;
   in
     {
       xdg.configFile = {
@@ -15,6 +17,7 @@
         any-nix-shell
         comma
         nix-tree
+      ] ++ optionals isLinux [
         glibcLocales
       ];
 
