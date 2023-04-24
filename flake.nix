@@ -117,6 +117,9 @@
             # since the programs in here refer to the configuration files in home manager. Instead, I'll just
             # put them earlier on the PATH than the home manager programs. This results in duplicates of whatever
             # programs home manager and this have in common so I should find a way to remove those.
+            #
+            # I couldn't figure out how to escape '$argv' properly in a double quoted string in the fish wrapper so
+            # I'm using a single quoted string and having echo concatenate it with everything else.
             sealedPackage = import ./.meta/modules/unit/sealed-packages.nix pkgs activationPackage;
             shellBootstrap = pkgs.writeScript "shell-bootstrap"
               ''
