@@ -143,7 +143,7 @@
 
               # fish writes to its configuration directory so it needs to be mutable. So here I am copying
               # all of its config files from the Nix store to a mutable directory.
-              ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive ${activationPackage}/home-files/.config/fish ''$config_dir
+              ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.config/fish ''$config_dir
               # NOTE: The hashbang needs to be the first two bytes in the file for the kernel to recognize it so
               # don't move it to its own line.
               echo -s >''$mutable_bin/fish "#!${pkgs.fish}/bin/fish
@@ -155,8 +155,8 @@
               ${pkgs.coreutils}/bin/chmod +x ''$mutable_bin/fish
 
               # neovim needs mutable directories as well
-              ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive ${activationPackage}/home-files/.config/nvim ''$config_dir
-              ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive ${activationPackage}/home-files/.local/share/nvim ''$data_dir
+              ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.config/nvim ''$config_dir
+              ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.local/share/nvim ''$data_dir
               # NOTE: The hashbang needs to be the first two bytes in the file for the kernel to recognize it so
               # don't move it to its own line.
               ${pkgs.coreutils}/bin/echo >''$mutable_bin/nvim "#!${pkgs.fish}/bin/fish
