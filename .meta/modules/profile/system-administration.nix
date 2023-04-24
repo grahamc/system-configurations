@@ -33,8 +33,8 @@
         viddy
         zoxide
         file
-        # This is on most machines by default, but not with the version I need. I need at least version 600 since
-        # that's where they added support for XDG Base Directories.
+        # Though less is on most machines by default, I added it here because I need a relatively recent version (600)
+        # since that's when they added support for XDG Base Directories.
         less
         # This is on most machines by default, but it wasn't in my docker container
         gnused
