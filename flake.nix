@@ -130,7 +130,7 @@
               # I will source the Home Manager setup script because it sets the LOCALE_ARCHIVE to the path of the
               # archive in the Nix store.
               set --prepend fish_function_path ${pkgs.fishPlugins.foreign-env}/share/fish/vendor_functions.d
-              fenv source ${activationPackage}/home-path/etc/profile.d/hm-session-vars.sh >/dev/null
+              PATH="${pkgs.coreutils}/bin:''$PATH" fenv source ${activationPackage}/home-path/etc/profile.d/hm-session-vars.sh >/dev/null
               set -e fish_function_path[1]
 
               fish_add_path --global --prepend ${activationPackage}/home-path/bin
