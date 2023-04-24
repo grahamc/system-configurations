@@ -24,7 +24,7 @@
       home.file = {
         ".local/bin/manix" = {
           text = ''
-            #!/bin/bash
+            #!${pkgs.bash}/bin/bash
 
             PATH="${pkgs.manix}/bin:$PATH"
 

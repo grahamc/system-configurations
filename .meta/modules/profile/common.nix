@@ -42,7 +42,7 @@
         ".dotfiles/.git/hooks/post-rewrite".source = makeSymlinkToRepo ".meta/git_file_watch/hooks/post-rewrite.sh";
         ".local/bin/home-manager-switch" = {
           text = ''
-            #!/bin/bash
+            #!${pkgs.bash}/bin/bash
 
             # Add missing entries in sub-flake lock files so the top-level flake pulls them in when I do
             # `--update-input` below.
@@ -68,7 +68,7 @@
         };
         ".local/bin/home-manager-upgrade" = {
           text = ''
-            #!/bin/bash
+            #!${pkgs.bash}/bin/bash
 
             # Update inputs in sub-flakes so the top-level flake pulls them in.
             nix flake update '${repo}/.meta/modules/my-overlay'
