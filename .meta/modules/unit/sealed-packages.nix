@@ -72,6 +72,10 @@ nixpkgs: activationPackage:
           FIGLET_FONTDIR = "${activationPackageHome}/.local/share/figlet";
         };
       }
+      {
+        package = nixpkgs.comma;
+        binaryPath = "bin/,";
+      }
     ] ++ nixpkgs.lib.lists.optionals nixpkgs.stdenv.isLinux [
       { package = nixpkgs.pipr; }
     ];
