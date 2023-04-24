@@ -16,6 +16,7 @@ nixpkgs: activationPackage:
           XDG_CONFIG_HOME = "${activationPackageHome}/.config";
           XDG_DATA_HOME = "${activationPackageHome}/.local/share";
           XDG_STATE_HOME = "${activationPackageHome}/.local/state";
+          XDG_CACHE_HOME = "${activationPackageHome}/.cache";
         };
         allEnvironmentVariables = defaultEnvironmentVariables // environmentVariables;
         joinedEnvironmentVariables = nixpkgs.lib.strings.concatMapStringsSep
