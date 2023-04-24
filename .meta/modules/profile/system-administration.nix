@@ -36,8 +36,11 @@
         # Though less is on most machines by default, I added it here because I need a relatively recent version (600)
         # since that's when they added support for XDG Base Directories.
         less
-        # This is on most machines by default, but it wasn't in my docker container
+        # These weren't in a docker container
         gnused
+        coreutils-full
+        which
+        man
       ] ++ optionals isLinux [
         trash-cli
         pipr
