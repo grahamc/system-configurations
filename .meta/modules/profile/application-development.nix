@@ -25,6 +25,8 @@
         bashInteractive
         yash
         cloudflared
+        timg
+        watchman
       ];
 
       home.file = {

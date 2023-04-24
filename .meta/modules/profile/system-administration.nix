@@ -17,7 +17,6 @@
       ];
 
       home.packages = with pkgs; [
-        timg
         autossh
         doggo
         duf
@@ -32,7 +31,6 @@
         tealdeer
         tree
         viddy
-        watchman
         zoxide
         file
         # This is on most machines by default, but not with the version I need. I need at least version 600 since
