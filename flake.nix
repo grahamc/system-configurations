@@ -167,8 +167,8 @@
               # NOTE: The hashbang needs to be the first two bytes in the file for the kernel to recognize it so
               # don't move it to its own line.
               ${pkgs.coreutils}/bin/echo >''$mutable_bin/nvim "#!${pkgs.fish}/bin/fish
-                XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir ${pkgs.neovim-unwrapped}/bin/nvim
-                "
+                XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir \
+                ${pkgs.neovim-unwrapped}/bin/nvim" ' ''$argv'
               ${pkgs.coreutils}/bin/chmod +x ''$mutable_bin/nvim
 
               # Set fish as the default shell
