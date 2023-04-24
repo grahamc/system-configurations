@@ -143,6 +143,7 @@
               set -g state_dir (${pkgs.coreutils}/bin/mktemp --directory)
               set -g config_dir (${pkgs.coreutils}/bin/mktemp --directory)
               set -g data_dir (${pkgs.coreutils}/bin/mktemp --directory)
+              set -g runtime_dir (${pkgs.coreutils}/bin/mktemp --directory)
 
               # fish writes to its configuration directory so it needs to be mutable. So here I am copying
               # all of its config files from the Nix store to a mutable directory.
@@ -151,10 +152,13 @@
               # don't move it to its own line.
               echo -s >''$mutable_bin/fish "#!${pkgs.fish}/bin/fish
                 # I unexport the XDG Base directories so host programs pick up the host's XDG directories.
-                XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir ${pkgs.fish}/bin/fish \
+                XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir \
+                ${pkgs.fish}/bin/fish \
                   --init-command 'set --unexport XDG_CONFIG_HOME' \
                   --init-command 'set --unexport XDG_DATA_HOME' \
-                  --init-command 'set --unexport XDG_STATE_HOME'" ' ''$argv'
+                  --init-command 'set --unexport XDG_STATE_HOME' \
+                  --init-command 'set --unexport XDG_RUNTIME_DIR' \
+                  " ' ''$argv'
               ${pkgs.coreutils}/bin/chmod +x ''$mutable_bin/fish
 
               # neovim needs mutable directories as well
