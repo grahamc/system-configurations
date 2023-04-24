@@ -43,7 +43,6 @@ nixpkgs: activationPackage:
       in
         wrapper;
     sealedPackageConfigurations = [
-      { package = nixpkgs.bat; }
       { package = nixpkgs.tmux; }
       { package = nixpkgs.nix; }
       { package = nixpkgs.lsd; }
