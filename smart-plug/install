@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # exit the script if any command returns a non-zero exit code
 set -e

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 if has_changes 'tmux/tmux.conf'; then
   if confirm "The tmux configuration has changed, would you like to reload tmux?"; then

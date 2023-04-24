@@ -1,4 +1,4 @@
-#!/bin/env sh
+#!/usr/bin/env sh
 
 # If Firefox Developer Edition is open, use that instead of normal firefox.
 

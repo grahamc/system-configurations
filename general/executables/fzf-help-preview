@@ -1,4 +1,4 @@
-#!/bin/env fish
+#!/usr/bin/env fish
 
 # Prints a cheatsheet for fzf keybinds. This is intended to be used in a call to preview() in fzf.
 #

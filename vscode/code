@@ -1,4 +1,4 @@
-#!/bin/env sh
+#!/usr/bin/env sh
 # A wrapper for vscode to enable running natively in Wayland, instead of using xwayland, if the current session is
 # using Wayland. This way the font won't be blurry on HiDPI screens.
 # issue: https://github.com/microsoft/vscode/issues/109176

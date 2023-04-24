@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 if has_changes 'login-shell/profile.sh'; then
   echo "The login shell profile has changed. To apply these changes you can log out. Press enter to continue (This will not log you out)"

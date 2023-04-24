@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 # Exit if a command returns a non-zero exit code
 set -o errexit

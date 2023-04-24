@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 fish_function_pattern='fish/functions/*'
 fish_conf_pattern='fish/conf.d/*'

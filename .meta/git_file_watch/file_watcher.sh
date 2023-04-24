@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 # Assign stdin, stdout, and stderr to the terminal
 exec </dev/tty >/dev/tty 2>&1

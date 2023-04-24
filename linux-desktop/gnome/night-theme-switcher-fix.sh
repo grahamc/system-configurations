@@ -1,4 +1,4 @@
-#!/bin/env sh
+#!/usr/bin/env sh
 
 dbus-monitor --session "type='signal',interface='org.gnome.ScreenSaver'" | \
 ( while true; do

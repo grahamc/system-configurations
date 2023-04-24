@@ -1,4 +1,4 @@
-#!/bin/env fish
+#!/usr/bin/env fish
 
 function _tmux_nest
   if not set --query TMUX

@@ -1,4 +1,4 @@
-#!/bin/env fish
+#!/usr/bin/env fish
 
 # Wrapper for fzf. If caller is inside a tmux session, it will zoom the current pane,
 # run fzf, and minimize the pane. Unless the pane was zoomed before calling this script,
