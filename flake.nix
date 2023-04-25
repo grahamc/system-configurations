@@ -194,7 +194,7 @@
               # Compile my custom themes for bat.
               chronic bat cache --build
 
-              exec ''$SHELL
+              exec ''$SHELL ''$argv
               '';
           in
             {
