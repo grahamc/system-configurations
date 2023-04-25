@@ -110,27 +110,35 @@
               installMethod = "copy";
             };
             inherit (homeManagerOutputs.packages.${system}.homeConfigurations.${hostName}) activationPackage;
+            # I don't want the programs that this script depends on to be in the $PATH since they are not
+            # necessarily part of my Home Manager configuration so I'll set them to variables instead.
+            mktemp = "${pkgs.coreutils}/bin/mktemp";
+            copy = "${pkgs.coreutils}/bin/cp";
+            chmod = "${pkgs.coreutils}/bin/chmod";
+            fish = "${pkgs.fish}/bin/fish";
+            coreutilsBinaryPath = "${pkgs.coreutils}/bin";
+            foreignEnvFunctionPath = "${pkgs.fishPlugins.foreign-env}/share/fish/vendor_functions.d";
             # I couldn't figure out how to escape '$argv' properly in a double quoted string in the fish wrapper so
             # I'm using a single quoted string and having echo concatenate it with everything else.
+            #
+            # NOTE: The hashbangs in the scripts need to be the first two bytes in the file for the kernel to
+            # recognize them so it must come directly after the opening quote of the script.
             shellBootstrap = pkgs.writeScript "shell-bootstrap"
-              ''
-              #!${pkgs.fish}/bin/fish
+              ''#!${fish}
 
               # For packages that need one of their XDG Base directories to be mutable
-              set -g mutable_bin (${pkgs.coreutils}/bin/mktemp --directory)
-              set -g state_dir (${pkgs.coreutils}/bin/mktemp --directory)
-              set -g config_dir (${pkgs.coreutils}/bin/mktemp --directory)
-              set -g data_dir (${pkgs.coreutils}/bin/mktemp --directory)
-              set -g runtime_dir (${pkgs.coreutils}/bin/mktemp --directory)
-              set -g cache_dir (${pkgs.coreutils}/bin/mktemp --directory)
+              set -g mutable_bin (${mktemp} --directory)
+              set -g state_dir (${mktemp} --directory)
+              set -g config_dir (${mktemp} --directory)
+              set -g data_dir (${mktemp} --directory)
+              set -g runtime_dir (${mktemp} --directory)
+              set -g cache_dir (${mktemp} --directory)
 
               # Make mutable copies of the contents of any XDG Base Directory in the Home Manager configuration.
               # This is because some programs need to be able to write to one of these directories e.g. `fish`.
-              ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.config/* ''$config_dir
-              ${pkgs.coreutils}/bin/cp --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.local/share/* ''$data_dir
+              ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.config/* ''$config_dir
+              ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.local/share/* ''$data_dir
 
-              # NOTE: The hashbangs in the wrappers need to be the first two bytes in the file for the kernel to
-              # recognize it so don't move it to its own line.
               for program in ${activationPackage}/home-path/bin/*
                 set base (basename ''$program)
 
@@ -139,7 +147,7 @@
                     # TODO: Wrapping this caused an infinite loop so I'll copy it instead
                     cp -L ''$program ''$mutable_bin/env
                   case fish
-                    echo -s >''$mutable_bin/''$base "#!${pkgs.fish}/bin/fish
+                    echo -s >''$mutable_bin/''$base "#!${fish}
                       # I unexport the XDG Base directories so host programs pick up the host's XDG directories.
                       XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir XDG_CACHE_HOME=''$cache_dir \
                       ''$program \
@@ -149,32 +157,32 @@
                         --init-command 'set --unexport XDG_RUNTIME_DIR' \
                         " ' ''$argv'
                   case rg
-                    echo -s >''$mutable_bin/''$base "#!${pkgs.fish}/bin/fish
+                    echo -s >''$mutable_bin/''$base "#!${fish}
                       XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir XDG_CACHE_HOME=''$cache_dir RIPGREP_CONFIG_PATH=${activationPackage}/home-files/.ripgreprc \
                       ''$program" ' ''$argv'
                   case watchman
-                    echo -s >''$mutable_bin/''$base "#!${pkgs.fish}/bin/fish
+                    echo -s >''$mutable_bin/''$base "#!${fish}
                       XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir XDG_CACHE_HOME=''$cache_dir WATCHMAN_CONFIG_FILE=${activationPackage}/home-files/.config/watchman/watchman.json \
                       ''$program" ' ''$argv'
                   case figlet
-                    echo -s >''$mutable_bin/''$base "#!${pkgs.fish}/bin/fish
+                    echo -s >''$mutable_bin/''$base "#!${fish}
                       XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir XDG_CACHE_HOME=''$cache_dir FIGLET_FONTDIR=${activationPackage}/home-files/.local/share/figlet \
                       ''$program" ' ''$argv'
                   case '*'
-                    echo -s >''$mutable_bin/''$base "#!${pkgs.fish}/bin/fish
+                    echo -s >''$mutable_bin/''$base "#!${fish}
                       XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir XDG_CACHE_HOME=''$cache_dir \
                       ''$program" ' ''$argv'
                 end
 
-                ${pkgs.coreutils}/bin/chmod +x ''$mutable_bin/''$base
+                ${chmod} +x ''$mutable_bin/''$base
               end
 
               # My login shell .profile sets the LOCALE_ARCHIVE for me, but it sets it to
               # ~/.nix-profile/lib/locale/locale-archive and I won't have that in a 'sealed' environment so instead
               # I will source the Home Manager setup script because it sets the LOCALE_ARCHIVE to the path of the
               # archive in the Nix store.
-              set --prepend fish_function_path ${pkgs.fishPlugins.foreign-env}/share/fish/vendor_functions.d
-              PATH="${pkgs.coreutils}/bin:''$PATH" fenv source ${activationPackage}/home-path/etc/profile.d/hm-session-vars.sh >/dev/null
+              set --prepend fish_function_path ${foreignEnvFunctionPath}
+              PATH="${coreutilsBinaryPath}:''$PATH" fenv source ${activationPackage}/home-path/etc/profile.d/hm-session-vars.sh >/dev/null
               set -e fish_function_path[1]
 
               fish_add_path --global --prepend ${activationPackage}/home-files/.local/bin
