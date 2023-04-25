@@ -110,7 +110,7 @@
               installMethod = "copy";
             };
             inherit (homeManagerOutputs.packages.${system}.homeConfigurations.${hostName}) activationPackage;
-            shellBootstrapScriptName = "shell-bootstrap";
+            shellBootstrapScriptName = "shell";
             # I don't want the programs that this script depends on to be in the $PATH since they are not
             # necessarily part of my Home Manager configuration so I'll set them to variables instead.
             mktemp = "${pkgs.coreutils}/bin/mktemp";
