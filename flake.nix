@@ -118,6 +118,8 @@
             chmod = "${pkgs.coreutils}/bin/chmod";
             fish = "${pkgs.fish}/bin/fish";
             coreutilsBinaryPath = "${pkgs.coreutils}/bin";
+            basename = "${coreutilsBinaryPath}/basename";
+            which = "${pkgs.which}/bin/which";
             foreignEnvFunctionPath = "${pkgs.fishPlugins.foreign-env}/share/fish/vendor_functions.d";
             # I couldn't figure out how to escape '$argv' properly in a double quoted string in the fish wrapper so
             # I'm using a single quoted string and having echo concatenate it with everything else.
@@ -141,7 +143,7 @@
               ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.local/share/* ''$data_dir
 
               for program in ${activationPackage}/home-path/bin/*
-                set base (basename ''$program)
+                set base (${basename} ''$program)
 
                 switch "$base"
                   case env
@@ -190,7 +192,7 @@
               fish_add_path --global --prepend ''$mutable_bin
 
               # Set fish as the default shell
-              set --global --export SHELL (which fish)
+              set --global --export SHELL (${which} fish)
 
               # Compile my custom themes for bat.
               chronic bat cache --build
