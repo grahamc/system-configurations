@@ -148,7 +148,7 @@
                 switch "$base"
                   case env
                     # TODO: Wrapping this caused an infinite loop so I'll copy it instead
-                    cp -L ''$program ''$mutable_bin/env
+                    ${copy} -L ''$program ''$mutable_bin/env
                   case fish
                     echo -s >''$mutable_bin/''$base "#!${fish}
                       # I unexport the XDG Base directories so host programs pick up the host's XDG directories.
