@@ -151,6 +151,13 @@ config.keys = {
     mods = 'CTRL|SHIFT',
     action = wezterm.action.PasteFrom('Clipboard')
   },
+  {
+    key = 'i',
+    mods = 'CTRL',
+    action = wezterm.action.SendKey {
+      key = 'F12',
+    },
+  },
 }
 
 return config

@@ -217,7 +217,7 @@ vim.keymap.set({'i'}, '<C-e>', '<ESC>$a')
 -- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
 --
 -- move forward in the jumplist
-vim.keymap.set("n", "<C-p>", '<C-i>')
+vim.keymap.set("n", "<F12>", '<C-i>')
 EOF
 " }}}
 
