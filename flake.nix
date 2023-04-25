@@ -110,6 +110,7 @@
               installMethod = "copy";
             };
             inherit (homeManagerOutputs.packages.${system}.homeConfigurations.${hostName}) activationPackage;
+            shellBootstrapScriptName = "shell-bootstrap";
             # I don't want the programs that this script depends on to be in the $PATH since they are not
             # necessarily part of my Home Manager configuration so I'll set them to variables instead.
             mktemp = "${pkgs.coreutils}/bin/mktemp";
@@ -123,7 +124,7 @@
             #
             # NOTE: The hashbangs in the scripts need to be the first two bytes in the file for the kernel to
             # recognize them so it must come directly after the opening quote of the script.
-            shellBootstrap = pkgs.writeScript "shell-bootstrap"
+            shellBootstrap = pkgs.writeScriptBin shellBootstrapScriptName
               ''#!${fish}
 
               # For packages that need one of their XDG Base directories to be mutable
@@ -200,7 +201,8 @@
             {
               apps.default = {
                 type = "app";
-                program = builtins.toString shellBootstrap;
+                program = "${shellBootstrap}/bin/${shellBootstrapScriptName}";
+                programDirectory = "${shellBootstrap}";
               };
             }
         );
@@ -213,18 +215,12 @@
         (system:
           let
             pkgs = import nixpkgs {inherit system;};
+            inherit (pkgs.lib.lists) optionals;
             shellOutputsBySystem = shellOutputs.apps;
-            # I want this script run by the shell output to be included in the build, but since it has no directory
-            # associated with it (it's just /nix/<hash>-<script-name>) I can't include it in the `paths` key
-            # of `symlinkJoin`. Instead, I copy it into the package created by `symlinkJoin` in the `postBuild` hook.
-            copyShellOutputToPackage =
-              if builtins.hasAttr system shellOutputsBySystem
-                then ''cp ${shellOutputsBySystem.${system}.default.program} $out/''
-                else "";
-            homeManagerStorePaths =
-              if builtins.hasAttr system activationPackagesBySystem
-              then activationPackagesBySystem.${system}
-              else [];
+            hasSystem = builtins.hasAttr system;
+            outputs =
+              (optionals (hasSystem activationPackagesBySystem) activationPackagesBySystem.${system})
+              ++ (optionals (hasSystem shellOutputsBySystem) [shellOutputsBySystem.${system}.default.programDirectory]);
           in
             {
               packages = {
@@ -232,8 +228,7 @@
                   default = pkgs.symlinkJoin
                     {
                       name ="default";
-                      paths = homeManagerStorePaths;
-                      postBuild = copyShellOutputToPackage;
+                      paths = outputs;
                     };
                 };
               };
