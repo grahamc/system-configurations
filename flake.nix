@@ -239,7 +239,7 @@
               };
             }
         )
-        flake-utils.lib.allSystems;
+        (with flake-utils.lib.system; [ x86_64-linux x86_64-darwin ]);
       recursiveMerge = sets: nixpkgs.lib.lists.foldr nixpkgs.lib.recursiveUpdate {} sets;
     in
       # For example, merging these two sets:                                    Would result in one set containing:
