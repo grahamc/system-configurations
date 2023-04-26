@@ -38,7 +38,6 @@ jobs:
       # Dereference the symlink so the upload works properly. The name will look like 'shell-x86_64.AppImage' so I'm
       # using a glob pattern to match it.
       - run: cp -L shell-* shell
-      - run: ls
       - name: Upload executable
         uses: svenstaro/upload-release-action@v2
         with:
