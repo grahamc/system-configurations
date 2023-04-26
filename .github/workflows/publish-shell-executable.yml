@@ -1,0 +1,46 @@
+name: Publish Shell Executable
+on:
+  push:
+    paths:
+      - '**'
+      - '!README.md'
+      - '!.*'
+      - '.meta'
+      - '.github/workflows/publish-shell-executable.yml'
+    branches:
+      - master
+env:
+  # The checkout action clones the repository into github.workspace. I set $HOME to github.workspace so that the
+  # directory structure matches that of the machine I tested this on, where the repository is in $HOME/.dotfiles.
+  HOME: ${{ github.workspace }}
+jobs:
+  publish-executable:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    defaults:
+      run:
+        working-directory: './.dotfiles'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: '.dotfiles'
+      - uses: cachix/install-nix-action@v20
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - uses: cachix/cachix-action@v12
+        with:
+          name: bigolu
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+      - run: nix bundle --update-input my-overlay --show-trace --bundler .# .#
+      # Dereference the symlink so the upload works properly. The name will look like 'shell-x86_64.AppImage' so I'm
+      # using a glob pattern to match it.
+      - run: cp -L shell-* shell
+      - run: ls
+      - name: Upload executable
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: shell
+          overwrite: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}

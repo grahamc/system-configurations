@@ -16,6 +16,13 @@
     };
     flake-utils.url = "github:numtide/flake-utils";
     my-overlay.url = "path:./.meta/modules/my-overlay";
+    nix-appimage = {
+      url = "github:ralismark/nix-appimage";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
   };
 
   nixConfig = {
@@ -23,7 +30,7 @@
     extra-trusted-public-keys = "bigolu.cachix.org-1:AJELdgYsv4CX7rJkuGu5HuVaOHcqlOgR07ZJfihVTIw=";
   };
 
-  outputs = { nixpkgs, home-manager, nix-index-database, flake-utils, my-overlay, ... }:
+  outputs = { nixpkgs, home-manager, nix-index-database, flake-utils, my-overlay, nix-appimage, ... }:
     let
       createHomeManagerOutputs = {
         hostName,
@@ -240,6 +247,13 @@
             }
         )
         (with flake-utils.lib.system; [ x86_64-linux x86_64-darwin ]);
+      bundlerOutputs = map
+        (system:
+          {
+            bundlers."${system}" = nix-appimage.bundlers."${system}";
+          }
+        )
+        (with flake-utils.lib.system; [ x86_64-linux ]);
       recursiveMerge = sets: nixpkgs.lib.lists.foldr nixpkgs.lib.recursiveUpdate {} sets;
     in
       # For example, merging these two sets:                                    Would result in one set containing:
@@ -252,5 +266,5 @@
       #      };                               };                                      };
       #    };                               };                                      };
       #  }                                }                                       }
-      recursiveMerge (homeManagerOutputsPerHost ++ defaultOutputs ++ [shellOutputs]);
+      recursiveMerge (homeManagerOutputsPerHost ++ defaultOutputs ++ [shellOutputs] ++ bundlerOutputs);
 }
