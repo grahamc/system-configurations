@@ -24,4 +24,4 @@ curl --fail --progress-bar --location \
 chmod +x "$executable_name"
 
 # Execute the temporary file
-"$executable_name"
+"$executable_name" "$@"
