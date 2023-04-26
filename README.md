@@ -20,6 +20,6 @@ Configs and whatnot. Managed with [Home Manager for Nix](https://github.com/nix-
 - To run the shell `sh -c "$(curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.meta/run-shell.sh)"`
 - To run a specific program in the shell `sh -c "$(curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.meta/run-shell.sh)" shell -c 'nvim some-file.py'`
 
-> NOTE: Not recommended for machines that already have Nix installed since the host Nix store, `/nix`, will be shadowed by the Nix store in the executable.
+- > WARNING: The standalone executable is not recommended for machines that already have Nix installed since the host Nix store, `/nix`, will be shadowed by the Nix store in the executable.
 
-> NOTE: To run the standalone executable in a docker container the container needs to be run in privileged mode. For example: `docker run --privileged --rm -it --entrypoint bash nixos/nix`
+- > NOTE: To run the executable in a docker container the container needs to be run in privileged mode. For example: `docker run --privileged --rm -it --entrypoint bash nixos/nix`
