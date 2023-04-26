@@ -91,6 +91,7 @@
             ];
             systems = [ x86_64-darwin ];
             isGui = true;
+            homeDirectory = "/Users/biggs";
           }
         ];
       homeManagerOutputsPerHost = map createHomeManagerOutputs hostConfigurations;
