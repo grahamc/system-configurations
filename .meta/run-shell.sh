@@ -12,7 +12,7 @@ executable_name="/tmp/bigolu.dotfiles.$$"
 # This check warns that $answer is referenced, but no assigned. It's not taking into account that I escaped the '$'
 # so the variable will be evaluated when the trap executes and an earlier statement in the trap assigns
 # the variable $answer.
-trap "printf 'Do you want to remove the shell executable \"$executable_name\"? (y/n): '; read -r answer; [ \"\$answer\" = y ] && rm -f $executable_name" 0
+trap "[ -f $executable_name ] || exit; printf 'Do you want to remove the shell executable \"$executable_name\"? (y/n): '; read -r answer; [ \"\$answer\" = y ] && rm -f $executable_name" 0
 
 trap 'exit $?' 1 2 3 15
 
