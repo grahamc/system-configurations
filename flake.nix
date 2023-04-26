@@ -223,7 +223,7 @@
             inherit (pkgs.lib.lists) optionals;
             shellOutputsBySystem = shellOutputs.apps;
             hasSystem = builtins.hasAttr system;
-            outputs =
+            paths =
               (optionals (hasSystem activationPackagesBySystem) activationPackagesBySystem.${system})
               ++ (optionals (hasSystem shellOutputsBySystem) [shellOutputsBySystem.${system}.default.programDirectory]);
           in
@@ -233,7 +233,7 @@
                   default = pkgs.symlinkJoin
                     {
                       name ="default";
-                      paths = outputs;
+                      inherit paths;
                     };
                 };
               };
