@@ -38,9 +38,6 @@
         less
         # These weren't in a docker container
         gnused
-        coreutils-full
-        which
-        man
       ] ++ optionals isLinux [
         trash-cli
         pipr
