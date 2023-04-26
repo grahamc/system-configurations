@@ -23,3 +23,7 @@ Configs and whatnot. Managed with [Home Manager for Nix](https://github.com/nix-
 - > WARNING: The standalone executable is not recommended for machines that already have Nix installed since the host Nix store, `/nix`, will be shadowed by the Nix store in the executable.
 
 - > NOTE: To run the executable in a docker container the container needs to be run in privileged mode. For example: `docker run --privileged --rm -it --entrypoint bash nixos/nix`
+
+## Install Nix
+
+You can try the [Determinate Systems Installer](https://github.com/DeterminateSystems/nix-installer) (recommended) or the [official installer](https://nixos.org/download.html). The README for the Determinate Systems installer lists the differences between the two.
