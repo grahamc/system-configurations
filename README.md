@@ -28,7 +28,7 @@ Configs and whatnot. Managed with [Home Manager for Nix](https://github.com/nix-
 
 ### Installation
 
-You can install Nix [Determinate Systems Installer](https://github.com/DeterminateSystems/nix-installer) (recommended) or the [official installer](https://nixos.org/download.html). The README for the Determinate Systems installer lists the differences between the two.
+You can install Nix with the [Determinate Systems Installer](https://github.com/DeterminateSystems/nix-installer) (recommended) or the [official installer](https://nixos.org/download.html). The README for the Determinate Systems installer lists the differences between the two.
 
 ### Adding the Cache
 
