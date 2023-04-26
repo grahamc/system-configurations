@@ -84,14 +84,13 @@
             isGui = true;
           }
           {
-            hostName = "macbook";
+            hostName = "bigmac";
             modules = [
               ./.meta/modules/profile/application-development.nix
               ./.meta/modules/profile/system-administration.nix
             ];
             systems = [ x86_64-darwin ];
             isGui = true;
-            username = "bigmac";
           }
         ];
       homeManagerOutputsPerHost = map createHomeManagerOutputs hostConfigurations;
