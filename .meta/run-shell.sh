@@ -10,7 +10,7 @@ trap "rm -f $executable_name" 0
 
 trap 'exit $?' 1 2 3 15
 
-curl --fail -silent --show-error --location \
+curl --fail --progress-bar --location \
   https://github.com/bigolu/dotfiles/releases/download/master/shell \
   --output "$executable_name"
 
