@@ -3,10 +3,16 @@
 executable_name="/tmp/bigolu.dotfiles.$$"
 
 # Arrange for the temporary file to be deleted when the script terminates
+#
 # shellcheck disable=2064
 # This check warns that the variables in the string will be substituted now as opposed to when the trap executes.
 # This is fine since the variable's value won't change.
-trap "rm -f $executable_name" 0
+#
+# shellcheck disable=2154
+# This check warns that $answer is referenced, but no assigned. It's not taking into account that I escaped the '$'
+# so the variable will be evaluated when the trap executes and an earlier statement in the trap assigns
+# the variable $answer.
+trap "printf 'Do you want to remove the shell executable \"$executable_name\"? (y/n): '; read -r answer; [ \"\$answer\" = y ] && rm -f $executable_name" 0
 
 trap 'exit $?' 1 2 3 15
 
