@@ -3,7 +3,7 @@
   email = hi@bigo.lu
 [core]
   editor = nvim
-  pager = delta-with-fallback-to-less
+  pager = delta
 [push]
   default = current
 [pull]
@@ -37,7 +37,7 @@
   colorMoved = default
   tool = vscode
 [interactive]
-  diffFilter = delta-with-fallback-to-less --color-only
+  diffFilter = delta --color-only
 [delta]
   navigate = true
   hyperlinks = true

@@ -13,9 +13,7 @@
         gitui
       ];
 
-      home.file = {
-        ".local/bin/delta-with-fallback-to-less".source = makeSymlinkToRepo "git/delta-with-fallback-to-less";
-      } // gitExecutables;
+      home.file = gitExecutables;
 
       xdg.configFile = {
         "gitui/theme.ron".source = makeSymlinkToRepo "git/gitui/theme.ron";
