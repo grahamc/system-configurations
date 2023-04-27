@@ -149,7 +149,7 @@ local keybinds = {
   },
   {
     key = 'v',
-    mods = 'CTRL',
+    mods = 'CTRL|SHIFT',
     action = wezterm.action.PasteFrom('Clipboard')
   },
 
