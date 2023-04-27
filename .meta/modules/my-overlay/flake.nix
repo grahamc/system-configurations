@@ -12,7 +12,6 @@
     "vim-plugin-vim-caser" = {url = "github:arthurxavierx/vim-caser"; flake = false;};
 
     "tmux-plugin-resurrect" = {url = "github:tmux-plugins/tmux-resurrect"; flake = false;};
-    "tmux-plugin-tmux-volume" = {url = "github:levex/tmux-plugin-volume"; flake = false;};
     "tmux-plugin-tmux-suspend" = {url = "github:MunifTanjim/tmux-suspend"; flake = false;};
 
     "fish-plugin-fish-abbreviation-tips" = {url = "github:gazorby/fish-abbreviation-tips"; flake = false;};
@@ -90,7 +89,6 @@
 
         rtpFilePathFixes = {
           "tmux-suspend" = "suspend.tmux";
-          "tmux-volume" = "volume.tmux";
         };
         applyRtpFilePathFix = tmuxPluginInfo:
           let

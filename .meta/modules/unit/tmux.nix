@@ -7,10 +7,7 @@
       better-mouse-mode
       resurrect
       mode-indicator
-      battery
-      online-status
       tmux-suspend
-      tmux-volume
 
       # NOTE: continuum must be the last plugin listed: https://github.com/tmux-plugins/tmux-continuum#known-issues
       continuum

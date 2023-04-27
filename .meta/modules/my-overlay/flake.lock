@@ -55,7 +55,6 @@
         "fish-plugin-fish-abbreviation-tips": "fish-plugin-fish-abbreviation-tips",
         "tmux-plugin-resurrect": "tmux-plugin-resurrect",
         "tmux-plugin-tmux-suspend": "tmux-plugin-tmux-suspend",
-        "tmux-plugin-tmux-volume": "tmux-plugin-tmux-volume",
         "vim-plugin-SchemaStore.nvim": "vim-plugin-SchemaStore.nvim",
         "vim-plugin-cmp-env": "vim-plugin-cmp-env",
         "vim-plugin-folding-nvim": "vim-plugin-folding-nvim",
@@ -95,22 +94,6 @@
       "original": {
         "owner": "MunifTanjim",
         "repo": "tmux-suspend",
-        "type": "github"
-      }
-    },
-    "tmux-plugin-tmux-volume": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1538481517,
-        "narHash": "sha256-x4O0u0AfwpoKsayUPdJO+ybRgK+Sr0CDTrQbeZEBLy4=",
-        "owner": "levex",
-        "repo": "tmux-plugin-volume",
-        "rev": "4e4032d2fc3283e031334467cd3a4fd0abe73078",
-        "type": "github"
-      },
-      "original": {
-        "owner": "levex",
-        "repo": "tmux-plugin-volume",
         "type": "github"
       }
     },
