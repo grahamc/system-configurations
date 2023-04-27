@@ -140,7 +140,8 @@ wezterm.on('toggle-color-scheme', function(window)
   _G.reload_due_to_manual_color_scheme_toggle = true
   window:set_config_overrides(overrides)
 end)
-config.keys = {
+
+local keybinds = {
   {
     key = 'c',
     mods = 'ALT',
@@ -151,6 +152,9 @@ config.keys = {
     mods = 'CTRL',
     action = wezterm.action.PasteFrom('Clipboard')
   },
+
+  -- For neovim, since TMUX doesn't support extended keys anymore.
+  -- issue: https://github.com/tmux/tmux/issues/2705
   {
     key = 'i',
     mods = 'CTRL',
@@ -159,5 +163,34 @@ config.keys = {
     },
   },
 }
+
+local function generate_neovim_tab_navigation_keybinds()
+  local result = {}
+  for tab_number=1,9 do
+    local tab_number_string = tostring(tab_number)
+
+    local keybind = {
+      key = tab_number_string,
+      mods = 'CTRL',
+      action = wezterm.action.Multiple {
+        wezterm.action.SendKey {key = 'Space'},
+        wezterm.action.SendKey {key = tab_number_string},
+      },
+    }
+
+    table.insert(result, keybind)
+  end
+
+  return result
+end
+
+local function table_concat(t1,t2)
+  for i=1,#t2 do
+    t1[#t1+1] = t2[i]
+  end
+  return t1
+end
+
+config.keys = table_concat(keybinds, generate_neovim_tab_navigation_keybinds())
 
 return config
