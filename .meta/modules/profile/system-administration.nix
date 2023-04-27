@@ -4,7 +4,7 @@
       makeSymlinkToRepo
       ;
     inherit (lib.lists) optionals;
-    inherit (pkgs.stdenv) isLinux;
+    inherit (pkgs.stdenv) isLinux isDarwin;
     inherit (lib.attrsets) optionalAttrs;
   in
     {
@@ -44,6 +44,9 @@
         trash-cli
         pipr
         clear
+      ] ++ optionals isDarwin [
+        # macOS comes with a very old version of ncurses that doesn't have a terminfo entry for tmux, tmux-256color
+        ncurses
       ];
 
       home.file = {
