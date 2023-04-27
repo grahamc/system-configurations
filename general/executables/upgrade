@@ -41,7 +41,8 @@ function upgrade
     and upgrade-home-manager
 
     # TODO: The Pop Shop is slow and doesn't have a progress indicator so I'll use the commandline for now.
-    type --query aptitude
+    type --query apt
+    and type --query apt-get
     and upgrade-debian
     type --query flatpak
     and upgrade-flatpak
