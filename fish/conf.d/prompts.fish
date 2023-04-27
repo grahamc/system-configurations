@@ -209,14 +209,14 @@ function _get_container_name
 end
 
 function _get_path_context
-    set -g _pwd_dir_length 0
+    set -g fish_prompt_pwd_dir_length 0
     set path (prompt_pwd)
 
     set dir_length 5
     # 4 border chars + 'path: ' = 10
     set max_width (math $COLUMNS - 10)
     while test (string length --visible $path) -gt $max_width -a $dir_length -ge 1
-        set -g _pwd_dir_length $dir_length
+        set -g fish_prompt_pwd_dir_length $dir_length
         set path (prompt_pwd)
         set dir_length (math $dir_length - 1)
     end
