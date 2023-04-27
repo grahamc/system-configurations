@@ -93,7 +93,7 @@ _G.ClickLink = function()
     vim.fn.jobstart({'xdg-open', cfile}, {detach = true})
   end
 end
-vim.keymap.set('n', '<C-LeftMouse>', '<Cmd>lua ClickLink()<CR>')
+vim.keymap.set('n', '<C-LeftMouse>', '<LeftMouse><Cmd>lua ClickLink()<CR>')
 
 vim.o.scroll = 1
 
