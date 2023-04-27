@@ -29,10 +29,6 @@ set --global --export FZF_ALT_C_OPTS "--preview 'type --query lsd; and lsd {}; o
 
 set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}"'
 
-# use ctrl+f for file search instead of default ctrl+t
-bind --erase \ct
-bind-no-focus \cf 'my-fzf-file-widget'
-
 # use ctrl+h for history search instead of default ctrl+r
 bind --erase \cr
 # If we chose an entry from the history widget, which is signified by an exit code of 0, then we set a flag
@@ -54,8 +50,6 @@ end
 # use alt+d for directory search instead of default alt+c
 bind --erase \ec
 bind-no-focus \ed 'FZF_ALT_C_OPTS="$FZF_ALT_C_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-cd-widget'
-
-bind-no-focus \cg 'fzf-grep-widget'
 
 # Workaround to allow me to use fzf-tmux-zoom with the default widgets that come with fzf.
 # The default widgets use __fzfcmd to get the name of the fzf command to use so I am

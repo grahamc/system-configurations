@@ -47,11 +47,10 @@
       ];
 
       home.file = {
-        # ripgrep
         ".ripgreprc".source = makeSymlinkToRepo "ripgrep/ripgreprc";
-
-        # for any searchers e.g. ripgrep
         ".ignore".source = makeSymlinkToRepo "search/ignore";
+        ".local/bin/fzf-tmux-zoom".source = makeSymlinkToRepo "fzf/fzf-tmux-zoom";
+        ".local/bin/fzf-help-preview".source = makeSymlinkToRepo "fzf/fzf-help-preview";
       } // optionalAttrs isLinux {
         ".local/bin/pbcopy".source = makeSymlinkToRepo "general/executables/osc-copy";
         ".local/bin/pbpaste" = {
@@ -71,19 +70,13 @@
       };
 
       xdg.configFile = {
-        # lsd
         "lsd".source = makeSymlinkToRepo "lsd";
-
-        # viddy
         "viddy.toml".source = makeSymlinkToRepo "viddy/viddy.toml";
-
-        # watchman
         "watchman/watchman.json".source = makeSymlinkToRepo "watchman/watchman.json";
-
-        # less
         "lesskey".source = makeSymlinkToRepo "less/lesskey";
+        "fish/conf.d/fzf.fish".source = makeSymlinkToRepo "fzf/fzf.fish";
       } // optionalAttrs isLinux {
-        # pipr
         "pipr/pipr.toml".source = makeSymlinkToRepo "pipr/pipr.toml";
+        "fish/conf.d/pipr.fish".source = makeSymlinkToRepo "pipr/pipr.fish";
       };
     }

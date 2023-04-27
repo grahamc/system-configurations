@@ -5,7 +5,6 @@
       makeSymlinkToRepo
       ;
 
-    fishFunctions = makeSymlinksToTopLevelFilesInRepo "fish/my-functions" "fish/functions" ../../../fish/functions;
     fishConfigs = makeSymlinksToTopLevelFilesInRepo "fish/conf.d" "fish/conf.d" ../../../fish/conf.d;
   in
     {
@@ -39,7 +38,7 @@
 
       home.file.".dotfiles/.meta/git_file_watch/active_file_watches/fish".source = makeSymlinkToRepo ".meta/git_file_watch/file_watches/fish.sh";
 
-      xdg.configFile = fishFunctions // fishConfigs;
+      xdg.configFile = fishConfigs;
 
       xdg.dataFile = {
         "figlet/smblock.tlf".source = makeSymlinkToRepo "fish/figlet/smblock.tlf";

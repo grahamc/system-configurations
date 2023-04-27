@@ -25,25 +25,28 @@
         tmux
       ] ++ tmuxPlugins;
 
-      xdg.configFile."tmux/tmux.conf".text = ''
-        # This is where my config expects plugins to be in order to access their scripts
-        # My old tmux plugin manager, TPM, would set this environment variable to the path where plugins were stored.
-        # Though I use Nix to manage my plugins now, this variable is referenced all over my tmux.conf so I'll
-        # set the variable here to not break anything.
-        set-environment -g "TMUX_PLUGIN_MANAGER_PATH" "${config.home.homeDirectory}/.nix-profile/share/tmux-plugins/"
+      xdg.configFile = {
+        "tmux/tmux.conf".text = ''
+          # This is where my config expects plugins to be in order to access their scripts
+          # My old tmux plugin manager, TPM, would set this environment variable to the path where plugins were stored.
+          # Though I use Nix to manage my plugins now, this variable is referenced all over my tmux.conf so I'll
+          # set the variable here to not break anything.
+          set-environment -g "TMUX_PLUGIN_MANAGER_PATH" "${config.home.homeDirectory}/.nix-profile/share/tmux-plugins/"
 
-        source-file ${makeSymlinkToRepo "tmux/tmux.conf"}
+          source-file ${makeSymlinkToRepo "tmux/tmux.conf"}
 
-        ${(lib.strings.concatMapStringsSep "\n\n" (p: ''
-          # ${getPluginName p}
-          # ---------------------
-          ${p.extraConfig or ""}
-          run-shell ${if types.package.check p then p.rtp else p.plugin.rtp}
-        '') tmuxPlugins)}
-      '';
+          ${(lib.strings.concatMapStringsSep "\n\n" (p: ''
+            # ${getPluginName p}
+            # ---------------------
+            ${p.extraConfig or ""}
+            run-shell ${if types.package.check p then p.rtp else p.plugin.rtp}
+          '') tmuxPlugins)}
+        '';
+        "fish/conf.d/tmux-integration.fish".source = makeSymlinkToRepo "tmux/tmux-integration.fish";
+        "fish/conf.d/tmux.fish".source = makeSymlinkToRepo "tmux/tmux.fish";
+      };
 
       home.file = {
-        ".local/bin/tmux-nest".source = makeSymlinkToRepo "tmux/tmux-nest";
         ".local/bin/tmux-click-url.py".source = makeSymlinkToRepo "tmux/tmux-click-url.py";
         ".dotfiles/.meta/git_file_watch/active_file_watches/tmux".source = makeSymlinkToRepo ".meta/git_file_watch/file_watches/tmux.sh";
       };

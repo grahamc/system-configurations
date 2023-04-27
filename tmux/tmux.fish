@@ -1,8 +1,15 @@
-function is_tmux_running
-    tmux list-sessions &>/dev/null
+if not status is-interactive
+    exit
 end
 
+abbr --add --global ta tmux attach-session
+abbr --add --global r-tmux-server reload-tmux-server
+
 function reload-tmux-server --description 'Reload tmux server'
+    function is_tmux_running
+        tmux list-sessions &>/dev/null
+    end
+
     # Not sure how to restart the tmux server and reconnect to it
     # from a tmux-managed shell.
     if test -n "$TMUX"

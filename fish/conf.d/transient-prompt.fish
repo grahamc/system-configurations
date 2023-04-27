@@ -1,3 +1,7 @@
+if not status is-interactive
+    exit
+end
+
 # Transient prompt
 #
 # TODO: Ideally I'd do this with a preexec hook, but that won't work for reasons outlined
