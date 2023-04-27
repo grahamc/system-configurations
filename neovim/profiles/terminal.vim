@@ -143,15 +143,6 @@ vim.api.nvim_create_autocmd(
     group = group_id,
   }
 )
-local function toggle_autosave()
-  is_autosave_enabled = not is_autosave_enabled
-
-  -- Save immediately when autosave is toggled on
-  if is_autosave_enabled then
-    vim.cmd.wall()
-  end
-end
-vim.api.nvim_create_user_command('ToggleAutosave', toggle_autosave, {desc = 'Toggle autosave'})
 -- }}}
 
 -- Windows {{{
