@@ -148,7 +148,7 @@ config.keys = {
   },
   {
     key = 'v',
-    mods = 'CTRL|SHIFT',
+    mods = 'CTRL',
     action = wezterm.action.PasteFrom('Clipboard')
   },
   {
