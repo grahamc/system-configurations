@@ -56,8 +56,10 @@ To avoid building everything on your machine, you can enable this repository's N
 
 - <span id="check-trust">Check if you are a trusted user</span>:
 
-  - Single user Nix installation: The user that installed Nix is always trusted in a single user installation.
+  - single-user Nix installation: The user that installed Nix is always trusted in a single user installation.
 
-  - Multi user Nix installation: Run `nix show-config` and look for your `$USER` in the `trusted-users` key.
+  - multi-user Nix installation: Run `nix show-config` and look for your `$USER` in the `trusted-users` key.
 
-- <span id="add-trust">Add yourself to the trusted users</space>: Run `echo "extra-trusted-users = $USER" | sudo tee -a /etc/nix/nix.conf` to add yourself as a trusted user in the Nix system configuration. Then [restart the Nix daemon](#restart-daemon) to apply the changes.
+- <span id="add-trust">Add yourself to the trusted users</space>:
+
+  - Run `echo "extra-trusted-users = $USER" | sudo tee -a /etc/nix/nix.conf` to add yourself as a trusted user in the Nix system configuration. Then [restart the Nix daemon](#restart-daemon) to apply the changes.
