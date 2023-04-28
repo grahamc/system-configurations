@@ -21,7 +21,7 @@
         rustc
         cargo
         jdk
-        go
+        lua
         bashInteractive
         yash
         cloudflared
