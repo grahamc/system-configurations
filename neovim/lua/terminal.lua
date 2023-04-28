@@ -132,7 +132,7 @@ local function get_enter_key_actions()
 end
 vim.keymap.set('i', '<CR>', get_enter_key_actions, {expr = true})
 
-vim.o.colorcolumn = 120
+vim.o.colorcolumn = '120'
 
 vim.o.shell = 'sh'
 
