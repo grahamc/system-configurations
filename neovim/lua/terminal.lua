@@ -927,10 +927,6 @@ Plug(
 )
 vim.g.startuptime_tries = 100
 
--- Opens the OS color picker and inserts the chosen color into the buffer.
-Plug('KabbAmine/vCoolor.vim')
-vim.g.vcoolor_disable_mappings = 1
-
 -- To get the vim help pages for vim-plug itself, you need to add it as a plugin
 Plug('junegunn/vim-plug')
 
