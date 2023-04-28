@@ -4,6 +4,9 @@ if not status is-interactive
     exit
 end
 
+# Sets the cursor shape to a blinking bar
+echo -ne '\033[5 q'
+
 # Print banner
 if not set --query BANNER_WAS_PRINTED
     set banner Fish Shell v(string split ' ' (fish --version) | tail -n 1)

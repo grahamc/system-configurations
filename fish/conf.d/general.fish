@@ -3,7 +3,6 @@ if not status is-interactive
 end
 
 abbr --add --global trash trash-put
-abbr --add --global t-sys sysz
 abbr --add --global g git
 set --global --export PAGER less
 abbr --add --global ruhroh 'sudo truncate -s 0 /var/log/syslog'
@@ -12,14 +11,12 @@ abbr --add --global r-initramfs 'sudo update-initramfs -u -k all'
 abbr --add --global logout-all 'sudo killall -u $USER'
 abbr --add --global r-icons 'sudo update-icon-caches /usr/share/icons/* ~/.local/share/icons/*'
 abbr --add --global du 'du -shL'
-
+# reload the database used to search for applications
+abbr --add --global r-desktop-entries 'sudo update-desktop-database; update-desktop-database ~/.local/share/applications'
 # Set the terminal's color capability to 256 colors if it isn't already. 
 if not string match --regex --quiet -- '256' $TERM
     set --global --export TERM xterm-256color
 end
-
-# reload the database used to search for applications
-abbr --add --global r-desktop-entries 'sudo update-desktop-database; update-desktop-database ~/.local/share/applications'
 
 # sudo
 abbr --add --global s 'sudo --preserve-env=PATH'
@@ -44,6 +41,8 @@ end
 set --global --export MANOPT '--no-hyphenation'
 abbr --add --global fm fzf-man-widget
 
+# neovim
+#
 # Set preferred editor.
 #
 # BACKGROUND: Historically, EDITOR referred to a line editor (e.g. ed) and
@@ -57,12 +56,12 @@ abbr --add --global fm fzf-man-widget
 # For more info: https://unix.stackexchange.com/questions/4859/visual-vs-editor-what-s-the-difference/302391#302391
 set --global --export VISUAL (command -v nvim)
 set --global --export EDITOR $VISUAL
+function vim --wraps nvim
+    nvim $argv
+end
 
 # Change the color grep uses for highlighting matches to magenta
 set --global --export GREP_COLORS 'ms=00;35'
-
-# Sets the cursor shape to a blinking bar
-echo -ne '\033[5 q'
 
 # ls
 # use the long format
@@ -78,6 +77,21 @@ abbr --add --global -- - 'cd -'
 # Don't add the name of the virtual environment to my prompt. This way, I can add it myself
 # using the same formatting as the rest of my prompt.
 set --global --export VIRTUAL_ENV_DISABLE_PROMPT 1
+function python --wraps python
+    if type --query ipython
+    # Make sure ipython belongs to the current python installation.
+    #
+    # If I pipe the output of python to grep, python will raise a BrokenPipeError. To avoid this, I use echo to pipe
+    # the output.
+    and echo (command python -m pip list) | grep -q ipython
+        if test (count $argv) -eq 0
+        or contains -- '-i' $argv
+            ipython $argv
+            return
+        end
+    end
+    command python $argv
+end
 
 # ripgrep
 set --global --export RIPGREP_CONFIG_PATH "$HOME/.ripgreprc"
@@ -133,12 +147,12 @@ function , --wraps ,
     FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --height 30% --no-preview --no-header --delimiter '.' --with-nth '..-5'" COMMA_PICKER=fzf command , $argv
 end
 
+# touch
 function touchx
     set filename "$argv"
     touch "$filename"
     chmod +x "$filename"
 end
-
 function touchp --description 'Create file and make parent directories' --argument-names filepath
     set -l parent_folder (dirname $filepath)
     mkdir -p $parent_folder
@@ -213,3 +227,39 @@ function tree --wraps tree
   command tree -a $argv
   return $status
 end
+
+function ssh --wraps ssh
+    # For why ExitOnForwardFailure is necessary see here:
+    # https://www.everythingcli.org/ssh-tunnelling-for-fun-and-profit-autossh/#comment-494
+    #
+    # The arguments before it are so that autossh restarts the ssh connection after about 90 seconds of
+    # not receiving a response from the server.
+    autossh -M 0 -o "ServerAliveInterval 30" -o "ServerAliveCountMax 3" -o 'ExitOnForwardFailure=yes' $argv
+end
+
+function dig --wraps doggo
+    doggo --color=false $argv
+end
+
+function df --wraps duf
+    env NO_COLOR=1 duf $argv
+end
+
+function ping --wraps gping
+    gping $argv
+end
+
+function ls --wraps lsd
+    lsd $argv
+end
+
+# Wrapping watch since viddy doesn't have autocomplete
+function watch --wraps watch
+    viddy --pty $argv
+end
+
+function sh --wraps yash
+    yash $argv
+end
+
+alias wezterm 'flatpak run org.wezfurlong.wezterm'
