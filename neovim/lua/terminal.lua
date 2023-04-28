@@ -116,7 +116,7 @@ vim.api.nvim_create_autocmd(
 
 vim.keymap.set('', '<C-x>', '<Cmd>xa<CR>')
 
--- suspend vim and start a new shell
+-- suspend vim
 vim.keymap.set({'n', 'i', 'x'}, '<C-z>', '<Cmd>suspend<CR>')
 
 -- Decide which actions to take when the enter key is pressed.
