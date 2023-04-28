@@ -1,11 +1,10 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
     inherit (import ../util.nix {inherit config lib specialArgs;})
-      makeSymlinkToRepo
       makeSymlinksToTopLevelFilesInRepo
       runBeforeLinkGeneration
       ;
-    plugfile = builtins.readFile ../../../neovim/plugfile.lua;
+    plugfile = builtins.readFile ../../../neovim/lua/plugfile.lua;
     plugfile_lines = builtins.filter (line: line != "") (lib.strings.splitString "\n" plugfile);
     pluginNames = map
       (line:

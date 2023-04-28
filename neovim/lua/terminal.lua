@@ -1,69 +1,147 @@
-" vim:foldmethod=marker
+-- vim:foldmethod=marker
+-- Exit if vim is not running in a terminal (also referred to as a tty). I detect this by
+-- checking if the input to vim is coming from a terminal or vim is outputting to a terminal.
+if not vim.fn.has('ttyin') and not vim.fn.has('ttyout') then
+  return
+end
 
-" Exit if vim is not running in a terminal (also referred to as a tty). I detect this by
-" checking if the input to vim is coming from a terminal or vim is outputting to a terminal.
-if !has('ttyin') && !has('ttyout')
-  finish
-endif
+-- Miscellaneous {{{
+vim.o.confirm = true
+vim.o.mouse = 'a'
+vim.o.scrolloff = 999
+vim.o.jumpoptions = 'stack'
 
-" Miscellaneous {{{
-set confirm
-set mouse=a
-set display+=lastline
-set scrolloff=999
-set jumpoptions=stack
+-- persist undo history to disk
+vim.o.undofile = true
 
-" persist undo history to disk
-set undofile
+local group_id = vim.api.nvim_create_augroup('General', {})
+vim.api.nvim_create_autocmd(
+  'FileType',
+  {
+    pattern = 'sh',
+    callback = function()
+      vim.opt_local.keywordprg = 'man'
+    end,
+    group = group_id,
+  }
+)
+-- Highlight the word under the cursor
+vim.api.nvim_create_autocmd(
+  'CursorHold',
+  {
+    callback = function()
+      vim.cmd(string.format(
+        [[silent! 2match WordUnderCursor /\V\<%s\>/]],
+        vim.fn.escape(vim.fn.expand([[<cword>]]), [[/\]])
+      ))
+    end,
+    group = group_id,
+  }
+)
+-- Don't highlight the word under the cursor for inactive windows
+vim.api.nvim_create_autocmd(
+  'WinLeave',
+  {
+    callback = function()
+      vim.cmd('2match none')
+    end,
+    group = group_id,
+  }
+)
+-- After a quickfix command is run, open the quickfix window , if there are results
+vim.api.nvim_create_autocmd(
+  'QuickFixCmdPost',
+  {
+    pattern = '[^l]*',
+    callback = function()
+      vim.cmd.cwindow()
+    end,
+    group = group_id,
+  }
+)
+vim.api.nvim_create_autocmd(
+  'QuickFixCmdPost',
+  {
+    pattern = 'l*',
+    callback = function()
+      vim.cmd.lwindow()
+    end,
+    group = group_id,
+  }
+)
+-- Put focus back in quickfix window after opening an entry
+vim.api.nvim_create_autocmd(
+  'FileType',
+  {
+    pattern = 'qf',
+    callback = function()
+      vim.keymap.set('n', '<CR>', '<CR><C-W>p', {buffer = true})
+    end,
+    group = group_id,
+  }
+)
+-- highlight trailing whitespace
+vim.api.nvim_create_autocmd(
+  'ColorScheme',
+  {
+    callback = function()
+      vim.api.nvim_set_hl(0, 'ExtraWhitespace', { link = 'Warning' })
+      vim.cmd([[match ExtraWhitespace /\s\+$/]])
+    end,
+    group = group_id,
+  }
+)
+vim.api.nvim_create_autocmd(
+  'OptionSet',
+  {
+    pattern = 'readonly',
+    callback = function()
+      if vim.v.option_new then
+        vim.opt_local.colorcolumn = ''
+      end
+    end,
+    group = group_id,
+  }
+)
+vim.api.nvim_create_autocmd(
+  'FileType',
+  {
+    pattern = {'qf', 'help'},
+    callback = function()
+      vim.opt_local.colorcolumn = ''
+    end,
+    group = group_id,
+  }
+)
 
-augroup Miscellaneous
-  autocmd!
-  autocmd BufEnter *
-        \ if &ft ==# 'help' && (&columns * 10) / &lines > 31 | wincmd L | endif
-  autocmd FileType sh setlocal keywordprg=man
-  autocmd CursorHold * execute printf('silent! 2match WordUnderCursor /\V\<%s\>/', escape(expand('<cword>'), '/\'))
-  autocmd WinLeave * 2match none
-  " After a quickfix command is run, open the quickfix window , if there are results
-  autocmd QuickFixCmdPost [^l]* cwindow
-  autocmd QuickFixCmdPost l*    lwindow
-  " Put focus back in quickfix window after opening an entry
-  autocmd FileType qf nnoremap <buffer> <CR> <CR><C-W>p
-  " highlight trailing whitespace
-  autocmd ColorScheme * highlight! link ExtraWhitespace Warning | execute 'match ExtraWhitespace /\s\+$/'
-  autocmd OptionSet readonly if v:option_new | setlocal colorcolumn= | endif
-  autocmd FileType qf,help setlocal colorcolumn=
-augroup END
-
-lua << EOF
 vim.keymap.set('', '<C-s>', '<Cmd>wa<CR>')
 vim.keymap.set('', '<C-x>', '<Cmd>xa<CR>')
 
 -- suspend vim and start a new shell
 vim.keymap.set({'n', 'i', 'x'}, '<C-z>', '<Cmd>suspend<CR>')
-EOF
 
-" Decide which actions to take when the enter key is pressed.
-function! GetEnterKeyActions()
-  let autopairs_keys = v:lua.MPairs.autopairs_cr()
-  " If only the enter key is returned, that means we aren't inside a pair.
-  let isCursorInEmptyPair = v:lua.vim.inspect(autopairs_keys) !=# '"\r"'
-  if isCursorInEmptyPair
+-- Decide which actions to take when the enter key is pressed.
+local function get_enter_key_actions()
+  local autopairs_keys = MPairs.autopairs_cr()
+  -- If only the enter key is returned, that means we aren't inside a pair.
+  local is_cursor_in_empty_pair = vim.inspect(autopairs_keys) ~= [["\r"]]
+  if is_cursor_in_empty_pair then
     return autopairs_keys
-  endif
+  end
 
-  return "\<CR>"
-endfunction
-inoremap <expr> <CR> GetEnterKeyActions()
+  return [[<CR>]]
+end
+vim.keymap.set('i', '<CR>', get_enter_key_actions, {expr = true})
 
-set colorcolumn=120
+vim.o.colorcolumn = 120
 
-set shell=sh
+vim.o.shell = 'sh'
 
-nnoremap <BS> <C-^>
+vim.keymap.set('n', '<BS>', '<C-^>')
 
-set ttimeout ttimeoutlen=50
+vim.o.ttimeout = true
+vim.o.ttimeoutlen = 50
 
-lua << EOF
 -- Delete comment character when joining commented lines
 vim.opt.formatoptions:append('j')
 vim.opt.formatoptions:append('r')
@@ -100,10 +178,8 @@ vim.o.scroll = 1
 vim.keymap.set('n', '|', '<Cmd>set list!<CR>', {silent = true})
 
 vim.o.shortmess = 'filnxtToOFs'
-EOF
-" }}}
+-- }}}
 
-lua << EOF
 -- Utilities {{{
 _G.unicode = function(hex)
   return vim.fn.execute(
@@ -1736,173 +1812,200 @@ Plug(
   }
 )
 -- }}}
-EOF
 
-" Colorscheme {{{
-Plug 'nordtheme/vim'
-  let g:nord_bold = 1
-  let g:nord_italic = 1
-  let g:nord_italic_comments = 1
-  let g:nord_underline = 1
-  function! SetNordOverrides()
-    highlight MatchParen ctermfg=blue cterm=underline ctermbg=NONE
-    " Transparent vertical split
-    highlight WinSeparator ctermbg=NONE ctermfg=15
-    " statusline colors
-    highlight StatusLine ctermbg=8 ctermfg=NONE
-    highlight StatusLineSeparator ctermfg=8 ctermbg=NONE cterm=reverse,bold
-    highlight StatusLineErrorText ctermfg=1 ctermbg=8
-    highlight StatusLineWarningText ctermfg=3 ctermbg=8
-    highlight StatusLineInfoText ctermfg=4 ctermbg=8
-    highlight StatusLineHintText ctermfg=5 ctermbg=8
-    highlight StatusLineStandoutText ctermfg=3 ctermbg=8
-    highlight CursorLine ctermfg=NONE ctermbg=NONE cterm=underline
-    highlight! link CursorLineNr CursorLine
-    " transparent background
-    highlight Normal ctermbg=NONE
-    highlight EndOfBuffer ctermbg=NONE
-    " relative line numbers
-    highlight LineNr ctermfg=15
-    highlight! link LineNrAbove LineNr
-    highlight! link LineNrBelow LineNrAbove
-    highlight WordUnderCursor ctermbg=8
-    highlight! link IncSearch Search
-    highlight TabLine ctermbg=8 ctermfg=15
-    highlight TabLineSel ctermbg=8 ctermfg=NONE
-    highlight TabLineFill ctermbg=8
-    highlight TabLineIndexSel ctermbg=8 ctermfg=6
-    highlight! link TabLineIndex TabLine
-    highlight Comment ctermfg=15 ctermbg=NONE
-    " This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
-    " By unsetting this, I ensure that terminals opened in vim will use the colors from the color palette of the
-    " terminal in which vim is running
-    if exists('g:terminal_ansi_colors') | unlet g:terminal_ansi_colors | endif
-    " Have vim only use the colors from the color palette of the terminal in which it runs
-    set t_Co=256
-    highlight Visual ctermbg=3 ctermfg=0
-    " Search hit
-    highlight Search ctermfg=DarkYellow ctermbg=NONE cterm=reverse
-    " Parentheses
-    highlight Delimiter ctermfg=NONE ctermbg=NONE
-    highlight ErrorMsg ctermfg=1 ctermbg=NONE
-    highlight WarningMsg ctermfg=3 ctermbg=NONE
-    highlight Error ctermfg=1 ctermbg=NONE cterm=undercurl
-    highlight Warning ctermfg=3 ctermbg=NONE cterm=undercurl
-    highlight! link SpellBad Error
-    highlight! link NvimInternalError ErrorMsg
-    highlight Folded ctermfg=15 ctermbg=24 cterm=NONE
-    highlight FoldColumn ctermfg=15 ctermbg=NONE
-    highlight SpecialKey ctermfg=13 ctermbg=NONE
-    highlight NonText ctermfg=15 ctermbg=NONE
-    highlight NvimTreeWinBar ctermfg=6 ctermbg=8
-    highlight! link ExplorerTabLine NvimTreeWinBar
-    highlight NerdTreeNormal ctermbg=NONE
-    highlight VirtColumn ctermfg=24
-    highlight DiagnosticSignError ctermfg=1 ctermbg=NONE
-    highlight DiagnosticSignWarn ctermfg=3 ctermbg=NONE
-    highlight DiagnosticSignInfo ctermfg=4 ctermbg=NONE
-    highlight DiagnosticSignHint ctermfg=5 ctermbg=NONE
-    highlight! link DiagnosticUnderlineError Error
-    highlight! link DiagnosticUnderlineWarn Warning
-    highlight DiagnosticUnderlineInfo ctermfg=4 ctermbg=NONE cterm=undercurl
-    highlight DiagnosticUnderlineHint ctermfg=5 ctermbg=NONE cterm=undercurl
-    highlight! link DiagnosticInfo DiagnosticSignInfo
-    highlight! link DiagnosticHint DiagnosticSignHint
-    highlight! CmpItemAbbrMatch ctermbg=NONE ctermfg=6
-    highlight! link CmpItemAbbrMatchFuzzy CmpItemAbbrMatch
-    highlight! CmpItemKind ctermbg=NONE ctermfg=15
-    highlight! link CmpItemMenu CmpItemKind
-    highlight! link CmpNormal Float2Normal
-    highlight! link CmpDocumentationNormal Float3Normal
-    highlight! link CmpDocumentationBorder CmpDocumentationNormal
-    highlight CmpCursorLine ctermfg=6 ctermbg=NONE cterm=reverse
-    " autocomplete popupmenu
-    highlight PmenuSel ctermfg=6 ctermbg=NONE cterm=reverse
-    highlight Pmenu ctermfg=NONE ctermbg=24
-    highlight PmenuThumb ctermfg=NONE ctermbg=15
-    highlight! link PmenuSbar CmpNormal
-    " List of telescope highlight groups:
-    " https://github.com/nvim-telescope/telescope.nvim/blob/master/plugin/telescope.lua
-    highlight! TelescopePromptNormal ctermbg=24
-    highlight! TelescopePromptBorder ctermbg=24 ctermfg=24
-    highlight! TelescopePromptTitle ctermbg=24 ctermfg=6 cterm=reverse,bold,nocombine
-    highlight! TelescopePreviewNormal ctermbg=16
-    highlight! TelescopePreviewBorder ctermbg=16 ctermfg=15
-    highlight! TelescopePreviewTitle ctermbg=16 ctermfg=15 cterm=nocombine
-    highlight! TelescopeResultsNormal ctermbg=16
-    highlight! TelescopeResultsBorder ctermbg=16 ctermfg=16
-    highlight! TelescopeResultsTitle ctermbg=16 ctermfg=15 cterm=italic
-    highlight! TelescopePromptPrefix ctermbg=24 ctermfg=6 cterm=none,nocombine
-    highlight! TelescopeMatching ctermbg=NONE ctermfg=6
-    highlight! TelescopeSelection ctermbg=24
-    highlight! TelescopeSelectionCaret ctermbg=24 ctermfg=24
-    highlight TelescopePromptCounter ctermfg=15 cterm=none,nocombine
-    highlight MasonHeader ctermbg=NONE ctermfg=4 cterm=reverse,bold
-    highlight MasonHighlight ctermbg=NONE ctermfg=6
-    highlight MasonHighlightBlockBold ctermbg=NONE ctermfg=6 cterm=reverse,bold
-    highlight MasonMuted ctermbg=NONE ctermfg=NONE
-    highlight MasonMutedBlock ctermbg=NONE ctermfg=15 cterm=reverse
-    highlight MasonError ctermbg=NONE ctermfg=1
-    highlight! link NormalFloat Float1Normal
-    highlight! link FloatBorder Float1Border
-    highlight LuaSnipNode ctermfg=11
-    highlight! link WhichKeyFloat Float4Normal
-    highlight! link WhichKeyBorder Float4Border
-    highlight CodeActionSign ctermbg=NONE ctermfg=3
-    highlight! link LspFloatNormal Float2Normal
-    highlight! link LspFloatBorder Float2Border
-    highlight Float1Normal ctermbg=32
-    highlight! link Float1Border Float1Normal
-    highlight Float2Normal ctermbg=24
-    highlight! link Float2Border Float2Normal
-    highlight Float3Normal ctermbg=8
-    highlight! link Float3Border Float3Normal
-    highlight Float4Normal ctermbg=0
-    highlight Float4Border ctermbg=0 ctermfg=15
-    highlight FidgetTitle ctermbg=NONE ctermfg=15 cterm=italic
-    highlight FidgetTask ctermbg=NONE ctermfg=15 cterm=italic
-    highlight NvimTreeIndentMarker ctermfg=15
-    highlight String ctermfg=50
-  endfunction
-  augroup NordVim
-    autocmd!
-    autocmd ColorScheme nord call SetNordOverrides()
-    " The highlight I use for the word under the cursor and text selected in visual mode is the same.
-    " This will disable the highlighting for the word under the cursor while I'm in visual mode.
-    function! DisableWordUnderCursorHighlight()
-      if mode(1) =~# '\v^(v|)'
-        highlight WordUnderCursor ctermbg=NONE
-        " When I leave visual mode, enable WordUnderCursor highlighting
-        autocmd ModeChanged * ++once if mode(1) !~# '\v^(v|)' | highlight WordUnderCursor ctermbg=8 | endif
-      endif
-    endfunction
-    autocmd ModeChanged * call DisableWordUnderCursorHighlight()
-    " use nested so my colorscheme changes are loaded
-    autocmd User PlugEndPost ++nested lua pcall(function() vim.cmd.colorscheme('nord') end)
-  augroup END
-" }}}
+-- Colorscheme {{{
+Plug('nordtheme/vim')
+vim.g.nord_bold = true
+vim.g.nord_italic = true
+vim.g.nord_italic_comments = true
+vim.g.nord_underline = true
+local function SetNordOverrides()
+  vim.api.nvim_set_hl(0, 'MatchParen', {ctermfg = 'blue', ctermbg = 'NONE', underline = true,})
+  -- Transparent vertical split
+  vim.api.nvim_set_hl(0, 'WinSeparator', {ctermbg = 'NONE', ctermfg = 15,})
+  -- statusline colors
+  vim.api.nvim_set_hl(0, 'StatusLine', {ctermbg = 8, ctermfg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'StatusLineSeparator', {ctermfg = 8, ctermbg = 'NONE', reverse = true, bold = true,})
+  vim.api.nvim_set_hl(0, 'StatusLineErrorText', {ctermfg = 1, ctermbg = 8,})
+  vim.api.nvim_set_hl(0, 'StatusLineWarningText', {ctermfg = 3, ctermbg = 8,})
+  vim.api.nvim_set_hl(0, 'StatusLineInfoText', {ctermfg = 4, ctermbg = 8,})
+  vim.api.nvim_set_hl(0, 'StatusLineHintText', {ctermfg = 5, ctermbg = 8,})
+  vim.api.nvim_set_hl(0, 'StatusLineStandoutText', {ctermfg = 3, ctermbg = 8,})
+  vim.api.nvim_set_hl(0, 'CursorLine', {ctermfg = 'NONE', ctermbg = 'NONE', underline = true,})
+  vim.api.nvim_set_hl(0, 'CursorLineNr', {link = 'CursorLine'})
+  -- transparent background
+  vim.api.nvim_set_hl(0, 'Normal', {ctermbg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'EndOfBuffer', {ctermbg = 'NONE',})
+  -- relative line numbers
+  vim.api.nvim_set_hl(0, 'LineNr', {ctermfg = 15,})
+  vim.api.nvim_set_hl(0, 'LineNrAbove', {link = 'LineNr'})
+  vim.api.nvim_set_hl(0, 'LineNrBelow', {link = 'LineNrAbove'})
+  vim.api.nvim_set_hl(0, 'WordUnderCursor', {ctermbg = 8,})
+  vim.api.nvim_set_hl(0, 'IncSearch', {link = 'Search'})
+  vim.api.nvim_set_hl(0, 'TabLine', {ctermbg = 8, ctermfg = 15,})
+  vim.api.nvim_set_hl(0, 'TabLineSel', {ctermbg = 8, ctermfg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'TabLineFill', {ctermbg = 8,})
+  vim.api.nvim_set_hl(0, 'TabLineIndexSel', {ctermbg = 8, ctermfg = 6,})
+  vim.api.nvim_set_hl(0, 'TabLineIndex', {link = 'TabLine'})
+  vim.api.nvim_set_hl(0, 'Comment', {ctermfg = 15, ctermbg = 'NONE',})
+  -- This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
+  -- By unsetting this, I ensure that terminals opened in vim will use the colors from the color palette of the
+  -- terminal in which vim is running
+  vim.g.terminal_ansi_colors = nil
+  -- Have vim only use the colors from the color palette of the terminal in which it runs
+  vim.o.t_Co = 256
+  vim.api.nvim_set_hl(0, 'Visual', {ctermbg = 3, ctermfg = 0,})
+  -- Search hit
+  vim.api.nvim_set_hl(0, 'Search', {ctermfg = 'DarkYellow', ctermbg = 'NONE', reverse = true,})
+  -- Parentheses
+  vim.api.nvim_set_hl(0, 'Delimiter', {ctermfg = 'NONE', ctermbg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'ErrorMsg', {ctermfg = 1, ctermbg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'WarningMsg', {ctermfg = 3, ctermbg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'Error', {ctermfg = 1, ctermbg = 'NONE', undercurl = true,})
+  vim.api.nvim_set_hl(0, 'Warning', {ctermfg = 3, ctermbg = 'NONE', undercurl = true,})
+  vim.api.nvim_set_hl(0, 'SpellBad', {link = 'Error'})
+  vim.api.nvim_set_hl(0, 'NvimInternalError', {link = 'ErrorMsg'})
+  vim.api.nvim_set_hl(0, 'Folded', {ctermfg = 15, ctermbg = 24,})
+  vim.api.nvim_set_hl(0, 'FoldColumn', {ctermfg = 15, ctermbg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'SpecialKey', {ctermfg = 13, ctermbg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'NonText', {ctermfg = 15, ctermbg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'NvimTreeWinBar', {ctermfg = 6, ctermbg = 8,})
+  vim.api.nvim_set_hl(0, 'ExplorerTabLine', {link = 'NvimTreeWinBar'})
+  vim.api.nvim_set_hl(0, 'NerdTreeNormal', {ctermbg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'VirtColumn', {ctermfg = 24,})
+  vim.api.nvim_set_hl(0, 'DiagnosticSignError', {ctermfg = 1, ctermbg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'DiagnosticSignWarn', {ctermfg = 3, ctermbg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'DiagnosticSignInfo', {ctermfg = 4, ctermbg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'DiagnosticSignHint', {ctermfg = 5, ctermbg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', {link = 'Error'})
+  vim.api.nvim_set_hl(0, 'DiagnosticUnderlineWarn', {link = 'Warning'})
+  vim.api.nvim_set_hl(0, 'DiagnosticUnderlineInfo', {ctermfg = 4, ctermbg = 'NONE', undercurl = true,})
+  vim.api.nvim_set_hl(0, 'DiagnosticUnderlineHint', {ctermfg = 5, ctermbg = 'NONE', undercurl = true,})
+  vim.api.nvim_set_hl(0, 'DiagnosticInfo', {link = 'DiagnosticSignInfo'})
+  vim.api.nvim_set_hl(0, 'DiagnosticHint', {link = 'DiagnosticSignHint'})
+  vim.api.nvim_set_hl(0, 'CmpItemAbbrMatch', {ctermbg = 'NONE', ctermfg = 6,})
+  vim.api.nvim_set_hl(0, 'CmpItemAbbrMatchFuzzy', {link = 'CmpItemAbbrMatch'})
+  vim.api.nvim_set_hl(0, 'CmpItemKind', {ctermbg = 'NONE', ctermfg = 15,})
+  vim.api.nvim_set_hl(0, 'CmpItemMenu', {link = 'CmpItemKind'})
+  vim.api.nvim_set_hl(0, 'CmpNormal', {link = 'Float2Normal'})
+  vim.api.nvim_set_hl(0, 'CmpDocumentationNormal', {link = 'Float3Normal'})
+  vim.api.nvim_set_hl(0, 'CmpDocumentationBorder', {link = 'CmpDocumentationNormal'})
+  vim.api.nvim_set_hl(0, 'CmpCursorLine', {ctermfg = 6, ctermbg = 'NONE', reverse = true,})
+  -- autocomplete popupmenu
+  vim.api.nvim_set_hl(0, 'PmenuSel', {ctermfg = 6, ctermbg = 'NONE', reverse = true,})
+  vim.api.nvim_set_hl(0, 'Pmenu', {ctermfg = 'NONE', ctermbg = 24,})
+  vim.api.nvim_set_hl(0, 'PmenuThumb', {ctermfg = 'NONE', ctermbg = 15,})
+  vim.api.nvim_set_hl(0, 'PmenuSbar', {link = 'CmpNormal'})
+  -- List of telescope highlight groups:
+  -- https://github.com/nvim-telescope/telescope.nvim/blob/master/plugin/telescope.lua
+  vim.api.nvim_set_hl(0, 'TelescopePromptNormal', {ctermbg = 24,})
+  vim.api.nvim_set_hl(0, 'TelescopePromptBorder', {ctermbg = 24, ctermfg = 24,})
+  vim.api.nvim_set_hl(0, 'TelescopePromptTitle', {ctermbg = 24, ctermfg = 6, reverse = true, bold = true,})
+  vim.api.nvim_set_hl(0, 'TelescopePreviewNormal', {ctermbg = 16,})
+  vim.api.nvim_set_hl(0, 'TelescopePreviewBorder', {ctermbg = 16, ctermfg = 15,})
+  vim.api.nvim_set_hl(0, 'TelescopePreviewTitle', {ctermbg = 16, ctermfg = 15,})
+  vim.api.nvim_set_hl(0, 'TelescopeResultsNormal', {ctermbg = 16,})
+  vim.api.nvim_set_hl(0, 'TelescopeResultsBorder', {ctermbg = 16, ctermfg = 16,})
+  vim.api.nvim_set_hl(0, 'TelescopeResultsTitle', {ctermbg = 16, ctermfg = 15, italic = true,})
+  vim.api.nvim_set_hl(0, 'TelescopePromptPrefix', {ctermbg = 24, ctermfg = 6,})
+  vim.api.nvim_set_hl(0, 'TelescopeMatching', {ctermbg = 'NONE', ctermfg = 6,})
+  vim.api.nvim_set_hl(0, 'TelescopeSelection', {ctermbg = 24,})
+  vim.api.nvim_set_hl(0, 'TelescopeSelectionCaret', {ctermbg = 24, ctermfg = 24,})
+  vim.api.nvim_set_hl(0, 'TelescopePromptCounter', {ctermfg = 15,})
+  vim.api.nvim_set_hl(0, 'MasonHeader', {ctermbg = 'NONE', ctermfg = 4, reverse = true, bold = true,})
+  vim.api.nvim_set_hl(0, 'MasonHighlight', {ctermbg = 'NONE', ctermfg = 6,})
+  vim.api.nvim_set_hl(0, 'MasonHighlightBlockBold', {ctermbg = 'NONE', ctermfg = 6, reverse = true, bold = true,})
+  vim.api.nvim_set_hl(0, 'MasonMuted', {ctermbg = 'NONE', ctermfg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'MasonMutedBlock', {ctermbg = 'NONE', ctermfg = 15, reverse = true,})
+  vim.api.nvim_set_hl(0, 'MasonError', {ctermbg = 'NONE', ctermfg = 1,})
+  vim.api.nvim_set_hl(0, 'NormalFloat', {link = 'Float1Normal'})
+  vim.api.nvim_set_hl(0, 'FloatBorder', {link = 'Float1Border'})
+  vim.api.nvim_set_hl(0, 'LuaSnipNode', {ctermfg = 11,})
+  vim.api.nvim_set_hl(0, 'WhichKeyFloat', {link = 'Float4Normal'})
+  vim.api.nvim_set_hl(0, 'WhichKeyBorder', {link = 'Float4Border'})
+  vim.api.nvim_set_hl(0, 'CodeActionSign', {ctermbg = 'NONE', ctermfg = 3,})
+  vim.api.nvim_set_hl(0, 'LspFloatNormal', {link = 'Float2Normal'})
+  vim.api.nvim_set_hl(0, 'LspFloatBorder', {link = 'Float2Border'})
+  vim.api.nvim_set_hl(0, 'Float1Normal', {ctermbg = 32,})
+  vim.api.nvim_set_hl(0, 'Float1Border', {link = 'Float1Normal'})
+  vim.api.nvim_set_hl(0, 'Float2Normal', {ctermbg = 24,})
+  vim.api.nvim_set_hl(0, 'Float2Border', {link = 'Float2Normal'})
+  vim.api.nvim_set_hl(0, 'Float3Normal', {ctermbg = 8,})
+  vim.api.nvim_set_hl(0, 'Float3Border', {link = 'Float3Normal'})
+  vim.api.nvim_set_hl(0, 'Float4Normal', {ctermbg = 0,})
+  vim.api.nvim_set_hl(0, 'Float4Border', {ctermbg = 0, ctermfg = 15,})
+  vim.api.nvim_set_hl(0, 'FidgetTitle', {ctermbg = 'NONE', ctermfg = 15,italic = true,})
+  vim.api.nvim_set_hl(0, 'FidgetTask', {ctermbg = 'NONE', ctermfg = 15, italic = true,})
+  vim.api.nvim_set_hl(0, 'NvimTreeIndentMarker', {ctermfg = 15,})
+  vim.api.nvim_set_hl(0, 'String', {ctermfg = 50,})
+end
+local group_id = vim.api.nvim_create_augroup('NordVim', {})
+vim.api.nvim_create_autocmd(
+  'ColorScheme',
+  {
+    pattern = 'nord',
+    callback = SetNordOverrides,
+    group = group_id,
+  }
+)
+vim.api.nvim_create_autocmd(
+  'User',
+  {
+    pattern = "PlugEndPost",
+    callback = function()
+      vim.cmd.colorscheme('nord')
+    end,
+    group = group_id,
+    -- use nested so my colorscheme changes are loaded
+    nested = true,
+  }
+)
+-- }}}
 
-" Plugin Management {{{
-" Install any plugins that have been registered in the plugfile.vim, but aren't installed
-function! InstallMissingPlugins()
-  let plugs = get(g:, 'plugs', {})
-  " Plugins registered in plugfile.vim will be in g:registered_plugs
-  let missing_plugins = filter(deepcopy(plugs), {plugin_name, plugin_info -> !isdirectory(plugin_info.dir) && index(g:registered_plugs, plugin_name) != -1})
-  if empty(missing_plugins)
-    return
-  endif
+-- Install Missing Plugins {{{
+-- Install any plugins that have been registered in the plugfile.vim, but aren't installed
+local group_id = vim.api.nvim_create_augroup('InstallMissingPlugins', {})
+vim.api.nvim_create_autocmd(
+  'User',
+  {
+    pattern = 'PlugEndPost',
+    callback = function()
+      local plugs = vim.g.plugs or {}
+      -- Plugins registered in plugfile.vim will be in g:registered_plugs
+      local missing_plugins = {}
+      for name, info in pairs(plugs) do
+        local is_installed = vim.fn.isdirectory(info.dir)
+        local is_registered = vim.g.registered_plugs[name] ~= nil
+        if not is_installed and is_registered then
+          missing_plugins[name] = info
+        end
+      end
 
-  let install_prompt = "The following plugins are not installed:\n" . join(keys(missing_plugins), ", ") . "\nWould you like to install them?"
-  let should_install = confirm(install_prompt, "yes\nno") == 1
-  if should_install
-    execute printf('PlugInstall --sync %s', join(keys(missing_plugins), " "))
-  endif
-endfunction
+      -- checking for empty table
+      if next(missing_plugins) == nil then
+        return
+      end
 
-augroup PostPluginLoadOperations
-  autocmd!
-  autocmd User PlugEndPost call InstallMissingPlugins()
-augroup END
-" }}}
+      local missing_plugin_names={}
+      for key,_ in pairs(missing_plugins) do
+        table.insert(missing_plugin_names, key)
+      end
 
-" }}}
+      local install_prompt = string.format(
+        "The following plugins are not installed:\n%s\nWould you like to install them?",
+        table.concat(missing_plugin_names, ', ')
+      )
+      local should_install = vim.fn.confirm(install_prompt, [[yes\nno]]) == 1
+      if should_install then
+        vim.cmd(string.format(
+          'PlugInstall --sync %s',
+          table.concat(missing_plugin_names, ' ')
+        ))
+      end
+    end,
+    group = group_id,
+  }
+)
+-- }}}
+
+-- }}}

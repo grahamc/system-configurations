@@ -42,6 +42,9 @@ function plug_begin()
   )
   pcall(vim.fn['plug#load'], 'impatient.nvim')
   pcall(require, 'impatient')
+
+  -- Register Plugins
+  require('plugfile')
 end
 
 function plug_end()
@@ -88,6 +91,6 @@ function RegisterPlug(repo)
   local plugin_name = repo:match("^[%w-]+/([%w-_.]+)$")
 
   local temp = vim.g.registered_plugs
-  table.insert(temp, plugin_name)
+  temp[plugin_name] = true
   vim.g.registered_plugs = temp
 end

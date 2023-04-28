@@ -1,77 +1,62 @@
-" vim:foldmethod=marker
+-- vim:foldmethod=marker
 
-" Miscellaneous {{{
-set nrformats-=octal
-set timeout timeoutlen=500
-set updatetime=500
-set noswapfile
-set fileformats=unix,dos,mac
-set paragraphs= sections=
+-- Miscellaneous {{{
+vim.opt.nrformats:remove('octal')
+vim.o.timeout = true
+vim.o.timeoutlen = 500
+vim.o.updatetime = 500
+vim.o.swapfile = false
+vim.o.fileformats = 'unix,dos,mac'
+vim.o.paragraphs = ''
+vim.o.sections = ''
 
-augroup ExtendIskeyword
-  autocmd!
-  " Extend iskeyword for filetypes that can reference CSS classes
-  autocmd FileType
-        \ css,scss,javascriptreact,typescriptreact,javascript,typescript,sass,postcss
-        \ setlocal iskeyword+=-,?,!
-  autocmd FileType vim setlocal iskeyword+=:,#
-  autocmd FileType tmux setlocal iskeyword+=-
-  autocmd FileType txt setlocal iskeyword+=_
-augroup END
+local group_id = vim.api.nvim_create_augroup('ExtendIskeyword', {})
+vim.api.nvim_create_autocmd(
+  'FileType',
+  {
+    pattern = 'txt',
+    callback = function() vim.opt_local.iskeyword:append('_') end,
+    group = group_id,
+  }
+)
+vim.api.nvim_create_autocmd(
+  'FileType',
+  {
+    pattern = 'tmux',
+    callback = function() vim.opt_local.iskeyword:append('-') end,
+    group = group_id,
+  }
+)
+vim.api.nvim_create_autocmd(
+  'FileType',
+  {
+    pattern = {'css', 'scss', 'javascriptreact', 'typescriptreact', 'javascript', 'typescript', 'sass', 'postcss',},
+    callback = function() vim.opt_local.iskeyword:append('-,?,!') end,
+    group = group_id,
+  }
+)
 
-inoremap jk <Esc>
+vim.keymap.set({'i'}, 'jk', '<Esc>')
 
-function! VisualPaste()
-  let keys = ''
+-- 1. reindent the pasted text
+-- 2. move to the end of the pasted text
+vim.keymap.set({'n'}, 'p', 'p=`]', {silent = true})
 
-  " Delete the selected text and put it in the blackhole register.
-  " This way, we don't overwrite the contents of the clipboard
-  let keys .= '"_d'
+-- select the text that was just pasted
+vim.keymap.set({'n'}, 'gp', '`[v`]')
 
-  " Paste the contents of the clipboard
-  let last_visualmode = visualmode()
-  " visual or visual-block mode
-  if last_visualmode ==# 'v' || last_visualmode ==# ''
-    let selection_end_column = getcharpos("'>")[2]
-    let line_column_count = strdisplaywidth(getline("'>"))
-    let is_selection_end_at_end_of_line = selection_end_column == line_column_count
-    if is_selection_end_at_end_of_line
-      let keys .= 'p'
-    else
-      let keys .= 'P'
-    endif
-  " visual-line mode
-  else
-    let keys .= 'P'
+-- Prevents inserting two spaces after punctuation on a join (J)
+vim.o.joinspaces = false
 
-    " Reindent the pasted text. This will also move the cursor to the end of the pasted text
-    let keys .= '=`]'
-  endif
+vim.o.formatoptions = ''
+vim.opt.matchpairs:append('<:>')
 
-  return keys
-endfunction
-xnoremap <silent> p <Esc>:execute 'normal gv<C-r><C-r>=VisualPaste()<CR>'<CR>
+-- move ten lines at a time by holding ctrl and a directional key
+vim.keymap.set({'n'}, '<C-j>', '10j', {remap = true})
+vim.keymap.set({'n'}, '<C-k>', '10k', {remap = true})
+vim.keymap.set({'x'}, '<C-j>', '10j', {remap = true})
+vim.keymap.set({'x'}, '<C-k>', '10k', {remap = true})
 
-" - reindent the pasted text
-" - move to the end of the pasted text
-nnoremap <silent> p p=`]
-
-" select the text that was just pasted
-noremap gp `[v`]
-
-" Prevents inserting two spaces after punctuation on a join (J)
-set nojoinspaces
-
-set formatoptions=
-
-set matchpairs+=<:>
-" move ten lines at a time by holding ctrl and a directional key
-nmap <C-j> 10j
-nmap <C-k> 10k
-xmap <C-j> 10j
-xmap <C-k> 10k
-
-lua << EOF
 -- Always move by screen line, unless a count was specified or we're in a line-wise mode.
 function move_by_screen_line(direction)
   mode = vim.fn.mode()
@@ -88,46 +73,45 @@ function move_by_screen_line(direction)
 end
 vim.keymap.set({'n', 'x'}, 'j', function() return move_by_screen_line('j') end, {expr =true})
 vim.keymap.set({'n', 'x'}, 'k', function() return move_by_screen_line('k') end, {expr =true})
-EOF
 
-" Resizing panes
-nnoremap <silent> <C-Left> <Cmd>vertical resize +1<CR>
-nnoremap <silent> <C-Right> <Cmd>vertical resize -1<CR>
-nnoremap <silent> <C-Up> <Cmd>resize +1<CR>
-nnoremap <silent> <C-Down> <Cmd>resize -1<CR>
+-- Resizing panes
+vim.keymap.set({'n'}, '<C-Left>', [[<Cmd>vertical resize +1<CR>]], {silent = true})
+vim.keymap.set({'n'}, '<C-Right>', [[<Cmd>vertical resize -1<CR>]], {silent = true})
+vim.keymap.set({'n'}, '<C-Up>', [[<Cmd>resize +1<CR>]], {silent = true})
+vim.keymap.set({'n'}, '<C-Down>', [[<Cmd>resize -1<CR>]], {silent = true})
 
-" Copy up to the end of line, not including the newline character
-nnoremap Y yg_
+-- Copy up to the end of line, not including the newline character
+vim.keymap.set({'n'}, 'Y', 'yg_')
 
-" Using the paragraph motions won't add to the jump stack
-nnoremap } <Cmd>keepjumps normal! }<CR>
-nnoremap { <Cmd>keepjumps normal! {<CR>
+-- Using the paragraph motions won't add to the jump stack
+vim.keymap.set({'n'}, '}', [[<Cmd>keepjumps normal! }<CR>]])
+vim.keymap.set({'n'}, '{', [[<Cmd>keepjumps normal! {<CR>]])
 
-" 'n' always searches forwards, 'N' always searches backwards
-nnoremap <expr> n  'Nn'[v:searchforward]
-xnoremap <expr> n  'Nn'[v:searchforward]
-onoremap <expr> n  'Nn'[v:searchforward]
-nnoremap <expr> N  'nN'[v:searchforward]
-xnoremap <expr> N  'nN'[v:searchforward]
-onoremap <expr> N  'nN'[v:searchforward]
+-- 'n' always searches forwards, 'N' always searches backwards
+vim.keymap.set({'n'}, 'n', "'Nn'[v:searchforward]", {expr = true})
+vim.keymap.set({'x'}, 'n', "'Nn'[v:searchforward]", {expr = true})
+vim.keymap.set({'o'}, 'n', "'Nn'[v:searchforward]", {expr = true})
+vim.keymap.set({'n'}, 'N', "'nN'[v:searchforward]", {expr = true})
+vim.keymap.set({'x'}, 'N', "'nN'[v:searchforward]", {expr = true})
+vim.keymap.set({'o'}, 'N', "'nN'[v:searchforward]", {expr = true})
 
-" Enter a newline above or below the current line.
-nnoremap <Enter> o<ESC>
-" TODO: This won't work until tmux can differentiate between enter and shift+enter.
-" tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
-nnoremap <S-Enter> O<ESC>
+-- Enter a newline above or below the current line.
+vim.keymap.set({'n'}, '<Enter>', 'o<ESC>')
 
-" Disable language providers. Feels like a lot of trouble to install neovim bindings for all these languages
-" so I'll just avoid plugins that require them. By disabling the providers, I won't get a warning about
-" missing bindings when I run ':checkhealth'.
-let g:loaded_python3_provider = 0
-let g:loaded_ruby_provider = 0
-let g:loaded_node_provider = 0
-let g:loaded_perl_provider = 0
+-- TODO: This won't work until tmux can differentiate between enter and shift+enter.
+-- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
+vim.keymap.set({'n'}, '<S-Enter>', 'O<ESC>')
 
-nnoremap Q <Nop>
+-- Disable language providers. Feels like a lot of trouble to install neovim bindings for all these languages
+-- so I'll just avoid plugins that require them. By disabling the providers, I won't get a warning about
+-- missing bindings when I run ':checkhealth'.
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
 
-lua << EOF
+vim.keymap.set({'n'}, 'Q', '<Nop>')
+
 -- Execute macros more quickly by enabling lazyredraw and disabling events while the macro is running
 local function get_char()
   local ret_val, char_num = pcall(vim.fn.getchar)
@@ -213,60 +197,80 @@ vim.keymap.set({'n'}, '<C-e>', '$')
 vim.keymap.set({'i'}, '<C-a>', '<ESC>^i')
 vim.keymap.set({'i'}, '<C-e>', '<ESC>$a')
 
--- TODO: When tmux is able to differentiate between tab and ctrl+i this mapping should be updated.
+-- My terminal is configured to send F12 when I press <C-i> and neovim maps it back to <C-i> here.
+-- TODO: When tmux is able to differentiate between tab and ctrl+i this mapping should be removed.
 -- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
 --
 -- move forward in the jumplist
-vim.keymap.set("n", "<F12>", '<C-i>')
-EOF
-" }}}
+vim.keymap.set({"n"}, "<F12>", '<C-i>')
+-- }}}
 
-" Option overrides {{{
-function! OverrideVimsDefaultFiletypePlugins()
-  " Vim's default filetype plugins get run when filetype detection is enabled (i.e. ':filetype plugin on').
-  " So in order to override settings from vim's filetype plugins, these FileType autocommands need to be registered
-  " after filetype detection is enabled. Filetype detection is turned on in plug_end() so this function gets called at
-  " PlugEndPost, which is right after plug_end() is called.
-  augroup OverrideFiletypePlugins
-    autocmd!
+-- Option overrides {{{
+local group_id = vim.api.nvim_create_augroup('VimDefaultOverrides', {})
 
-    " Use vim help pages for keywordprg in vim files
-    autocmd FileType vim setlocal keywordprg=:tab\ help
+-- Vim's default filetype plugins get run when filetype detection is enabled (i.e. ':filetype plugin on').
+-- So in order to override settings from vim's filetype plugins, these FileType autocommands need to be registered
+-- after filetype detection is enabled. Filetype detection is turned on in plug_end() so this function gets called at
+-- PlugEndPost, which is right after plug_end() is called.
+local function override_default_filetype_plugins()
+  -- Don't automatically hard-wrap text
+  vim.api.nvim_create_autocmd(
+    'FileType',
+    {
+      pattern = '*',
+      callback = function()
+        vim.opt_local.textwidth = 0
+        vim.opt_local.wrapmargin = 0
+      end,
+      group = group_id,
+    }
+  )
 
-    " Don't automatically hard-wrap text
-    autocmd FileType * setlocal textwidth=0
-    autocmd FileType * setlocal wrapmargin=0
-  augroup END
-endfunction
+  -- Use vim help pages for keywordprg in vim files
+  vim.api.nvim_create_autocmd(
+    'FileType',
+    {
+      pattern = 'vim',
+      callback = function() vim.opt_local.keywordprg = ':tab help' end,
+      group = group_id,
+    }
+  )
+end
 
-augroup Overrides
-  autocmd!
-  autocmd User PlugEndPost call OverrideVimsDefaultFiletypePlugins()
-augroup END
-" }}}
+vim.api.nvim_create_autocmd(
+  'User',
+  {
+    pattern = 'PlugEndPost',
+    callback = override_default_filetype_plugins,
+    group = group_id,
+  }
+)
+-- }}}
 
-" Searching {{{
-" searching is only case sensitive when the query contains an uppercase letter
-set ignorecase smartcase
+-- Searching {{{
+-- searching is only case sensitive when the query contains an uppercase letter
+vim.o.ignorecase = true
+vim.o.smartcase = true
 
-" Use ripgrep as the grep program, if it's available. Otherwise use the internal
-" grep implementation since it's cross-platform
-let &grepprg = executable('rg') ? 'rg --vimgrep --smart-case --follow' : 'internal'
+-- Use ripgrep as the grep program, if it's available. Otherwise use the internal
+-- grep implementation since it's cross-platform
+vim.o.grepprg = vim.fn.executable('rg') and 'rg --vimgrep --smart-case --follow' or 'internal'
 
-" Search for selected text, forwards or backwards.
-vnoremap <silent> * :<C-U>
-      \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-      \gvy/<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
-      \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
-      \gVzv:call setreg('"', old_reg, old_regtype)<CR>
-vnoremap <silent> # :<C-U>
-      \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
-      \gvy?<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(
-      \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
-      \gVzv:call setreg('"', old_reg, old_regtype)<CR>
-" }}}
+-- Search for selected text, forwards or backwards.
+vim.keymap.set(
+  {'v'},
+  '*',
+  [[:<C-U>let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>gvy/<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>gVzv:call setreg('"', old_reg, old_regtype)<CR>]],
+  {silent = true}
+)
+vim.keymap.set(
+  {'v'},
+  '#',
+  [[:<C-U>let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>gvy?<C-R>=&ic?'\c':'\C'<CR><C-R><C-R>=substitute(escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>gVzv:call setreg('"', old_reg, old_regtype)<CR>]],
+  {silent = true}
+)
+-- }}}
 
-lua << EOF
 -- Plugins {{{
 -- Motions for levels of indentation
 Plug(
@@ -401,4 +405,3 @@ vim.keymap.set("v", "g-", 'g<Plug>(dial-decrement)')
 
 Plug 'arthurxavierx/vim-caser'
 -- }}}
-EOF
