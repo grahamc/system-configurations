@@ -114,7 +114,6 @@ vim.api.nvim_create_autocmd(
   }
 )
 
-vim.keymap.set('', '<C-s>', '<Cmd>wa<CR>')
 vim.keymap.set('', '<C-x>', '<Cmd>xa<CR>')
 
 -- suspend vim and start a new shell
