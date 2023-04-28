@@ -237,11 +237,9 @@ local function close()
   end
 
   local last_tab = vim.fn.tabpagenr('#')
-  vim.cmd.execute([['q']])
+  vim.cmd.q()
   vim.cmd(string.format(
-    [[
-      silent! tabnext %s
-    ]],
+    [[silent! tabnext %s]],
     last_tab
   ))
 end

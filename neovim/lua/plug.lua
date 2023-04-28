@@ -72,11 +72,15 @@ function Plug(repo, options)
     if options['on'] or options['for'] then
       local plugin_name = repo:match("^[%w-]+/([%w-_.]+)$")
       configs.lazy[plugin_name] = config
-      vim.cmd(string.format(
-        [[ autocmd! User %s ++once lua PlugWrapperApplyLazyConfig('%s') ]],
-        plugin_name,
-        plugin_name
-      ))
+      vim.api.nvim_create_autocmd(
+        'User',
+        {
+          pattern = plugin_name,
+          callback = function() _G.PlugWrapperApplyLazyConfig(plugin_name) end,
+          group = vim.api.nvim_create_augroup('PlugLua', {}),
+          once = true,
+        }
+      )
     else
       table.insert(configs.immediate, config)
     end
