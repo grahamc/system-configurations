@@ -47,9 +47,6 @@ function upgrade
     type --query flatpak
     and upgrade-flatpak
 
-    type --query nvim
-    and upgrade-nvim
-
     test -d ~/.fluent-theme
     and upgrade-fluent
 
@@ -73,44 +70,6 @@ end
 function upgrade-flatpak
     print_banner 'FLATPAK'
     flatpak update --assumeyes
-end
-
-function upgrade-nvim
-    print_banner 'NEOVIM'
-
-    # This way we don't check for updates in plugins that aren't being used
-    echo -n 'Removing unused plugins... '
-    nvim --headless -i NONE -c 'PlugClean!' -c 'qa'
-    echo 'done'
-
-    set plugin_count (ls ~/.local/share/nvim/plugged | wc -l)
-    set current_plugin_number 1
-    for plugin_directory in ~/.local/share/nvim/plugged/*
-        echo -n -e -s 'Checking plugins for updates: ' $current_plugin_number '/' $plugin_count \r
-        chronic git -C $plugin_directory fetch
-        if test -n "$(git -C $plugin_directory log HEAD..origin/HEAD --oneline)"
-            set is_outdated
-            break
-        end
-
-        set current_plugin_number (math $current_plugin_number + 1)
-    end
-    # clear current line, which has the progress indicator
-    echo -e -n '\33[2K'
-
-    if not set --query is_outdated
-        echo 'Nothing to do.'
-        return
-    end
-
-    read --prompt-str 'Would you like to update? (y/n): ' --nchars 1 response
-    if test $response = 'y'
-        # I explicitly set the input file to the terminal in case this command is run in a pipeline.
-        # For exmaple: `yes | <this_script>`.
-        nvim -c 'autocmd VimEnter * MyPlugUpdate' </dev/tty
-        # Remove the impatient.nvim cache. Sometimes treesitter requires this after a treesitter upgrage.
-        rm ~/.cache/nvim/luacache_*
-    end
 end
 
 function upgrade-dotfiles
