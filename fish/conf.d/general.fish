@@ -74,9 +74,6 @@ set --global --export LS_COLORS 'di=0:ln=0:so=0:pi=0:ex=0:bd=0:cd=0:su=0:sg=0:tw
 # cd
 abbr --add --global -- - 'cd -'
 
-# nix
-abbr --add --global 'nr' 'nix repl --file ~/.config/nix/repl-startup.nix'
-
 # python
 # Don't add the name of the virtual environment to my prompt. This way, I can add it myself
 # using the same formatting as the rest of my prompt.
@@ -129,9 +126,6 @@ abbr --add --global ncdu 'ncdu --color off'
 # Increase maxixmum number of open file descriptors that a single process can have. This applies to the current
 # process and its descendents.
 ulimit -Sn 10000
-
-# any-nix-shell
-any-nix-shell fish | source
 
 # comma
 function , --wraps ,
