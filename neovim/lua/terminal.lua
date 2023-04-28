@@ -1971,11 +1971,11 @@ vim.api.nvim_create_autocmd(
     pattern = 'PlugEndPost',
     callback = function()
       local plugs = vim.g.plugs or {}
-      -- Plugins registered in plugfile.vim will be in g:registered_plugs
+      -- Plugins registered in plugfile.vim will be in _G.registered_plugs
       local missing_plugins = {}
       for name, info in pairs(plugs) do
         local is_installed = vim.fn.isdirectory(info.dir)
-        local is_registered = vim.g.registered_plugs[name] ~= nil
+        local is_registered = _G.registered_plugs[name] ~= nil
         if not is_installed and is_registered then
           missing_plugins[name] = info
         end

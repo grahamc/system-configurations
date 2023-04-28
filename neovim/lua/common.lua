@@ -160,7 +160,7 @@ vim.api.nvim_create_autocmd(
   'RecordingEnter',
   {
     callback = function()
-      if vim.g.fast_macro_events == nil then
+      if _G.fast_macro_events == nil then
         events = vim.fn.getcompletion('', 'event')
 
         for index, event in ipairs(events) do
@@ -170,11 +170,11 @@ vim.api.nvim_create_autocmd(
           end
         end
 
-        vim.g.fast_macro_events = table.concat(events, ',')
+        _G.fast_macro_events = table.concat(events, ',')
       end
 
       vim.g.old_eventignore = vim.o.eventignore
-      vim.o.eventignore = vim.g.fast_macro_events
+      vim.o.eventignore = _G.fast_macro_events
     end,
     group = group_id,
   }

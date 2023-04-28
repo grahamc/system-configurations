@@ -15,15 +15,15 @@ vim.keymap.set({'n'}, '<Leader>-', '<C-w>s', {remap = true})
 -- Folds
 vim.keymap.set({'n'}, '<Tab>', function() vim.fn.VSCodeNotify('editor.toggleFold') end, {silent = true})
 local function fold_toggle()
-  if vim.g.is_folded == nil then
-    vim.g.is_folded = false
+  if _G.is_folded == nil then
+    _G.is_folded = false
   end
-  if vim.g.is_folded then
+  if _G.is_folded then
     vim.fn.VSCodeNotify('editor.unfoldAll')
-    vim.g.is_folded = false
+    _G.is_folded = false
   else
     vim.fn.VSCodeNotify('editor.foldAll')
-    vim.g.is_folded = true
+    _G.is_folded = true
   end
 end
 vim.keymap.set({'n'}, '<S-Tab>', fold_toggle, {silent = true})

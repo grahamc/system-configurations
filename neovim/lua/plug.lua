@@ -6,7 +6,7 @@ local original_plug_end = vim.fn['plug#end']
 local original_plug = vim.fn['plug#']
 
 -- Plugins that have been added through `RegisterPlug`
-vim.g.registered_plugs = {}
+_G.registered_plugs = {}
 
 -- Functions to be called after a plugin is loaded to configure it.
 local configs = {
@@ -90,7 +90,5 @@ function RegisterPlug(repo)
 
   local plugin_name = repo:match("^[%w-]+/([%w-_.]+)$")
 
-  local temp = vim.g.registered_plugs
-  temp[plugin_name] = true
-  vim.g.registered_plugs = temp
+  _G.registered_plugs[plugin_name] = true
 end
