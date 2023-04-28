@@ -39,7 +39,7 @@ function _tmux_connect
 
     set accent (set_color cyan)
     set normal (set_color normal)
-    read --prompt "echo -n -s 'Welcome back $USER, would you like to connect to tmux? (' '$accent' 'y' '$normal' '/' '$accent' 'n' '$normal' '): ';" --nchars 1 response
+    read --prompt "echo -n -s 'Hey $USER, would you like to connect to tmux? (' '$accent' 'y' '$normal' '/' '$accent' 'n' '$normal' '): ';" --nchars 1 response
     if test $response = y
         tmux attach-session
     end
