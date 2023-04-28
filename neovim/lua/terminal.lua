@@ -1755,18 +1755,6 @@ Plug(
             )
           )
         end,
-
-        ["prosemd_lsp"] = function()
-          lspconfig.prosemd_lsp.setup(
-            vim.tbl_deep_extend(
-              'force',
-              default_server_config,
-              {
-                filetypes = {'markdown', 'gitcommit', 'text'},
-              }
-            )
-          )
-        end,
       })
     end,
   }
