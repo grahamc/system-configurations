@@ -32,6 +32,17 @@
 
   outputs = { nixpkgs, home-manager, nix-index-database, flake-utils, my-overlay, nix-appimage, ... }:
     let
+      # For example, merging these two sets:                                    Would result in one set containing:
+      #  { packages = {                   { packages = {                          { packages = {
+      #      x86_64-linux = {                 x86_64-linux = {                        x86_64-linux = {
+      #        homeConfigurations = {           homeConfigurations = {                  homeConfigurations = {
+      #          laptop = <derivation>;            desktop = <derivation>;                   laptop = <derivation>;
+      #                                                                                     desktop = <derivation>;
+      #        }                                }                                       }
+      #      };                               };                                      };
+      #    };                               };                                      };
+      #  }                                }                                       }
+      recursiveMerge = sets: nixpkgs.lib.lists.foldr nixpkgs.lib.recursiveUpdate {} sets;
       createHomeManagerOutputs = {
         hostName,
         modules,
@@ -95,17 +106,7 @@
           }
         ];
       homeManagerOutputsPerHost = map createHomeManagerOutputs hostConfigurations;
-      # e.g. {x86_64-linux = [<derivation>]; x86_64-darwin = [<derivation>];}
-      activationPackagesBySystem = nixpkgs.lib.foldAttrs
-        (item: acc:
-          let
-            configs = builtins.attrValues item.homeConfigurations;
-            activationPackages = map (builtins.getAttr "activationPackage") configs;
-          in
-            acc ++ activationPackages
-        )
-        []
-        (map (builtins.getAttr "packages") homeManagerOutputsPerHost);
+      homeManagerOutputs = recursiveMerge homeManagerOutputsPerHost;
       # Run my shell environment, both programs and their config files, completely from the nix store.
       shellOutputs = flake-utils.lib.eachSystem
         (with flake-utils.lib.system; [ x86_64-linux x86_64-darwin ])
@@ -215,34 +216,38 @@
               apps.default = {
                 type = "app";
                 program = "${shellBootstrap}/bin/${shellBootstrapScriptName}";
-                programDirectory = "${shellBootstrap}";
+                programDerivation = shellBootstrap;
               };
             }
         );
-      # The default output is a `symlinkJoin` of all the Home Manager outputs. This way I can easily build
-      # all the Home Manager outputs in CI to populate my binary cache. There are some open issues for providing an
-      # easier way to build all packages for CI.
+      # The default output contains symbolic links to all the packages whose dependencies I want cache through CI.
+      # This way in my CI pipeline I can build this output and populate my binary cache with every dependency that gets
+      # pulled in. There are some open issues for providing an easier way to build all packages for CI.
       # issue: https://github.com/NixOS/nix/issues/7165
       # issue: https://github.com/NixOS/nix/issues/7157
       defaultOutputs = map
         (system:
           let
             pkgs = import nixpkgs {inherit system;};
-            inherit (pkgs.lib.lists) optionals;
-            shellOutputsBySystem = shellOutputs.apps;
+            inherit (pkgs.lib.attrsets) optionalAttrs mapAttrs;
             hasSystem = builtins.hasAttr system;
-            paths =
-              (optionals (hasSystem activationPackagesBySystem) activationPackagesBySystem.${system})
-              ++ (optionals (hasSystem shellOutputsBySystem) [shellOutputsBySystem.${system}.default.programDirectory]);
+
+            homeConfigurationOutputsBySystem = homeManagerOutputs.packages;
+            homeConfigurationDerivationsByName = optionalAttrs
+              (hasSystem homeConfigurationOutputsBySystem)
+              (mapAttrs (key: value: value.activationPackage) homeConfigurationOutputsBySystem.${system}.homeConfigurations);
+
+            shellOutputsBySystem = shellOutputs.apps;
+            shellDerivationByName = optionalAttrs
+              (hasSystem shellOutputsBySystem)
+              {shell = shellOutputsBySystem.${system}.default.programDerivation;};
+
+            allDerivationsByName = homeConfigurationDerivationsByName // shellDerivationByName;
           in
             {
               packages = {
                 "${system}" = {
-                  default = pkgs.symlinkJoin
-                    {
-                      name ="default";
-                      inherit paths;
-                    };
+                  default = pkgs.linkFarm "packages-to-cache" allDerivationsByName;
                 };
               };
             }
@@ -255,17 +260,6 @@
           }
         )
         (with flake-utils.lib.system; [ x86_64-linux ]);
-      recursiveMerge = sets: nixpkgs.lib.lists.foldr nixpkgs.lib.recursiveUpdate {} sets;
     in
-      # For example, merging these two sets:                                    Would result in one set containing:
-      #  { packages = {                   { packages = {                          { packages = {
-      #      x86_64-linux = {                 x86_64-linux = {                        x86_64-linux = {
-      #        homeConfigurations = {           homeConfigurations = {                  homeConfigurations = {
-      #          laptop = <derivation>;            desktop = <derivation>;                   laptop = <derivation>;
-      #                                                                                     desktop = <derivation>;
-      #        }                                }                                       }
-      #      };                               };                                      };
-      #    };                               };                                      };
-      #  }                                }                                       }
-      recursiveMerge (homeManagerOutputsPerHost ++ defaultOutputs ++ [shellOutputs] ++ bundlerOutputs);
+      recursiveMerge ([homeManagerOutputs] ++ defaultOutputs ++ [shellOutputs] ++ bundlerOutputs);
 }
