@@ -85,17 +85,6 @@ vim.api.nvim_create_autocmd(
     group = group_id,
   }
 )
--- highlight trailing whitespace
-vim.api.nvim_create_autocmd(
-  'ColorScheme',
-  {
-    callback = function()
-      vim.api.nvim_set_hl(0, 'ExtraWhitespace', { link = 'Warning' })
-      vim.cmd([[match ExtraWhitespace /\s\+$/]])
-    end,
-    group = group_id,
-  }
-)
 vim.api.nvim_create_autocmd(
   'OptionSet',
   {
