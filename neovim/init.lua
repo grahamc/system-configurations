@@ -27,7 +27,7 @@ for _, plugin in pairs(plugins_to_disable) do
 end
 
 -- Variables used across config files
-vim.g.mapleader = vim.api.nvim_replace_termcodes('<Space>', true, false, true)
+vim.g.mapleader = ' '
 
 -- Calling this before I load the profiles so I can register plugins inside them
 plug_begin()
