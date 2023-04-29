@@ -5,6 +5,11 @@ if not vim.fn.has('ttyin') and not vim.fn.has('ttyout') then
   return
 end
 
+-- TODO: The tty{in,out} check passes in vscode so I'm explicitly checking that it isn't running in vscode.
+if vim.g.vscode ~= nil then
+  return
+end
+
 -- Miscellaneous {{{
 vim.o.confirm = true
 vim.o.mouse = 'a'
