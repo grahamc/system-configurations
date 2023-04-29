@@ -74,7 +74,6 @@ vim.keymap.set({'n'}, 'zv', function() vim.fn.VSCodeNotify('editor.action.dirtyd
 vim.keymap.set({'n'}, ']c', function() vim.fn.VSCodeNotify('workbench.action.editor.nextChange') end)
 vim.keymap.set({'n'}, '[c', function() vim.fn.VSCodeNotify('workbench.action.editor.previousChange') end)
 
-
 -- right click
 vim.keymap.set({'n'}, '<Leader><Leader>', function() vim.fn.VSCodeNotify('editor.action.showContextMenu') end)
 vim.keymap.set({'x'}, '<Leader><Leader>', function() vim.fn.VSCodeNotify('editor.action.showContextMenu') end)
