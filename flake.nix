@@ -225,7 +225,8 @@
       # pulled in. There are some open issues for providing an easier way to build all packages for CI.
       # issue: https://github.com/NixOS/nix/issues/7165
       # issue: https://github.com/NixOS/nix/issues/7157
-      defaultOutputs = map
+      defaultOutputs = flake-utils.lib.eachSystem
+        (with flake-utils.lib.system; [ x86_64-linux x86_64-darwin ])
         (system:
           let
             pkgs = import nixpkgs {inherit system;};
@@ -244,22 +245,13 @@
 
             allDerivationsByName = homeConfigurationDerivationsByName // shellDerivationByName;
           in
-            {
-              packages = {
-                "${system}" = {
-                  default = pkgs.linkFarm "packages-to-cache" allDerivationsByName;
-                };
-              };
-            }
-        )
-        (with flake-utils.lib.system; [ x86_64-linux x86_64-darwin ]);
-      bundlerOutputs = map
+            { packages.default = pkgs.linkFarm "packages-to-cache" allDerivationsByName; }
+        );
+      bundlerOutputs = flake-utils.lib.eachSystem
+        (with flake-utils.lib.system; [ x86_64-linux ])
         (system:
-          {
-            bundlers."${system}" = nix-appimage.bundlers."${system}";
-          }
-        )
-        (with flake-utils.lib.system; [ x86_64-linux ]);
+          { bundlers = nix-appimage.bundlers.${system}; }
+        );
     in
-      recursiveMerge ([homeManagerOutputs] ++ defaultOutputs ++ [shellOutputs] ++ bundlerOutputs);
+      recursiveMerge [homeManagerOutputs defaultOutputs shellOutputs bundlerOutputs];
 }
