@@ -3,6 +3,9 @@ if vim.g.vscode == nil then
   return
 end
 
+-- TODO: I have this set in init.lua, but it won't work in vscode unless I set it here.
+vim.g.mapleader = ' '
+
 -- search
 vim.keymap.set({'n'}, '<Leader>f', vim.cmd.Find, {silent = true})
 vim.keymap.set({'n'}, '<Leader>g', function() vim.fn.VSCodeNotify("workbench.action.findInFiles") end, {silent = true})
