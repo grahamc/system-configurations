@@ -27,6 +27,7 @@
         cloudflared
         timg
         watchman
+        nil
       ];
 
       home.file = {
