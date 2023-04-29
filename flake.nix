@@ -1,6 +1,11 @@
 {
   description = "Biggs's Home Manager configuration";
 
+  nixConfig = {
+    extra-substituters = "https://bigolu.cachix.org";
+    extra-trusted-public-keys = "bigolu.cachix.org-1:AJELdgYsv4CX7rJkuGu5HuVaOHcqlOgR07ZJfihVTIw=";
+  };
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {
@@ -23,11 +28,6 @@
         flake-utils.follows = "flake-utils";
       };
     };
-  };
-
-  nixConfig = {
-    extra-substituters = "https://bigolu.cachix.org";
-    extra-trusted-public-keys = "bigolu.cachix.org-1:AJELdgYsv4CX7rJkuGu5HuVaOHcqlOgR07ZJfihVTIw=";
   };
 
   outputs = { nixpkgs, home-manager, nix-index-database, flake-utils, my-overlay, nix-appimage, ... }:
