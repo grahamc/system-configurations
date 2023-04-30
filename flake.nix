@@ -82,7 +82,10 @@
             };
           in
             {
-              packages.homeConfigurations.${hostName} = home-manager.lib.homeManagerConfiguration {
+              # Using `legacyPackages` here because `packages` doesn't support nested derivations meaning the values
+              # inside the `packages` attribute set must be derivations.
+              # For more info: https://discourse.nixos.org/t/flake-questions/8741/2
+              legacyPackages.homeConfigurations.${hostName} = home-manager.lib.homeManagerConfiguration {
                 inherit pkgs;
                 modules = modules ++ [ ./.meta/modules/profile/common.nix ];
                 extraSpecialArgs = { inherit hostName isGui nix-index-database username homeDirectory installMethod xdgPkgs; };
@@ -137,7 +140,7 @@
               systems = [ system ];
               installMethod = "copy";
             };
-            inherit (homeManagerOutputs.packages.${system}.homeConfigurations.${hostName}) activationPackage;
+            inherit (homeManagerOutputs.legacyPackages.${system}.homeConfigurations.${hostName}) activationPackage;
             shellBootstrapScriptName = "shell";
             # I don't want the programs that this script depends on to be in the $PATH since they are not
             # necessarily part of my Home Manager configuration so I'll set them to variables instead.
@@ -238,7 +241,7 @@
             inherit (pkgs.lib.attrsets) optionalAttrs mapAttrs;
             hasSystem = builtins.hasAttr system;
 
-            homeConfigurationOutputsBySystem = homeManagerOutputs.packages;
+            homeConfigurationOutputsBySystem = homeManagerOutputs.legacyPackages;
             homeConfigurationDerivationsByName = optionalAttrs
               (hasSystem homeConfigurationOutputsBySystem)
               (mapAttrs (key: value: value.activationPackage) homeConfigurationOutputsBySystem.${system}.homeConfigurations);
