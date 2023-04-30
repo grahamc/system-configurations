@@ -30,18 +30,6 @@ local function fold_toggle()
   end
 end
 vim.keymap.set({'n'}, '<S-Tab>', fold_toggle, {silent = true})
-local function MoveCursor(direction)
-    if vim.fn.reg_recording() == '' and vim.fn.reg_executing() == '' then
-        return 'g' .. direction
-    else
-        return direction
-    end
-end
--- TODO: These mappings allow me to move over folds without opening them. However, I won't be able to navigate through
--- folds while creating a macro.
--- source: https://github.com/vscode-neovim/vscode-neovim/issues/58#issuecomment-989481648
-vim.keymap.set({'n'}, 'j', function() MoveCursor('j') end, {expr = true, remap = true})
-vim.keymap.set({'n'}, 'k', function() MoveCursor('k') end, {expr = true, remap = true})
 
 vim.keymap.set({'n'}, '[<Tab>', function() vim.fn.VSCodeNotify('editor.gotoPreviousFold') end)
 vim.keymap.set({'n'}, ']<Tab>', function() vim.fn.VSCodeNotify('editor.gotoNextFold') end)
