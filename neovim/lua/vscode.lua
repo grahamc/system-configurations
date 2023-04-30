@@ -9,7 +9,7 @@ vim.g.mapleader = ' '
 -- search
 vim.keymap.set({'n'}, '<Leader>f', vim.cmd.Find, {silent = true})
 vim.keymap.set(
-  {'n'},
+  {'n', 'v'},
   '<Leader>g',
   function()
     vim.fn.VSCodeNotify("workbench.action.findInFiles")
@@ -18,7 +18,7 @@ vim.keymap.set(
   end,
   {silent = true}
 )
-vim.keymap.set({'n'}, '<Leader>s', function() vim.fn.VSCodeNotify("workbench.action.showAllSymbols") end, {silent = true})
+vim.keymap.set({'n', 'v'}, '<Leader>s', function() vim.fn.VSCodeNotify("workbench.action.showAllSymbols") end, {silent = true})
 
 -- window
 vim.keymap.set({'n'}, '<Leader><Bar>', '<C-w>v', {remap = true})

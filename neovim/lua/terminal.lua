@@ -182,6 +182,18 @@ _G.unicode = function(hex)
     )
   )
 end
+function vim.get_visual_selection()
+  vim.cmd('noau normal! "vy"')
+  local text = vim.fn.getreg('v')
+  vim.fn.setreg('v', {})
+
+  text = string.gsub(text, "\n", "")
+  if #text > 0 then
+    return text
+  else
+    return ''
+  end
+end
 -- }}}
 
 -- Autosave {{{
@@ -1037,17 +1049,30 @@ Plug(
         augroup END
       ]])
 
-      vim.keymap.set('n', '<Leader>h', '<Cmd>Telescope command_history<CR>')
+      local telescope_builtins = require('telescope.builtin')
+      local function call_with_visual_selection(picker)
+        local result = function()
+          local visual_selection = vim.get_visual_selection()
+          if #visual_selection > 0 then
+            picker({default_text = visual_selection})
+          else
+            picker()
+          end
+        end
+
+        return result
+      end
+      vim.keymap.set({'n', 'v'}, '<Leader>h', call_with_visual_selection(telescope_builtins.command_history))
       vim.keymap.set('n', '<Leader>b', '<Cmd>Telescope buffers<CR>')
       -- My terminal is configured to send F11 when I press <C-/> since TMUX can't use <C-/> right now.
       -- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
       vim.keymap.set('n', '<F11>', '<Cmd>Telescope commands<CR>')
-      vim.keymap.set('n', '<Leader>k', '<Cmd>Telescope help_tags<CR>')
-      vim.keymap.set('n', '<Leader>g', '<Cmd>Telescope live_grep<CR>')
+      vim.keymap.set({'n', 'v'}, '<Leader>k', call_with_visual_selection(telescope_builtins.help_tags))
+      vim.keymap.set({'n', 'v'}, '<Leader>g', call_with_visual_selection(telescope_builtins.live_grep))
       vim.keymap.set('n', '<Leader>f', '<Cmd>Telescope find_files<CR>')
       vim.keymap.set('n', '<Leader>j', '<Cmd>Telescope jumplist<CR>')
       vim.keymap.set('n', '<Leader><Leader>', '<Cmd>Telescope resume<CR>')
-      vim.keymap.set('n', '<Leader>s', '<Cmd>Telescope lsp_dynamic_workspace_symbols<CR>')
+      vim.keymap.set({'n', 'v'}, '<Leader>s', call_with_visual_selection(telescope_builtins.lsp_dynamic_workspace_symbols))
       vim.keymap.set('n', '<Leader>l', '<Cmd>Telescope diagnostics<CR>')
       vim.cmd([[
         command! Highlights Telescope highlights
