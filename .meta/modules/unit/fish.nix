@@ -6,6 +6,7 @@
       ;
 
     fishConfigs = makeSymlinksToTopLevelFilesInRepo "fish/conf.d" "fish/conf.d" ../../../fish/conf.d;
+    inherit (specialArgs) xdgPkgs;
   in
     {
       # Using this so HM can include it's generated completion scripts
@@ -32,8 +33,8 @@
         ];
       };
 
-      home.packages = with pkgs; [
-        figlet
+      home.packages = [
+        xdgPkgs.figlet
       ];
 
       home.file.".dotfiles/.meta/git_file_watch/active_file_watches/fish".source = makeSymlinkToRepo ".meta/git_file_watch/file_watches/fish.sh";

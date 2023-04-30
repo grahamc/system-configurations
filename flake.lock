@@ -194,6 +194,22 @@
         "type": "github"
       }
     },
+    "nix-xdg": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1512105841,
+        "narHash": "sha256-QIumPb5uZk6R6WInPKMzBSCOD6k5REZmWIp1vYITNNo=",
+        "owner": "infinisil",
+        "repo": "nix-xdg",
+        "rev": "230fb8ae96f6660e2c2990accdbbf1764942ff11",
+        "type": "github"
+      },
+      "original": {
+        "owner": "infinisil",
+        "repo": "nix-xdg",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1681036984,
@@ -217,6 +233,7 @@
         "my-overlay": "my-overlay",
         "nix-appimage": "nix-appimage",
         "nix-index-database": "nix-index-database",
+        "nix-xdg": "nix-xdg",
         "nixpkgs": "nixpkgs"
       }
     },

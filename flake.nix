@@ -28,9 +28,13 @@
         flake-utils.follows = "flake-utils";
       };
     };
+    nix-xdg = {
+      url = "github:infinisil/nix-xdg";
+      flake = false;
+    };
   };
 
-  outputs = { nixpkgs, home-manager, nix-index-database, flake-utils, my-overlay, nix-appimage, ... }:
+  outputs = { self, nixpkgs, home-manager, nix-index-database, flake-utils, my-overlay, nix-appimage, nix-xdg }:
     let
       # For example, merging these two sets:                                    Would result in one set containing:
       #  { packages = {                   { packages = {                          { packages = {
@@ -63,12 +67,25 @@
               inherit system;
               overlays = [ my-overlay.overlays.default ];
             };
+
+            xdgOverlay = ((import "${nix-xdg}/module.nix") {inherit pkgs; inherit (pkgs) lib; config = {};}).config.lib.xdg.xdgOverlay
+              {
+                specs = {
+                  ripgrep.env.RIPGREP_CONFIG_PATH = {config}: "${config}/ripgreprc";
+                  watchman.env.WATCHMAN_CONFIG_FILE = {config}: "${config}/watchman.json";
+                  figlet.env.FIGLET_FONTDIR = {data}: data;
+                };
+              };
+            xdgPkgs = import nixpkgs {
+              inherit system;
+              overlays = [ xdgOverlay ];
+            };
           in
             {
               packages.homeConfigurations.${hostName} = home-manager.lib.homeManagerConfiguration {
                 inherit pkgs;
                 modules = modules ++ [ ./.meta/modules/profile/common.nix ];
-                extraSpecialArgs = { inherit hostName isGui nix-index-database username homeDirectory installMethod; };
+                extraSpecialArgs = { inherit hostName isGui nix-index-database username homeDirectory installMethod xdgPkgs; };
               };
             }
         );
@@ -171,18 +188,6 @@
                         --init-command 'set --unexport XDG_RUNTIME_DIR' \
                         --init-command 'set --unexport XDG_CACHE_HOME_DIR' \
                         " ' ''$argv'
-                  case rg
-                    echo -s >''$mutable_bin/''$base "#!${fish}
-                      XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir XDG_CACHE_HOME=''$cache_dir RIPGREP_CONFIG_PATH=${activationPackage}/home-files/.ripgreprc \
-                      ''$program" ' ''$argv'
-                  case watchman
-                    echo -s >''$mutable_bin/''$base "#!${fish}
-                      XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir XDG_CACHE_HOME=''$cache_dir WATCHMAN_CONFIG_FILE=${activationPackage}/home-files/.config/watchman/watchman.json \
-                      ''$program" ' ''$argv'
-                  case figlet
-                    echo -s >''$mutable_bin/''$base "#!${fish}
-                      XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir XDG_CACHE_HOME=''$cache_dir FIGLET_FONTDIR=${activationPackage}/home-files/.local/share/figlet \
-                      ''$program" ' ''$argv'
                   case '*'
                     echo -s >''$mutable_bin/''$base "#!${fish}
                       XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir XDG_CACHE_HOME=''$cache_dir \

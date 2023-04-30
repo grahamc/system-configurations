@@ -6,6 +6,7 @@
     inherit (lib.lists) optionals;
     inherit (pkgs.stdenv) isLinux isDarwin;
     inherit (lib.attrsets) optionalAttrs;
+    inherit (specialArgs) xdgPkgs;
   in
     {
       imports = [
@@ -27,7 +28,7 @@
         lsd
         moreutils
         ncdu
-        ripgrep
+        xdgPkgs.ripgrep
         tealdeer
         tree
         viddy
@@ -50,7 +51,6 @@
       ];
 
       home.file = {
-        ".ripgreprc".source = makeSymlinkToRepo "ripgrep/ripgreprc";
         ".ignore".source = makeSymlinkToRepo "search/ignore";
         ".local/bin/fzf-tmux-zoom".source = makeSymlinkToRepo "fzf/fzf-tmux-zoom";
         ".local/bin/fzf-help-preview".source = makeSymlinkToRepo "fzf/fzf-help-preview";
@@ -78,6 +78,7 @@
         "watchman/watchman.json".source = makeSymlinkToRepo "watchman/watchman.json";
         "lesskey".source = makeSymlinkToRepo "less/lesskey";
         "fish/conf.d/fzf.fish".source = makeSymlinkToRepo "fzf/fzf.fish";
+        "ripgrep/ripgreprc".source = makeSymlinkToRepo "ripgrep/ripgreprc";
       } // optionalAttrs isLinux {
         "pipr/pipr.toml".source = makeSymlinkToRepo "pipr/pipr.toml";
         "fish/conf.d/pipr.fish".source = makeSymlinkToRepo "pipr/pipr.fish";

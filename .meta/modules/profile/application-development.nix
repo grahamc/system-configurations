@@ -5,6 +5,7 @@
       makeSymlinksToTopLevelFilesInRepo
       ;
     ipythonConfigs = makeSymlinksToTopLevelFilesInRepo ".ipython/profile_default/startup" "python/ipython/startup" ../../../python/ipython/startup;
+    inherit (specialArgs) xdgPkgs;
   in
     {
       imports = [
@@ -26,7 +27,7 @@
         yash
         cloudflared
         timg
-        watchman
+        xdgPkgs.watchman
         nil
       ];
 

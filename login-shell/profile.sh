@@ -7,18 +7,12 @@ if [ -e "$_nix_profile_setup_script" ]; then
 fi
 export LOCALE_ARCHIVE="$HOME/.nix-profile/lib/locale/locale-archive"
 
-# I want to keep a user-specific config so that I can manage it with Nix Home Manager
-export WATCHMAN_CONFIG_FILE="$HOME/.config/watchman/watchman.json"
-
 # I want to keep a user-specific catalog so that I can manage it with Nix Home Manager
 export XML_CATALOG_FILES="/etc/xml/catalog $HOME/.local/share/xml/catalog"
 
 # go
 export GOPATH="$HOME/.local/share/go"
 export PATH="$GOPATH/bin:$PATH"
-
-# figlet
-export FIGLET_FONTDIR="$HOME/.local/share/figlet"
 
 # Adding this to the PATH since this is where user-specific executables should go, per the
 # XDG Base Directory spec.
