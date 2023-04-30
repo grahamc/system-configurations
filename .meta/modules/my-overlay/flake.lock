@@ -58,7 +58,6 @@
         "vim-plugin-SchemaStore.nvim": "vim-plugin-SchemaStore.nvim",
         "vim-plugin-cmp-env": "vim-plugin-cmp-env",
         "vim-plugin-folding-nvim": "vim-plugin-folding-nvim",
-        "vim-plugin-vCoolor.vim": "vim-plugin-vCoolor.vim",
         "vim-plugin-vim": "vim-plugin-vim",
         "vim-plugin-vim-CursorLineCurrentWindow": "vim-plugin-vim-CursorLineCurrentWindow",
         "vim-plugin-vim-caser": "vim-plugin-vim-caser",
@@ -142,22 +141,6 @@
       "original": {
         "owner": "pierreglaser",
         "repo": "folding-nvim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-vCoolor.vim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1602668087,
-        "narHash": "sha256-sfw6Y9NbbFzoYALgQPBuu+36OSaTFzM0tWCOjDl8ag8=",
-        "owner": "KabbAmine",
-        "repo": "vCoolor.vim",
-        "rev": "bc19d684af09b1e146cf72176eea1ecded84882c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "KabbAmine",
-        "repo": "vCoolor.vim",
         "type": "github"
       }
     },

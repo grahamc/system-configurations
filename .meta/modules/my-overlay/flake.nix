@@ -3,7 +3,6 @@
 
   inputs = {
     "vim-plugin-vim-CursorLineCurrentWindow" = {url = "github:inkarkat/vim-CursorLineCurrentWindow"; flake = false;};
-    "vim-plugin-vCoolor.vim" = {url = "github:KabbAmine/vCoolor.vim"; flake = false;};
     "vim-plugin-virt-column.nvim" = {url = "github:lukas-reineke/virt-column.nvim"; flake = false;};
     "vim-plugin-folding-nvim" = {url = "github:pierreglaser/folding-nvim"; flake = false;};
     "vim-plugin-cmp-env" = {url = "github:bydlw98/cmp-env"; flake = false;};
