@@ -1039,7 +1039,9 @@ Plug(
 
       vim.keymap.set('n', '<Leader>h', '<Cmd>Telescope command_history<CR>')
       vim.keymap.set('n', '<Leader>b', '<Cmd>Telescope buffers<CR>')
-      vim.keymap.set('n', '<Leader>/', '<Cmd>Telescope commands<CR>')
+      -- My terminal is configured to send F11 when I press <C-/> since TMUX can't use <C-/> right now.
+      -- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
+      vim.keymap.set('n', '<F11>', '<Cmd>Telescope commands<CR>')
       vim.keymap.set('n', '<Leader>k', '<Cmd>Telescope help_tags<CR>')
       vim.keymap.set('n', '<Leader>g', '<Cmd>Telescope live_grep<CR>')
       vim.keymap.set('n', '<Leader>f', '<Cmd>Telescope find_files<CR>')

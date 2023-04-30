@@ -162,6 +162,13 @@ local keybinds = {
       key = 'F12',
     },
   },
+  {
+    key = '/',
+    mods = 'CTRL',
+    action = wezterm.action.SendKey {
+      key = 'F11',
+    },
+  },
 }
 
 local function generate_neovim_tab_navigation_keybinds()
