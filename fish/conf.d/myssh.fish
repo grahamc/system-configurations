@@ -28,20 +28,16 @@ end
 #     chmod +x "$shell_path"
 #   fi
 # else
-#   printf "Unable to find your shell, do you want to download it? (y/n): "
-#   read -r response
-#   if [ "$response" = y ]; then
-#     mkdir -p "$shell_dir"
-#     if command -v curl; then
-#       curl --fail --progress-bar --location --time-cond "$shell_path" "$download_url" --output "$shell_path"
-#     else
-#       wget --output-document "$shell_path" "$download_url"
-#     fi
-#     chmod +x "$shell_path"
+#   mkdir -p "$shell_dir"
+#   if command -v curl; then
+#     curl --fail --progress-bar --location --time-cond "$shell_path" "$download_url" --output "$shell_path"
+#   else
+#     wget --output-document "$shell_path" "$download_url"
 #   fi
+#   chmod +x "$shell_path"
 # fi
 # "$shell_path"
 
 function myssh --wraps ssh
-    ssh -o RequestTTY=yes -o RemoteCommand='$SHELL -l -c '"'"'/bin/sh -c '"'"':; set -o errexit; set -o nounset; shell_dir="$HOME/.local/bin"; shell_path="$shell_dir/biggs-shell"; download_url="https://github.com/bigolu/dotfiles/releases/download/master/shell"; if [ -f "$shell_path" ]; then printf "Do you want to update your shell? (y/n): "; read -r response; if [ "$response" = y ]; then if command -v curl; then curl --fail --progress-bar --location "$download_url" --output "$shell_path"; else wget --output-document "$shell_path" "$download_url"; fi; chmod +x "$shell_path"; fi; else printf "Unable to find your shell, do you want to download it? (y/n): "; read -r response; if [ "$response" = y ]; then mkdir -p "$shell_dir"; if command -v curl; then curl --fail --progress-bar --location --time-cond "$shell_path" "$download_url" --output "$shell_path"; else wget --output-document "$shell_path" "$download_url"; fi; chmod +x "$shell_path"; fi; fi; "$shell_path"'"''" $argv
+    ssh -o RequestTTY=yes -o RemoteCommand='$SHELL -l -c '"'"'/bin/sh -c '"'"':; set -o errexit; set -o nounset; shell_dir="$HOME/.local/bin"; shell_path="$shell_dir/biggs-shell"; download_url="https://github.com/bigolu/dotfiles/releases/download/master/shell"; if [ -f "$shell_path" ]; then printf "Do you want to update your shell? (y/n): "; read -r response; if [ "$response" = y ]; then if command -v curl; then curl --fail --progress-bar --location "$download_url" --output "$shell_path"; else wget --output-document "$shell_path" "$download_url"; fi; chmod +x "$shell_path"; fi; else mkdir -p "$shell_dir"; if command -v curl; then curl --fail --progress-bar --location --time-cond "$shell_path" "$download_url" --output "$shell_path"; else wget --output-document "$shell_path" "$download_url"; fi; chmod +x "$shell_path"; fi; "$shell_path"'"''" $argv
 end
