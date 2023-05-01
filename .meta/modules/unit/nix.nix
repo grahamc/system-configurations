@@ -9,7 +9,6 @@
     {
       xdg.configFile = {
         "nix/nix.conf".source = makeSymlinkToRepo "nix/nix.conf";
-        "fish/conf.d/nix-fzf.fish".source = makeSymlinkToRepo "nix/fzf.fish";
         "nix/repl-startup.nix".source = makeSymlinkToRepo "nix/repl-startup.nix";
         "fish/conf.d/nix.fish".source = makeSymlinkToRepo "nix/nix.fish";
       };
