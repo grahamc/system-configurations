@@ -13,7 +13,6 @@
         ../unit/firefox-developer-edition.nix
         ../unit/git.nix
         ../unit/wezterm.nix
-        ../unit/vscode.nix
       ];
 
       home.packages = with pkgs; [
