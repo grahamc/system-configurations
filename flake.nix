@@ -151,11 +151,6 @@
             basename = "${coreutilsBinaryPath}/basename";
             which = "${pkgs.which}/bin/which";
             foreignEnvFunctionPath = "${pkgs.fishPlugins.foreign-env}/share/fish/vendor_functions.d";
-            # I couldn't figure out how to escape '$argv' properly in a double quoted string in the fish wrapper so
-            # I'm using a single quoted string and having echo concatenate it with everything else.
-            #
-            # NOTE: The hashbangs in the scripts need to be the first two bytes in the file for the kernel to
-            # recognize them so it must come directly after the opening quote of the script.
             shellBootstrap = pkgs.writeScriptBin shellBootstrapScriptName
               ''#!${fish}
 
@@ -186,6 +181,8 @@
               for program in ${activationPackage}/home-path/bin/*
                 set base (${basename} ''$program)
 
+                # NOTE: The hashbangs in the scripts need to be the first two bytes in the file for the kernel to
+                # recognize them so it must come directly after the opening quote of the script.
                 switch "$base"
                   case env
                     # TODO: Wrapping this caused an infinite loop so I'll copy it instead
