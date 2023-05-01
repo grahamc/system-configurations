@@ -16,9 +16,12 @@ trap "[ -f $executable_name ] || exit; printf 'Do you want to remove the shell e
 
 trap 'exit $?' 1 2 3 15
 
-curl --fail --progress-bar --location \
-  https://github.com/bigolu/dotfiles/releases/download/master/shell \
-  --output "$executable_name"
+download_url='https://github.com/bigolu/dotfiles/releases/download/master/shell'
+if command -v curl; then
+  curl --fail --progress-bar --location "$download_url" --output "$executable_name"
+else
+  wget --output-document "$executable_name" "$download_url"
+fi
 
 # Make the temporary file executable
 chmod +x "$executable_name"
