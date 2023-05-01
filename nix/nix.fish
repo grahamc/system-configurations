@@ -40,7 +40,8 @@ function nix-unstaged-files-warning --on-event fish_preexec --argument-names com
 
     # If there are untracked files, warn the user since they'll be ignored by any Nix Flake
     if test -n "$(git ls-files --others --exclude-standard)"
-      echo -e -n "\n$(set_color --reverse --bold yellow) WARNING $(set_color normal) THE UNTRACKED FILES IN THIS REPOSITORY WILL BE IGNORED BY ANY NIX FLAKE OPERATION! Press enter to acknowledge:" >/dev/stderr
+    or test -n "$(git ls-files --deleted --exclude-standard)"
+      echo -e -n "\n$(set_color --reverse --bold yellow) WARNING $(set_color normal) THE UNTRACKED/REMOVED FILES IN THIS REPOSITORY WILL BE IGNORED BY ANY NIX FLAKE OPERATION! Press enter to acknowledge:" >/dev/stderr
       read --prompt ''
     end
 end
