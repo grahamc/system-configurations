@@ -35,5 +35,6 @@
           '';
           executable = true;
         };
+        ".local/bin/nix".source = makeSymlinkToRepo "nix/nix-repl-wrapper.fish";
       };
     }

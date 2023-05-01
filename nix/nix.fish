@@ -2,7 +2,6 @@ if not status is-interactive
     exit
 end
 
-abbr --add --global 'nr' 'nix repl --file ~/.config/nix/repl-startup.nix'
 any-nix-shell fish | source
 
 # If the user run a nix or home-manager command while in a git repository with untracked files, warn them since those
