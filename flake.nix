@@ -208,8 +208,8 @@
               PATH="${coreutilsBinaryPath}:''$PATH" fenv source ${activationPackage}/home-path/etc/profile.d/hm-session-vars.sh >/dev/null
               set -e fish_function_path[1]
 
-              fish_add_path --global --prepend ${activationPackage}/home-files/.local/bin
               fish_add_path --global --prepend ''$mutable_bin
+              fish_add_path --global --prepend ${activationPackage}/home-files/.local/bin
 
               # Set fish as the default shell
               set --global --export SHELL (${which} fish)
