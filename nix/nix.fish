@@ -1,8 +1,14 @@
 if not status is-interactive
-    exit
+  exit
 end
 
 any-nix-shell fish | source
+
+# Load fzf keybinds
+if command -s fzf-share >/dev/null
+  source (fzf-share)/key-bindings.fish
+end
+fzf_key_bindings
 
 # If the user run a nix or home-manager command while in a git repository with untracked files, warn them since those
 # files will be ignored by any Nix Flake operation.
