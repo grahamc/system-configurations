@@ -168,6 +168,17 @@
               set -g runtime_dir (${mktemp} --directory)
               set -g cache_dir (${mktemp} --directory)
 
+              # Clean up temporary directories when the shell exits
+              function _cleanup --on-event fish_exit \
+              --inherit-variable mutable_bin \
+              --inherit-variable state_dir \
+              --inherit-variable config_dir \
+              --inherit-variable data_dir \
+              --inherit-variable runtime_dir \
+              --inherit-variable cache_dir
+                rm -rf "$mutable_bin" "$state_dir" "$config_dir" "$data_dir" "$runtime_dir" "$cache_dir"
+              end
+
               # Make mutable copies of the contents of any XDG Base Directory in the Home Manager configuration.
               # This is because some programs need to be able to write to one of these directories e.g. `fish`.
               ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.config/* ''$config_dir
@@ -217,7 +228,7 @@
               # Compile my custom themes for bat.
               chronic bat cache --build
 
-              exec ''$SHELL ''$argv
+              ''$SHELL ''$argv
               '';
           in
             {
