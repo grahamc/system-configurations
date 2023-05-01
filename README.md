@@ -15,7 +15,7 @@ Configs and whatnot. Managed with [Home Manager for Nix](https://github.com/nix-
 - Run the shell with `nix --extra-experimental-features 'nix-command flakes' run --update-input my-overlay github:bigolu/dotfiles`
 - Run a specific command in the shell with `nix --extra-experimental-features 'nix-command flakes' run github:bigolu/dotfiles -- -c 'nvim some-file.py'`
 
-### Standalone executable (Linux only)
+### Standalone executable (Linux, with [fuse](https://github.com/libfuse/libfuse) installed, only)
 
 - Run the shell with `sh -c "$(curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.meta/run-shell.sh)"`
 - Run a specific program in the shell with `sh -c "$(curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.meta/run-shell.sh)" shell -c 'nvim some-file.py'`
