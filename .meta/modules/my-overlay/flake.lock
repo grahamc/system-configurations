@@ -99,11 +99,11 @@
     "vim-plugin-SchemaStore.nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1682028043,
-        "narHash": "sha256-BiWR3O2e8JO1Hn3SZKbhOmBwnQWWT0QE+ZwgSH3Nfxc=",
+        "lastModified": 1682704853,
+        "narHash": "sha256-m083PkV59oCy95PoMNADu+qwOv1BO8HXT7zoYHSu6sU=",
         "owner": "b0o",
         "repo": "SchemaStore.nvim",
-        "rev": "bff3297b0c1dba18907c9e5a8eb433e8b2add045",
+        "rev": "383abaefd6c062dd6a03aef2fa88e671780069ec",
         "type": "github"
       },
       "original": {

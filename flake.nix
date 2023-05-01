@@ -12,7 +12,6 @@
       url = "github:nix-community/home-manager";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        utils.follows = "flake-utils";
       };
     };
     nix-index-database = {
