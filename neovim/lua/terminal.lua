@@ -1381,6 +1381,7 @@ Plug(
       -- sources
       local buffer = {
         name = 'buffer',
+        priority = 2,
         option = {
           keyword_length = 2,
           get_bufnrs = function()
@@ -1401,34 +1402,39 @@ Plug(
           end,
         },
       }
-      local nvim_lsp = { name = 'nvim_lsp' }
-      local omni = { name = 'omni' }
+      local nvim_lsp = { name = 'nvim_lsp', priority = 8, }
+      local omni = { name = 'omni', priority = 3, }
       local path = {
         name = 'path',
+        priority = 9,
         option = {
           label_trailing_slash = false,
         },
       }
       local tmux = {
         name = 'tmux',
+        priority = 1,
         option = { all_panes = true, label = 'Tmux', },
       }
-      local cmdline = { name = 'cmdline' }
+      local cmdline = { name = 'cmdline', priority = 9, }
       local cmdline_history = {
         name = 'cmdline_history',
+        priority = 2,
         max_item_count = 2,
       }
       local dictionary = {
         name = 'dictionary',
+        priority = 1,
         keyword_length = 2,
         keyword_pattern = [[\a\+]],
       }
-      local lsp_signature = { name = 'nvim_lsp_signature_help' }
+      local lsp_signature = { name = 'nvim_lsp_signature_help', priority = 8, }
       local luasnip_source = {
         name = 'luasnip',
+        priority = 6,
         option = {use_show_condition = false},
       }
-      local env = {name = 'env'}
+      local env = {name = 'env', priority = 6,}
 
       -- helpers
       local is_cursor_preceded_by_nonblank_character = function()
@@ -1448,6 +1454,7 @@ Plug(
           fields = {'abbr', 'kind'},
           format = function(entry, vim_item)
             vim_item.menu = nil
+            vim_item.dup = 0
             return vim_item
           end,
         },
@@ -1469,7 +1476,6 @@ Plug(
           },
         },
         mapping = cmp.mapping.preset.insert({
-          ['<C-a>'] = cmp.mapping.complete(),
           ['<CR>'] = function(fallback)
             -- TODO: Don't block <CR> if signature help is active
             -- https://github.com/hrsh7th/cmp-nvim-lsp-signature-help/issues/13
@@ -1530,6 +1536,7 @@ Plug(
           }
         ),
         sorting = {
+          priority_weight = 100.0,
           comparators = {
             function(...)
               return cmp_buffer:compare_locality(...)
@@ -1552,6 +1559,7 @@ Plug(
                 buffer = 'Buffer',
                 path = 'Path',
               })[entry.source.name]
+              vim_item.dup = 0
               return vim_item
             end,
           },
@@ -1761,7 +1769,7 @@ Plug(
             -- https://vale.sh/docs/topics/scoping/#code-1
             extra_filetypes = {
               'c', 'cs', 'cpp', 'css', 'go', 'haskell', 'java', 'javascript', 'less', 'lua', 'perl', 'php',
-              'python', 'r', 'ruby', 'sass', 'scala', 'swift', 'gitcommit', 'text',
+              'python', 'r', 'ruby', 'sass', 'scala', 'swift',
             },
           }),
         },
