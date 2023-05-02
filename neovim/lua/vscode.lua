@@ -40,15 +40,11 @@ local function fold_toggle()
 end
 vim.keymap.set({'n'}, '<S-Tab>', fold_toggle, {silent = true})
 
-vim.keymap.set({'n'}, '[<Tab>', function() vim.fn.VSCodeNotify('editor.gotoPreviousFold') end)
-vim.keymap.set({'n'}, ']<Tab>', function() vim.fn.VSCodeNotify('editor.gotoNextFold') end)
-vim.keymap.set({'x'}, '[<Tab>', function() vim.fn.VSCodeNotify('editor.gotoPreviousFold') end)
-vim.keymap.set({'x'}, ']<Tab>', function() vim.fn.VSCodeNotify('editor.gotoNextFold') end)
+vim.keymap.set({'n', 'x'}, '[<Tab>', function() vim.fn.VSCodeNotify('editor.gotoPreviousFold') end)
+vim.keymap.set({'n', 'x'}, ']<Tab>', function() vim.fn.VSCodeNotify('editor.gotoNextFold') end)
 
 -- comment
-vim.keymap.set({'x'}, 'gc', '<Plug>VSCodeCommentary', {remap = true})
-vim.keymap.set({'n'}, 'gc', '<Plug>VSCodeCommentary', {remap = true})
-vim.keymap.set({'o'}, 'gc', '<Plug>VSCodeCommentary', {remap = true})
+vim.keymap.set({'x', 'n', 'o'}, 'gc', '<Plug>VSCodeCommentary', {remap = true})
 vim.keymap.set({'n'}, 'gcc', '<Plug>VSCodeCommentaryLine', {remap = true})
 
 -- language server
@@ -72,8 +68,7 @@ vim.keymap.set({'n'}, ']c', function() vim.fn.VSCodeNotify('workbench.action.edi
 vim.keymap.set({'n'}, '[c', function() vim.fn.VSCodeNotify('workbench.action.editor.previousChange') end)
 
 -- right click
-vim.keymap.set({'n'}, '<Leader><Leader>', function() vim.fn.VSCodeNotify('editor.action.showContextMenu') end)
-vim.keymap.set({'x'}, '<Leader><Leader>', function() vim.fn.VSCodeNotify('editor.action.showContextMenu') end)
+vim.keymap.set({'n', 'x'}, '<Leader><Leader>', function() vim.fn.VSCodeNotify('editor.action.showContextMenu') end)
 
 -- Sync the visual mode selection with vscode's selection.
 local selection_sync_group_id = vim.api.nvim_create_augroup('SyncVisualSelectionWithVscode', {})
