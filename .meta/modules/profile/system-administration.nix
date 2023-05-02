@@ -54,6 +54,9 @@
         ".ignore".source = makeSymlinkToRepo "search/ignore";
         ".local/bin/fzf-tmux-zoom".source = makeSymlinkToRepo "fzf/fzf-tmux-zoom";
         ".local/bin/fzf-help-preview".source = makeSymlinkToRepo "fzf/fzf-help-preview";
+        ".local/bin/myssh" = {
+          source = makeSymlinkToRepo "ssh/myssh.sh";
+        };
       } // optionalAttrs isLinux {
         ".local/bin/pbcopy".source = makeSymlinkToRepo "general/executables/osc-copy";
         ".local/bin/pbpaste" = {
@@ -79,6 +82,7 @@
         "lesskey".source = makeSymlinkToRepo "less/lesskey";
         "fish/conf.d/fzf.fish".source = makeSymlinkToRepo "fzf/fzf.fish";
         "ripgrep/ripgreprc".source = makeSymlinkToRepo "ripgrep/ripgreprc";
+        "ssh/start-my-shell.sh".source = makeSymlinkToRepo "ssh/start-my-shell.sh";
       } // optionalAttrs isLinux {
         "pipr/pipr.toml".source = makeSymlinkToRepo "pipr/pipr.toml";
         "fish/conf.d/pipr.fish".source = makeSymlinkToRepo "pipr/pipr.fish";

@@ -263,3 +263,8 @@ function sh --wraps yash
 end
 
 alias wezterm 'flatpak run org.wezfurlong.wezterm'
+
+# wrapping for the autocomplete
+function myssh --wraps ssh
+    command myssh $argv
+end
