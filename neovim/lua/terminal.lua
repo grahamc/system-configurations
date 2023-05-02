@@ -139,21 +139,6 @@ vim.o.ttimeoutlen = 50
 vim.opt.formatoptions:append('j')
 vim.opt.formatoptions:append('r')
 
--- Run filetype detection after a file with no filetype is saved. This way if I add a hashbang to the type of the file,
--- the filetype will update.
-local group_id = vim.api.nvim_create_augroup('FiletypeDetectionOnSave', {})
-vim.api.nvim_create_autocmd(
-  'BufWritePost',
-  {
-    callback = function()
-      if vim.o.filetype == '' then
-        vim.cmd.filetype('detect')
-      end
-    end,
-    group = group_id,
-  }
-)
-
 -- Open link on mouse click. Works on urls that wrap on to the following line.
 _G.ClickLink = function()
   cfile = vim.fn.expand('<cfile>')
