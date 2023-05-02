@@ -927,18 +927,6 @@ Plug(
   }
 )
 
-Plug(
-  'dstein64/vim-startuptime',
-  {
-    config = function()
-      vim.cmd([[
-        cnoreabbrev <expr> StartupTime getcmdtype() == ":" && getcmdline() == 'StartupTime' ? 'tab StartupTime' : 'StartupTime'
-      ]])
-    end,
-  }
-)
-vim.g.startuptime_tries = 100
-
 -- To get the vim help pages for vim-plug itself, you need to add it as a plugin
 Plug('junegunn/vim-plug')
 
@@ -1251,48 +1239,6 @@ Plug(
           texthl = 'CodeActionSign',
         }
       )
-    end,
-  }
-)
-
-Plug(
-  'j-hui/fidget.nvim',
-  {
-    config = function()
-      local margin = ' '
-      local border = ' ┃'
-      require('fidget').setup({
-        text = {
-          spinner = 'dots',
-        },
-        window = {
-          blend = 0,
-          zindex = 99,
-        },
-        fmt = {
-          fidget = function(fidget_name, spinner)
-            return string.format('%s%s %s%s', margin, spinner, fidget_name, border)
-          end,
-          task = function(task_name, message, percentage)
-            return string.format(
-              '%s%s%s%s%s',
-              margin,
-              message,
-              percentage and string.format(' (%s%%)', percentage) or '',
-              task_name and string.format(' [%s]', task_name) or '',
-              border
-            )
-          end,
-        },
-        sources = {
-          ['null-ls'] = {
-            ignore = true,
-          },
-          ['ltex'] = {
-            ignore = true,
-          },
-        },
-      })
     end,
   }
 )
