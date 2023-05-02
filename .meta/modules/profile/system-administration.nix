@@ -18,7 +18,6 @@
       ];
 
       home.packages = with pkgs; [
-        autossh
         doggo
         duf
         fd
