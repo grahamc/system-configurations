@@ -24,7 +24,8 @@
         };
         Service = {
           ExecStart = "${pkgs.xorg.xmodmap}/bin/xmodmap %E/xmodmap/config";
-          Restart = "always";
+          Type = "oneshot";
+          RemainAfterExit = "true";
         };
         Install = {
           WantedBy = ["default.target"];
