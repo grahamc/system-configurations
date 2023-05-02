@@ -197,12 +197,10 @@ vim.keymap.set({'n'}, '<C-e>', '$')
 vim.keymap.set({'i'}, '<C-a>', '<ESC>^i')
 vim.keymap.set({'i'}, '<C-e>', '<ESC>$a')
 
--- My terminal is configured to send F12 when I press <C-i> and neovim maps it back to <C-i> here.
--- TODO: When tmux is able to differentiate between tab and ctrl+i this mapping should be removed.
--- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
---
--- move forward in the jumplist
-vim.keymap.set({"n"}, "<F12>", '<C-i>')
+-- Move forward and backwards in the jumplist
+vim.keymap.set({"n"}, "<M-]>", '<C-i>')
+vim.keymap.set({"n"}, "<M-[>", '<C-o>')
+
 -- }}}
 
 -- Option overrides {{{

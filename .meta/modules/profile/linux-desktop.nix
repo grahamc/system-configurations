@@ -14,5 +14,6 @@
       "autostart/theme-sync.desktop".source = makeSymlinkToRepo "linux-desktop/gnome/theme-sync.desktop";
       "fontconfig/fonts.conf".source = makeSymlinkToRepo "linux-desktop/fontconfig/local.conf";
       "fontconfig/conf.d/10-nerd-font-symbols.conf".source = makeSymlinkToRepo "linux-desktop/fontconfig/10-nerd-font-symbols.conf";
+      "autokey/data".source = makeSymlinkToRepo "autokey/data";
     };
   }
