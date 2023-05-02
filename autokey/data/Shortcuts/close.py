@@ -1,8 +1,8 @@
 # Get the class of the currently-focused window:
 #winClass = window.get_active_class().lower()
 
-#output = "<alt>+]"
+#output = "<ctrl>+q"
 #if "firefox" in winClass:
-#    output = "<ctrl>+]"
+#    output = "<ctrl>+w"
 
-keyboard.send_keys("<ctrl>+]")
+keyboard.send_keys("<ctrl>+w")
