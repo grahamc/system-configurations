@@ -22,9 +22,6 @@ end
 abbr --add --global s 'sudo --preserve-env=PATH'
 abbr --add --global sudo 'sudo --preserve-env=PATH'
 
-# ps
-abbr --add --global fp fzf-process-widget
-
 # timg
 function timg --wraps timg
     set pixelation_options
@@ -39,7 +36,6 @@ end
 # man
 # NOTE: Per the man manpage, spaces in $MANOPT must be escaped with a backslash
 set --global --export MANOPT '--no-hyphenation'
-abbr --add --global fm fzf-man-widget
 
 # neovim
 #

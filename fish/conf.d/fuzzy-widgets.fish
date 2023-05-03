@@ -62,6 +62,7 @@ function fzf-man-widget --description 'Search manpages'
   set manpage_section (echo $choice | awk '{print $2}' | string sub --start=2 --end=-1)
   man $manpage_section $manpage_name
 end
+abbr --add --global fm fzf-man-widget
 
 function fzf-process-widget --description 'Manage processes'
   set reload_command 'ps -e --format user,pid,ppid,nice=NICE,start_time,etime,command --sort=-start_time'
@@ -122,6 +123,7 @@ function fzf-process-widget --description 'Manage processes'
   end
   fish -c "$sudo kill --signal $signal $process_ids"
 end
+abbr --add --global fp fzf-process-widget
 
 function my-fzf-file-widget --description 'Search files'
   set dir "$(commandline -t)"
