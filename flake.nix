@@ -31,9 +31,16 @@
       url = "github:infinisil/nix-xdg";
       flake = false;
     };
+    smart-plug = {
+      url = "path:./smart-plug";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-index-database, flake-utils, my-overlay, nix-appimage, nix-xdg }:
+  outputs = { self, nixpkgs, home-manager, nix-index-database, flake-utils, my-overlay, nix-appimage, nix-xdg, smart-plug }:
     let
       # For example, merging these two sets:                                    Would result in one set containing:
       #  { packages = {                   { packages = {                          { packages = {
@@ -79,6 +86,13 @@
               inherit system;
               overlays = [ xdgOverlay ];
             };
+            resolvedModules = map
+              (module:
+                if pkgs.lib.isAttrs module && builtins.hasAttr "getForSystem" module
+                  then module.getForSystem system
+                  else module
+              )
+              modules;
           in
             {
               # Using `legacyPackages` here because `packages` doesn't support nested derivations meaning the values
@@ -86,7 +100,7 @@
               # For more info: https://discourse.nixos.org/t/flake-questions/8741/2
               legacyPackages.homeConfigurations.${hostName} = home-manager.lib.homeManagerConfiguration {
                 inherit pkgs;
-                modules = modules ++ [ ./.meta/modules/profile/common.nix ];
+                modules = resolvedModules ++ [ ./.meta/modules/profile/common.nix ];
                 extraSpecialArgs = { inherit hostName isGui nix-index-database username homeDirectory installMethod xdgPkgs; };
               };
             }
@@ -109,6 +123,7 @@
               ./.meta/modules/profile/application-development.nix
               ./.meta/modules/profile/system-administration.nix
               ./.meta/modules/profile/linux-desktop.nix
+              {getForSystem = (system: smart-plug.legacyPackages.${system}.homeManagerModules.smart-plug);}
             ];
             systems = [ x86_64-linux ];
             isGui = true;

@@ -47,6 +47,7 @@
             # Add missing entries in sub-flake lock files so the top-level flake pulls them in when I do
             # `--update-input` below.
             nix flake lock '${repo}/.meta/modules/my-overlay'
+            nix flake lock '${repo}/smart-plug'
 
             # I need `--update-input my-overlay` for the following reasons:
             #   - Without it, I get an error when trying to build home-manager on any machine where
@@ -62,7 +63,7 @@
             # the latest version of `my-overlay` I have to use `--update-input my-overlay` before running
             # `home-manager switch`. There's an issue open to improve on this workflow though:
             # issue: https://github.com/NixOS/nix/issues/6352
-            home-manager switch --flake "${repo}#${hostName}" --update-input my-overlay
+            home-manager switch --flake "${repo}#${hostName}" --update-input my-overlay --update-input smart-plug
           '';
           executable = true;
         };

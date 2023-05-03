@@ -6,7 +6,7 @@ Configs and whatnot. Managed with [Home Manager for Nix](https://github.com/nix-
 
 1. Clone the repository and go into its directory by running `git clone https://github.com/bigolu/dotfiles.git ~/.dotfiles && cd ~/.dotfiles`.
 
-2. Apply the Home Manager configuration by running `nix --extra-experimental-features "nix-command flakes" run home-manager/master -- --extra-experimental-features "nix-command flakes" switch --flake .#<host_name> --update-input my-overlay` where `<host_name>` is one of the hosts specified in the [flake.nix](https://github.com/bigolu/dotfiles/blob/master/flake.nix).
+2. Apply the Home Manager configuration by running `nix --extra-experimental-features "nix-command flakes" run home-manager/master -- --extra-experimental-features "nix-command flakes" switch --flake .#<host_name> --update-input my-overlay --update-input smart-plug` where `<host_name>` is one of the hosts specified in the [flake.nix](https://github.com/bigolu/dotfiles/blob/master/flake.nix).
 
 ## Run
 
