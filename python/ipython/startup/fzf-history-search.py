@@ -184,7 +184,6 @@ def _create_fzf_process(initial_query, fifo_input_path, fifo_output_path):
     return subprocess.Popen([
         'fzf',
         '--no-sort',
-        '--multi',
         '-n3..,..',
         '--with-nth=4..',
         '--tiebreak=index',

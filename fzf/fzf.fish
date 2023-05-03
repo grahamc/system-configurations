@@ -8,7 +8,7 @@ set _magnifying_glass (echo -s \uf002 '  ')
 set --global --export FZF_DEFAULT_OPTS "
     --cycle
     --ellipsis='…'
-    --bind 'tab:down,shift-tab:up,ctrl-j:preview-down,ctrl-k:preview-up,change:first,alt-o:change-preview-window(right,60%|bottom,75%)+refresh-preview,ctrl-/:preview(fzf-help-preview)+preview-top,ctrl-\\:refresh-preview,enter:accept,ctrl-r:refresh-preview,ctrl-w:toggle-preview-wrap'
+    --bind 'tab:down,shift-tab:up,ctrl-j:preview-down,ctrl-k:preview-up,change:first,alt-o:change-preview-window(right,60%|bottom,75%)+refresh-preview,ctrl-/:preview(fzf-help-preview)+preview-top,ctrl-\\:refresh-preview,enter:accept,ctrl-r:refresh-preview,ctrl-w:toggle-preview-wrap,alt-enter:toggle'
     --layout=reverse
     --border=none
     --color='16,fg:dim,fg+:-1:regular:underline,bg+:-1,info:15,gutter:8,pointer:-1:bold,prompt:6:regular,border:15:dim,query:-1:regular,marker:-1:bold,header:15,spinner:yellow,hl:cyan:dim,hl+:regular:cyan:underline'
@@ -22,7 +22,9 @@ set --global --export FZF_DEFAULT_OPTS "
     --history='$_fzf_history_file'
     --header='(Press ctrl+/ for help)'
     --preview='echo {}'
-    --preview-window=wrap,bottom,border-sharp,75%"
+    --preview-window=wrap,bottom,border-sharp,75%
+    --multi
+    "
 
 set --global --export FZF_ALT_C_COMMAND 'test $dir = '.' && set _args "--strip-cwd-prefix" || set _args '.' $dir; fd $_args --follow --hidden --type directory --type symlink'
 set --global --export FZF_ALT_C_OPTS "--preview 'type --query lsd; and lsd {}; or ls {}' --keep-right --bind='change:first'"

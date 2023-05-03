@@ -69,14 +69,13 @@ function fzf-process-widget --description 'Manage processes'
   set choice \
       ( \
         FZF_DEFAULT_COMMAND="$reload_command" \
-        FZF_HINTS='ctrl+alt+r: refresh process list\nalt+enter: select multiple items' \
+        FZF_HINTS='ctrl+alt+r: refresh process list' \
         fzf \
             --ansi \
-            --multi \
             --no-clear \
             # only search on PID, PPID, and the command
             --nth '2,3,7..' \
-            --bind "change:first,ctrl-alt-r:reload@$reload_command@+first,alt-enter:toggle" \
+            --bind "change:first,ctrl-alt-r:reload@$reload_command@+first" \
             --header-lines=1 \
             --prompt 'processes: ' \
             # I 'echo' the fzf placeholder in the grep regex to get around the fact that fzf substitutions are single quoted and the quotes
@@ -155,7 +154,7 @@ function my-fzf-file-widget --description 'Search files'
   end
   '
 
-  set choice \
+  set choices \
       ( \
         FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' '$dir'; fd \$_args --follow --hidden --type file --type symlink" \
         fzf-tmux-zoom \
@@ -166,7 +165,7 @@ function my-fzf-file-widget --description 'Search files'
       )
   or return
 
-  commandline --current-token --replace $choice
+  commandline --current-token --replace "$choices"
 
   # this should be done whenever a binding produces output (see: man bind)
   commandline -f repaint
