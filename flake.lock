@@ -245,7 +245,7 @@
       },
       "locked": {
         "lastModified": 1,
-        "narHash": "sha256-osbJpqMGam+w1g7o3N1DfRtFwXLjIHrFEHtrBU3sKK8=",
+        "narHash": "sha256-7t38/OcaiYOCPLyUDGA9+2k5dS33oyV0LIOU9wKLqb8=",
         "path": "./smart-plug",
         "type": "path"
       },
