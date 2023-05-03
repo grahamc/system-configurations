@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=xmodmap
+Comment=Set my keybinds
+Exec=xmodmap "$HOME/.config/xmodmap/config"
+Terminal=false
+Type=Application
+StartupNotify=false

@@ -16,20 +16,6 @@
       "fontconfig/conf.d/10-nerd-font-symbols.conf".source = makeSymlinkToRepo "linux-desktop/fontconfig/10-nerd-font-symbols.conf";
       "autokey/data".source = makeSymlinkToRepo "autokey/data";
       "xmodmap/config".source = makeSymlinkToRepo "xmodmap/config";
-    };
-    systemd.user.services = {
-      xmodmap = {
-        Unit = {
-          Description = "xmodmap";
-        };
-        Service = {
-          ExecStart = "${pkgs.xorg.xmodmap}/bin/xmodmap %E/xmodmap/config";
-          Type = "oneshot";
-          RemainAfterExit = "true";
-        };
-        Install = {
-          WantedBy = ["default.target"];
-        };
-      };
+      "autostart/xmodmap.desktop".source = makeSymlinkToRepo "xmodmap/xmodmap.desktop";
     };
   }
