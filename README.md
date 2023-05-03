@@ -28,19 +28,28 @@ Configs and whatnot. Managed with [Home Manager for Nix](https://github.com/nix-
 
 ### Installation
 
-You can install Nix with the [Determinate Systems Installer](https://github.com/DeterminateSystems/nix-installer) (recommended) or the [official installer](https://nixos.org/download.html). The README for the Determinate Systems installer lists the differences between the two.
+I recommend installing Nix with the following command:
+
+```sh
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- \
+       install --extra-conf "trusted-users = $(whoami)"
+```
+
+This uses the [Determinate Systems Installer](https://github.com/DeterminateSystems/nix-installer) with one extra option set, `trusted-users`, so that your user is added to the list of trusted users during the installation. In Nix, some actions require that your user is trusted, such as adding a cache ([explained below](#adding-the-cache)). Having this set during installation allows you start using Nix immediately after installing without having to edit any configuration files.
+
+Alternatively, you can use the [official installer](https://nixos.org/download.html), though this process is more manual. The README for the Determinate Systems installer lists the differences between the two.
 
 ### Adding the Cache
 
-To avoid building everything on your machine, you can enable this repository's Nix binary cache on your local machine using the steps below:
+To avoid building everything on your machine, you can configure Nix to use this repository's package cache using the steps below:
 
-1. [Check to see if you are a trusted user](#check-trust). If you aren't, then [add yourself to the trusted users](#add-trust).
+1. [Check to see if you are a trusted user](#check-trust). If you aren't, then [add yourself to trusted-users](#add-trust).
 
-2. After running one of the `nix` commands from the [Link](#link) or [Run](#run) sections above, reply yes to the prompts to add the cache.
+2. When you first try to use anything from this repository, by running one of the `nix` commands from the [Link](#link) or [Run](#run) sections above, reply yes to the prompts to add the cache.
 
 ### Troubleshooting
 
-- **Cache is being ignored**: First, [check to see if you are a trusted user](#check-trust). If you aren't, then [add yourself to the trusted users](#add-trust). Then enable the cache by adding the lines below to your config in `~/.config/nix/nix.conf` (If you have a multi-user Nix installation, you'll need to [restart the Nix daemon](#restart-daemon) afterwards to apply the changes.):
+- **Cache is being ignored**: First, [check to see if you are a trusted user](#check-trust). If you aren't, then [add yourself to trusted-users](#add-trust). Then enable the cache by adding the lines below to your config in `~/.config/nix/nix.conf` (If you have a multi-user Nix installation, you'll need to [restart the Nix daemon](#restart-daemon) afterwards to apply the changes.):
 
         extra-substituters = https://bigolu.cachix.org
         extra-trusted-substituters = https://bigolu.cachix.org
@@ -60,6 +69,6 @@ To avoid building everything on your machine, you can enable this repository's N
 
   - multi-user Nix installation: Run `nix show-config` and look for your `$USER` in the `trusted-users` key.
 
-- <span id="add-trust">Add yourself to the trusted users</space>:
+- <span id="add-trust">Add yourself to trusted-users</space>:
 
   - Run `echo "extra-trusted-users = $USER" | sudo tee -a /etc/nix/nix.conf` to add yourself as a trusted user in the Nix system configuration. Then [restart the Nix daemon](#restart-daemon) to apply the changes.
