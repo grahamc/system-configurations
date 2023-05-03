@@ -2,6 +2,7 @@
   let
     inherit (import ../util.nix {inherit config lib specialArgs;})
       makeSymlinkToRepo
+      runAfterWriteBoundary
       ;
     inherit (specialArgs) isGui;
     inherit (pkgs.stdenv) isLinux;
@@ -15,7 +16,10 @@
       "fontconfig/fonts.conf".source = makeSymlinkToRepo "linux-desktop/fontconfig/local.conf";
       "fontconfig/conf.d/10-nerd-font-symbols.conf".source = makeSymlinkToRepo "linux-desktop/fontconfig/10-nerd-font-symbols.conf";
       "autokey/data".source = makeSymlinkToRepo "autokey/data";
-      "xmodmap/config".source = makeSymlinkToRepo "xmodmap/config";
-      "autostart/xmodmap.desktop".source = makeSymlinkToRepo "xmodmap/xmodmap.desktop";
     };
+
+    home.activation.gnomeXkbSetup = runAfterWriteBoundary
+      ''
+      ${pkgs.glib}/bin/gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:nocaps']"
+      '';
   }
