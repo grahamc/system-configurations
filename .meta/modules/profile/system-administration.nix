@@ -15,6 +15,8 @@
         ../unit/tmux.nix
         ../unit/wezterm.nix
         ../unit/fbterm.nix
+        ../unit/keyboard-shortcuts.nix
+        ../unit/fonts.nix
       ];
 
       home.packages = with pkgs; [

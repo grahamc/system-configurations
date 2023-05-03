@@ -13,6 +13,8 @@
         ../unit/firefox-developer-edition.nix
         ../unit/git.nix
         ../unit/wezterm.nix
+        ../unit/keyboard-shortcuts.nix
+        ../unit/fonts.nix
       ];
 
       home.packages = with pkgs; [

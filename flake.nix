@@ -112,7 +112,7 @@
             modules = [
               ./.meta/modules/profile/application-development.nix
               ./.meta/modules/profile/system-administration.nix
-              ./.meta/modules/profile/linux-desktop.nix
+              ./.meta/modules/unit/gnome-theme-fix.nix
             ];
             systems = [ x86_64-linux ];
             isGui = true;
@@ -122,7 +122,7 @@
             modules = [
               ./.meta/modules/profile/application-development.nix
               ./.meta/modules/profile/system-administration.nix
-              ./.meta/modules/profile/linux-desktop.nix
+              ./.meta/modules/unit/gnome-theme-fix.nix
               {getForSystem = (system: smart-plug.legacyPackages.${system}.homeManagerModules.smart-plug);}
             ];
             systems = [ x86_64-linux ];
