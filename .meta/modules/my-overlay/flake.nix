@@ -137,6 +137,18 @@
               find . ! -name 'clear' ! -name 'busybox' -type f,l -exec rm -f {} +
             '';
           };
+          catp = previousNixpkgs.stdenv.mkDerivation {
+            pname = "catp";
+            version = "0.2.0";
+            src = previousNixpkgs.fetchzip {
+              url = "https://github.com/rapiz1/catp/releases/download/v0.2.0/catp-x86_64-unknown-linux-gnu.zip";
+              sha256 = "sha256-U7h/Ecm+8oXy8Zr+Rq25eSiZw/2/GuUCFvnCtuc7pT8=";
+            };
+            installPhase = ''
+              mkdir -p $out/bin
+              cp $src/catp $out/bin/
+            '';
+          };
         };
         allPackages = crossPlatformPackages // linuxOnlyPackages;
       in
