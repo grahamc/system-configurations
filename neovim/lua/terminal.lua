@@ -1048,9 +1048,8 @@ Plug(
       end
       vim.keymap.set({'n', 'v'}, '<Leader>h', call_with_visual_selection(telescope_builtins.command_history))
       vim.keymap.set('n', '<Leader>b', '<Cmd>Telescope buffers<CR>')
-      -- My terminal is configured to send F11 when I press <C-/> since TMUX can't use <C-/> right now.
-      -- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
-      vim.keymap.set('n', '<F11>', '<Cmd>Telescope commands<CR>')
+      -- This is actually ctrl+/, see :help :map-special-keys
+      vim.keymap.set('n', '<C-_>', '<Cmd>Telescope commands<CR>')
       vim.keymap.set({'n', 'v'}, '<Leader>k', call_with_visual_selection(telescope_builtins.help_tags))
       vim.keymap.set({'n', 'v'}, '<Leader>g', call_with_visual_selection(telescope_builtins.live_grep))
       vim.keymap.set('n', '<Leader>f', '<Cmd>Telescope find_files<CR>')

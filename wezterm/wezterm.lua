@@ -153,16 +153,8 @@ local keybinds = {
     action = wezterm.action.PasteFrom('Clipboard')
   },
 
-  -- For neovim, since TMUX doesn't support extended keys anymore.
+  -- Doing this since TMUX doesn't support extended keys anymore.
   -- issue: https://github.com/tmux/tmux/issues/2705
-  {
-    key = '/',
-    mods = 'CTRL',
-    action = wezterm.action.SendKey {
-      key = 'F11',
-    },
-  },
-  -- For TMUX, for the reason above
   {
     key = '{',
     mods = 'CTRL|SHIFT',
