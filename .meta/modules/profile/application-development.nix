@@ -1,10 +1,5 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (import ../util.nix {inherit config lib specialArgs;})
-      makeSymlinkToRepo
-      makeSymlinksToTopLevelFilesInRepo
-      ;
-    ipythonConfigs = makeSymlinksToTopLevelFilesInRepo ".ipython/profile_default/startup" "python/ipython/startup" ../../../python/ipython/startup;
     inherit (specialArgs) xdgPkgs;
   in
     {
@@ -32,12 +27,20 @@
         nil
       ];
 
+      symlink.home.file = {
+        ".ipython/profile_default/ipython_config.py".source = "python/ipython/ipython_config.py";
+        ".yashrc".source = "yash/yashrc";
+        ".cloudflared/config.yaml".source = "cloudflared/config.yaml";
+        ".markdownlint.jsonc".source = "markdownlint/markdownlint.jsonc";
+        ".vale.ini".source = "vale/vale.ini";
+        ".ipython/profile_default/startup" = {
+          source = "python/ipython/startup";
+          sourcePath = ../../../python/ipython/startup;
+          recursive = true;
+        };
+      };
+
       home.file = {
-        ".ipython/profile_default/ipython_config.py".source = makeSymlinkToRepo "python/ipython/ipython_config.py";
-        ".yashrc".source = makeSymlinkToRepo "yash/yashrc";
-        ".cloudflared/config.yaml".source = makeSymlinkToRepo "cloudflared/config.yaml";
-        ".markdownlint.jsonc".source = makeSymlinkToRepo "markdownlint/markdownlint.jsonc";
-        ".vale.ini".source = makeSymlinkToRepo "vale/vale.ini";
         ".local/bin/pynix" = {
           text = ''
             #!${pkgs.fish}/bin/fish
@@ -48,12 +51,11 @@
           '';
           executable = true;
         };
+      };
 
-      } // ipythonConfigs;
-
-      xdg.configFile = {
-        "pip/pip.conf".source = makeSymlinkToRepo "python/pip/pip.conf";
-        "vale/styles/base".source = makeSymlinkToRepo "vale/styles/base";
-        "vale/styles/ignore.txt".source = makeSymlinkToRepo "vale/styles/ignore.txt";
+      symlink.xdg.configFile = {
+        "pip/pip.conf".source = "python/pip/pip.conf";
+        "vale/styles/base".source = "vale/styles/base";
+        "vale/styles/ignore.txt".source = "vale/styles/ignore.txt";
       };
     }

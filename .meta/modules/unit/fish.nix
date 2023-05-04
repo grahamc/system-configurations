@@ -1,12 +1,7 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (import ../util.nix {inherit config lib specialArgs;})
-      makeSymlinksToTopLevelFilesInRepo
-      makeSymlinkToRepo
-      ;
-
-    fishConfigs = makeSymlinksToTopLevelFilesInRepo "fish/conf.d" "fish/conf.d" ../../../fish/conf.d;
     inherit (specialArgs) xdgPkgs;
+    myFishConfigPath = "fish/my-config.fish";
   in
     {
       # Using this so HM can include it's generated completion scripts
@@ -21,7 +16,7 @@
           # Remove Home Manager's command-not-found handler
           functions --erase __fish_command_not_found_handler
 
-          source ${makeSymlinkToRepo "fish/config.fish"}
+          source ${config.xdg.configHome}/${myFishConfigPath}
         '';
         # TODO: Some plugins, such as fish-abbreviation-tips, expect an event that `fisher` emits whenever it
         # installs a plugin, <plugin_name>_install, to do setup. Home manager doesn't emit that event so
@@ -37,11 +32,20 @@
         xdgPkgs.figlet
       ];
 
-      home.file.".dotfiles/.meta/git_file_watch/active_file_watches/fish".source = makeSymlinkToRepo ".meta/git_file_watch/file_watches/fish.sh";
+      symlink.home.file = {
+        ".dotfiles/.meta/git_file_watch/active_file_watches/fish".source = ".meta/git_file_watch/file_watches/fish.sh";
+      };
 
-      xdg.configFile = fishConfigs;
+      symlink.xdg.configFile = {
+        "fish/conf.d" = {
+          source = "fish/conf.d";
+          sourcePath = ../../../fish/conf.d;
+          recursive = true;
+        };
+        ${myFishConfigPath}.source = "fish/config.fish";
+      };
 
-      xdg.dataFile = {
-        "figlet/smblock.tlf".source = makeSymlinkToRepo "fish/figlet/smblock.tlf";
+      symlink.xdg.dataFile = {
+        "figlet/smblock.tlf".source = "fish/figlet/smblock.tlf";
       };
     }

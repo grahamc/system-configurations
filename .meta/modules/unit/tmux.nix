@@ -1,8 +1,5 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (import ../util.nix {inherit config lib specialArgs;})
-      makeSymlinkToRepo
-      ;
     tmuxPlugins = with pkgs.tmuxPlugins; [
       better-mouse-mode
       resurrect
@@ -14,6 +11,8 @@
     ];
     inherit (lib) types;
     getPluginName = p: if types.package.check p then p.pname else p.plugin.pname;
+    # relative to $XDG_CONFIG_HOME
+    myTmuxConfigPath = "tmux/my-tmux.conf";
   in
     {
       # Installing the plugins into my profile, instead of using programs.tmux.plugins, for two reasons:
@@ -33,7 +32,7 @@
           # set the variable here to not break anything.
           set-environment -g "TMUX_PLUGIN_MANAGER_PATH" "${config.home.homeDirectory}/.nix-profile/share/tmux-plugins/"
 
-          source-file ${makeSymlinkToRepo "tmux/tmux.conf"}
+          source-file ${config.xdg.configHome}/${myTmuxConfigPath}
 
           ${(lib.strings.concatMapStringsSep "\n\n" (p: ''
             # ${getPluginName p}
@@ -42,12 +41,16 @@
             run-shell ${if types.package.check p then p.rtp else p.plugin.rtp}
           '') tmuxPlugins)}
         '';
-        "fish/conf.d/tmux-integration.fish".source = makeSymlinkToRepo "tmux/tmux-integration.fish";
-        "fish/conf.d/tmux.fish".source = makeSymlinkToRepo "tmux/tmux.fish";
       };
 
-      home.file = {
-        ".local/bin/tmux-click-url.py".source = makeSymlinkToRepo "tmux/tmux-click-url.py";
-        ".dotfiles/.meta/git_file_watch/active_file_watches/tmux".source = makeSymlinkToRepo ".meta/git_file_watch/file_watches/tmux.sh";
+      symlink.xdg.configFile = {
+        "fish/conf.d/tmux-integration.fish".source = "tmux/tmux-integration.fish";
+        "fish/conf.d/tmux.fish".source = "tmux/tmux.fish";
+        ${myTmuxConfigPath}.source = "tmux/tmux.conf";
+      };
+
+      symlink.home.file = {
+        ".local/bin/tmux-click-url.py".source = "tmux/tmux-click-url.py";
+        ".dotfiles/.meta/git_file_watch/active_file_watches/tmux".source = ".meta/git_file_watch/file_watches/tmux.sh";
       };
     }

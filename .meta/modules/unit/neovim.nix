@@ -1,9 +1,5 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (import ../util.nix {inherit config lib specialArgs;})
-      makeSymlinksToTopLevelFilesInRepo
-      runBeforeLinkGeneration
-      ;
     plugfile = builtins.readFile ../../../neovim/lua/plugfile.lua;
     plugfile_lines = builtins.filter (line: line != "") (lib.strings.splitString "\n" plugfile);
     pluginNames = map
@@ -53,7 +49,13 @@
         pkgs.neovim-unwrapped
       ];
 
-      xdg.configFile = makeSymlinksToTopLevelFilesInRepo "nvim" "neovim" ../../../neovim;
+      symlink.xdg.configFile = {
+        "nvim" = {
+          source = "neovim";
+          sourcePath = ../../../neovim;
+          recursive = true;
+        };
+      };
 
       xdg.dataFile = {
         "nvim/site/autoload/plug.vim".source = "${pkgs.vimPlugins.vim-plug}/plug.vim";
@@ -68,9 +70,11 @@
       # TODO: Because of this, HM will print out an error when it tries to clean up an orphan link. This is because
       # the orphan link will have already been removed by this. So expect warning messages about orphan links
       # being skipped whenever you remove a plugin from neovim.
-      home.activation.neovimSetup = runBeforeLinkGeneration ''
-        if test -d "${pluginDirectory}" && test -n "$(ls -A "${pluginDirectory}")"; then
-          rm -rf ${pluginDirectory}/*  
-        fi
-      '';
+      home.activation.neovimSetup = lib.hm.dag.entryBefore
+        [ "linkGeneration" ]
+        ''
+          if test -d "${pluginDirectory}" && test -n "$(ls -A "${pluginDirectory}")"; then
+            rm -rf ${pluginDirectory}/*  
+          fi
+        '';
     }

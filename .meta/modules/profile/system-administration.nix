@@ -1,8 +1,5 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (import ../util.nix {inherit config lib specialArgs;})
-      makeSymlinkToRepo
-      ;
     inherit (lib.lists) optionals;
     inherit (pkgs.stdenv) isLinux isDarwin;
     inherit (lib.attrsets) optionalAttrs;
@@ -52,15 +49,16 @@
         ncurses
       ];
 
-      home.file = {
-        ".ignore".source = makeSymlinkToRepo "search/ignore";
-        ".local/bin/fzf-tmux-zoom".source = makeSymlinkToRepo "fzf/fzf-tmux-zoom";
-        ".local/bin/fzf-help-preview".source = makeSymlinkToRepo "fzf/fzf-help-preview";
-        ".local/bin/myssh" = {
-          source = makeSymlinkToRepo "ssh/myssh.sh";
-        };
+      symlink.home.file = {
+        ".ignore".source = "search/ignore";
+        ".local/bin/fzf-tmux-zoom".source = "fzf/fzf-tmux-zoom";
+        ".local/bin/fzf-help-preview".source = "fzf/fzf-help-preview";
+        ".local/bin/myssh".source = "ssh/myssh.sh";
       } // optionalAttrs isLinux {
-        ".local/bin/pbcopy".source = makeSymlinkToRepo "general/executables/osc-copy";
+        ".local/bin/pbcopy".source = "general/executables/osc-copy";
+      };
+
+      home.file = optionalAttrs isLinux {
         ".local/bin/pbpaste" = {
           text = ''
             #!${pkgs.fish}/bin/fish
@@ -77,16 +75,16 @@
         };
       };
 
-      xdg.configFile = {
-        "lsd".source = makeSymlinkToRepo "lsd";
-        "viddy.toml".source = makeSymlinkToRepo "viddy/viddy.toml";
-        "watchman/watchman.json".source = makeSymlinkToRepo "watchman/watchman.json";
-        "lesskey".source = makeSymlinkToRepo "less/lesskey";
-        "fish/conf.d/fzf.fish".source = makeSymlinkToRepo "fzf/fzf.fish";
-        "ripgrep/ripgreprc".source = makeSymlinkToRepo "ripgrep/ripgreprc";
-        "ssh/start-my-shell.sh".source = makeSymlinkToRepo "ssh/start-my-shell.sh";
+      symlink.xdg.configFile = {
+        "lsd".source = "lsd";
+        "viddy.toml".source = "viddy/viddy.toml";
+        "watchman/watchman.json".source = "watchman/watchman.json";
+        "lesskey".source = "less/lesskey";
+        "fish/conf.d/fzf.fish".source = "fzf/fzf.fish";
+        "ripgrep/ripgreprc".source = "ripgrep/ripgreprc";
+        "ssh/start-my-shell.sh".source = "ssh/start-my-shell.sh";
       } // optionalAttrs isLinux {
-        "pipr/pipr.toml".source = makeSymlinkToRepo "pipr/pipr.toml";
-        "fish/conf.d/pipr.fish".source = makeSymlinkToRepo "pipr/pipr.fish";
+        "pipr/pipr.toml".source = "pipr/pipr.toml";
+        "fish/conf.d/pipr.fish".source = "pipr/pipr.fish";
       };
     }

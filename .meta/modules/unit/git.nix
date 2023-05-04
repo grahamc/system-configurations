@@ -1,22 +1,24 @@
 { config, lib, pkgs, specialArgs, ... }:
-  let
-    inherit (import ../util.nix {inherit config lib specialArgs;})
-      makeSymlinkToRepo
-      makeSymlinksToTopLevelFilesInRepo
-      ;
-    gitExecutables = makeSymlinksToTopLevelFilesInRepo ".local/bin" "git/subcommands" ../../../git/subcommands;
-  in
-    {
-      home.packages = with pkgs; [
-        git
-        delta
-        gitui
-      ];
+  {
+    home.packages = with pkgs; [
+      git
+      delta
+      gitui
+    ];
 
-      home.file = gitExecutables;
-
-      xdg.configFile = {
-        "gitui/theme.ron".source = makeSymlinkToRepo "git/gitui/theme.ron";
-        "git/config".source = makeSymlinkToRepo "git/gitconfig";
+    symlink.home.file = {
+      # I link to this directory from other modules so I make sure the key here is unique and specify the target
+      # inside the attribute set.
+      ".local/bin (git)" = {
+        target = ".local/bin";
+        source = "git/subcommands";
+        recursive = true;
+        sourcePath = ../../../git/subcommands;
       };
-    }
+    };
+
+    symlink.xdg.configFile = {
+      "gitui/theme.ron".source = "git/gitui/theme.ron";
+      "git/config".source = "git/gitconfig";
+    };
+  }

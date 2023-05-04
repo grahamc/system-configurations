@@ -1,7 +1,7 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
     inherit (specialArgs) hostName nix-index-database username homeDirectory;
-    inherit (import ../util.nix {inherit config lib specialArgs;}) makeSymlinkToRepo repo;
+    repo = "${config.home.homeDirectory}/.dotfiles";
   in
     {
       imports = [
@@ -11,7 +11,10 @@
         ../unit/neovim.nix
         ../unit/general.nix
         nix-index-database.hmModules.nix-index
+        ../utility/symlink.nix
       ];
+
+      symlink.repositoryDirectory = repo;
 
       # Home Manager needs a bit of information about you and the
       # paths it should manage.
@@ -37,9 +40,12 @@
       # Let Home Manager install and manage itself.
       programs.home-manager.enable = true;
 
+      symlink.home.file = {
+        ".dotfiles/.git/hooks/post-merge".source = ".meta/git_file_watch/hooks/post-merge.sh";
+        ".dotfiles/.git/hooks/post-rewrite".source = ".meta/git_file_watch/hooks/post-rewrite.sh";
+      };
+
       home.file = {
-        ".dotfiles/.git/hooks/post-merge".source = makeSymlinkToRepo ".meta/git_file_watch/hooks/post-merge.sh";
-        ".dotfiles/.git/hooks/post-rewrite".source = makeSymlinkToRepo ".meta/git_file_watch/hooks/post-rewrite.sh";
         ".local/bin/home-manager-switch" = {
           text = ''
             #!${pkgs.bash}/bin/bash

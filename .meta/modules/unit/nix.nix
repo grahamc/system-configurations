@@ -1,16 +1,13 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (import ../util.nix {inherit config lib specialArgs;})
-      makeSymlinkToRepo
-      ;
     inherit (lib.lists) optionals;
     inherit (pkgs.stdenv) isLinux;
   in
     {
-      xdg.configFile = {
-        "nix/nix.conf".source = makeSymlinkToRepo "nix/nix.conf";
-        "nix/repl-startup.nix".source = makeSymlinkToRepo "nix/repl-startup.nix";
-        "fish/conf.d/nix.fish".source = makeSymlinkToRepo "nix/nix.fish";
+      symlink.xdg.configFile = {
+        "nix/nix.conf".source = "nix/nix.conf";
+        "nix/repl-startup.nix".source = "nix/repl-startup.nix";
+        "fish/conf.d/nix.fish".source = "nix/nix.fish";
       };
 
       home.packages = with pkgs; [
@@ -34,6 +31,8 @@
           '';
           executable = true;
         };
-        ".local/bin/nix".source = makeSymlinkToRepo "nix/nix-repl-wrapper.fish";
+      };
+      symlink.home.file = {
+        ".local/bin/nix".source = "nix/nix-repl-wrapper.fish";
       };
     }
