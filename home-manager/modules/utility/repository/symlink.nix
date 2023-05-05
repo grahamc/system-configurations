@@ -1,3 +1,5 @@
+# This module makes it easy to create symlinks to a file in your Home Manager repository. This way you
+# can edit a file and have the changes applied instantly without having to switch generations.
 { config, lib, pkgs, ... }:
 
 let

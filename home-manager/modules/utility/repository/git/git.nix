@@ -1,3 +1,6 @@
+# Since many of the files that I link with Home Manager are symlinks, the Home Manager `onChange` hook doesn't
+# work for me. Instead, I made this module that lets you run commands when a file changes in git. For example,
+# after a `git pull`.
 { config, lib, pkgs, ... }:
   let
     inherit (lib) types;
