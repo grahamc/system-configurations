@@ -80,7 +80,7 @@ in {
       # Exclude the attributes that aren't in the original file type.
       inherit (file) target executable;
       source = if config.symlink.makeCopiesInstead
-        then /. + absoluteSource
+        then ../../../. + (lib.strings.removePrefix config.symlink.repositoryDirectory absoluteSource)
         else config.lib.file.mkOutOfStoreSymlink absoluteSource;
     };
     # TODO: I won't need this if Home Manager gets support for recursive symlinks.
