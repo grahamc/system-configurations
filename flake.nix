@@ -57,7 +57,7 @@
         hostName,
         modules,
         systems,
-        isGui ? false,
+        isGui ? true,
         username ? "biggs",
         homeDirectory ? "/home/${username}",
       }:
@@ -117,7 +117,6 @@
               ./home-manager/modules/gnome-theme-fix.nix
             ];
             systems = [ x86_64-linux ];
-            isGui = true;
           }
           {
             hostName = "desktop";
@@ -128,7 +127,6 @@
               {getForSystem = (system: smart-plug.legacyPackages.${system}.homeManagerModules.smart-plug);}
             ];
             systems = [ x86_64-linux ];
-            isGui = true;
           }
           {
             hostName = "bigmac";
@@ -137,7 +135,6 @@
               ./home-manager/modules/profile/system-administration.nix
             ];
             systems = [ x86_64-darwin ];
-            isGui = true;
             homeDirectory = "/Users/biggs";
           }
         ];
@@ -157,6 +154,7 @@
                 {config.symlink.makeCopiesInstead = true;}
               ];
               systems = [ system ];
+              isGui = false;
             };
             inherit (homeManagerOutputs.legacyPackages.${system}.homeConfigurations.${hostName}) activationPackage;
             shellBootstrapScriptName = "shell";
