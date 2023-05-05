@@ -85,6 +85,8 @@
             ${builtins.readFile ./on-change-base.sh}
             ${joinedHandlerStrings}
           '';
+          # TODO: The indentation in the script isn't consistent.
+          # issue: https://github.com/NixOS/nix/issues/543
           makeOnChangeHook = hookBasePath:
             ''#!${pkgs.dash}/bin/dash
               
