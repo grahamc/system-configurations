@@ -13,7 +13,7 @@
         target = ".local/bin";
         source = "git/subcommands";
         recursive = true;
-        sourcePath = ../../../git/subcommands;
+        sourcePath = ../../git/subcommands;
       };
     };
 

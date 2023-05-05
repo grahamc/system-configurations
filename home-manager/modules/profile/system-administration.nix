@@ -7,13 +7,13 @@
   in
     {
       imports = [
-        ../unit/bat.nix
-        ../unit/git.nix
-        ../unit/tmux.nix
-        ../unit/wezterm.nix
-        ../unit/fbterm.nix
-        ../unit/keyboard-shortcuts.nix
-        ../unit/fonts.nix
+        ../bat.nix
+        ../git.nix
+        ../tmux.nix
+        ../wezterm.nix
+        ../fbterm.nix
+        ../keyboard-shortcuts.nix
+        ../fonts.nix
       ];
 
       home.packages = with pkgs; [

@@ -6,11 +6,11 @@
   in
     {
       imports = [
-        ../unit/login-shell.nix
-        ../unit/fish.nix
-        ../unit/nix.nix
-        ../unit/neovim.nix
-        ../unit/general.nix
+        ../login-shell.nix
+        ../fish.nix
+        ../nix.nix
+        ../neovim.nix
+        ../general.nix
         nix-index-database.hmModules.nix-index
         ../utility/symlink.nix
         ../utility/vim-plug.nix
@@ -68,7 +68,7 @@
 
             # Add missing entries in sub-flake lock files so the top-level flake pulls them in when I do
             # `--update-input` below.
-            nix flake lock '${repo}/.meta/modules/my-overlay'
+            nix flake lock '${repo}/home-manager/overlay'
             nix flake lock '${repo}/smart-plug'
 
             # I need `--update-input my-overlay` for the following reasons:
@@ -94,7 +94,7 @@
             #!${pkgs.bash}/bin/bash
 
             # Update inputs in sub-flakes so the top-level flake pulls them in.
-            nix flake update '${repo}/.meta/modules/my-overlay'
+            nix flake update '${repo}/home-manager/overlay'
 
             home-manager switch --flake "${repo}#${hostName}" --recreate-lock-file
           '';

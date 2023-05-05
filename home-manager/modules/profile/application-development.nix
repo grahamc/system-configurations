@@ -4,12 +4,12 @@
   in
     {
       imports = [
-        ../unit/direnv.nix
-        ../unit/firefox-developer-edition.nix
-        ../unit/git.nix
-        ../unit/wezterm.nix
-        ../unit/keyboard-shortcuts.nix
-        ../unit/fonts.nix
+        ../direnv.nix
+        ../firefox-developer-edition.nix
+        ../git.nix
+        ../wezterm.nix
+        ../keyboard-shortcuts.nix
+        ../fonts.nix
       ];
 
       home.packages = with pkgs; [

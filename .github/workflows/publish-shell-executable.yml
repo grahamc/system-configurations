@@ -5,8 +5,6 @@ on:
       - '**'
       - '!README.md'
       - '!.**'
-      # for the nix files in a folder like .meta/
-      - '**.nix'
       - '.github/workflows/publish-shell-executable.yml'
     branches:
       - master

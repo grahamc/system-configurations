@@ -7,10 +7,10 @@
     symlink.xdg.configFile = {
       "nvim" = {
         source = "neovim";
-        sourcePath = ../../../neovim;
+        sourcePath = ../../neovim;
         recursive = true;
       };
     };
 
-    vimPlug.plugfile = ../../../neovim/lua/plugfile.lua;
+    vimPlug.plugfile = ../../neovim/lua/plugfile.lua;
   }

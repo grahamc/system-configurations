@@ -5,7 +5,7 @@
       # inside the attribute set.
       ".local/bin (general)" = {
         source = "general/executables";
-        sourcePath = ../../../general/executables;
+        sourcePath = ../../general/executables;
         recursive = true;
       };
     };

@@ -136,11 +136,11 @@
       "locked": {
         "lastModified": 1,
         "narHash": "sha256-7E0jeM5E5/BaVZyVXaydSoDkwCJ8R6dKTGjNBCsVwf4=",
-        "path": "./.meta/modules/my-overlay",
+        "path": "./home-manager/overlay",
         "type": "path"
       },
       "original": {
-        "path": "./.meta/modules/my-overlay",
+        "path": "./home-manager/overlay",
         "type": "path"
       }
     },

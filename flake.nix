@@ -19,7 +19,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
-    my-overlay.url = "path:./.meta/modules/my-overlay";
+    my-overlay.url = "path:./home-manager/overlay";
     nix-appimage = {
       url = "github:ralismark/nix-appimage";
       inputs = {
@@ -60,8 +60,6 @@
         isGui ? false,
         username ? "biggs",
         homeDirectory ? "/home/${username}",
-        # copy or symlink
-        installMethod ? "symlink",
       }:
         # TODO: Waiting on a more concise way to define configurations per system.
         # issue: https://github.com/nix-community/home-manager/issues/3075
@@ -74,6 +72,9 @@
               overlays = [ my-overlay.overlays.default ];
             };
 
+            # I'm including this overlay in a separate nixpkgs to avoid rebuilds of tools that depend on anything
+            # wrapped in this overlay. This is fine since I only need XDG Base Directory compliance when I'm using
+            # a program directly.
             xdgOverlay = ((import "${nix-xdg}/module.nix") {inherit pkgs; inherit (pkgs) lib; config = {};}).config.lib.xdg.xdgOverlay
               {
                 specs = {
@@ -86,6 +87,7 @@
               inherit system;
               overlays = [ xdgOverlay ];
             };
+
             resolvedModules = map
               (module:
                 if pkgs.lib.isAttrs module && builtins.hasAttr "getForSystem" module
@@ -100,8 +102,8 @@
               # For more info: https://discourse.nixos.org/t/flake-questions/8741/2
               legacyPackages.homeConfigurations.${hostName} = home-manager.lib.homeManagerConfiguration {
                 inherit pkgs;
-                modules = resolvedModules ++ [ ./.meta/modules/profile/common.nix ];
-                extraSpecialArgs = { inherit hostName isGui nix-index-database username homeDirectory installMethod xdgPkgs; };
+                modules = resolvedModules ++ [ ./home-manager/modules/profile/common.nix ];
+                extraSpecialArgs = { inherit hostName isGui nix-index-database username homeDirectory xdgPkgs; };
               };
             }
         );
@@ -110,9 +112,9 @@
           {
             hostName = "laptop";
             modules = [
-              ./.meta/modules/profile/application-development.nix
-              ./.meta/modules/profile/system-administration.nix
-              ./.meta/modules/unit/gnome-theme-fix.nix
+              ./home-manager/modules/profile/application-development.nix
+              ./home-manager/modules/profile/system-administration.nix
+              ./home-manager/modules/gnome-theme-fix.nix
             ];
             systems = [ x86_64-linux ];
             isGui = true;
@@ -120,9 +122,9 @@
           {
             hostName = "desktop";
             modules = [
-              ./.meta/modules/profile/application-development.nix
-              ./.meta/modules/profile/system-administration.nix
-              ./.meta/modules/unit/gnome-theme-fix.nix
+              ./home-manager/modules/profile/application-development.nix
+              ./home-manager/modules/profile/system-administration.nix
+              ./home-manager/modules/gnome-theme-fix.nix
               {getForSystem = (system: smart-plug.legacyPackages.${system}.homeManagerModules.smart-plug);}
             ];
             systems = [ x86_64-linux ];
@@ -131,8 +133,8 @@
           {
             hostName = "bigmac";
             modules = [
-              ./.meta/modules/profile/application-development.nix
-              ./.meta/modules/profile/system-administration.nix
+              ./home-manager/modules/profile/application-development.nix
+              ./home-manager/modules/profile/system-administration.nix
             ];
             systems = [ x86_64-darwin ];
             isGui = true;
@@ -147,12 +149,14 @@
         (system:
           let
             pkgs = import nixpkgs { inherit system; };
-            hostName = "apps-default";
+            hostName = "no-host";
             homeManagerOutputs = createHomeManagerOutputs {
               inherit hostName;
-              modules = [ ./.meta/modules/profile/system-administration.nix ];
+              modules = [
+                ./home-manager/modules/profile/system-administration.nix
+                {config.symlink.makeCopiesInstead = true;}
+              ];
               systems = [ system ];
-              installMethod = "copy";
             };
             inherit (homeManagerOutputs.legacyPackages.${system}.homeConfigurations.${hostName}) activationPackage;
             shellBootstrapScriptName = "shell";

@@ -35,7 +35,7 @@
       symlink.xdg.configFile = {
         "fish/conf.d" = {
           source = "fish/conf.d";
-          sourcePath = ../../../fish/conf.d;
+          sourcePath = ../../fish/conf.d;
           recursive = true;
         };
         ${myFishConfigPath}.source = "fish/config.fish";

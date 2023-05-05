@@ -82,7 +82,7 @@
             "\n\n"
             handlerStrings;
           onChangeScript = ''
-            ${builtins.readFile ../../utility/git-repository/on-change-base.sh}
+            ${builtins.readFile ./on-change-base.sh}
             ${joinedHandlerStrings}
           '';
           makeOnChangeHook = hookBasePath:
@@ -102,7 +102,7 @@
               ${onChangeScript}
             '';
           postMergeHook = makeOnChangeHook null;
-          postRewriteHook = makeOnChangeHook ../../utility/git-repository/post-rewrite-hook-base.sh;
+          postRewriteHook = makeOnChangeHook ./post-rewrite-hook-base.sh;
         in
           {
             home.file = {
