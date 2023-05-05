@@ -5,7 +5,7 @@
       nix-direnv
     ];
 
-    symlink.xdg.configFile = {
+    repository.symlink.xdg.configFile = {
       "direnv/direnv.toml".source = "direnv/direnv.toml";
       # I'm using an out-of-store symlink because since links are generated before programs are installed, if
       # nix-direnv hasn't been installed yet, a regular symlink would throw an error. For out-of-store links

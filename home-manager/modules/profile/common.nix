@@ -12,15 +12,13 @@
         ../neovim.nix
         ../general.nix
         nix-index-database.hmModules.nix-index
-        ../utility/symlink.nix
         ../utility/vim-plug.nix
-        ../utility/git-repository/git-repository.nix
+        ../utility/repository/repository.nix
       ];
 
-      symlink.repositoryDirectory = repo;
-      gitRepository.repositoryPath = repoRelativeToHome;
+      repository.path = repoRelativeToHome;
 
-      gitRepository.onChangeHandlers = [
+      repository.git.onChange = [
         {
           # This should be the first check since other checks might depend on new files
           # being linked, or removed files being unlinked, in order to work. For example, if a new

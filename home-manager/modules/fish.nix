@@ -28,7 +28,7 @@
         xdgPkgs.figlet
       ];
 
-      symlink.xdg.configFile = {
+      repository.symlink.xdg.configFile = {
         "fish/conf.d" = {
           source = "fish/conf.d";
           sourcePath = ../../fish/conf.d;
@@ -37,11 +37,11 @@
         ${myFishConfigPath}.source = "fish/config.fish";
       };
 
-      symlink.xdg.dataFile = {
+      repository.symlink.xdg.dataFile = {
         "figlet/smblock.tlf".source = "fish/figlet/smblock.tlf";
       };
 
-      gitRepository.onChangeHandlers = [
+      repository.git.onChange = [
         {
           patterns.modified = ["fish/functions/*" "fish/conf.d/*"];
           confirmation = "A fish configuration or function has changed, would you like to reload all fish shells?";

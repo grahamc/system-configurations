@@ -3,7 +3,7 @@
     inherit (specialArgs) isGui;
     inherit (pkgs.stdenv) isLinux;
   in lib.mkIf (isLinux && isGui) {
-    symlink.xdg.configFile = {
+    repository.symlink.xdg.configFile = {
       "autokey/data".source = "autokey/data";
     };
 

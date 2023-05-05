@@ -1,6 +1,6 @@
 { config, lib, specialArgs, ... }:
   {
-    symlink.home.file = {
+    repository.symlink.home.file = {
       ".profile".source = "login-shell/profile.sh";
       ".bash_profile".source = "login-shell/bash_profile.bash";
       ".bashrc".source = "login-shell/bashrc.bash";
@@ -8,7 +8,7 @@
       ".zprofile".source = "login-shell/zprofile.zsh";
     };
 
-    gitRepository.onChangeHandlers = [
+    repository.git.onChange = [
       {
         patterns.modified = ["login-shell/profile.sh"];
         action = ''

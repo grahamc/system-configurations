@@ -5,7 +5,7 @@
       type = types.listOf types.str;
       default = [];
     };
-    onChangeHandlerType = types.submodule {
+    onChangeType = types.submodule {
       options = {
         patterns = {
           modified = fileChangeType;
@@ -27,27 +27,24 @@
     };
   in
     {
-      options.gitRepository = {
-        repositoryPath = lib.mkOption {
-          type = types.str;
-        };
-        onChangeHandlers = lib.mkOption {
-          type = types.listOf onChangeHandlerType;
+      options.repository.git = {
+        onChange = lib.mkOption {
+          type = types.listOf onChangeType;
           default = [];
         };
       };
 
       config =
         let
-          makeHandlerString = onChangeHandler:
+          mapOnChangeEntryToScript = onChangeEntry:
             let
               # changeType is the name of a function in the script
               makeIfConditionForChangeTypeAndPattern = changeType: pattern: "${changeType} ${lib.strings.escapeShellArgs [pattern]}";
-              changeTypes = builtins.attrNames onChangeHandler.patterns;
+              changeTypes = builtins.attrNames onChangeEntry.patterns;
               conditonsPerChangeType = map
                 (changeType:
                   let
-                    patterns = onChangeHandler.patterns.${changeType};
+                    patterns = onChangeEntry.patterns.${changeType};
                     makeIfConditionForPattern = makeIfConditionForChangeTypeAndPattern changeType;
                     conditions = map makeIfConditionForPattern patterns;
                   in
@@ -56,34 +53,34 @@
                 changeTypes;
               flattenedConditions = lib.lists.flatten conditonsPerChangeType;
               joinedConditions = lib.strings.concatStringsSep " || " flattenedConditions;
-              action = if onChangeHandler.confirmation == null
-                then onChangeHandler.action
+              action = if onChangeEntry.confirmation == null
+                then onChangeEntry.action
                 else ''
-                  if confirm ${lib.strings.escapeShellArgs [onChangeHandler.confirmation]}; then
-                    ${onChangeHandler.action}
+                  if confirm ${lib.strings.escapeShellArgs [onChangeEntry.confirmation]}; then
+                    ${onChangeEntry.action}
                   fi
                 '';
-              handlerString = ''
+              script = ''
                 if ${joinedConditions}; then
                   ${action}
                 fi
               '';
             in
-              handlerString;
+              script;
           # This sorts in increasing order, but I want decreasing order since higher priorities should go first.
           # To reverse the sort order I negate the comparator return value.
-          sortedHandlers = lib.lists.sort
+          sortedOnChangeEntries = lib.lists.sort
             (a: b: !(a.priority < b.priority))
-            config.gitRepository.onChangeHandlers;
-          handlerStrings = map
-            makeHandlerString
-            sortedHandlers;
-          joinedHandlerStrings = lib.strings.concatStringsSep
+            config.repository.git.onChange;
+          onChangeScripts = map
+            mapOnChangeEntryToScript
+            sortedOnChangeEntries;
+          joinedOnChangeScripts = lib.strings.concatStringsSep
             "\n\n"
-            handlerStrings;
+            onChangeScripts;
           onChangeScript = ''
             ${builtins.readFile ./on-change-base.sh}
-            ${joinedHandlerStrings}
+            ${joinedOnChangeScripts}
           '';
           # TODO: The indentation in the script isn't consistent.
           # issue: https://github.com/NixOS/nix/issues/543
@@ -108,11 +105,11 @@
         in
           {
             home.file = {
-              "${config.gitRepository.repositoryPath}/.git/hooks/post-merge" = {
+              "${config.repository.path}/.git/hooks/post-merge" = {
                 text = postMergeHook;
                 executable = true;
               };
-              "${config.gitRepository.repositoryPath}/.git/hooks/post-rewrite" = {
+              "${config.repository.path}/.git/hooks/post-rewrite" = {
                 text = postRewriteHook;
                 executable = true;
               };

@@ -37,17 +37,7 @@ let
   fileType = types.submodule getFileOptions;
   fileAttrsType = types.attrsOf fileType;
 in {
-  options.symlink = {
-    repositoryDirectory = lib.mkOption {
-      type = types.nullOr types.str;
-      default = null;
-      example = "/home/user/.dotfiles";
-      description = ''
-        Absolute path to your dotfiles repository. Any relative `source`s will be prefixed with this so it must
-        be set if a relative `source` is given.
-      '';
-    };
-
+  options.repository.symlink = {
     makeCopiesInstead = lib.mkOption {
       type = types.bool;
       default = false;
@@ -72,15 +62,17 @@ in {
 
   config = let
     isRelativePath = path: !lib.hasPrefix "/" path;
+    repositoryAbsolutePath = "${config.home.homeDirectory}/${config.repository.path}";
     formatFile = file: let
       absoluteSource = if isRelativePath file.source
-        then "${config.symlink.repositoryDirectory}/${file.source}"
+        then "${repositoryAbsolutePath}/${file.source}"
         else file.source;
+      repoPathAttrs = ../../../../.;
     in {
       # Exclude the attributes that aren't in the original file type.
       inherit (file) target executable;
-      source = if config.symlink.makeCopiesInstead
-        then ../../../. + (lib.strings.removePrefix config.symlink.repositoryDirectory absoluteSource)
+      source = if config.repository.symlink.makeCopiesInstead
+        then repoPathAttrs + (lib.strings.removePrefix repositoryAbsolutePath absoluteSource)
         else config.lib.file.mkOutOfStoreSymlink absoluteSource;
     };
     # TODO: I won't need this if Home Manager gets support for recursive symlinks.
@@ -111,21 +103,18 @@ in {
         fileSet;
   in
     {
-      # TODO: separate the assertions
       assertions = [
         {
           assertion = let
-            fileSets = with config.symlink; [home.file xdg.configFile xdg.dataFile];
+            fileSets = with config.repository.symlink; [home.file xdg.configFile xdg.dataFile];
             isRecursiveWithoutSourcePath = file: file.recursive && file.sourcePath == null;
-            isRepositoryDirectorySet = config.symlink.repositoryDirectory != null;
-            isRelativeWithoutRepositoryDirectory = file: isRelativePath file.source && !isRepositoryDirectorySet;
             isInvalid = lib.lists.any
               lib.trivial.id
               (lib.lists.flatten
                 (map
                   (fileSet:
                     (map
-                      (file: isRecursiveWithoutSourcePath file || isRelativeWithoutRepositoryDirectory file)
+                      isRecursiveWithoutSourcePath
                       (builtins.attrValues fileSet)
                     )
                   )
@@ -134,11 +123,11 @@ in {
               );
           in
             !isInvalid;
-          message = "The recursive option is set, but no sourcePath was given OR A relative path was given and `repositoryDirectory` wasn't set.";
+          message = "The recursive option is set, but no sourcePath was given.";
         }
       ];
-      home.file = formatFileSet config.symlink.home.file;
-      xdg.configFile = formatFileSet config.symlink.xdg.configFile;
-      xdg.dataFile = formatFileSet config.symlink.xdg.dataFile;
+      home.file = formatFileSet config.repository.symlink.home.file;
+      xdg.configFile = formatFileSet config.repository.symlink.xdg.configFile;
+      xdg.dataFile = formatFileSet config.repository.symlink.xdg.dataFile;
     };
 }

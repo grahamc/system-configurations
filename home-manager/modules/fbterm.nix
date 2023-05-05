@@ -7,7 +7,7 @@
       fbterm
     ];
 
-    symlink.home.file = {
+    repository.symlink.home.file = {
       ".fbtermrc".source = "fbterm/fbtermrc";
     };
   }

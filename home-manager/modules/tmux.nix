@@ -43,17 +43,17 @@
         '';
       };
 
-      symlink.xdg.configFile = {
+      repository.symlink.xdg.configFile = {
         "fish/conf.d/tmux-integration.fish".source = "tmux/tmux-integration.fish";
         "fish/conf.d/tmux.fish".source = "tmux/tmux.fish";
         ${myTmuxConfigPath}.source = "tmux/tmux.conf";
       };
 
-      symlink.home.file = {
+      repository.symlink.home.file = {
         ".local/bin/tmux-click-url.py".source = "tmux/tmux-click-url.py";
       };
 
-      gitRepository.onChangeHandlers = [
+      repository.git.onChange  = [
         {
           patterns.modified = ["tmux/tmux.conf"];
           confirmation = "The tmux configuration has changed, would you like to reload tmux?";

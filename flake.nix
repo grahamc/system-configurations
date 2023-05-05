@@ -155,7 +155,7 @@
               inherit hostName;
               modules = [
                 ./home-manager/modules/profile/system-administration.nix
-                {config.symlink.makeCopiesInstead = true;}
+                {config.repository.symlink.makeCopiesInstead = true;}
               ];
               systems = [ system ];
               isGui = false;

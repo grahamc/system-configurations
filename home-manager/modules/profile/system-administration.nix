@@ -49,7 +49,7 @@
         ncurses
       ];
 
-      symlink.home.file = {
+      repository.symlink.home.file = {
         ".ignore".source = "search/ignore";
         ".local/bin/fzf-tmux-zoom".source = "fzf/fzf-tmux-zoom";
         ".local/bin/fzf-help-preview".source = "fzf/fzf-help-preview";
@@ -75,7 +75,7 @@
         };
       };
 
-      symlink.xdg.configFile = {
+      repository.symlink.xdg.configFile = {
         "lsd".source = "lsd";
         "viddy.toml".source = "viddy/viddy.toml";
         "watchman/watchman.json".source = "watchman/watchman.json";

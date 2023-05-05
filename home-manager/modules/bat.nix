@@ -1,6 +1,6 @@
 { config, lib, pkgs, specialArgs, ... }:
   {
-    symlink.xdg.configFile = {
+    repository.symlink.xdg.configFile = {
       "bat/config".source = "bat/config";
       "bat/themes/base16-brighter.tmTheme".source = "bat/base16-brighter.tmTheme";
     };

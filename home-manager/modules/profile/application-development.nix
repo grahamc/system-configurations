@@ -27,7 +27,7 @@
         nil
       ];
 
-      symlink.home.file = {
+      repository.symlink.home.file = {
         ".ipython/profile_default/ipython_config.py".source = "python/ipython/ipython_config.py";
         ".yashrc".source = "yash/yashrc";
         ".cloudflared/config.yaml".source = "cloudflared/config.yaml";
@@ -53,7 +53,7 @@
         };
       };
 
-      symlink.xdg.configFile = {
+      repository.symlink.xdg.configFile = {
         "pip/pip.conf".source = "python/pip/pip.conf";
         "vale/styles/base".source = "vale/styles/base";
         "vale/styles/ignore.txt".source = "vale/styles/ignore.txt";

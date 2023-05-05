@@ -4,7 +4,7 @@
       pkgs.neovim-unwrapped
     ];
 
-    symlink.xdg.configFile = {
+    repository.symlink.xdg.configFile = {
       "nvim" = {
         source = "neovim";
         sourcePath = ../../neovim;

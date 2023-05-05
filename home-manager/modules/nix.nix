@@ -4,7 +4,7 @@
     inherit (pkgs.stdenv) isLinux;
   in
     {
-      symlink.xdg.configFile = {
+      repository.symlink.xdg.configFile = {
         "nix/nix.conf".source = "nix/nix.conf";
         "nix/repl-startup.nix".source = "nix/repl-startup.nix";
         "fish/conf.d/nix.fish".source = "nix/nix.fish";
@@ -32,7 +32,7 @@
           executable = true;
         };
       };
-      symlink.home.file = {
+      repository.symlink.home.file = {
         ".local/bin/nix".source = "nix/nix-repl-wrapper.fish";
       };
     }
