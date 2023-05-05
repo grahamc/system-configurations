@@ -48,6 +48,15 @@
                     };
                   };
                 };
+                # I need sudo to link this so I'm putting it in an activation script
+                home.activation.smartPlugSetup = lib.hm.dag.entryAfter
+                  [ "linkGeneration" ]
+                  ''
+                  sudo install --compare --backup --suffix=.bak --owner=root --group=root --mode='u=rwx,g=r,o=r' -D --verbose --no-target-directory ${config.home.homeDirectory}/.dotfiles/smart-plug/wait-one-second /etc/NetworkManager/dispatcher.d/pre-down.d/wait-one-second
+                  # I think this script get combined with other activation scripts. In which case, clear the
+                  # credential cache so nothing else runs with admin privileges.
+                  sudo -K
+                  '';
               };
         }
       );
