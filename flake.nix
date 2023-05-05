@@ -93,8 +93,8 @@
             # the system and returns the module.
             mappedModules = map
               (module:
-                if pkgs.lib.isAttrs module && builtins.hasAttr "getForSystem" module
-                  then module.getForSystem system
+                if builtins.isFunction module
+                  then module system
                   else module
               )
               modules;
@@ -127,7 +127,7 @@
               ./home-manager/modules/profile/application-development.nix
               ./home-manager/modules/profile/system-administration.nix
               ./home-manager/modules/gnome-theme-fix.nix
-              {getForSystem = (system: smart-plug.legacyPackages.${system}.homeManagerModules.smart-plug);}
+              (system: smart-plug.legacyPackages.${system}.homeManagerModules.smart-plug)
             ];
             systems = [ x86_64-linux ];
           }
