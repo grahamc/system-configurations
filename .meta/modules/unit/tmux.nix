@@ -51,6 +51,13 @@
 
       symlink.home.file = {
         ".local/bin/tmux-click-url.py".source = "tmux/tmux-click-url.py";
-        ".dotfiles/.meta/git_file_watch/active_file_watches/tmux".source = ".meta/git_file_watch/file_watches/tmux.sh";
       };
+
+      gitRepository.onChangeHandlers = [
+        {
+          patterns.modified = ["tmux/tmux.conf"];
+          confirmation = "The tmux configuration has changed, would you like to reload tmux?";
+          action = "tmux source-file ~/.config/tmux/tmux.conf";
+        }
+      ];
     }

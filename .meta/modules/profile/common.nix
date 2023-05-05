@@ -1,7 +1,8 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
     inherit (specialArgs) hostName nix-index-database username homeDirectory;
-    repo = "${config.home.homeDirectory}/.dotfiles";
+    repoRelativeToHome = ".dotfiles";
+    repo = "${config.home.homeDirectory}/${repoRelativeToHome}";
   in
     {
       imports = [
@@ -13,9 +14,28 @@
         nix-index-database.hmModules.nix-index
         ../utility/symlink.nix
         ../utility/vim-plug.nix
+        ../utility/git-repository/git-repository.nix
       ];
 
       symlink.repositoryDirectory = repo;
+      gitRepository.repositoryPath = repoRelativeToHome;
+
+      gitRepository.onChangeHandlers = [
+        {
+          # This should be the first check since other checks might depend on new files
+          # being linked, or removed files being unlinked, in order to work. For example, if a new
+          # bat theme is added, the theme needs to be linked before we can rebuild the bat cache.
+          priority = 100;
+          patterns = {
+            added = ["*"];
+            deleted = ["*"];
+            modified = ["\\.nix$" "flake\\.lock"];
+          };
+          action = ''
+            home-manager-switch
+          '';
+        }
+      ];
 
       # Home Manager needs a bit of information about you and the
       # paths it should manage.
@@ -40,11 +60,6 @@
 
       # Let Home Manager install and manage itself.
       programs.home-manager.enable = true;
-
-      symlink.home.file = {
-        ".dotfiles/.git/hooks/post-merge".source = ".meta/git_file_watch/hooks/post-merge.sh";
-        ".dotfiles/.git/hooks/post-rewrite".source = ".meta/git_file_watch/hooks/post-rewrite.sh";
-      };
 
       home.file = {
         ".local/bin/home-manager-switch" = {

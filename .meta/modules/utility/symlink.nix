@@ -25,7 +25,7 @@ let
       and ignored otherwise
     '';
   };
-  getFileOptions = {name, config, ...}:
+  getFileOptions = {name, ...}:
     {
       options = {
         inherit target source executable recursive sourcePath;

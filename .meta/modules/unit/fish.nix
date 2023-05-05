@@ -32,10 +32,6 @@
         xdgPkgs.figlet
       ];
 
-      symlink.home.file = {
-        ".dotfiles/.meta/git_file_watch/active_file_watches/fish".source = ".meta/git_file_watch/file_watches/fish.sh";
-      };
-
       symlink.xdg.configFile = {
         "fish/conf.d" = {
           source = "fish/conf.d";
@@ -48,4 +44,14 @@
       symlink.xdg.dataFile = {
         "figlet/smblock.tlf".source = "fish/figlet/smblock.tlf";
       };
+
+      gitRepository.onChangeHandlers = [
+        {
+          patterns.modified = ["fish/functions/*" "fish/conf.d/*"];
+          confirmation = "A fish configuration or function has changed, would you like to reload all fish shells?";
+          action = ''
+            fish -c 'set --universal _fish_reload_indicator (random)'
+          '';
+        }
+      ];
     }
