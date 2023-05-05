@@ -53,6 +53,7 @@
       #    };                               };                                      };
       #  }                                }                                       }
       recursiveMerge = sets: nixpkgs.lib.lists.foldr nixpkgs.lib.recursiveUpdate {} sets;
+
       createHomeManagerOutputs = {
         hostName,
         modules,
@@ -88,7 +89,9 @@
               overlays = [ xdgOverlay ];
             };
 
-            resolvedModules = map
+            # Some of modules are specific to a system so instead of the module, a function is passed in that takes
+            # the system and returns the module.
+            mappedModules = map
               (module:
                 if pkgs.lib.isAttrs module && builtins.hasAttr "getForSystem" module
                   then module.getForSystem system
@@ -102,7 +105,7 @@
               # For more info: https://discourse.nixos.org/t/flake-questions/8741/2
               legacyPackages.homeConfigurations.${hostName} = home-manager.lib.homeManagerConfiguration {
                 inherit pkgs;
-                modules = resolvedModules ++ [ ./home-manager/modules/profile/common.nix ];
+                modules = mappedModules ++ [ ./home-manager/modules/profile/common.nix ];
                 extraSpecialArgs = { inherit hostName isGui nix-index-database username homeDirectory xdgPkgs; };
               };
             }
@@ -140,6 +143,7 @@
         ];
       homeManagerOutputsPerHost = map createHomeManagerOutputs hostConfigurations;
       homeManagerOutputs = recursiveMerge homeManagerOutputsPerHost;
+
       # Run my shell environment, both programs and their config files, completely from the nix store.
       shellOutputs = flake-utils.lib.eachSystem
         (with flake-utils.lib.system; [ x86_64-linux x86_64-darwin ])
@@ -252,7 +256,8 @@
               };
             }
         );
-      # The default output contains symbolic links to all the packages whose dependencies I want cache through CI.
+
+      # This output has symbolic links to all the packages whose dependencies I want cache through CI.
       # This way in my CI pipeline I can build this output and populate my binary cache with every dependency that gets
       # pulled in. There are some open issues for providing an easier way to build all packages for CI.
       # issue: https://github.com/NixOS/nix/issues/7165
@@ -279,6 +284,11 @@
           in
             { packages.default = pkgs.linkFarm "packages-to-cache" allDerivationsByName; }
         );
+
+       # This output is the bundler that I use to build an executable of the app output defined earlier in this flake.
+       # I could just reference this bundler with `nix bundle --bundler github:ralismark/nix-appimage .#`, but
+       # then it wouldn't be pinned to a revision. To pin it, I include it as an input and use the bundler output
+       # below.
       bundlerOutputs = flake-utils.lib.eachSystem
         (with flake-utils.lib.system; [ x86_64-linux ])
         (system:
