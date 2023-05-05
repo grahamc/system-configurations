@@ -9,7 +9,7 @@ dbus-monitor --session "type='signal',interface='org.gnome.ScreenSaver'" | \
       if echo "$gtk_theme" | grep -q Light; then
         shell_theme='Fluent-round'
       fi
-      dconf write /org/gnome/shell/extensions/user-theme/name "$shell_theme"
+      dconf write /org/gnome/shell/extensions/user-theme/name "'$shell_theme'"
       echo "GNOME shell theme changed to '$shell_theme'."
     fi
 done )
