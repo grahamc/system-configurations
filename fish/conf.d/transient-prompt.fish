@@ -43,12 +43,7 @@ function _load_transient_prompt_and_execute
         end
     end
 
-    # TODO: fish-abbreviation-tips also has a \r binding so I'm calling it here if
-    # it's defined. Since the last line in the abbr-tips function executes the commandline,
-    # I make sure to not also do it here if I'm calling that function.
-    type --query __abbr_tips_bind_newline
-    and __abbr_tips_bind_newline
-    or commandline -f execute
+    commandline -f execute
 end
 bind \r _load_transient_prompt_and_execute
 # The newline character executes the commandline as well so rebind that too

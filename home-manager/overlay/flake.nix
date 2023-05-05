@@ -13,7 +13,6 @@
     "tmux-plugin-resurrect" = {url = "github:tmux-plugins/tmux-resurrect"; flake = false;};
     "tmux-plugin-tmux-suspend" = {url = "github:MunifTanjim/tmux-suspend"; flake = false;};
 
-    "fish-plugin-fish-abbreviation-tips" = {url = "github:gazorby/fish-abbreviation-tips"; flake = false;};
     "fish-plugin-autopair-fish" = {url = "github:jorgebucaran/autopair.fish"; flake = false;};
     "fish-plugin-async-prompt" = {url = "github:acomagu/fish-async-prompt"; flake = false;};
   };

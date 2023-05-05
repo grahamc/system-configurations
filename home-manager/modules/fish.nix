@@ -18,11 +18,10 @@
 
           source ${config.xdg.configHome}/${myFishConfigPath}
         '';
-        # TODO: Some plugins, such as fish-abbreviation-tips, expect an event that `fisher` emits whenever it
-        # installs a plugin, <plugin_name>_install, to do setup. Home manager doesn't emit that event so
+        # TODO: Some plugins expect an event that `fisher` emits whenever it
+        # installs a plugin, <plugin_name>_install, to do setup. Home Manager doesn't emit that event so
         # for now I'm manually calling the setup functions in my config.fish.
         plugins = with pkgs.fishPlugins; [
-          {name = "fish-abbreviation-tips"; src = fish-abbreviation-tips;}
           {name = "autopair-fish"; src = autopair-fish;}
           {name = "async-prompt"; src = async-prompt;}
         ];

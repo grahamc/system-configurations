@@ -48,22 +48,6 @@
         "type": "github"
       }
     },
-    "fish-plugin-fish-abbreviation-tips": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1674487577,
-        "narHash": "sha256-F1t81VliD+v6WEWqj1c1ehFBXzqLyumx5vV46s/FZRU=",
-        "owner": "gazorby",
-        "repo": "fish-abbreviation-tips",
-        "rev": "8ed76a62bb044ba4ad8e3e6832640178880df485",
-        "type": "github"
-      },
-      "original": {
-        "owner": "gazorby",
-        "repo": "fish-abbreviation-tips",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -122,7 +106,6 @@
       "inputs": {
         "fish-plugin-async-prompt": "fish-plugin-async-prompt",
         "fish-plugin-autopair-fish": "fish-plugin-autopair-fish",
-        "fish-plugin-fish-abbreviation-tips": "fish-plugin-fish-abbreviation-tips",
         "tmux-plugin-resurrect": "tmux-plugin-resurrect",
         "tmux-plugin-tmux-suspend": "tmux-plugin-tmux-suspend",
         "vim-plugin-SchemaStore.nvim": "vim-plugin-SchemaStore.nvim",
@@ -135,7 +118,7 @@
       },
       "locked": {
         "lastModified": 1,
-        "narHash": "sha256-7E0jeM5E5/BaVZyVXaydSoDkwCJ8R6dKTGjNBCsVwf4=",
+        "narHash": "sha256-OADn+molPcTryRjPlKo6NeapCWxzYWzruY+6X2VQXD0=",
         "path": "./home-manager/overlay",
         "type": "path"
       },

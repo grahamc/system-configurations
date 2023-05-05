@@ -35,12 +35,7 @@ set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}"'
 
 # use ctrl+h for history search instead of default ctrl+r
 bind --erase \cr
-# If we chose an entry from the history widget, which is signified by an exit code of 0, then we set a flag
-# that tells fish-abbreviation-tips not to display a tip. This way, I won't get reminded about an abbreviation when
-# executing a command
-# from the history
-#
-# I also merge the history so that the search will search across all fish sessions' histories.
+# I merge the history so that the search will search across all fish sessions' histories.
 #
 # TODO: The script in conf.d for the plugin 'jorgebucaran/autopair.fish' is deleting my ctrl+h keybind
 # that I define in here. As a workaround, I set this keybind when the first prompt is loaded which should be after
@@ -48,7 +43,7 @@ bind --erase \cr
 function __set_fzf_history_keybind --on-event fish_prompt
     # I only want this to run once so delete the function.
     functions -e (status current-function)
-    bind-no-focus \ch 'history merge; fzf-history-widget && set -g __abbr_tips_used 1'
+    bind-no-focus \ch 'history merge; fzf-history-widget'
 end
 
 # use alt+d for directory search instead of default alt+c
