@@ -4,7 +4,7 @@
     myFishConfigPath = "fish/my-config.fish";
   in
     {
-      # Using this so HM can include it's generated completion scripts
+      # Using this so Home Manager can include it's generated completion scripts
       programs.fish = {
         enable = true;
         interactiveShellInit = ''
@@ -18,9 +18,6 @@
 
           source ${config.xdg.configHome}/${myFishConfigPath}
         '';
-        # TODO: Some plugins expect an event that `fisher` emits whenever it
-        # installs a plugin, <plugin_name>_install, to do setup. Home Manager doesn't emit that event so
-        # for now I'm manually calling the setup functions in my config.fish.
         plugins = with pkgs.fishPlugins; [
           {name = "autopair-fish"; src = autopair-fish;}
           {name = "async-prompt"; src = async-prompt;}
