@@ -257,7 +257,7 @@
       # pulled in. There are some open issues for providing an easier way to build all packages for CI.
       # issue: https://github.com/NixOS/nix/issues/7165
       # issue: https://github.com/NixOS/nix/issues/7157
-      defaultOutputs = flake-utils.lib.eachSystem
+      cacheOutputs = flake-utils.lib.eachSystem
         (with flake-utils.lib.system; [ x86_64-linux x86_64-darwin ])
         (system:
           let
@@ -285,5 +285,5 @@
           { bundlers = nix-appimage.bundlers.${system}; }
         );
     in
-      recursiveMerge [homeManagerOutputs defaultOutputs shellOutputs bundlerOutputs];
+      recursiveMerge [homeManagerOutputs cacheOutputs shellOutputs bundlerOutputs];
 }
