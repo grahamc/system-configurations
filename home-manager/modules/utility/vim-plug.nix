@@ -1,3 +1,15 @@
+# This module will fetch all the vim plugins specified in a `plugfile.lua` and copy them to the directory
+# where vim-plug stores plugins. This way you can fetch your plugins with Nix, but still load them with vim-plug.
+# One advantage of this is that plugins can be stored in your Nix binary cache with all your other packages which
+# is particularly useful for plugins that require compilation like nvim-treesitter.
+#
+# Caveats:
+#   - You can only install and remove plugins with vim-plug. This is because all the other commands, like PlugDiff,
+# depend on the plugin directory being a git repository and Nix doesn't include the .git folder when fetching a plugin.
+# This is because the .git folder is not created deterministically so if it was included, the hash for the package
+# may change despite fetching the same version. More info here: https://github.com/NixOS/nixpkgs/issues/8567.
+#   - If you try to install nvim-treesitter grammars using TSInstall, you'll get an error. Not sure why, but this issue
+# is acknowledged in the NixOS wiki: https://nixos.wiki/wiki/Treesitter.
 { config, lib, pkgs, ... }:
   let
     inherit (lib) types;
