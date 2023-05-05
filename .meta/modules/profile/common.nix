@@ -12,6 +12,7 @@
         ../unit/general.nix
         nix-index-database.hmModules.nix-index
         ../utility/symlink.nix
+        ../utility/vim-plug.nix
       ];
 
       symlink.repositoryDirectory = repo;
