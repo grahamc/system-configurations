@@ -9,11 +9,7 @@
       imports = [
         ../bat.nix
         ../git.nix
-        ../tmux.nix
-        ../wezterm.nix
         ../fbterm.nix
-        ../keyboard-shortcuts.nix
-        ../fonts.nix
       ];
 
       home.packages = with pkgs; [

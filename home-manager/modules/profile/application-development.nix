@@ -7,9 +7,6 @@
         ../direnv.nix
         ../firefox-developer-edition.nix
         ../git.nix
-        ../wezterm.nix
-        ../keyboard-shortcuts.nix
-        ../fonts.nix
       ];
 
       home.packages = with pkgs; [

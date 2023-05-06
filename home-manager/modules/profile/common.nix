@@ -13,6 +13,10 @@
         ../utility/vim-plug.nix
         ../utility/repository/repository.nix
         ../home-manager.nix
+        ../fonts.nix
+        ../keyboard-shortcuts.nix
+        ../wezterm.nix
+        ../tmux.nix
       ];
 
       repository.path = ".dotfiles";
