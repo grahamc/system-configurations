@@ -213,28 +213,7 @@
         "nix-appimage": "nix-appimage",
         "nix-index-database": "nix-index-database",
         "nix-xdg": "nix-xdg",
-        "nixpkgs": "nixpkgs",
-        "smart-plug": "smart-plug"
-      }
-    },
-    "smart-plug": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-7t38/OcaiYOCPLyUDGA9+2k5dS33oyV0LIOU9wKLqb8=",
-        "path": "./smart-plug",
-        "type": "path"
-      },
-      "original": {
-        "path": "./smart-plug",
-        "type": "path"
+        "nixpkgs": "nixpkgs"
       }
     },
     "squashfuse": {

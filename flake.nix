@@ -31,16 +31,9 @@
       url = "github:infinisil/nix-xdg";
       flake = false;
     };
-    smart-plug = {
-      url = "path:./smart-plug";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
-    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-index-database, flake-utils, my-overlay, nix-appimage, nix-xdg, smart-plug }:
+  outputs = { self, nixpkgs, home-manager, nix-index-database, flake-utils, my-overlay, nix-appimage, nix-xdg }:
     let
       # For example, merging these two sets:                                    Would result in one set containing:
       #  { packages = {                   { packages = {                          { packages = {
@@ -127,7 +120,6 @@
               ./home-manager/modules/profile/application-development.nix
               ./home-manager/modules/profile/system-administration.nix
               ./home-manager/modules/gnome-theme-fix.nix
-              (system: smart-plug.legacyPackages.${system}.homeManagerModules.smart-plug)
             ];
             systems = [ x86_64-linux ];
           }

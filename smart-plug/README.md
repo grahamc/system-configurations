@@ -16,9 +16,9 @@ If you leave studio monitors on while turning off the sound source, you will get
 
 - Run `nix run` in this directory.
 
-## Installation (Requires [Home Manager for Nix](https://github.com/nix-community/home-manager))
+## Installation
 
-The Nix flake in this directory has an output with a Home Manager module for running this as a systemd user service. The output is `legacyPackages.<system>.homeManagerModules.smart-plug`. You can run `nix flake show` to find the supported systems.
+- Run `install.bash`. You'll have to change the paths in systemd service based on where things are on your machine.
 
 ## Development
 
