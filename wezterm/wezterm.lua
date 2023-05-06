@@ -18,6 +18,10 @@ config.audible_bell = 'Disabled'
 config.default_cursor_style = 'BlinkingBar'
 config.bold_brightens_ansi_colors = false
 config.disable_default_key_bindings = true
+config.window_padding = {
+  left = 0,
+  right = 0,
+}
 
 local my_colors_per_color_scheme = {
   ['Biggs Nord'] = {
