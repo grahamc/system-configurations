@@ -196,11 +196,6 @@ vim.keymap.set({'n'}, '<C-a>', '^')
 vim.keymap.set({'n'}, '<C-e>', '$')
 vim.keymap.set({'i'}, '<C-a>', '<ESC>^i')
 vim.keymap.set({'i'}, '<C-e>', '<ESC>$a')
-
--- Move forward and backwards in the jumplist
-vim.keymap.set({"n"}, "<M-]>", '<C-i>')
-vim.keymap.set({"n"}, "<M-[>", '<C-o>')
-
 -- }}}
 
 -- Option overrides {{{

@@ -157,11 +157,10 @@ vim.keymap.set('n', '|', '<Cmd>set list!<CR>', {silent = true})
 
 vim.o.shortmess = 'filnxtToOFs'
 
--- Move forward and backwards in the jumplist. These keys are sent by the terminal since the actual keys that I use
--- , alt+[ and alt+], aren't working right now since TMUX lost support for extended keys.
+-- I have a mapping in my terminal for <C-i> that sends F9 to get around the fact that TMUX considers <C-i> the
+-- same as <Tab> right now since TMUX lost support for extended keys.
 -- TODO: tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
 vim.keymap.set({"n"}, "<F9>", '<C-i>')
-vim.keymap.set({"n"}, "<F8>", '<C-o>')
 -- }}}
 
 -- Utilities {{{

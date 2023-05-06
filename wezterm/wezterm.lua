@@ -156,31 +156,24 @@ local keybinds = {
   -- Doing this since TMUX doesn't support extended keys anymore.
   -- issue: https://github.com/tmux/tmux/issues/2705
   {
-    key = '{',
-    mods = 'CTRL|SHIFT',
+    key = '[',
+    mods = 'ALT',
     action = wezterm.action.SendKey {
       key = 'F10',
-    },
-  },
-  {
-    key = '}',
-    mods = 'CTRL|SHIFT',
-    action = wezterm.action.SendKey {
-      key = 'F12',
     },
   },
   {
     key = ']',
     mods = 'ALT',
     action = wezterm.action.SendKey {
-      key = 'F9',
+      key = 'F12',
     },
   },
   {
-    key = '[',
-    mods = 'ALT',
+    key = 'i',
+    mods = 'CTRL',
     action = wezterm.action.SendKey {
-      key = 'F8',
+      key = 'F9',
     },
   },
 }
