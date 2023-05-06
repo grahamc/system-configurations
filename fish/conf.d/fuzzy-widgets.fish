@@ -72,7 +72,6 @@ function fzf-process-widget --description 'Manage processes'
         FZF_HINTS='ctrl+alt+r: refresh process list' \
         fzf \
             --ansi \
-            --no-clear \
             # only search on PID, PPID, and the command
             --nth '2,3,7..' \
             --bind "change:first,ctrl-alt-r:reload@$reload_command@+first" \
@@ -85,12 +84,7 @@ function fzf-process-widget --description 'Manage processes'
             --no-hscroll \
             --preview-window 'nowrap' \
       )
-  or begin
-    # necessary since I'm using the --no-clear option in fzf
-    tput rmcup
-
-    return
-  end
+  or return
 
   set process_ids (printf %s\n $choice | awk '{print $2}')
   set process_command_names (printf %s\n $choice | awk '{print $7}')
