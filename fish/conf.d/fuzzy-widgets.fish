@@ -3,7 +3,7 @@ if not status is-interactive
 end
 
 function fzf-grep-widget --description 'Search by line, recursively, from current directory'
-  set rg_command 'rg --hidden --fixed-strings --column --line-number --no-heading --color=always --smart-case --follow --'
+  set rg_command 'rg --hidden --column --line-number --no-heading --color=always --smart-case --follow --'
   set choice \
       ( \
         FZF_DEFAULT_COMMAND="echo -n ''" \
