@@ -7,5 +7,10 @@
       "fontconfig/fonts.conf".source = "fontconfig/local.conf";
       "fontconfig/conf.d/10-nerd-font-symbols.conf".source = "fontconfig/10-nerd-font-symbols.conf";
     };
+    fonts.fontconfig.enable = true;
+    home.packages = with pkgs; [
+      (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
+      jetbrains-mono
+    ];
   }
 
