@@ -1,7 +1,7 @@
 { config, lib, pkgs, specialArgs, ... }:
   {
-    home.packages = [
-      pkgs.neovim-unwrapped
+    home.packages = with pkgs; [
+      neovim-unwrapped
     ];
 
     repository.symlink.xdg.configFile = {
