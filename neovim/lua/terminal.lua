@@ -575,31 +575,6 @@ vim.opt.fillchars:append('eob: ')
 _G.GetDiagnosticCountForSeverity = function(severity)
   return #vim.diagnostic.get(0, {severity = severity})
 end
-_G.modified_indicator = nil
-_G.SetModifiedIndicator = function(_)
-  local last_buffer_number = vim.fn.bufnr('$')
-  for buffer_number=1,last_buffer_number do
-    -- doesn't exist
-    if vim.fn.bufnr(buffer_number) == -1 then
-      goto continue
-    end
-
-    -- Not modifiable
-    if vim.fn.getbufvar(buffer_number, '&modifiable') ~= 1 then
-      goto continue
-    end
-
-    -- Buffer isn't linked to a file
-    if vim.fn.filereadable(vim.fn.bufname(buffer_number)) == 0 then
-      goto continue
-    end
-
-    ::continue::
-  end
-
-  modified_indicator = nil
-end
-vim.fn.timer_start(1000, SetModifiedIndicator, {['repeat'] = -1})
 _G.StatusLine = function()
   local item_separator = '%#StatusLineSeparator# ∙ '
 
@@ -677,9 +652,6 @@ _G.StatusLine = function()
   local right_side_items = {position}
   if diagnostics then
     table.insert(right_side_items, diagnostics)
-  end
-  if modified_indicator then
-    table.insert(right_side_items, modified_indicator)
   end
   local right_side = table.concat(right_side_items, item_separator)
 
