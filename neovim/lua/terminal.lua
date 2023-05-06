@@ -1244,6 +1244,48 @@ Plug(
     end,
   }
 )
+
+Plug(
+  'j-hui/fidget.nvim',
+  {
+    config = function()
+      local margin = ' '
+      local border = ' ┃'
+      require('fidget').setup({
+        text = {
+          spinner = 'dots',
+        },
+        window = {
+          blend = 0,
+          zindex = 99,
+        },
+        fmt = {
+          fidget = function(fidget_name, spinner)
+            return string.format('%s%s %s%s', margin, spinner, fidget_name, border)
+          end,
+          task = function(task_name, message, percentage)
+            return string.format(
+              '%s%s%s%s%s',
+              margin,
+              message,
+              percentage and string.format(' (%s%%)', percentage) or '',
+              task_name and string.format(' [%s]', task_name) or '',
+              border
+            )
+          end,
+        },
+        sources = {
+          ['null-ls'] = {
+            ignore = true,
+          },
+          ['ltex'] = {
+            ignore = true,
+          },
+        },
+      })
+    end,
+  }
+)
 -- }}}
 
 -- File Explorer {{{
