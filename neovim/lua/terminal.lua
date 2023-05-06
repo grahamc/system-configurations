@@ -405,8 +405,24 @@ vim.o.pumheight = 6
 vim.o.wildmode = 'longest:full,full'
 vim.o.wildoptions = 'pum'
 vim.o.cmdheight = 1
+_G.smagic_abbrev = function()
+  if vim.fn.getcmdtype() ~= ':' then
+    return 's'
+  end
+
+  local cmdline = vim.fn.getcmdline()
+  if cmdline == 's' or cmdline == [['<,'>s]] then
+    return 'smagic'
+  end
+
+  return 's'
+end
 vim.cmd([[
   cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
+  " Autocommands get executed without smagic so I make sure that I explicitly specify it on the commandline
+  " so if my autocommand has a substitute command it will use smagic.
+  cnoreabbrev <expr> s v:lua.smagic_abbrev()
+  cnoreabbrev <expr> %s getcmdtype() == ':' && getcmdline() == '%s' ? '%smagic' : '%s'
 ]])
 vim.keymap.set('c', '<C-a>', '<C-b>', {remap = true})
 -- }}}
