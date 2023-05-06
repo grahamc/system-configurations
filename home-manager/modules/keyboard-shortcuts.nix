@@ -3,10 +3,6 @@
     inherit (specialArgs) isGui;
     inherit (pkgs.stdenv) isLinux;
   in lib.mkIf (isLinux && isGui) {
-    repository.symlink.xdg.configFile = {
-      "autokey/data".source = "autokey/data";
-    };
-
     home.activation.gnomeXkbSetup = lib.hm.dag.entryAfter
       [ "writeBoundary" ]
       ''
