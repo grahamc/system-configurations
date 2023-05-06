@@ -654,7 +654,7 @@ _G.StatusLine = function()
   end
   local right_side = table.concat(right_side_items, item_separator)
 
-  local statusline_separator = '%#StatusLine#%=     '
+  local statusline_separator = '%#StatusLine# %= '
   local padding = '%#StatusLine# '
   local statusline = padding .. left_side .. statusline_separator .. right_side .. padding
 
