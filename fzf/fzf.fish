@@ -7,12 +7,10 @@ set xdg_data (test -n "$XDG_DATA_HOME" && echo "$XDG_DATA_HOME" || echo "$HOME/.
 set _fzf_history_file "$xdg_data/fzf/fzf-history.txt"
 set _magnifying_glass (echo -s \uf002 '  ')
 
-# TODO: Ideally I would want a `toggle-bind` action so that ctrl-t can toggle tracking and the `change` bind. For now,
-# if I want to rebind `change` I have to restart fzf.
 set --global --export FZF_DEFAULT_OPTS "
     --cycle
     --ellipsis='…'
-    --bind 'tab:down,shift-tab:up,ctrl-j:preview-down,ctrl-k:preview-up,change:first,ctrl-o:change-preview-window(right,60%|bottom,75%)+refresh-preview,ctrl-/:preview(fzf-help-preview)+preview-top,ctrl-\\:refresh-preview,enter:accept,ctrl-r:refresh-preview,ctrl-w:toggle-preview-wrap,alt-enter:toggle,ctrl-t:track+unbind(change)'
+    --bind 'tab:down,shift-tab:up,ctrl-j:preview-down,ctrl-k:preview-up,change:first,ctrl-o:change-preview-window(right,60%|bottom,75%)+refresh-preview,ctrl-/:preview(fzf-help-preview)+preview-top,ctrl-\\:refresh-preview,enter:accept,ctrl-r:refresh-preview,ctrl-w:toggle-preview-wrap,alt-enter:toggle,ctrl-t:track+unbind(change),focus:rebind(change)'
     --layout=reverse
     --border=none
     --color='16,fg:dim,fg+:-1:regular:underline,bg+:-1,info:15,gutter:8,pointer:-1:bold,prompt:6:regular,border:15:dim,query:-1:regular,marker:-1:bold,header:15,spinner:yellow,hl:cyan:dim,hl+:regular:cyan:underline'
