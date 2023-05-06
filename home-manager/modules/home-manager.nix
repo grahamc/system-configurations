@@ -53,7 +53,7 @@
             # the latest version of `my-overlay` I have to use `--update-input my-overlay` before running
             # `home-manager switch`. There's an issue open to improve on this workflow though:
             # issue: https://github.com/NixOS/nix/issues/6352
-            home-manager switch --flake "${repositoryPath}#${hostName}" --update-input my-overlay --update-input smart-plug
+            home-manager switch --flake "${repositoryPath}#${hostName}" --update-input my-overlay
           '';
           executable = true;
         };
