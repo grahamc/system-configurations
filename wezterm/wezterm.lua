@@ -153,7 +153,7 @@ local keybinds = {
   },
   {
     key = 'v',
-    mods = 'CTRL|SHIFT',
+    mods = 'SUPER',
     action = wezterm.action.PasteFrom('Clipboard')
   },
 
