@@ -9,7 +9,6 @@ function fzf-grep-widget --description 'Search by line, recursively, from curren
         FZF_DEFAULT_COMMAND="echo -n ''" \
         FZF_HINTS='ctrl+e: edit in neovim' \
         fzf-tmux-zoom \
-            --ansi \
             --disabled \
             # we refresh-preview after executing vim in the event that the file gets modified by vim
             --bind "ctrl-e:execute(nvim '+call cursor({2},{3})' {1} < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $rg_command {q} || true" \
@@ -37,7 +36,6 @@ function fzf-man-widget --description 'Search manpages'
       ( \
         FZF_DEFAULT_COMMAND='man -k . --long' \
          fzf-tmux-zoom  \
-            --ansi \
             --tiebreak=chunk,begin,end \
             --prompt 'manpages: ' \
             # Setting a very large MANWIDTH so that man will not truncate lines and instead allow
@@ -71,7 +69,6 @@ function fzf-process-widget --description 'Manage processes'
         FZF_DEFAULT_COMMAND="$reload_command" \
         FZF_HINTS='ctrl+alt+r: refresh process list' \
         fzf \
-            --ansi \
             # only search on PID, PPID, and the command
             --nth '2,3,7..' \
             --bind "change:first,ctrl-alt-r:reload@$reload_command@+first" \
@@ -152,8 +149,6 @@ function my-fzf-file-widget --description 'Search files'
       ( \
         FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' '$dir'; fd \$_args --follow --hidden --type file --type symlink" \
         fzf-tmux-zoom \
-            --ansi \
-            --bind "change:first" \
             --prompt "$prompt" \
             --preview "$preview_command" \
       )

@@ -188,7 +188,6 @@ def _create_fzf_process(initial_query, fifo_input_path, fifo_output_path):
         '--with-nth=4..',
         '--tiebreak=index',
         f"--history={os.environ['HOME']}/.config/fzf/fzf-ipython-history.txt",
-        '--ansi',
         '--exact',
         '--query={}'.format(initial_query),
         '--preview-window=35%',

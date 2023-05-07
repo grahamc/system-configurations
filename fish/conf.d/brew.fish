@@ -13,7 +13,6 @@ function fzf-brew-install-widget --description 'Install packages with brew'
     FZF_DEFAULT_COMMAND='brew formulae' \
     FZF_HINTS='ctrl+o: search online' \
     fzf-tmux-zoom \
-    --ansi \
     --bind 'ctrl-o:preview(echo "Searching online...")+reload(brew search "" | tail -n +2)' \
     --prompt 'brew install ' \
     # fzf triggers its loading animation for the preview window if the command hasn't completed
@@ -35,7 +34,6 @@ function fzf-brew-uninstall-widget --description 'Uninstall packages with brew'
     ( \
       FZF_DEFAULT_COMMAND='brew leaves --installed-on-request' \
       fzf-tmux-zoom \
-        --ansi \
         --prompt 'brew uninstall ' \
         # fzf triggers its loading animation for the preview window if the command hasn't completed
         # and has outputted at least one line. To get a loading animation for the 'brew info' command

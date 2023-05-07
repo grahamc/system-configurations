@@ -22,7 +22,7 @@ end
 bind \co __view_last_command_output_in_less
 
 function __view_last_command_output_in_fzf
-    echo "$(__last_command_output)" | fzf --ansi --preview-window 35%
+    echo "$(__last_command_output)" | fzf --preview-window 35%
 
     # this should be done whenever a binding produces output (see: man bind)
     commandline -f repaint

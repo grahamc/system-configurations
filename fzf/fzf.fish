@@ -30,6 +30,7 @@ set --global --export FZF_DEFAULT_OPTS "
     --scrollbar='🮈'
     --preview-label ' press ctrl+/ for help '
     --preview-label-pos '-3:bottom'
+    --ansi
     "
 
 set --global --export FZF_ALT_C_COMMAND 'test $dir = '.' && set _args "--strip-cwd-prefix" || set _args '.' $dir; fd $_args --follow --hidden --type directory --type symlink'

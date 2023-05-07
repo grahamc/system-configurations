@@ -25,7 +25,6 @@ function fzf-apt-install-widget --description 'Install packages with apt'
       ( \
         FZF_DEFAULT_COMMAND='apt-cache pkgnames' \
         fzf-tmux-zoom \
-            --ansi \
             --bind "change:first" \
             --prompt 'apt install: ' \
             --preview "apt show {} 2>/dev/null | GREP_COLORS='$GREP_COLORS' grep --color=always -E '(^[a-z|A-Z|-]*:|^)' | less" \
@@ -42,7 +41,6 @@ function fzf-apt-remove-widget --description 'Remove packages with apt'
       ( \
         FZF_DEFAULT_COMMAND='apt list --installed 2>/dev/null | string split --no-empty --fields 1 -- \'/\' | tail -n +2' \
         fzf-tmux-zoom \
-            --ansi \
             --bind "change:first" \
             --prompt 'apt remove: ' \
             --preview "echo -e \"\$(apt show {} 2>/dev/null)\n\$(apt-cache rdepends --installed --no-recommends --no-suggests {} | tail -n +2)\" | GREP_COLORS='$GREP_COLORS' grep --color=always -E '(^[a-z|A-Z|-]*:|^.*:\$|^)' | less" \
