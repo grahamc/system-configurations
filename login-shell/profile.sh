@@ -1,12 +1,5 @@
 # shellcheck shell=sh
 
-# Setup nix
-_nix_profile_setup_script="$HOME/.nix-profile/etc/profile.d/nix.sh"
-if [ -e "$_nix_profile_setup_script" ]; then
-  . "$_nix_profile_setup_script"
-fi
-export LOCALE_ARCHIVE="$HOME/.nix-profile/lib/locale/locale-archive"
-
 # go
 export GOPATH="$HOME/.local/share/go"
 export PATH="$GOPATH/bin:$PATH"
