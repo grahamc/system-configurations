@@ -7,9 +7,6 @@ if [ -e "$_nix_profile_setup_script" ]; then
 fi
 export LOCALE_ARCHIVE="$HOME/.nix-profile/lib/locale/locale-archive"
 
-# I want to keep a user-specific catalog so that I can manage it with Nix Home Manager
-export XML_CATALOG_FILES="/etc/xml/catalog $HOME/.local/share/xml/catalog"
-
 # go
 export GOPATH="$HOME/.local/share/go"
 export PATH="$GOPATH/bin:$PATH"
