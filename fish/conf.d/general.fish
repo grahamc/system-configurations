@@ -257,3 +257,7 @@ end
 function myssh --wraps ssh
     command myssh $argv
 end
+
+# Sometimes vendor configs add to the PATH, but I want my ~/.local/bin to be first, in case I want to wrap one of
+# the vendor programs. Since this file is sourced after vendor configs I set it here.
+fish_add_path --prepend "$HOME/.local/bin"
