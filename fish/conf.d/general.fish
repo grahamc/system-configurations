@@ -249,7 +249,9 @@ function sh --wraps yash
     yash $argv
 end
 
-alias wezterm 'flatpak run org.wezfurlong.wezterm'
+if uname | grep -q Linux
+    alias wezterm 'flatpak run org.wezfurlong.wezterm'
+end
 
 # wrapping for the autocomplete
 function myssh --wraps ssh
