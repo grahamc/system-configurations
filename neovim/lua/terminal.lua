@@ -161,6 +161,9 @@ vim.o.shortmess = 'filnxtToOFs'
 -- same as <Tab> right now since TMUX lost support for extended keys.
 -- TODO: tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
 vim.keymap.set({"n"}, "<F9>", '<C-i>')
+
+-- Use shift+u to redo the last undone change
+vim.keymap.set({"n"}, "<S-u>", '<C-r>')
 -- }}}
 
 -- Utilities {{{
