@@ -43,7 +43,7 @@ vim.keymap.set({'i'}, 'jk', '<Esc>')
 vim.keymap.set({'n'}, 'p', 'p=`]', {silent = true})
 
 -- select the text that was just pasted
-vim.keymap.set({'n'}, 'gp', '`[v`]')
+vim.keymap.set({'n'}, 'gV', '`[v`]')
 
 -- Prevents inserting two spaces after punctuation on a join (J)
 vim.o.joinspaces = false
