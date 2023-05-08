@@ -1437,12 +1437,6 @@ Plug(
         priority = 2,
         max_item_count = 2,
       }
-      local dictionary = {
-        name = 'dictionary',
-        priority = 1,
-        keyword_length = 2,
-        keyword_pattern = [[\a\+]],
-      }
       local lsp_signature = { name = 'nvim_lsp_signature_help', priority = 8, }
       local luasnip_source = {
         name = 'luasnip',
@@ -1537,17 +1531,18 @@ Plug(
             end
           end, { 'i', 's' }),
         }),
+        -- The order of the sources controls which entry will be chosen if multiple sources return entries with the
+        -- same names. Sources at the bottom of this list will be chosen over the sources above them.
         sources = cmp.config.sources(
           {
-            luasnip_source,
-            nvim_lsp,
-            buffer,
-            omni,
-            path,
-            env,
-            tmux,
             lsp_signature,
-            dictionary,
+            buffer,
+            tmux,
+            env,
+            luasnip_source,
+            omni,
+            nvim_lsp,
+            path,
           }
         ),
         sorting = {
