@@ -1,6 +1,6 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (specialArgs) nix-index-database;
+    inherit (specialArgs) nix-index-database repositoryDirectory;
   in
     {
       imports = [
@@ -19,7 +19,7 @@
         ../tmux.nix
       ];
 
-      repository.path = ".dotfiles";
+      repository.path = repositoryDirectory;
 
       repository.git.onChange = [
         {

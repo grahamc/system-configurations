@@ -1,7 +1,8 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (specialArgs) hostName username homeDirectory;
-    repositoryPath = "${config.home.homeDirectory}/${config.repository.path}";
+    inherit (specialArgs) hostName username homeDirectory repositoryDirectory;
+    repositoryAbsolutePath = "${homeDirectory}/${repositoryDirectory}";
+    inherit (pkgs.lib.attrsets) optionalAttrs;
   in
     {
       # Home Manager needs a bit of information about you and the
@@ -29,15 +30,14 @@
       programs.home-manager.enable = true;
 
       # Scripts for switching generations and upgrading flake inputs.
-      home.file = {
-        ".local/bin/home-manager-switch" = {
+      home.file = optionalAttrs (!specialArgs.isHomeManagerSubmodule) {
+        ".local/bin/host-manager-switch" = {
           text = ''
             #!${pkgs.bash}/bin/bash
 
             # Add missing entries in sub-flake lock files so the top-level flake pulls them in when I do
             # `--update-input` below.
-            nix flake lock '${repositoryPath}/home-manager/overlay'
-            nix flake lock '${repositoryPath}/smart-plug'
+            nix flake lock '${repositoryAbsolutePath}/home-manager/overlay'
 
             # I need `--update-input my-overlay` for the following reasons:
             #   - Without it, I get an error when trying to build home-manager on any machine where
@@ -53,26 +53,27 @@
             # the latest version of `my-overlay` I have to use `--update-input my-overlay` before running
             # `home-manager switch`. There's an issue open to improve on this workflow though:
             # issue: https://github.com/NixOS/nix/issues/6352
-            home-manager switch --flake "${repositoryPath}#${hostName}" --update-input my-overlay
+            home-manager switch --flake "${repositoryAbsolutePath}#${hostName}" --update-input my-overlay "''$@"
           '';
           executable = true;
         };
-        ".local/bin/home-manager-upgrade" = {
+        ".local/bin/host-manager-upgrade" = {
           text = ''
             #!${pkgs.bash}/bin/bash
 
             # Update inputs in sub-flakes so the top-level flake pulls them in.
-            nix flake update '${repositoryPath}/home-manager/overlay'
-            nix flake update '${repositoryPath}/smart-plug'
+            nix flake update '${repositoryAbsolutePath}/home-manager/overlay'
 
-            home-manager switch --flake "${repositoryPath}#${hostName}" --recreate-lock-file
+            home-manager switch --flake "${repositoryAbsolutePath}#${hostName}" --recreate-lock-file "''$@"
           '';
           executable = true;
         };
       };
 
       # Show me what changed everytime I switch generations e.g. version updates or added/removed files.
-      home.activation.printChanges = lib.hm.dag.entryAnywhere ''
-        ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
-      '';
+      home.activation = optionalAttrs (!specialArgs.isHomeManagerSubmodule){
+        printChanges = lib.hm.dag.entryAnywhere ''
+          ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
+        '';
+      };
     }

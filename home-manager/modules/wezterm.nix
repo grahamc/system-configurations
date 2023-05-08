@@ -16,7 +16,5 @@
         if [ ! -f $wezterm_config ]; then
           ln --symbolic ${config.home.homeDirectory}/.dotfiles/wezterm/wezterm.lua $wezterm_config
         fi
-
-        cp --no-preserve=mode --recursive --dereference "$HOME/.nix-profile/share/fonts/." "${config.xdg.dataHome}/fonts"
       '';
   }
