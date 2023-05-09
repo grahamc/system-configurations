@@ -32,7 +32,7 @@ jobs:
         with:
           name: bigolu
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      - run: nix bundle --update-input my-overlay --show-trace --bundler .# .#
+      - run: nix bundle --show-trace --bundler .# .#
       # Dereference the symlink so I can upload the actual executable. The symlink name will look like
       # 'shell-x86_64.AppImage' so I'm using a glob pattern to match it.
       - run: cp -L shell-* shell

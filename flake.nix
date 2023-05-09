@@ -1,5 +1,5 @@
 {
-  description = "Biggs's Home Manager configuration";
+  description = "Biggs's host configurations";
 
   nixConfig = {
     extra-substituters = "https://bigolu.cachix.org";
@@ -8,6 +8,10 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+
+    # home-manager
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs = {
@@ -18,8 +22,8 @@
       url = "github:Mic92/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    flake-utils.url = "github:numtide/flake-utils";
-    my-overlay.url = "path:./home-manager/overlay";
+
+    # bundler
     nix-appimage = {
       url = "github:ralismark/nix-appimage";
       inputs = {
@@ -27,370 +31,46 @@
         flake-utils.follows = "flake-utils";
       };
     };
-    nix-xdg = {
-      url = "github:infinisil/nix-xdg";
-      flake = false;
-    };
+
     nix-darwin = {
       url = "github:lnl7/nix-darwin/master";
       inputs = {
         nixpkgs.follows = "nixpkgs";
       };
     };
+
+    # overlay
+    "vim-plugin-vim-CursorLineCurrentWindow" = {url = "github:inkarkat/vim-CursorLineCurrentWindow"; flake = false;};
+    "vim-plugin-virt-column.nvim" = {url = "github:lukas-reineke/virt-column.nvim"; flake = false;};
+    "vim-plugin-folding-nvim" = {url = "github:pierreglaser/folding-nvim"; flake = false;};
+    "vim-plugin-cmp-env" = {url = "github:bydlw98/cmp-env"; flake = false;};
+    "vim-plugin-SchemaStore.nvim" = {url = "github:b0o/SchemaStore.nvim"; flake = false;};
+    "vim-plugin-vim" = {url = "github:nordtheme/vim"; flake = false;};
+    "vim-plugin-vim-caser" = {url = "github:arthurxavierx/vim-caser"; flake = false;};
+    "tmux-plugin-resurrect" = {url = "github:tmux-plugins/tmux-resurrect"; flake = false;};
+    "tmux-plugin-tmux-suspend" = {url = "github:MunifTanjim/tmux-suspend"; flake = false;};
+    "fish-plugin-autopair-fish" = {url = "github:jorgebucaran/autopair.fish"; flake = false;};
+    "fish-plugin-async-prompt" = {url = "github:acomagu/fish-async-prompt"; flake = false;};
+    nix-xdg = {
+      url = "github:infinisil/nix-xdg";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-index-database, flake-utils, my-overlay, nix-appimage, nix-xdg, nix-darwin, }:
-    let
-      # For example, merging these two sets:                                    Would result in one set containing:
-      #  { packages = {                   { packages = {                          { packages = {
-      #      x86_64-linux = {                 x86_64-linux = {                        x86_64-linux = {
-      #        homeConfigurations = {           homeConfigurations = {                  homeConfigurations = {
-      #          laptop = <derivation>;            desktop = <derivation>;                   laptop = <derivation>;
-      #                                                                                     desktop = <derivation>;
-      #        }                                }                                       }
-      #      };                               };                                      };
-      #    };                               };                                      };
-      #  }                                }                                       }
-      recursiveMerge = sets: nixpkgs.lib.lists.foldr nixpkgs.lib.recursiveUpdate {} sets;
+  outputs = inputs@{ self, home-manager, flake-parts, flake-utils, nix-index-database, nixpkgs, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [
+        ./flake-modules/cache.nix
+        ./flake-modules/nix-darwin.nix
+        ./flake-modules/overlay.nix
+        ./flake-modules/shell.nix
+        ./flake-modules/bundler.nix
+        ./flake-modules/home-manager.nix
+      ];
 
-      createHomeOutputs = {
-        hostName,
-        modules,
-        systems,
-        isGui ? true,
-        username ? "biggs",
-        homeDirectory ? "/home/${username}",
-        repositoryDirectory ? ".dotfiles",
-      }:
-        # TODO: Waiting on a more concise way to define configurations per system.
-        # issue: https://github.com/nix-community/home-manager/issues/3075
-        flake-utils.lib.eachSystem
-        systems
-        (system:
-          let
-            pkgs = import nixpkgs {
-              inherit system;
-              overlays = [ my-overlay.overlays.default ];
-            };
-
-            # I'm including this overlay in a separate nixpkgs to avoid rebuilds of tools that depend on anything
-            # wrapped in this overlay. This is fine since I only need XDG Base Directory compliance when I'm using
-            # a program directly.
-            xdgOverlay = ((import "${nix-xdg}/module.nix") {inherit pkgs; inherit (pkgs) lib; config = {};}).config.lib.xdg.xdgOverlay
-              {
-                specs = {
-                  ripgrep.env.RIPGREP_CONFIG_PATH = {config}: "${config}/ripgreprc";
-                  watchman.env.WATCHMAN_CONFIG_FILE = {config}: "${config}/watchman.json";
-                  figlet.env.FIGLET_FONTDIR = {data}: data;
-                };
-              };
-            xdgPkgs = import nixpkgs {
-              inherit system;
-              overlays = [ xdgOverlay ];
-            };
-
-            # Some of modules are specific to a system so instead of the module, a function is passed in that takes
-            # the system and returns the module.
-            mappedModules = map
-              (module:
-                if builtins.isFunction module
-                  then module system
-                  else module
-              )
-              modules;
-          in
-            {
-              # Using `legacyPackages` here because `packages` doesn't support nested derivations meaning the values
-              # inside the `packages` attribute set must be derivations.
-              # For more info: https://discourse.nixos.org/t/flake-questions/8741/2
-              legacyPackages.homeConfigurations.${hostName} = home-manager.lib.homeManagerConfiguration {
-                inherit pkgs;
-                modules = mappedModules ++ [ ./home-manager/modules/profile/common.nix ];
-                extraSpecialArgs = {
-                  inherit hostName isGui nix-index-database username homeDirectory repositoryDirectory xdgPkgs;
-                  isHomeManagerSubmodule = false;
-                };
-              };
-            }
-        );
-      homeHostConfigurations = with flake-utils.lib.system;
-        [
-          {
-            hostName = "laptop";
-            modules = [
-              ./home-manager/modules/profile/application-development.nix
-              ./home-manager/modules/profile/system-administration.nix
-              ./home-manager/modules/gnome-theme-fix.nix
-            ];
-            systems = [ x86_64-linux ];
-          }
-          {
-            hostName = "desktop";
-            modules = [
-              ./home-manager/modules/profile/application-development.nix
-              ./home-manager/modules/profile/system-administration.nix
-              ./home-manager/modules/gnome-theme-fix.nix
-            ];
-            systems = [ x86_64-linux ];
-          }
-        ];
-      homeOutputsPerHost = map createHomeOutputs homeHostConfigurations;
-      homeOutputs = recursiveMerge homeOutputsPerHost;
-
-      createDarwinOutputs = {
-        hostName,
-        modules,
-        homeModules,
-        systems,
-        username ? "biggs",
-        homeDirectory ? "/Users/${username}",
-        repositoryDirectory ? ".dotfiles",
-      }:
-        # TODO: Waiting on a more concise way to define configurations per system.
-        # issue: https://github.com/nix-community/home-manager/issues/3075
-        flake-utils.lib.eachSystem
-        systems
-        (system:
-          let
-            # Some of modules are specific to a system so instead of the module, a function is passed in that takes
-            # the system and returns the module.
-            mappedModules = map
-              (module:
-                if builtins.isFunction module
-                  then module system
-                  else module
-              )
-              modules;
-            mappedHomeModules = map
-              (module:
-                if builtins.isFunction module
-                  then module system
-                  else module
-              )
-              homeModules;
-
-            # I'm including this overlay in a separate nixpkgs to avoid rebuilds of tools that depend on anything
-            # wrapped in this overlay. This is fine since I only need XDG Base Directory compliance when I'm using
-            # a program directly.
-            pkgs = import nixpkgs {
-              inherit system;
-              overlays = [ my-overlay.overlays.default ];
-            };
-            xdgOverlay = ((import "${nix-xdg}/module.nix") {inherit pkgs; inherit (pkgs) lib; config = {};}).config.lib.xdg.xdgOverlay
-              {
-                specs = {
-                  ripgrep.env.RIPGREP_CONFIG_PATH = {config}: "${config}/ripgreprc";
-                  watchman.env.WATCHMAN_CONFIG_FILE = {config}: "${config}/watchman.json";
-                  figlet.env.FIGLET_FONTDIR = {data}: data;
-                };
-              };
-            xdgPkgs = import nixpkgs {
-              inherit system;
-              overlays = [ xdgOverlay ];
-            };
-          in
-            {
-              # Using `legacyPackages` here because `packages` doesn't support nested derivations meaning the values
-              # inside the `packages` attribute set must be derivations.
-              # For more info: https://discourse.nixos.org/t/flake-questions/8741/2
-              legacyPackages.darwinConfigurations.${hostName} = nix-darwin.lib.darwinSystem {
-                inherit system;
-                modules = mappedModules ++ [
-                  {
-                    nixpkgs.overlays = [
-                      my-overlay.overlays.default
-                    ];
-                  }
-
-                  home-manager.darwinModules.home-manager
-                  {
-                    home-manager.useGlobalPkgs = true;
-                    home-manager.useUserPackages = true;
-                    home-manager.extraSpecialArgs = {
-                      inherit hostName nix-index-database username homeDirectory repositoryDirectory xdgPkgs; isGui = true;
-                      isHomeManagerSubmodule = true;
-                    };
-                    home-manager.users.${username} = {
-                      imports = mappedHomeModules ++ [./home-manager/modules/profile/common.nix];
-                    };
-                  }
-                ];
-                specialArgs = { inherit hostName username homeDirectory repositoryDirectory; };
-              };
-            }
-        );
-      darwinHostConfigurations = with flake-utils.lib.system;
-        [
-          {
-            hostName = "bigmac";
-            modules = [
-              ./nix-darwin/modules/general.nix
-            ];
-            homeModules = [
-              ./home-manager/modules/profile/application-development.nix
-              ./home-manager/modules/profile/system-administration.nix
-            ];
-            systems = [ x86_64-darwin ];
-          }
-        ];
-      darwinOutputsPerHost = map createDarwinOutputs darwinHostConfigurations;
-      darwinOutputs = recursiveMerge darwinOutputsPerHost;
-
-      # Run my shell environment, both programs and their config files, completely from the nix store.
-      shellOutputs = flake-utils.lib.eachSystem
-        (with flake-utils.lib.system; [ x86_64-linux x86_64-darwin ])
-        (system:
-          let
-            pkgs = import nixpkgs { inherit system; };
-            hostName = "no-host";
-            homeManagerOutputs = createHomeOutputs {
-              inherit hostName;
-              modules = [
-                ./home-manager/modules/profile/system-administration.nix
-                {config.repository.symlink.makeCopiesInstead = true;}
-              ];
-              systems = [ system ];
-              isGui = false;
-            };
-            inherit (homeManagerOutputs.legacyPackages.${system}.homeConfigurations.${hostName}) activationPackage;
-            shellBootstrapScriptName = "shell";
-            # I don't want the programs that this script depends on to be in the $PATH since they are not
-            # necessarily part of my Home Manager configuration so I'll set them to variables instead.
-            mktemp = "${pkgs.coreutils}/bin/mktemp";
-            copy = "${pkgs.coreutils}/bin/cp";
-            chmod = "${pkgs.coreutils}/bin/chmod";
-            fish = "${pkgs.fish}/bin/fish";
-            coreutilsBinaryPath = "${pkgs.coreutils}/bin";
-            basename = "${coreutilsBinaryPath}/basename";
-            which = "${pkgs.which}/bin/which";
-            foreignEnvFunctionPath = "${pkgs.fishPlugins.foreign-env}/share/fish/vendor_functions.d";
-            shellBootstrap = pkgs.writeScriptBin shellBootstrapScriptName
-              ''#!${fish}
-
-              # For packages that need one of their XDG Base directories to be mutable
-              set -g mutable_bin (${mktemp} --directory)
-              set -g state_dir (${mktemp} --directory)
-              set -g config_dir (${mktemp} --directory)
-              set -g data_dir (${mktemp} --directory)
-              set -g runtime_dir (${mktemp} --directory)
-              set -g cache_dir (${mktemp} --directory)
-
-              # Clean up temporary directories when the shell exits
-              function _cleanup --on-event fish_exit \
-              --inherit-variable mutable_bin \
-              --inherit-variable state_dir \
-              --inherit-variable config_dir \
-              --inherit-variable data_dir \
-              --inherit-variable runtime_dir \
-              --inherit-variable cache_dir
-                rm -rf "$mutable_bin" "$state_dir" "$config_dir" "$data_dir" "$runtime_dir" "$cache_dir"
-              end
-
-              # Make mutable copies of the contents of any XDG Base Directory in the Home Manager configuration.
-              # This is because some programs need to be able to write to one of these directories e.g. `fish`.
-              ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.config/* ''$config_dir
-              ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.local/share/* ''$data_dir
-
-              for program in ${activationPackage}/home-path/bin/*
-                set base (${basename} ''$program)
-
-                # NOTE: The hashbangs in the scripts need to be the first two bytes in the file for the kernel to
-                # recognize them so it must come directly after the opening quote of the script.
-                switch "$base"
-                  case env
-                    # TODO: Wrapping this caused an infinite loop so I'll copy it instead
-                    ${copy} -L ''$program ''$mutable_bin/env
-                  case fish
-                    echo -s >''$mutable_bin/''$base "#!${fish}
-                      # I unexport the XDG Base directories so host programs pick up the host's XDG directories.
-                      XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir XDG_CACHE_HOME=''$cache_dir \
-                      ''$program \
-                        --init-command 'set --unexport XDG_CONFIG_HOME' \
-                        --init-command 'set --unexport XDG_DATA_HOME' \
-                        --init-command 'set --unexport XDG_STATE_HOME' \
-                        --init-command 'set --unexport XDG_RUNTIME_DIR' \
-                        --init-command 'set --unexport XDG_CACHE_HOME_DIR' \
-                        " ' ''$argv'
-                  case '*'
-                    echo -s >''$mutable_bin/''$base "#!${fish}
-                      XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir XDG_CACHE_HOME=''$cache_dir \
-                      ''$program" ' ''$argv'
-                end
-
-                ${chmod} +x ''$mutable_bin/''$base
-              end
-
-              # My login shell .profile sets the LOCALE_ARCHIVE for me, but it sets it to
-              # <profile_path>/lib/locale/locale-archive and I won't have that in a 'sealed' environment so instead
-              # I will source the Home Manager setup script because it sets the LOCALE_ARCHIVE to the path of the
-              # archive in the Nix store.
-              set --prepend fish_function_path ${foreignEnvFunctionPath}
-              PATH="${coreutilsBinaryPath}:''$PATH" fenv source ${activationPackage}/home-path/etc/profile.d/hm-session-vars.sh >/dev/null
-              set -e fish_function_path[1]
-
-              fish_add_path --global --prepend ''$mutable_bin
-              fish_add_path --global --prepend ${activationPackage}/home-files/.local/bin
-
-              # Set fish as the default shell
-              set --global --export SHELL (${which} fish)
-
-              # Compile my custom themes for bat.
-              chronic bat cache --build
-
-              ''$SHELL ''$argv
-              '';
-          in
-            {
-              apps.default = {
-                type = "app";
-                program = "${shellBootstrap}/bin/${shellBootstrapScriptName}";
-                programDerivation = shellBootstrap;
-              };
-            }
-        );
-
-      # This output has symbolic links to all the packages whose dependencies I want cache through CI.
-      # This way in my CI pipeline I can build this output and populate my binary cache with every dependency that gets
-      # pulled in. There are some open issues for providing an easier way to build all packages for CI.
-      # issue: https://github.com/NixOS/nix/issues/7165
-      # issue: https://github.com/NixOS/nix/issues/7157
-      cacheOutputs = flake-utils.lib.eachSystem
-        (with flake-utils.lib.system; [ x86_64-linux x86_64-darwin ])
-        (system:
-          let
-            pkgs = import nixpkgs {inherit system;};
-            inherit (pkgs.lib.attrsets) optionalAttrs mapAttrs;
-            hasSystem = builtins.hasAttr system;
-
-            homeOutputsBySystem = homeOutputs.legacyPackages;
-            homeDerivationsByName = optionalAttrs
-              (hasSystem homeOutputsBySystem)
-              (mapAttrs (key: value: value.activationPackage) homeOutputsBySystem.${system}.homeConfigurations);
-
-            darwinOutputsBySystem = darwinOutputs.legacyPackages;
-            darwinDerivationsByName = optionalAttrs
-              (hasSystem darwinOutputsBySystem)
-              (mapAttrs (key: value: value.system) darwinOutputsBySystem.${system}.darwinConfigurations);
-
-            shellOutputsBySystem = shellOutputs.apps;
-            shellDerivationByName = optionalAttrs
-              (hasSystem shellOutputsBySystem)
-              {shell = shellOutputsBySystem.${system}.default.programDerivation;};
-
-            allDerivationsByName = homeDerivationsByName // darwinDerivationsByName // shellDerivationByName;
-          in
-            { packages.default = pkgs.linkFarm "packages-to-cache" allDerivationsByName; }
-        );
-
-       # This output is the bundler that I use to build an executable of the app output defined earlier in this flake.
-       # I could just reference this bundler with `nix bundle --bundler github:ralismark/nix-appimage .#`, but
-       # then it wouldn't be pinned to a revision. To pin it, I include it as an input and use the bundler output
-       # below.
-      bundlerOutputs = flake-utils.lib.eachSystem
-        (with flake-utils.lib.system; [ x86_64-linux ])
-        (system:
-          { bundlers = nix-appimage.bundlers.${system}; }
-        );
-    in
-      recursiveMerge [homeOutputs cacheOutputs shellOutputs bundlerOutputs darwinOutputs];
+      systems = with flake-utils.lib.system; [
+        x86_64-linux
+        x86_64-darwin
+      ];
+    };
 }

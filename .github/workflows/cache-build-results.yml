@@ -25,5 +25,5 @@ jobs:
         with:
           name: bigolu
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      - run: nix build --show-trace --update-input my-overlay
+      - run: nix build --show-trace
         working-directory: './.dotfiles'

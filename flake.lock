@@ -64,6 +64,24 @@
         "type": "github"
       }
     },
+    "flake-parts": {
+      "inputs": {
+        "nixpkgs-lib": "nixpkgs-lib"
+      },
+      "locked": {
+        "lastModified": 1683560683,
+        "narHash": "sha256-XAygPMN5Xnk/W2c1aW0jyEa6lfMDZWlQgiNtmHXytPc=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "006c75898cf814ef9497252b022e91c946ba8e17",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
     "flake-utils": {
       "inputs": {
         "systems": "systems"
@@ -89,42 +107,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1682779989,
-        "narHash": "sha256-H8AjcIBYFYrlRobYJ+n1B+ZJ6TsaaeZpuLn4iRqVvr4=",
+        "lastModified": 1683651229,
+        "narHash": "sha256-HN0Mw8g1XQIrcdyzqT00YW0Uqi/V/BUUUAgvcK1pcSM=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "3144311f31194b537808ae6848f86f3dbf977d59",
+        "rev": "983f8a1bb965b261492123cd8e2d07da46d4d50a",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
         "type": "github"
-      }
-    },
-    "my-overlay": {
-      "inputs": {
-        "fish-plugin-async-prompt": "fish-plugin-async-prompt",
-        "fish-plugin-autopair-fish": "fish-plugin-autopair-fish",
-        "tmux-plugin-resurrect": "tmux-plugin-resurrect",
-        "tmux-plugin-tmux-suspend": "tmux-plugin-tmux-suspend",
-        "vim-plugin-SchemaStore.nvim": "vim-plugin-SchemaStore.nvim",
-        "vim-plugin-cmp-env": "vim-plugin-cmp-env",
-        "vim-plugin-folding-nvim": "vim-plugin-folding-nvim",
-        "vim-plugin-vim": "vim-plugin-vim",
-        "vim-plugin-vim-CursorLineCurrentWindow": "vim-plugin-vim-CursorLineCurrentWindow",
-        "vim-plugin-vim-caser": "vim-plugin-vim-caser",
-        "vim-plugin-virt-column.nvim": "vim-plugin-virt-column.nvim"
-      },
-      "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-OADn+molPcTryRjPlKo6NeapCWxzYWzruY+6X2VQXD0=",
-        "path": "./home-manager/overlay",
-        "type": "path"
-      },
-      "original": {
-        "path": "./home-manager/overlay",
-        "type": "path"
       }
     },
     "nix-appimage": {
@@ -181,11 +174,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1682417654,
-        "narHash": "sha256-XtUhq1GTRzV7QebHkxjd7Z58E6lVEk6Iv1/pF/GnBB4=",
+        "lastModified": 1683638468,
+        "narHash": "sha256-tQEaGZfZ2Hpw+XIVEHaJ8FaF1yNQyMDDhUyIQ7LTIEg=",
         "owner": "Mic92",
         "repo": "nix-index-database",
-        "rev": "e3e320b19c192f40a5b98e8776e3870df62dee8a",
+        "rev": "219067a5e3cf4b9581c8b4fcfc59ecd5af953d07",
         "type": "github"
       },
       "original": {
@@ -226,16 +219,45 @@
         "type": "github"
       }
     },
+    "nixpkgs-lib": {
+      "locked": {
+        "dir": "lib",
+        "lastModified": 1682879489,
+        "narHash": "sha256-sASwo8gBt7JDnOOstnps90K1wxmVfyhsTPPNTGBPjjg=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "da45bf6ec7bbcc5d1e14d3795c025199f28e0de0",
+        "type": "github"
+      },
+      "original": {
+        "dir": "lib",
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
+        "fish-plugin-async-prompt": "fish-plugin-async-prompt",
+        "fish-plugin-autopair-fish": "fish-plugin-autopair-fish",
+        "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
-        "my-overlay": "my-overlay",
         "nix-appimage": "nix-appimage",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nix-xdg": "nix-xdg",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "tmux-plugin-resurrect": "tmux-plugin-resurrect",
+        "tmux-plugin-tmux-suspend": "tmux-plugin-tmux-suspend",
+        "vim-plugin-SchemaStore.nvim": "vim-plugin-SchemaStore.nvim",
+        "vim-plugin-cmp-env": "vim-plugin-cmp-env",
+        "vim-plugin-folding-nvim": "vim-plugin-folding-nvim",
+        "vim-plugin-vim": "vim-plugin-vim",
+        "vim-plugin-vim-CursorLineCurrentWindow": "vim-plugin-vim-CursorLineCurrentWindow",
+        "vim-plugin-vim-caser": "vim-plugin-vim-caser",
+        "vim-plugin-virt-column.nvim": "vim-plugin-virt-column.nvim"
       }
     },
     "squashfuse": {
@@ -304,11 +326,11 @@
     "vim-plugin-SchemaStore.nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1682704853,
-        "narHash": "sha256-m083PkV59oCy95PoMNADu+qwOv1BO8HXT7zoYHSu6sU=",
+        "lastModified": 1683219659,
+        "narHash": "sha256-s5hDMZ8M+Xdxd3HQ/jgxznDhot1IbysQ9rsN2tKVHIA=",
         "owner": "b0o",
         "repo": "SchemaStore.nvim",
-        "rev": "383abaefd6c062dd6a03aef2fa88e671780069ec",
+        "rev": "b8e6c7d966857e8ff14d9b6a23eec9214d99db32",
         "type": "github"
       },
       "original": {
@@ -352,11 +374,11 @@
     "vim-plugin-vim": {
       "flake": false,
       "locked": {
-        "lastModified": 1681141240,
-        "narHash": "sha256-GtG46oxyvv6fnO6cR6dunebiWYvX+7LRiVnx7/Blb10=",
+        "lastModified": 1683146605,
+        "narHash": "sha256-P4fbRNeJjXOoAQiWXXHZhm4ejgMD8W7OkdEF4TpEc7g=",
         "owner": "nordtheme",
         "repo": "vim",
-        "rev": "f725ac643afce04021c9abcbb57711fcb9fa71e9",
+        "rev": "f13f5dfbb784deddbc1d8195f34dfd9ec73e2295",
         "type": "github"
       },
       "original": {

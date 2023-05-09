@@ -6,14 +6,14 @@ Configs and whatnot. Managed with [Home Manager](https://github.com/nix-communit
 
 1. Clone the repository and go into its directory by running `git clone https://github.com/bigolu/dotfiles.git ~/.dotfiles && cd ~/.dotfiles`.
 
-2. Apply the Home Manager configuration by running `nix --extra-experimental-features "nix-command flakes" run home-manager/master -- --extra-experimental-features "nix-command flakes" switch --flake .#<host_name> --update-input my-overlay` where `<host_name>` is one of the hosts specified in the [flake.nix](https://github.com/bigolu/dotfiles/blob/master/flake.nix).
+2. Apply the Home Manager configuration by running `nix run home-manager/master -- switch --flake .#<host_name>` where `<host_name>` is one of the hosts specified in the [flake.nix](https://github.com/bigolu/dotfiles/blob/master/flake.nix).
 
 ## Run
 
 ### With Nix
 
-- Run the shell with `nix --extra-experimental-features 'nix-command flakes' run --update-input my-overlay github:bigolu/dotfiles`
-- Run a specific command in the shell with `nix --extra-experimental-features 'nix-command flakes' run github:bigolu/dotfiles -- -c 'nvim some-file.py'`
+- Run the shell with `nix run github:bigolu/dotfiles`
+- Run a specific command in the shell with `nix run github:bigolu/dotfiles -- -c 'nvim some-file.py'`
 
 ### Standalone executable (Linux, with [fuse](https://github.com/libfuse/libfuse) installed, only)
 
