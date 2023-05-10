@@ -27,6 +27,7 @@
         viddy
         zoxide
         file
+        pstree
         # Useful for commands that don't work quite the same way between macOS and Linux
         coreutils-full
         gnugrep
