@@ -3,6 +3,14 @@
     inherit (lib.lists) optionals;
     inherit (pkgs.stdenv) isLinux isDarwin;
     inherit (lib.attrsets) optionalAttrs;
+    open = pkgs.writeShellApplication
+      {
+        name = "open";
+        runtimeInputs = [pkgs.xdg-utils];
+        text = ''
+          xdg-open "''$@"
+        '';
+      };
   in
     {
       imports = [
@@ -41,6 +49,7 @@
         pipr
         clear
         catp
+        open
       ] ++ optionals isDarwin [
         # macOS comes with a very old version of ncurses that doesn't have a terminfo entry for tmux, tmux-256color
         ncurses
