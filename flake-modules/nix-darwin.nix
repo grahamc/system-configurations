@@ -25,7 +25,10 @@
               {
                 inherit system;
                 modules = modules ++ homeManagerModules ++ [overlayModule];
-                specialArgs = { inherit hostName username homeDirectory repositoryDirectory; };
+                specialArgs = {
+                  inherit hostName username homeDirectory repositoryDirectory;
+                  inherit (self.lib) updateFlags;
+                };
               };
             darwinOutput = {
               # Using `legacyPackages` here because `packages` doesn't support nested derivations meaning the values

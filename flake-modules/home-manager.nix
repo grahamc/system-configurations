@@ -39,6 +39,7 @@
                   home-manager.extraSpecialArgs = {
                     inherit hostName username homeDirectory repositoryDirectory isGui;
                     inherit (inputs) nix-index-database;
+                    inherit (self.lib) updateFlags;
                     isHomeManagerRunningAsASubmodule = true;
                   };
                   home-manager.users.${username} = {
@@ -71,6 +72,7 @@
               extraSpecialArgs = {
                 inherit hostName isGui username homeDirectory repositoryDirectory;
                 inherit (inputs) nix-index-database;
+                inherit (self.lib) updateFlags;
                 isHomeManagerRunningAsASubmodule = false;
               };
             };

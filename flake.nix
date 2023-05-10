@@ -57,7 +57,7 @@
     };
   };
 
-  outputs = inputs@{ self, home-manager, flake-parts, flake-utils, nix-index-database, nixpkgs, ... }:
+  outputs = inputs@{ flake-parts, flake-utils, nixpkgs, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         ./flake-modules/cache.nix
@@ -66,11 +66,75 @@
         ./flake-modules/shell.nix
         ./flake-modules/bundler.nix
         ./flake-modules/home-manager.nix
+        (
+          {lib, flake-parts-lib, inputs, ... }:
+            let
+              inherit (lib) mkOption types;
+              inherit (flake-parts-lib) mkTransposedPerSystemModule;
+            in
+              mkTransposedPerSystemModule {
+                name = "lib";
+                option = mkOption {
+                  type = types.anything;
+                  default = { };
+                };
+                file = ./flake.nix;
+              }
+        )
       ];
 
       systems = with flake-utils.lib.system; [
         x86_64-linux
         x86_64-darwin
       ];
+
+      flake =
+        let
+          inputSet = rec {
+            home = [
+              "nixpkgs"
+              "flake-utils"
+              "flake-parts"
+              "home-manager"
+              "nix-index-database"
+              "nix-appimage"
+              "vim-plugin-vim-CursorLineCurrentWindow"
+              "vim-plugin-virt-column.nvim"
+              "vim-plugin-folding-nvim"
+              "vim-plugin-cmp-env"
+              "vim-plugin-SchemaStore.nvim"
+              "vim-plugin-vim"
+              "vim-plugin-vim-caser"
+              "tmux-plugin-resurrect"
+              "tmux-plugin-tmux-suspend"
+              "fish-plugin-autopair-fish"
+              "fish-plugin-async-prompt"
+              "nix-xdg"
+            ];
+            darwin = home ++ [
+              "nix-darwin"
+            ];
+          };
+          isInputListed = input:
+            (builtins.elem input inputSet.home) || (builtins.elem input inputSet.darwin);
+          inputNames = (nixpkgs.lib.lists.remove "self" (builtins.attrNames inputs));
+          hasAllInputsListed = builtins.all isInputListed inputNames;
+          convertInputsToUpdateFlags = inputNames:
+            nixpkgs.lib.concatStringsSep
+              " "
+              (map (input: ''--update-input ${nixpkgs.lib.strings.escapeShellArgs [input]}'') inputNames);
+          updateFlags = if hasAllInputsListed
+            then
+              nixpkgs.lib.mapAttrs
+                (host-manager: inputNames: convertInputsToUpdateFlags inputNames)
+                inputSet
+            else
+              abort "You need to specify when these inputs should be updated: ${nixpkgs.lib.concatStringsSep ", " (builtins.filter (input: !(isInputListed input)) inputNames)}";
+        in
+          {
+            lib = {
+              inherit updateFlags;
+            };
+          };
     };
 }

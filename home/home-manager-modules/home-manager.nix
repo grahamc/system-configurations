@@ -1,6 +1,6 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (specialArgs) hostName username homeDirectory isHomeManagerRunningAsASubmodule;
+    inherit (specialArgs) hostName username homeDirectory isHomeManagerRunningAsASubmodule updateFlags;
     inherit (lib.attrsets) optionalAttrs;
   in
     lib.mkMerge [
@@ -42,7 +42,7 @@
           ".local/bin/host-manager-upgrade" = {
             text = ''
               #!${pkgs.bash}/bin/bash
-              home-manager switch --flake "${config.repository.directory}#${hostName}" --recreate-lock-file "''$@"
+              home-manager switch --flake "${config.repository.directory}#${hostName}" ${updateFlags.home} "''$@"
             '';
             executable = true;
           };

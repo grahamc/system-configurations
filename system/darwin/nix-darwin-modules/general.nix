@@ -1,6 +1,6 @@
 { config, lib, specialArgs, pkgs, ... }:
   let
-    inherit (specialArgs) hostName homeDirectory username repositoryDirectory;
+    inherit (specialArgs) hostName homeDirectory username repositoryDirectory updateFlags;
 
     # Scripts for switching generations and upgrading flake inputs.
     packages = [
@@ -21,7 +21,7 @@
         text = ''
           oldGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
 
-          darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" --recreate-lock-file "''$@"
+          darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" ${updateFlags.darwin} "''$@"
 
           newGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
           nvd diff "''$oldGenerationPath" "''$newGenerationPath"
