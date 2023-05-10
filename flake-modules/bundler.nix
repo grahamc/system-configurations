@@ -4,16 +4,16 @@
     inherit (lib.attrsets) optionalAttrs;
     inherit (flake-parts-lib) mkTransposedPerSystemModule;
 
+    recursiveMerge = sets: lib.lists.foldr lib.recursiveUpdate {} sets;
     bundlerOption = mkTransposedPerSystemModule {
       name = "bundlers";
       option = mkOption {
-        type = types.lazyAttrsOf types.anything;
+        type = types.anything;
         default = { };
       };
       file = ./bundler.nix;
     };
-  in
-    {
+    bundlerOutput = {
       config = {
         perSystem = {system, ...}:
           # This output is the bundler that I use to build an executable of the app output defined earlier in this flake.
@@ -24,5 +24,8 @@
             (builtins.elem system (with inputs.flake-utils.lib.system; [ x86_64-linux ]))
             { bundlers = inputs.nix-appimage.bundlers.${system}; };
       };
-    } // bundlerOption
+    };
+  in
+    # They both have a 'config' key so I need to merge recursively
+    recursiveMerge [ bundlerOption bundlerOutput ]
 

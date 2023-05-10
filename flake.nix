@@ -66,21 +66,6 @@
         ./flake-modules/shell.nix
         ./flake-modules/bundler.nix
         ./flake-modules/home-manager.nix
-        (
-          {lib, flake-parts-lib, inputs, ... }:
-            let
-              inherit (lib) mkOption types;
-              inherit (flake-parts-lib) mkTransposedPerSystemModule;
-            in
-              mkTransposedPerSystemModule {
-                name = "lib";
-                option = mkOption {
-                  type = types.anything;
-                  default = { };
-                };
-                file = ./flake.nix;
-              }
-        )
       ];
 
       systems = with flake-utils.lib.system; [
@@ -132,7 +117,7 @@
               abort "You need to specify when these inputs should be updated: ${nixpkgs.lib.concatStringsSep ", " (builtins.filter (input: !(isInputListed input)) inputNames)}";
         in
           {
-            lib = {
+            otherlib = {
               inherit updateFlags;
             };
           };
