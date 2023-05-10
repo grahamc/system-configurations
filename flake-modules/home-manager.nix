@@ -51,32 +51,42 @@
           };
         };
 
-        createHomeOutput = system: {
+        createHomeOutput = system: args@{
           hostName,
           modules,
           isGui ? true,
           username ? "biggs",
-          homeDirectory ? "/home/${username}",
-          repositoryDirectory ? "${homeDirectory}/.dotfiles",
         }:
-          {
-            # Using `legacyPackages` here because `packages` doesn't support nested derivations meaning the values
-            # inside the `packages` attribute set must be derivations.
-            # For more info: https://discourse.nixos.org/t/flake-questions/8741/2
-            legacyPackages.homeConfigurations.${hostName} = inputs.home-manager.lib.homeManagerConfiguration {
-              pkgs = import inputs.nixpkgs {
-                inherit system;
-                overlays = [self.overlays.default];
-              };
-              modules = modules ++ [self.darwinModules.homeModules.profile.common];
-              extraSpecialArgs = {
-                inherit hostName isGui username homeDirectory repositoryDirectory;
-                inherit (inputs) nix-index-database;
-                inherit (self.lib) updateFlags;
-                isHomeManagerRunningAsASubmodule = false;
+          let
+            pkgs = import inputs.nixpkgs {
+              inherit system;
+              overlays = [self.overlays.default];
+            };
+            homePrefix = if pkgs.stdenv.isLinux
+              then "/home"
+              else "/Users";
+            homeDirectory = if builtins.hasAttr "homeDirectory" args
+              then args.homeDirectory
+              else "${homePrefix}/${username}";
+            repositoryDirectory = if builtins.hasAttr "repositoryDirectory" args
+              then args.repositoryDirectory
+              else "${homeDirectory}/.dotfiles";
+          in
+            {
+              # Using `legacyPackages` here because `packages` doesn't support nested derivations meaning the values
+              # inside the `packages` attribute set must be derivations.
+              # For more info: https://discourse.nixos.org/t/flake-questions/8741/2
+              legacyPackages.homeConfigurations.${hostName} = inputs.home-manager.lib.homeManagerConfiguration {
+                modules = modules ++ [self.darwinModules.homeModules.profile.common];
+                inherit pkgs;
+                extraSpecialArgs = {
+                  inherit hostName isGui username homeDirectory repositoryDirectory;
+                  inherit (inputs) nix-index-database;
+                  inherit (self.lib) updateFlags;
+                  isHomeManagerRunningAsASubmodule = false;
+                };
               };
             };
-          };
         libOutputs = {
           lib = {
             inherit recursiveMerge createHomeOutput;
