@@ -3,6 +3,18 @@
     inherit (lib.lists) optionals;
     inherit (pkgs.stdenv) isLinux;
     inherit (specialArgs) nix-index-database;
+    nix-daemon-reload = pkgs.writeShellApplication
+      {
+        name = "nix-daemon-reload";
+        runtimeInputs = [pkgs.xdg-utils];
+        text = ''
+          if uname | grep -q Linux; then
+            systemctl restart nix-daemon.service
+          else
+            sudo launchctl stop org.nixos.nix-daemon && sudo launchctl start org.nixos.nix-daemon
+          fi
+        '';
+      };
   in
     {
       imports = [
@@ -22,6 +34,7 @@
         any-nix-shell
         nix-tree
         comma
+        nix-daemon-reload
       ] ++ optionals isLinux [
         glibcLocales
       ];
