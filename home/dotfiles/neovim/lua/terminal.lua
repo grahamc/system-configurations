@@ -146,7 +146,7 @@ _G.ClickLink = function()
     cfile:match("https?://(([%w_.~!*:@&+$/?%%#-]-)(%w[-.%w]*%.)(%w%w%w?%w?)(:?)(%d*)(/?)([%w_.~!*:@&+$/?%%#=-]*))")
     or cfile:match("ftps?://(([%w_.~!*:@&+$/?%%#-]-)(%w[-.%w]*%.)(%w%w%w?%w?)(:?)(%d*)(/?)([%w_.~!*:@&+$/?%%#=-]*))")
   if is_url then
-    vim.fn.jobstart({'xdg-open', cfile}, {detach = true})
+    vim.fn.jobstart({'open', cfile}, {detach = true})
   end
 end
 vim.keymap.set('n', '<C-LeftMouse>', '<LeftMouse><Cmd>lua ClickLink()<CR>')
