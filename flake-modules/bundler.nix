@@ -5,27 +5,36 @@
     inherit (flake-parts-lib) mkTransposedPerSystemModule;
 
     recursiveMerge = sets: lib.lists.foldr lib.recursiveUpdate {} sets;
+
+    bundlerOutputKey = "bundlers";
+
     bundlerOption = mkTransposedPerSystemModule {
-      name = "bundlers";
+      name = bundlerOutputKey;
       option = mkOption {
         type = types.anything;
-        default = { };
+        default = {};
       };
       file = ./bundler.nix;
     };
-    bundlerOutput = {
+
+    # This output is the bundler that I use to build an executable of the app output in this flake.
+    # I could just reference this bundler with `nix bundle --bundler <flakeref> .#`, but
+    # then it wouldn't be pinned to a version. To pin it, I include it as a flake input, thus adding it to my
+    # `flack.lock`. To use it, I expose that pinned version through the flake output below.
+    bundlerConfig = {
       config = {
         perSystem = {system, ...}:
-          # This output is the bundler that I use to build an executable of the app output defined earlier in this flake.
-          # I could just reference this bundler with `nix bundle --bundler github:ralismark/nix-appimage .#`, but
-          # then it wouldn't be pinned to a revision. To pin it, I include it as an input and use the bundler output
-          # below.
-          optionalAttrs
-            (builtins.elem system (with inputs.flake-utils.lib.system; [ x86_64-linux ]))
-            { bundlers = inputs.nix-appimage.bundlers.${system}; };
+          let
+            supportedSystems = with inputs.flake-utils.lib.system; [ x86_64-linux ];
+            isSupportedSystem = builtins.elem system supportedSystems;
+            bundlerOutput = {
+              ${bundlerOutputKey} = inputs.nix-appimage.${bundlerOutputKey}.${system};
+            };
+          in
+            optionalAttrs isSupportedSystem bundlerOutput;
       };
     };
   in
     # They both have a 'config' key so I need to merge recursively
-    recursiveMerge [ bundlerOption bundlerOutput ]
+    recursiveMerge [ bundlerOption bundlerConfig ]
 
