@@ -180,6 +180,20 @@ local keybinds = {
       key = 'F9',
     },
   },
+  {
+    key = '[',
+    mods = 'CTRL',
+    action = wezterm.action.SendKey {
+      key = 'F7',
+    },
+  },
+  {
+    key = ']',
+    mods = 'CTRL',
+    action = wezterm.action.SendKey {
+      key = 'F8',
+    },
+  },
 }
 
 local function generate_neovim_tab_navigation_keybinds()

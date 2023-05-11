@@ -289,8 +289,8 @@ vim.api.nvim_create_autocmd(
 
 -- Tab pages {{{
 vim.keymap.set('n', '<C-t>', function() vim.cmd('$tabnew') end, {silent = true})
-vim.keymap.set({'n', 'i'}, '<C-[>', vim.cmd.tabprevious, {silent = true})
-vim.keymap.set({'n', 'i'}, '<C-]>', vim.cmd.tabnext, {silent = true})
+vim.keymap.set({'n', 'i'}, '<F7>', vim.cmd.tabprevious, {silent = true})
+vim.keymap.set({'n', 'i'}, '<F8>', vim.cmd.tabnext, {silent = true})
 
 -- Switch tabs with <Leader><tab number>
 for window_index=1,9 do
