@@ -11,7 +11,7 @@
           else
             let
               hostName = "no-host";
-              homeManagerOutput = self.home-manager-utilties.makeHomeOutput system {
+              homeManagerOutput = self.home-manager-utilties.makeFlakeOutput system {
                 inherit hostName;
                 modules = with self.home-manager-utilties.modules; [
                   profile.system-administration

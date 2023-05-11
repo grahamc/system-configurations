@@ -4,7 +4,7 @@
       let
         recursiveMerge = sets: lib.lists.foldr lib.recursiveUpdate {} sets;
 
-        makeOutput = {
+        makeFlakeOutput = {
           hostName,
           modules,
           homeModules,
@@ -59,13 +59,11 @@
             ];
           }
         ];
-        supportedHosts = builtins.filter
-          (host: builtins.elem system host.systems)
-          hosts;
-        outputs = map
-          (host: makeOutput host.configuration)
-          supportedHosts;
-        mergedOutputs = recursiveMerge outputs;
+        isCurrentSystemSupportedByHost = host: builtins.elem system host.systems;
+        supportedHosts = builtins.filter isCurrentSystemSupportedByHost hosts;
+        makeFlakeOutputForHost = host: makeFlakeOutput host.configuration;
+        flakeOutputs = map makeFlakeOutputForHost supportedHosts;
+        mergedFlakeOutputs = recursiveMerge flakeOutputs;
       in
-        mergedOutputs;
+        mergedFlakeOutputs;
   }

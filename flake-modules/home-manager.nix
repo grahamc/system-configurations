@@ -71,7 +71,7 @@
           configuration
         ];
 
-    makeHomeOutput =
+    makeFlakeOutput =
       system: 
       args@{
         hostName,
@@ -114,7 +114,7 @@
     {
       flake = {
         home-manager-utilties = {
-          inherit modules makeDarwinModules makeHomeOutput;
+          inherit modules makeDarwinModules makeFlakeOutput;
         };
       };
 
@@ -149,10 +149,11 @@
                 ];
               }
             ];
-          isSupportedHost = host: builtins.elem system host.systems;
-          supportedHosts = builtins.filter isSupportedHost hosts;
-          homeOutputList = map (host: makeHomeOutput system host.configuration) supportedHosts;
-          homeOutputSet = recursiveMerge homeOutputList;
+          isCurrentSystemSupportedByHost = host: builtins.elem system host.systems;
+          supportedHosts = builtins.filter isCurrentSystemSupportedByHost hosts;
+          makeFlakeOutputForHost = host: makeFlakeOutput system host.configuration;
+          flakeOutputs = map makeFlakeOutputForHost supportedHosts;
+          mergedFlakeOutputs = recursiveMerge flakeOutputs;
         in
-          homeOutputSet;
+          mergedFlakeOutputs;
     }
