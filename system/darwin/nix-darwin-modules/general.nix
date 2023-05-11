@@ -36,4 +36,12 @@
         home = homeDirectory;
         inherit packages;
       };
+
+      fonts = {
+        fontDir.enable = true;
+        fonts = with pkgs; [
+          (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
+          jetbrains-mono
+        ];
+      };
     }
