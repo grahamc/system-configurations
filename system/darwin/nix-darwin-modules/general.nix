@@ -44,4 +44,6 @@
           jetbrains-mono
         ];
       };
+
+      security.pam.enableSudoTouchIdAuth = true;
     }
