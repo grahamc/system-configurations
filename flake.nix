@@ -10,8 +10,6 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     flake-parts.url = "github:hercules-ci/flake-parts";
-
-    # home-manager
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs = {
@@ -22,8 +20,6 @@
       url = "github:Mic92/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # bundler
     nix-appimage = {
       url = "github:ralismark/nix-appimage";
       inputs = {
@@ -31,15 +27,16 @@
         flake-utils.follows = "flake-utils";
       };
     };
-
     nix-darwin = {
       url = "github:lnl7/nix-darwin/master";
       inputs = {
         nixpkgs.follows = "nixpkgs";
       };
     };
-
-    # overlay
+    nix-xdg = {
+      url = "github:infinisil/nix-xdg";
+      flake = false;
+    };
     "vim-plugin-vim-CursorLineCurrentWindow" = {url = "github:inkarkat/vim-CursorLineCurrentWindow"; flake = false;};
     "vim-plugin-virt-column.nvim" = {url = "github:lukas-reineke/virt-column.nvim"; flake = false;};
     "vim-plugin-folding-nvim" = {url = "github:pierreglaser/folding-nvim"; flake = false;};
@@ -51,10 +48,6 @@
     "tmux-plugin-tmux-suspend" = {url = "github:MunifTanjim/tmux-suspend"; flake = false;};
     "fish-plugin-autopair-fish" = {url = "github:jorgebucaran/autopair.fish"; flake = false;};
     "fish-plugin-async-prompt" = {url = "github:acomagu/fish-async-prompt"; flake = false;};
-    nix-xdg = {
-      url = "github:infinisil/nix-xdg";
-      flake = false;
-    };
   };
 
   outputs = inputs@{ flake-parts, flake-utils, nixpkgs, ... }:
@@ -75,7 +68,7 @@
 
       flake =
         let
-          inputSet = rec {
+          inputListsByHostManager = rec {
             home = [
               "nixpkgs"
               "flake-utils"
@@ -101,22 +94,34 @@
             ];
           };
           isInputListed = input:
-            (builtins.elem input inputSet.home) || (builtins.elem input inputSet.darwin);
+            let
+              containsInput = builtins.elem input;
+              inputLists = builtins.attrValues inputListsByHostManager;
+            in
+              builtins.any containsInput inputLists;
           inputNames = (nixpkgs.lib.lists.remove "self" (builtins.attrNames inputs));
-          hasAllInputsListed = builtins.all isInputListed inputNames;
-          convertInputsToUpdateFlags = inputNames:
-            nixpkgs.lib.concatStringsSep
-              " "
-              (map (input: ''--update-input ${nixpkgs.lib.strings.escapeShellArgs [input]}'') inputNames);
+          unlistedInputs = builtins.filter (input: !(isInputListed input)) inputNames;
+          hasAllInputsListed = unlistedInputs == [];
+          convertInputListToUpdateFlags = inputList:
+            let
+              convertInputToUpdateFlag = input: ''--update-input ${nixpkgs.lib.strings.escapeShellArgs [input]}'';
+              updateFlags = map convertInputToUpdateFlag inputList;
+              joinedUpdateFlags = nixpkgs.lib.concatStringsSep
+                " "
+                updateFlags;
+            in
+              joinedUpdateFlags;
+          joinedUnlistedInputs = nixpkgs.lib.concatStringsSep ", " unlistedInputs;
+          updateFlagsByHostManager = nixpkgs.lib.mapAttrs
+            (_ignored: inputList: convertInputListToUpdateFlags inputList)
+            inputListsByHostManager;
           updateFlags = if hasAllInputsListed
-            then
-              nixpkgs.lib.mapAttrs
-                (host-manager: inputNames: convertInputsToUpdateFlags inputNames)
-                inputSet
-            else
-              abort "You need to specify when these inputs should be updated: ${nixpkgs.lib.concatStringsSep ", " (builtins.filter (input: !(isInputListed input)) inputNames)}";
+            then updateFlagsByHostManager
+            else abort "You need to specify when these inputs should be updated: ${joinedUnlistedInputs}";
         in
           {
+            # TODO: I wanted to put this under 'lib' with my other utlities, but I couldn't figure out how to get the two
+            # definitions to merge instead of one overwriting the other so I'm using a different name instead.
             otherlib = {
               inherit updateFlags;
             };
