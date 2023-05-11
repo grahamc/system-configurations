@@ -1,7 +1,9 @@
-{ self, inputs, ... }:
+{ self, inputs, lib, ... }:
   {
     perSystem = {system, ...}:
       let
+        recursiveMerge = sets: lib.lists.foldr lib.recursiveUpdate {} sets;
+
         makeOutput = {
           hostName,
           modules,
@@ -11,9 +13,10 @@
           repositoryDirectory ? "${homeDirectory}/.dotfiles",
         }:
           let
-            homeManagerModules = self.darwinModules.createHomeModules
+            homeManagerSubmodules = self.home-manager-utilties.makeDarwinModules
               {
-                inherit username hostName homeDirectory repositoryDirectory homeModules;
+                inherit username hostName homeDirectory repositoryDirectory;
+                modules = homeModules;
                 isGui = true;
               };
             overlayModule = {
@@ -24,10 +27,10 @@
             darwinConfiguration = inputs.nix-darwin.lib.darwinSystem
               {
                 inherit system;
-                modules = modules ++ homeManagerModules ++ [overlayModule];
+                modules = modules ++ homeManagerSubmodules ++ [overlayModule];
                 specialArgs = {
                   inherit hostName username homeDirectory repositoryDirectory;
-                  inherit (self.otherlib) updateFlags;
+                  inherit (self.input-utilities) updateFlags;
                 };
               };
             darwinOutput = {
@@ -39,29 +42,30 @@
           in
             darwinOutput;
 
-        hosts = with inputs.flake-utils.lib.system; with self.darwinModules.homeModules;
-          [
-            {
-              configuration = {
-                hostName = "bigmac";
-                modules = [
-                  ../system/darwin/nix-darwin-modules/general.nix
-                ];
-                homeModules = [
-                  profile.system-administration
-                  profile.application-development
-                ];
-              };
-              systems = [ x86_64-darwin ];
-            }
-          ];
+        hosts =  [
+          {
+            configuration = {
+              hostName = "bigmac";
+              modules = [
+                ../system/darwin/nix-darwin-modules/general.nix
+              ];
+              homeModules = with self.home-manager-utilties.modules; [
+                profile.system-administration
+                profile.application-development
+              ];
+            };
+            systems = with inputs.flake-utils.lib.system; [
+              x86_64-darwin
+            ];
+          }
+        ];
         supportedHosts = builtins.filter
           (host: builtins.elem system host.systems)
           hosts;
         outputs = map
           (host: makeOutput host.configuration)
           supportedHosts;
-        mergedOutputs = self.lib.recursiveMerge outputs;
+        mergedOutputs = recursiveMerge outputs;
       in
         mergedOutputs;
   }

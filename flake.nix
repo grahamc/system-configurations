@@ -56,7 +56,7 @@
         ./flake-modules/cache.nix
         ./flake-modules/nix-darwin.nix
         ./flake-modules/overlay.nix
-        ./flake-modules/shell.nix
+        ./flake-modules/shell/shell.nix
         ./flake-modules/bundler.nix
         ./flake-modules/home-manager.nix
       ];
@@ -120,9 +120,7 @@
             else abort "You need to specify when these inputs should be updated: ${joinedUnlistedInputs}";
         in
           {
-            # TODO: I wanted to put this under 'lib' with my other utlities, but I couldn't figure out how to get the two
-            # definitions to merge instead of one overwriting the other so I'm using a different name instead.
-            otherlib = {
+            input-utilities = {
               inherit updateFlags;
             };
           };
