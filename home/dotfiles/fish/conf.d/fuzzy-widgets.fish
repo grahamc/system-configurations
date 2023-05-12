@@ -56,6 +56,9 @@ function fzf-man-widget --description 'Search manpages'
     return
   end
 
+  # on macOS, there is no space between the manpage name and the section, e.g. name(3), so I'll add one.
+  set choice (string replace '(' ' (' "$choice")
+
   set manpage_name (echo $choice | awk '{print $1}')
   set manpage_section (echo $choice | awk '{print $2}' | string sub --start=2 --end=-1)
   man $manpage_section $manpage_name
