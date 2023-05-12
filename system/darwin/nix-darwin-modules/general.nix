@@ -91,4 +91,6 @@
         yabai.enable = true;
         skhd.enable = true;
       };
+
+      programs.bash.enable = false;
     }

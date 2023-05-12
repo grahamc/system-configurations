@@ -1,24 +1,25 @@
 # shellcheck shell=sh
 
 # Setup nix
-# nix-darwin
-export PATH="/run/current-system/sw/bin:$PATH"
-# I think this is for single user installations from the official Nix installer
-_nix_profile_setup_script="$HOME/.nix-profile/etc/profile.d/nix.sh"
-if [ -e "$_nix_profile_setup_script" ]; then
-  . "$_nix_profile_setup_script"
-fi
-# For multi-user install by Determinate systems
+# For the Determinate Systems multi-user installer. The installer receipt says it add this to /etc/zshrc, but I don't
+# see it so it never gets called on macOS.
 _nix_profile_multi_user_setup_script="/etc/bash.bashrc"
 if [ -e "$_nix_profile_multi_user_setup_script" ]; then
-  . "$_nix_profile_multi_user_setup_script"
+  # The script is in bash so I'm sourcing it in a bash shell and having that shell print out its environment, one
+  # variable per line, in the form `export NAME="value"`. This way I can just `eval` those export statements
+  # in this shell.
+  #
+  # This will break if the environment variable value has newlines though.
+  BASH_ENVIRONMENT="$(bash -c ". $_nix_profile_multi_user_setup_script; printenv | sed 's/^/export /;s/=/=\"/;s/$/\"/'")"
+  eval "$BASH_ENVIRONMENT"
 fi
-# home-manager when it's a submodule, otherwise it install to ~/.nix-profile
-export PATH="/etc/profiles/per-user/$USER/bin:$PATH"
-# This is present after I install glib-locacles to my profile and its for the Nix packcage manager
+# For non-NixOS linux distributions
+# see: https://nixos.wiki/wiki/Locales
 if uname | grep -q Linux; then
-  export LOCALE_ARCHIVE="$HOME/.nix-profile/lib/locale/locale-archive"
+  export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
 fi
+# nix-darwin. Not sure how to have it configure this for me so I hardcoded it.
+export PATH="/run/current-system/sw/bin:$PATH"
 
 # go
 export GOPATH="$HOME/.local/share/go"
