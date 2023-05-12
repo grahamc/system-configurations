@@ -37,8 +37,8 @@ function upgrade
     type --query nix
     and upgrade-nix
 
-    type --query host-manager-upgrade
-    and upgrade-host-manager
+    type --query home-manager
+    and upgrade-home-manager
 
     # TODO: The Pop Shop is slow and doesn't have a progress indicator so I'll use the commandline for now.
     type --query apt
@@ -144,31 +144,28 @@ function upgrade-fluent
     popd
 end
 
-function upgrade-nix
+function upgrade-nix-system
     print_banner 'Nix'
-
-    nix-channel --update
-    nix-env --upgrade '*'
-
-    # Delete all generations besides the last two in case something goes wrong with the upgrade.
-    nix-env --delete-generations +2
-    nix-collect-garbage
-end
-
-function upgrade-host-manager
-    print_banner 'Host Manager'
 
     read --prompt-str 'Would you like to update? (y/n): ' --nchars 1 response
     if test $response != 'y'
         return
     end
 
+    # upgrade packages in current user and system profiles
+    nix-channel --update
+    nix-env --upgrade '*'
+    nix-env --profile /nix/var/nix/profiles/system --upgrade '*'
+    # e.g. nix-darwin, home-manager
     host-manager-upgrade
 
     # Delete all generations besides the last two in case something goes wrong with the upgrade.
+    #
+    # Current user's profile
+    nix-env --delete-generations +2
+    # System profile, which includes generations of any system-manager like nix-darwin.
+    nix-env --profile /nix/var/nix/profiles/system --delete-generations +2
     if type --query home-manager
-        # remove all generations besides the most recent 2
-        #
         # TODO: There's an issue for adding an option to specify the number of generations to keep, like
         # `nix-env --delete-generations`.
         # issue: https://github.com/nix-community/home-manager/issues/3325
@@ -181,7 +178,8 @@ function upgrade-host-manager
             home-manager remove-generations $generations_to_delete
         end
     end
-    nix-collect-garbage
+    # Using sudo to include the root profile
+    sudo nix-collect-garbage
 end
 
 upgrade $argv
