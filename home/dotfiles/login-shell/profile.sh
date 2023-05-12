@@ -9,8 +9,9 @@ if [ -e "$_nix_profile_multi_user_setup_script" ]; then
   # variable per line, in the form `export NAME="value"`. This way I can just `eval` those export statements
   # in this shell.
   #
-  # This will break if the environment variable value has newlines though.
-  BASH_ENVIRONMENT="$(bash -c ". $_nix_profile_multi_user_setup_script; printenv | sed 's/^/export /;s/=/=\"/;s/$/\"/'")"
+  # This will break if the environment variable value has newlines though. I omit the SHLVL of the bash shell since
+  # I don't want the SHLVL in this shell to change.
+  BASH_ENVIRONMENT="$(bash -c ". $_nix_profile_multi_user_setup_script; env -u SHLVL | sed 's/^/export /;s/=/=\"/;s/$/\"/'")"
   eval "$BASH_ENVIRONMENT"
 fi
 # For non-NixOS linux distributions
