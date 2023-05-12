@@ -47,6 +47,11 @@
             recursive = true;
           };
         };
+
+        targets.darwin.keybindings = {
+          # By default, a bell sound goes off whenever I use ctrl+/, this disables that.
+          "^/" = "noop:";
+        };
       };
   in
     lib.mkMerge [linux mac]

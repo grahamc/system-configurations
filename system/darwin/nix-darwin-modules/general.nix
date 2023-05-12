@@ -77,6 +77,7 @@
           rm /usr/local/bin/yabai
           cp ${config.services.yabai.package}/bin/yabai /usr/local/bin/
         '';
+        defaults.NSGlobalDomain.ApplePressAndHoldEnabled = false;
       };
 
       environment.etc = {
