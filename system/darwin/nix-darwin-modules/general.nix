@@ -3,8 +3,8 @@
     inherit (specialArgs) hostName homeDirectory username repositoryDirectory updateFlags;
 
     # Scripts for switching generations and upgrading flake inputs.
-    packages = [
-      (pkgs.writeShellApplication {
+    packages = with pkgs; [
+      (writeShellApplication {
         name = "host-manager-switch";
         runtimeInputs = with pkgs; [nvd];
         text = ''
@@ -16,7 +16,7 @@
           nvd diff "''$oldGenerationPath" "''$newGenerationPath"
         '';
       })
-      (pkgs.writeShellApplication {
+      (writeShellApplication {
         name = "host-manager-upgrade";
         text = ''
           oldGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
@@ -46,4 +46,49 @@
       };
 
       security.pam.enableSudoTouchIdAuth = true;
+
+      homebrew = {
+        enable = true;
+        casks = [
+          "spaceid"
+          "wezterm"
+          "xcodes"
+          "hammerspoon"
+        ];
+      };
+
+      system = {
+        keyboard = {
+          enableKeyMapping = true;
+          remapCapsLockToControl = true;
+        };
+        activationScripts.postActivation.text = ''
+          # When hibernating, actually power down instead of the default behaviour where a hibernation file is
+          # created, but the computer stays in suspension.
+          sudo pmset -b hibernatemode 25
+          # The services in `config.services.*` get launched before I login so the directory that nix-darwin installs
+          # packages to won't be on their $PATH. So here I'm making copying the programs needed by these services
+          # into a directory that's on the $PATH by default:
+          #
+          # skhd needs itself on the $PATH for any of the shortcuts in my skhdrc that use the skhd command to send keys.
+          rm /usr/local/bin/skhd
+          cp ${pkgs.skhd}/bin/skhd /usr/local/bin/
+          # One of hammerspoon's plugins, stackline, needs yabai.
+          rm /usr/local/bin/yabai
+          cp ${config.services.yabai.package}/bin/yabai /usr/local/bin/
+        '';
+      };
+
+      environment.etc = {
+        "sudoers.d/10-my-commands".text = ''
+          # This allows yabai to inject code in Dock.app so it can properly function. Also lets me reload my config
+          # without a password
+          ALL ALL=NOPASSWD: /usr/local/bin/yabai
+        '';
+      };
+
+      services = {
+        yabai.enable = true;
+        skhd.enable = true;
+      };
     }

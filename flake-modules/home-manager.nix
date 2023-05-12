@@ -41,6 +41,7 @@
         homeDirectory,
         repositoryDirectory,
         nix-index-database,
+        stackline,
         updateFlags,
         isHomeManagerRunningAsASubmodule,
       }:
@@ -52,6 +53,7 @@
           {
             inherit hostName username homeDirectory repositoryDirectory isGui;
             inherit (inputs) nix-index-database;
+            inherit (inputs) stackline;
             inherit (self.input-utilities) updateFlags;
             isHomeManagerRunningAsASubmodule = true;
           };
@@ -97,6 +99,7 @@
             {
               inherit hostName isGui username homeDirectory repositoryDirectory;
               inherit (inputs) nix-index-database;
+              inherit (inputs) stackline;
               inherit (self.input-utilities) updateFlags;
               isHomeManagerRunningAsASubmodule = false;
             };

@@ -249,6 +249,7 @@
         "nix-index-database": "nix-index-database",
         "nix-xdg": "nix-xdg",
         "nixpkgs": "nixpkgs",
+        "stackline": "stackline",
         "tmux-plugin-resurrect": "tmux-plugin-resurrect",
         "tmux-plugin-tmux-suspend": "tmux-plugin-tmux-suspend",
         "vim-plugin-SchemaStore.nvim": "vim-plugin-SchemaStore.nvim",
@@ -273,6 +274,22 @@
       "original": {
         "owner": "vasi",
         "repo": "squashfuse",
+        "type": "github"
+      }
+    },
+    "stackline": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1669758007,
+        "narHash": "sha256-x7SIgKR6rwkoVVbaAvjFr1N7wTF3atni/d6xGLBBRN4=",
+        "owner": "AdamWagner",
+        "repo": "stackline",
+        "rev": "2aa0bd9a27f93bad24b0fd4da38f3c0356414098",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AdamWagner",
+        "repo": "stackline",
         "type": "github"
       }
     },

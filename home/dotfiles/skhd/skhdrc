@@ -1,0 +1,241 @@
+# Switch into this mode if you want a shortcut to pass through without being processed by skhd
+# For example, if you wanted to input "cmd -a" directly and not whatever you have it mapped to, you can do:
+# `skhd -k "hyper - 0x80"; skhd -k "cmd - a"; skhd -k "hyper - 0x80"`
+:: passthrough
+hyper - 0x80 ; passthrough
+passthrough < hyper - 0x80 ; default
+
+# OS shortcuts
+########################################
+# lock screen
+cmd - escape : skhd -k "cmd + ctrl - q"
+# switch to workspace
+cmd - 1 : skhd -k "ctrl - 1"
+cmd - 2 : skhd -k "ctrl - 2"
+cmd - 3 : skhd -k "ctrl - 3"
+cmd - 4 : skhd -k "ctrl - 4"
+cmd - 5 : skhd -k "ctrl - 5"
+cmd - 6 : skhd -k "ctrl - 6"
+cmd - 7 : skhd -k "ctrl - 7"
+cmd - 8 : skhd -k "ctrl - 8"
+cmd - 9 : skhd -k "ctrl - 9"
+# mission control
+cmd - d : skhd -k "ctrl - up"
+# undo/redo
+cmd - u : skhd -k "cmd - z"
+cmd + shift - u : skhd -k "cmd + shift - z"
+# cmd + / for spotlight
+cmd - 0x2C : skhd -k "cmd - space"
+# move the cursor to the beginning/end of the line
+cmd - 0x21 [
+	"WezTerm" : skhd -k "ctrl - a"
+	* : skhd -k "cmd - left"
+]
+cmd - 0x1E [
+	"WezTerm" : skhd -k "ctrl - e"
+	* : skhd -k "cmd - right"
+]
+# move the cursor to the beginning/end of the word
+# TODO: fix the WezTerm ones, need to assign action in fish to hyper-something and add here
+cmd + shift - 0x21 [
+	"WezTerm" : skhd -k "ctrl - a"
+	* : skhd -k "alt - left"
+]
+cmd + shift - 0x1E [
+	"WezTerm" : skhd -k "ctrl - e"
+	* : skhd -k "alt - right"
+]
+# delete everything to the left/right of the cursor
+cmd + ctrl - 0x21 [
+	"WezTerm" : skhd -k "ctrl - u"
+	* : skhd -k "cmd + shift - left" && skhd -k "backspace"
+]
+cmd + ctrl - 0x1E [
+	"WezTerm" : skhd -k "ctrl - k"
+	* : skhd -k "cmd + shift - right" && skhd -k "backspace"
+]
+# delete everything to the left/right of the word under the cursor
+# TODO: fix the WezTerm ones, need to assign action in fish to hyper-something and add here
+cmd + ctrl + shift - 0x21 [
+	"WezTerm" : skhd -k "ctrl - w"
+	* : skhd -k "alt + shift - left" && skhd -k "backspace"
+]
+cmd + ctrl + shift - 0x1E [
+	"WezTerm" : skhd -k "ctrl - k"
+	* : skhd -k "alt + shift - right" && skhd -k "backspace"
+]
+
+# Yabai shortcuts
+# TODO: Put these in their own file
+########################################
+# reset window sizes to be equal
+cmd + shift - 0 : yabai -m space --balance
+# toggle float mode on the current window
+cmd - g : yabai -m window --toggle float
+# toggle stack for the current window
+cmd - s : yabai -m window --insert stack
+# toggle sticky for current window
+cmd - p : yabai -m window --toggle sticky
+# maximize window
+# TODO: enable this when I fix my screen
+# cmd - m : yabai -m window --toggle zoom-fullscreen && yabai -m space --toggle padding && yabai -m space --toggle gap
+cmd - m : yabai -m window --toggle zoom-fullscreen
+cmd + shift - m : yabai -m window --toggle zoom-parent
+# make window fullscreen
+cmd - f : skhd -k "cmd + ctrl - f"
+# rotate windows [counter]clockwise
+cmd - o : yabai -m space --rotate 270
+cmd + shift - o : yabai -m space --rotate 90
+# focus workspace
+cmd + ctrl - h : skhd -k "ctrl - left"
+cmd + ctrl - l : skhd -k "ctrl - right"
+# focus display
+cmd + alt - h : yabai -m display --focus west
+cmd + alt - j : yabai -m display --focus south
+cmd + alt - k : yabai -m display --focus north
+cmd + alt - l : yabai -m display --focus east
+# Go to next/previous window in stack
+cmd + shift - l : yabai -m window --focus stack.next || yabai -m window --focus stack.first
+cmd + shift - h : yabai -m window --focus stack.prev || yabai -m window --focus stack.last
+# change focus
+cmd - h : yabai -m window --focus west
+cmd - j : yabai -m window --focus south
+cmd - k : yabai -m window --focus north
+cmd - l : yabai -m window --focus east
+# Go to last focused window, workspace, and display
+cmd - backspace : yabai -m window --focus recent
+cmd + ctrl - backspace : yabai -m space --focus recent
+cmd + alt - backspace : yabai -m display --focus recent
+# enter adjustment mode
+:: adjustment : yabai -m config window_border on; yabai -m config window_border_hdpi on; yabai -m config active_window_border_color "0xfc00ffff"; yabai -m config normal_window_border_color "0x00ffffff"; yabai -m config active_window_opacity .8
+cmd - return ; adjustment
+# move window
+adjustment < h : yabai-remove-from-stack west || yabai -m window --warp west || $(yabai -m window --display west; yabai -m display --focus west)
+adjustment < j : yabai-remove-from-stack south || yabai -m window --warp south || $(yabai -m window --display south; yabai -m display --focus south)
+adjustment < k : yabai-remove-from-stack north || yabai -m window --warp north || $(yabai -m window --display north; yabai -m display --focus north)
+adjustment < l : yabai-remove-from-stack east || yabai -m window --warp east || $(yabai -m window --display east; yabai -m display --focus east)
+# swap windows
+adjustment < ctrl - h : yabai -m window --swap west
+adjustment < ctrl - j : yabai -m window --swap south
+adjustment < ctrl - k : yabai -m window --swap north
+adjustment < ctrl - l : yabai -m window --swap east
+# grow/shrink window
+adjustment < shift - h : yabai -m window --resize left:40:0 || yabai -m window --resize right:-40:0
+adjustment < shift - j : yabai -m window --resize top:0:40 || yabai -m window --resize bottom:0:-40
+adjustment < shift - k : yabai -m window --resize bottom:0:40 || yabai -m window --resize top:0:-40
+adjustment < shift - l : yabai -m window --resize right:40:0 || yabai -m window --resize left:-40:0
+# stack windows
+adjustment < alt - h  : yabai -m window west --stack $(yabai -m query --windows --window | jq -r '.id')
+adjustment < alt - j  : yabai -m window south --stack $(yabai -m query --windows --window | jq -r '.id')
+adjustment < alt - k  : yabai -m window north --stack $(yabai -m query --windows --window | jq -r '.id')
+adjustment < alt - l  : yabai -m window east --stack $(yabai -m query --windows --window | jq -r '.id')
+# exit adjustment mode
+:: default : yabai -m config window_border off; yabai -m config active_window_opacity 1.0
+adjustment < escape ; default
+adjustment < return ; default
+adjustment < cmd - return ; default
+
+# App shortcuts
+########################################
+# Use hjkl as arrow keys when holding down Fn
+fn - h : skhd -k "left"
+fn - j : skhd -k "down"
+fn - k : skhd -k "up"
+fn - l : skhd -k "right"
+# Move back/forward through browser history
+alt - 0x21 [
+	"Firefox" : skhd -k "cmd - left"
+	"Firefox Developer Edition" : skhd -k "cmd - left"
+	* ~
+]
+alt - 0x1E [
+	"Firefox" : skhd -k "cmd - right"
+	"Firefox Developer Edition" : skhd -k "cmd - right"
+	* ~
+]
+# scroll
+ctrl - j [
+	* : skhd -k "fn - down" && skhd -k "fn - down" && skhd -k "fn - down"
+	"WezTerm" ~
+]
+ctrl - k [
+	* : skhd -k "fn - up" && skhd -k "fn - up" && skhd -k "fn - up"
+	"WezTerm" ~
+]
+ctrl - h [
+	* : skhd -k "fn - left" && skhd -k "fn - left" && skhd -k "fn - left"
+	"WezTerm" ~
+]
+ctrl - l [
+	* : skhd -k "fn - right" && skhd -k "fn - right" && skhd -k "fn - right"
+	"WezTerm" ~
+]
+# refresh
+ctrl - r [
+	* : skhd -k "cmd - r"
+	"WezTerm" ~
+]
+ctrl + shift - r [
+	* : skhd -k "cmd + shift - r"
+	"WezTerm" ~
+]
+# close tab
+ctrl - q [
+	"Firefox" : skhd -k "cmd - w"
+	"Firefox Developer Edition" : skhd -k "cmd - w"
+	* ~
+]
+# Go to last tab
+ctrl - backspace [
+	"Firefox" : skhd -k "cmd + shift - 1"
+	"Firefox Developer Edition" : skhd -k "cmd + shift - 1"
+	* ~
+]
+# restore the last closed tab
+ctrl + shift - t [
+	"Firefox" : skhd -k "cmd + shift - t"
+	"Firefox Developer Edition" : skhd -k "cmd + shift - t"
+	* ~
+]
+# new tab
+ctrl - t [
+	"Firefox" : skhd -k "cmd - t"
+	"Firefox Developer Edition" : skhd -k "cmd - t"
+	* ~
+]
+# Go to next/previous tab
+ctrl - 0x21 [
+	"Firefox" : skhd -k "cmd + alt - left"
+	"Firefox Developer Edition" : skhd -k "cmd + alt - left"
+	* ~
+]
+ctrl - 0x1E [
+	"Firefox" : skhd -k "cmd + alt - right"
+	"Firefox Developer Edition" : skhd -k "cmd + alt - right"
+	* ~
+]
+# Find
+ctrl - f [
+	"Firefox" : skhd -k "hyper - 0x80" ; skhd -k "cmd - f" ; skhd -k "hyper - 0x80"
+	"Firefox Developer Edition" : skhd -k "hyper - 0x80" ; skhd -k "cmd - f" ; skhd -k "hyper - 0x80"
+	"Notesnook" : skhd -k "hyper - 0x80" ; skhd -k "cmd - f" ; skhd -k "hyper - 0x80"
+	* ~
+]
+# ctrl + / to go to address bar
+ctrl - 0x2C [
+	"Firefox" : skhd -k "f6"
+	"Firefox Developer Edition" : skhd -k "f6"
+	* ~
+]
+# Move a file to the trash in Finder
+backspace [
+	"finder" : skhd -k "hyper - 0x80" ; skhd -k "cmd - backspace" ; skhd -k "hyper - 0x80"
+	* ~
+]
+# Open bookmarks bar in Firefox
+# Ope Developer Edition bookmarks bar in Firefox
+ctrl - b [
+	"Firefox" : skhd -k "cmd - b"
+	"Firefox Developer Edition" : skhd -k "cmd - b"
+	* ~
+]

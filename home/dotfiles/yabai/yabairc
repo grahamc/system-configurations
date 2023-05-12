@@ -1,0 +1,33 @@
+#!/usr/bin/env sh
+
+yabai -m signal --add event=dock_did_restart action="sudo --non-interactive yabai --load-sa"
+sudo --non-interactive yabai --load-sa
+
+# Calling this when I'm already in tiling mode might change the order of my windows, which I don't want, so I only set tiling mode if it isn't already set
+[ "$(yabai -m config layout)" != 'bsp' ] && yabai -m config layout bsp
+
+# TODO: Added a bunch of padding to the bottom since the bottom of my screen is busted :/
+yabai -m config bottom_padding 50
+yabai -m config top_padding    10
+yabai -m config left_padding   10
+yabai -m config right_padding  10
+yabai -m config window_gap     10
+yabai -m config auto_balance on
+
+# All the macOS system GUIs e.g. System Preferences
+yabai -m rule --add app="^System .*$" title=".*" manage=off
+
+# The installer GUI that comes up when you click a .dmg
+yabai -m rule --add app="^DiskImages UI Agent$" title=".*" manage=off
+yabai -m rule --add app="^Installer$" title=".*" manage=off
+# progress bar for copying a file
+yabai -m rule --add app="^Finder$" title="^Copy$" manage=off
+
+yabai -m rule --add app="^Firefox$" title="^Log in to your PayPal account$" manage=off
+
+yabai -m config focus_follows_mouse autoraise
+yabai -m config mouse_follows_focus on
+yabai -m config window_origin_display cursor
+yabai -m config window_opacity on
+yabai -m config window_topmost on
+yabai -m config mouse_drop_action swap
