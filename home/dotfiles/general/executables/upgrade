@@ -176,11 +176,13 @@ function upgrade-nix-system
         # `nix-env --delete-generations`.
         # issue: https://github.com/nix-community/home-manager/issues/3325
         #
-        # TODO: I'm also not bothering to try and keep the last two generations since Home Manger doesn't support
+        # TODO: I'm not bothering to try and keep the last two generations since Home Manger doesn't support
         # rollbacks yet.
         # issue: https://github.com/nix-community/home-manager/issues/1114
         #
-        # TODO: figure out how to remove all gens besides the current one
+        # This removes all generations older than 'now', an alias for the current time. However, it excludes the
+        # current generation so we can use this to remove all unused generations.
+        home-manager expire-generations now
     end
 
     # With all the old generations deleted, collect garbage.
