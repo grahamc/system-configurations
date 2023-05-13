@@ -74,9 +74,8 @@
           let
             # You can make a string into a Path by concatenating it with a Path. However, in flake pure evaluation mode
             # all Paths must be inside the flake directory so we use a Path that points to the flake directory.
-            flakeDirectoryPath = ../../../../.;
             pathStringRelativeToHomeManager = (lib.strings.removePrefix flakeDirectory pathString);
-            path = flakeDirectoryPath + pathStringRelativeToHomeManager;
+            path = config.repository.directoryPath + pathStringRelativeToHomeManager;
           in
             path;
         convertFileToHomeManagerSymlink = file:

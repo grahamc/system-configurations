@@ -26,7 +26,7 @@
           filteredDirectoryContents;
         in
           modules;
-    modules = loadModules ../home/home-manager-modules;
+    modules = loadModules ./modules;
 
     defaultModules = [modules.profile.common];
     # I made this function to ensure that I pass the correct `extraSpecialArgs` when using home-manager
@@ -42,6 +42,7 @@
         repositoryDirectory,
         nix-index-database,
         stackline,
+        self,
         updateFlags,
         isHomeManagerRunningAsASubmodule,
       }:
@@ -52,8 +53,7 @@
         extraSpecialArgs = validateExtraSpecialArgs
           {
             inherit hostName username homeDirectory repositoryDirectory isGui;
-            inherit (inputs) nix-index-database;
-            inherit (inputs) stackline;
+            inherit (inputs) nix-index-database stackline self;
             inherit (self.input-utilities) updateFlags;
             isHomeManagerRunningAsASubmodule = true;
           };
@@ -101,8 +101,7 @@
           extraSpecialArgs = validateExtraSpecialArgs
             {
               inherit hostName isGui username homeDirectory repositoryDirectory;
-              inherit (inputs) nix-index-database;
-              inherit (inputs) stackline;
+              inherit (inputs) nix-index-database stackline self;
               inherit (self.input-utilities) updateFlags;
               isHomeManagerRunningAsASubmodule = false;
             };

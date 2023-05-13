@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
   {
     home.packages = with pkgs; [
       neovim-unwrapped
@@ -11,5 +11,6 @@
       };
     };
 
-    vimPlug.plugfile = ../../dotfiles/neovim/lua/plugfile.lua;
+    vimPlug.plugfile = config.repository.directoryPath + "/dotfiles/neovim/lua/plugfile.lua"; 
+    
   }

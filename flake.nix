@@ -62,7 +62,7 @@
         ./flake-modules/overlay.nix
         ./flake-modules/shell/shell.nix
         ./flake-modules/bundler.nix
-        ./flake-modules/home-manager.nix
+        ./flake-modules/home-manager/home-manager.nix
       ];
 
       systems = with flake-utils.lib.system; [

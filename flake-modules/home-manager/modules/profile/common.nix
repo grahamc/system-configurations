@@ -1,6 +1,6 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (specialArgs) repositoryDirectory;
+    inherit (specialArgs) repositoryDirectory self;
   in
     {
       imports = [
@@ -20,6 +20,7 @@
       ];
 
       repository.directory = repositoryDirectory;
+      repository.directoryPath = self.outPath;
       repository.symlink.baseDirectory = "${repositoryDirectory}/dotfiles";
 
       # When switching generations, stop obsolete services and start ones that are wanted by active units.

@@ -13,5 +13,9 @@
           type = types.str;
           description = "Absolute path to the root of the repository.";
         };
+        directoryPath = lib.mkOption {
+          type = types.path;
+          description = "Same as directory, but with the type of the path builtin.";
+        };
       };
     }
