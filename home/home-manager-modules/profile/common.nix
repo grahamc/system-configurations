@@ -20,7 +20,7 @@
       ];
 
       repository.directory = repositoryDirectory;
-      repository.symlink.baseDirectory = "${repositoryDirectory}/home/dotfiles";
+      repository.symlink.baseDirectory = "${repositoryDirectory}/dotfiles";
 
       # When switching generations, stop obsolete services and start ones that are wanted by active units.
       systemd.user.startServices = "sd-switch";

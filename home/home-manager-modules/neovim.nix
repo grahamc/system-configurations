@@ -11,5 +11,5 @@
       };
     };
 
-    vimPlug.plugfile = ../dotfiles/neovim/lua/plugfile.lua;
+    vimPlug.plugfile = ../../dotfiles/neovim/lua/plugfile.lua;
   }
