@@ -1,12 +1,23 @@
 # dotfiles
 
-Configs and whatnot. Managed with [Home Manager](https://github.com/nix-community/home-manager). Works on Linux and macOS.
+Configs and whatnot. Uses [Home Manager](https://github.com/nix-community/home-manager), [nix-darwin](https://github.com/LnL7/nix-darwin), and [flake-parts](https://flake.parts). Works on Linux and macOS.
 
 ## Link
 
-1. Clone the repository and go into its directory by running `git clone https://github.com/bigolu/dotfiles.git ~/.dotfiles && cd ~/.dotfiles`.
+First, clone the repository and go into its directory by running `git clone https://github.com/bigolu/dotfiles.git ~/.dotfiles && cd ~/.dotfiles`. The next steps depend on which host manager you're using.
 
-2. Apply the Home Manager configuration by running `nix run home-manager/master -- switch --flake .#<host_name>` where `<host_name>` is one of the hosts specified in the [flake.nix](https://github.com/bigolu/dotfiles/blob/master/flake.nix).
+### Home Manager
+
+1. Apply the Home Manager configuration by running `nix run home-manager/master -- switch --flake .#<host_name>` where `<host_name>` is one of the hosts defined in the [Home Manager flake module](https://github.com/bigolu/dotfiles/blob/master/flake-modules/home-manager.nix).
+
+### nix-darwin
+
+1. I install some Homebrew packages through nix-darwin, but nix-darwin doesn't provide brew so you'll have to install it yourself. Check the site for instructions: [brew.sh](https://brew.sh/).
+
+2. Unlike Home Manager, nix-darwin doesn't have a flake app output (though there is an [open issue](https://github.com/LnL7/nix-darwin/issues/398) to add it) so it will need to be set up using the non-flake installer:
+
+    1. Run `nix build .#legacyPackages.darwinConfigurations.<host_name>.system` where `<host_name>` is one of the hosts defined in the [nix-darwin flake module](https://github.com/bigolu/dotfiles/blob/master/flake-modules/nix-darwin.nix). This will build the nix-darwin configuration in a folder named `result` in the current directory.
+    2. Run `./result/sw/bin/darwin-rebuild switch --flake .<host_name>` where `<host_name>` is the same one you used in the last step. This will apply the configuration to your host. You can now remove the `result` folder with `rm -rf ./result`.
 
 ## Run
 
@@ -47,7 +58,7 @@ To avoid building everything on your machine, you can configure Nix to use this 
 
 2. After running one of the `nix` commands from the [Link](#link) or [Run](#run) sections above, reply yes to the prompts to add the cache.
 
-### Troubleshooting
+## Troubleshooting
 
 - **Cache is being ignored**: First, [check to see if you are a trusted user](#check-trust). If you aren't, then [add yourself to trusted-users](#add-trust). Then enable the cache by adding the lines below to your config in `~/.config/nix/nix.conf` (If you have a multi-user Nix installation, you'll need to [restart the Nix daemon](#restart-daemon) afterward to apply the changes.):
 
@@ -55,7 +66,9 @@ To avoid building everything on your machine, you can configure Nix to use this 
         extra-trusted-substituters = https://bigolu.cachix.org
         extra-trusted-public-keys = bigolu.cachix.org-1:AJELdgYsv4CX7rJkuGu5HuVaOHcqlOgR07ZJfihVTIw=
 
-### How To
+- **apfs.util isn't working**: Make sure that the `/etc/synthetic.conf` has the permission `0644`.
+
+## How To
 
 - <span id="restart-daemon">Restart the Nix daemon</span>:
 
