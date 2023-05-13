@@ -30,7 +30,10 @@
     ];
   in
     {
-      nix.useDaemon = true;
+      nix = {
+        useDaemon = true;
+        gc.automatic = true;
+      };
 
       users.users.${username} = {
         home = homeDirectory;
