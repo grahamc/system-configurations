@@ -23,6 +23,11 @@
 
           darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" ${updateFlags.darwin} "''$@"
 
+          brew update
+          brew upgrade
+          brew autoremove
+          brew cleanup
+
           newGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
           nvd diff "''$oldGenerationPath" "''$newGenerationPath"
         '';
