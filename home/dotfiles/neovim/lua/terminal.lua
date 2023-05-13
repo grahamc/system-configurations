@@ -1784,6 +1784,7 @@ Plug(
               'python', 'r', 'ruby', 'sass', 'scala', 'swift',
             },
           }),
+          builtins.diagnostics.actionlint,
         },
       })
     end,
