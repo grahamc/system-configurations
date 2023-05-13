@@ -11,21 +11,21 @@ c.advanced = {}
 c.paths.yabai                         = '/usr/local/bin/yabai'
 
 -- Appearance
-c.appearance.color                    = { white = 0.90 }    -- Indicator background color, e.g., {red = 0.5, blue = 0 }
+c.appearance.color                    = { white = 0.90, }    -- Indicator background color, e.g., {red = 0.5, blue = 0 }
 c.appearance.alpha                    = 1                   -- Opacity of active indicators
-c.appearance.dimmer                   = 5                 -- Higher numbers increase contrast b/n focused & unfocused state
+c.appearance.dimmer                   = 1.5                 -- Higher numbers increase contrast b/n focused & unfocused state
 c.appearance.iconDimmer               = 1.1                 -- Higher numbers dim inactive icons *less* than the non-icon indicators
-c.appearance.showIcons                = true                -- Window indicator style ('lozenge'-shaped when false)
+c.appearance.showIcons                = false                -- Window indicator style ('lozenge'-shaped when false)
 c.appearance.size                     = 32                  -- Size of window indicators (height when icons off)
 c.appearance.radius                   = 3                   -- Indicator roundness. Higher numbers → *less* roundness… I'm sorry
 c.appearance.iconPadding              = 4                   -- Space between icon & indicator edge. Higher numbers → smaller, more inset icons
-c.appearance.pillThinness             = 6                   -- Aspect ratio of pill-style icons (width = size / pillThinness)
+c.appearance.pillThinness             = 8                   -- Aspect ratio of pill-style icons (width = size / pillThinness)
 
 c.appearance.vertSpacing              = 1.2                 -- Amount of vertical space between indicators
 
 c.appearance.offset                   = {}                  -- Offset controls position of stack indicators relative to the window
 c.appearance.offset.y                 = 2                   -- Distance from top of the window to render indicators
-c.appearance.offset.x                 = 4                   -- Distance away from the edge of the window to render indicators
+c.appearance.offset.x                 = 3                   -- Distance away from the edge of the window to render indicator
 
 c.appearance.shouldFade               = true                -- Enable/disable fade animations
 c.appearance.fadeDuration             = 0.2                 -- Duration of fade animations (seconds) 
