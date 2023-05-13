@@ -47,7 +47,7 @@
             configuration = {
               hostName = "bigmac";
               modules = [
-                ../system/darwin/nix-darwin-modules/general.nix
+                ./modules/general.nix
               ];
               homeModules = with self.home-manager-utilties.modules; [
                 profile.system-administration

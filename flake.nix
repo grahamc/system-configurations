@@ -58,7 +58,7 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         ./flake-modules/cache.nix
-        ./flake-modules/nix-darwin.nix
+        ./flake-modules/nix-darwin/nix-darwin.nix
         ./flake-modules/overlay.nix
         ./flake-modules/shell/shell.nix
         ./flake-modules/bundler.nix
