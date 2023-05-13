@@ -83,6 +83,8 @@
         modules,
         isGui ? true,
         username ? "biggs",
+        homeDirectory ? null,
+        repositoryDirectory ? null,
       }:
         let
           pkgs = import inputs.nixpkgs {
@@ -92,12 +94,12 @@
           homePrefix = if pkgs.stdenv.isLinux
             then "/home"
             else "/Users";
-          homeDirectory = if builtins.hasAttr "homeDirectory" args
-            then args.homeDirectory
-            else "${homePrefix}/${username}";
-          repositoryDirectory = if builtins.hasAttr "repositoryDirectory" args
-            then args.repositoryDirectory
-            else "${homeDirectory}/.dotfiles";
+          homeDirectory = if args.homeDirectory == null
+            then "${homePrefix}/${username}"
+            else args.homeDirectory;
+          repositoryDirectory = if args.repositoryDirectory == null
+            then "${homeDirectory}/.dotfiles"
+            else args.repositoryDirectory;
           extraSpecialArgs = validateExtraSpecialArgs
             {
               inherit hostName isGui username homeDirectory repositoryDirectory;
