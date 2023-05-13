@@ -155,29 +155,35 @@ alt - 0x1E [
 ]
 # scroll
 ctrl - j [
-	* : skhd -k "fn - down" && skhd -k "fn - down" && skhd -k "fn - down"
-	"WezTerm" ~
+	"Firefox" : skhd -k "fn - down" && skhd -k "fn - down" && skhd -k "fn - down"
+	"Firefox Developer Edition" : skhd -k "fn - down" && skhd -k "fn - down" && skhd -k "fn - down"
+	* ~
 ]
 ctrl - k [
-	* : skhd -k "fn - up" && skhd -k "fn - up" && skhd -k "fn - up"
-	"WezTerm" ~
+	"Firefox" : skhd -k "fn - up" && skhd -k "fn - up" && skhd -k "fn - up"
+	"Firefox Developer Edition" : skhd -k "fn - up" && skhd -k "fn - up" && skhd -k "fn - up"
+	* ~
 ]
 ctrl - h [
-	* : skhd -k "fn - left" && skhd -k "fn - left" && skhd -k "fn - left"
-	"WezTerm" ~
+	"Firefox" : skhd -k "fn - left" && skhd -k "fn - left" && skhd -k "fn - left"
+	"Firefox Developer Edition" : skhd -k "fn - left" && skhd -k "fn - left" && skhd -k "fn - left"
+	* ~
 ]
 ctrl - l [
-	* : skhd -k "fn - right" && skhd -k "fn - right" && skhd -k "fn - right"
-	"WezTerm" ~
+	"Firefox" : skhd -k "fn - right" && skhd -k "fn - right" && skhd -k "fn - right"
+	"Firefox Developer Edition" : skhd -k "fn - right" && skhd -k "fn - right" && skhd -k "fn - right"
+	* ~
 ]
 # refresh
 ctrl - r [
-	* : skhd -k "cmd - r"
-	"WezTerm" ~
+	"Firefox" : skhd -k "cmd - r"
+	"Firefox Developer Edition" : skhd -k "cmd - r"
+	* ~
 ]
 ctrl + shift - r [
-	* : skhd -k "cmd + shift - r"
-	"WezTerm" ~
+	"Firefox" : skhd -k "cmd + shift - r"
+	"Firefox Developer Edition" : skhd -k "cmd + shift - r"
+	* ~
 ]
 # close tab
 ctrl - q [
