@@ -144,6 +144,15 @@ function upgrade-fluent
     popd
 end
 
+# I have two users for my Nix multi-user installation, root and myself. Most nix commands only operate on the
+# current user's profile so this function lets me run a command for both root and myself.
+function run_as_current_and_root_user --argument-names nix_command
+    # Run for the current user
+    eval "$nix_command"
+    # Run for the root user. Nix determines the current user based on $HOME so I use --set-home to set $HOME to the
+    # root user's $HOME.
+    eval "sudo --set-home $nix_command"
+end
 function upgrade-nix-system
     print_banner 'Nix'
 
@@ -152,29 +161,32 @@ function upgrade-nix-system
         return
     end
 
-    # upgrade packages in current user and system profiles
-    nix-channel --update
-    nix-env --upgrade '*'
-    nix-env --profile /nix/var/nix/profiles/system --upgrade '*'
-    # e.g. nix-darwin, home-manager
+    run_as_current_and_root_user 'nix-channel --update'
+
+    # Now that the channels are updated, upgrade the packages.
+    run_as_current_and_root_user 'nix-env --upgrade "*"'
+
+    # Upgrade my host manager flake. This could be home-manager nix-darwin, etc.
     host-manager-upgrade
 
-    # Delete all generations besides the last two in case something goes wrong with the upgrade.
-    #
-    # Current user's profile
-    nix-env --delete-generations +2
-    # System profile, which includes generations of any system-manager like nix-darwin.
-    nix-env --profile /nix/var/nix/profiles/system --delete-generations +2
-    # TODO: There's an issue for adding an option to specify the number of generations to keep, like
-    # `nix-env --delete-generations`.
-    # issue: https://github.com/nix-community/home-manager/issues/3325
-    #
-    # TODO: I'm also not bothering to try and keep the last two generations since Home Manger doesn't support
-    # rollbacks yet.
-    # issue: https://github.com/nix-community/home-manager/issues/1114
-    home-manager expire-generations '-1 day'
-    # Using sudo to include the root profile
-    sudo nix-collect-garbage
+    # Delete all generations besides the last two in case I want to rollback.
+    run_as_current_and_root_user 'nix-env --delete-generations +2'
+    if type --query home-manager
+        # TODO: There's an issue for adding an option to specify the number of generations to keep, like
+        # `nix-env --delete-generations`.
+        # issue: https://github.com/nix-community/home-manager/issues/3325
+        #
+        # TODO: I'm also not bothering to try and keep the last two generations since Home Manger doesn't support
+        # rollbacks yet.
+        # issue: https://github.com/nix-community/home-manager/issues/1114
+        #
+        # TODO: figure out how to remove all gens besides the current one
+    end
+
+    # With all the old generations deleted, collect garbage.
+    # TODO: I think I only need to run this as root and it will include other users, but just to be safe I'll
+    # run it twice.
+    run_as_current_and_root_user nix-collect-garbage
 end
 
 upgrade $argv
