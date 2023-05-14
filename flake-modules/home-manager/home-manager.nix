@@ -9,12 +9,18 @@
         filteredDirectoryContents = lib.attrsets.filterAttrs
           isNixFileOrDirectory
           directoryContents;
+        containsDefaultDotNix = path:
+          builtins.any
+            (basename: basename == "default.nix")
+            (builtins.attrNames (builtins.readDir path));
         modules = lib.attrsets.foldlAttrs
           (accumulator: basename: type:
             let
               path = (directory + "/${basename}");
               removeDotNixSuffix = basename: lib.strings.removeSuffix ".nix" basename;
-              modules = if isDirectory type
+              isTypeDirectory = isDirectory type;
+              doesNotContainDefaultDotNix = !(containsDefaultDotNix path);
+              modules = if isTypeDirectory && doesNotContainDefaultDotNix
                 then { "${basename}" = loadModules path; }
                 else { "${removeDotNixSuffix basename}" = import path; };
             in
@@ -22,8 +28,8 @@
           )
           {}
           filteredDirectoryContents;
-        in
-          modules;
+      in
+        modules;
     modules = loadModules ./modules;
 
     defaultModules = [modules.profile.common];
