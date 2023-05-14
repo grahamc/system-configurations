@@ -11,7 +11,6 @@ config.font_size = 11.5
 config.cell_width = 1.04
 config.line_height = 1.3
 config.underline_thickness = "210%"
-config.treat_east_asian_ambiguous_width_as_wide = true
 config.hide_tab_bar_if_only_one_tab = true
 config.window_background_opacity = .97
 config.window_close_confirmation = 'NeverPrompt'
