@@ -18,7 +18,8 @@
     # dereference the symbolic links. I don't preserve the mode of the original files since they are read
     # only and I want to be able to remove everything in the directory before copying again.
     home.activation.fontSetup = lib.hm.dag.entryAfter
-      ["linkGeneration"]
+      # Must be after `installPackages` since that's when the fonts get installed.
+      ["installPackages"]
       ''
         target_directory='${config.xdg.dataHome}/fonts'
         rm -rf "''$target_directory/*"
