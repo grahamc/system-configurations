@@ -25,7 +25,7 @@ function reload-tmux-server --description 'Reload tmux server'
         # error text if we try to detach all clients on a session that has no clients
         tmux list-sessions -F '#{session_name}' | xargs -I SESSION tmux detach-client -s SESSION 2>/dev/null
         # save server state
-        "$TMUX_PLUGIN_MANAGER_PATH"resurrect/scripts/save.sh quiet
+        ~/.nix-profile/share/tmux-plugins/resurrect/scripts/save.sh quiet
 
         # The tmux server is not actually shut down by the time 'kill-server' returns. This causes a problem:
         #
