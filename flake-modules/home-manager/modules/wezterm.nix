@@ -9,7 +9,7 @@
       ["linkGeneration"]
       ''
         wezterm_config='${config.home.homeDirectory}/.wezterm.lua'
-        if [ -f $wezterm_config ]; then
+        if [ -L $wezterm_config ]; then
           rm "$wezterm_config"
         fi
         ln --symbolic ${config.repository.symlink.baseDirectory}/wezterm/wezterm.lua $wezterm_config
