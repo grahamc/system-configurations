@@ -28,17 +28,11 @@
                     (repositoryName: _ignored: hasPrefix repositoryName)
                     repositories;
                 
-                removePrefix = string:
-                  let
-                    matches = builtins.match "${repositoryPrefix}(.*)" string;
-                    stringWithoutPrefix = builtins.elemAt matches 0;
-                  in
-                    stringWithoutPrefix;
                 removePrefixFromRepositories = repositories:
                   prev.lib.mapAttrs'
                     (repositoryName: repositorySourceCode:
                       let
-                        repositoryNameWithoutPrefix = removePrefix repositoryName;
+                        repositoryNameWithoutPrefix = prev.lib.strings.removePrefix repositoryPrefix repositoryName;
                       in
                         prev.lib.nameValuePair
                           repositoryNameWithoutPrefix
