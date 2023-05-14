@@ -73,18 +73,20 @@ function fzf-process-widget --description 'Manage processes'
   if uname | grep -q Linux
     set reload_command "$reload_command --sort=-start_time"
     set preview_command 'ps --pid {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree --hide-threads --long --show-pids --unicode --show-parents --arguments {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp "[^└|─]+,$(echo {2})( .*|\$)" --regexp "^"'
+    set catp_command 'sudo catp {2}'
   else
     set preview_command 'ps -p {1} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree -w -g 3 -p {1} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp "[^└|─]+,$(echo {1})( .*|\$)" --regexp "^"'
+    set catp_command 'echo not supported on macOS'
   end
 
   set choice \
       ( \
         FZF_DEFAULT_COMMAND="$reload_command" \
-        FZF_HINTS='ctrl+alt+r: refresh process list' \
+        FZF_HINTS='ctrl+alt+r: refresh process list\nctrl+alt+o: view process output' \
         fzf \
             # only search on PID, PPID, and the command
             --nth '2,3,7..' \
-            --bind "change:first,ctrl-alt-r:reload@$reload_command@+first" \
+            --bind "change:first,ctrl-alt-o:execute@$catp_command@,ctrl-alt-r:reload@$reload_command@+first" \
             --header-lines=1 \
             --prompt 'processes: ' \
             --preview "$preview_command" \
