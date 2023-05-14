@@ -144,14 +144,25 @@ function upgrade-fluent
     popd
 end
 
-# I have two users for my Nix multi-user installation, root and myself. Most nix commands only operate on the
-# current user's profile so this function lets me run a command for both root and myself.
-function run_as_current_and_root_user --argument-names nix_command
+function is_multi_user_nix_installation
+    # TODO: Nix is considering including a command similar to nix-info in the official nix cli. If they do, use
+    # that instead.
+    # issue: https://github.com/NixOS/nix/issues/3085
+    nix-info | grep -q -E 'multi-user[^,]+yes,'
+end
+# There are two types of Nix installations, single and multi user. This function will run the specified nix command
+# for every user of the Nix installation. In the case of a single-user installation, there is only one user and
+# I assume it's the current user. For multi-user installations, I only ever have two users, root and myself, so
+# I run the command once for root and once for the current user, who I assume is myself.
+function run_for_each_nix_user --argument-names nix_command
     # Run for the current user
     eval "$nix_command"
-    # Run for the root user. Nix determines the current user based on $HOME so I use --set-home to set $HOME to the
-    # root user's $HOME.
-    eval "sudo --set-home $nix_command"
+
+    if is_multi_user_nix_installation
+        # Run for the root user. Nix determines the current user based on $HOME so I use --set-home to set $HOME to the
+        # root user's $HOME.
+        eval "sudo --set-home $nix_command"
+    end
 end
 function upgrade-nix-system
     print_banner 'Nix'
@@ -161,16 +172,16 @@ function upgrade-nix-system
         return
     end
 
-    run_as_current_and_root_user 'nix-channel --update'
+    run_for_each_nix_user 'nix-channel --update'
 
     # Now that the channels are updated, upgrade the packages.
-    run_as_current_and_root_user 'nix-env --upgrade "*"'
+    run_for_each_nix_user 'nix-env --upgrade "*"'
 
     # Upgrade my host manager flake. This could be home-manager nix-darwin, etc.
     host-manager-upgrade
 
     # Delete all generations besides the last two in case I want to rollback.
-    run_as_current_and_root_user 'nix-env --delete-generations +2'
+    run_for_each_nix_user 'nix-env --delete-generations +2'
     if type --query home-manager
         # TODO: There's an issue for adding an option to specify the number of generations to keep, like
         # `nix-env --delete-generations`.
@@ -188,7 +199,7 @@ function upgrade-nix-system
     # With all the old generations deleted, collect garbage.
     # TODO: I think I only need to run this as root and it will include other users, but just to be safe I'll
     # run it twice.
-    run_as_current_and_root_user nix-collect-garbage
+    run_for_each_nix_user nix-collect-garbage
 end
 
 upgrade $argv

@@ -35,6 +35,7 @@
         nix-tree
         comma
         nix-daemon-reload
+        nix-info
       ] ++ optionals isLinux [
         glibcLocales
       ];
