@@ -2,8 +2,6 @@
   {
     perSystem = {system, ...}:
       let
-        recursiveMerge = sets: lib.lists.foldr lib.recursiveUpdate {} sets;
-
         makeFlakeOutput = {
           hostName,
           modules,
@@ -13,7 +11,7 @@
           repositoryDirectory ? "${homeDirectory}/.dotfiles",
         }:
           let
-            homeManagerSubmodules = self.home-manager-utilties.makeDarwinModules
+            homeManagerSubmodules = self.lib.makeDarwinModules
               {
                 inherit username hostName homeDirectory repositoryDirectory;
                 modules = homeModules;
@@ -30,7 +28,7 @@
                 modules = modules ++ homeManagerSubmodules ++ [overlayModule];
                 specialArgs = {
                   inherit hostName username homeDirectory repositoryDirectory;
-                  inherit (self.input-utilities) updateFlags;
+                  inherit (self.lib) updateFlags;
                 };
               };
             darwinOutput = {
@@ -49,7 +47,7 @@
               modules = [
                 ./modules/general.nix
               ];
-              homeModules = with self.home-manager-utilties.modules; [
+              homeModules = with self.lib.modules; [
                 profile.system-administration
                 profile.application-development
               ];
@@ -63,7 +61,7 @@
         supportedHosts = builtins.filter isCurrentSystemSupportedByHost hosts;
         makeFlakeOutputForHost = host: makeFlakeOutput host.configuration;
         flakeOutputs = map makeFlakeOutputForHost supportedHosts;
-        mergedFlakeOutputs = recursiveMerge flakeOutputs;
+        mergedFlakeOutputs = self.lib.recursiveMerge flakeOutputs;
       in
         mergedFlakeOutputs;
   }

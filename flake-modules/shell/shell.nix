@@ -11,9 +11,9 @@
           else
             let
               hostName = "no-host";
-              homeManagerOutput = self.home-manager-utilties.makeFlakeOutput system {
+              homeManagerOutput = self.lib.makeFlakeOutput system {
                 inherit hostName;
-                modules = with self.home-manager-utilties.modules; [
+                modules = with self.lib.modules; [
                   profile.system-administration
                   # I want a self contained executable so I can't have symlinks that point outside the Nix store.
                   {config.repository.symlink.makeCopiesInstead = true;}

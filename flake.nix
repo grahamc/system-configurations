@@ -61,8 +61,9 @@
         ./flake-modules/nix-darwin/nix-darwin.nix
         ./flake-modules/overlay.nix
         ./flake-modules/shell/shell.nix
-        ./flake-modules/bundler.nix
+        ./flake-modules/bundler
         ./flake-modules/home-manager/home-manager.nix
+        ./flake-modules/lib.nix
       ];
 
       systems = with flake-utils.lib.system; [
@@ -125,7 +126,7 @@
             else abort "You need to specify when these inputs should be updated: ${joinedUnlistedInputs}";
         in
           {
-            input-utilities = {
+            lib = {
               inherit updateFlags;
             };
           };

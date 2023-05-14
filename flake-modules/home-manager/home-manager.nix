@@ -1,7 +1,5 @@
 { lib, inputs, self, ... }:
   let
-    recursiveMerge = sets: lib.lists.foldr lib.recursiveUpdate {} sets;
-
     loadModules = directory:
       let
         directoryContents = builtins.readDir directory;
@@ -54,7 +52,7 @@
           {
             inherit hostName username homeDirectory repositoryDirectory isGui;
             inherit (inputs) nix-index-database stackline self;
-            inherit (self.input-utilities) updateFlags;
+            inherit (self.lib) updateFlags;
             isHomeManagerRunningAsASubmodule = true;
           };
         configuration = {
@@ -102,7 +100,7 @@
             {
               inherit hostName isGui username homeDirectory repositoryDirectory;
               inherit (inputs) nix-index-database stackline self;
-              inherit (self.input-utilities) updateFlags;
+              inherit (self.lib) updateFlags;
               isHomeManagerRunningAsASubmodule = false;
             };
         in
@@ -118,7 +116,7 @@
   in
     {
       flake = {
-        home-manager-utilties = {
+        lib = {
           inherit modules makeDarwinModules makeFlakeOutput;
         };
       };
@@ -158,7 +156,7 @@
           supportedHosts = builtins.filter isCurrentSystemSupportedByHost hosts;
           makeFlakeOutputForHost = host: makeFlakeOutput system host.configuration;
           flakeOutputs = map makeFlakeOutputForHost supportedHosts;
-          mergedFlakeOutputs = recursiveMerge flakeOutputs;
+          mergedFlakeOutputs = self.lib.recursiveMerge flakeOutputs;
         in
           mergedFlakeOutputs;
     }
