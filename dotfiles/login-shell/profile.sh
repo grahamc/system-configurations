@@ -21,8 +21,7 @@ if uname | grep -q Linux; then
 fi
 # nix-darwin. Not sure how to have it configure this for me so I hardcoded it.
 export PATH="/run/current-system/sw/bin:$PATH"
-
-# brew
+# nix-darwin manages brew so I'll turn off all the automatic management.
 export HOMEBREW_NO_INSTALL_UPGRADE=1
 export HOMEBREW_NO_INSTALL_CLEANUP=1
 export HOMEBREW_NO_AUTO_UPDATE=1
