@@ -19,6 +19,7 @@
       timg
       xdgWrappers.watchman
       nil
+      pynix
     ];
 
     repository.symlink.home.file = {
@@ -30,19 +31,6 @@
       ".ipython/profile_default/startup" = {
         source = "python/ipython/startup";
         recursive = true;
-      };
-    };
-
-    home.file = {
-      ".local/bin/pynix" = {
-        text = ''
-          #!${pkgs.fish}/bin/fish
-
-          set packages (printf %s\n $argv | xargs -I PACKAGE echo "python3Packages.PACKAGE")
-          ${pkgs.any-nix-shell}/bin/.any-nix-shell-wrapper fish -p $packages
-
-        '';
-        executable = true;
       };
     };
 

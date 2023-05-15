@@ -51,10 +51,12 @@
         open
         # for pstree
         psmisc
+        pbpaste
       ] ++ optionals isDarwin [
         # macOS comes with a very old version of ncurses that doesn't have a terminfo entry for tmux, tmux-256color
         ncurses
         pstree
+        trash
       ];
 
       repository.symlink.home.file = {
@@ -62,55 +64,6 @@
         ".local/bin/fzf-tmux-zoom".source = "fzf/fzf-tmux-zoom";
         ".local/bin/fzf-help-preview".source = "fzf/fzf-help-preview";
         ".local/bin/myssh".source = "ssh/myssh.sh";
-      };
-
-      home.file = optionalAttrs isLinux {
-        ".local/bin/pbpaste" = {
-          text = ''
-            #!${pkgs.fish}/bin/fish
-
-            if type --query wl-paste
-              wl-paste
-            else if type --query xclip
-              xclip -selection clipboard -out
-            else
-              echo "Error: Can't find a program to pasting clipboard contents" 1>/dev/stderr
-            end
-          '';
-          executable = true;
-        };
-      } // optionalAttrs isDarwin {
-        # I can remove this when trashy gets support for macOS, which is blocked by an issue with the library they use
-        # for accessing the trash: https://github.com/Byron/trash-rs/issues/8
-        ".local/bin/trash" = {
-          text = ''
-            #!${pkgs.python3}/bin/python3
-            import os
-            import sys
-            import subprocess
-
-            if len(sys.argv) > 1:
-                files = []
-                for arg in sys.argv[1:]:
-                    if os.path.exists(arg):
-                        p = os.path.abspath(arg).replace('\\', '\\\\').replace('"', '\\"')
-                        files.append('the POSIX file "' + p + '"')
-                    else:
-                        sys.stderr.write(
-                            "%s: %s: No such file or directory\n" % (sys.argv[0], arg))
-                if len(files) > 0:
-                    cmd = ['osascript', '-e',
-                          'tell app "Finder" to move {' + ', '.join(files) + '} to trash']
-                    r = subprocess.call(cmd, stdout=open(os.devnull, 'w'))
-                    sys.exit(r if len(files) == len(sys.argv[1:]) else 1)
-            else:
-                sys.stderr.write(
-                    'usage: %s file(s)\n'
-                    '       move file(s) to Trash\n' % os.path.basename(sys.argv[0]))
-                sys.exit(64) # matches what rm does on my system
-          '';
-          executable = true;
-        };
       };
 
       repository.symlink.xdg.configFile = {

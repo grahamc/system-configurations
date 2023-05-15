@@ -4,7 +4,7 @@
       let
         overlay = final: prev:
           let
-            inherit (prev.stdenv) isLinux;
+            inherit (prev.stdenv) isLinux isDarwin;
             inherit (prev.lib.attrsets) optionalAttrs;
 
             # YYYYMMDDHHMMSS -> YYYY-MM-DD
@@ -98,11 +98,23 @@
               fishPluginBuilder;
             allFishPlugins = prev.fishPlugins // newFishPlugins;
 
+            pynix = prev.writeShellApplication
+              {
+                name = "pynix";
+                runtimeInputs = with prev; [any-nix-shell];
+                text = ''
+                  packages="''$(printf "%s\n" "$@" | xargs -I PACKAGE printf "python3Packages.PACKAGE ")"
+                  eval ".any-nix-shell-wrapper fish -p ''$packages"
+                '';
+              };
+
             crossPlatformPackages = {
               vimPlugins = allVimPlugins;
               tmuxPlugins = allTmuxPlugins;
               fishPlugins = allFishPlugins;
+              inherit pynix;
             };
+
             linuxOnlyPackages = optionalAttrs isLinux {
               clear = prev.symlinkJoin {
                 name = "clear";
@@ -126,6 +138,51 @@
                   cp $src/catp $out/bin/
                 '';
               };
+              pbpaste = prev.writeScriptBin "pbpaste"
+                ''
+                  #!${prev.fish}/bin/fish
+
+                  if type --query wl-paste
+                    wl-paste
+                  else if type --query xclip
+                    xclip -selection clipboard -out
+                  else
+                    echo "Error: Can't find a program to pasting clipboard contents" 1>/dev/stderr
+                  end
+                '';
+            };
+
+            darwinOnlyPackages = optionalAttrs isDarwin {
+              # I can remove this when trashy gets support for macOS, which is blocked by an issue with the library they use
+              # for accessing the trash: https://github.com/Byron/trash-rs/issues/8
+              trash = prev.writeScriptBin "trash"
+                ''
+                  #!${prev.python3}/bin/python3
+
+                  import os
+                  import sys
+                  import subprocess
+
+                  if len(sys.argv) > 1:
+                      files = []
+                      for arg in sys.argv[1:]:
+                          if os.path.exists(arg):
+                              p = os.path.abspath(arg).replace('\\', '\\\\').replace('"', '\\"')
+                              files.append('the POSIX file "' + p + '"')
+                          else:
+                              sys.stderr.write(
+                                  "%s: %s: No such file or directory\n" % (sys.argv[0], arg))
+                      if len(files) > 0:
+                          cmd = ['osascript', '-e',
+                                'tell app "Finder" to move {' + ', '.join(files) + '} to trash']
+                          r = subprocess.call(cmd, stdout=open(os.devnull, 'w'))
+                          sys.exit(r if len(files) == len(sys.argv[1:]) else 1)
+                  else:
+                      sys.stderr.write(
+                          'usage: %s file(s)\n'
+                          '       move file(s) to Trash\n' % os.path.basename(sys.argv[0]))
+                      sys.exit(64) # matches what rm does on my system
+                '';
             };
 
             xdgModule = import "${inputs.nix-xdg}/module.nix";
@@ -153,7 +210,7 @@
               };
             };
 
-            allPackages = crossPlatformPackages // linuxOnlyPackages // xdgWrappers;
+            allPackages = crossPlatformPackages // linuxOnlyPackages // darwinOnlyPackages // xdgWrappers;
           in
             allPackages;
 

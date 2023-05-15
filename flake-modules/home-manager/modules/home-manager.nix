@@ -2,6 +2,22 @@
   let
     inherit (specialArgs) hostName username homeDirectory isHomeManagerRunningAsASubmodule updateFlags;
     inherit (lib.attrsets) optionalAttrs;
+
+    # Scripts for switching generations and upgrading flake inputs.
+    host-manager-switch = pkgs.writeShellApplication
+      {
+        name = "host-manager-switch";
+        text = ''
+          home-manager switch --flake "${config.repository.directory}#${hostName}" "''$@"
+        '';
+      };
+    host-manager-upgrade = pkgs.writeShellApplication
+      {
+        name = "host-manager-upgrade";
+        text = ''
+          home-manager switch --flake "${config.repository.directory}#${hostName}" ${updateFlags.home} "''$@"
+        '';
+      };
   in
     lib.mkMerge [
       {
@@ -23,39 +39,7 @@
 
         # Let Home Manager install and manage itself.
         programs.home-manager.enable = true;
-      }
-      (optionalAttrs (!isHomeManagerRunningAsASubmodule) {
-        # Home Manager needs a bit of information about you and the
-        # paths it should manage.
-        home.username = username;
-        home.homeDirectory = homeDirectory;
 
-        # Scripts for switching generations and upgrading flake inputs.
-        home.file = {
-          ".local/bin/host-manager-switch" = {
-            text = ''
-              #!${pkgs.bash}/bin/bash
-              home-manager switch --flake "${config.repository.directory}#${hostName}" "''$@"
-            '';
-            executable = true;
-          };
-          ".local/bin/host-manager-upgrade" = {
-            text = ''
-              #!${pkgs.bash}/bin/bash
-              home-manager switch --flake "${config.repository.directory}#${hostName}" ${updateFlags.home} "''$@"
-            '';
-            executable = true;
-          };
-        };
-
-        # Show me what changed everytime I switch generations e.g. version updates or added/removed files.
-        home.activation = {
-          printChanges = lib.hm.dag.entryAnywhere ''
-            ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
-          '';
-        };
-
-        # host-manager-switch may not be defined by home-manager, it could be the system manager like nix-darwin.
         repository.git.onChange = [
           {
             # This should be the first check since other checks might depend on new files
@@ -71,5 +55,25 @@
             '';
           }
         ];
+      }
+      # These are all things that don't need to be done when home manager is being run as a submodule inside of
+      # another host manager, like nix-darwin. They don't need to be done because the outer host manager will do them.
+      (optionalAttrs (!isHomeManagerRunningAsASubmodule) {
+        # Home Manager needs a bit of information about you and the
+        # paths it should manage.
+        home.username = username;
+        home.homeDirectory = homeDirectory;
+
+        home.packages = [
+          host-manager-switch
+          host-manager-upgrade
+        ];
+
+        # Show me what changed everytime I switch generations e.g. version updates or added/removed files.
+        home.activation = {
+          printChanges = lib.hm.dag.entryAnywhere ''
+            ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
+          '';
+        };
       })
     ]
