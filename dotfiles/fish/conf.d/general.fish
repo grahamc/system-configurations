@@ -2,7 +2,6 @@ if not status is-interactive
     exit
 end
 
-abbr --add --global trash trash-put
 abbr --add --global g git
 set --global --export PAGER less
 abbr --add --global ruhroh 'sudo truncate -s 0 /var/log/syslog'

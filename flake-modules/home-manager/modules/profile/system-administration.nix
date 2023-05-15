@@ -44,7 +44,7 @@
         # These weren't in a docker container
         gnused
       ] ++ optionals isLinux [
-        trash-cli
+        trashy
         pipr
         clear
         catp
