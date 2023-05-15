@@ -32,7 +32,11 @@
           # set the variable here to not break anything.
           set-environment -g "TMUX_PLUGIN_MANAGER_PATH" "${config.home.profileDirectory}/share/tmux-plugins/"
 
-          source-file ${config.xdg.configHome}/${myTmuxConfigPath}
+          set xdg_config "''$HOME/.config"
+          if set --query XDG_CONFIG_HOME
+            set xdg_config "''$XDG_CONFIG_HOME"
+          end
+          source-file "''$xdg_config/${myTmuxConfigPath}"
 
           ${(lib.strings.concatMapStringsSep "\n\n" (p: ''
             # ${getPluginName p}
