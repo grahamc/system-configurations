@@ -98,6 +98,8 @@
               fishPluginBuilder;
             allFishPlugins = prev.fishPlugins // newFishPlugins;
 
+            # Lets me starts a nix shell with python and the specified python packages.
+            # Example: `pynix requests marshmallow`
             pynix = prev.writeShellApplication
               {
                 name = "pynix";
@@ -107,6 +109,8 @@
                   eval ".any-nix-shell-wrapper fish -p ''$packages"
                 '';
               };
+            # This wrapper lets me search the manix entries and view their documentation inside of fzf.
+            # Since I only ever use `manix` this way, I'm just going shadow the original `manix` with this wrapper.
             manix = prev.writeShellApplication
               {
                 name = "manix";
