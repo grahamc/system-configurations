@@ -129,7 +129,7 @@ abbr --add --global fp fzf-process-widget
 
 function my-fzf-file-widget --description 'Search files'
   set dir "$(commandline -t)"
-  if test "$(string sub --length 1 "$dir")" = '~'
+  if test "$(string sub --length 1 -- "$dir")" = '~'
     set dir (string replace '~' "$HOME" "$dir")
   end
   if not test -d "$dir"
