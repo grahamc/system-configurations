@@ -37,8 +37,6 @@
         nix-daemon-reload
         nix-info
         manix
-      ] ++ optionals isLinux [
-        glibcLocales
       ];
 
       repository.symlink.home.file = {
