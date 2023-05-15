@@ -27,7 +27,6 @@
                 ({config, ...}: {
                   # I want a self contained executable so I can't have symlinks that point outside the Nix store.
                   config.repository.symlink.makeCopiesInstead = true;
-                  config.programs.fish.enable = lib.mkForce false;
                   config.programs.fish.package = minimalFish;
                   config.xdg.dataFile."nvim/site/parser".source = lib.mkForce
                     (pkgs.writeShellApplication {name = "fake"; text = "";});
