@@ -58,11 +58,11 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         ./flake-modules/cache.nix
-        ./flake-modules/nix-darwin/nix-darwin.nix
+        ./flake-modules/nix-darwin
         ./flake-modules/overlay.nix
-        ./flake-modules/shell/shell.nix
+        ./flake-modules/shell
         ./flake-modules/bundler
-        ./flake-modules/home-manager/home-manager.nix
+        ./flake-modules/home-manager
         ./flake-modules/lib.nix
         ./flake-modules/assign-inputs-to-host-managers.nix
       ];
