@@ -37,9 +37,6 @@
         # changes in each release.
         home.stateVersion = "23.05";
 
-        # Let Home Manager install and manage itself.
-        programs.home-manager.enable = true;
-
         repository.git.onChange = [
           {
             # This should be the first check since other checks might depend on new files
@@ -68,6 +65,9 @@
           host-manager-switch
           host-manager-upgrade
         ];
+
+        # Let Home Manager install and manage itself.
+        programs.home-manager.enable = true;
 
         # Show me what changed everytime I switch generations e.g. version updates or added/removed files.
         home.activation = {
