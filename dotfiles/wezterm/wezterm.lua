@@ -2,12 +2,24 @@ local wezterm = require 'wezterm'
 
 local config = wezterm.config_builder()
 
+local function is_mac()
+	local fh,_ = assert(io.popen("uname 2>/dev/null","r"))
+	if fh then
+		osname = fh:read()
+	end
+
+	return osname == "Darwin"
+end
+
 -- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system, but Flatpak apps
 -- can't access my font configuration file from their sandbox so for now I'll hardcode a font.
 -- issue: https://github.com/flatpak/flatpak/issues/1563
 config.font = wezterm.font_with_fallback({'JetBrains Mono NL', 'SymbolsNerdFontMono'})
 config.underline_position = -9
-config.font_size = 11.5
+config.font_size = 10.3
+if is_mac() then
+  config.font_size = 11.5
+end
 config.cell_width = 1.04
 config.line_height = 1.3
 config.underline_thickness = "210%"
