@@ -64,71 +64,12 @@
         ./flake-modules/bundler
         ./flake-modules/home-manager/home-manager.nix
         ./flake-modules/lib.nix
+        ./flake-modules/assign-inputs-to-host-managers.nix
       ];
 
       systems = with flake-utils.lib.system; [
         x86_64-linux
         x86_64-darwin
       ];
-
-      flake =
-        let
-          inputListsByHostManager = rec {
-            home = [
-              "nixpkgs"
-              "flake-utils"
-              "flake-parts"
-              "home-manager"
-              "nix-index-database"
-              "nix-appimage"
-              "vim-plugin-vim-CursorLineCurrentWindow"
-              "vim-plugin-virt-column.nvim"
-              "vim-plugin-folding-nvim"
-              "vim-plugin-cmp-env"
-              "vim-plugin-SchemaStore.nvim"
-              "vim-plugin-vim"
-              "vim-plugin-vim-caser"
-              "tmux-plugin-resurrect"
-              "tmux-plugin-tmux-suspend"
-              "fish-plugin-autopair-fish"
-              "fish-plugin-async-prompt"
-              "nix-xdg"
-            ];
-            darwin = home ++ [
-              "nix-darwin"
-              "stackline"
-            ];
-          };
-          isInputListed = input:
-            let
-              containsInput = builtins.elem input;
-              inputLists = builtins.attrValues inputListsByHostManager;
-            in
-              builtins.any containsInput inputLists;
-          inputNames = (nixpkgs.lib.lists.remove "self" (builtins.attrNames inputs));
-          unlistedInputs = builtins.filter (input: !(isInputListed input)) inputNames;
-          hasAllInputsListed = unlistedInputs == [];
-          convertInputListToUpdateFlags = inputList:
-            let
-              convertInputToUpdateFlag = input: ''--update-input ${nixpkgs.lib.strings.escapeShellArgs [input]}'';
-              updateFlags = map convertInputToUpdateFlag inputList;
-              joinedUpdateFlags = nixpkgs.lib.concatStringsSep
-                " "
-                updateFlags;
-            in
-              joinedUpdateFlags;
-          joinedUnlistedInputs = nixpkgs.lib.concatStringsSep ", " unlistedInputs;
-          updateFlagsByHostManager = nixpkgs.lib.mapAttrs
-            (_ignored: inputList: convertInputListToUpdateFlags inputList)
-            inputListsByHostManager;
-          updateFlags = if hasAllInputsListed
-            then updateFlagsByHostManager
-            else abort "You need to specify when these inputs should be updated: ${joinedUnlistedInputs}";
-        in
-          {
-            lib = {
-              inherit updateFlags;
-            };
-          };
     };
 }
