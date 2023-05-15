@@ -15,7 +15,11 @@
           # Remove Home Manager's command-not-found handler
           functions --erase __fish_command_not_found_handler
 
-          source ${config.xdg.configHome}/${myFishConfigPath}
+          set xdg_config "''$HOME/.config"
+          if set --query XDG_CONFIG_HOME
+            set xdg_config "''$XDG_CONFIG_HOME"
+          end
+          source "''$xdg_config/${myFishConfigPath}"
         '';
         plugins = with pkgs.fishPlugins; [
           {name = "autopair-fish"; src = autopair-fish;}
