@@ -5,7 +5,8 @@
   in
     {
       imports = [
-        ./git/git.nix
+        ./git
+        ./symlink.nix
       ];
 
       options.repository = {

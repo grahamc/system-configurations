@@ -1,3 +1,4 @@
+# This module has the configuration that I always want applied.
 { config, lib, pkgs, specialArgs, ... }:
   let
     inherit (specialArgs) repositoryDirectory self;
@@ -10,8 +11,7 @@
         ../neovim.nix
         ../general.nix
         ../utility/vim-plug.nix
-        ../utility/repository/symlink.nix
-        ../utility/repository/repository.nix
+        ../utility/repository
         ../home-manager.nix
         ../fonts.nix
         ../keyboard-shortcuts.nix

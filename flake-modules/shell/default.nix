@@ -1,8 +1,9 @@
+# This output lets me run my shell environment, both programs and their config files, completely from the nix store.
+# Useful for headless servers or containers.
 { inputs, self, ... }:
   {
     perSystem = {lib, system, pkgs, ...}:
       let
-        # Run my shell environment, both programs and their config files, completely from the nix store.
         supportedSystems = with inputs.flake-utils.lib.system; [ x86_64-linux x86_64-darwin ];
         isSupportedSystem = builtins.elem system supportedSystems;
         shellOutput = if !isSupportedSystem

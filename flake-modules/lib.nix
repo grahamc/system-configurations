@@ -7,6 +7,7 @@
           type = lib.types.attrsOf (lib.types.uniq (lib.types.anything));
           default = {};
           internal = true;
+          description = "Utilties for other flake modules to use.";
         };
       };
     };
