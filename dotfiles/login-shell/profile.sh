@@ -19,6 +19,11 @@ fi
 if uname | grep -q Linux; then
   export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
 fi
+# For single-user Nix. I don't think it left a setup script in any of the shells' vendor directories.
+_nix_single_user="$HOME/.nix-profile/etc/profile.d/nix.sh"
+if [ -e "$_nix_single_user" ]; then
+  . "$_nix_single_user"
+fi
 # nix-darwin. Not sure how to have it configure this for me so I hardcoded it.
 export PATH="/run/current-system/sw/bin:$PATH"
 # nix-darwin manages brew so I'll turn off all the automatic management.
