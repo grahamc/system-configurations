@@ -17,7 +17,6 @@
                 withSystemd = false;
               };
               fzf = prev.fzf.override { perl = prev.perl534; };
-              git = pkgs.gitMinimal;
             };
             homeManagerOutput = self.lib.makeFlakeOutput system {
               inherit hostName;
