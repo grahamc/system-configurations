@@ -35,7 +35,6 @@
         viddy
         zoxide
         file
-        pstree
         # Useful for commands that don't work quite the same way between macOS and Linux
         coreutils-full
         gnugrep
@@ -50,9 +49,12 @@
         clear
         catp
         open
+        # for pstree
+        psmisc
       ] ++ optionals isDarwin [
         # macOS comes with a very old version of ncurses that doesn't have a terminfo entry for tmux, tmux-256color
         ncurses
+        pstree
       ];
 
       repository.symlink.home.file = {
