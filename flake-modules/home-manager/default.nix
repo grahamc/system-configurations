@@ -89,11 +89,12 @@
         modules,
         isGui ? true,
         username ? "biggs",
+        overlays ? [],
       }:
         let
           pkgs = import inputs.nixpkgs {
             inherit system;
-            overlays = [self.overlays.default];
+            overlays = [self.overlays.default] ++ overlays;
           };
           homePrefix = if pkgs.stdenv.isLinux
             then "/home"
