@@ -66,15 +66,14 @@ end
 abbr --add --global fm fzf-man-widget
 
 function fzf-process-widget --description 'Manage processes'
-  set reload_command 'ps -e -O user,pid,ppid,nice=NICE,start_time,etime,command'
-
   # I 'echo' the fzf placeholder in the grep regex to get around the fact that fzf substitutions are single quoted and the quotes
   # would mess up the grep regex.
   if uname | grep -q Linux
-    set reload_command "$reload_command --sort=-start_time"
+    set reload_command 'ps -e --format user,pid,ppid,nice=NICE,start_time,etime,command --sort=-start_time'
     set preview_command 'ps --pid {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree --hide-threads --long --show-pids --unicode --show-parents --arguments {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp "[^└|─]+,$(echo {2})( .*|\$)" --regexp "^"'
     set catp_command 'sudo catp {2}'
   else
+    set reload_command 'ps -e -O user,pid,ppid,nice=NICE,start_time,etime,command'
     set preview_command 'ps -p {1} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree -w -g 3 -p {1} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp "[^└|─]+,$(echo {1})( .*|\$)" --regexp "^"'
     set catp_command 'echo not supported on macOS'
   end
