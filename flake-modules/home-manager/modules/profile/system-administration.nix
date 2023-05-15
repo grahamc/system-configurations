@@ -62,8 +62,6 @@
         ".local/bin/fzf-tmux-zoom".source = "fzf/fzf-tmux-zoom";
         ".local/bin/fzf-help-preview".source = "fzf/fzf-help-preview";
         ".local/bin/myssh".source = "ssh/myssh.sh";
-      } // optionalAttrs isLinux {
-        ".local/bin/pbcopy".source = "general/executables/osc-copy";
       };
 
       home.file = optionalAttrs isLinux {
@@ -82,6 +80,8 @@
           executable = true;
         };
       } // optionalAttrs isDarwin {
+        # I can remove this when trashy gets support for macOS, which is blocked by an issue with the library they use
+        # for accessing the trash: https://github.com/Byron/trash-rs/issues/8
         ".local/bin/trash" = {
           text = ''
             #!${pkgs.python3}/bin/python3

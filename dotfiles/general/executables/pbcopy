@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This command copies the text from stdin to the clipboard using OSC 52. With this you can even copy text from
+# an SSH shell to the host computer's clipboard.
+
 set -eu
 
 # get data either form stdin or from file
