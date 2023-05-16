@@ -1,6 +1,7 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    myFishConfigPath = "fish/my-config.fish";
+    symlinkToMyFishConfig = config.lib.file.mkOutOfStoreSymlink
+      "${config.repository.symlink.baseDirectory}/fish/config.fish";
   in
     {
       # Using this so Home Manager can include it's generated completion scripts
@@ -15,11 +16,7 @@
           # Remove Home Manager's command-not-found handler
           functions --erase __fish_command_not_found_handler
 
-          set xdg_config "''$HOME/.config"
-          if set --query XDG_CONFIG_HOME
-            set xdg_config "''$XDG_CONFIG_HOME"
-          end
-          source "''$xdg_config/${myFishConfigPath}"
+          source '${symlinkToMyFishConfig}'
         '';
         plugins = with pkgs.fishPlugins; [
           {name = "autopair-fish"; src = autopair-fish;}
@@ -36,7 +33,6 @@
           source = "fish/conf.d";
           recursive = true;
         };
-        ${myFishConfigPath}.source = "fish/config.fish";
       };
 
       repository.symlink.xdg.dataFile = {

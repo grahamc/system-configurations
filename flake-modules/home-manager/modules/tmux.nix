@@ -11,8 +11,8 @@
     ];
     inherit (lib) types;
     getPluginName = p: if types.package.check p then p.pname else p.plugin.pname;
-    # relative to $XDG_CONFIG_HOME
-    myTmuxConfigPath = "tmux/my-tmux.conf";
+    symlinkToMyTmuxConfig = config.lib.file.mkOutOfStoreSymlink
+      "${config.repository.symlink.baseDirectory}/tmux/tmux.conf";
   in
     {
       # Installing the plugins into my profile, instead of using programs.tmux.plugins, for two reasons:
@@ -32,11 +32,7 @@
           # set the variable here to not break anything.
           set-environment -g "TMUX_PLUGIN_MANAGER_PATH" "${config.home.profileDirectory}/share/tmux-plugins/"
 
-          set xdg_config "''$HOME/.config"
-          if set --query XDG_CONFIG_HOME
-            set xdg_config "''$XDG_CONFIG_HOME"
-          end
-          source-file "''$xdg_config/${myTmuxConfigPath}"
+          source-file '${symlinkToMyTmuxConfig}'
 
           ${(lib.strings.concatMapStringsSep "\n\n" (p: ''
             # ${getPluginName p}
@@ -50,7 +46,6 @@
       repository.symlink.xdg.configFile = {
         "fish/conf.d/tmux-integration.fish".source = "tmux/tmux-integration.fish";
         "fish/conf.d/tmux.fish".source = "tmux/tmux.fish";
-        ${myTmuxConfigPath}.source = "tmux/tmux.conf";
       };
 
       repository.symlink.home.file = {
