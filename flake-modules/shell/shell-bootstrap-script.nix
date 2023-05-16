@@ -8,74 +8,81 @@
   which,
   foreignEnvFunctionPath,
   activationPackage,
-  localeArchive,
+  # Not applicable to macOS
+  localeArchive ? null,
 }:
-  ''#!${fish}
+  let
+    setLocaleArchive =
+      if localeArchive == null
+        then ""
+        else "set --global --export LOCALE_ARCHIVE '${localeArchive}'";
+  in
+    ''#!${fish}
 
-  # For packages that need one of their XDG Base directories to be mutable
-  set -g mutable_bin (${mktemp} --directory)
-  set -g state_dir (${mktemp} --directory)
-  set -g config_dir (${mktemp} --directory)
-  set -g data_dir (${mktemp} --directory)
-  set -g runtime_dir (${mktemp} --directory)
-  set -g cache_dir (${mktemp} --directory)
+    # For packages that need one of their XDG Base directories to be mutable
+    set -g mutable_bin (${mktemp} --directory)
+    set -g state_dir (${mktemp} --directory)
+    set -g config_dir (${mktemp} --directory)
+    set -g data_dir (${mktemp} --directory)
+    set -g runtime_dir (${mktemp} --directory)
+    set -g cache_dir (${mktemp} --directory)
 
-  # Clean up temporary directories when the shell exits
-  function _cleanup --on-event fish_exit \
-  --inherit-variable mutable_bin \
-  --inherit-variable state_dir \
-  --inherit-variable config_dir \
-  --inherit-variable data_dir \
-  --inherit-variable runtime_dir \
-  --inherit-variable cache_dir
-    rm -rf "$mutable_bin" "$state_dir" "$config_dir" "$data_dir" "$runtime_dir" "$cache_dir"
-  end
-
-  # Make mutable copies of the contents of any XDG Base Directory in the Home Manager configuration.
-  # This is because some programs need to be able to write to one of these directories e.g. `fish`.
-  ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.config/* ''$config_dir
-  ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.local/share/* ''$data_dir
-
-  for program in ${activationPackage}/home-path/bin/*
-    set base (${basename} ''$program)
-
-    # NOTE: The hashbangs in the scripts need to be the first two bytes in the file for the kernel to
-    # recognize them so it must come directly after the opening quote of the script.
-    switch "$base"
-      case env
-        # TODO: Wrapping this caused an infinite loop so I'll copy it instead
-        ${copy} -L ''$program ''$mutable_bin/env
-      case fish
-        echo -s >''$mutable_bin/''$base "#!${fish}
-          # I unexport the XDG Base directories so host programs pick up the host's XDG directories.
-          XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir XDG_CACHE_HOME=''$cache_dir \
-          ''$program \
-            --init-command 'set --unexport XDG_CONFIG_HOME' \
-            --init-command 'set --unexport XDG_DATA_HOME' \
-            --init-command 'set --unexport XDG_STATE_HOME' \
-            --init-command 'set --unexport XDG_RUNTIME_DIR' \
-            --init-command 'set --unexport XDG_CACHE_HOME_DIR' \
-            " ' ''$argv'
-      case '*'
-        echo -s >''$mutable_bin/''$base "#!${fish}
-          XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir XDG_CACHE_HOME=''$cache_dir \
-          ''$program" ' ''$argv'
+    # Clean up temporary directories when the shell exits
+    function _cleanup --on-event fish_exit \
+    --inherit-variable mutable_bin \
+    --inherit-variable state_dir \
+    --inherit-variable config_dir \
+    --inherit-variable data_dir \
+    --inherit-variable runtime_dir \
+    --inherit-variable cache_dir
+      rm -rf "$mutable_bin" "$state_dir" "$config_dir" "$data_dir" "$runtime_dir" "$cache_dir"
     end
 
-    ${chmod} +x ''$mutable_bin/''$base
-  end
+    # Make mutable copies of the contents of any XDG Base Directory in the Home Manager configuration.
+    # This is because some programs need to be able to write to one of these directories e.g. `fish`.
+    ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.config/* ''$config_dir
+    ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.local/share/* ''$data_dir
 
-  set --global --export LOCALE_ARCHIVE '${localeArchive}'
+    for program in ${activationPackage}/home-path/bin/*
+      set base (${basename} ''$program)
 
-  fish_add_path --global --prepend ''$mutable_bin
-  fish_add_path --global --prepend ${activationPackage}/home-files/.local/bin
+      # NOTE: The hashbangs in the scripts need to be the first two bytes in the file for the kernel to
+      # recognize them so it must come directly after the opening quote of the script.
+      switch "$base"
+        case env
+          # TODO: Wrapping this caused an infinite loop so I'll copy it instead
+          ${copy} -L ''$program ''$mutable_bin/env
+        case fish
+          echo -s >''$mutable_bin/''$base "#!${fish}
+            # I unexport the XDG Base directories so host programs pick up the host's XDG directories.
+            XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir XDG_CACHE_HOME=''$cache_dir \
+            ''$program \
+              --init-command 'set --unexport XDG_CONFIG_HOME' \
+              --init-command 'set --unexport XDG_DATA_HOME' \
+              --init-command 'set --unexport XDG_STATE_HOME' \
+              --init-command 'set --unexport XDG_RUNTIME_DIR' \
+              --init-command 'set --unexport XDG_CACHE_HOME_DIR' \
+              " ' ''$argv'
+        case '*'
+          echo -s >''$mutable_bin/''$base "#!${fish}
+            XDG_CONFIG_HOME=''$config_dir XDG_DATA_HOME=''$data_dir XDG_STATE_HOME=''$state_dir XDG_RUNTIME_DIR=''$runtime_dir XDG_CACHE_HOME=''$cache_dir \
+            ''$program" ' ''$argv'
+      end
 
-  # Set fish as the default shell
-  set --global --export SHELL (${which} fish)
+      ${chmod} +x ''$mutable_bin/''$base
+    end
 
-  # Compile my custom themes for bat.
-  chronic bat cache --build
+    ${setLocaleArchive}
 
-  ''$SHELL ''$argv
-  ''
+    fish_add_path --global --prepend ''$mutable_bin
+    fish_add_path --global --prepend ${activationPackage}/home-files/.local/bin
+
+    # Set fish as the default shell
+    set --global --export SHELL (${which} fish)
+
+    # Compile my custom themes for bat.
+    chronic bat cache --build
+
+    ''$SHELL ''$argv
+    ''
 

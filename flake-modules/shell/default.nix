@@ -9,6 +9,7 @@
     perSystem = {lib, system, pkgs, ...}:
       let
         inherit (lib.attrsets) optionalAttrs;
+        inherit (pkgs.stdenv) isLinux;
         shellOutput =
           let
             hostName = "no-host";
@@ -22,6 +23,7 @@
               tmux = prev.tmux.override {
                 withSystemd = false;
               };
+            } // optionalAttrs isLinux {
               fzf = prev.fzf.override {
                 glibcLocales = minimalLocales;
               };
@@ -43,7 +45,9 @@
                 config.programs.home-manager.enable = lib.mkForce false;
                 # This removes the dependency on `sd-switch`.
                 config.systemd.user.startServices = lib.mkForce "suggest";
-                # There is no option to prevent Home Manager from making this environment variables and overriding
+              } // optionalAttrs isLinux {
+                # These variables contain the path to the locale archive in pkgs.glibcLocales.
+                # There is no option to prevent Home Manager from making these environment variables and overriding
                 # glibcLocales in an overlay would cause too many rebuild so instead I overwrite the environment
                 # variables. Now, glibcLocales won't be a dependency.
                 config.home.sessionVariables = lib.mkForce {
@@ -70,19 +74,20 @@
             # $PATH before the script executes. In this case, I don't want the programs that the script depends on to
             # be in the $PATH because I don't want them on the $PATH of the shell that gets launched at the end of the
             # script. Instead, I'll supply the dependencies through the variables listed below.
-            shellBootstrapScript = import ./shell-bootstrap-script.nix
-              rec {
-                inherit (homeManagerOutput.legacyPackages.homeConfigurations.${hostName}) activationPackage;
-                coreutilsBinaryPath = "${pkgs.coreutils}/bin";
-                mktemp = "${coreutilsBinaryPath}/mktemp";
-                copy = "${coreutilsBinaryPath}/cp";
-                chmod = "${coreutilsBinaryPath}/chmod";
-                basename = "${coreutilsBinaryPath}/basename";
-                fish = "${minimalFish}/bin/fish";
-                which = "${pkgs.which}/bin/which";
-                foreignEnvFunctionPath = "${pkgs.fishPlugins.foreign-env}/share/fish/vendor_functions.d";
-                localeArchive = "${minimalLocales}/lib/locale/locale-archive";
-              };
+            shellBootstrapScriptDependencies = rec {
+              inherit (homeManagerOutput.legacyPackages.homeConfigurations.${hostName}) activationPackage;
+              coreutilsBinaryPath = "${pkgs.coreutils}/bin";
+              mktemp = "${coreutilsBinaryPath}/mktemp";
+              copy = "${coreutilsBinaryPath}/cp";
+              chmod = "${coreutilsBinaryPath}/chmod";
+              basename = "${coreutilsBinaryPath}/basename";
+              fish = "${minimalFish}/bin/fish";
+              which = "${pkgs.which}/bin/which";
+              foreignEnvFunctionPath = "${pkgs.fishPlugins.foreign-env}/share/fish/vendor_functions.d";
+            } // optionalAttrs isLinux {
+              localeArchive = "${minimalLocales}/lib/locale/locale-archive";
+            };
+            shellBootstrapScript = import ./shell-bootstrap-script.nix shellBootstrapScriptDependencies;
             shellBootstrap = pkgs.writeScriptBin shellBootstrapScriptName shellBootstrapScript;
           in
             {
