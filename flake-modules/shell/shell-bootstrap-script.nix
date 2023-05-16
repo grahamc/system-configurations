@@ -8,6 +8,7 @@
   which,
   foreignEnvFunctionPath,
   activationPackage,
+  localeArchive,
 }:
   ''#!${fish}
 
@@ -64,13 +65,7 @@
     ${chmod} +x ''$mutable_bin/''$base
   end
 
-  # My login shell .profile sets the LOCALE_ARCHIVE for me, but it sets it to
-  # <profile_path>/lib/locale/locale-archive and I won't have that in a 'sealed' environment so instead
-  # I will source the Home Manager setup script because it sets the LOCALE_ARCHIVE to the path of the
-  # archive in the Nix store.
-  set --prepend fish_function_path ${foreignEnvFunctionPath}
-  PATH="${coreutilsBinaryPath}:''$PATH" fenv source ${activationPackage}/home-path/etc/profile.d/hm-session-vars.sh >/dev/null
-  set -e fish_function_path[1]
+  set --global --export LOCALE_ARCHIVE '${localeArchive}'
 
   fish_add_path --global --prepend ''$mutable_bin
   fish_add_path --global --prepend ${activationPackage}/home-files/.local/bin

@@ -11,10 +11,14 @@
             minimalFish = pkgs.fish.override {
               usePython = false;
             };
+            minimalLocales = pkgs.glibcLocales.override { allLocales = false; };
             minimalOverlay = final: prev: {
               fish = minimalFish;
               tmux = prev.tmux.override {
                 withSystemd = false;
+              };
+              fzf = prev.fzf.override {
+                glibcLocales = minimalLocales;
               };
             };
             homeManagerOutput = self.lib.makeFlakeOutput system {
@@ -36,6 +40,10 @@
                   config.home.activation.printChanges = lib.mkForce "";
                   config.programs.home-manager.enable = lib.mkForce false;
                   config.systemd.user.startServices = lib.mkForce "suggest";
+                  config.home.sessionVariables = lib.mkForce {
+                    LOCALE_ARCHIVE_2_27 = "";
+                    LOCALE_ARCHIVE_2_11 = "";
+                  };
                 })
               ];
               isGui = false;
@@ -66,6 +74,7 @@
                   which
                   foreignEnvFunctionPath
                   ;
+                localeArchive = "${minimalLocales}/lib/locale/locale-archive";
               };
             shellBootstrap = pkgs.writeScriptBin shellBootstrapScriptName shellBootstrapScript;
           in
