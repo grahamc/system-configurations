@@ -17,7 +17,7 @@ trap "[ -f $executable_name ] || exit; printf 'Do you want to remove the shell e
 trap 'exit $?' 1 2 3 15
 
 download_url='https://github.com/bigolu/dotfiles/releases/download/master/shell'
-if command -v curl; then
+if command -v curl 1>/dev/null 2>&1; then
   curl --fail --progress-bar --location "$download_url" --output "$executable_name"
 else
   wget --output-document "$executable_name" "$download_url"
