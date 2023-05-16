@@ -40,7 +40,7 @@ local my_colors_per_color_scheme = {
     [0] = '#1d212b', [1] = '#BF616A', [2] = '#A3BE8C', [3] = '#EBCB8B', [4] = '#81A1C1', [5] = '#B48EAD', [6] = '#88C0D0', [7] = '#D8DEE9',
     [8] = '#2e3440', [9] = '#BF616A', [10] = '#A3BE8C', [11] = '#d08770', [12] = '#81A1C1', [13] = '#B48EAD', [14] = '#8FBCBB', [15] = '#626f89',
     -- Floating windows in neovim
-    [16] = '#12151f', [32] = '#1d2129',
+    [16] = '#12151f',
     -- For folded lines
     [24] = '#2e3440',
     -- Background color for the non-emphasized and emphasized part of a removed line in a git diff
@@ -57,7 +57,7 @@ local my_colors_per_color_scheme = {
     [0] = '#FFFFFF', [1] = '#ee3d3b', [2] = '#2AA298', [3] = '#e9873a', [4] = '#288ed7', [5] = '#2AA298', [6] = '#994cc3', [7] = '#403f53',
     [8] = '#F0F0F0', [9] = '#ee3d3b', [10] = '#2AA298', [11] = '#c96765', [12] = '#288ed7', [13] = '#2AA298', [14] = '#d6438a', [15] = '#979893',
     -- Floating windows in neovim
-    [16] = '#efefef', [32] = '#f1f3f5',
+    [16] = '#efefef',
     -- For folded lines
     [24] = '#e5e5e5',
     -- Background color for the non-emphasized and emphasized part of a removed line in a git diff
