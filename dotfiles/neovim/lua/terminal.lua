@@ -168,9 +168,12 @@ vim.keymap.set({"n"}, "<S-u>", '<C-r>')
 
 -- Utilities {{{
 _G.unicode = function(hex)
+  hex_length = #hex
+  local unicode_format_specifier = hex_length > 4 and 'U' or 'u'
   return vim.fn.execute(
     string.format(
-      [[echon "\u%s"]],
+      [[echon "\%s%s"]],
+      unicode_format_specifier,
       hex
     )
   )
@@ -598,7 +601,7 @@ _G.StatusLine = function()
 
   local readonly = nil
   if vim.o.readonly then
-    indicator = unicode('f840')
+    indicator = unicode('f0341')
     readonly = '%#StatusLineStandoutText#' .. indicator
   end
 
@@ -611,25 +614,25 @@ _G.StatusLine = function()
   local diagnostic_list = {}
   local error_count = diagnostic_count.error
   if error_count > 0 then
-    icon = unicode('f659') .. ' '
+    icon = unicode('f0159') .. ' '
     local error = '%#StatusLineErrorText#' .. icon .. error_count
     table.insert(diagnostic_list, error)
   end
   local warning_count = diagnostic_count.warning
   if warning_count > 0 then
-    icon = unicode('fad5') .. ' '
+    icon = unicode('f0026') .. ' '
     local warning = '%#StatusLineWarningText#' .. icon  .. warning_count
     table.insert(diagnostic_list, warning)
   end
   local info_count = diagnostic_count.info
   if info_count > 0 then
-    icon = unicode('f7fc') .. ' '
+    icon = unicode('f05a') .. ' '
     local info = '%#StatusLineInfoText#' .. icon  .. info_count
     table.insert(diagnostic_list, info)
   end
   local hint_count = diagnostic_count.hint
   if hint_count > 0 then
-    icon = unicode('f7fc') .. ' '
+    icon = unicode('f0fd') .. ' '
     local hint = '%#StatusLineHintText#' .. icon  .. hint_count
     table.insert(diagnostic_list, hint)
   end
@@ -723,7 +726,7 @@ _G.Tabline = function()
 
   local is_explorer_open = vim.fn.getwinvar(1, 'is_explorer', false)
   if is_explorer_open then
-    local icon = unicode('25A0')
+    local icon = unicode('f4d3')
     local title = ' ' .. icon .. ' File Explorer'
 
     local title_length = string.len(title)
@@ -1210,7 +1213,7 @@ Plug(
       vim.fn.sign_define(
         'LightBulbSign',
         {
-          text = unicode('f834'),
+          text = unicode('f0335'),
           texthl = 'CodeActionSign',
         }
       )
@@ -1599,9 +1602,9 @@ Plug(
           width = 1,
           height = .95,
           icons = {
-            package_installed = unicode('f632') .. '  ',
+            package_installed = unicode('f0133') .. '  ',
             package_pending = unicode('f251') .. '  ',
-            package_uninstalled = unicode('f62f') .. '  ',
+            package_uninstalled = unicode('f0766') .. '  ',
           },
           keymaps = {
             toggle_package_expand = "<Tab>",
