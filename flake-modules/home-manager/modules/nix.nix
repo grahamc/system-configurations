@@ -21,6 +21,9 @@
         nix-index-database.hmModules.nix-index
       ];
 
+      # Don't make a command_not_found handler
+      programs.nix-index.enableFishIntegration = false;
+
       repository.symlink.xdg.configFile = {
         "nix/nix.conf".source = "nix/nix.conf";
         "nix/repl-startup.nix".source = "nix/repl-startup.nix";
