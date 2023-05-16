@@ -45,15 +45,14 @@
                 config.programs.home-manager.enable = lib.mkForce false;
                 # This removes the dependency on `sd-switch`.
                 config.systemd.user.startServices = lib.mkForce "suggest";
-              } // optionalAttrs isLinux {
                 # These variables contain the path to the locale archive in pkgs.glibcLocales.
                 # There is no option to prevent Home Manager from making these environment variables and overriding
                 # glibcLocales in an overlay would cause too many rebuild so instead I overwrite the environment
                 # variables. Now, glibcLocales won't be a dependency.
-                config.home.sessionVariables = lib.mkForce {
+                config.home.sessionVariables = optionalAttrs isLinux (lib.mkForce {
                   LOCALE_ARCHIVE_2_27 = "";
                   LOCALE_ARCHIVE_2_11 = "";
-                };
+                });
               };
             homeManagerOutput = self.lib.makeFlakeOutput system {
               inherit hostName;
