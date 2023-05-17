@@ -17,15 +17,14 @@
                 modules = homeModules;
                 isGui = true;
               };
-            overlayModule = {
-              nixpkgs.overlays = [
-                self.overlays.default
-              ];
+            pkgs = import inputs.nixpkgs {
+              inherit system;
+              overlays = [self.overlays.default];
             };
             darwinConfiguration = inputs.nix-darwin.lib.darwinSystem
               {
-                inherit system;
-                modules = modules ++ homeManagerSubmodules ++ [overlayModule];
+                inherit pkgs;
+                modules = modules ++ homeManagerSubmodules;
                 specialArgs = {
                   inherit hostName username homeDirectory repositoryDirectory;
                   flakeInputs = inputs;
