@@ -33,7 +33,7 @@ vim.g.mapleader = ' '
 plug_begin()
 
 -- Load profiles
-require('common')
+require('base')
 require('terminal')
 require('vscode')
 require('browser')
