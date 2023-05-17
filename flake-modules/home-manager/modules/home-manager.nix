@@ -1,7 +1,7 @@
-{ config, lib, pkgs, specialArgs, ... }:
+{ config, lib, pkgs, specialArgs, inputs, ... }:
   let
     inherit (specialArgs) hostName username homeDirectory isHomeManagerRunningAsASubmodule;
-    inherit (specialArgs.inputs) self;
+    inherit (specialArgs.flakeInputs) self;
     inherit (lib.attrsets) optionalAttrs;
 
     # Scripts for switching generations and upgrading flake inputs.

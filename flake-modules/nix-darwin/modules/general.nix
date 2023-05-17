@@ -1,7 +1,7 @@
 { config, lib, specialArgs, pkgs, ... }:
   let
     inherit (specialArgs) hostName homeDirectory username repositoryDirectory;
-    inherit (specialArgs.inputs) self;
+    inherit (specialArgs.flakeInputs) self;
 
     # Scripts for switching generations and upgrading flake inputs.
     packages = [

@@ -27,7 +27,8 @@
                 inherit system;
                 modules = modules ++ homeManagerSubmodules ++ [overlayModule];
                 specialArgs = {
-                  inherit hostName username homeDirectory repositoryDirectory inputs;
+                  inherit hostName username homeDirectory repositoryDirectory;
+                  flakeInputs = inputs;
                 };
               };
             darwinOutput = {

@@ -47,7 +47,7 @@
         homeDirectory,
         repositoryDirectory,
         isHomeManagerRunningAsASubmodule,
-        inputs
+        flakeInputs
       }:
       args;
 
@@ -55,8 +55,9 @@
       let
         extraSpecialArgs = validateExtraSpecialArgs
           {
-            inherit hostName username homeDirectory repositoryDirectory isGui inputs;
+            inherit hostName username homeDirectory repositoryDirectory isGui;
             isHomeManagerRunningAsASubmodule = true;
+            flakeInputs = inputs;
           };
         configuration = {
           home-manager = {
@@ -102,8 +103,9 @@
             else "${homeDirectory}/.dotfiles";
           extraSpecialArgs = validateExtraSpecialArgs
             {
-              inherit hostName isGui username homeDirectory repositoryDirectory inputs;
+              inherit hostName isGui username homeDirectory repositoryDirectory;
               isHomeManagerRunningAsASubmodule = false;
+              flakeInputs = inputs;
             };
         in
           {

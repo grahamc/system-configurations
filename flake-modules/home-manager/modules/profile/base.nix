@@ -1,7 +1,7 @@
 # This module has the configuration that I always want applied.
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (specialArgs) repositoryDirectory inputs;
+    inherit (specialArgs) repositoryDirectory flakeInputs;
   in
     {
       imports = [
@@ -20,7 +20,7 @@
       ];
 
       repository.directory = repositoryDirectory;
-      repository.directoryPath = inputs.self.outPath;
+      repository.directoryPath = flakeInputs.self.outPath;
       repository.symlink.baseDirectory = "${repositoryDirectory}/dotfiles";
 
       # When switching generations, stop obsolete services and start ones that are wanted by active units.
