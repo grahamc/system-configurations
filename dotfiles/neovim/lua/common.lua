@@ -145,7 +145,9 @@ _G.fast_macro = function()
   vim.o.lazyredraw = true
   vim.cmd(
     string.format(
-      [[%snormal! %s@%s]],
+      -- Execute silently so I don't get prompted to press enter if an error is thrown. For example, when I use
+      -- substitute and there is no match.
+      [[silent! %snormal! %s@%s]],
       range,
       count,
       register
