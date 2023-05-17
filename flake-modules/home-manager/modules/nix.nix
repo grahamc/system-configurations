@@ -1,12 +1,9 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (lib.lists) optionals;
-    inherit (pkgs.stdenv) isLinux;
     inherit (specialArgs) nix-index-database;
     nix-daemon-reload = pkgs.writeShellApplication
       {
         name = "nix-daemon-reload";
-        runtimeInputs = [pkgs.xdg-utils];
         text = ''
           if uname | grep -q Linux; then
             systemctl restart nix-daemon.service
