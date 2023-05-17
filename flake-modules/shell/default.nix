@@ -60,8 +60,8 @@
               # to root since Home Manager won't include systemd if the user is root.
               # see: https://github.com/nix-community/home-manager/blob/master/modules/systemd.nix
               username = "root";
-              modules = with self.lib.modules; [
-                profile.system-administration
+              modules = [
+                "${self.lib.moduleBaseDirectory}/profile/system-administration.nix"
                 shellModule
               ];
               isGui = false;

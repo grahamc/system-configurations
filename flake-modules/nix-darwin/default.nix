@@ -46,9 +46,9 @@
               modules = [
                 ./modules/general.nix
               ];
-              homeModules = with self.lib.modules; [
-                profile.system-administration
-                profile.application-development
+              homeModules = [
+                "${self.lib.moduleBaseDirectory}/profile/system-administration.nix"
+                "${self.lib.moduleBaseDirectory}/profile/application-development.nix"
               ];
             };
             systems = with inputs.flake-utils.lib.system; [

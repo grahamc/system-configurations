@@ -1,40 +1,10 @@
 { lib, inputs, self, ... }:
   let
-    loadModules = directory:
-      let
-        directoryContents = builtins.readDir directory;
-        isDirectory = type: type == "directory";
-        isNixFile = basename: lib.strings.hasSuffix ".nix" basename;
-        isNixFileOrDirectory = basename: type: isNixFile basename || isDirectory type;
-        filteredDirectoryContents = lib.attrsets.filterAttrs
-          isNixFileOrDirectory
-          directoryContents;
-        containsDefaultDotNix = path:
-          builtins.any
-            (basename: basename == "default.nix")
-            (builtins.attrNames (builtins.readDir path));
-        modules = lib.attrsets.foldlAttrs
-          (accumulator: basename: type:
-            let
-              path = (directory + "/${basename}");
-              removeDotNixSuffix = basename: lib.strings.removeSuffix ".nix" basename;
-              isTypeDirectory = isDirectory type;
-              doesNotContainDefaultDotNix = !(containsDefaultDotNix path);
-              modules = if isTypeDirectory && doesNotContainDefaultDotNix
-                then { "${basename}" = loadModules path; }
-                else { "${removeDotNixSuffix basename}" = import path; };
-            in
-              accumulator // modules
-          )
-          {}
-          filteredDirectoryContents;
-      in
-        modules;
-    modules = loadModules ./modules;
+    moduleBaseDirectory = ./modules;
 
     # This is the module that I always include. I put it in a list so it can easily be concatenated with other
     # module lists.
-    baseModuleAsList = [modules.profile.base];
+    baseModuleAsList = ["${moduleBaseDirectory}/profile/base.nix"];
     # I made this function to ensure that I pass the correct `extraSpecialArgs` when using home-manager
     # directly and as a submodule, since I sometimes add an argument to one and not the other. If I don't
     # pass the correct arguments Nix will throw an error since I didn't call the function with the specified
@@ -121,7 +91,7 @@
     {
       flake = {
         lib = {
-          inherit modules makeDarwinModules makeFlakeOutput;
+          inherit moduleBaseDirectory makeDarwinModules makeFlakeOutput;
         };
       };
 
@@ -132,10 +102,10 @@
               {
                 configuration = {
                   hostName = "laptop";
-                  modules = with modules; [
-                    profile.application-development
-                    profile.system-administration
-                    gnome-theme-fix
+                  modules = [
+                    "${moduleBaseDirectory}/profile/application-development.nix"
+                    "${moduleBaseDirectory}/profile/system-administration.nix"
+                    "${moduleBaseDirectory}/gnome-theme-fix.nix"
                   ];
                 };
                 systems = with inputs.flake-utils.lib.system; [
@@ -145,10 +115,10 @@
               {
                 configuration = {
                   hostName = "desktop";
-                  modules = with modules; [
-                    profile.application-development
-                    profile.system-administration
-                    gnome-theme-fix
+                  modules = [
+                    "${moduleBaseDirectory}/profile/application-development.nix"
+                    "${moduleBaseDirectory}/profile/system-administration.nix"
+                    "${moduleBaseDirectory}/gnome-theme-fix.nix"
                   ];
                 };
                 systems = with inputs.flake-utils.lib.system; [
