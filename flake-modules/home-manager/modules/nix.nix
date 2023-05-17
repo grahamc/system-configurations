@@ -1,6 +1,6 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (specialArgs) nix-index-database;
+    inherit (specialArgs) inputs;
     nix-daemon-reload = pkgs.writeShellApplication
       {
         name = "nix-daemon-reload";
@@ -15,7 +15,7 @@
   in
     {
       imports = [
-        nix-index-database.hmModules.nix-index
+        inputs.nix-index-database.hmModules.nix-index
       ];
 
       # Don't make a command_not_found handler

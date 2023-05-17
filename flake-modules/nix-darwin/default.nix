@@ -27,8 +27,7 @@
                 inherit system;
                 modules = modules ++ homeManagerSubmodules ++ [overlayModule];
                 specialArgs = {
-                  inherit hostName username homeDirectory repositoryDirectory;
-                  inherit (self.lib) updateFlags;
+                  inherit hostName username homeDirectory repositoryDirectory inputs;
                 };
               };
             darwinOutput = {

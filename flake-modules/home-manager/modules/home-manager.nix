@@ -1,6 +1,7 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (specialArgs) hostName username homeDirectory isHomeManagerRunningAsASubmodule updateFlags;
+    inherit (specialArgs) hostName username homeDirectory isHomeManagerRunningAsASubmodule;
+    inherit (specialArgs.inputs) self;
     inherit (lib.attrsets) optionalAttrs;
 
     # Scripts for switching generations and upgrading flake inputs.
@@ -15,7 +16,7 @@
       {
         name = "hostctl-upgrade";
         text = ''
-          home-manager switch --flake "${config.repository.directory}#${hostName}" ${updateFlags.home} "''$@"
+          home-manager switch --flake "${config.repository.directory}#${hostName}" ${self.lib.updateFlags.home} "''$@"
         '';
       };
   in

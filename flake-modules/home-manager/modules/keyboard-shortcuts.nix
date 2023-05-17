@@ -1,6 +1,6 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
-    inherit (specialArgs) isGui stackline;
+    inherit (specialArgs) isGui inputs;
     inherit (pkgs.stdenv) isLinux isDarwin;
     linux = lib.mkIf
       (isGui && isLinux)
@@ -15,7 +15,7 @@
     stacklineWithoutConfig = pkgs.stdenv.mkDerivation {
       pname = "mystackline";
       version = "0.1";
-      src = stackline;
+      src = inputs.stackline;
       installPhase = ''
         mkdir -p $out
         cp -r $src/* $out/

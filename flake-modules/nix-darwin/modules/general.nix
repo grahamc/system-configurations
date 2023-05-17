@@ -1,10 +1,11 @@
 { config, lib, specialArgs, pkgs, ... }:
   let
-    inherit (specialArgs) hostName homeDirectory username repositoryDirectory updateFlags;
+    inherit (specialArgs) hostName homeDirectory username repositoryDirectory;
+    inherit (specialArgs.inputs) self;
 
     # Scripts for switching generations and upgrading flake inputs.
-    packages = with pkgs; [
-      (writeShellApplication {
+    packages = [
+      (pkgs.writeShellApplication {
         name = "hostctl-switch";
         runtimeInputs = with pkgs; [nvd];
         text = ''
@@ -16,12 +17,12 @@
           nvd diff "''$oldGenerationPath" "''$newGenerationPath"
         '';
       })
-      (writeShellApplication {
+      (pkgs.writeShellApplication {
         name = "hostctl-upgrade";
         text = ''
           oldGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
 
-          darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" ${updateFlags.darwin} "''$@"
+          darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" ${self.lib.updateFlags.darwin} "''$@"
 
           brew update
           brew upgrade

@@ -46,11 +46,8 @@
         username,
         homeDirectory,
         repositoryDirectory,
-        nix-index-database,
-        stackline,
-        self,
-        updateFlags,
         isHomeManagerRunningAsASubmodule,
+        inputs
       }:
       args;
 
@@ -58,9 +55,7 @@
       let
         extraSpecialArgs = validateExtraSpecialArgs
           {
-            inherit hostName username homeDirectory repositoryDirectory isGui;
-            inherit (inputs) nix-index-database stackline self;
-            inherit (self.lib) updateFlags;
+            inherit hostName username homeDirectory repositoryDirectory isGui inputs;
             isHomeManagerRunningAsASubmodule = true;
           };
         configuration = {
@@ -107,9 +102,7 @@
             else "${homeDirectory}/.dotfiles";
           extraSpecialArgs = validateExtraSpecialArgs
             {
-              inherit hostName isGui username homeDirectory repositoryDirectory;
-              inherit (inputs) nix-index-database stackline self;
-              inherit (self.lib) updateFlags;
+              inherit hostName isGui username homeDirectory repositoryDirectory inputs;
               isHomeManagerRunningAsASubmodule = false;
             };
         in
