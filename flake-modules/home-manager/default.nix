@@ -90,7 +90,7 @@
   in
     {
       flake = {
-        lib = {
+        lib.home = {
           inherit moduleBaseDirectory makeDarwinModules makeFlakeOutput;
         };
       };

@@ -54,14 +54,14 @@
                   LOCALE_ARCHIVE_2_11 = "";
                 });
               };
-            homeManagerOutput = self.lib.makeFlakeOutput system {
+            homeManagerOutput = self.lib.home.makeFlakeOutput system {
               inherit hostName;
               # I want to remove the systemd dependency, but there is no option for that. Instead, I set the user
               # to root since Home Manager won't include systemd if the user is root.
               # see: https://github.com/nix-community/home-manager/blob/master/modules/systemd.nix
               username = "root";
               modules = [
-                "${self.lib.moduleBaseDirectory}/profile/system-administration.nix"
+                "${self.lib.home.moduleBaseDirectory}/profile/system-administration.nix"
                 shellModule
               ];
               isGui = false;

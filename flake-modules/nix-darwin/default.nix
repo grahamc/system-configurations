@@ -11,7 +11,7 @@
           repositoryDirectory ? "${homeDirectory}/.dotfiles",
         }:
           let
-            homeManagerSubmodules = self.lib.makeDarwinModules
+            homeManagerSubmodules = self.lib.home.makeDarwinModules
               {
                 inherit username hostName homeDirectory repositoryDirectory;
                 modules = homeModules;
@@ -47,8 +47,8 @@
                 ./modules/general.nix
               ];
               homeModules = [
-                "${self.lib.moduleBaseDirectory}/profile/system-administration.nix"
-                "${self.lib.moduleBaseDirectory}/profile/application-development.nix"
+                "${self.lib.home.moduleBaseDirectory}/profile/system-administration.nix"
+                "${self.lib.home.moduleBaseDirectory}/profile/application-development.nix"
               ];
             };
             systems = with inputs.flake-utils.lib.system; [
