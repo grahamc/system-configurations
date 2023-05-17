@@ -5,15 +5,13 @@ import sys
 from time import sleep
 
 yellow = '\x1b[33;49;7;1m'
-blue = '\x1b[34;49;7;1m'
 normal = '\x1b[0m'
 code = '\x1b[35m\x1b[100m'
 
 # banner
-print(f'{blue} INFO {normal} Python v{".".join(str(x) for x in sys.version_info[:3])}, IPython v{".".join(str(x) for x in IPython.version_info[:3])}. Type {code} ? {normal} for help.')
+print(f'Python v{".".join(str(x) for x in sys.version_info[:3])}, IPython v{".".join(str(x) for x in IPython.version_info[:3])}. Type {code} ? {normal} for help.')
 
 # enable verbose exception traces
-print(f'{blue} INFO {normal}', end=' ')
 %xmode Verbose
 
 # enable autoreload
