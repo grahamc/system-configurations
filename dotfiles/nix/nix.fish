@@ -10,7 +10,7 @@ if command -s fzf-share >/dev/null
 end
 fzf_key_bindings
 
-# If the user run a nix or host-manager command while in a git repository with untracked files, warn them since those
+# If the user run a nix or hostctl command while in a git repository with untracked files, warn them since those
 # files will be ignored by any Nix Flake operation.
 function nix-unstaged-files-warning --on-event fish_preexec --argument-names commandline
     # Have to set these first before the $status changes
@@ -19,7 +19,7 @@ function nix-unstaged-files-warning --on-event fish_preexec --argument-names com
 
     set command (string split ' ' -- "$commandline")[1]
     if not string match --regex --quiet -- 'nix' "$command"
-    and not string match --regex --quiet -- 'host-manager' "$command"
+    and not string match --regex --quiet -- 'hostctl' "$command"
     and not string match --regex --quiet -- 'home-manager' "$command"
     and not string match --regex --quiet -- 'darwin-rebuild' "$command"
       return

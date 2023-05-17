@@ -4,16 +4,16 @@
     inherit (lib.attrsets) optionalAttrs;
 
     # Scripts for switching generations and upgrading flake inputs.
-    host-manager-switch = pkgs.writeShellApplication
+    hostctl-switch = pkgs.writeShellApplication
       {
-        name = "host-manager-switch";
+        name = "hostctl-switch";
         text = ''
           home-manager switch --flake "${config.repository.directory}#${hostName}" "''$@"
         '';
       };
-    host-manager-upgrade = pkgs.writeShellApplication
+    hostctl-upgrade = pkgs.writeShellApplication
       {
-        name = "host-manager-upgrade";
+        name = "hostctl-upgrade";
         text = ''
           home-manager switch --flake "${config.repository.directory}#${hostName}" ${updateFlags.home} "''$@"
         '';
@@ -48,7 +48,7 @@
               deleted = ["*"];
             };
             action = ''
-              host-manager-switch
+              hostctl-switch
             '';
           }
         ];
@@ -62,8 +62,8 @@
         home.homeDirectory = homeDirectory;
 
         home.packages = [
-          host-manager-switch
-          host-manager-upgrade
+          hostctl-switch
+          hostctl-upgrade
         ];
 
         # Let Home Manager install and manage itself.

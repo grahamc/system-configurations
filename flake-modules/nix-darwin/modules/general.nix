@@ -5,7 +5,7 @@
     # Scripts for switching generations and upgrading flake inputs.
     packages = with pkgs; [
       (writeShellApplication {
-        name = "host-manager-switch";
+        name = "hostctl-switch";
         runtimeInputs = with pkgs; [nvd];
         text = ''
           oldGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
@@ -17,7 +17,7 @@
         '';
       })
       (writeShellApplication {
-        name = "host-manager-upgrade";
+        name = "hostctl-upgrade";
         text = ''
           oldGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
 
