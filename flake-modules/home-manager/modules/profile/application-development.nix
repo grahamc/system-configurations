@@ -10,6 +10,7 @@
       (python3.withPackages(ps: with ps; [pip mypy ipython]))
       nodejs
       rustc
+      go
       cargo
       jdk
       lua

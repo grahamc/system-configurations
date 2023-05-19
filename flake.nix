@@ -65,6 +65,7 @@
         ./flake-modules/home-manager
         ./flake-modules/lib.nix
         ./flake-modules/assign-inputs-to-host-managers.nix
+        ./flake-modules/rootless-bundler
       ];
 
       systems = with flake-utils.lib.system; [
