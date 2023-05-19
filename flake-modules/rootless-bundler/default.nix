@@ -24,7 +24,10 @@
                     cp --recursive $(cat ${pkgs.writeReferencesToFile appPackage}) ./deps/
                     chmod -R 777 ./deps
                     cd ./flake-modules/rootless-bundler/gozip
-                    GOBIN="$PWD" ${pkgs.go}/bin/go install ./cmd/gozip/main.go
+                    # Go tries to access the home directory to make a cache, but we don't have one in this build
+                    # environment so put the cache in the current directory.
+                    mkdir gocache
+                    GOCACHE="$PWD/gocache" GOBIN="$PWD" ${pkgs.go}/bin/go install ./cmd/gozip/main.go
                     cp main $out
                     cd ../../../deps
                     cp ${self'.apps.default.program} entrypoint
