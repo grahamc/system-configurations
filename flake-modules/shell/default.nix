@@ -16,8 +16,9 @@
             minimalFish = pkgs.fish.override {
               usePython = false;
             };
-            # By default English is included so that will be the only one in this package.
-            minimalLocales = pkgs.glibcLocales.override { allLocales = false; };
+            # "C.UTF-8/UTF-8" is the locacle the perl said wasn't supported so I added it here.
+            # "en_US.UTF-8/UTF-8" was the default locacle so I'm keeping it just in case.
+            minimalLocales = pkgs.glibcLocales.override { allLocales = false;  locales = ["en_US.UTF-8/UTF-8" "C.UTF-8/UTF-8"];};
             minimalOverlay = final: prev: {
               fish = minimalFish;
               tmux = prev.tmux.override {
