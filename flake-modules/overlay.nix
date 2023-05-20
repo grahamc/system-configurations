@@ -103,7 +103,7 @@
             pynix = prev.writeShellApplication
               {
                 name = "pynix";
-                runtimeInputs = with prev; [any-nix-shell];
+                runtimeInputs = with final; [any-nix-shell];
                 text = ''
                   packages="''$(printf "%s\n" "$@" | xargs -I PACKAGE printf "python3Packages.PACKAGE ")"
                   eval ".any-nix-shell-wrapper fish -p ''$packages"
@@ -136,7 +136,7 @@
             linuxOnlyPackages = optionalAttrs isLinux {
               clear = prev.symlinkJoin {
                 name = "clear";
-                paths = [prev.busybox];
+                paths = [final.busybox];
                 buildInputs = [prev.makeWrapper];
                 # clear is a symlink to busybox so remove everything except those two.
                 postBuild = ''
@@ -158,7 +158,7 @@
               };
               pbpaste = prev.writeScriptBin "pbpaste"
                 ''
-                  #!${prev.fish}/bin/fish
+                  #!${final.fish}/bin/fish
 
                   if type --query wl-paste
                     wl-paste
@@ -175,7 +175,7 @@
               # for accessing the trash: https://github.com/Byron/trash-rs/issues/8
               trash = prev.writeScriptBin "trash"
                 ''
-                  #!${prev.python3}/bin/python3
+                  #!${final.python3}/bin/python3
 
                   import os
                   import sys
