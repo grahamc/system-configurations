@@ -183,7 +183,7 @@
               # for accessing the trash: https://github.com/Byron/trash-rs/issues/8
               trash = prev.writeScriptBin "trash"
                 ''
-                  #!${final.python3}/bin/python3
+                  #!/usr/bin/env python3
 
                   import os
                   import sys
