@@ -291,41 +291,41 @@ func GetNewStorePrefix() (prefix string, err error){
 	return "", errors.New("Unable to find a new store prefix")
 }
 
-func ExtractArchiveAndRewritePaths() (extractedArchivePath string, err error) {
+func ExtractArchiveAndRewritePaths() (extractedArchivePath string, executableCachePath string, err error) {
 	// no cache then write,
 	// if cache then check if hash is same and cache location is same then use, otherwise delete hash folder and file and write new and use
 	// cache: binary name folder, hash folder and file saying where this was extracted to
 	userCachePath, err := os.UserCacheDir()
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	cachePath := filepath.Join(userCachePath, "nix-rootless-bundler")
 	err = CreateDirectoryIfNotExists(cachePath)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	executablePath, err := os.Executable()
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	executableName := filepath.Base(executablePath)
-	executableCachePath := filepath.Join(cachePath, executableName)
+	executableCachePath = filepath.Join(cachePath, executableName)
 	err = CreateDirectoryIfNotExists(executableCachePath)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	executable, err := os.Open(executablePath)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	defer executable.Close()
 	hash := sha256.New()
 	_, err = io.Copy(hash, executable)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	executableChecksum := string(hash.Sum(nil))
 	archiveContentsPath := filepath.Join(executableCachePath, "archive-contents")
@@ -336,57 +336,63 @@ func ExtractArchiveAndRewritePaths() (extractedArchivePath string, err error) {
 	cacheKeyPath := filepath.Join(executableCachePath, "cache-key.txt")
 	isFileExists, err := IsFileExists(cacheKeyPath)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	if isFileExists {
 		cacheKey_Bytes, err := os.ReadFile(cacheKeyPath)
 		if err != nil {
-			return "", err
+			return "", "", err
 		}
 		cacheKey := string(cacheKey_Bytes)
 		if cacheKey == expectedCacheKey {
-			return archiveContentsPath, nil
+			return archiveContentsPath, executableCachePath, nil
 		}
 	}
 
 	os.RemoveAll(archiveContentsPath)
 	err = os.Mkdir(archiveContentsPath, 0755)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	err = Unzip(executablePath, archiveContentsPath)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	newStorePath, err := GetNewStorePrefix()
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	os.Remove(newStorePath)
 	err = os.Symlink(archiveContentsPath, newStorePath)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	err = RewritePaths(archiveContentsPath, newStorePath)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	err = os.WriteFile(cacheKeyPath, []byte(expectedCacheKey), 0755)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	return archiveContentsPath, nil
+	return archiveContentsPath, executableCachePath, nil
 }
 
 func SelfExtractAndRunNixEntrypoint() (err error) {
-	extractedArchivePath, err := ExtractArchiveAndRewritePaths()
+	extractedArchivePath, cachePath, err := ExtractArchiveAndRewritePaths()
 	if err != nil {
 		return err
 	}
+	defer func() {
+		deleteCacheEnvVariable := os.Getenv("NIX_ROOTLESS_BUNDLER_DELETE_CACHE")
+		if len(deleteCacheEnvVariable) > 0 {
+			os.RemoveAll(cachePath)
+		}
+	}()
 
 	entrypointPath := filepath.Join(extractedArchivePath, "entrypoint")
 	cmd := exec.Command(entrypointPath)
