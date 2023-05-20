@@ -213,8 +213,9 @@ func RewritePaths(archiveContentsPath string, newStorePath string) (error) {
 	newStorePathWithPadding := strings.Replace(newStorePath, "/", strings.Repeat("/", extraSlashesCount + 1), 1)
 	for _, file := range topLevelFilesInArchive {
 		name := file.Name()
-		oldPackagePath := oldStorePath + name
-		newPackagePath := newStorePathWithPadding + name
+		oldPackagePath := filepath.Join(oldStorePath, name)
+		// I'm intentionally not using `filepath.Join` here since it normalizes the path which would remove the padding.
+		newPackagePath := newStorePathWithPadding + "/" + name
 		newPackagePaths[oldPackagePath] = newPackagePath
 	}
 
