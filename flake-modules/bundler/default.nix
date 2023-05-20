@@ -34,7 +34,7 @@
                 cd ../../../deps
                 cp ${entrypoint} entrypoint
                 chmod 777 entrypoint
-                ../flake-modules/bundler/gozip/main -c $out ./*
+                ../flake-modules/bundler/gozip/main -internalCreate $out ./*
               '';
             };
 

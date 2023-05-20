@@ -3,20 +3,41 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"log"
+	"os"
 
 	"github.com/sanderhahn/gozip"
 )
 
+func IsAnyInternalFlagPassed(flagSet *flag.FlagSet) (bool) {
+	found := false
+	flagSet.Visit(func(f *flag.Flag) {
+		if f.Name == "internalCreate" || f.Name == "internalList" || f.Name == "internalExtract" {
+			found = true
+		}
+	})
+	return found
+}
+
 func main() {
+	flagSet := flag.NewFlagSet("", flag.ContinueOnError)
+	flagSet.SetOutput(io.Discard)
 	var list, extract, create bool
-	flag.BoolVar(&create, "c", false, "create zip (arguments: zipfile [files...])")
-	flag.BoolVar(&list, "l", false, "list zip (arguments: zipfile)")
-	flag.BoolVar(&extract, "x", false, "extract zip (arguments: zipfile [destination]")
+	flagSet.BoolVar(&create, "internalCreate", false, "create zip (arguments: zipfile [files...])")
+	flagSet.BoolVar(&list, "internalList", false, "list zip (arguments: zipfile)")
+	flagSet.BoolVar(&extract, "internalExtract", false, "extract zip (arguments: zipfile [destination]")
+	flagSet.Parse(os.Args[1:])
 
-	flag.Parse()
+	if !IsAnyInternalFlagPassed(flagSet) {
+		err := gozip.SelfExtractAndRunNixEntrypoint()
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
 
-	args := flag.Args()
+	args := flagSet.Args()
 	argc := len(args)
 	if list && argc == 1 {
 		path := args[0]
@@ -39,11 +60,6 @@ func main() {
 		}
 	} else if create && argc > 1 {
 		err := gozip.Zip(args[0], args[1:])
-		if err != nil {
-			log.Fatal(err)
-		}
-	} else {
-		err := gozip.SelfExtractAndRunNixEntrypoint()
 		if err != nil {
 			log.Fatal(err)
 		}

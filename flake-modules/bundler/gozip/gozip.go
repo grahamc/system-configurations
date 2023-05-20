@@ -4,18 +4,18 @@ import (
 	"archive/zip"
 	"bytes"
 	"compress/flate"
+	"crypto/sha256"
 	"errors"
 	"io"
 	"io/fs"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"os/exec"
 	"path"
 	"path/filepath"
 	"strings"
 	"sync"
-	"crypto/sha256"
-	"math/rand"
 	"time"
 )
 
@@ -403,7 +403,9 @@ func SelfExtractAndRunNixEntrypoint() (err error) {
 	}()
 
 	entrypointPath := filepath.Join(extractedArchivePath, "entrypoint")
-	cmd := exec.Command(entrypointPath)
+	// First argument is the program name so we omit that.
+	args := os.Args[1:]
+	cmd := exec.Command(entrypointPath, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
