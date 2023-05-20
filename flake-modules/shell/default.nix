@@ -13,6 +13,12 @@
         shellOutput =
           let
             hostName = "no-host";
+            # When I can't remove a package, I replace it with this.
+            emptyPackage = pkgs.writeShellApplication
+              {
+                name = "fake";
+                text = "";
+              };
             minimalFish = pkgs.fish.override {
               usePython = false;
             };
@@ -28,14 +34,14 @@
               fzf = prev.fzf.override {
                 glibcLocales = minimalLocales;
               };
+              open = emptyPackage;
             };
             shellModule = {config, ...}:
               {
                 # I want a self contained executable so I can't have symlinks that point outside the Nix store.
                 config.repository.symlink.makeCopiesInstead = true;
                 # I do this to override the original link to the treesitter parsers.
-                config.xdg.dataFile."nvim/site/parser".source = lib.mkForce
-                  (pkgs.writeShellApplication {name = "fake"; text = "";});
+                config.xdg.dataFile."nvim/site/parser".source = lib.mkForce emptyPackage;
                 config.programs.nix-index = {
                   enable = false;
                   symlinkToCacheHome = false;
