@@ -30,6 +30,9 @@
               tmux = prev.tmux.override {
                 withSystemd = false;
               };
+              comma = emptyPackage;
+              coreutils-full = prev.coreutils;
+              gitMinimal = emptyPackage;
             } // optionalAttrs isLinux {
               fzf = prev.fzf.override {
                 glibcLocales = minimalLocales;
@@ -60,6 +63,7 @@
                   LOCALE_ARCHIVE_2_27 = "";
                   LOCALE_ARCHIVE_2_11 = "";
                 });
+                config.xdg.mime.enable = lib.mkForce false;
               };
             homeManagerOutput = self.lib.home.makeFlakeOutput system {
               inherit hostName;
