@@ -30,29 +30,32 @@ func IsZip(path string) bool {
 }
 
 // Zip takes all the files (dirs) and zips them into path
-func Zip(path string, dirs []string) (err error) {
-	if IsZip(path) {
-		return errors.New(path + " is already a zip file")
+func Zip(destinationPath string, filesToZip []string) (err error) {
+	if IsZip(destinationPath) {
+		return errors.New(destinationPath + " is already a zip file")
 	}
 
-	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+	destinationFile, err := os.OpenFile(destinationPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
 		return
 	}
-	defer f.Close()
+	defer destinationFile.Close()
 
-	startoffset, err := f.Seek(0, os.SEEK_END)
+	// To make a self extracting archive, the `destinationPath` can be the executable that does the extraction.
+	// For this reason, we set the `startoffset` to `os.SEEK_END`. This way we append the contents of the archive
+	// after the executable. Check the README for an example of making a self-extracting archive.
+	startoffset, err := destinationFile.Seek(0, os.SEEK_END)
 	if err != nil {
 		return
 	}
 
-	w := zip.NewWriter(f)
+	w := zip.NewWriter(destinationFile)
 	w.RegisterCompressor(zip.Deflate, func(out io.Writer) (io.WriteCloser, error) {
 		return flate.NewWriter(out, flate.BestCompression)
 	})
 	w.SetOffset(startoffset)
 
-	for _, dir := range dirs {
+	for _, dir := range filesToZip {
 		err = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
@@ -195,7 +198,10 @@ func RewritePaths(archiveContentsPath string, newStorePath string) (error) {
 	}
 	defer archiveContents.Close()
 
-	// The 0 means return all files in the directory, as opposed to setting a max
+	// The top level files in the archive are the directories of the Nix packages so we can use those directory names
+	// to get a list of all the package paths that need to be rewritten in the binaries.
+	//
+	// The 0 means return all files in the directory, as opposed to setting a max.
 	topLevelFilesInArchive, err := archiveContents.Readdir(0)
 	if err != nil {
 		return err
@@ -203,11 +209,12 @@ func RewritePaths(archiveContentsPath string, newStorePath string) (error) {
 	newPackagePaths := make(map[string]string)
 	oldStorePath := "/nix/store"
 	extraSlashesCount := len(oldStorePath) - len(newStorePath)
-	newStorePrefixWithPadding := strings.Replace(newStorePath, "/", strings.Repeat("/", extraSlashesCount + 1), 1)
+	// The new store path must be the same length as the old one or it messes up the binary.
+	newStorePathWithPadding := strings.Replace(newStorePath, "/", strings.Repeat("/", extraSlashesCount + 1), 1)
 	for _, file := range topLevelFilesInArchive {
 		name := file.Name()
 		oldPackagePath := oldStorePath + name
-		newPackagePath := newStorePrefixWithPadding + name
+		newPackagePath := newStorePathWithPadding + name
 		newPackagePaths[oldPackagePath] = newPackagePath
 	}
 
@@ -266,7 +273,7 @@ func RewritePaths(archiveContentsPath string, newStorePath string) (error) {
 	return nil
 }
 
-func GetNewStorePrefix() (prefix string, err error){
+func GetNewStorePath() (prefix string, err error){
 	rand.Seed(time.Now().UnixNano())
 	charset := "abcdefghijklmnopqrstuvwxyz"
 	var candidatePrefix string
@@ -359,7 +366,7 @@ func ExtractArchiveAndRewritePaths() (extractedArchivePath string, executableCac
 		return "", "", err
 	}
 
-	newStorePath, err := GetNewStorePrefix()
+	newStorePath, err := GetNewStorePath()
 	if err != nil {
 		return "", "", err
 	}

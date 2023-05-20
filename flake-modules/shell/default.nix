@@ -12,7 +12,7 @@
         inherit (pkgs.stdenv) isLinux;
         shellOutput =
           let
-            hostName = "no-host";
+            hostName = "guest-host";
             # When I can't remove a package, I replace it with this.
             emptyPackage = pkgs.writeShellApplication
               {
