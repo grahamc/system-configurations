@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest]
     defaults:
       run:
         working-directory: './.dotfiles'
@@ -34,11 +34,14 @@ jobs:
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
       - run: nix bundle --show-trace --bundler .# .#
       # Dereference the symlink so I can upload the actual executable. The symlink name will look like
-      # 'shell-x86_64.AppImage' so I'm using a glob pattern to match it.
-      - run: cp -L shell-* shell
+      # 'shell-x86_64-linux' so I'm using a glob pattern to match it.
+      - run: |
+          mkdir tmp
+          cp -L shell-* ./tmp/
       - name: Upload executable
         uses: svenstaro/upload-release-action@v2
         with:
-          file: '${{ env.HOME }}/.dotfiles/shell'
+          file: '${{ env.HOME }}/.dotfiles/tmp/*'
+          file_glob: true
           overwrite: true
           repo_token: ${{ secrets.GITHUB_TOKEN }}

@@ -20,13 +20,6 @@
       url = "github:Mic92/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-appimage = {
-      url = "github:ralismark/nix-appimage";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
-    };
     nix-darwin = {
       url = "github:lnl7/nix-darwin/master";
       inputs = {
@@ -65,7 +58,6 @@
         ./flake-modules/home-manager
         ./flake-modules/lib.nix
         ./flake-modules/assign-inputs-to-host-managers.nix
-        ./flake-modules/rootless-bundler
       ];
 
       systems = with flake-utils.lib.system; [

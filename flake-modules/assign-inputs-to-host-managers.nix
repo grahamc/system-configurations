@@ -13,7 +13,6 @@
             "flake-parts"
             "home-manager"
             "nix-index-database"
-            "nix-appimage"
             "vim-plugin-vim-CursorLineCurrentWindow"
             "vim-plugin-virt-column.nvim"
             "vim-plugin-folding-nvim"
