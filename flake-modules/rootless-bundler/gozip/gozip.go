@@ -2,17 +2,21 @@ package gozip
 
 import (
 	"archive/zip"
+	"bytes"
+	"compress/flate"
 	"errors"
 	"io"
+	"io/fs"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
 	"path/filepath"
-	"bytes"
 	"strings"
-	"compress/flate"
 	"sync"
+	"crypto/sha256"
+	"math/rand"
+	"time"
 )
 
 // IsZip checks to see if path is already a zip file
@@ -100,12 +104,14 @@ func Zip(path string, dirs []string) (err error) {
 // Unzip unzips the file zippath and puts it in destination
 func Unzip(zippath string, destination string) (err error) {
 	zipReader, err := zip.OpenReader(zippath)
-	zipReader.RegisterDecompressor(zip.Store, func(in io.Reader) (io.ReadCloser) {
-		return flate.NewReader(in)
-	})
 	if err != nil {
 		return err
 	}
+	zipReader.RegisterDecompressor(zip.Store, func(in io.Reader) (io.ReadCloser) {
+		return flate.NewReader(in)
+	})
+	defer zipReader.Close()
+
 	for _, file := range zipReader.File {
 		fullname := path.Join(destination, file.Name)
 		if file.FileInfo().IsDir() {
@@ -117,6 +123,8 @@ func Unzip(zippath string, destination string) (err error) {
 			if err != nil {
 				return err
 			}
+			defer fileReadCloser.Close()
+
 			_, err = io.CopyN(buf, fileReadCloser, file.FileInfo().Size())
 			if err != nil {
 				return err
@@ -165,45 +173,46 @@ func UnzipList(path string) (list []string, err error) {
 	return
 }
 
-func Entrypoint() (err error) {
-	exePath, err := os.Executable()
-	if err != nil {
-		return err
-	}
-	os.RemoveAll("out")
-	err = os.Mkdir("out", 0755)
-	if err != nil {
-		return err
-	}
-	Unzip(exePath, "out")
+func CreateDirectoryIfNotExists(path string) (err error) {
+	return os.MkdirAll(path, 0755)
+}
 
-	os.Remove("/tmp/rew")
-	wd, err := os.Getwd()
+func IsFileExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	} else if errors.Is(err, fs.ErrNotExist) {
+		return false, nil
+	} else {
+		return false, err
+	}
+}
+
+func RewritePaths(archiveContentsPath string, newStorePath string) (error) {
+	archiveContents, err := os.Open(archiveContentsPath)
 	if err != nil {
 		return err
 	}
-	err = os.Symlink(wd + "/out", "/tmp/rew")
+	defer archiveContents.Close()
+
+	// The 0 means return all files in the directory, as opposed to setting a max
+	topLevelFilesInArchive, err := archiveContents.Readdir(0)
 	if err != nil {
 		return err
 	}
-	outDir, err := os.Open("./out")
-	if err != nil {
-		return err
-	}
-	outDirFiles, err := outDir.Readdir(0)
-	if err != nil {
-		return err
-	}
-	hashes := make(map[string]string)
-	for _, file := range outDirFiles {
+	newPackagePaths := make(map[string]string)
+	oldStorePath := "/nix/store"
+	extraSlashesCount := len(oldStorePath) - len(newStorePath)
+	newStorePrefixWithPadding := strings.Replace(newStorePath, "/", strings.Repeat("/", extraSlashesCount + 1), 1)
+	for _, file := range topLevelFilesInArchive {
 		name := file.Name()
-		oldpath := "/nix/store/" + name
-		newPath := "/tmp/rew///" + name
-		hashes[oldpath] = newPath
+		oldPackagePath := oldStorePath + name
+		newPackagePath := newStorePrefixWithPadding + name
+		newPackagePaths[oldPackagePath] = newPackagePath
 	}
 
 	waitGroup := sync.WaitGroup{}
-	err = filepath.Walk("./out", filepath.WalkFunc(func(path string, info os.FileInfo, err error) (error) {
+	err = filepath.Walk(archiveContentsPath, filepath.WalkFunc(func(path string, info os.FileInfo, err error) (error) {
 		if err != nil {
 			return err
 		}
@@ -219,8 +228,8 @@ func Entrypoint() (err error) {
 				if err != nil {
 					return err
 				}
-				if strings.HasPrefix(str, "/nix/store/") {
-					newTarget := strings.Replace(str, "/nix/store/", "/tmp/rew/", 1)
+				if strings.HasPrefix(str, oldStorePath) {
+					newTarget := strings.Replace(str, oldStorePath, newStorePath, 1)
 					err = os.Remove(path)
 					if err != nil {
 						return err
@@ -233,21 +242,20 @@ func Entrypoint() (err error) {
 				return nil
 			}
 
-			read, err := ioutil.ReadFile(path)
+			fileContents, err := ioutil.ReadFile(path)
 			if err != nil {
 				return err
 			}
-			newContents := read
-			for old, new := range hashes {
-				newContents = bytes.ReplaceAll(newContents, []byte(old), []byte(new))
+			newFileContents := fileContents
+			for oldPackagePath, newPackagePath := range newPackagePaths {
+				newFileContents = bytes.ReplaceAll(newFileContents, []byte(oldPackagePath), []byte(newPackagePath))
 			}
-			err = ioutil.WriteFile(path, []byte(newContents), 0)
+			err = ioutil.WriteFile(path, []byte(newFileContents), 0)
 			if err != nil {
 				return err
 			}
-			return
+			return nil
 		}(path, info)
-
 		return nil
 	}))
 	if err != nil {
@@ -255,13 +263,139 @@ func Entrypoint() (err error) {
 	}
 	waitGroup.Wait()
 
-	cmd := exec.Command("./out/entrypoint")
+	return nil
+}
+
+func GetNewStorePrefix() (prefix string, err error){
+	rand.Seed(time.Now().UnixNano())
+	charset := "abcdefghijklmnopqrstuvwxyz"
+	var candidatePrefix string
+	for i := 1; i <= 10; i++ {
+		candidatePrefix = "/tmp/"
+
+		// needs to be <= 5 since it will be appended to '/tmp/' and needs to be <= '/nix/store'
+		stringLength := 4
+		for i := 1; i <= stringLength; i++ {
+			candidatePrefix = candidatePrefix + string(charset[rand.Intn(len(charset))])
+		}
+
+		isFileExists, err := IsFileExists(candidatePrefix)
+		if err != nil {
+			return "", err
+		}
+		if !isFileExists {
+			return candidatePrefix, nil
+		}
+	}
+
+	return "", errors.New("Unable to find a new store prefix")
+}
+
+func ExtractArchiveAndRewritePaths() (extractedArchivePath string, err error) {
+	// no cache then write,
+	// if cache then check if hash is same and cache location is same then use, otherwise delete hash folder and file and write new and use
+	// cache: binary name folder, hash folder and file saying where this was extracted to
+	userCachePath, err := os.UserCacheDir()
+	if err != nil {
+		return "", err
+	}
+	cachePath := filepath.Join(userCachePath, "nix-rootless-bundler")
+	err = CreateDirectoryIfNotExists(cachePath)
+	if err != nil {
+		return "", err
+	}
+
+	executablePath, err := os.Executable()
+	if err != nil {
+		return "", err
+	}
+
+	executableName := filepath.Base(executablePath)
+	executableCachePath := filepath.Join(cachePath, executableName)
+	err = CreateDirectoryIfNotExists(executableCachePath)
+	if err != nil {
+		return "", err
+	}
+
+	executable, err := os.Open(executablePath)
+	if err != nil {
+		return "", err
+	}
+	defer executable.Close()
+	hash := sha256.New()
+	_, err = io.Copy(hash, executable)
+	if err != nil {
+		return "", err
+	}
+	executableChecksum := string(hash.Sum(nil))
+	archiveContentsPath := filepath.Join(executableCachePath, "archive-contents")
+
+	// The cache entry is still valid if the executable is the same and the cache is still in the same place, since
+	// we rewrite the Nix store paths to point to the cache.
+	expectedCacheKey := executableCachePath + executableChecksum
+	cacheKeyPath := filepath.Join(executableCachePath, "cache-key.txt")
+	isFileExists, err := IsFileExists(cacheKeyPath)
+	if err != nil {
+		return "", err
+	}
+	if isFileExists {
+		cacheKey_Bytes, err := os.ReadFile(cacheKeyPath)
+		if err != nil {
+			return "", err
+		}
+		cacheKey := string(cacheKey_Bytes)
+		if cacheKey == expectedCacheKey {
+			return archiveContentsPath, nil
+		}
+	}
+
+	os.RemoveAll(archiveContentsPath)
+	err = os.Mkdir(archiveContentsPath, 0755)
+	if err != nil {
+		return "", err
+	}
+	err = Unzip(executablePath, archiveContentsPath)
+	if err != nil {
+		return "", err
+	}
+
+	newStorePath, err := GetNewStorePrefix()
+	if err != nil {
+		return "", err
+	}
+	os.Remove(newStorePath)
+	err = os.Symlink(archiveContentsPath, newStorePath)
+	if err != nil {
+		return "", err
+	}
+
+	err = RewritePaths(archiveContentsPath, newStorePath)
+	if err != nil {
+		return "", err
+	}
+
+	err = os.WriteFile(cacheKeyPath, []byte(expectedCacheKey), 0755)
+	if err != nil {
+		return "", err
+	}
+
+	return archiveContentsPath, nil
+}
+
+func SelfExtractAndRunNixEntrypoint() (err error) {
+	extractedArchivePath, err := ExtractArchiveAndRewritePaths()
+	if err != nil {
+		return err
+	}
+
+	entrypointPath := filepath.Join(extractedArchivePath, "entrypoint")
+	cmd := exec.Command(entrypointPath)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err = cmd.Run()
 	if err != nil {
-		return
+		return err
 	}
 
 	return nil

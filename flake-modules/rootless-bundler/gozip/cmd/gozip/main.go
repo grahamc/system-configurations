@@ -43,7 +43,7 @@ func main() {
 			log.Fatal(err)
 		}
 	} else {
-		err := gozip.Entrypoint()
+		err := gozip.SelfExtractAndRunNixEntrypoint()
 		if err != nil {
 			log.Fatal(err)
 		}
