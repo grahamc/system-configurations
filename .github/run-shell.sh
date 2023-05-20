@@ -18,9 +18,9 @@ fi
 
 download_url="https://github.com/bigolu/dotfiles/releases/download/master/$name"
 if command -v curl 1>/dev/null 2>&1; then
-  curl --fail --progress-bar --location "$download_url"
+  curl --fail --progress-bar --location "$download_url" --output "$name"
 else
-  wget "$download_url"
+  wget --output-document "$name" "$download_url"
 fi
 chmod +x "$name"
 
