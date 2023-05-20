@@ -168,6 +168,14 @@
                     echo "Error: Can't find a program to pasting clipboard contents" 1>/dev/stderr
                   end
                 '';
+              open = prev.writeShellApplication
+                {
+                  name = "open";
+                  runtimeInputs = [final.xdg-utils];
+                  text = ''
+                    xdg-open "''$@"
+                  '';
+                };
             };
 
             darwinOnlyPackages = optionalAttrs isDarwin {

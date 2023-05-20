@@ -3,14 +3,6 @@
     inherit (lib.lists) optionals;
     inherit (pkgs.stdenv) isLinux isDarwin;
     inherit (lib.attrsets) optionalAttrs;
-    open = pkgs.writeShellApplication
-      {
-        name = "open";
-        runtimeInputs = [pkgs.xdg-utils];
-        text = ''
-          xdg-open "''$@"
-        '';
-      };
   in
     {
       imports = [
