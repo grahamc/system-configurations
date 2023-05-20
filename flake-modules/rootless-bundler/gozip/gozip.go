@@ -12,6 +12,7 @@ import (
 	"bytes"
 	"strings"
 	"compress/flate"
+	"sync"
 )
 
 // IsZip checks to see if path is already a zip file
@@ -200,6 +201,8 @@ func Entrypoint() (err error) {
 		newPath := "/tmp/rew///" + name
 		hashes[oldpath] = newPath
 	}
+
+	waitGroup := sync.WaitGroup{}
 	err = filepath.Walk("./out", filepath.WalkFunc(func(path string, info os.FileInfo, err error) (error) {
 		if err != nil {
 			return err
@@ -208,43 +211,49 @@ func Entrypoint() (err error) {
 			return nil
 		}
 
-		if info.Mode()&os.ModeSymlink != 0 {
-			str, err := os.Readlink(path)
+		waitGroup.Add(1)
+		go func(path string, info os.FileInfo) (err error) {
+			defer waitGroup.Done()
+			if info.Mode()&os.ModeSymlink != 0 {
+				str, err := os.Readlink(path)
+				if err != nil {
+					return err
+				}
+				if strings.HasPrefix(str, "/nix/store/") {
+					newTarget := strings.Replace(str, "/nix/store/", "/tmp/rew/", 1)
+					err = os.Remove(path)
+					if err != nil {
+						return err
+					}
+					err = os.Symlink(newTarget, path)
+					if err != nil {
+						return err
+					}
+				}
+				return nil
+			}
+
+			read, err := ioutil.ReadFile(path)
 			if err != nil {
 				return err
 			}
-			if strings.HasPrefix(str, "/nix/store/") {
-				newTarget := strings.Replace(str, "/nix/store/", "/tmp/rew/", 1)
-				err = os.Remove(path)
-				if err != nil {
-					return err
-				}
-				err = os.Symlink(newTarget, path)
-				if err != nil {
-					return err
-				}
+			newContents := read
+			for old, new := range hashes {
+				newContents = bytes.ReplaceAll(newContents, []byte(old), []byte(new))
 			}
-			return nil
-		}
-
-		read, err := ioutil.ReadFile(path)
-		if err != nil {
-			return err
-		}
-		newContents := read
-		for old, new := range hashes {
-			newContents = bytes.ReplaceAll(newContents, []byte(old), []byte(new))
-		}
-		err = ioutil.WriteFile(path, []byte(newContents), 0)
-		if err != nil {
-			return err
-		}
+			err = ioutil.WriteFile(path, []byte(newContents), 0)
+			if err != nil {
+				return err
+			}
+			return
+		}(path, info)
 
 		return nil
 	}))
 	if err != nil {
 		return err
 	}
+	waitGroup.Wait()
 
 	cmd := exec.Command("./out/entrypoint")
 	cmd.Stdin = os.Stdin
