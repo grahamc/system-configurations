@@ -19,29 +19,33 @@
   in
     ''#!${fish}
 
-    # For packages that need one of their XDG Base directories to be mutable
-    set -g mutable_bin (${mktemp} --directory)
-    set -g state_dir (${mktemp} --directory)
-    set -g config_dir (${mktemp} --directory)
-    set -g data_dir (${mktemp} --directory)
-    set -g runtime_dir (${mktemp} --directory)
-    set -g cache_dir (${mktemp} --directory)
-
+    set mutable_bin (${mktemp} --directory)
+    set state_dir (${mktemp} --directory)
+    set runtime_dir (${mktemp} --directory)
+    set cache_dir (${mktemp} --directory)
+    set config_dir ${activationPackage}/home-files/.config
+    set data_dir ${activationPackage}/home-files/.local/share
     # Clean up temporary directories when the shell exits
-    function _cleanup --on-event fish_exit \
-    --inherit-variable mutable_bin \
-    --inherit-variable state_dir \
-    --inherit-variable config_dir \
-    --inherit-variable data_dir \
-    --inherit-variable runtime_dir \
-    --inherit-variable cache_dir
-      rm -rf "$mutable_bin" "$state_dir" "$config_dir" "$data_dir" "$runtime_dir" "$cache_dir"
+    function _cleanup --on-event fish_exit
+      rm -rf "$mutable_bin" "$state_dir" "$runtime_dir" "$cache_dir"
     end
 
-    # Make mutable copies of the contents of any XDG Base Directory in the Home Manager configuration.
-    # This is because some programs need to be able to write to one of these directories e.g. `fish`.
-    ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.config/* ''$config_dir
-    ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.local/share/* ''$data_dir
+    # Some packages need one of their XDG Base directories to be mutable so if the Nix store isn't writable we
+    # copy the directories into temporary ones.
+    if not test -w /nix/store
+      set config_dir (${mktemp} --directory)
+      set data_dir (${mktemp} --directory)
+
+      # Clean up temporary directories when the shell exits
+      function _cleanup --on-event fish_exit
+        rm -rf "$config_dir" "$data_dir"
+      end
+
+      # Make mutable copies of the contents of any XDG Base Directory in the Home Manager configuration.
+      # This is because some programs need to be able to write to one of these directories e.g. `fish`.
+      ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.config/* ''$config_dir
+      ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.local/share/* ''$data_dir
+    end
 
     for program in ${activationPackage}/home-path/bin/*
       set base (${basename} ''$program)
