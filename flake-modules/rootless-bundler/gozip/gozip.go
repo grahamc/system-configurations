@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"bytes"
 	"strings"
+	"compress/flate"
 )
 
 // IsZip checks to see if path is already a zip file
@@ -41,6 +42,9 @@ func Zip(path string, dirs []string) (err error) {
 	}
 
 	w := zip.NewWriter(f)
+	w.RegisterCompressor(zip.Deflate, func(out io.Writer) (io.WriteCloser, error) {
+		return flate.NewWriter(out, flate.BestCompression)
+	})
 	w.SetOffset(startoffset)
 
 	for _, dir := range dirs {
@@ -55,6 +59,7 @@ func Zip(path string, dirs []string) (err error) {
 			}
 
 			fh, err := zip.FileInfoHeader(linfo)
+			fh.Method = zip.Deflate
 			if err != nil {
 				return err
 			}
@@ -94,6 +99,9 @@ func Zip(path string, dirs []string) (err error) {
 // Unzip unzips the file zippath and puts it in destination
 func Unzip(zippath string, destination string) (err error) {
 	zipReader, err := zip.OpenReader(zippath)
+	zipReader.RegisterDecompressor(zip.Store, func(in io.Reader) (io.ReadCloser) {
+		return flate.NewReader(in)
+	})
 	if err != nil {
 		return err
 	}
