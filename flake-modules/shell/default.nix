@@ -17,7 +17,7 @@
             emptyPackage = pkgs.writeShellApplication
               {
                 name = "fake";
-                text = "";
+                text = "echo 'This command is not supported in portable mode.'";
               };
             minimalFish = pkgs.fish.override {
               usePython = false;
