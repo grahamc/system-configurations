@@ -24,4 +24,4 @@ else
 fi
 chmod +x "$name"
 
-"$name" "$@"
+"./$name" "$@"
