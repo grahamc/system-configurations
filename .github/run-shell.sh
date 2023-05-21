@@ -1,27 +1,32 @@
 # shellcheck shell=sh
 
-name="shell"
-if uname -m | grep -q 'x86_64'; then
-  name="${name}-x86_64"
+set -o errexit
+set -o nounset
+
+name="shell-$(uname -m)-$(uname -s | tr '[:upper:]' '[:lower:]')"
+# shellcheck disable=2034
+# It gets used in an `eval`
+download_url="https://github.com/bigolu/dotfiles/releases/download/master/$name"
+
+if command -v curl 1>/dev/null 2>&1; then
+  # shellcheck disable=2016
+  file_not_exists_command='! curl --head --silent --fail "$download_url" 2> /dev/null'
+  # shellcheck disable=2016
+  download_command='curl --fail --progress-bar --location "$download_url" --output "$name"'
 else
-  echo "This architecture isn't supported: $(uname -m)"
-  exit 1
+  # shellcheck disable=2016
+  file_not_exists_command='! wget -q --method=HEAD "$download_url"'
+  # shellcheck disable=2016
+  download_command='wget --output-document "$name" "$download_url"'
 fi
-if uname | grep -q Linux; then
-  name="${name}-linux"
-elif uname | grep -q Darwin; then
-  name="${name}-darwin"
-else
-  echo "This system isn't supported: $(uname)"
+
+if eval "$file_not_exists_command"; then
+  echo "This system isn't supported: $(uname -sm)"
   exit 1
 fi
 
-download_url="https://github.com/bigolu/dotfiles/releases/download/master/$name"
-if command -v curl 1>/dev/null 2>&1; then
-  curl --fail --progress-bar --location "$download_url" --output "$name"
-else
-  wget --output-document "$name" "$download_url"
-fi
+eval "$download_command"
+
 chmod +x "$name"
 
 "./$name" "$@"
