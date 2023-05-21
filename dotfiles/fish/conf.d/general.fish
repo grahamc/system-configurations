@@ -92,7 +92,7 @@ end
 set --global --export RIPGREP_CONFIG_PATH "$HOME/.ripgreprc"
 
 # zoxide
-set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'type --query lsd; and lsd {2}; or ls {2}' --keep-right --bind='change:first' --height 40% --preview-window '50%'"
+set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'type --query lsd; and lsd {2}; or ls {2}' --keep-right --height 40% --preview-window '50%'"
 if type --query zoxide
     zoxide init --cmd cd fish | source
 
