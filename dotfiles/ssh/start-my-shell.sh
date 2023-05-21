@@ -42,4 +42,4 @@ else
   fi
   chmod +x "$shell_path"
 fi
-"./$shell_path"
+"$shell_path"
