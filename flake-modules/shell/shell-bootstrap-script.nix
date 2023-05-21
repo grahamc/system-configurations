@@ -32,7 +32,7 @@
 
     # Some packages need one of their XDG Base directories to be mutable so if the Nix store isn't writable we
     # copy the directories into temporary ones.
-    if not test -w /nix/store
+    if not test -w ${activationPackage}
       set config_dir (${mktemp} --directory)
       set data_dir (${mktemp} --directory)
 
