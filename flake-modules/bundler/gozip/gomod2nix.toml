@@ -1,0 +1,6 @@
+schema = 3
+
+[mod]
+  [mod."github.com/klauspost/compress"]
+    version = "v1.16.5"
+    hash = "sha256-m4wBSvrFyp//S4dB6S9ggEVFxNWTiJ8RBuucscuMDAs="

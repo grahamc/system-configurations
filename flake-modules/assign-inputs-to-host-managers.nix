@@ -25,6 +25,7 @@
             "fish-plugin-autopair-fish"
             "fish-plugin-async-prompt"
             "nix-xdg"
+            "gomod2nix"
           ];
           darwin = home ++ [
             "nix-darwin"

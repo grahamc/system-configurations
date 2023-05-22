@@ -34,6 +34,12 @@
       url = "github:AdamWagner/stackline";
       flake = false;
     };
+    gomod2nix = {
+      url = "github:nix-community/gomod2nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
     "vim-plugin-vim-CursorLineCurrentWindow" = {url = "github:inkarkat/vim-CursorLineCurrentWindow"; flake = false;};
     "vim-plugin-virt-column.nvim" = {url = "github:lukas-reineke/virt-column.nvim"; flake = false;};
     "vim-plugin-folding-nvim" = {url = "github:pierreglaser/folding-nvim"; flake = false;};

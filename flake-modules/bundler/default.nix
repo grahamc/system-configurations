@@ -15,26 +15,37 @@
         makeExecutable = {derivation, entrypoint, name}:
           let
             nameWithArch = "${name}-${system}";
+            goPkgs = import inputs.nixpkgs {
+              inherit system;
+              overlays = [
+                inputs.gomod2nix.overlays.default
+              ];
+            };
+            gozip = goPkgs.buildGoApplication {
+              pname = "gozip";
+              version = "0.1";
+              src = ./gozip;
+              pwd = ./gozip;
+              modules = ./gozip/gomod2nix.toml;
+            };
           in
             pkgs.stdenv.mkDerivation {
               pname = nameWithArch;
               name = nameWithArch;
               src = self;
+              buildInputs = [gozip];
               installPhase = ''
                 mkdir deps
                 mkdir preDeps
                 cp --recursive $(cat ${pkgs.writeReferencesToFile derivation}) ./deps/
                 chmod -R 777 ./deps
                 cd ./flake-modules/bundler/gozip
-                # Go tries to access the home directory to make a cache, but we don't have one in this build
-                # environment so put the cache in the current directory.
-                mkdir gocache
-                GOCACHE="$PWD/gocache" GOBIN="$PWD" ${pkgs.go}/bin/go install ./cmd/gozip/main.go
-                cp main $out
+                cp --dereference "$(${pkgs.which}/bin/which gozip)" $out
                 cd ../../../deps
                 cp ${entrypoint} entrypoint
                 chmod 777 entrypoint
-                ../flake-modules/bundler/gozip/main -internalCreate $out ./*
+                chmod +w $out
+                gozip -internalCreate $out ./*
               '';
             };
 

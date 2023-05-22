@@ -1,40 +1,39 @@
 package gozip
 
 import (
-	"archive/zip"
+	"archive/tar"
 	"bytes"
-	"compress/flate"
 	"crypto/sha256"
 	"errors"
 	"io"
 	"io/fs"
-	"io/ioutil"
+	"log"
 	"math/rand"
 	"os"
 	"os/exec"
-	"path"
 	"path/filepath"
 	"strings"
 	"sync"
 	"time"
+	"crypto/sha512"
+
+	"github.com/klauspost/compress/zstd"
 )
 
-// IsZip checks to see if path is already a zip file
-func IsZip(path string) bool {
-	r, err := zip.OpenReader(path)
-	if err == nil {
-		r.Close()
-		return true
+func GetTarReader(r io.Reader) (*tar.Reader, error) {
+	zRdr, err := zstd.NewReader(r)
+	if err != nil {
+		return nil, err
 	}
-	return false
+
+	return tar.NewReader(zRdr), nil
 }
 
-// Zip takes all the files (dirs) and zips them into path
+func generateBoundary() []byte {
+	h := sha512.Sum512([]byte("boundary"))
+	return h[:]
+}
 func Zip(destinationPath string, filesToZip []string) (err error) {
-	if IsZip(destinationPath) {
-		return errors.New(destinationPath + " is already a zip file")
-	}
-
 	destinationFile, err := os.OpenFile(destinationPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
 		return
@@ -44,136 +43,251 @@ func Zip(destinationPath string, filesToZip []string) (err error) {
 	// To make a self extracting archive, the `destinationPath` can be the executable that does the extraction.
 	// For this reason, we set the `startoffset` to `os.SEEK_END`. This way we append the contents of the archive
 	// after the executable. Check the README for an example of making a self-extracting archive.
-	startoffset, err := destinationFile.Seek(0, os.SEEK_END)
+	_, err = destinationFile.Seek(0, os.SEEK_END)
 	if err != nil {
-		return
+		return err
+	}
+	_, err = destinationFile.Write(generateBoundary())
+	if err != nil {
+		log.Fatal("writing boundary to output file:", err)
 	}
 
-	w := zip.NewWriter(destinationFile)
-	w.RegisterCompressor(zip.Deflate, func(out io.Writer) (io.WriteCloser, error) {
-		return flate.NewWriter(out, flate.BestCompression)
-	})
-	w.SetOffset(startoffset)
+	zWrt, err := zstd.NewWriter(destinationFile, zstd.WithEncoderLevel(zstd.SpeedBestCompression))
+	if err != nil {
+		return err
+	}
+	defer zWrt.Close()
+	tarWrt := tar.NewWriter(zWrt)
+	defer tarWrt.Close()
 
-	for _, dir := range filesToZip {
-		err = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+	cd := "."
+	for _, file := range filesToZip {
+		rootDir := os.DirFS(cd)
+		file = filepath.Clean(file)
+		fs.WalkDir(rootDir, file, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
 				return err
 			}
+			if path == "." {
+				return nil
+			}
 
-			linfo,err := os.Lstat(path)
+			var hdr tar.Header
+			hdr.Name = path
+
+			info, err := d.Info()
 			if err != nil {
 				return err
 			}
+			mode := info.Mode()
+			hdr.Mode = int64(mode)
 
-			fh, err := zip.FileInfoHeader(linfo)
-			fh.Method = zip.Deflate
-			if err != nil {
-				return err
-			}
-			fh.Name = path
-
-			writer, err := w.CreateHeader(fh)
-			if err != nil {
-				return err
-			}
-			if !info.IsDir() {
-				var content []byte
-				if info.Mode()&os.ModeSymlink != 0 {
-					str, err := os.Readlink(path)
+			switch mode.Type() {
+				case fs.ModeDir:
+					hdr.Typeflag = tar.TypeDir
+				case fs.ModeSymlink:
+					hdr.Typeflag = tar.TypeSymlink
+					target, err := os.Readlink(filepath.Join(cd, path))
 					if err != nil {
 						return err
 					}
-					content = []byte(str)
-				} else {
-					content, err = os.ReadFile(path)
-					if err != nil {
-						return err
-					}
-				}
+					hdr.Linkname = target
+				case 0: // regular file
+					hdr.Typeflag = tar.TypeReg
+					hdr.Size = info.Size()
+				default:
+					log.Fatalf("unsupported file type: %s", path)
+			}
 
-				_, err = writer.Write(content)
+			err = tarWrt.WriteHeader(&hdr)
+			if err != nil {
+				return err
+			}
+
+			if mode.Type() == 0 {
+				wf, err := os.Open(filepath.Join(cd, path))
 				if err != nil {
 					return err
 				}
+				_, err = io.Copy(tarWrt, wf)
+				if err != nil {
+					return err
+				}
+				wf.Close()
 			}
-			return err
+
+			return nil
 		})
 	}
-	err = w.Close()
+
 	return
+}
+
+func createFile(path string) (*os.File, error) {
+	dir := filepath.Dir(path)
+	err := os.MkdirAll(dir, 0755)
+	if err != nil {
+		return nil, err
+	}
+	f, err := os.Create(path)
+	if err != nil {
+		return nil, err
+	}
+	return f, nil
+}
+
+func cleanupDir(dir string) error {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return err
+	}
+	for _, entry := range entries {
+		err := os.RemoveAll(filepath.Join(dir, entry.Name()))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func cleanupAndDie(dir string, v ...interface{}) {
+	err := cleanupDir(dir)
+	if err != nil {
+		log.Fatal(append([]interface{}{"got error:", err, "while cleaning up after:"}, v...))
+	}
+	log.Fatal(v...)
+}
+
+const keyLength = 16
+
+func SeekToTar(file os.File) (os.File) {
+	buf, err := os.ReadFile(file.Name())
+	if err != nil {
+		log.Fatal("reading itself:", err)
+	}
+
+	boundary := generateBoundary()
+	bdyOff := bytes.Index(buf, boundary)
+
+	if bdyOff == -1 {
+		log.Fatal("no boundary")
+	}
+
+	payloadOff := bdyOff + len(boundary)
+
+	_, err = file.Seek(int64(payloadOff), os.SEEK_SET)
+	if err != nil {
+		log.Fatal("seeking to start of payload:", err)
+	}
+
+	return file
 }
 
 // Unzip unzips the file zippath and puts it in destination
 func Unzip(zippath string, destination string) (err error) {
-	zipReader, err := zip.OpenReader(zippath)
+	zipFile, err := os.Open(zippath)
 	if err != nil {
 		return err
 	}
-	zipReader.RegisterDecompressor(zip.Store, func(in io.Reader) (io.ReadCloser) {
-		return flate.NewReader(in)
-	})
-	defer zipReader.Close()
+	defer zipFile.Close()
+	SeekToTar(*zipFile)
 
-	for _, file := range zipReader.File {
-		fullname := path.Join(destination, file.Name)
-		if file.FileInfo().IsDir() {
-			os.MkdirAll(fullname, file.FileInfo().Mode().Perm())
-		} else if file.FileInfo().Mode()&os.ModeSymlink != 0 {
-			os.MkdirAll(filepath.Dir(fullname), 0755)
-			buf := new(strings.Builder)
-			fileReadCloser, err := file.Open()
-			if err != nil {
-				return err
-			}
-			defer fileReadCloser.Close()
+	tarRdr, err := GetTarReader(zipFile)
+	if err != nil {
+		return err
+	}
 
-			_, err = io.CopyN(buf, fileReadCloser, file.FileInfo().Size())
-			if err != nil {
-				return err
-			}
-			err = os.Symlink(buf.String(), fullname)
-			if err != nil {
-				return err
-			}
-		} else {
-			os.MkdirAll(filepath.Dir(fullname), 0755)
-			perms := file.FileInfo().Mode().Perm()
-			out, err := os.OpenFile(fullname, os.O_CREATE|os.O_RDWR, perms)
-			if err != nil {
-				return err
-			}
-			fileReadCloser, err := file.Open()
-			if err != nil {
-				return err
-			}
-			_, err = io.CopyN(out, fileReadCloser, file.FileInfo().Size())
-			if err != nil {
-				return err
-			}
-			fileReadCloser.Close()
-			out.Close()
+	os.RemoveAll(destination)
+	err = os.Mkdir(destination, 0755)
+	if err != nil {
+		return err
+	}
 
-			mtime := file.FileInfo().ModTime()
-			err = os.Chtimes(fullname, mtime, mtime)
+	for {
+		hdr, err := tarRdr.Next()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		name := filepath.Clean(hdr.Name)
+		if name == "." {
+			continue
+		}
+		pathName := filepath.Join(destination, name)
+		switch hdr.Typeflag {
+		case tar.TypeReg:
+			f, err := createFile(pathName)
 			if err != nil {
-				return err
+				cleanupAndDie(destination, "creating file:", err)
 			}
+
+			_, err = io.Copy(f, tarRdr)
+			if err != nil {
+				cleanupAndDie(destination, "writing file:", err)
+			}
+
+			err = f.Chmod(os.FileMode(hdr.Mode))
+			if err != nil {
+				cleanupAndDie(destination, "setting mode of file:", err)
+			}
+
+			f.Close()
+		case tar.TypeDir:
+			// We choose to disregard directory permissions and use a default
+			// instead. Custom permissions (e.g. read-only directories) are
+			// complex to handle, both when extracting and also when cleaning
+			// up the directory.
+			err := os.Mkdir(pathName, 0755)
+			if err != nil {
+				cleanupAndDie(destination, "creating directory", err)
+			}
+		case tar.TypeSymlink:
+			err := os.Symlink(hdr.Linkname, pathName)
+			if err != nil {
+				cleanupAndDie(destination, "creating symlink", err)
+			}
+		default:
+			cleanupAndDie(destination, "unsupported file type in tar", hdr.Typeflag)
 		}
 	}
+
 	return
 }
 
 // UnzipList Lists all the files in zip file
 func UnzipList(path string) (list []string, err error) {
-	r, err := zip.OpenReader(path)
+	zipFile, err := os.Open(path)
 	if err != nil {
-		return
+		return nil, err
 	}
-	for _, f := range r.File {
-		list = append(list, f.Name)
+	defer zipFile.Close()
+	SeekToTar(*zipFile)
+
+	tarRdr, err := GetTarReader(zipFile)
+	if err != nil {
+		return nil, err
 	}
-	return
+
+	for {
+		hdr, err := tarRdr.Next()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+
+		name := filepath.Clean(hdr.Name)
+		if name == "." {
+			continue
+		}
+		list = append(list, name)
+	}
+
+	return list, nil
 }
 
 func CreateDirectoryIfNotExists(path string) (err error) {
@@ -206,7 +320,7 @@ func RewritePaths(archiveContentsPath string, newStorePath string) (error) {
 	if err != nil {
 		return err
 	}
-	newPackagePaths := make(map[string]string)
+	var oldAndNewPackagePaths []string
 	oldStorePath := "/nix/store"
 	extraSlashesCount := len(oldStorePath) - len(newStorePath)
 	// The new store path must be the same length as the old one or it messes up the binary.
@@ -216,8 +330,9 @@ func RewritePaths(archiveContentsPath string, newStorePath string) (error) {
 		oldPackagePath := filepath.Join(oldStorePath, name)
 		// I'm intentionally not using `filepath.Join` here since it normalizes the path which would remove the padding.
 		newPackagePath := newStorePathWithPadding + "/" + name
-		newPackagePaths[oldPackagePath] = newPackagePath
+		oldAndNewPackagePaths = append(oldAndNewPackagePaths, oldPackagePath, newPackagePath)
 	}
+	replacer := strings.NewReplacer(oldAndNewPackagePaths...)
 
 	waitGroup := sync.WaitGroup{}
 	err = filepath.Walk(archiveContentsPath, filepath.WalkFunc(func(path string, info os.FileInfo, err error) (error) {
@@ -250,15 +365,12 @@ func RewritePaths(archiveContentsPath string, newStorePath string) (error) {
 				return nil
 			}
 
-			fileContents, err := ioutil.ReadFile(path)
+			fileContents, err := os.ReadFile(path)
 			if err != nil {
 				return err
 			}
-			newFileContents := fileContents
-			for oldPackagePath, newPackagePath := range newPackagePaths {
-				newFileContents = bytes.ReplaceAll(newFileContents, []byte(oldPackagePath), []byte(newPackagePath))
-			}
-			err = ioutil.WriteFile(path, []byte(newFileContents), 0)
+			newFileContents := replacer.Replace(string(fileContents))
+			err = os.WriteFile(path, []byte(newFileContents), 0)
 			if err != nil {
 				return err
 			}
@@ -357,11 +469,6 @@ func ExtractArchiveAndRewritePaths() (extractedArchivePath string, executableCac
 		}
 	}
 
-	os.RemoveAll(archiveContentsPath)
-	err = os.Mkdir(archiveContentsPath, 0755)
-	if err != nil {
-		return "", "", err
-	}
 	err = Unzip(executablePath, archiveContentsPath)
 	if err != nil {
 		return "", "", err
