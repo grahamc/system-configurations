@@ -11,7 +11,7 @@ download_url="https://github.com/bigolu/dotfiles/releases/download/master/$name"
 # I disable rule 2016 since I'm intentionally not expanding the variables in the string, `eval` will do that.
 if command -v curl 1>/dev/null 2>&1; then
   # shellcheck disable=2016
-  file_not_exists_command='! curl --head --silent --fail "$download_url" 2> /dev/null'
+  file_not_exists_command='! curl --head --silent --fail "$download_url" 1>/dev/null 2>&1'
   # shellcheck disable=2016
   download_command='curl --fail --progress-bar --location --time-cond "$shell_path" "$download_url" --output "$shell_path"'
   # shellcheck disable=2016
