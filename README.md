@@ -41,10 +41,15 @@ I recommend installing Nix with the following command:
 
 ```sh
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- \
-       install --extra-conf "trusted-users = $(whoami)"
+       install \
+         --extra-conf "trusted-users = $(whoami)" \
+         --extra-conf "auto-optimise-store = false"
 ```
 
-This uses the [Determinate Systems Installer](https://github.com/DeterminateSystems/nix-installer) with one extra option set, `trusted-users`, so that your user is added to the list of trusted users during the installation. In Nix, some actions require that your user is trusted, such as adding a cache ([explained below](#adding-the-cache)). Having this set during installation allows you start using Nix immediately after installing without having to edit any configuration files.
+This uses the [Determinate Systems Installer](https://github.com/DeterminateSystems/nix-installer) with a few extra options set:
+
+- `trusted-users`: This adds the current user to the list of trusted users. In Nix, some actions require that your user is trusted, such as adding a cache ([explained below](#adding-the-cache)). Setting this allows you start using Nix immediately after installation without having to edit any configuration files.
+- `auto-optimise-store`: This feature can help decrease the amount of space used by the Nix store and so the installer enables it by default. However, there is also a bug related to this feature that you may encounter so I'd suggest leaving this off until the bug is fixed. You can find the issue for this bug [here](https://github.com/NixOS/nix/issues/7273).
 
 Alternatively, you can use the [official installer](https://nixos.org/download.html), though this one has more steps. The README for the Determinate Systems installer lists the differences between the two.
 
@@ -60,9 +65,11 @@ To avoid building everything on your machine, you can configure Nix to use this 
 
 - **Cache is being ignored**: First, [check to see if you are a trusted user](#check-trust). If you aren't, then [add yourself to trusted-users](#add-trust). Then enable the cache by adding the lines below to your config in `~/.config/nix/nix.conf` (If you have a multi-user Nix installation, you'll need to [restart the Nix daemon](#restart-daemon) afterward to apply the changes.):
 
+    ``` conf
         extra-substituters = https://bigolu.cachix.org
         extra-trusted-substituters = https://bigolu.cachix.org
         extra-trusted-public-keys = bigolu.cachix.org-1:AJELdgYsv4CX7rJkuGu5HuVaOHcqlOgR07ZJfihVTIw=
+    ```
 
 - **apfs.util isn't working**: Make sure that the `/etc/synthetic.conf` has the permission `0644`.
 
