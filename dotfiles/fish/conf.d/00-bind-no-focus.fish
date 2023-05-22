@@ -1,7 +1,3 @@
-if not status is-interactive
-    exit
-end
-
 # TODO: Workaround for fish bug
 # issue: https://github.com/fish-shell/fish-shell/issues/6942
 #
