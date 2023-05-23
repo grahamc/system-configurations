@@ -99,19 +99,20 @@ function _fzf_complete
             complete --escape --do-complete (commandline --cut-at-cursor) \
             # remove duplicates
             | sort --unique \
+            # Use a different color for the completion item description
+            | string replace --regex -- '(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' (set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
             | fzf \
-            --preview 'echo {2}' \
-            --delimiter \t \
-            --preview-window '50%' \
-            --height 45% \
-            --no-header \
-            --bind 'backward-eof:abort' \
-            --select-1 \
-            --prompt "$(commandline --current-token)" \
-            --exit-0 \
-            --no-hscroll \
-            --color 'gutter:-1,prompt:6' \
-            --tiebreak=begin,chunk \
+                --delimiter \t \
+                --no-preview \
+                --height 45% \
+                --no-header \
+                --bind 'backward-eof:abort' \
+                --select-1 \
+                --prompt "$(commandline --current-token)" \
+                --exit-0 \
+                --no-hscroll \
+                --color 'gutter:-1,prompt:6' \
+                --tiebreak=begin,chunk \
         )
     and begin
         set entry "$(string split -f1 -- \t $choice)"
@@ -156,7 +157,14 @@ function _fzf_complete_helper
         _fzf_complete
     end
 end
-bind-no-focus -k btab _fzf_complete_helper
+# Set the binding on fish_prompt since something else was overriding it.
+function __set_fzf_tab_complete --on-event fish_prompt
+    # I only want this to run once so delete the function.
+    functions -e (status current-function)
+    bind-no-focus \t _fzf_complete_helper
+end
+# Keep normal tab complete on shift+tab to expand wildcards.
+bind -k btab complete
 
 # Save command to history before executing it. This way long running commands, like ssh or watch, will show up in
 # the history immediately.
