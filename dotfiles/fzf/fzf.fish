@@ -24,7 +24,7 @@ set --global --export FZF_DEFAULT_OPTS " \
     --history='$_fzf_history_file' \
     --header=' ' \
     --preview='echo {}' \
-    --preview-window=wrap,bottom,75% \
+    --preview-window=wrap,bottom,40% \
     --multi \
     --no-separator \
     --scrollbar='🮈' \
