@@ -1220,48 +1220,6 @@ Plug(
     end,
   }
 )
-
-Plug(
-  'j-hui/fidget.nvim',
-  {
-    config = function()
-      local margin = ' '
-      local border = ' ┃'
-      require('fidget').setup({
-        text = {
-          spinner = 'dots',
-        },
-        window = {
-          blend = 0,
-          zindex = 99,
-        },
-        fmt = {
-          fidget = function(fidget_name, spinner)
-            return string.format('%s%s %s%s', margin, spinner, fidget_name, border)
-          end,
-          task = function(task_name, message, percentage)
-            return string.format(
-              '%s%s%s%s%s',
-              margin,
-              message,
-              percentage and string.format(' (%s%%)', percentage) or '',
-              task_name and string.format(' [%s]', task_name) or '',
-              border
-            )
-          end,
-        },
-        sources = {
-          ['null-ls'] = {
-            ignore = true,
-          },
-          ['ltex'] = {
-            ignore = true,
-          },
-        },
-      })
-    end,
-  }
-)
 -- }}}
 
 -- File Explorer {{{
@@ -1917,8 +1875,6 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'Float3Border', {link = 'Float3Normal'})
   vim.api.nvim_set_hl(0, 'Float4Normal', {ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'Float4Border', {ctermbg = 'NONE', ctermfg = 15,})
-  vim.api.nvim_set_hl(0, 'FidgetTitle', {ctermbg = 'NONE', ctermfg = 15,italic = true,})
-  vim.api.nvim_set_hl(0, 'FidgetTask', {ctermbg = 'NONE', ctermfg = 15, italic = true,})
   vim.api.nvim_set_hl(0, 'NvimTreeIndentMarker', {ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'String', {ctermfg = 50,})
 end
