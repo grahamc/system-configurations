@@ -115,16 +115,16 @@ function _fzf_complete
                 --tiebreak=begin,chunk \
         )
     and begin
+        # Remove the tab and description, leaving only the completion item.
         set entry "$(string split -f1 -- \t $choice)"
 
         set space ' '
-        # Only add a space after the entry if it isn't an abbreviation.
+
+        # Don't add a space if the entry isn't an abbreviation.
         #
         # TODO: This assumes that an abbreviation can only be expanded if it's the first token in the commandline.
         # However, with the flag '--position anywhere', abbreviations can be expanded anywhere in the commandline so
         # I should check for that flag.
-        #
-        # TODO: Need to account for when the directory starts with tilde, gotta expand it
         #
         # We determine if the entry will be the first token by checking for an empty commandline.
         # We trim spaces because spaces don't count as tokens.
@@ -132,11 +132,24 @@ function _fzf_complete
         if abbr --query -- "$entry"
         and test -z "$trimmed_commandline"
             set space ''
-        else if test -d "$entry"
-        and printf "$entry" | grep -q -E '\/$'
+        end
+
+        # Don't add a space if the item is an absolute directory and ends in a slash
+        # expand tilde
+        set first_char (string sub --length 1 -- "$entry")
+        if test "$first_char" = '~'
+            set expanded_entry "$HOME"(string sub --start 2 -- "$entry")
+        else
+            set expanded_entry "$entry"
+        end
+        if test -d "$expanded_entry"
+        and test (string sub --start -1 -- "$expanded_entry") = '/'
             set space ''
-        else if test -d "$PWD/$entry"
-        and printf "$entry" | grep -q -E '\/$'
+        end
+
+        # Don't add a space if the item is a relative directory and ends in a slash
+        if test -d "$PWD/$entry"
+        and test (string sub --start -1 -- "$expanded_entry") = '/'
             set space ''
         end
 
