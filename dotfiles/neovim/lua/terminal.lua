@@ -1892,7 +1892,10 @@ vim.api.nvim_create_autocmd(
   {
     pattern = "PlugEndPost",
     callback = function()
-      vim.cmd.colorscheme('nord')
+      -- Normally my plugin configuration code is inside a `config` function in the plugin definition, but I need
+      -- this loaded earlier so you don't see a flash of the default colorscheme and then mine. I use `pcall` so
+      -- that even if the colorscheme doesn't exist, an error won't be printed.
+      pcall(vim.cmd.colorscheme, 'nord')
     end,
     group = group_id,
     -- use nested so my colorscheme changes are loaded
