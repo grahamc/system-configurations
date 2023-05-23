@@ -9,4 +9,11 @@
     };
 
     repository.symlink.home.file.".local/bin/my-firefox".source = "firefox-developer-edition/my-firefox";
+
+    home.activation.firefoxDeveloperEditionSetup = lib.hm.dag.entryAfter
+      # Must be after `linkGeneration` since that's when the desktop entry will be linked in.
+      ["linkGeneration"]
+      ''
+        ${pkgs.xdg-utils}/bin/xdg-settings set default-web-browser my-firefox.desktop
+      '';
   }
