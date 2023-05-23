@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Firefox Developer Edition
 GenericName=Firefox Developer Edition
-Exec=/opt/firefox/firefox %u
+Exec=firefox-developer-edition %u
 Terminal=false
 Icon=/opt/firefox/browser/chrome/icons/default/default128.png
 Type=Application
