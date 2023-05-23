@@ -198,6 +198,18 @@ vim.keymap.set({'n'}, '<C-a>', '^')
 vim.keymap.set({'n'}, '<C-e>', '$')
 vim.keymap.set({'i'}, '<C-a>', '<ESC>^i')
 vim.keymap.set({'i'}, '<C-e>', '<ESC>$a')
+
+local group_id = vim.api.nvim_create_augroup('Filetype Associations', {})
+vim.api.nvim_create_autocmd(
+  {'BufRead', 'BufNewFile',},
+  {
+    pattern = '.envrc',
+    callback = function()
+      vim.opt_local.filetype = 'sh'
+    end,
+    group = group_id,
+  }
+)
 -- }}}
 
 -- Option overrides {{{
