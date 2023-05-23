@@ -14,7 +14,7 @@ function fzf-grep-widget --description 'Search by line, recursively, from curren
             --bind "ctrl-e:execute(nvim '+call cursor({2},{3})' {1} < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $rg_command {q} || true" \
             --delimiter ':' \
             --prompt 'lines: ' \
-            --preview-window '+{2}/3' \
+            --preview-window '+{2}/3,75%' \
             # the minus 2 prevents a weird line wrap issue
             # The head and tail commands are there to remove the first and last line of output of bat
             # i.e. the top and bottom border of bat since I don't like how they look
@@ -51,6 +51,7 @@ function fzf-man-widget --description 'Search manpages'
             #
             # The 'string sub' is to remove the parentheses around the manpage section
             --preview "MANWIDTH=1000000 man (string sub --start=2 --end=-1 {2}) {1} 2>/dev/null" \
+            --preview-window '75%' \
       )
   or begin
     return
@@ -91,7 +92,7 @@ function fzf-process-widget --description 'Manage processes'
             --preview "$preview_command" \
             --tiebreak=chunk,begin,end \
             --no-hscroll \
-            --preview-window 'nowrap' \
+            --preview-window 'nowrap,75%' \
       )
   or return
 
@@ -163,6 +164,7 @@ function my-fzf-file-widget --description 'Search files'
         fzf-tmux-zoom \
             --prompt "$prompt" \
             --preview "$preview_command" \
+            --preview-window '75%' \
       )
   or return
 
