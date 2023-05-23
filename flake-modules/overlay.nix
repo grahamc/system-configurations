@@ -212,6 +212,8 @@
             };
 
             xdgModule = import "${inputs.nix-xdg}/module.nix";
+            # The intended way to use the nix-xdg is through a module, but I only want to use the overlay so
+            # instead I call the module function here just to get the overlay out.
             xdgModuleContents = xdgModule {pkgs = prev; inherit (prev) lib; config = {};};
             xdgOverlay = xdgModuleContents.config.lib.xdg.xdgOverlay
               {
