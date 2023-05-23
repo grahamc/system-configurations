@@ -221,19 +221,11 @@
                   figlet.env.FIGLET_FONTDIR = {data}: data;
                 };
               };
-            # TODO: It's a bit awkward that I'm creating a new nixpkgs instance only to extract the few packages that I
-            # wrapped.
-            xdgPkgs = import inputs.nixpkgs {
-              inherit (prev.stdenv) system;
-              overlays = [ xdgOverlay ];
-            };
             # I put these packages under 'xdgWrappers' so they don't overwrite the originals. This is to avoid rebuilds
             # of tools that depend on anything wrapped in this overlay. This is fine since I only need XDG Base Directory
             # compliance when I'm using a program directly.
             xdgWrappers = {
-              xdgWrappers = {
-                inherit (xdgPkgs) ripgrep watchman figlet;
-              };
+              xdgWrappers = xdgOverlay final prev;
             };
 
             allPackages = crossPlatformPackages // linuxOnlyPackages // darwinOnlyPackages // xdgWrappers;
