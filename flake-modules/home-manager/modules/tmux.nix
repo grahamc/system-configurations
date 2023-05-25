@@ -55,7 +55,7 @@
 
       repository.git.onChange  = [
         {
-          patterns.modified = ["*tmux/tmux.conf"];
+          patterns.modified = [''^dotfiles/tmux/tmux\.conf$''];
           confirmation = "The tmux configuration has changed, would you like to reload tmux?";
           action = "tmux source-file ~/.config/tmux/tmux.conf";
         }

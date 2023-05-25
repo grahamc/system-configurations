@@ -1,4 +1,4 @@
-{ config, lib, pkgs, specialArgs, inputs, ... }:
+{ config, lib, pkgs, specialArgs, ... }:
   let
     inherit (specialArgs) hostName username homeDirectory isHomeManagerRunningAsASubmodule;
     inherit (specialArgs.flakeInputs) self;
@@ -45,8 +45,9 @@
             # bat theme is added, the theme needs to be linked before we can rebuild the bat cache.
             priority = 100;
             patterns = {
-              added = ["*"];
-              deleted = ["*"];
+              added = [".*"];
+              deleted = [".*"];
+              modified = [''^flake-modules/'' ''^flake\.nix$'' ''^flake\.lock$''];
             };
             action = ''
               hostctl-switch

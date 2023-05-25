@@ -10,7 +10,7 @@
 
     repository.git.onChange = [
       {
-        patterns.modified = ["*login-shell/profile.sh"];
+        patterns.modified = [''^dotfiles/login-shell/profile\.sh$''];
         action = ''
           echo "The login shell profile has changed. To apply these changes you can log out. Press enter to continue (This will not log you out)"
 
