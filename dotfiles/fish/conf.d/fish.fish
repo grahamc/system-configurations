@@ -217,3 +217,31 @@ end
 function reload-fish
     set --universal _fish_reload_indicator (random)
 end
+
+# BASH-style history expansion
+function _bash_style_history_expansion
+    set token "$argv[1]"
+    set last_command "$history[1]"
+    printf '%s' "$last_command" | read --tokenize --list last_command_tokens
+
+    if test "$token" = '!!'
+        echo "$last_command"
+    else if test "$token" = '!^'
+        echo "$last_command_tokens[1]"
+    else if test "$token" = '!$'
+        echo "$last_command_tokens[-1]"
+    else if string match --quiet --regex -- '\!\-?\d+' "$token"
+        set last_command_token_index (string match --regex -- '\-?\d+' "$token")
+        set absolute_value (math abs "$last_command_token_index")
+        if test "$absolute_value" -gt (count $last_command_tokens)
+            return 1
+        end
+        echo "$last_command_tokens[$last_command_token_index]"
+    else
+        return 1
+    end
+end
+abbr --add bash_style_history_expansion \
+    --position anywhere \
+    --regex '\!(\!|\^|\$|\-?\d+)' \
+    --function _bash_style_history_expansion
