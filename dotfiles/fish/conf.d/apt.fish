@@ -28,6 +28,7 @@ function fzf-apt-install-widget --description 'Install packages with apt'
             --bind "change:first" \
             --prompt 'apt install: ' \
             --preview "apt show {} 2>/dev/null | GREP_COLORS='$GREP_COLORS' grep --color=always -E '(^[a-z|A-Z|-]*:|^)' | less" \
+            --preview-window '75%' \
             --tiebreak=chunk,begin,end \
       )
   or return
@@ -44,6 +45,7 @@ function fzf-apt-remove-widget --description 'Remove packages with apt'
             --bind "change:first" \
             --prompt 'apt remove: ' \
             --preview "echo -e \"\$(apt show {} 2>/dev/null)\n\$(apt-cache rdepends --installed --no-recommends --no-suggests {} | tail -n +2)\" | GREP_COLORS='$GREP_COLORS' grep --color=always -E '(^[a-z|A-Z|-]*:|^.*:\$|^)' | less" \
+            --preview-window '75%' \
             --tiebreak=chunk,begin,end \
       )
   or return
