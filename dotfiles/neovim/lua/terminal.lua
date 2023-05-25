@@ -1,12 +1,9 @@
 -- vim:foldmethod=marker
 -- Exit if vim is not running in a terminal (also referred to as a tty). I detect this by
 -- checking if the input to vim is coming from a terminal or vim is outputting to a terminal.
-if not vim.fn.has('ttyin') and not vim.fn.has('ttyout') then
-  return
-end
-
--- TODO: The tty{in,out} check passes in vscode so I'm explicitly checking that it isn't running in vscode.
-if vim.g.vscode ~= nil then
+local has_ttyin = vim.fn.has('ttyin') == 1
+local has_ttyout = vim.fn.has('ttyout') == 1
+if not has_ttyin and not has_ttyout then
   return
 end
 
@@ -280,7 +277,8 @@ vim.api.nvim_create_autocmd(
     callback = function()
       -- Don't equalize splits if the new window is floating, it won't get resized anyway.
       -- Don't equalize when vim is starting up or it will reset the window sizes from my session.
-      if vim.api.nvim_win_get_config(0).relative ~= '' or vim.fn.has('vim_starting') then
+      local is_vim_starting = vim.fn.has('vim_starting') == 1
+      if vim.api.nvim_win_get_config(0).relative ~= '' or is_vim_starting then
         return
       end
       vim.cmd.wincmd('=')
