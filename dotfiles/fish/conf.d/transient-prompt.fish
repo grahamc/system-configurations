@@ -74,3 +74,4 @@ function _delete_or_load_transient_prompt_and_exit
     commandline -f repaint
 end
 bind \cd _delete_or_load_transient_prompt_and_exit
+bind \cq _delete_or_load_transient_prompt_and_exit
