@@ -13,7 +13,8 @@ if ! command -v firefox-developer-edition >/dev/null 2>&1; then
   exit
 fi
 
-if pgrep --full firefox-developer-edition >/dev/null 2>&1; then
+# The .desktop entry executes the binary in /opt so I have to look for that.
+if pgrep --full '/opt/firefox' >/dev/null 2>&1; then
   firefox-developer-edition "$@"
 else
   firefox "$@"
