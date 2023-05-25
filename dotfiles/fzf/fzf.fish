@@ -51,9 +51,9 @@ function __set_fzf_history_keybind --on-event fish_prompt
     bind-no-focus \ch 'history merge; fzf-history-widget'
 end
 
-# use alt+d for directory search instead of default alt+c
+# use ctrl+d for directory search instead of default alt+c
 bind --erase \ec
-bind-no-focus \ed 'FZF_ALT_C_OPTS="$FZF_ALT_C_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-cd-widget'
+bind-no-focus \cd 'FZF_ALT_C_OPTS="$FZF_ALT_C_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-cd-widget'
 
 # Workaround to allow me to use fzf-tmux-zoom with the default widgets that come with fzf.
 # The default widgets use __fzfcmd to get the name of the fzf command to use so I am
