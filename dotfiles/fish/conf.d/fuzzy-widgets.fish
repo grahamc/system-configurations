@@ -149,11 +149,11 @@ function my-fzf-file-widget --description 'Search files'
   echo -s (set_color brwhite) {} \n
   if file --brief --mime-type {} | grep -q -i image
     if set --query TMUX
-      timg -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" -p quarter {}
+      timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" -p quarter {}
     else if env | grep -q WEZTERM
-      timg -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" -p kitty {}
+      timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" -p kitty {}
     else
-      timg -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
+      timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
     end
   else
     bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {} | tail -n +2 | head -n -1

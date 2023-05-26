@@ -32,7 +32,7 @@ function timg --wraps timg
         set pixelation_options '-p' 'quarter'
     end
 
-    command timg $pixelation_options $argv
+    command timg --center $pixelation_options $argv
 end
 
 # man
