@@ -86,7 +86,7 @@ function fzf-process-widget --description 'Manage processes'
         fzf \
             # only search on PID, PPID, and the command
             --nth '2,3,7..' \
-            --bind "change:first,ctrl-alt-o:execute@$catp_command@,ctrl-alt-r:reload@$reload_command@+first" \
+            --bind "ctrl-alt-o:execute@$catp_command@,ctrl-alt-r:reload@$reload_command@+first" \
             --header-lines=1 \
             --prompt 'processes: ' \
             --preview "$preview_command" \
@@ -106,7 +106,6 @@ function fzf-process-widget --description 'Manage processes'
       ( \
         FZF_DEFAULT_COMMAND="string split ' ' (kill -l)" \
         fzf \
-            --bind "change:first" \
             --header 'Select a signal to send or exit to print the PIDs' \
             --prompt 'signals: ' \
             --preview '' \
