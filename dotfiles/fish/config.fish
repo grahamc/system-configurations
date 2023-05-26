@@ -10,12 +10,7 @@ echo -ne '\033[5 q'
 # Print banner
 if not set --query BANNER_WAS_PRINTED
     set banner Fish Shell v(string split ' ' (fish --version) | tail -n 1)
-
-    # If we don't have figlet, or the smblock font, fallback to echo. Doing it this way because I don't know how
-    # to check for the existence of a figlet font so I'll have to just let it fail.
-    figlet -W -f smblock $banner 2>/dev/null
-    or echo $banner
-
+    figlet -W -f smblock $banner
     set --global --export BANNER_WAS_PRINTED
 end
 
@@ -44,14 +39,10 @@ function _tmux_connect
         tmux attach-session
     end
 end
-if type --query tmux
-    _tmux_connect
-end
+_tmux_connect
 
 # Trigger direnv. This way if a terminal or tmux-pane gets spawned in a directory that has
 # a .envrc file, it will get loaded automatically.
-if type --query direnv
-    direnv reload 2>/dev/null
-    # Added this so that even if the previous command fails, this script won't return a non-zero exit code
-    or true
-end
+direnv reload 2>/dev/null
+# Added this so that even if the previous command fails, this script won't return a non-zero exit code
+or true

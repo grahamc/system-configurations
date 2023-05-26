@@ -94,24 +94,19 @@ end
 set --global --export RIPGREP_CONFIG_PATH "$HOME/.ripgreprc"
 
 # zoxide
-set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'type --query lsd; and lsd {2}; or ls {2}' --keep-right --height 40% --preview-window '50%'"
-if type --query zoxide
-    zoxide init --cmd cd fish | source
-
-    # overwrite the cd function that zoxide creates to handle the '--' argument
-    function cd --wraps cd
-        # zoxide does not support the '--' argument
-        if set index (contains --index -- '--' $argv)
-            set --erase argv[$index]
-        end
-        __zoxide_z $argv
+set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'lsd {2}' --keep-right --height 40% --preview-window '50%'"
+zoxide init --cmd cd fish | source
+# overwrite the cd function that zoxide creates to handle the '--' argument
+function cd --wraps cd
+    # zoxide does not support the '--' argument
+    if set index (contains --index -- '--' $argv)
+        set --erase argv[$index]
     end
+    __zoxide_z $argv
 end
 
 # direnv
-if type --query direnv
-    direnv hook fish | source
-end
+direnv hook fish | source
 # toggle activation/deactivation messages
 set --global --export DIRENV_LOG_FORMAT (set_color brwhite)'[direnv] %s'(set_color normal)
 
@@ -205,21 +200,18 @@ function tree --wraps tree
     return $status
   end
 
-  if type --query fd
-    # If there are no arguments, get files from fd since fd will exclude anything in a .gitignore or .ignore file.
-    if test (count $argv) -eq 0
-      fd | command tree -a --fromfile .
-      return $status
-    end
-
-    # If there is just one argument, we'll assume that it's a directory and pass it to fd for reasons stated in the case
-    # above.
-    if test (count $argv) -eq 1
-      fd . "$argv[1]" | command tree -a --fromfile .
-      return $status
-    end
+  # If there are no arguments, get files from fd since fd will exclude anything in a .gitignore or .ignore file.
+  if test (count $argv) -eq 0
+    fd | command tree -a --fromfile .
+    return $status
   end
 
+  # If there is just one argument, we'll assume that it's a directory and pass it to fd for reasons stated in the case
+  # above.
+  if test (count $argv) -eq 1
+    fd . "$argv[1]" | command tree -a --fromfile .
+    return $status
+  end
 
   command tree -a $argv
   return $status
