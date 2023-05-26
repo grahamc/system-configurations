@@ -164,23 +164,11 @@ function _fzf_complete
 
     commandline -f repaint
 end
-function _fzf_complete_helper
-    if commandline --paging-mode
-        commandline -f forward-char
-        return
-    end
-
-    if not type --query fzf
-        commandline -f complete
-    else
-        _fzf_complete
-    end
-end
 # Set the binding on fish_prompt since something else was overriding it.
 function __set_fzf_tab_complete --on-event fish_prompt
     # I only want this to run once so delete the function.
     functions -e (status current-function)
-    bind-no-focus \t _fzf_complete_helper
+    bind-no-focus \t _fzf_complete
 end
 # Keep normal tab complete on shift+tab to expand wildcards.
 bind -k btab complete
