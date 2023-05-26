@@ -146,8 +146,11 @@ function my-fzf-file-widget --description 'Search files'
   # - The head and tail commands are there to remove the first and last line of output of bat i.e. the top and bottom
   # border of bat since I don't like how they look
   set preview_command '
+  echo -s (set_color brwhite) {} \n
   if file --brief --mime-type {} | grep -q -i image
-    if env | grep -q WEZTERM
+    if set --query TMUX
+      timg -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" -p quarter {}
+    else if env | grep -q WEZTERM
       timg -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" -p kitty {}
     else
       timg -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
@@ -194,7 +197,7 @@ function fzf-directory-widget --description 'Seach directories'
         FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' '$dir'; fd \$_args --follow --hidden --type directory --type symlink" \
         fzf-tmux-zoom \
             --prompt "$prompt" \
-            --preview 'lsd {}' \
+            --preview 'echo -s (set_color brwhite) {} \n; lsd {}' \
             --preview-window '75%' \
             --keep-right \
       )
