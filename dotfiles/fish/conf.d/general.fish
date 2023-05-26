@@ -25,11 +25,10 @@ abbr --add --global sudo 'sudo --preserve-env=PATH'
 function timg --wraps timg
     set pixelation_options
     # timg doesn't detect Wezterm or TMUX so I'll do it here
-    if env | grep -q WEZTERM
-        set pixelation_options '-p' 'kitty'
-    end
     if set --query TMUX
         set pixelation_options '-p' 'quarter'
+    else if test "$TERM_PROGRAM" = 'WezTerm'
+        set pixelation_options '-p' 'kitty'
     end
 
     command timg --center $pixelation_options $argv

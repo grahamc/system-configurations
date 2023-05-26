@@ -150,7 +150,7 @@ function my-fzf-file-widget --description 'Search files'
   if file --brief --mime-type {} | grep -q -i image
     if set --query TMUX
       timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" -p quarter {}
-    else if env | grep -q WEZTERM
+    else if test "$TERM_PROGRAM" = WezTerm
       timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" -p kitty {}
     else
       timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
