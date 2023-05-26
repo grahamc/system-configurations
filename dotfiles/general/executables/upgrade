@@ -37,9 +37,6 @@ function upgrade
     type --query nix
     and upgrade-nix
 
-    type --query home-manager
-    and upgrade-home-manager
-
     # TODO: The Pop Shop is slow and doesn't have a progress indicator so I'll use the commandline for now.
     type --query apt
     and type --query apt-get
