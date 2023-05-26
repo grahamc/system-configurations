@@ -217,4 +217,4 @@ function fzf-directory-widget --description 'Seach directories'
 
   commandline -f repaint
 end
-bind-no-focus \cd 'fzf-directory-widget'
+bind-no-focus \ed 'fzf-directory-widget'
