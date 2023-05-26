@@ -41,8 +41,10 @@ function _tmux_connect
 end
 _tmux_connect
 
-# Trigger direnv. This way if a terminal or tmux-pane gets spawned in a directory that has
-# a .envrc file, it will get loaded automatically.
-direnv reload 2>/dev/null
-# Added this so that even if the previous command fails, this script won't return a non-zero exit code
-or true
+if type --query direnv
+    # Trigger direnv. This way if a terminal or tmux-pane gets spawned in a directory that has
+    # a .envrc file, it will get loaded automatically.
+    direnv reload 2>/dev/null
+    # Added this so that even if the previous command fails, this script won't return a non-zero exit code
+    or true
+end

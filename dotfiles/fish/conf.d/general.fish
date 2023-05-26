@@ -106,9 +106,11 @@ function cd --wraps cd
 end
 
 # direnv
-direnv hook fish | source
-# toggle activation/deactivation messages
-set --global --export DIRENV_LOG_FORMAT (set_color brwhite)'[direnv] %s'(set_color normal)
+if type --query direnv
+    direnv hook fish | source
+    # toggle activation/deactivation messages
+    set --global --export DIRENV_LOG_FORMAT (set_color brwhite)'[direnv] %s'(set_color normal)
+end
 
 # watch
 abbr --add --global watch 'watch --no-title --differences --interval 0.5'
