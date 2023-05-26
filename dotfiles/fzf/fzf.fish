@@ -33,9 +33,6 @@ set --global --export FZF_DEFAULT_OPTS " \
     --ansi \
     "
 
-set --global --export FZF_ALT_C_COMMAND 'test $dir = '.' && set _args "--strip-cwd-prefix" || set _args '.' $dir; fd $_args --follow --hidden --type directory --type symlink'
-set --global --export FZF_ALT_C_OPTS "--preview 'type --query lsd; and lsd {}; or ls {}' --keep-right --bind='change:first'"
-
 set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}"'
 
 # use ctrl+h for history search instead of default ctrl+r
@@ -50,10 +47,6 @@ function __set_fzf_history_keybind --on-event fish_prompt
     functions -e (status current-function)
     bind-no-focus \ch 'history merge; fzf-history-widget'
 end
-
-# use ctrl+d for directory search instead of default alt+c
-bind --erase \ec
-bind-no-focus \cd 'FZF_ALT_C_OPTS="$FZF_ALT_C_OPTS --prompt=\'$(prompt_pwd)/\'" fzf-cd-widget'
 
 # Workaround to allow me to use fzf-tmux-zoom with the default widgets that come with fzf.
 # The default widgets use __fzfcmd to get the name of the fzf command to use so I am

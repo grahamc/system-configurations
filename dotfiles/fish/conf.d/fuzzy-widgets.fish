@@ -174,3 +174,35 @@ function my-fzf-file-widget --description 'Search files'
   commandline -f repaint
 end
 bind-no-focus \cf 'my-fzf-file-widget'
+
+# use ctrl+d for directory search instead of default alt+c
+function fzf-directory-widget --description 'Seach directories'
+  set dir "$(commandline -t)"
+  if test "$(string sub --length 1 -- "$dir")" = '~'
+    set dir (string replace '~' "$HOME" "$dir")
+  end
+  if not test -d "$dir"
+    set dir '.'
+  end
+
+  set prompt "$dir"
+  if test "$(string sub --start -1 "$dir")" != '/'
+    set prompt "$prompt/"
+  end
+
+  set choices \
+      ( \
+        FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' '$dir'; fd \$_args --follow --hidden --type directory --type symlink" \
+        fzf-tmux-zoom \
+            --prompt "$prompt" \
+            --preview 'lsd {}' \
+            --preview-window '75%' \
+            --keep-right \
+      )
+  or return
+
+  commandline --current-token --replace "$choices"
+
+  commandline -f repaint
+end
+bind-no-focus \cd 'fzf-directory-widget'
