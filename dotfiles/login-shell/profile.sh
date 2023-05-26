@@ -46,8 +46,10 @@ export PATH="$GOPATH/bin:$PATH"
 # other executables.
 PATH="$HOME/.local/bin:$PATH"
 
-# Enable smooth scrolling in Firefox
-export MOZ_USE_XINPUT2=1
+# Enable smooth scrolling in Firefox for Linux
+if uname | grep -q Linux; then
+  export MOZ_USE_XINPUT2=1
+fi
 
 # switch to fbterm if we are running in a TTY
 # [ "$TERM" = "linux" ] && [[ $- == *i* ]] && command -v fbterm >/dev/null 2>&1 && FBTERM=1 exec fbterm
