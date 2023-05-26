@@ -27,6 +27,9 @@
               src = ./gozip;
               pwd = ./gozip;
               modules = ./gozip/gomod2nix.toml;
+              # Adding these tags so the gozip executable is built statically.
+              # More info: https://www.arp242.net/static-go.html
+              tags = ["osusergo" "netgo"];
             };
           in
             pkgs.stdenv.mkDerivation {
