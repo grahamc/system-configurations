@@ -136,7 +136,7 @@ function my-fzf-file-widget --description 'Search files'
     set dir '.'
   end
 
-  set prompt "$dir"
+  set prompt (string replace "$HOME" '~' "$dir")
   if test "$(string sub --start -1 "$dir")" != '/'
     set prompt "$prompt/"
   end
@@ -184,7 +184,7 @@ function fzf-directory-widget --description 'Seach directories'
     set dir '.'
   end
 
-  set prompt "$dir"
+  set prompt (string replace "$HOME" '~' "$dir")
   if test "$(string sub --start -1 "$dir")" != '/'
     set prompt "$prompt/"
   end
