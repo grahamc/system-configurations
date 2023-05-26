@@ -25,7 +25,10 @@ if [ -e "$_nix_single_user" ]; then
   . "$_nix_single_user"
 fi
 # nix-darwin. Not sure how to have it configure this for me so I hardcoded it.
-export PATH="/run/current-system/sw/bin:$PATH"
+nix_darwin_bin='/run/current-system/sw/bin'
+if [ -d "$nix_darwin_bin" ] && uname | grep -q Darwin; then
+  export PATH="$nix_darwin_bin:$PATH"
+fi
 # nix-darwin manages brew so I'll turn off all the automatic management.
 export HOMEBREW_NO_INSTALL_UPGRADE=1
 export HOMEBREW_NO_INSTALL_CLEANUP=1
