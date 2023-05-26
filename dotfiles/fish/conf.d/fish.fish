@@ -84,7 +84,13 @@ bind \e\[1\;3C forward-word
 bind \cb beginning-of-line
 
 # ctrl+r to refresh terminal, shell, and screen
-bind \cr 'reset && exec fish && clear'
+#
+# Set the binding on fish_prompt since something else was overriding it.
+function __set_reload_keybind --on-event fish_prompt
+    # I only want this to run once so delete the function.
+    functions -e (status current-function)
+    bind-no-focus \cr 'reset && exec fish && clear'
+end
 
 # search variables
 abbr --add --global fv 'FZF_DEFAULT_COMMAND="set --names" fzf --preview "set --show {}"'
