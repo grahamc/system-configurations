@@ -170,7 +170,12 @@ function my-fzf-file-widget --description 'Search files'
       )
   or return
 
-  commandline --current-token --replace "$choices"
+  set escaped_choices
+  for choice in $choices
+    set --append escaped_choices (string escape --style script --no-quoted "$choice")
+  end
+
+  commandline --current-token --replace "$escaped_choices"
 
   # this should be done whenever a binding produces output (see: man bind)
   commandline -f repaint
@@ -203,7 +208,12 @@ function fzf-directory-widget --description 'Seach directories'
       )
   or return
 
-  commandline --current-token --replace "$choices"
+  set escaped_choices
+  for choice in $choices
+    set --append escaped_choices (string escape --style script --no-quoted "$choice")
+  end
+
+  commandline --current-token --replace "$escaped_choices"
 
   commandline -f repaint
 end
