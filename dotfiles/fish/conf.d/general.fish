@@ -250,7 +250,8 @@ function sh --wraps yash
     yash $argv
 end
 
-if uname | grep -q Linux
+if type --query flatpak
+and flatpak list --app | grep -q 'org.wezfurlong.wezterm'
     alias wezterm 'flatpak run org.wezfurlong.wezterm'
 end
 
