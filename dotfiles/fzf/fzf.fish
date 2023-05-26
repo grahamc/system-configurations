@@ -2,7 +2,6 @@ if not status is-interactive
     exit
 end
 
-
 set xdg_data (test -n "$XDG_DATA_HOME" && echo "$XDG_DATA_HOME" || echo "$HOME/.local/share")
 set _fzf_history_file "$xdg_data/fzf/fzf-history.txt"
 set _magnifying_glass (echo -s \uf002 '  ')
@@ -34,9 +33,8 @@ set --global --export FZF_DEFAULT_OPTS " \
     "
 
 set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}"'
-
 # use ctrl+h for history search instead of default ctrl+r
-bind --erase \cr
+#
 # I merge the history so that the search will search across all fish sessions' histories.
 #
 # TODO: The script in conf.d for the plugin 'jorgebucaran/autopair.fish' is deleting my ctrl+h keybind
