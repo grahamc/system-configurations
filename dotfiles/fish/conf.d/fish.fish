@@ -100,13 +100,14 @@ echo -ne "\033]0;fish\007"
 
 # Use shift+tab to select an autocomplete entry with fzf
 function _fzf_complete
+    set current_token (commandline --current-token)
     set choice \
         ( \
             complete --escape --do-complete (commandline --cut-at-cursor) \
             # remove duplicates
             | sort --unique \
             # Use a different color for the completion item description
-            | string replace --regex -- '(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' (set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
+            | string replace --regex -- '(?<prefix>^'(string escape --style regex -- "$current_token")')(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' (set_color brwhite)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
             | fzf \
                 --delimiter \t \
                 --no-preview \
@@ -114,11 +115,15 @@ function _fzf_complete
                 --no-header \
                 --bind 'backward-eof:abort' \
                 --select-1 \
-                --prompt "$(commandline --current-token)" \
                 --exit-0 \
                 --no-hscroll \
                 --color 'gutter:-1,prompt:6' \
                 --tiebreak=begin,chunk \
+                # I set the current token as the delimiter so I can exclude from what gets searched.
+                # Since the current token is in the beginning of the string, it will be the first field index so
+                # I'll start searching from 2.
+                --delimiter "$current_token" \
+                --nth '2..' \
         )
     and begin
         # Remove the tab and description, leaving only the completion item.
