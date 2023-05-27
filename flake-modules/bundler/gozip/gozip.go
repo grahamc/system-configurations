@@ -20,15 +20,6 @@ import (
 	"github.com/klauspost/compress/zstd"
 )
 
-func GetTarReader(r io.Reader) (*tar.Reader, error) {
-	zRdr, err := zstd.NewReader(r)
-	if err != nil {
-		return nil, err
-	}
-
-	return tar.NewReader(zRdr), nil
-}
-
 func generateBoundary() []byte {
 	h := sha512.Sum512([]byte("boundary"))
 	return h[:]
@@ -192,10 +183,12 @@ func Unzip(zippath string, destination string) (err error) {
 	defer zipFile.Close()
 	SeekToTar(*zipFile)
 
-	tarRdr, err := GetTarReader(zipFile)
+	zRdr, err := zstd.NewReader(zipFile)
 	if err != nil {
 		return err
 	}
+	defer zRdr.Close()
+	tarRdr := tar.NewReader(zRdr)
 
 	os.RemoveAll(destination)
 	err = os.Mkdir(destination, 0755)
@@ -266,10 +259,12 @@ func UnzipList(path string) (list []string, err error) {
 	defer zipFile.Close()
 	SeekToTar(*zipFile)
 
-	tarRdr, err := GetTarReader(zipFile)
+	zRdr, err := zstd.NewReader(zipFile)
 	if err != nil {
 		return nil, err
 	}
+	defer zRdr.Close()
+	tarRdr := tar.NewReader(zRdr)
 
 	for {
 		hdr, err := tarRdr.Next()
