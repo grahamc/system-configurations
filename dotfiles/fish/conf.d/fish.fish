@@ -103,7 +103,7 @@ function _fzf_complete
     set current_token (commandline --current-token)
     set choice \
         ( \
-            complete --escape --do-complete (commandline --cut-at-cursor) \
+            complete --escape --do-complete -- "$(commandline --cut-at-cursor)" \
             # remove duplicates
             | sort --unique \
             # Use a different color for the completion item description
