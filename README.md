@@ -2,7 +2,7 @@
 
 Configs and whatnot. Uses [Home Manager](https://github.com/nix-community/home-manager), [nix-darwin](https://github.com/LnL7/nix-darwin), and [flake-parts](https://flake.parts). Works on Linux and macOS.
 
-## Link
+## Applying the configuration
 
 First, clone the repository and go into its directory by running `git clone https://github.com/bigolu/dotfiles.git ~/.dotfiles && cd ~/.dotfiles`. The next steps depend on which host manager you're using.
 
@@ -19,19 +19,21 @@ First, clone the repository and go into its directory by running `git clone http
     1. Run `nix build .#legacyPackages.darwinConfigurations.<host_name>.system` where `<host_name>` is one of the hosts defined in the [nix-darwin flake module](https://github.com/bigolu/dotfiles/blob/master/flake-modules/nix-darwin.nix). This will build the nix-darwin configuration in a folder named `result` in the current directory.
     2. Run `./result/sw/bin/darwin-rebuild switch --flake .<host_name>` where `<host_name>` is the same one you used in the last step. This will apply the configuration to your host. You can now remove the `result` folder with `rm -rf ./result`.
 
-## Run
+## Running the home configuration
 
-### With Nix
-
-- Run the shell with `nix run github:bigolu/dotfiles`
-- Run a specific command in the shell with `nix run github:bigolu/dotfiles -- -c 'nvim some-file.py'`
-
-### Standalone executable
+My home config is also available as an executable with no dependencies. The executable is self-extracting archive (SFX) that contains all the commandline programs I use, as well as my config files for them. Running it will start my shell which will have access to these programs and configs.
 
 - Run the shell with `NIX_ROOTLESS_BUNDLER_DELETE_CACHE=1 sh -c "$(curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run-shell.sh)"`
 - Run a specific program in the shell with `NIX_ROOTLESS_BUNDLER_DELETE_CACHE=1 sh -c "$(curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run-shell.sh)" shell -c 'nvim some-file.py'`
 
-  > NOTE: To keep the cache created by the executable, remove the environment variable in the beginning of either command. The cache is in <user_cache_dir>/nix-rootless-bundler. To see what <user_cache_dir> would be on your machine, you can check the golang documentation for [os.UserCacheDir](https://pkg.go.dev/os#UserCacheDir).
+  > NOTE: While the SFX doesn't depend on any programs on your computer, there are some requirements:
+  >
+  > - A `/tmp` directory - You can read this [GitHub issue comment](https://github.com/NixOS/nix/issues/1971#issue-304578884) regarding a "rootless Nix" to see why this is needed, as well as learn more about how this works.
+  > - ~450 MB - To run, the SFX must extract itself to a directory and run from there. This means you need space for the SFX (compressed to ~80 MB) and the extraction (~370 MB), totaling 450 MB.
+  >
+  > <br/>
+  >
+  > TIP: By default, the SFX caches the extracted archive. To keep this behavior, remove the environment variable `NIX_ROOTLESS_BUNDLER_DELETE_CACHE=1` from the beginning of either of the above commands. The cache is in <user_cache_dir>/nix-rootless-bundler. To see what <user_cache_dir> would be on your computer, you can check the golang documentation for [os.UserCacheDir](https://pkg.go.dev/os#UserCacheDir).
 
 ## Setting up Nix
 
