@@ -122,7 +122,7 @@ function _fzf_complete
                 # I set the current token as the delimiter so I can exclude from what gets searched.
                 # Since the current token is in the beginning of the string, it will be the first field index so
                 # I'll start searching from 2.
-                --delimiter "$current_token" \
+                --delimiter "^$current_token" \
                 --nth '2..' \
         )
     and begin
