@@ -2,8 +2,10 @@ name: Cache Build Results
 on:
   push:
     paths:
-      - '**.nix'
       - '.github/workflows/cache-build-results.yml'
+      - 'flake.nix'
+      - 'flake.lock'
+      - 'flake-modules/**'
     branches:
       - master
 env:

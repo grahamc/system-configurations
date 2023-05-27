@@ -2,10 +2,11 @@ name: Publish Shell Executable
 on:
   push:
     paths:
-      - '**'
-      - '!README.md'
-      - '!.**'
       - '.github/workflows/publish-shell-executable.yml'
+      - 'flake.nix'
+      - 'flake.lock'
+      - 'flake-modules/**'
+      - 'dotfiles/**'
     branches:
       - master
 env:
