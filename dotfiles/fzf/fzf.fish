@@ -12,7 +12,7 @@ set --global --export FZF_DEFAULT_OPTS " \
     --bind 'tab:down,shift-tab:up,ctrl-j:preview-down,ctrl-k:preview-up,change:first,ctrl-o:change-preview-window(right,60%|bottom,75%)+refresh-preview,ctrl-/:preview(fzf-help-preview)+preview-top,ctrl-\\:refresh-preview,enter:accept,ctrl-r:refresh-preview,ctrl-w:toggle-preview-wrap,alt-enter:toggle,ctrl-t:track+unbind(change),focus:rebind(change),f7:prev-history,f8:next-history,ctrl-p:toggle-preview' \
     --layout=reverse \
     --border=none \
-    --color='16,fg+:-1:regular:underline,bg+:-1,info:15,gutter:8,pointer:-1:bold,prompt:6:regular,border:15:dim,query:-1:regular,marker:-1:bold,header:15,spinner:yellow,hl:cyan:dim,hl+:regular:cyan:underline' \
+    --color='16,fg+:-1:regular:underline,bg+:-1,info:15,gutter:-1,pointer:-1:bold,prompt:6:regular,border:15:dim,query:-1:regular,marker:-1:bold,header:15,spinner:yellow,hl:cyan:dim,hl+:regular:cyan:underline' \
     --margin=3% \
     --height 100% \
     --prompt='$_magnifying_glass' \
@@ -21,7 +21,6 @@ set --global --export FZF_DEFAULT_OPTS " \
     --pointer='>' \
     --marker='>' \
     --history='$_fzf_history_file' \
-    --header=' ' \
     --preview='echo {}' \
     --preview-window=wrap,bottom,40% \
     --multi \
