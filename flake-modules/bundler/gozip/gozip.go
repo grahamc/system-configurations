@@ -412,9 +412,6 @@ func GetNewStorePath() (prefix string, err error){
 }
 
 func ExtractArchiveAndRewritePaths() (extractedArchivePath string, executableCachePath string, err error) {
-	// no cache then write,
-	// if cache then check if hash is same and cache location is same then use, otherwise delete hash folder and file and write new and use
-	// cache: binary name folder, hash folder and file saying where this was extracted to
 	userCachePath, err := os.UserCacheDir()
 	if err != nil {
 		return "", "", err
@@ -447,51 +444,69 @@ func ExtractArchiveAndRewritePaths() (extractedArchivePath string, executableCac
 	if err != nil {
 		return "", "", err
 	}
-	executableChecksum := string(hash.Sum(nil))
+	expectedExecutableChecksum := hash.Sum(nil)
 	archiveContentsPath := filepath.Join(executableCachePath, "archive-contents")
 
-	// The cache entry is still valid if the executable is the same and the cache is still in the same place, since
-	// we rewrite the Nix store paths to point to the cache.
-	expectedCacheKey := executableCachePath + executableChecksum
-	cacheKeyPath := filepath.Join(executableCachePath, "cache-key.txt")
-	isFileExists, err := IsFileExists(cacheKeyPath)
+	isNewExtraction := false
+	executableChecksumFile := filepath.Join(executableCachePath, "checksum.txt")
+	executableChecksumFileExists, err := IsFileExists(executableChecksumFile)
 	if err != nil {
 		return "", "", err
 	}
-	if isFileExists {
-		cacheKey_Bytes, err := os.ReadFile(cacheKeyPath)
+	if executableChecksumFileExists {
+		checksum, err := os.ReadFile(executableChecksumFile)
 		if err != nil {
 			return "", "", err
 		}
-		cacheKey := string(cacheKey_Bytes)
-		if cacheKey == expectedCacheKey {
-			return archiveContentsPath, executableCachePath, nil
+		if !bytes.Equal(checksum, expectedExecutableChecksum) {
+			err = Unzip(executablePath, archiveContentsPath)
+			if err != nil {
+				return "", "", err
+			}
+			err = os.WriteFile(executableChecksumFile, expectedExecutableChecksum, 0755)
+			if err != nil {
+				return "", "", err
+			}
+			isNewExtraction = true
 		}
+	} else {
+		err = Unzip(executablePath, archiveContentsPath)
+		if err != nil {
+			return "", "", err
+		}
+		err = os.WriteFile(executableChecksumFile, expectedExecutableChecksum, 0755)
+		if err != nil {
+			return "", "", err
+		}
+		isNewExtraction = true
 	}
 
-	err = Unzip(executablePath, archiveContentsPath)
-	if err != nil {
-		return "", "", err
+	isNewStorePath := false
+	linkToNewStorePath := filepath.Join(executableCachePath, "link-to-store")
+	newStorePath, _ := os.Readlink(linkToNewStorePath)
+	newStorePathTarget, _ := os.Readlink(newStorePath)
+	if newStorePathTarget != archiveContentsPath {
+		newStorePath, err = GetNewStorePath()
+		if err != nil {
+			return "", "", err
+		}
+		err = os.Symlink(archiveContentsPath, newStorePath)
+		if err != nil {
+			return "", "", err
+		}
+		os.Remove(linkToNewStorePath)
+		err = os.Symlink(newStorePath, linkToNewStorePath)
+		if err != nil {
+			return "", "", err
+		}
+		isNewStorePath = true
 	}
 
-	newStorePath, err := GetNewStorePath()
-	if err != nil {
-		return "", "", err
-	}
-	os.Remove(newStorePath)
-	err = os.Symlink(archiveContentsPath, newStorePath)
-	if err != nil {
-		return "", "", err
-	}
-
-	err = RewritePaths(archiveContentsPath, newStorePath)
-	if err != nil {
-		return "", "", err
-	}
-
-	err = os.WriteFile(cacheKeyPath, []byte(expectedCacheKey), 0755)
-	if err != nil {
-		return "", "", err
+	if isNewExtraction || isNewStorePath {
+		err = RewritePaths(archiveContentsPath, newStorePath)
+		if err != nil {
+			return "", "", err
+		}
 	}
 
 	return archiveContentsPath, executableCachePath, nil
