@@ -21,6 +21,13 @@ First, clone the repository and go into its directory by running `git clone http
 
 ## Running the home configuration
 
+### Using Nix
+
+- Run the shell with `nix run github:bigolu/dotfiles`
+- Run a specific command in the shell with `nix run github:bigolu/dotfiles -- -c 'nvim some-file.py'`
+
+### Using a Standalone Executable
+
 My home config is also available as an executable with no dependencies. The executable is self-extracting archive (SFX) that contains all the commandline programs I use, as well as my config files for them. Running it will start my shell which will have access to these programs and configs.
 
 - Run the shell with `NIX_ROOTLESS_BUNDLER_DELETE_CACHE=1 sh -c "$(curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run-shell.sh)"`
