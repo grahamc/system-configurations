@@ -119,7 +119,6 @@ function _fzf_complete
                 --select-1 \
                 --exit-0 \
                 --no-hscroll \
-                --color 'gutter:-1' \
                 --tiebreak=begin,chunk \
                 # I set the current token as the delimiter so I can exclude from what gets searched.
                 # Since the current token is in the beginning of the string, it will be the first field index so
