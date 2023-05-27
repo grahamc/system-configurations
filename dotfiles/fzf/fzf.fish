@@ -25,7 +25,7 @@ set --global --export FZF_DEFAULT_OPTS " \
     --preview-window=wrap,bottom,40% \
     --multi \
     --no-separator \
-    --scrollbar='🮈' \
+    --scrollbar='🮉' \
     --preview-label ' press ctrl+/ for help ' \
     --preview-label-pos '-3:bottom' \
     --ansi \
