@@ -9,7 +9,7 @@ set _color_error_text (set_color normal; set_color red)
 set _color_normal (set_color normal)
 set _color_border (set_color normal; set_color brwhite)
 
-set async_prompt_functions test
+set async_prompt_functions
 
 function fish_prompt --description 'Print the prompt'
     # pipestatus contains the exit code(s) of the last command that was executed
