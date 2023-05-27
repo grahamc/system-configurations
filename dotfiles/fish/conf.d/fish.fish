@@ -112,10 +112,9 @@ function _fzf_complete
                 (set_color brwhite)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
             | fzf \
                 --delimiter \t \
-                --no-preview \
                 --height 45% \
                 --no-header \
-                --bind 'backward-eof:abort' \
+                --bind 'backward-eof:abort,start:toggle-preview' \
                 --select-1 \
                 --exit-0 \
                 --no-hscroll \
