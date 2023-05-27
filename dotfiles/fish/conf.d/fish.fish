@@ -104,8 +104,6 @@ function _fzf_complete
     set choice \
         ( \
             complete --escape --do-complete -- "$(commandline --cut-at-cursor)" \
-            # remove duplicates
-            | uniq --unique \
             # Use a different color for the completion item description
             | string replace --regex -- \
                 '(?<prefix>^'(string escape --style regex -- "$current_token")')(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' \
