@@ -28,19 +28,19 @@ First, clone the repository and go into its directory by running `git clone http
 
 ### Using a Standalone Executable
 
-My home config is also available as an executable with no dependencies. The executable is self-extracting archive (SFX) that contains all the commandline programs I use, as well as my config files for them. Running it will start my shell which will have access to these programs and configs.
+My home config is also available as an executable with no dependencies. The executable is self-extracting archive (SEA) that contains all the commandline programs I use, as well as my config files for them. Running it will start my shell which will have access to these programs and configs.
 
 - Run the shell with `NIX_ROOTLESS_BUNDLER_DELETE_CACHE=1 sh -c "$(curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run-shell.sh)"`
 - Run a specific program in the shell with `NIX_ROOTLESS_BUNDLER_DELETE_CACHE=1 sh -c "$(curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run-shell.sh)" shell -c 'nvim some-file.py'`
 
-  > NOTE: While the SFX doesn't depend on any programs on your computer, there are some requirements:
+  > NOTE: While the SEA doesn't depend on any programs on your computer, there are some requirements:
   >
   > - A `/tmp` directory - You can read this [GitHub issue comment](https://github.com/NixOS/nix/issues/1971#issue-304578884) regarding a "rootless Nix" to see why this is needed, as well as learn more about how this works.
-  > - ~450 MB - To run, the SFX must extract itself to a directory and run from there. This means you need space for the SFX (compressed to ~80 MB) and the extraction (~370 MB), totaling 450 MB.
+  > - ~450 MB - To run, the SEA must extract itself to a directory and run from there. This means you need space for the SEA (compressed to ~80 MB) and the extraction (~370 MB), totaling 450 MB.
   >
   > <br/>
   >
-  > TIP: By default, the SFX caches the extracted archive. To keep this behavior, remove the environment variable `NIX_ROOTLESS_BUNDLER_DELETE_CACHE=1` from the beginning of either of the above commands. The cache is in <user_cache_dir>/nix-rootless-bundler. To see what <user_cache_dir> would be on your computer, you can check the golang documentation for [os.UserCacheDir](https://pkg.go.dev/os#UserCacheDir).
+  > TIP: By default, the SEA caches the extracted archive. To keep this behavior, remove the environment variable `NIX_ROOTLESS_BUNDLER_DELETE_CACHE=1` from the beginning of either of the above commands. The cache is in <user_cache_dir>/nix-rootless-bundler. To see what <user_cache_dir> would be on your computer, you can check the golang documentation for [os.UserCacheDir](https://pkg.go.dev/os#UserCacheDir).
 
 ## Setting up Nix
 
