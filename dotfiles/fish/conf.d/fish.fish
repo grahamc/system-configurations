@@ -101,7 +101,7 @@ echo -ne "\033]0;fish\007"
 # Use shift+tab to select an autocomplete entry with fzf
 function _fzf_complete
     set current_token (commandline --current-token)
-    set choice \
+    set entries \
         ( \
             complete --escape --do-complete -- "$(commandline --cut-at-cursor)" \
             # Use a different color for the completion item description
@@ -124,8 +124,9 @@ function _fzf_complete
                 --nth '2..' \
         )
     and begin
-        # Remove the tab and description, leaving only the completion item.
-        set entry "$(string split -f1 -- \t $choice)"
+        # Remove the tab and description, leaving only the completion items.
+        set entries "$(string split -f1 -- \t $entries)"
+        set entry (string join -- ' ' $entries)
 
         set space ' '
 
