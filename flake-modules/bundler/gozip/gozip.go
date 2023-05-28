@@ -3,7 +3,9 @@ package gozip
 import (
 	"archive/tar"
 	"bytes"
+	"context"
 	"crypto/sha256"
+	"crypto/sha512"
 	"errors"
 	"io"
 	"io/fs"
@@ -12,12 +14,13 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
-	"sync"
 	"time"
-	"crypto/sha512"
 
 	"github.com/klauspost/compress/zstd"
+	"golang.org/x/sync/errgroup"
+	"golang.org/x/sync/semaphore"
 )
 
 func generateBoundary() []byte {
@@ -329,7 +332,12 @@ func RewritePaths(archiveContentsPath string, newStorePath string) (error) {
 	}
 	replacer := strings.NewReplacer(oldAndNewPackagePaths...)
 
-	waitGroup := sync.WaitGroup{}
+	ctx := context.TODO()
+	g, ctx := errgroup.WithContext(ctx)
+	var (
+		maxWorkers = runtime.GOMAXPROCS(0)
+		sem = semaphore.NewWeighted(int64(maxWorkers))
+	)
 	err = filepath.Walk(archiveContentsPath, filepath.WalkFunc(func(path string, info os.FileInfo, err error) (error) {
 		if err != nil {
 			return err
@@ -338,9 +346,11 @@ func RewritePaths(archiveContentsPath string, newStorePath string) (error) {
 			return nil
 		}
 
-		waitGroup.Add(1)
-		go func(path string, info os.FileInfo) (err error) {
-			defer waitGroup.Done()
+		if err := sem.Acquire(ctx, 1); err != nil {
+			return err
+		}
+		g.Go(func() error {
+			defer sem.Release(1)
 			if info.Mode()&os.ModeSymlink != 0 {
 				str, err := os.Readlink(path)
 				if err != nil {
@@ -370,15 +380,15 @@ func RewritePaths(archiveContentsPath string, newStorePath string) (error) {
 				return err
 			}
 			return nil
-		}(path, info)
+		})
+
 		return nil
 	}))
 	if err != nil {
 		return err
 	}
-	waitGroup.Wait()
 
-	return nil
+	return g.Wait()
 }
 
 func GetNewStorePath() (prefix string, err error){

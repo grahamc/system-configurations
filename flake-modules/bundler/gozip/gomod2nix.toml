@@ -4,3 +4,6 @@ schema = 3
   [mod."github.com/klauspost/compress"]
     version = "v1.16.5"
     hash = "sha256-m4wBSvrFyp//S4dB6S9ggEVFxNWTiJ8RBuucscuMDAs="
+  [mod."golang.org/x/sync"]
+    version = "v0.2.0"
+    hash = "sha256-hKk9zsy2aXY7R0qGFZhGOVvk5qD17f6KHEuK4rGpTsg="
