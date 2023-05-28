@@ -68,7 +68,7 @@ To avoid building everything on your machine, you can configure Nix to use this 
 
 1. [Check to see if you are a trusted user](#check-trust). If you aren't, then [add yourself to trusted-users](#add-trust).
 
-2. After running one of the `nix` commands from the [Link](#link) or [Run](#run) sections above, reply yes to the prompts to add the cache.
+2. After running one of the `nix` commands from the [Apply](#applying-the-configuration) or [Run](#running-the-home-configuration) sections above, reply yes to the prompts to add the cache.
 
 ## Troubleshooting
 
