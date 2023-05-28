@@ -8,7 +8,7 @@ First, clone the repository and go into its directory by running `git clone http
 
 ### Home Manager
 
-1. Apply the Home Manager configuration by running `nix run home-manager/master -- switch --flake .#<host_name>` where `<host_name>` is one of the hosts defined in the [Home Manager flake module](https://github.com/bigolu/dotfiles/blob/master/flake-modules/home-manager.nix).
+1. Apply the Home Manager configuration by running `nix run home-manager/master -- switch --flake .#<host_name>` where `<host_name>` is one of the hosts defined in the [Home Manager flake module](https://github.com/bigolu/dotfiles/blob/master/flake-modules/home-manager/default.nix).
 
 ### nix-darwin
 
@@ -16,7 +16,7 @@ First, clone the repository and go into its directory by running `git clone http
 
 2. Unlike Home Manager, nix-darwin doesn't have a flake app output (though there is an [open issue](https://github.com/LnL7/nix-darwin/issues/398) to add it) so it will need to be set up using the non-flake installer:
 
-    1. Run `nix build .#legacyPackages.darwinConfigurations.<host_name>.system` where `<host_name>` is one of the hosts defined in the [nix-darwin flake module](https://github.com/bigolu/dotfiles/blob/master/flake-modules/nix-darwin.nix). This will build the nix-darwin configuration in a folder named `result` in the current directory.
+    1. Run `nix build .#legacyPackages.darwinConfigurations.<host_name>.system` where `<host_name>` is one of the hosts defined in the [nix-darwin flake module](https://github.com/bigolu/dotfiles/blob/master/flake-modules/nix-darwin/default.nix). This will build the nix-darwin configuration in a folder named `result` in the current directory.
     2. Run `./result/sw/bin/darwin-rebuild switch --flake .<host_name>` where `<host_name>` is the same one you used in the last step. This will apply the configuration to your host. You can now remove the `result` folder with `rm -rf ./result`.
 
 ## Running the home configuration
