@@ -261,3 +261,5 @@ fish_add_path --prepend --move "$HOME/.local/bin"
 if uname | grep -q Linux
     abbr --add --global trash 'trash put'
 end
+
+alias chase 'chase --verbose'
