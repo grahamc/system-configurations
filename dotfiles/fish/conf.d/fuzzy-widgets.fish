@@ -14,11 +14,11 @@ function fzf-grep-widget --description 'Search by line, recursively, from curren
             --bind "ctrl-e:execute(nvim '+call cursor({2},{3})' {1} < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $rg_command {q} || true" \
             --delimiter ':' \
             --prompt 'lines: ' \
-            --preview-window '+{2}/3,75%' \
+            --preview-window '+{2}/3,75%,~1' \
             # the minus 2 prevents a weird line wrap issue
             # The head and tail commands are there to remove the first and last line of output of bat
             # i.e. the top and bottom border of bat since I don't like how they look
-            --preview 'bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {1} --highlight-line {2} | tail -n +2 | head -n -1' \
+            --preview 'echo -s (set_color brwhite) {1} \n; bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {1} --highlight-line {2} | tail -n +2 | head -n -1' \
       )
   or return
 
@@ -166,7 +166,7 @@ function my-fzf-file-widget --description 'Search files'
         fzf-tmux-zoom \
             --prompt "$prompt" \
             --preview "$preview_command" \
-            --preview-window '75%' \
+            --preview-window '75%,~1' \
       )
   or return
 
@@ -203,7 +203,7 @@ function fzf-directory-widget --description 'Seach directories'
         fzf-tmux-zoom \
             --prompt "$prompt" \
             --preview 'echo -s (set_color brwhite) {} \n; lsd {}' \
-            --preview-window '75%' \
+            --preview-window '75%,~1' \
             --keep-right \
       )
   or return
