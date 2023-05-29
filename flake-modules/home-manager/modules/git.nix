@@ -1,7 +1,7 @@
 { config, lib, pkgs, specialArgs, ... }:
   {
     home.packages = with pkgs; [
-      gitMinimal
+      gitFull
       delta
       gitui
     ];
