@@ -13,12 +13,26 @@
         shellOutput =
           let
             hostName = "guest-host";
-            # When I can't remove a package, I replace it with this.
-            emptyPackage = pkgs.writeShellApplication
-              {
-                name = "fake";
-                text = "echo 'This command is not supported in portable mode.'";
-              };
+            makeEmptyPackage = packageName:
+              pkgs.runCommand
+                packageName
+                {}
+                ''mkdir -p $out/bin'';
+            makeStubPackage = bash: package:
+              pkgs.runCommand
+                "stub-package"
+                {}
+                ''
+                  mkdir -p $out/bin
+                  for PROGRAM in ${package}/bin/*; do
+                    name="$(basename "$PROGRAM")"
+                    echo >"$out/bin/$name"  "#!${bash}/bin/bash
+                      echo 'This program is not supported in portable mode.' >/dev/stderr
+                      exit 1
+                      "
+                    chmod 755 "$out/bin/$name"
+                  done
+                '';
             minimalFish = pkgs.fish.override {
               usePython = false;
             };
@@ -27,24 +41,23 @@
             minimalLocales = pkgs.glibcLocales.override { allLocales = false;  locales = ["en_US.UTF-8/UTF-8" "C.UTF-8/UTF-8"];};
             minimalOverlay = final: prev: {
               fish = minimalFish;
-              tmux = prev.tmux.override {
-                withSystemd = false;
-              };
-              comma = emptyPackage;
+              comma = makeStubPackage final.bash prev.comma;
               coreutils-full = prev.coreutils;
-              gitMinimal = emptyPackage;
+              gitFull = makeEmptyPackage "stub-git";
             } // optionalAttrs isLinux {
               fzf = prev.fzf.override {
                 glibcLocales = minimalLocales;
               };
-              open = emptyPackage;
+              tmux = prev.tmux.override {
+                withSystemd = false;
+              };
             };
             shellModule = {config, ...}:
               {
                 # I want a self contained executable so I can't have symlinks that point outside the Nix store.
                 config.repository.symlink.makeCopiesInstead = true;
                 # I do this to override the original link to the treesitter parsers.
-                config.xdg.dataFile."nvim/site/parser".source = lib.mkForce emptyPackage;
+                config.xdg.dataFile."nvim/site/parser".source = lib.mkForce (makeEmptyPackage "stub-parser");
                 config.programs.nix-index = {
                   enable = false;
                   symlinkToCacheHome = false;
