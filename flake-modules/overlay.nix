@@ -171,7 +171,6 @@
               open = prev.writeShellApplication
                 {
                   name = "open";
-                  runtimeInputs = [final.xdg-utils];
                   text = ''
                     xdg-open "''$@"
                   '';
