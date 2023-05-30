@@ -1043,6 +1043,8 @@ Plug(
       vim.keymap.set('n', '<Leader>b', '<Cmd>Telescope buffers<CR>')
       -- This is actually ctrl+/, see :help :map-special-keys
       vim.keymap.set('n', '<C-_>', '<Cmd>Telescope commands<CR>')
+      -- Outside TMUX the above won't work, I have to use <C-/>, so I just map both.
+      vim.keymap.set('n', '<C-/>', '<Cmd>Telescope commands<CR>')
       vim.keymap.set({'n', 'v'}, '<Leader>k', call_with_visual_selection(telescope_builtins.help_tags))
       vim.keymap.set({'n', 'v'}, '<Leader>g', call_with_visual_selection(telescope_builtins.live_grep))
       vim.keymap.set('n', '<Leader>f', '<Cmd>Telescope find_files<CR>')
