@@ -151,7 +151,9 @@ function my-fzf-file-widget --description 'Search files'
     if set --query TMUX
       timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" -p quarter {}
     else if test "$TERM_PROGRAM" = WezTerm
-      timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" -p kitty {}
+      # This should have "-p kitty", but that won\'t work until fzf has support for Kitty\'s image format:
+      # issue: https://github.com/junegunn/fzf/issues/3228
+      timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
     else
       timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
     end
