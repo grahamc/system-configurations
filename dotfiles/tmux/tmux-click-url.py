@@ -3,13 +3,14 @@
 import sys
 import subprocess
 from urllib.parse import urlparse
+import os
 
 # NOTE: Characters I removed: '()
 VALID_URL_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&*+,;='
 MOUSE_PROGRAMS = ['vim', 'nvim']
 
 def main():
-    # 0-indexed
+    # The x and y are 0-indexed
     mouse_x = int(sys.argv[1])
     mouse_y = int(sys.argv[2])
     pane_command = sys.argv[3]
@@ -17,6 +18,7 @@ def main():
     scroll_position = int(scroll_position) if scroll_position != '' else 0
     mouse_y = mouse_y - scroll_position
     mouse_url = sys.argv[5]
+    terminal_width = int(sys.argv[6])
 
     # If the program in the current pane grabbed the mouse, don't open any links. The program in the pane should do it.
     #
@@ -42,9 +44,9 @@ def main():
         return
 
     # build and validate url
-    left = expand(pane_lines, mouse_x, mouse_y, True)[::-1]
+    left = expand(pane_lines, mouse_x, mouse_y, True, terminal_width)[::-1]
     left.append(pane_lines[mouse_y][mouse_x])
-    right = expand(pane_lines, mouse_x, mouse_y, False)
+    right = expand(pane_lines, mouse_x, mouse_y, False, terminal_width)
     potential_url = ''.join(left + right)
     result = urlparse(potential_url)
     if result.scheme == '':
@@ -55,7 +57,7 @@ def main():
 def open_url(url):
     subprocess.run(['open', url], stdout=subprocess.DEVNULL, stdin=subprocess.DEVNULL)
 
-def expand(lines, start_x, start_y, left):
+def expand(lines, start_x, start_y, left, terminal_width):
     result = []
     x = start_x
     y = start_y
@@ -70,6 +72,16 @@ def expand(lines, start_x, start_y, left):
             x = x + step
         y = y + step
         if is_in_bounds(len(lines), y):
+            if left:
+                # Don't continue expanding unless the line we're currently on extends to the end of the screen,
+                # which suggests it wrapped.
+                if len(lines[y]) != terminal_width:
+                    break
+            else:
+                # Don't continue expanding unless the last line we were on hit the end of the screen,
+                # which suggests it wrapped.
+                if len(lines[y - step]) != terminal_width:
+                    break
             x = len(lines[y]) - 1 if left else 0
 
     return result
