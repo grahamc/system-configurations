@@ -304,11 +304,6 @@ function _get_status_context
         return
     end
 
-    if test (count $argv) -gt 1
-        set plural 's'
-    else
-        set plural ''
-    end
     set warning_codes 130
 
     set red (set_color red)
