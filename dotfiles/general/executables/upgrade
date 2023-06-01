@@ -11,7 +11,7 @@ end
 function upgrade
     # NOTE: Should be first because otherwise other tools might try to perform upgrades
     # that have already been performed on another machine and just need to be pulled in.
-    # Also, if upgrading a tool results in a dotfile being changed, (e.g. neovim snapshot)
+    # Also, if upgrading a tool results in a dotfile being changed, (e.g. Nix flake.lock)
     # then pulling dotfiles afterwards might cause a merge conflict.
     if pushd ~/.dotfiles
         if git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null
@@ -116,12 +116,12 @@ function upgrade-nix
         # `nix-env --delete-generations`.
         # issue: https://github.com/nix-community/home-manager/issues/3325
         #
-        # TODO: I'm not bothering to try and keep the last two generations since Home Manger doesn't support
+        # TODO: I'm not bothering to keep the last two generations since Home Manager doesn't support
         # rollbacks yet.
         # issue: https://github.com/nix-community/home-manager/issues/1114
         #
         # This removes all generations older than 'now', an alias for the current time. However, it excludes the
-        # current generation so we can use this to remove all unused generations.
+        # current generation so we can use this to remove all generations besides the current one.
         home-manager expire-generations now
     end
 
