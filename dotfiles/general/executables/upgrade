@@ -98,7 +98,7 @@ function run_for_each_nix_user --argument-names nix_command
         eval "sudo --set-home $nix_command"
     end
 end
-function upgrade-nix-system
+function upgrade-nix
     print_banner 'Nix'
 
     read --prompt-str 'Would you like to update? (y/n): ' --nchars 1 response
