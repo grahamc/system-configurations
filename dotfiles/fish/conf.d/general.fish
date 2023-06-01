@@ -62,7 +62,7 @@ set --global --export GREP_COLORS 'ms=00;35'
 
 # ls
 # use the long format
-abbr --add --global ll 'ls -l'
+abbr --add --position anywhere --global ll 'ls -l'
 # broken symlinks or missing files (files that a symlink references, but don't exist) are colored red, everything
 # else is the normal color
 set --global --export LS_COLORS 'di=0:ln=0:so=0:pi=0:ex=0:bd=0:cd=0:su=0:sg=0:tw=0:ow=0:or=31:mi=31:no=37:*=37'
@@ -259,7 +259,7 @@ end
 fish_add_path --prepend --move "$HOME/.local/bin"
 
 if uname | grep -q Linux
-    abbr --add --global trash 'trash put'
+    abbr --add --position anywhere --global trash 'trash put'
 end
 
 alias chase 'chase --verbose'
