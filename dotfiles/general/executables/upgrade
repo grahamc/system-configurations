@@ -37,13 +37,6 @@ function upgrade
     type --query nix
     and upgrade-nix
 
-    # TODO: The Pop Shop is slow and doesn't have a progress indicator so I'll use the commandline for now.
-    type --query apt
-    and type --query apt-get
-    and upgrade-debian
-    type --query flatpak
-    and upgrade-flatpak
-
     test -d ~/.fluent-theme
     and upgrade-fluent
 
@@ -54,19 +47,6 @@ function upgrade
         end
         popd
     end
-end
-
-function upgrade-debian
-    print_banner 'DEBIAN'
-
-    sudo apt update
-    sudo apt-get --assume-yes --with-new-pkgs upgrade
-    sudo apt-get --assume-yes autoremove
-end
-
-function upgrade-flatpak
-    print_banner 'FLATPAK'
-    flatpak update --assumeyes
 end
 
 function upgrade-dotfiles
