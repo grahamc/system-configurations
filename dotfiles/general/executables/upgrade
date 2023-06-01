@@ -104,7 +104,7 @@ function upgrade-nix
     run_for_each_nix_user 'nix-channel --update'
 
     # Now that the channels are updated, upgrade the packages.
-    run_for_each_nix_user 'nix-env --upgrade "*"'
+    run_for_each_nix_user 'nix profile upgrade'
 
     # Upgrade my host manager flake. This could be home-manager nix-darwin, etc.
     hostctl-upgrade
