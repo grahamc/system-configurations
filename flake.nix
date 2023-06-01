@@ -40,11 +40,15 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+    # These names need to match the flake ID regex. The regex can be found here:
+    # https://github.com/NixOS/nix/blob/ccaadc957593522e9b46336eb5afa45ff876f13f/src/libutil/url-parts.hh#L42
+    #
+    # There is also an issue open for relaxing the constraints in this regex: https://github.com/NixOS/nix/issues/7703
     "vim-plugin-vim-CursorLineCurrentWindow" = {url = "github:inkarkat/vim-CursorLineCurrentWindow"; flake = false;};
-    "vim-plugin-virt-column.nvim" = {url = "github:lukas-reineke/virt-column.nvim"; flake = false;};
+    "vim-plugin-virt-column-nvim" = {url = "github:lukas-reineke/virt-column.nvim"; flake = false;};
     "vim-plugin-folding-nvim" = {url = "github:pierreglaser/folding-nvim"; flake = false;};
     "vim-plugin-cmp-env" = {url = "github:bydlw98/cmp-env"; flake = false;};
-    "vim-plugin-SchemaStore.nvim" = {url = "github:b0o/SchemaStore.nvim"; flake = false;};
+    "vim-plugin-schemastore-nvim" = {url = "github:b0o/SchemaStore.nvim"; flake = false;};
     "vim-plugin-vim" = {url = "github:nordtheme/vim"; flake = false;};
     "vim-plugin-vim-caser" = {url = "github:arthurxavierx/vim-caser"; flake = false;};
     "tmux-plugin-resurrect" = {url = "github:tmux-plugins/tmux-resurrect"; flake = false;};
