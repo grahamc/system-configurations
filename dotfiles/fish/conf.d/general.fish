@@ -127,7 +127,7 @@ abbr --add --global font-debug 'DISPLAY=:0 FC_DEBUG=4 pango-view --font=monospac
 abbr --add --global reload-fonts 'fc-cache -vr'
 
 # ncdu
-abbr --add --global ncdu 'ncdu --color off'
+alias ncdu 'ncdu --color off'
 
 # ulimit
 #
