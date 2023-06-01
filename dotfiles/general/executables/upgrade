@@ -37,9 +37,6 @@ function upgrade
     type --query nix
     and upgrade-nix
 
-    test -d ~/.fluent-theme
-    and upgrade-fluent
-
     # NOTE: This should be last so that all changes produced by any upgrade are included in the commit.
     if pushd ~/.dotfiles
         if git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null
@@ -93,32 +90,6 @@ function make_commit_in_dotfiles
     else
         echo 'Nothing to commit.'
     end
-end
-
-function upgrade-fluent
-    print_banner 'Fluent Theme'
-
-    # TODO: If this gets removed, remove the popd below as well
-    if not pushd ~/.fluent-theme
-        return
-    end
-
-    if not git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null
-        return
-    end
-
-    chronic git fetch --tags
-    set latest_release "$(git ls-remote --refs --sort='version:refname' --tags 'https://github.com/vinceliuice/Fluent-gtk-theme.git' | cut -d/ -f3- | tail -n 1)"
-    set current_release "$(git describe --tags)"
-    if test "$current_release" != "$latest_release"
-        git checkout "$latest_release"
-        ./install.sh --theme all --icon popos --libadwaita --tweaks round
-    else
-        echo 'Nothing to do'
-    end
-
-    # TODO: If this gets removed, remove the pushd above as well
-    popd
 end
 
 function is_multi_user_nix_installation
