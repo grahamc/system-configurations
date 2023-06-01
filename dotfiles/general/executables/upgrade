@@ -9,20 +9,6 @@ end
 
 # upgrade/cleanup packages in all package managers
 function upgrade
-    # If arguments are passed, assume they are package manager names and only upgrade those ones
-    if test (count $argv) -gt 0
-        for package_manager in $argv
-            set function_name "upgrade-$package_manager"
-            if functions --query $function_name
-                eval $function_name
-            else
-                echo -e -s \n (set_color red) "error: No upgrader found for '$package_manager'"
-            end
-        end
-
-        return
-    end
-
     # NOTE: Should be first because otherwise other tools might try to perform upgrades
     # that have already been performed on another machine and just need to be pulled in.
     # Also, if upgrading a tool results in a dotfile being changed, (e.g. neovim snapshot)
