@@ -101,11 +101,6 @@ end
 function upgrade-nix
     print_banner 'Nix'
 
-    read --prompt-str 'Would you like to update? (y/n): ' --nchars 1 response
-    if test $response != 'y'
-        return
-    end
-
     run_for_each_nix_user 'nix-channel --update'
 
     # Now that the channels are updated, upgrade the packages.
