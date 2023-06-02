@@ -25,6 +25,8 @@
         # The `man` in nixpkgs is only intended to be used for NixOS, it doesn't work properly on other OS's so I'm disabling
         # it. Since I'm not using the nixpkgs man, I have any packages I install their man outputs so my
         # system's `man` can find them.
+        #
+        # home-manager issue: https://github.com/nix-community/home-manager/issues/432
         programs.man.enable = false;
         home.extraOutputsToInstall = [ "man" ];
 
