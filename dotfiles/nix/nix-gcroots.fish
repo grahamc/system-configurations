@@ -1,6 +1,6 @@
 #!/usr/bin/env fish
 
-function print_symlink_chain --argument-names symlink
+function get_symlink_chain --argument-names symlink
   set chase_output (chase --verbose $symlink 2>/dev/null)
   set chase_status $status
   # Remove the first line since it's the same as $symlink
@@ -15,7 +15,10 @@ function print_symlink_chain --argument-names symlink
 
   set joined_chain (string join -- ' -> ' $chain)
 
-  echo -e $joined_chain
+  # Include the size
+  set joined_chain (string match --regex -- '^[^\s]+' (du -shL $symlink 2>/dev/null))' '$joined_chain
+
+  echo $joined_chain
 end
 
 function print_roots_for_directory --argument-names directory
@@ -30,12 +33,16 @@ function print_roots_for_directory --argument-names directory
   if test (count $roots) -eq 0
     echo "No roots found."
   else
+    set chains
     for root in $roots
       # Don't print broken symlinks
       if test -e $root
-        print_symlink_chain $root
+        set --append chains (get_symlink_chain $root)
       end
     end
+    # sort by size, descending
+    set chains (printf '%s\n' $chains | sort --human-numeric-sort --reverse)
+    printf '%s\n' $chains
   end
   echo
 end
