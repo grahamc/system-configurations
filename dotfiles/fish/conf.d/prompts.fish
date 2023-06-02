@@ -27,7 +27,7 @@ function fish_prompt --description 'Print the prompt'
     if set --query TRANSIENT
         set --erase TRANSIENT
 
-        echo -n -s -e (_get_separator) "\n" $_color_text (_get_arrow) $_color_normal
+        echo -n -s -e (_get_separator) "\n" (_get_arrow) $_color_normal
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY
@@ -111,7 +111,7 @@ end
 
 
 function _get_arrow
-    echo -n -s (string repeat -n $SHLVL '>') ' '
+    echo -n -s $_color_text (string repeat -n $SHLVL '>') ' '
 end
 
 function _get_python_context
@@ -119,7 +119,7 @@ function _get_python_context
         return
     end
 
-    echo -n -s $_color_text 'venv: ' (_get_python_venv_name)
+    echo -n -s $_color_normal 'venv: ' (_get_python_venv_name)
 end
 
 function _get_python_venv_name
@@ -143,7 +143,7 @@ function _get_job_context
 
     set --local job_commands (jobs --command)
     set --local formatted_job_commands (string split ' ' $job_commands | string join ,)
-    echo -n -s $_color_text 'jobs: ' $formatted_job_commands
+    echo -n -s $_color_normal 'jobs: ' $formatted_job_commands
 end
 
 function _get_privilege_context
@@ -161,19 +161,19 @@ end
 
 function _get_host_context
     if set --query SSH_TTY
-        echo -n -s $_color_text "host: $USER on $(hostname) (ssh)"
+        echo -n -s $_color_normal "host: $USER on $(hostname) (ssh)"
         return
     end
 
     set container_name (_get_container_name)
     if test -n "$container_name"
-        echo -n -s $_color_text "host: $USER on $container_name (container)"
+        echo -n -s $_color_normal "host: $USER on $container_name (container)"
         return
     end
 
 
     if test "$USER" != 'biggs'
-        echo -n -s $_color_text "host: $USER on $(hostname)"
+        echo -n -s $_color_normal "host: $USER on $(hostname)"
         return
     end
 end
@@ -221,7 +221,7 @@ function _get_path_context
         set dir_length (math $dir_length - 1)
     end
 
-    echo -n -s $_color_text 'path: ' $path
+    echo -n -s $_color_normal 'path: ' $path
 end
 
 function _get_direnv_context
@@ -237,7 +237,7 @@ function _get_direnv_context
         set blocked (echo -n -s (set_color red) ' (blocked)')
     end
 
-    echo -n -s $_color_text 'direnv: ' "$directory" "$blocked"
+    echo -n -s $_color_normal 'direnv: ' "$directory" "$blocked"
 end
 
 function _get_git_context
@@ -246,7 +246,7 @@ function _get_git_context
         return
     end
     if test "$git_context" = (_get_git_context_async_loading_indicator)
-        echo -n -s $_color_text 'git: ' $git_context
+        echo -n -s $_color_normal 'git: ' $git_context
         return
     end
 
@@ -261,7 +261,7 @@ function _get_git_context
         set formatted_context (_abbreviate_git_states $formatted_context)
     end
 
-    echo -n -s $_color_text 'git: ' $formatted_context
+    echo -n -s $_color_normal 'git: ' $formatted_context
 end
 
 set --append async_prompt_functions _get_git_context_async
@@ -327,7 +327,7 @@ function _get_status_context
         end
     end
 
-    echo -n -s $_color_text 'status: '(string join "$normal, " $pipestatus_formatted)
+    echo -n -s $_color_normal 'status: '(string join "$normal, " $pipestatus_formatted)
 end
 
 function _get_nix_context
@@ -345,6 +345,6 @@ function _get_nix_context
         set packages " ($packages)"
     end
 
-    echo -n -s $_color_text "nix: $color$IN_NIX_SHELL$_color_text$packages"
+    echo -n -s $_color_normal "nix: $color$IN_NIX_SHELL$_color_normal$packages"
 end
 
