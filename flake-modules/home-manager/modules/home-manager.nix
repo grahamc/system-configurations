@@ -3,6 +3,7 @@
     inherit (specialArgs) hostName username homeDirectory isHomeManagerRunningAsASubmodule;
     inherit (specialArgs.flakeInputs) self;
     inherit (lib.attrsets) optionalAttrs;
+    inherit (pkgs.stdenv) isLinux;
 
     # Scripts for switching generations and upgrading flake inputs.
     hostctl-switch = pkgs.writeShellApplication
@@ -78,6 +79,35 @@
           printChanges = lib.hm.dag.entryAnywhere ''
             ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
           '';
+        };
+
+        systemd = optionalAttrs isLinux {
+          user.services = {
+            home-manager-delete-old-generations = {
+              Unit = {
+                Description = "Delete old generations of home-manager";
+              };
+              Service = {
+                Type = "oneshot";
+                ExecStart = "${pkgs.home-manager}/bin/home-manager expire-generations now";
+              };
+            };
+          };
+
+          user.timers = {
+            home-manager-delete-old-generations = {
+              Unit = {
+                Description = "Delete old generations of home-manager daily";
+              };
+              Timer = {
+                OnCalendar = "daily";
+                Persistent = true;
+              };
+              Install = {
+                WantedBy = ["timers.target"];
+              };
+            };
+          };
         };
       })
     ]
