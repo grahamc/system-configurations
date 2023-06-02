@@ -38,7 +38,10 @@
     {
       nix = {
         useDaemon = true;
-        gc.automatic = true;
+        gc = {
+          automatic = true;
+          options = "--delete-old";
+        };
       };
 
       users.users.${username} = {
