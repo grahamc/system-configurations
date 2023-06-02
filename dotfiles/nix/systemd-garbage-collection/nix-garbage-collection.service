@@ -3,4 +3,5 @@ Description=Collect garbage in the Nix store
 
 [Service]
 Type = "oneshot"
-ExecStart=/home/biggs/.nix-profile/bin/nix-collect-garbage --delete-old
+# Wait 5 minutes for home-manager to delete its old generations
+ExecStart=/bin/sh -c '/home/biggs/.nix-profile/bin/sleep 300 && /home/biggs/.nix-profile/bin/nix-collect-garbage --delete-old'
