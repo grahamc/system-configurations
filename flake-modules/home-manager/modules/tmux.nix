@@ -20,8 +20,18 @@
       # - So I can keep the plugin settings in my config. Settings need to be defined before the plugin is loaded
       # and programs.tmux loads my configuration _after_ loading plugins so it wouldn't work. Instead I load
       # them my self.
-      home.packages = with pkgs; [
-        tmux
+      home.packages = [
+        (pkgs.writeShellApplication
+          {
+            name = "tmux";
+            runtimeInputs = [pkgs.tmux];
+            # I want the $SHLVL to start from one for any shells launched in TMUX since they technically aren't
+            # children of the shell that I launched TMUX with. I would do this with TMUX's `default-command`, but
+            # I'm having problems with that setting, as explained in my tmux.conf.
+            text = ''
+              env -u SHLVL tmux "$@"
+            '';
+          })
       ] ++ tmuxPlugins;
 
       xdg.configFile = {
