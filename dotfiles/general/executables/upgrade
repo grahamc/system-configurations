@@ -112,16 +112,8 @@ function upgrade-nix
     # Delete all generations besides the last two in case I want to rollback.
     run_for_each_nix_user 'nix-env --delete-generations +2'
     if type --query home-manager
-        # TODO: There's an issue for adding an option to specify the number of generations to keep, like
-        # `nix-env --delete-generations`.
-        # issue: https://github.com/nix-community/home-manager/issues/3325
-        #
-        # TODO: I'm not bothering to keep the last two generations since Home Manager doesn't support
-        # rollbacks yet.
-        # issue: https://github.com/nix-community/home-manager/issues/1114
-        #
-        # This removes all generations older than 'now', an alias for the current time. However, it excludes the
-        # current generation so we can use this to remove all generations besides the current one.
+        # Delete all home-manager generations besides the current one. We do this by removing all generations,
+        # excluding the current current generation, older than 'now', an alias for the current time.
         home-manager expire-generations now
     end
 
