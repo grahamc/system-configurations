@@ -106,21 +106,8 @@ function upgrade-nix
     # Now that the channels are updated, upgrade the packages.
     run_for_each_nix_user 'nix profile upgrade'
 
-    # Upgrade my host manager flake. This could be home-manager nix-darwin, etc.
+    # Upgrade my host manager flake. This could be home-manager, nix-darwin, etc.
     hostctl-upgrade
-
-    # Delete all generations besides the last two in case I want to rollback.
-    run_for_each_nix_user 'nix-env --delete-generations +2'
-    if type --query home-manager
-        # Delete all home-manager generations besides the current one. We do this by removing all generations,
-        # excluding the current current generation, older than 'now', an alias for the current time.
-        home-manager expire-generations now
-    end
-
-    # With all the old generations deleted, collect garbage.
-    # TODO: I think I only need to run this as root and it will include other users, but just to be safe I'll
-    # run it twice.
-    run_for_each_nix_user nix-collect-garbage
 end
 
 upgrade $argv
