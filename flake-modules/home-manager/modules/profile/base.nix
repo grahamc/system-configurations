@@ -2,6 +2,8 @@
 { config, lib, pkgs, specialArgs, ... }:
   let
     inherit (specialArgs) repositoryDirectory flakeInputs;
+    inherit (lib.attrsets) optionalAttrs;
+    inherit (pkgs.stdenv) isLinux;
   in
     {
       imports = [
@@ -24,5 +26,7 @@
       repository.symlink.baseDirectory = "${repositoryDirectory}/dotfiles";
 
       # When switching generations, stop obsolete services and start ones that are wanted by active units.
-      systemd.user.startServices = "sd-switch";
+      systemd = optionalAttrs isLinux {
+        user.startServices = "sd-switch";
+      };
     }
