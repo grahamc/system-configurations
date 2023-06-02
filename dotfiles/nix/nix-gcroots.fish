@@ -1,0 +1,70 @@
+#!/usr/bin/env fish
+
+function print_symlink_chain --argument-names symlink
+  set chase_output (chase --verbose $symlink 2>/dev/null)
+  set chase_status $status
+  # Remove the first line since it's the same as $symlink
+  set chase_output $chase_output[2..]
+  # Remove the last line since it's essentially a duplicate of the line before it, the terminal file
+  set chase_output $chase_output[..-2]
+
+  # The lines have the form '-> <path>' so I'm removing the first 3 characters to get the <path>.
+  set chase_output_only_filenames (printf '%s\n' $chase_output | string sub --start 4)
+
+  set chain (set_color blue)$symlink(set_color normal) $chase_output_only_filenames
+
+  set joined_chain (string join -- ' -> ' $chain)
+
+  echo -e $joined_chain
+end
+
+function print_roots_for_directory --argument-names directory
+  set potential_roots $directory/*
+  # Filter out broken links
+  set roots
+  for root in $potential_roots
+    if test -e $root
+      set --append roots $root
+    end
+  end
+  if test (count $roots) -eq 0
+    echo "No roots found."
+  else
+    for root in $roots
+      # Don't print broken symlinks
+      if test -e $root
+        print_symlink_chain $root
+      end
+    end
+  end
+  echo
+end
+
+function print_gcroots
+  set gcroots_directory '/nix/var/nix/gcroots'
+
+  # automatic roots
+  set automatic_roots_directory "$gcroots_directory/auto"
+  echo (set_color --bold --underline)"Automatic roots ($automatic_roots_directory):"(set_color normal)
+  print_roots_for_directory $automatic_roots_directory
+
+  # per-user roots
+  set per_user_roots_directory "$gcroots_directory/per-user"
+  for user_roots_directory in $per_user_roots_directory/*
+    set user_roots_directory_absolute (path normalize $per_user_roots_directory/$user_roots_directory)
+    set user (path basename $user_roots_directory)
+    echo (set_color --bold --underline)"Roots for user '$user' ($user_roots_directory_absolute):"(set_color normal)
+    print_roots_for_directory $user_roots_directory
+  end
+
+  # User profile roots
+  set per_user_profile_roots_directory "$gcroots_directory/profiles/per-user"
+  for user_profile_roots_directory in $per_user_profile_roots_directory/*
+    set user_profile_roots_directory_absolute (path normalize $per_user_profile_roots_directory/$user_profile_roots_directory)
+    set user (path basename $user_profile_roots_directory)
+    echo (set_color --bold --underline)"Roots for user profile '$user' ($user_profile_roots_directory_absolute):"(set_color normal)
+    print_roots_for_directory $user_profile_roots_directory
+  end
+end
+
+print_gcroots $argv

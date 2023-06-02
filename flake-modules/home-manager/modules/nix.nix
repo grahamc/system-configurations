@@ -41,5 +41,6 @@
 
       repository.symlink.home.file = {
         ".local/bin/nix".source = "nix/nix-repl-wrapper.fish";
+        ".local/bin/nix-gcroots".source = "nix/nix-gcroots.fish";
       };
     }
