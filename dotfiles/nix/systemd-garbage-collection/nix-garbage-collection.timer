@@ -1,0 +1,9 @@
+[Unit]
+Description=Collect garbage in the Nix store daily
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target

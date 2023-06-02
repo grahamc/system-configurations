@@ -1,0 +1,6 @@
+[Unit]
+Description=Collect garbage in the Nix store
+
+[Service]
+Type = "oneshot"
+ExecStart=/home/biggs/.nix-profile/bin/nix-collect-garbage --delete-old
