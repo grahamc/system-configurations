@@ -9,7 +9,7 @@ set _magnifying_glass (echo -s \uf002 '  ')
 set --global --export FZF_DEFAULT_OPTS " \
     --cycle \
     --ellipsis='…' \
-    --bind 'tab:down,shift-tab:up,ctrl-j:preview-down,ctrl-k:preview-up,change:first,ctrl-o:change-preview-window(right,60%|bottom,75%)+refresh-preview,ctrl-/:preview(fzf-help-preview)+preview-top,ctrl-\\:refresh-preview,enter:accept,ctrl-r:refresh-preview,ctrl-w:toggle-preview-wrap,alt-enter:toggle,ctrl-t:track+unbind(change),focus:rebind(change),f7:prev-history,f8:next-history,ctrl-p:toggle-preview' \
+    --bind 'tab:down,shift-tab:up,ctrl-j:preview-down,ctrl-k:preview-up,change:first,ctrl-o:change-preview-window(right,60%|bottom,75%)+refresh-preview+change-preview-label( press ctrl+/ for help ),ctrl-/:preview(fzf-help-preview)+preview-top+change-preview-label( press ctrl+\\ to go back ),ctrl-\\:refresh-preview+change-preview-label( press ctrl+/ for help ),enter:accept,ctrl-r:refresh-preview+change-preview-label( press ctrl+/ for help ),ctrl-w:toggle-preview-wrap,alt-enter:toggle,ctrl-t:track+unbind(change),focus:rebind(change)+change-preview-label( press ctrl+/ for help ),f7:prev-history,f8:next-history,ctrl-p:toggle-preview' \
     --layout=reverse \
     --border=none \
     --color='16,fg+:-1:regular:underline,bg+:-1,info:15,gutter:-1,pointer:6:bold,prompt:6:regular,border:15:dim,query:-1:regular,marker:6:bold,header:15,spinner:yellow,hl:cyan:dim,hl+:regular:cyan:underline,scrollbar:15:dim' \
