@@ -17,6 +17,7 @@ function fish_prompt --description 'Print the prompt'
     # executed on the command line so I will store the value of pipestatus
     # now, before executing any commands.
     set last_pipestatus $pipestatus
+    set last_status $status
 
     # TODO: This clears the text in the terminal after the cursor. If we don't do this, multiline
     # prompts might not display properly.
@@ -46,7 +47,7 @@ function fish_prompt --description 'Print the prompt'
         (_get_job_context) \
         (_get_host_context) \
         (_get_path_context) \
-        (_get_status_context $last_pipestatus) \
+        (_get_status_context $last_status $last_pipestatus) \
         (_get_privilege_context)
     for context in $contexts
         if test -z $context
@@ -96,7 +97,9 @@ function _get_separator
 end
 
 function _format_context --argument-names context
-    echo -n -s $_color_border '╼[' $context $_color_border ']'
+    set left_border $_color_border'╼['$_color_normal
+    set right_border $_color_border']'$_color_normal
+    echo -n $left_border$context$right_border
 end
 
 function _make_line --argument-names type
@@ -299,35 +302,51 @@ function _abbreviate_git_states --argument-names git_context
 end
 
 function _get_status_context
-    # If there aren't any non-zero exit codes, i.e. failures, then we won't print anything
-    if not string match --quiet --invert 0 $argv
+    # I'd pass these in as two separate arguments, but fish doesn't support list arguments, all the arguments
+    # get flattened: https://github.com/fish-shell/fish-shell/issues/3375
+    set last_status $argv[1]
+    set last_pipestatus $argv[2..]
+
+    # If there aren't any non-zero exit codes in the last $pipestatus and the last $status is 0, then that means
+    # everything succeeded and I won't print anything
+    if not string match --quiet --invert 0 $last_pipestatus
+    and test $last_status -eq 0
         return
     end
 
-    set warning_codes 130
+    set status_color (get_color_for_exit_code $last_status)
+    set status_formatted $status_color$last_status$_color_normal
 
-    set red (set_color red)
-    set yellow (set_color yellow)
-    set normal (set_color normal)
+    set context "status: $status_formatted"
 
-    set pipestatus_formatted
-    for code in $argv
-        set color (set_color green)
-        if contains "$code" $warning_codes
-            set color "$yellow"
-        else if test "$code" != '0'
-            set color "$red"
+    if test (count $last_pipestatus) -gt 1
+        set pipestatus_formatted
+        for code in $last_pipestatus
+            set color (get_color_for_exit_code $code)
+            set signal (fish_status_to_signal $code)
+            if test "$code" != "$signal"
+                set --append pipestatus_formatted "$color$code($signal)"$_color_normal
+            else
+                set --append pipestatus_formatted "$color$code"$_color_normal
+            end
         end
+        set pipestatus_formatted (string join ', ' $pipestatus_formatted)
 
-        set signal (fish_status_to_signal $code)
-        if test "$code" != "$signal"
-            set --append pipestatus_formatted "$color$code($signal)"
-        else
-            set --append pipestatus_formatted "$color$code"
-        end
+        set context $context" (pipe: $pipestatus_formatted)"
     end
 
-    echo -n -s $_color_normal 'status: '(string join "$normal, " $pipestatus_formatted)
+    echo $context
+end
+function get_color_for_exit_code --argument-names exit_code
+    set warning_codes 130
+    set color (set_color green)
+    if contains "$exit_code" $warning_codes
+        set color (set_color yellow)
+    else if test "$exit_code" != '0'
+        set color (set_color red)
+    end
+
+    echo $color
 end
 
 function _get_nix_context
