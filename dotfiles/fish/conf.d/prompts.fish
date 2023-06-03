@@ -1,45 +1,58 @@
 # NOTE: Unlike most of my other fish configs, this one does not check if the shell is being run
-# interactively. This is because some of the functions defined here will be called in a non-interactive shell by my
-# async prompt plugin.
+# interactively. This is because some of the functions defined here will be called in a non-interactive shell by
+# fish-async-prompt.
 
-# The reason for all the 'set_color normal' commands is to undo any attributes set like '--bold'
-set _color_text (set_color normal; set_color cyan)
-set _color_standout_text (set_color normal; set_color yellow)
-set _color_error_text (set_color normal; set_color red)
+set _color_text (set_color cyan)
+set _color_standout_text (set_color yellow)
+set _color_error_text (set_color red)
 set _color_normal (set_color normal)
-set _color_border (set_color normal; set_color brwhite)
+set _color_border (set_color brwhite)
 
+# Names of of functions for fish-async-prompt to wrap
 set async_prompt_functions
 
+function fish_right_prompt
+    # # transient prompt
+    # if set --query TRANSIENT_RIGHT
+    #     set --erase TRANSIENT_RIGHT
+    #     echo -n ' '
+    #     return
+    # else if set --query TRANSIENT_EMPTY_RIGHT
+    #     set --erase TRANSIENT_EMPTY_RIGHT
+    #     echo -n ' '
+    #     return
+    # end
+
+    # # echo -s (set_color brwhite) '(ctrl+/: help)' (set_color normal)
+    # echo -s (set_color brwhite) '' (set_color normal)
+end
 function fish_prompt --description 'Print the prompt'
-    # pipestatus contains the exit code(s) of the last command that was executed
-    # (there are multiple codes in the case of a pipeline). I want the value of the last command
-    # executed on the command line so I will store the value of pipestatus
-    # now, before executing any commands.
-    set last_pipestatus $pipestatus
+    # I want the value of $status and $pipestatus for the last command executed on the command line so I will store
+    # their values now before executing any commands.
     set last_status $status
+    set last_pipestatus $pipestatus
 
     # TODO: This clears the text in the terminal after the cursor. If we don't do this, multiline
     # prompts might not display properly.
     # issue: https://github.com/fish-shell/fish-shell/issues/8418
     printf \e\[0J
 
+    # This is what I want to display on the line that separates my prompt from the output of the last command.
+    set separator ''
+
     # transient prompt
     if set --query TRANSIENT
         set --erase TRANSIENT
-
-        echo -n -s -e (_get_separator) "\n" (_get_arrow) $_color_normal
+        echo -n -e $separator\n(_get_arrow)
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY
-
         # Return without printing anything. This results in the prompt being refreshed in-place since it erases the
         # old prompt, prints nothing, and then draws the prompt again.
         return
     end
 
-    set -l lines
-    set -l contexts \
+    set contexts \
         (_get_direnv_context) \
         (_get_nix_context) \
         (_get_python_context) \
@@ -49,72 +62,46 @@ function fish_prompt --description 'Print the prompt'
         (_get_path_context) \
         (_get_status_context $last_status $last_pipestatus) \
         (_get_privilege_context)
+    set prompt_lines
     for context in $contexts
         if test -z $context
             continue
         end
 
+        # Truncate any contexts that wouldn't fit on one line.
+        # The 4 accounts for the 4 characters that make up the border, see `_make_line`.
         set max_width (math $COLUMNS - 4)
-        if test "$(string length --visible "$context")" -gt "$max_width"
-            set context (string shorten --max "$max_width" "$context")
+        if test (string length --visible $context) -gt $max_width
+            set context (string shorten --max $max_width $context)
         end
 
-        if not set --query lines[1]
-            set --local first_line (string join '' (_make_line first) (_format_context $context))
-            set --append lines $first_line
-            continue
+        if not set --query prompt_lines[1]
+            set --append prompt_lines (_make_line first $context)
+        else
+            set --append prompt_lines (_make_line middle $context)
         end
-
-        set --local formatted_context (_format_context $context)
-        set --local middle_line (string join '' (_make_line) $formatted_context)
-        set --append lines $middle_line
     end
-    set --append lines (_make_line last)
-    # Add another line to separate commands
-    set --prepend lines (_get_separator)
-    echo -e -n (string join '\n' $lines)
+    set --append prompt_lines (_make_line last)
+    set --prepend prompt_lines $separator
+    echo -e -n (string join '\n' $prompt_lines)
 end
-
-function fish_right_prompt
-  # # transient prompt
-  # if set --query TRANSIENT_RIGHT
-  #     set --erase TRANSIENT_RIGHT
-  #     echo -n ' '
-  #     return
-  # else if set --query TRANSIENT_EMPTY_RIGHT
-  #     set --erase TRANSIENT_EMPTY_RIGHT
-  #     echo -n ' '
-  #     return
-  # end
-
-  # # echo -s (set_color brwhite) '(ctrl+/: help)' (set_color normal)
-  # echo -s (set_color brwhite) '' (set_color normal)
-end
-
-function _get_separator
-    echo -n -s ' '
-    # echo -n -s (set_color brblack) (string repeat -n $COLUMNS "―")
-end
-
-function _format_context --argument-names context
+function _make_line --argument-names position context
     set left_border $_color_border'╼['$_color_normal
     set right_border $_color_border']'$_color_normal
-    echo -n $left_border$context$right_border
-end
 
-function _make_line --argument-names type
-    if test "$type" = first
-        echo -n -s $_color_border '┌'
-    else if test "$type" = last
-        echo -n -s $_color_border '└' (set_color normal; set_color brwhite) (_get_arrow) $_color_normal
-    else
-        echo -n -s $_color_border '├'
+    if test $position = first
+        set line_connector $_color_border'┌'$_color_normal
+        echo $line_connector$left_border$context$right_border
+    else if test $position = middle
+        set line_connector $_color_border'├'$_color_normal
+        echo $line_connector$left_border$context$right_border
+    else if test $position = last
+        set line_connector $_color_border'└'$_color_normal
+        echo $line_connector(_get_arrow)
     end
 end
-
-
 function _get_arrow
-    echo -n -s $_color_text (string repeat -n $SHLVL '>') ' '
+    echo $_color_text(string repeat -n $SHLVL '>')$_color_normal' '
 end
 
 function _get_python_context
@@ -122,7 +109,7 @@ function _get_python_context
         return
     end
 
-    echo -n -s $_color_normal 'venv: ' (_get_python_venv_name)
+    echo "venv: $(_get_python_venv_name)"
 end
 
 function _get_python_venv_name
@@ -132,11 +119,11 @@ function _get_python_venv_name
     # If the folder containing the virtualenv is named .venv, use the parent folder instead
     # since that should be more descriptive
     if test $last_path_segment = '.venv'
-        echo -n $path_segments[-2]
+        echo $path_segments[-2]
         return
     end
 
-    echo -n $last_path_segment
+    echo $last_path_segment
 end
 
 function _get_job_context
@@ -144,9 +131,9 @@ function _get_job_context
         return
     end
 
-    set --local job_commands (jobs --command)
-    set --local formatted_job_commands (string split ' ' $job_commands | string join ,)
-    echo -n -s $_color_normal 'jobs: ' $formatted_job_commands
+    set job_commands (jobs --command)
+    set formatted_job_commands (string join , $job_commands)
+    echo "jobs: $formatted_job_commands"
 end
 
 function _get_privilege_context
@@ -159,28 +146,23 @@ function _get_privilege_context
         return
     end
 
-    echo -n -s $_color_standout_text $privilege_context
+    echo $_color_standout_text$privilege_context$_color_normal
 end
 
 function _get_host_context
-    if set --query SSH_TTY
-        echo -n -s $_color_normal "host: $USER on $(hostname) (ssh)"
-        return
-    end
-
     set container_name (_get_container_name)
     if test -n "$container_name"
-        echo -n -s $_color_normal "host: $USER on $container_name (container)"
-        return
+        set host "$container_name (container)"
+    else if set --query SSH_TTY
+        set host "$(hostname) (ssh)"
+    else if test "$USER" != 'biggs'
+        set host (hostname)
     end
 
-
-    if test "$USER" != 'biggs'
-        echo -n -s $_color_normal "host: $USER on $(hostname)"
-        return
+    if test -n "$host"
+        echo "host: $USER on $host"
     end
 end
-
 # Taken from Starship Prompt: https://github.com/starship/starship/blob/master/src/modules/container.rs
 function _get_container_name
     if test -e /proc/vz
@@ -212,19 +194,19 @@ function _get_container_name
 end
 
 function _get_path_context
-    set -g fish_prompt_pwd_dir_length 0
-    set path (prompt_pwd)
+    # Passing 0 means prompt won't be shortened
+    set path (prompt_pwd --dir-length 0)
 
     set dir_length 5
-    # 4 border chars + 'path: ' = 10
+    # 4 border chars (see `_make_line`) + 'path: ' = 10
     set max_width (math $COLUMNS - 10)
     while test (string length --visible $path) -gt $max_width -a $dir_length -ge 1
-        set -g fish_prompt_pwd_dir_length $dir_length
-        set path (prompt_pwd)
+        # Each segment of the path will be truncated to a length of `$dir_length`.
+        set path (prompt_pwd --dir-length $dir_length)
         set dir_length (math $dir_length - 1)
     end
 
-    echo -n -s $_color_normal 'path: ' $path
+    echo "path: $path"
 end
 
 function _get_direnv_context
@@ -237,19 +219,19 @@ function _get_direnv_context
 
     set blocked ''
     if direnv status | grep --ignore-case --quiet 'Found RC allowed false'
-        set blocked (echo -n -s (set_color red) ' (blocked)')
+        set blocked (set_color red)' (blocked)'$_color_normal
     end
 
-    echo -n -s $_color_normal 'direnv: ' "$directory" "$blocked"
+    echo "direnv: $directory$blocked"
 end
 
 function _get_git_context
     set git_context (_get_git_context_async)
-    if test -z $git_context
+    if test -z "$git_context"
         return
     end
-    if test "$git_context" = (_get_git_context_async_loading_indicator)
-        echo -n -s $_color_normal 'git: ' $git_context
+    if test $git_context = (_get_git_context_async_loading_indicator)
+        echo "git: $git_context"
         return
     end
 
@@ -260,16 +242,16 @@ function _get_git_context
     # only add the closing parenthese if we added the opening one
     and set formatted_context (string join '' $formatted_context ')')
 
-    if test (string length --visible $formatted_context) -gt (math $COLUMNS - 10)
+    # 4 border chars (see `_make_line`) + 'git: ' = 9
+    if test (string length --visible $formatted_context) -gt (math $COLUMNS - 9)
         set formatted_context (_abbreviate_git_states $formatted_context)
     end
 
-    echo -n -s $_color_normal 'git: ' $formatted_context
+    echo "git: $formatted_context"
 end
-
 set --append async_prompt_functions _get_git_context_async
 function _get_git_context_async_loading_indicator
-    echo -n -s (set_color --dim --italics) 'loading…'
+    echo (set_color --dim --italics)'loading…'$_color_normal
 end
 function _get_git_context_async
     set --global __fish_git_prompt_showupstream 'informative'
@@ -284,7 +266,6 @@ function _get_git_context_async
     set --global __fish_git_prompt_char_stateseparator ''
     fish_git_prompt
 end
-
 function _abbreviate_git_states --argument-names git_context
     set long_states 'ahead:' 'behind:' 'untracked' 'dirty' 'staged' 'invalid'
     set abbreviated_states '↑' '↓' '?' '!' '+' '#'
@@ -324,15 +305,15 @@ function _get_status_context
         for code in $last_pipestatus
             set color (get_color_for_exit_code $code)
             set signal (fish_status_to_signal $code)
-            if test "$code" != "$signal"
-                set --append pipestatus_formatted "$color$code($signal)"$_color_normal
+            if test $code != $signal
+                set --append pipestatus_formatted $color"$code($signal)"$_color_normal
             else
-                set --append pipestatus_formatted "$color$code"$_color_normal
+                set --append pipestatus_formatted $color$code$_color_normal
             end
         end
         set pipestatus_formatted (string join ', ' $pipestatus_formatted)
 
-        set context $context" (pipe: $pipestatus_formatted)"
+        set context "$context (pipe: $pipestatus_formatted)"
     end
 
     echo $context
@@ -340,9 +321,9 @@ end
 function get_color_for_exit_code --argument-names exit_code
     set warning_codes 130
     set color (set_color green)
-    if contains "$exit_code" $warning_codes
+    if contains $exit_code $warning_codes
         set color (set_color yellow)
-    else if test "$exit_code" != '0'
+    else if test $exit_code != '0'
         set color (set_color red)
     end
 
@@ -354,16 +335,23 @@ function _get_nix_context
         return
     end
 
-    set color (set_color green)
-    if test "$IN_NIX_SHELL" = 'impure'
-        set color (set_color yellow)
-    end
-
-    set packages (string split --no-empty ' ' "$ANY_NIX_SHELL_PKGS" | xargs -I PACKAGE fish -c 'string split --fields (count (string split \'.\' \'PACKAGE\')) \'.\' \'PACKAGE\'')
+    set packages ( \
+        # Each package is separated by a space.
+        string split --no-empty ' ' "$ANY_NIX_SHELL_PKGS" \
+        # Packages may be have dots, e.g. 'vimPlugins.vim-abolish', in which case I take the segment after the last
+        # dot, 'vim-abolish'.
+        | xargs -I PACKAGE fish -c "string split --fields (count (string split '.' 'PACKAGE')) '.' 'PACKAGE'" \
+    )
     if test -n "$packages"
         set packages " ($packages)"
     end
 
-    echo -n -s $_color_normal "nix: $color$IN_NIX_SHELL$_color_normal$packages"
+    set color (set_color green)
+    if test $IN_NIX_SHELL = 'impure'
+        set color (set_color yellow)
+    end
+    set purity $color$IN_NIX_SHELL$_color_normal
+
+    echo "nix: $purity$packages"
 end
 
