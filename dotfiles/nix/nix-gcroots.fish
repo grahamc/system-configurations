@@ -58,18 +58,16 @@ function print_gcroots
   # per-user roots
   set per_user_roots_directory "$gcroots_directory/per-user"
   for user_roots_directory in $per_user_roots_directory/*
-    set user_roots_directory_absolute (path normalize $per_user_roots_directory/$user_roots_directory)
     set user (path basename $user_roots_directory)
-    echo (set_color --bold --underline)"Roots for user '$user' ($user_roots_directory_absolute):"(set_color normal)
+    echo (set_color --bold --underline)"Roots for user '$user' ($user_roots_directory):"(set_color normal)
     print_roots_for_directory $user_roots_directory
   end
 
   # User profile roots
   set per_user_profile_roots_directory "$gcroots_directory/profiles/per-user"
   for user_profile_roots_directory in $per_user_profile_roots_directory/*
-    set user_profile_roots_directory_absolute (path normalize $per_user_profile_roots_directory/$user_profile_roots_directory)
     set user (path basename $user_profile_roots_directory)
-    echo (set_color --bold --underline)"Roots for user profile '$user' ($user_profile_roots_directory_absolute):"(set_color normal)
+    echo (set_color --bold --underline)"Roots for user profile '$user' ($user_profile_roots_directory):"(set_color normal)
     print_roots_for_directory $user_profile_roots_directory
   end
 end
