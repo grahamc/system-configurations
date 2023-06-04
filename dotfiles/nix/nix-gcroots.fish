@@ -15,8 +15,11 @@ function get_symlink_chain --argument-names symlink
 
   set joined_chain (string join -- ' -> ' $chain)
 
-  # Include the size
-  set joined_chain (string match --regex -- '^[^\s]+' (du -shL $symlink 2>/dev/null))' '$joined_chain
+  if test -n "$NIX_GCROOTS_INCLUDE_SIZE"
+    # The out put of `du` looks like '<size> <filename>' so the `string match` removes everything after the size.
+    set size (string match --regex -- '^[^\s]+' (du -shL $symlink 2>/dev/null))
+    set joined_chain "$size $joined_chain"
+  end
 
   echo $joined_chain
 end
@@ -40,8 +43,10 @@ function print_roots_for_directory --argument-names directory
         set --append chains (get_symlink_chain $root)
       end
     end
-    # sort by size, descending
-    set chains (printf '%s\n' $chains | sort --human-numeric-sort --reverse)
+    if test -n "$NIX_GCROOTS_INCLUDE_SIZE"
+      # sort by size, descending
+      set chains (printf '%s\n' $chains | sort --human-numeric-sort --reverse)
+    end
     printf '%s\n' $chains
   end
   echo
@@ -72,4 +77,4 @@ function print_gcroots
   end
 end
 
-print_gcroots $argv
+print_gcroots
