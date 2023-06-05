@@ -386,7 +386,7 @@ _G.FoldText = function()
   -- truncate if there isn't space for the fold description and separator text
   local max_line_text_length = line_width - (fold_description_length + separator_text_length)
   if vim.fn.strdisplaywidth(line_text) > max_line_text_length then
-    local line_text = string.sub(line_text, 1, max_line_text_length)
+    line_text = string.sub(line_text, 1, max_line_text_length)
   end
 
   return line_text .. separator_text .. fold_description
