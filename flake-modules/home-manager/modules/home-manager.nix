@@ -89,7 +89,7 @@
               };
               Service = {
                 Type = "oneshot";
-                ExecStart = "${pkgs.home-manager}/bin/home-manager expire-generations now";
+                ExecStart = "%h/.nix-profile/bin/home-manager expire-generations now";
               };
             };
           };
