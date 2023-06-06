@@ -280,21 +280,14 @@ function _get_status_context
         return
     end
 
-    set status_color (get_color_for_exit_code $last_status)
-    set status_formatted $status_color$last_status$_color_normal
+    set formatted_exit_code (format_exit_code $last_status)
 
-    set context "status: $status_formatted"
+    set context "status: $formatted_exit_code"
 
     if test (count $last_pipestatus) -gt 1
         set pipestatus_formatted
         for code in $last_pipestatus
-            set color (get_color_for_exit_code $code)
-            set signal (fish_status_to_signal $code)
-            if test $code != $signal
-                set --append pipestatus_formatted $color"$code($signal)"$_color_normal
-            else
-                set --append pipestatus_formatted $color$code$_color_normal
-            end
+            set --append pipestatus_formatted (format_exit_code $code)
         end
         set pipestatus_formatted (string join ', ' $pipestatus_formatted)
 
@@ -302,6 +295,18 @@ function _get_status_context
     end
 
     echo $context
+end
+function format_exit_code --argument-names exit_code
+    set color (get_color_for_exit_code $exit_code)
+    set formatted_exit_code $color$exit_code$_color_normal
+
+    set signal (fish_status_to_signal $exit_code)
+    if test $exit_code != $signal
+        set formatted_signal $color/$signal$_color_normal
+        set formatted_exit_code $formatted_exit_code$formatted_signal
+    end
+
+    echo $formatted_exit_code
 end
 function get_color_for_exit_code --argument-names exit_code
     set warning_codes 130
