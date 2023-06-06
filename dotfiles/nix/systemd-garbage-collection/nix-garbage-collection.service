@@ -2,6 +2,8 @@
 Description=Collect garbage in the Nix store
 
 [Service]
-Type = "oneshot"
-# Wait 5 minutes for home-manager to delete its old generations
-ExecStart=/bin/sh -c '/home/biggs/.nix-profile/bin/sleep 300 && /home/biggs/.nix-profile/bin/nix-collect-garbage --delete-old'
+Type=oneshot
+# Wait 1 minute for home-manager to delete its old generations. I would schedule home-manager to run before
+# this, but I can't since the home-manager service is a user service and this is a system service and systemd
+# doesn't allow user services to reference system services and vice-versa.
+ExecStart=/bin/sh -c '/home/biggs/.nix-profile/bin/sleep 60 && /home/biggs/.nix-profile/bin/nix-collect-garbage --delete-old'
