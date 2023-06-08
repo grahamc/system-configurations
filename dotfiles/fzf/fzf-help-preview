@@ -27,9 +27,9 @@ end
 
 function _fzf_help_preview
     set hint_sections \
-        (_format_hint_section 'Navigation' 'tab/down: move down' 'shift+tab/up: move up', 'alt+enter: select multiple items', 'ctrl-t: toggle tracking') \
+        (_format_hint_section 'Navigation' 'shift+tab/tab: move up/down' 'alt+enter: select multiple items' 'ctrl-t: toggle tracking') \
         (_format_hint_section 'History' 'ctrl+[/]: go to previous/next entry in history') \
-        (_format_hint_section 'Preview Window' 'ctrl+p: toggle preview visibility' 'ctrl+r: refresh preview' 'ctrl+k/j: scroll preview window up/down one line' 'alt+up/down: scroll preview window up/down one page' 'ctrl+w: toggle line wrap' 'ctrl+o: toggle preview window orientation')
+        (_format_hint_section 'Preview Window' 'ctrl+p: toggle preview visibility' 'ctrl+r: refresh preview' 'ctrl+k/j: scroll preview window up/down one line' 'ctrl+w: toggle line wrap' 'ctrl+o: toggle preview window orientation')
     if set --query FZF_HINTS
         set widget_specific_hints (echo -e $FZF_HINTS)
         set --prepend hint_sections (_format_hint_section 'Widget-Specific' $widget_specific_hints)
