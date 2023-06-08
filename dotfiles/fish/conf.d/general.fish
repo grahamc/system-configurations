@@ -6,12 +6,12 @@ abbr --add --global g git
 set --global --export PAGER less
 abbr --add --global ruhroh 'sudo truncate -s 0 /var/log/syslog'
 abbr --add --global x 'chmod +x'
-abbr --add --global r-initramfs 'sudo update-initramfs -u -k all'
+abbr --add --global reload-initramfs 'sudo update-initramfs -u -k all'
 abbr --add --global logout-all 'sudo killall -u $USER'
-abbr --add --global r-icons 'sudo update-icon-caches /usr/share/icons/* ~/.local/share/icons/*'
+abbr --add --global reload-icons 'sudo update-icon-caches /usr/share/icons/* ~/.local/share/icons/*'
 abbr --add --global du 'du -shL'
 # reload the database used to search for applications
-abbr --add --global r-desktop-entries 'sudo update-desktop-database; update-desktop-database ~/.local/share/applications'
+abbr --add --global reload-desktop-entries 'sudo update-desktop-database; update-desktop-database ~/.local/share/applications'
 # Set the terminal's color capability to 256 colors if it isn't already. 
 if not string match --regex --quiet -- '256' $TERM
     set --global --export TERM xterm-256color

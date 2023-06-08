@@ -3,7 +3,6 @@ if not status is-interactive
 end
 
 abbr --add --global ta tmux attach-session
-abbr --add --global r-tmux-server reload-tmux-server
 
 function reload-tmux-server --description 'Reload tmux server'
     function is_tmux_running
