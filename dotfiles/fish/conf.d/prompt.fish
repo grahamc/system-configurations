@@ -2,14 +2,30 @@
 # interactively. This is because some of the functions defined here will be called in a non-interactive shell by
 # fish-async-prompt.
 
-set _color_text (set_color cyan)
-set _color_standout_text (set_color yellow)
+set _color_warning_text (set_color yellow)
 set _color_error_text (set_color red)
+set _color_success_text (set_color green)
 set _color_normal (set_color normal)
 set _color_border (set_color brwhite)
 
-# Names of of functions for fish-async-prompt to wrap
-set async_prompt_functions
+# Have `$async_function_name` get run asynchronously and show the text returned by `$loading_indicator_function_name`
+# while the async function is running.
+function add_async_prompt_function --argument-names async_function_name loading_indicator_function_name
+    # fish-async-prompt will wrap the functions added here and make them run asynchronously.
+    set --global --append async_prompt_functions $async_function_name
+
+    # fish-async-prompt expects the loading indicator function for `$async_function_name` to be named
+    # `$async_function_name`_loading_indicator
+    set correct_loading_indicator_function_name $async_function_name'_loading_indicator'
+    # If the function already has the right name don't do anything. This is because functions can't be wrapped by a
+    # function with the same name.
+    # see: https://stackoverflow.com/questions/46698467/is-it-possible-to-wrap-an-existing-function-with-another-function-using-the-same
+    if test $loading_indicator_function_name != $correct_loading_indicator_function_name
+        function $correct_loading_indicator_function_name
+            eval $loading_indicator_function_name
+        end
+    end
+end
 
 function fish_prompt --description 'Print the prompt'
     # I want the value of $status and $pipestatus for the last command executed on the command line so I will store
@@ -28,7 +44,7 @@ function fish_prompt --description 'Print the prompt'
     # transient prompt
     if set --query TRANSIENT
         set --erase TRANSIENT
-        echo -n -e $separator\n(_get_arrow)
+        echo -n -e $separator\n$_color_border(_arrows)$_color_normal
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY
@@ -37,16 +53,19 @@ function fish_prompt --description 'Print the prompt'
         return
     end
 
+    # The max number of screen columns a context can use and still fit on one line. The 4 accounts for the 4
+    # characters that make up the border, see `_make_line`.
+    set max_length (math $COLUMNS - 4)
     set contexts \
-        (_get_direnv_context) \
-        (_get_nix_context) \
-        (_get_python_context) \
-        (_get_git_context) \
-        (_get_job_context) \
-        (_get_host_context) \
-        (_get_path_context) \
-        (_get_status_context $last_status $last_pipestatus) \
-        (_get_privilege_context)
+        (_direnv_context) \
+        (_nix_context) \
+        (_python_context) \
+        (_git_context $max_length) \
+        (_job_context) \
+        (_host_context) \
+        (_path_context $max_length) \
+        (_status_context $last_status $last_pipestatus) \
+        (_privilege_context)
     set prompt_lines
     for context in $contexts
         if test -z $context
@@ -54,10 +73,8 @@ function fish_prompt --description 'Print the prompt'
         end
 
         # Truncate any contexts that wouldn't fit on one line.
-        # The 4 accounts for the 4 characters that make up the border, see `_make_line`.
-        set max_width (math $COLUMNS - 4)
-        if test (string length --visible $context) -gt $max_width
-            set context (string shorten --max $max_width $context)
+        if test (string length --visible $context) -gt $max_length
+            set context (string shorten --max $max_length $context)
         end
 
         if not set --query prompt_lines[1]
@@ -82,22 +99,22 @@ function _make_line --argument-names position context
         echo $line_connector$left_border$context$right_border
     else if test $position = last
         set line_connector $_color_border'└'$_color_normal
-        echo $line_connector(_get_arrow)
+        echo $line_connector(set_color cyan)(_arrows)$_color_normal
     end
 end
-function _get_arrow
-    echo $_color_text(string repeat -n $SHLVL '>')$_color_normal' '
+
+function _arrows
+    echo (string repeat -n $SHLVL '>')' '
 end
 
-function _get_python_context
+function _python_context
     if not set --query VIRTUAL_ENV
         return
     end
 
-    echo "venv: $(_get_python_venv_name)"
+    echo "venv: $(_python_venv_name)"
 end
-
-function _get_python_venv_name
+function _python_venv_name
     set -l path_segments (string split -- / $VIRTUAL_ENV)
     set -l last_path_segment $path_segments[-1]
 
@@ -111,7 +128,7 @@ function _get_python_venv_name
     echo $last_path_segment
 end
 
-function _get_job_context
+function _job_context
     if not jobs --query
         return
     end
@@ -121,7 +138,7 @@ function _get_job_context
     echo "jobs: $formatted_job_commands"
 end
 
-function _get_privilege_context
+function _privilege_context
     set privilege_context
     if test (id --user) -eq 0
         set privilege_context 'user has admin privileges'
@@ -131,11 +148,11 @@ function _get_privilege_context
         return
     end
 
-    echo $_color_standout_text$privilege_context$_color_normal
+    echo $_color_warning_text$privilege_context$_color_normal
 end
 
-function _get_host_context
-    set container_name (_get_container_name)
+function _host_context
+    set container_name (_container_name)
     if test -n "$container_name"
         set host "$container_name (container)"
     else if set --query SSH_TTY
@@ -149,7 +166,7 @@ function _get_host_context
     end
 end
 # Taken from Starship Prompt: https://github.com/starship/starship/blob/master/src/modules/container.rs
-function _get_container_name
+function _container_name
     if test -e /proc/vz
     and not test -e /proc/bc
         echo 'OpenVZ'
@@ -178,23 +195,23 @@ function _get_container_name
     end
 end
 
-function _get_path_context
+function _path_context --argument-names max_length
+    set context_prefix 'path: '
+
     # Passing 0 means prompt won't be shortened
     set path (prompt_pwd --dir-length 0)
-
+    set max_path_length (math $max_length - (string length $context_prefix))
     set dir_length 5
-    # 4 border chars (see `_make_line`) + 'path: ' = 10
-    set max_width (math $COLUMNS - 10)
-    while test (string length --visible $path) -gt $max_width -a $dir_length -ge 1
+    while test (string length --visible $path) -gt $max_path_length -a $dir_length -ge 1
         # Each segment of the path will be truncated to a length of `$dir_length`.
         set path (prompt_pwd --dir-length $dir_length)
         set dir_length (math $dir_length - 1)
     end
 
-    echo "path: $path"
+    echo $context_prefix$path
 end
 
-function _get_direnv_context
+function _direnv_context
     if not set --query DIRENV_DIR
         return
     end
@@ -204,41 +221,40 @@ function _get_direnv_context
 
     set blocked ''
     if direnv status | grep --ignore-case --quiet 'Found RC allowed false'
-        set blocked (set_color red)' (blocked)'$_color_normal
+        set blocked $_color_error_text' (blocked)'$_color_normal
     end
 
     echo "direnv: $directory$blocked"
 end
 
-function _get_git_context
-    set git_context (_get_git_context_async)
-    if test -z "$git_context"
+function _git_context --argument-names max_length
+    set context_prefix 'git: '
+
+    set git_status (_git_status)
+    if test -z "$git_status"
         return
     end
-    if test $git_context = (_get_git_context_async_loading_indicator)
-        echo "git: $git_context"
+    if test $git_status = (_git_status_loading_indicator)
+        echo $context_prefix$git_status
         return
     end
 
-    # remove parentheses and leading space e.g. ' (branch,dirty,untracked)' -> 'branch,dirty,untracked'
-    set --local formatted_context (string sub --start=3 --end=-1 $git_context)
-    # replace first comma with ' (' e.g. ',branch,dirty,untracked' -> ' (branch dirty,untracked'
-    set --local formatted_context (string replace ',' ' (' $formatted_context)
+    # remove parentheses and leading space e.g. ' (<branch>,dirty,untracked)' -> '<branch>,dirty,untracked'
+    set --local formatted_status (string sub --start=3 --end=-1 $git_status)
+    # replace first comma with ' (' e.g. ',<branch>,dirty,untracked' -> ' (<branch> dirty,untracked'
+    set --local formatted_status (string replace ',' ' (' $formatted_status)
     # only add the closing parenthese if we added the opening one
-    and set formatted_context (string join '' $formatted_context ')')
+    and set formatted_status (string join '' $formatted_status ')')
 
-    # 4 border chars (see `_make_line`) + 'git: ' = 9
-    if test (string length --visible $formatted_context) -gt (math $COLUMNS - 9)
-        set formatted_context (_abbreviate_git_states $formatted_context)
+    set max_status_length (math $max_length - (string length $context_prefix))
+    if test (string length --visible $formatted_status) -gt $max_status_length
+        set formatted_status (_abbreviate_git_states $formatted_status)
     end
 
-    echo "git: $formatted_context"
+    echo "git: $formatted_status"
 end
-set --append async_prompt_functions _get_git_context_async
-function _get_git_context_async_loading_indicator
-    echo (set_color --dim --italics)'loading…'$_color_normal
-end
-function _get_git_context_async
+add_async_prompt_function _git_status _git_status_loading_indicator
+function _git_status
     set --global __fish_git_prompt_showupstream 'informative'
     set --global __fish_git_prompt_showdirtystate 1
     set --global __fish_git_prompt_showuntrackedfiles 1
@@ -250,6 +266,9 @@ function _get_git_context_async
     set --global __fish_git_prompt_char_invalidstate ',invalid'
     set --global __fish_git_prompt_char_stateseparator ''
     fish_git_prompt
+end
+function _git_status_loading_indicator
+    echo (set_color --dim --italics)'loading…'$_color_normal
 end
 function _abbreviate_git_states --argument-names git_context
     set long_states 'ahead:' 'behind:' 'untracked' 'dirty' 'staged' 'invalid'
@@ -267,7 +286,7 @@ function _abbreviate_git_states --argument-names git_context
         | string replace --all --regex '[\(,\)]'  ''
 end
 
-function _get_status_context
+function _status_context
     # I'd pass these in as two separate arguments, but fish doesn't support list arguments, all the arguments
     # get flattened: https://github.com/fish-shell/fish-shell/issues/3375
     set last_status $argv[1]
@@ -297,7 +316,7 @@ function _get_status_context
     echo $context
 end
 function format_exit_code --argument-names exit_code
-    set color (get_color_for_exit_code $exit_code)
+    set color (color_for_exit_code $exit_code)
     set formatted_exit_code $color$exit_code$_color_normal
 
     set signal (fish_status_to_signal $exit_code)
@@ -308,19 +327,19 @@ function format_exit_code --argument-names exit_code
 
     echo $formatted_exit_code
 end
-function get_color_for_exit_code --argument-names exit_code
+function color_for_exit_code --argument-names exit_code
     set warning_codes 130
-    set color (set_color green)
+    set color $_color_success_text
     if contains $exit_code $warning_codes
-        set color (set_color yellow)
+        set color $_color_warning_text
     else if test $exit_code != '0'
-        set color (set_color red)
+        set color $_color_error_text
     end
 
     echo $color
 end
 
-function _get_nix_context
+function _nix_context
     if not set --query IN_NIX_SHELL
         return
     end
@@ -336,9 +355,9 @@ function _get_nix_context
         set packages " ($packages)"
     end
 
-    set color (set_color green)
+    set color $_color_success_text
     if test $IN_NIX_SHELL = 'impure'
-        set color (set_color yellow)
+        set color $_color_warning_text
     end
     set purity $color$IN_NIX_SHELL$_color_normal
 
