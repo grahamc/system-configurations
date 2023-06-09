@@ -53,6 +53,7 @@ scrollbar:15:dim\
     --border=none \
     --margin=3% \
     --height 100% \
+    --min-height 4 \
     --prompt='$_magnifying_glass' \
     --tabstop=2 \
     --info=inline \
