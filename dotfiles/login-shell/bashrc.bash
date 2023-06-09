@@ -25,9 +25,6 @@ if [ "$TERM" = "linux" ]; then
     printf "\e]P7E5E9F0"
     printf "\e]PF626f89"
     clear #for background artifacting
-
-    # Enable 256 color mode for fbterm
-    # [ -n "$FBTERM" ] && export TERM=fbterm
 fi
 
 # If the current shell isn't fish, use fish in place of bash for an interactive shell.

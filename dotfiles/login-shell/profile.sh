@@ -59,8 +59,3 @@ PATH="$HOME/.local/bin:$PATH"
 if uname | grep -q Linux; then
   export MOZ_USE_XINPUT2=1
 fi
-
-# switch to fbterm if we are running in a TTY
-# [ "$TERM" = "linux" ] && [[ $- == *i* ]] && command -v fbterm >/dev/null 2>&1 && FBTERM=1 exec fbterm
-
-# [ "$TERM" = "linux" ] && [[ $- == *i* ]] && export LC_ALL=en_US.UTF-8 && FBTERM=1 exec fbterm --font-size=20 -i fbterm_ucimf

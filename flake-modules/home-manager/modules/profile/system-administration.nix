@@ -8,7 +8,6 @@
       imports = [
         ../bat.nix
         ../git.nix
-        ../fbterm.nix
       ];
 
       home.packages = with pkgs; [
