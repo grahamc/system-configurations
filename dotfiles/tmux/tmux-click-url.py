@@ -3,7 +3,6 @@
 import sys
 import subprocess
 from urllib.parse import urlparse
-import os
 
 # NOTE: Characters I removed: '()
 VALID_URL_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&*+,;='
@@ -28,7 +27,9 @@ def main():
         return
 
     if mouse_url != '':
+        # tmux already extracted a url so just open it
         open_url(mouse_url)
+        return
 
     top_lines = subprocess.check_output(['tmux', 'capture-pane', '-p', '-S', str(mouse_y - 20), '-E', str(mouse_y)], text=True).split('\n')[:-1]
     bottom_lines = subprocess.check_output(['tmux', 'capture-pane', '-p', '-S', str(mouse_y + 1), '-E', str(mouse_y + 20)], text=True).split('\n')
