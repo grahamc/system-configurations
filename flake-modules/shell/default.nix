@@ -43,7 +43,7 @@
               fish = minimalFish;
               comma = makeStubPackage final.bash prev.comma;
               coreutils-full = prev.coreutils;
-              git = makeEmptyPackage "stub-git";
+              gitMinimal = makeEmptyPackage "stub-git";
             } // optionalAttrs isLinux {
               fzf = prev.fzf.override {
                 glibcLocales = minimalLocales;
