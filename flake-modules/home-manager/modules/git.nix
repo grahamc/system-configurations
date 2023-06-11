@@ -1,9 +1,8 @@
 { config, lib, pkgs, specialArgs, ... }:
   {
     home.packages = with pkgs; [
-      gitFull
+      git
       delta
-      gitui
     ];
 
     repository.symlink.home.file = {
@@ -17,7 +16,6 @@
     };
 
     repository.symlink.xdg.configFile = {
-      "gitui/theme.ron".source = "git/gitui/theme.ron";
       "git/config".source = "git/gitconfig";
     };
   }
