@@ -5,10 +5,11 @@ local config = wezterm.config_builder()
 local function is_mac()
 	local fh,_ = assert(io.popen("uname 2>/dev/null","r"))
 	if fh then
-		osname = fh:read()
+		local osname = fh:read()
+                return osname == "Darwin"
 	end
 
-	return osname == "Darwin"
+        return false
 end
 
 -- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system, but Flatpak apps
