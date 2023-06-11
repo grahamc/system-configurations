@@ -262,4 +262,4 @@ if uname | grep -q Linux
     abbr --add --position anywhere --global trash 'trash put'
 end
 
-alias chase 'chase --verbose'
+abbr --add --global chase 'chase --verbose'
