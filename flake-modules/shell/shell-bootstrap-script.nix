@@ -65,7 +65,7 @@
               --init-command 'set --unexport XDG_DATA_HOME' \
               --init-command 'set --unexport XDG_STATE_HOME' \
               --init-command 'set --unexport XDG_RUNTIME_DIR' \
-              --init-command 'set --unexport XDG_CACHE_HOME_DIR' \
+              --init-command 'set --unexport XDG_CACHE_HOME' \
               " ' ''$argv'
         case '*'
           echo -s >''$mutable_bin/''$base "#!${fish}

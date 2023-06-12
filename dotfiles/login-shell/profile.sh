@@ -1,28 +1,6 @@
 # shellcheck shell=sh
 
 # Setup nix
-# For the Determinate Systems multi-user installer. The installer receipt says it add this to /etc/zshrc, but I don't
-# see it so it never gets called on macOS.
-_nix_profile_multi_user_setup_script="/etc/bash.bashrc"
-if [ -e "$_nix_profile_multi_user_setup_script" ]; then
-  # The script is in bash so I'm sourcing it in a bash shell and having that shell print out its environment, one
-  # variable per line, in the form `export NAME='value'`. This way I can just `eval` those export statements
-  # in this shell.
-  #
-  # - I omit the SHLVL of the bash shell since I don't want the SHLVL in this shell to change.
-  #
-  # - The `-0` flag in env terminates each environment variable with a null byte, instead of a newline.
-  # The `-z` in sed tells sed that its input is separated by null bytes and not newlines. With both of these, I
-  # can distinguish between the end of an environment variable and a newline inside a variable. The `tr` command
-  # removes the null bytes from sed's output.
-  #
-  # - Since I use single quotes to enclose the variable I have to do something about single quotes inside the
-  # variable. The second sed command will replace those single quotes with `'"'"'`. An explanation of what that does
-  # is here: https://stackoverflow.com/a/1250279. The groups of 3 backslashes are there to escape the double quotes
-  # right after them.
-  BASH_ENVIRONMENT="$(bash -c ". $_nix_profile_multi_user_setup_script; env -0 -u SHLVL | sed -z \"s/^/export /;s/'/'\\\"'\\\"'/g;s/=/='/;s/$/'\;\n/\" | tr -d '\000'")"
-  eval "$BASH_ENVIRONMENT"
-fi
 # For non-NixOS linux distributions
 # see: https://nixos.wiki/wiki/Locales
 if uname | grep -q Linux; then
@@ -38,10 +16,12 @@ nix_darwin_bin='/run/current-system/sw/bin'
 if [ -d "$nix_darwin_bin" ] && uname | grep -q Darwin; then
   export PATH="$nix_darwin_bin:$PATH"
 fi
-# nix-darwin manages brew so I'll turn off all the automatic management.
-export HOMEBREW_NO_INSTALL_UPGRADE=1
-export HOMEBREW_NO_INSTALL_CLEANUP=1
-export HOMEBREW_NO_AUTO_UPDATE=1
+
+# Homebrew
+brew="/usr/local/bin/brew"
+if [ -x "$brew" ]; then
+  eval "$("$brew" shellenv sh)"
+fi
 
 # go
 export GOPATH="$HOME/.local/share/go"

@@ -6,8 +6,7 @@ sudo --non-interactive yabai --load-sa
 # Calling this when I'm already in tiling mode might change the order of my windows, which I don't want, so I only set tiling mode if it isn't already set
 [ "$(yabai -m config layout)" != 'bsp' ] && yabai -m config layout bsp
 
-# TODO: Added a bunch of padding to the bottom since the bottom of my screen is busted :/
-yabai -m config bottom_padding 50
+yabai -m config bottom_padding 10
 yabai -m config top_padding    10
 yabai -m config left_padding   10
 yabai -m config right_padding  10

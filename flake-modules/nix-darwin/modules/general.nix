@@ -7,7 +7,7 @@
     packages = [
       (pkgs.writeShellApplication {
         name = "hostctl-switch";
-        runtimeInputs = with pkgs; [nvd];
+        runtimeInputs = with pkgs; [nvd coreutils-full];
         text = ''
           oldGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
 
@@ -19,6 +19,7 @@
       })
       (pkgs.writeShellApplication {
         name = "hostctl-upgrade";
+        runtimeInputs = with pkgs; [nvd coreutils-full];
         text = ''
           oldGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
 
@@ -46,7 +47,6 @@
 
       users.users.${username} = {
         home = homeDirectory;
-        inherit packages;
       };
 
       fonts = {
@@ -66,6 +66,8 @@
           "wezterm"
           "xcodes"
           "hammerspoon"
+          "visual-studio-code"
+          "gitkraken"
         ];
       };
 
@@ -83,21 +85,32 @@
           # into a directory that's on the $PATH by default:
           #
           # skhd needs itself on the $PATH for any of the shortcuts in my skhdrc that use the skhd command to send keys.
-          rm /usr/local/bin/skhd
+          test -e /usr/local/bin/skhd && rm /usr/local/bin/skhd
           cp ${pkgs.skhd}/bin/skhd /usr/local/bin/
           # One of hammerspoon's plugins, stackline, needs yabai.
-          rm /usr/local/bin/yabai
+          test -e /usr/local/bin/yabai && rm /usr/local/bin/yabai
           cp ${config.services.yabai.package}/bin/yabai /usr/local/bin/
         '';
-        defaults.NSGlobalDomain.ApplePressAndHoldEnabled = false;
+        defaults = {
+          NSGlobalDomain = {
+            ApplePressAndHoldEnabled = false;
+            NSAutomaticQuoteSubstitutionEnabled = false;
+          };
+          dock.autohide = true;
+          trackpad.Clicking = true;
+        };
+        checks.verifyBuildUsers = false;
       };
 
-      environment.etc = {
-        "sudoers.d/10-my-commands".text = ''
-          # This allows yabai to inject code in Dock.app so it can properly function. Also lets me reload my config
-          # without a password
-          ALL ALL=NOPASSWD: /usr/local/bin/yabai
-        '';
+      environment = {
+        etc = {
+          "sudoers.d/10-my-commands".text = ''
+            # This allows yabai to inject code in Dock.app so it can properly function. Also lets me reload my config
+            # without a password
+            ALL ALL=NOPASSWD: /usr/local/bin/yabai
+          '';
+        };
+        systemPackages = packages;
       };
 
       services = {

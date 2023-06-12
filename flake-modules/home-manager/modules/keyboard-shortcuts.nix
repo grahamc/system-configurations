@@ -39,6 +39,7 @@
             recursive = true;
           };
           ".hammerspoon/stackline/conf.lua".source = "hammerspoon/stackline/conf.lua";
+          "Library/Keyboard Layouts/NoAccentKeys.bundle".source = "keyboard/US keyboard - no accent keys.bundle";
         };
 
         home.file = {

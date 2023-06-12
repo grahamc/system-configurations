@@ -12,12 +12,26 @@ First, clone the repository and go into its directory by running `git clone http
 
 ### nix-darwin
 
-1. I install some Homebrew packages through nix-darwin, but nix-darwin doesn't provide brew so you'll have to install it yourself. Check the site for instructions: [brew.sh](https://brew.sh/).
+1. Disable System Integrity Protection for `yabai`. Instructions can be found on the [yabai wiki](https://github.com/koekeishiya/yabai/wiki/Disabling-System-Integrity-Protection).
 
-2. Unlike Home Manager, nix-darwin doesn't have a flake app output (though there is an [open issue](https://github.com/LnL7/nix-darwin/issues/398) to add it) so it will need to be set up using the non-flake installer:
+2. I install some Homebrew packages through nix-darwin, but nix-darwin doesn't provide brew so you'll have to install it yourself. Check the site for instructions: [brew.sh](https://brew.sh/).
 
-    1. Run `nix build .#legacyPackages.darwinConfigurations.<host_name>.system` where `<host_name>` is one of the hosts defined in the [nix-darwin flake module](https://github.com/bigolu/dotfiles/blob/master/flake-modules/nix-darwin/default.nix). This will build the nix-darwin configuration in a folder named `result` in the current directory.
-    2. Run `./result/sw/bin/darwin-rebuild switch --flake .<host_name>` where `<host_name>` is the same one you used in the last step. This will apply the configuration to your host. You can now remove the `result` folder with `rm -rf ./result`.
+3. Unlike Home Manager, nix-darwin doesn't have a flake app output (though there is an [open issue](https://github.com/LnL7/nix-darwin/issues/398) to add it) so it will need to be set up using the non-flake installer:
+
+    1. Run `nix build .#darwinConfigurations.<host_name>.system` where `<host_name>` is one of the hosts defined in the [nix-darwin flake module](https://github.com/bigolu/dotfiles/blob/master/flake-modules/nix-darwin/default.nix). This will build the nix-darwin configuration in a folder named `result` in the current directory.
+    2. Run `./result/sw/bin/darwin-rebuild switch --flake .#<host_name>` where `<host_name>` is the same one you used in the last step. This will apply the configuration to your host. You can now remove the `result` folder with `rm -rf ./result`.
+
+4. Some of the settings applied by nix-darwin only take effect after a restart so do a restart now.
+
+5. Additional Setup
+
+    * Keyboard:
+
+        * Set the keyboard input source to 'Others -> (No Accent Keys)'.
+
+        * Disable the builtin keyboard shortcut for switching input sources, `ctrl+space`.
+
+    * Setup Hammerspoon using the instructions in the [Hammerspoon Getting Started Guide](https://www.hammerspoon.org/go/).
 
 ## Running the home configuration
 

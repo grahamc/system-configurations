@@ -15,24 +15,33 @@
     myTmuxConfigPath = "tmux/my-tmux.conf";
   in
     {
+      home.packages = [
+        # TODO: Include the manpage from the original tmux package in this wrapper.
+        (
+          # I'm intentionally not using `pkgs.writeShellApplication` so the original tmux doesn't get added
+          # to the path.
+          pkgs.writeScriptBin
+            "tmux"
+            # I want the $SHLVL to start from one for any shells launched in TMUX since they technically aren't
+            # children of the shell that I launched TMUX with. I would do this with TMUX's `default-command`, but
+            # that may break tmux-resurrect, as explained in my tmux.conf.
+            ''
+              #!${pkgs.bash}/bin/bash
+
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+
+              env -u SHLVL ${pkgs.tmux}/bin/tmux "$@"
+            ''
+        )
+      ]
       # Installing the plugins into my profile, instead of using programs.tmux.plugins, for two reasons:
       # - So that I can use the scripts defined in them. (They'll be added to <profile_path>/share/tmux-plugins)
       # - So I can keep the plugin settings in my config. Settings need to be defined before the plugin is loaded
       # and programs.tmux loads my configuration _after_ loading plugins so it wouldn't work. Instead I load
       # them my self.
-      home.packages = [
-        (pkgs.writeShellApplication
-          {
-            name = "tmux";
-            runtimeInputs = [pkgs.tmux];
-            # I want the $SHLVL to start from one for any shells launched in TMUX since they technically aren't
-            # children of the shell that I launched TMUX with. I would do this with TMUX's `default-command`, but
-            # I'm having problems with that setting, as explained in my tmux.conf.
-            text = ''
-              env -u SHLVL tmux "$@"
-            '';
-          })
-      ] ++ tmuxPlugins;
+      ++ tmuxPlugins;
 
       xdg.configFile = {
         "tmux/tmux.conf".text = ''

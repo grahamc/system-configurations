@@ -2,10 +2,26 @@ if not status is-interactive
     exit
 end
 
+if not uname | grep -q Darwin
+  exit
+end
+
 abbr --add --global fbi 'fzf-brew-install-widget'
 abbr --add --global fbu 'fzf-brew-uninstall-widget'
 abbr --add --global bo 'brew outdated --fetch-HEAD'
-set --global --export HOMEBREW_NO_INSTALL_UPGRADE 1
+
+# nix-darwin manages brew so I'll turn off all the automatic management.
+export HOMEBREW_NO_INSTALL_UPGRADE=1
+export HOMEBREW_NO_INSTALL_CLEANUP=1
+export HOMEBREW_NO_AUTO_UPDATE=1
+
+# autocomplete
+if test -d (brew --prefix)"/share/fish/completions"
+    set -global --prepend fish_complete_path (brew --prefix)/share/fish/completions
+end
+if test -d (brew --prefix)"/share/fish/vendor_completions.d"
+    set --global --prepend fish_complete_path (brew --prefix)/share/fish/vendor_completions.d
+end
 
 function fzf-brew-install-widget --description 'Install packages with brew'
   set choices \

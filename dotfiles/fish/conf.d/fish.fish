@@ -153,14 +153,14 @@ function _fzf_complete
         else
             set expanded_entry "$entry"
         end
-        if test -d "$expanded_entry"
+        if test -d (string unescape -- "$expanded_entry")
         and test (string sub --start -1 -- "$expanded_entry") = '/'
             set space ''
         end
 
         # Don't add a space if the item is a relative directory and ends in a slash
-        if test -d "$PWD/$entry"
-        and test (string sub --start -1 -- "$expanded_entry") = '/'
+        if test -d (string unescape -- "$PWD/$entry")
+        and test (string sub --start -1 -- "$entry") = '/'
             set space ''
         end
 
