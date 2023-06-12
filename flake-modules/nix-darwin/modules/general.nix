@@ -68,6 +68,10 @@
           "hammerspoon"
           "visual-studio-code"
           "gitkraken"
+          "firefox-developer-edition"
+        ];
+        taps = [
+          "homebrew/cask-versions"
         ];
       };
 
