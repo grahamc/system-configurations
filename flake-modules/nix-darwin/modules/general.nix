@@ -101,7 +101,10 @@
             NSAutomaticQuoteSubstitutionEnabled = false;
           };
           dock.autohide = true;
-          trackpad.Clicking = true;
+          trackpad = {
+            Clicking = true;
+            Dragging = true;
+          };
         };
         # With Nix's new `auto-allocate-uids` feature, build users get created on demand. This means this check
         # will always fail since the build users won't be present until the build actually starts so I'm disabling
