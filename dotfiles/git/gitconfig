@@ -10,6 +10,7 @@
   default = current
 [alias]
   all = add -A
+  commit-all = commit -am
   p = pull
   p-sub = submodule update
   s = status
