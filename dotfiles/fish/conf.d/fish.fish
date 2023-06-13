@@ -131,7 +131,7 @@ function _fzf_complete
 
         set space ' '
 
-        # Don't add a space if the entry isn't an abbreviation.
+        # Don't add a space if the entry is an abbreviation.
         #
         # TODO: This assumes that an abbreviation can only be expanded if it's the first token in the commandline.
         # However, with the flag '--position anywhere', abbreviations can be expanded anywhere in the commandline so
@@ -145,7 +145,7 @@ function _fzf_complete
             set space ''
         end
 
-        # Don't add a space if the item is an absolute directory and ends in a slash
+        # Don't add a space if the item is a directory and ends in a slash.
         # expand tilde
         set first_char (string sub --length 1 -- "$entry")
         if test "$first_char" = '~'
@@ -158,18 +158,12 @@ function _fzf_complete
             set space ''
         end
 
-        # Don't add a space if the item is a relative directory and ends in a slash
-        if test -d (string unescape -- "$PWD/$entry")
-        and test (string sub --start -1 -- "$entry") = '/'
-            set space ''
-        end
-
         commandline --replace --current-token -- "$entry$space"
     end
 
     commandline -f repaint
 end
-# Set the binding on fish_prompt since something else was overriding it.
+# Set the binding on fish_prompt since something else was overriding it during shell startup.
 function __set_fzf_tab_complete --on-event fish_prompt
     # I only want this to run once so delete the function.
     functions -e (status current-function)

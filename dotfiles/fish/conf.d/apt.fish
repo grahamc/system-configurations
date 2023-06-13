@@ -2,6 +2,10 @@ if not status is-interactive
     exit
 end
 
+if not uname | grep -q Linux
+    exit
+end
+
 abbr --add --global ai 'sudo apt install'
 abbr --add --global ar 'sudo apt remove'
 abbr --add --global aar 'sudo apt autoremove'
