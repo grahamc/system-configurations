@@ -92,13 +92,12 @@ local function create_color_schemes(colors_per_color_scheme)
         color_scheme['selection_bg'] = color
       elseif index == 5 then
         color_scheme['scrollbar_thumb'] = color
-      elseif index == 6 then
+      elseif index == 7 then
+        color_scheme['foreground'] = color
         color_scheme['cursor_border'] = color
         -- TODO: For cursor_border to work, cursor_bg needs to be set to the same color
         -- issue: https://github.com/wez/wezterm/issues/1494
         color_scheme['cursor_bg'] = color
-      elseif index == 7 then
-        color_scheme['foreground'] = color
       elseif index == 15 then
         color_scheme['split'] = color
       end
