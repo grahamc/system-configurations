@@ -69,6 +69,7 @@
           "visual-studio-code"
           "gitkraken"
           "firefox-developer-edition"
+          "finicky"
         ];
         taps = [
           "homebrew/cask-versions"

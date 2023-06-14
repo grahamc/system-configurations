@@ -37,7 +37,9 @@ First, clone the repository and go into its directory by running `git clone http
 
     * Setup Hammerspoon using the instructions in the [Hammerspoon Getting Started Guide](https://www.hammerspoon.org/go/).
 
-    * Open SpaceID
+    * Open SpaceID to set it as a login app
+    
+    * open Finicky to set it as the default browser
 
 ## Running the home configuration
 
