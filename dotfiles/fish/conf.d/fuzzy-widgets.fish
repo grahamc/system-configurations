@@ -29,7 +29,7 @@ function fzf-grep-widget --description 'Search by line, recursively, from curren
   # this should be done whenever a binding produces output (see: man bind)
   commandline -f repaint
 end
-bind-no-focus \cg 'fzf-grep-widget'
+mybind --no-focus \cg 'fzf-grep-widget'
 
 function fzf-man-widget --description 'Search manpages'
   set choice \
@@ -181,7 +181,7 @@ function my-fzf-file-widget --description 'Search files'
   # this should be done whenever a binding produces output (see: man bind)
   commandline -f repaint
 end
-bind-no-focus \cf 'my-fzf-file-widget'
+mybind --no-focus \cf 'my-fzf-file-widget'
 
 # use ctrl+d for directory search instead of default alt+c
 function fzf-directory-widget --description 'Seach directories'
@@ -218,4 +218,4 @@ function fzf-directory-widget --description 'Seach directories'
 
   commandline -f repaint
 end
-bind-no-focus \ed 'fzf-directory-widget'
+mybind --no-focus \ed 'fzf-directory-widget'

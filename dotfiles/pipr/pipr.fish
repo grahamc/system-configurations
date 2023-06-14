@@ -3,7 +3,7 @@ if not status is-interactive
 end
 
 abbr --add --global pipr 'pipr --no-isolation'
-bind-no-focus \cp pipr-widget
+mybind --no-focus \cp pipr-widget
 
 function pipr-widget
   set -l commandline (commandline -b)

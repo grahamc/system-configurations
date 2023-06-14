@@ -81,7 +81,7 @@ set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}"'
 function __set_fzf_history_keybind --on-event fish_prompt
     # I only want this to run once so delete the function.
     functions -e (status current-function)
-    bind-no-focus \ch 'history merge; fzf-history-widget'
+    mybind --no-focus \ch 'history merge; fzf-history-widget'
 end
 
 # Workaround to allow me to use fzf-tmux-zoom with the default widgets that come with fzf.

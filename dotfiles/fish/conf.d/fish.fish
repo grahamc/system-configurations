@@ -75,13 +75,13 @@ function _resume_job
     # this should be done whenever a binding produces output (see: man bind)
     commandline -f repaint
 end
-bind-no-focus \cz '_resume_job'
+mybind --no-focus \cz '_resume_job'
 
 # use ctrl+right-arrow to accept the next suggested word
-bind \e\[1\;3C forward-word
+mybind \e\[1\;3C forward-word
 
 # use ctrl+b to jump to beginning of line
-bind \cb beginning-of-line
+mybind \cb beginning-of-line
 
 # ctrl+r to refresh terminal, shell, and screen
 #
@@ -89,7 +89,7 @@ bind \cb beginning-of-line
 function __set_reload_keybind --on-event fish_prompt
     # I only want this to run once so delete the function.
     functions -e (status current-function)
-    bind-no-focus \cr 'reset && exec fish && clear'
+    mybind --no-focus \cr 'reset && exec fish && clear'
 end
 
 # search variables
@@ -109,7 +109,7 @@ function _fzf_complete
                 '(?<prefix>^'(string escape --style regex -- "$current_token")')(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' \
                 (set_color brwhite)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
             | fzf \
-                --height '~30%' \
+                --height '~35%' \
                 --preview-window '2' \
                 --margin 0 \
                 --no-header \
@@ -123,6 +123,10 @@ function _fzf_complete
                 # I'll start searching from 2.
                 --delimiter "^$current_token" \
                 --nth '2..' \
+                --border rounded \
+                --margin 0,2,0,2 \
+                --color 'border:8,prompt:15' \
+                --prompt $current_token \
         )
     and begin
         # Remove the tab and description, leaving only the completion items.
@@ -167,10 +171,10 @@ end
 function __set_fzf_tab_complete --on-event fish_prompt
     # I only want this to run once so delete the function.
     functions -e (status current-function)
-    bind-no-focus \t _fzf_complete
+    mybind --no-focus \t _fzf_complete
 end
 # Keep normal tab complete on shift+tab to expand wildcards.
-bind -k btab complete
+mybind -k btab complete
 
 # Save command to history before executing it. This way long running commands, like ssh or watch, will show up in
 # the history immediately.
@@ -239,6 +243,30 @@ abbr --add bash_style_history_expansion \
     --regex '\!(\!|\^|\$|\-?\d+)' \
     --function _bash_style_history_expansion
 
-# My terminal maps ctrl+[ and ctrl+] to f7 and f8
-bind --key f7 up-or-search
-bind --key f8 down-or-search
+# History keybinds. My terminal maps ctrl+[ and ctrl+] to f7 and f8
+mybind --key f7 up-or-search
+mybind --key f8 down-or-search
+
+# Enable vi mode
+fish_vi_key_bindings
+# Disable the default mode indicator that gets added to the prompt.
+functions --erase fish_mode_prompt
+# Use jk to go to normal mode
+mybind jk "if commandline -P; commandline -f cancel; else; set fish_bind_mode default; commandline -f backward-char repaint; end"
+# Set the normal and visual mode cursors to a block
+set fish_cursor_default block
+# Set the insert mode cursor to a line
+set fish_cursor_insert line blink
+# Set the replace mode cursor to an underscore
+set fish_cursor_replace_one underscore
+function _set_emacs_bindings --on-event fish_prompt
+    functions --erase (status current-function)
+    # Execute this once per mode that emacs bindings should be used in
+    fish_default_key_bindings -M insert
+    fish_default_key_bindings -M default
+    # Then execute the vi-bindings so they take precedence when there's a conflict.
+    # Without --no-erase fish_vi_key_bindings will default to
+    # resetting all bindings.
+    # The argument specifies the initial mode (insert, "default" or visual).
+    fish_vi_key_bindings --no-erase insert
+end

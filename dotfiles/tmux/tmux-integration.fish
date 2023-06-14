@@ -19,7 +19,7 @@ function __view_last_command_output_in_less
     # this should be done whenever a binding produces output (see: man bind)
     commandline -f repaint
 end
-bind \co __view_last_command_output_in_less
+mybind \co __view_last_command_output_in_less
 
 function __view_last_command_output_in_fzf
     echo "$(__last_command_output)" | fzf --preview-window 35%
@@ -27,7 +27,7 @@ function __view_last_command_output_in_fzf
     # this should be done whenever a binding produces output (see: man bind)
     commandline -f repaint
 end
-bind-no-focus \eo __view_last_command_output_in_fzf
+mybind --no-focus \eo __view_last_command_output_in_fzf
 
 function __view_last_command_output_in_vim
     vim '+set bt=nofile' (echo "$(__last_command_output)" | string replace -ra '\e\[[^m]*m' '' | string replace -ra '[^[:print:]]' '' | psub)
@@ -35,7 +35,7 @@ function __view_last_command_output_in_vim
     # this should be done whenever a binding produces output (see: man bind)
     commandline -f repaint
 end
-bind \ev __view_last_command_output_in_vim
+mybind \ev __view_last_command_output_in_vim
 
 function __get_last_pane_line
     set cursor_line (tmux display -p '#{cursor_y}')
