@@ -4,7 +4,7 @@ end
 
 set xdg_data (test -n "$XDG_DATA_HOME" && echo "$XDG_DATA_HOME" || echo "$HOME/.local/share")
 set _fzf_history_file "$xdg_data/fzf/fzf-history.txt"
-set _magnifying_glass (echo -s \uf002 '  ')
+set _magnifying_glass \uf002'  '
 set enter_help_hint ' press ctrl+/ for help '
 set leave_help_hint ' press ctrl+\\ to go back '
 
@@ -68,6 +68,7 @@ scrollbar:15:dim\
     --preview-label '$enter_help_hint' \
     --preview-label-pos '-3:bottom' \
     --ansi \
+    --tabstop 2 \
     "
 
 set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}"'
