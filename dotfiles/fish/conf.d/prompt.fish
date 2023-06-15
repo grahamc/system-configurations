@@ -81,23 +81,8 @@ function _make_line --argument-names position context
         echo $line_connector$left_border$context$right_border
     else if test $position = last
         set line_connector $_color_border'└'$_color_normal
-        switch $fish_bind_mode
-            case default
-                set arrow_color magenta
-                set mode_char 'N'
-            case insert
-                set arrow_color cyan
-                set mode_char 'I'
-            case visual
-                set arrow_color yellow
-                set mode_char 'V'
-            case replace_one
-                set arrow_color blue
-                set mode_char 'R'
-        end
-        set vi_mode $_color_border'('(set_color --bold $arrow_color)$mode_char$_color_normal$_color_border')'
-        set arrows (set_color $arrow_color)(_arrows)$_color_normal
-        echo $line_connector$vi_mode$arrows
+        set arrows (set_color cyan)(_arrows)$_color_normal
+        echo $line_connector$arrows
     end
 end
 

@@ -247,27 +247,3 @@ abbr --add bash_style_history_expansion \
 # History keybinds. My terminal maps ctrl+[ and ctrl+] to f7 and f8
 mybind --key f7 up-or-search
 mybind --key f8 down-or-search
-
-# Enable vi mode
-fish_vi_key_bindings
-# Disable the default mode indicator that gets added to the prompt.
-functions --erase fish_mode_prompt
-# Use jk to go to normal mode
-mybind jk "if commandline -P; commandline -f cancel; else; set fish_bind_mode default; commandline -f backward-char repaint; end"
-# Set the normal and visual mode cursors to a block
-set fish_cursor_default block
-# Set the insert mode cursor to a line
-set fish_cursor_insert line blink
-# Set the replace mode cursor to an underscore
-set fish_cursor_replace_one underscore
-function _set_emacs_bindings --on-event fish_prompt
-    functions --erase (status current-function)
-    # Execute this once per mode that emacs bindings should be used in
-    fish_default_key_bindings -M insert
-    fish_default_key_bindings -M default
-    # Then execute the vi-bindings so they take precedence when there's a conflict.
-    # Without --no-erase fish_vi_key_bindings will default to
-    # resetting all bindings.
-    # The argument specifies the initial mode (insert, "default" or visual).
-    fish_vi_key_bindings --no-erase insert
-end

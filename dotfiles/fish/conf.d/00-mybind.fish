@@ -16,6 +16,6 @@ function mybind
         set argv $argv[1 .. -2] 'type --query __fish_disable_focus && __fish_disable_focus' $argv[-1]
     end
 
-    bind --mode insert $argv
+    bind $argv
 end
 
