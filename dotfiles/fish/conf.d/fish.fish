@@ -110,10 +110,11 @@ function _fzf_complete
                 (set_color brwhite)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
             | fzf \
                 --height '~35%' \
-                --preview-window '2' \
+                --min-height 8 \
+                --preview-window '2,border-left,right,60%' \
                 --margin 0 \
                 --no-header \
-                --bind 'backward-eof:abort,start:toggle-preview' \
+                --bind 'backward-eof:abort,start:toggle-preview,ctrl-o:change-preview-window(bottom,75%,border-top|right,60%,border-left)+refresh-preview' \
                 --select-1 \
                 --exit-0 \
                 --no-hscroll \
@@ -125,7 +126,7 @@ function _fzf_complete
                 --nth '2..' \
                 --border rounded \
                 --margin 0,2,0,2 \
-                --color 'border:8,prompt:15' \
+                --color 'prompt:15,preview-label:0' \
                 --prompt $current_token \
         )
     and begin
