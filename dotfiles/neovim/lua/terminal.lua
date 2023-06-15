@@ -1337,10 +1337,10 @@ Plug(
         history = true,
         delete_check_events = "TextChanged",
       })
-      local function callback(_)
+      local timer = vim.loop.new_timer()
+      timer:start(0, 0, vim.schedule_wrap(function()
         require('luasnip.loaders.from_vscode').load()
-      end
-      vim.fn.timer_start(0, callback)
+      end))
     end
   }
 )
@@ -1921,7 +1921,7 @@ vim.api.nvim_create_autocmd(
       -- Plugins registered in plugfile.vim will be in _G.registered_plugs
       local missing_plugins = {}
       for name, info in pairs(plugs) do
-        local is_installed = vim.fn.isdirectory(info.dir)
+        local is_installed = vim.fn.isdirectory(info.dir) ~= 0
         local is_registered = _G.registered_plugs[name] ~= nil
         if not is_installed and is_registered then
           missing_plugins[name] = info
