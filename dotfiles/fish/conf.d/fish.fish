@@ -93,7 +93,20 @@ function __set_reload_keybind --on-event fish_prompt
 end
 
 # search variables
-abbr --add --global fv 'FZF_DEFAULT_COMMAND="set --names" fzf --preview "set --show {}"'
+function fv
+    for name in (set --names)
+        set value (set --show $name)
+        set entry "$name"\t"$(string join \n $value)"
+        set --append entries $entry
+    end
+    set choices (printf %s'\0' $entries \
+        | fzf \
+            --read0 \
+            --print0 \
+            --delimiter \t \
+            --with-nth 1 \
+            --preview 'echo {2..}')
+end
 
 # set terminal title
 echo -ne "\033]0;fish\007"
