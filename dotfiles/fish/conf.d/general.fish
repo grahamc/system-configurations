@@ -4,17 +4,21 @@ end
 
 abbr --add --global g git
 set --global --export PAGER less
-abbr --add --global ruhroh 'sudo truncate -s 0 /var/log/syslog'
 abbr --add --global x 'chmod +x'
-abbr --add --global reload-initramfs 'sudo update-initramfs -u -k all'
-abbr --add --global logout-all 'sudo killall -u $USER'
-abbr --add --global reload-icons 'sudo update-icon-caches /usr/share/icons/* ~/.local/share/icons/*'
 abbr --add --global du 'du -shL'
-# reload the database used to search for applications
-abbr --add --global reload-desktop-entries 'sudo update-desktop-database; update-desktop-database ~/.local/share/applications'
 # Set the terminal's color capability to 256 colors if it isn't already. 
 if not string match --regex --quiet -- '256' $TERM
     set --global --export TERM xterm-256color
+end
+if uname | grep -q Linux
+    abbr --add --global reload-initramfs 'sudo update-initramfs -u -k all'
+    abbr --add --global logout-all 'sudo killall -u $USER'
+    abbr --add --global reload-icons 'sudo update-icon-caches /usr/share/icons/* ~/.local/share/icons/*'
+    # reload the database used to search for applications
+    abbr --add --global reload-desktop-entries 'sudo update-desktop-database; update-desktop-database ~/.local/share/applications'
+    abbr --add --global ruhroh 'sudo truncate -s 0 /var/log/syslog'
+    abbr --add --position anywhere --global trash 'trash put'
+    abbr --add --global reload-fonts 'fc-cache -vr'
 end
 
 # sudo
@@ -118,13 +122,6 @@ abbr --add --global watch 'watch --no-title --differences --interval 0.5'
 # vscode
 # Also clearing the $TMUX variable so that the integrated terminal in vscode won't think it's in TMUX.
 abbr --add --global code 'TMUX= code'
-
-# fonts
-# For debugging. Launches a window displaying the specified character in the specified font. Also, prints a ton of
-# information to the console. The last font family listed in that output is probably the family being used to
-# render the specified character.
-abbr --add --global font-debug 'DISPLAY=:0 FC_DEBUG=4 pango-view --font=monospace -t ☺ | grep family:'
-abbr --add --global reload-fonts 'fc-cache -vr'
 
 # ncdu
 alias ncdu 'ncdu --color off'
@@ -256,10 +253,6 @@ end
 
 # Sometimes vendor configs add to the PATH, but I want my ~/.local/bin to be first, in case I want to wrap one of
 # the vendor programs. Since this file is sourced after vendor configs I set it here.
-fish_add_path --prepend --move "$HOME/.local/bin"
-
-if uname | grep -q Linux
-    abbr --add --position anywhere --global trash 'trash put'
-end
+fish_add_path --global --prepend --move "$HOME/.local/bin"
 
 abbr --add --global chase 'chase --verbose'
