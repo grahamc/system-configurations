@@ -42,6 +42,7 @@
         gc = {
           automatic = true;
           options = "--delete-old";
+          user = "biggs";
         };
       };
 
