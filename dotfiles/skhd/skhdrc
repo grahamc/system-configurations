@@ -82,7 +82,7 @@ cmd - p : yabai -m window --toggle sticky
 cmd - m : yabai -m window --toggle zoom-fullscreen
 cmd + shift - m : yabai -m window --toggle zoom-parent
 # make window fullscreen
-cmd - f : skhd -k "cmd + ctrl - f"
+cmd - f : skhd -k "fn - f"
 # rotate windows [counter]clockwise
 cmd - o : yabai -m space --rotate 270
 cmd + shift - o : yabai -m space --rotate 90
