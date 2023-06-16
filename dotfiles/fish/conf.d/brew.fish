@@ -48,7 +48,7 @@ end
 function widget-brew-uninstall --description 'Uninstall packages with brew'
   set choices \
     ( \
-      FZF_DEFAULT_COMMAND='brew leaves --installed-on-request' \
+      FZF_DEFAULT_COMMAND='brew leaves --installed-on-request; brew ls --cask' \
       fzf-tmux-zoom \
         --prompt 'brew uninstall ' \
         # fzf triggers its loading animation for the preview window if the command hasn't completed
