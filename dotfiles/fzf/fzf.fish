@@ -2,11 +2,11 @@ if not status is-interactive
     exit
 end
 
-set xdg_data (test -n "$XDG_DATA_HOME" && echo "$XDG_DATA_HOME" || echo "$HOME/.local/share")
-set _fzf_history_file "$xdg_data/fzf/fzf-history.txt"
-set _magnifying_glass \uf002'  '
-set enter_help_hint ' press ctrl+/ for help '
-set leave_help_hint ' press ctrl+\\ to go back '
+set --local xdg_data (test -n "$XDG_DATA_HOME" && echo "$XDG_DATA_HOME" || echo "$HOME/.local/share")
+set --local _fzf_history_file "$xdg_data/fzf/fzf-history.txt"
+set --local _magnifying_glass \uf002'  '
+set --local enter_help_hint ' press ctrl+/ for help '
+set --local leave_help_hint ' press ctrl+\\ to go back '
 
 # You can't have whitespace in the `--bind` or `--color` argument which is why they're formatted differently than
 # the other flags.
@@ -70,27 +70,6 @@ scrollbar:15:dim\
     --ansi \
     --tabstop 2 \
     "
-
-set --global --export FZF_CTRL_R_OPTS '--prompt="history: " --preview "echo {}"'
-# use ctrl+h for history search instead of default ctrl+r
-#
-# I merge the history so that the search will search across all fish sessions' histories.
-#
-# TODO: The script in conf.d for the plugin 'jorgebucaran/autopair.fish' is deleting my ctrl+h keybind
-# that I define in here. As a workaround, I set this keybind when the first prompt is loaded which should be after
-# autopair is loaded.
-function __set_fzf_history_keybind --on-event fish_prompt
-    # I only want this to run once so delete the function.
-    functions -e (status current-function)
-    mybind --no-focus \ch 'history merge; fzf-history-widget'
-end
-
-# Workaround to allow me to use fzf-tmux-zoom with the default widgets that come with fzf.
-# The default widgets use __fzfcmd to get the name of the fzf command to use so I am
-# overriding it here.
-function __fzfcmd
-    echo fzf-tmux-zoom
-end
 
 mkdir -p (dirname $_fzf_history_file)
 touch $_fzf_history_file

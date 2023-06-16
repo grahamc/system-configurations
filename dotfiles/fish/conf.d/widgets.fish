@@ -2,7 +2,7 @@ if not status is-interactive
     exit
 end
 
-function fzf-grep-widget --description 'Search by line, recursively, from current directory'
+function widget-grep --description 'Search by line, recursively, from current directory'
   set rg_command 'rg --hidden --column --line-number --no-heading --color=always --smart-case --follow --'
   set choice \
       ( \
@@ -29,9 +29,9 @@ function fzf-grep-widget --description 'Search by line, recursively, from curren
   # this should be done whenever a binding produces output (see: man bind)
   commandline -f repaint
 end
-mybind --no-focus \cg 'fzf-grep-widget'
+mybind --no-focus \cg 'widget-grep'
 
-function fzf-man-widget --description 'Search manpages'
+function widget-man --description 'Search manpages'
   # This command turns 'manpage_name(section) - description' into 'section manpage_name'.
   # The `\s?` is there because macOS separates the name and section with a space.
   set parse_entry_command "string replace --regex -- '(?<name>^.*)\s?\((?<section>.*)\)\s+.*\$' '\$section \$name'"
@@ -49,9 +49,9 @@ function fzf-man-widget --description 'Search manpages'
 
   eval 'man '(eval "$parse_entry_command '$choice'")
 end
-abbr --add --global fm fzf-man-widget
+abbr --add --global wm widget-man
 
-function fzf-process-widget --description 'Manage processes'
+function widget-process --description 'Manage processes'
   # I 'echo' the fzf placeholder in the grep regex to get around the fact that fzf substitutions are single quoted and the quotes
   # would mess up the grep regex.
   if uname | grep -q Linux
@@ -110,9 +110,9 @@ function fzf-process-widget --description 'Manage processes'
   end
   fish -c "$sudo kill --signal $signal $process_ids"
 end
-abbr --add --global fp fzf-process-widget
+abbr --add --global wp widget-process
 
-function my-fzf-file-widget --description 'Search files'
+function widget-file --description 'Search files'
   set dir "$(commandline -t)"
   if test "$(string sub --length 1 -- "$dir")" = '~'
     set dir (string replace '~' "$HOME" "$dir")
@@ -166,10 +166,10 @@ function my-fzf-file-widget --description 'Search files'
   # this should be done whenever a binding produces output (see: man bind)
   commandline -f repaint
 end
-mybind --no-focus \cf 'my-fzf-file-widget'
+mybind --no-focus \cf 'widget-file'
 
 # use ctrl+d for directory search instead of default alt+c
-function fzf-directory-widget --description 'Seach directories'
+function widget-directory --description 'Seach directories'
   set dir "$(commandline -t)"
   if test "$(string sub --length 1 -- "$dir")" = '~'
     set dir (string replace '~' "$HOME" "$dir")
@@ -203,4 +203,33 @@ function fzf-directory-widget --description 'Seach directories'
 
   commandline -f repaint
 end
-mybind --no-focus \ed 'fzf-directory-widget'
+mybind --no-focus \ed 'widget-directory'
+
+function widget-history --description 'Search history'
+  # I merge the history so that the search will search across all fish sessions' histories.
+  history merge
+
+  # I'm using the NUL character to delimit history entries since they may span multiple lines.
+  set choices ( \
+    history --null \
+      | fzf-tmux-zoom  \
+        --prompt 'history: ' \
+        --preview-window '20%' \
+        --scheme history \
+        --read0 \
+        --print0 \
+        --query (commandline) \
+      | string split0 \
+  )
+  or return
+
+  commandline --replace -- $choices
+end
+# The script in conf.d for the plugin 'jorgebucaran/autopair.fish' is deleting my ctrl+h keybind
+# that I define in here. As a workaround, I set this keybind when the first prompt is loaded which should be after
+# autopair is loaded.
+function __set_fzf_history_keybind --on-event fish_prompt
+  # I only want this to run once so delete the function.
+  functions -e (status current-function)
+  mybind --no-focus \ch widget-history
+end

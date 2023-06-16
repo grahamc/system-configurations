@@ -4,12 +4,6 @@ end
 
 any-nix-shell fish | source
 
-# Load fzf keybinds
-if command -s fzf-share >/dev/null
-  source (fzf-share)/key-bindings.fish
-end
-fzf_key_bindings
-
 # If the user run a nix or hostctl command while in a git repository with untracked files, warn them since those
 # files will be ignored by any Nix Flake operation.
 function _nix-unstaged-files-warning --on-event fish_preexec --argument-names commandline

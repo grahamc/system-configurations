@@ -93,20 +93,34 @@ function __set_reload_keybind --on-event fish_prompt
 end
 
 # search variables
-function fv
+function widget-variable --description 'Search environment variables'
     for name in (set --names)
         set value (set --show $name)
         set entry "$name"\t"$(string join \n $value)"
         set --append entries $entry
     end
-    set choices (printf %s'\0' $entries \
-        | fzf \
-            --read0 \
-            --print0 \
-            --delimiter \t \
-            --with-nth 1 \
-            --preview 'echo {2..}')
+
+    # I'm using the NUL character to delimit entries since they may span multiple lines.
+    set choices ( \
+        printf %s'\0' $entries \
+            | fzf \
+                --read0 \
+                --print0 \
+                --delimiter \t \
+                --with-nth 1 \
+                --preview 'echo {2..}' \
+            | string split0 \
+    )
+    or return
+
+    for choice in $choices
+        set name (string split --fields 1 -- \t $choice)
+        set --append chosen_names $name
+    end
+
+    echo $chosen_names
 end
+abbr --add --global wv widget-variable
 
 # set terminal title
 echo -ne "\033]0;fish\007"

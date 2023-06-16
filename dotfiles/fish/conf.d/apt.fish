@@ -15,8 +15,8 @@ abbr --add --global as apt-show
 abbr --add --global ap 'apt policy'
 abbr --add --global alu 'apt list --upgradeable'
 abbr --add --global ap 'sudo apt purge'
-abbr --add --global fai 'fzf-apt-install-widget'
-abbr --add --global far 'fzf-apt-remove-widget'
+abbr --add --global wai 'widget-apt-install'
+abbr --add --global war 'widget-apt-remove'
 
 function apt-show --description "'apt show' with each section name highlighted, paged with less" --wraps 'apt show'
     # I supress stderr to remove the warning that apt prints out when you use apt
@@ -24,7 +24,7 @@ function apt-show --description "'apt show' with each section name highlighted, 
     apt show $argv 2>/dev/null | grep --color=always -E "(^[a-z|A-Z|-]*:|^)" | less
 end
 
-function fzf-apt-install-widget --description 'Install packages with apt'
+function widget-apt-install --description 'Install packages with apt'
   set choices \
       ( \
         FZF_DEFAULT_COMMAND='apt-cache pkgnames' \
@@ -40,7 +40,7 @@ function fzf-apt-install-widget --description 'Install packages with apt'
   sudo apt-get install --assume-yes $choices
 end
 
-function fzf-apt-remove-widget --description 'Remove packages with apt'
+function widget-apt-remove --description 'Remove packages with apt'
   set choices \
       ( \
         FZF_DEFAULT_COMMAND='apt list --installed 2>/dev/null | string split --no-empty --fields 1 -- \'/\' | tail -n +2' \
