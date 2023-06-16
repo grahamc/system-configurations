@@ -132,7 +132,7 @@ function _fzf_complete
         ( \
             complete --escape --do-complete -- "$(commandline --cut-at-cursor)" \
             # Use a different color for the completion item description
-            | string replace --regex -- \
+            | string replace --ignore-case --regex -- \
                 '(?<prefix>^'(string escape --style regex -- "$current_token")')(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' \
                 (set_color brwhite)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
             | fzf \
