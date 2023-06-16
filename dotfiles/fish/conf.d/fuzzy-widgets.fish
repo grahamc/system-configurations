@@ -32,37 +32,22 @@ end
 mybind --no-focus \cg 'fzf-grep-widget'
 
 function fzf-man-widget --description 'Search manpages'
+  # This command turns 'manpage_name(section) - description' into 'section manpage_name'.
+  # The `\s?` is there because macOS separates the name and section with a space.
+  set parse_entry_command "string replace --regex -- '(?<name>^.*)\s?\((?<section>.*)\)\s+.*\$' '\$section \$name'"
+
   set choice \
       ( \
         FZF_DEFAULT_COMMAND='man -k . --long' \
          fzf-tmux-zoom  \
             --tiebreak=chunk,begin,end \
             --prompt 'manpages: ' \
-            # Setting a very large MANWIDTH so that man will not truncate lines and instead allow
-            # them to wrap. This way if I increase the terminal window size, the lines will take
-            # up the new width.
-            #
-            # Because of the large MANWIDTH the man formatters (e.g. troff) print errors so we suppress
-            # stderr.
-            #
-            # If fzf allowed refreshing the preview on SIGWINCH, we could remove MANWIDTH and just
-            # refresh the preview in the larger terminal window.
-            # Issue: https://github.com/junegunn/fzf/issues/2248
-            #
-            # The 'string sub' is to remove the parentheses around the manpage section
-            --preview "MANWIDTH=1000000 man (string sub --start=2 --end=-1 {2}) {1} 2>/dev/null" \
+            --preview "eval 'MANWIDTH=\$FZF_PREVIEW_COLUMNS man '($parse_entry_command {})" \
             --preview-window '75%' \
       )
-  or begin
-    return
-  end
+  or return
 
-  # on macOS, there is no space between the manpage name and the section, e.g. name(3), so I'll add one.
-  set choice (string replace '(' ' (' "$choice")
-
-  set manpage_name (echo $choice | awk '{print $1}')
-  set manpage_section (echo $choice | awk '{print $2}' | string sub --start=2 --end=-1)
-  man $manpage_section $manpage_name
+  eval 'man '(eval "$parse_entry_command '$choice'")
 end
 abbr --add --global fm fzf-man-widget
 
