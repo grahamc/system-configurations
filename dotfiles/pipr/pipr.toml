@@ -10,7 +10,7 @@
 # Leon Kowarschick
 
 # finish_hook: Executed once you close pipr, getting the command you constructed piped into stdin.
-finish_hook = "xclip -selection clipboard -in"
+finish_hook = "pbcopy"
 
 # Paranoid history mode writes every sucessfully running command into the history in autoeval mode.
 paranoid_history_mode_default = false
