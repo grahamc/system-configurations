@@ -192,28 +192,24 @@ function rust --description 'run the given rust source file' --wraps rustc
 end
 
 function tree --wraps tree
-  # If stdin is not connected to a terminal, we assume it's connected to a pipe.
-  # In which case, have tree take its input from stdin.
-  if not isatty stdin
-    command tree -a --fromfile .
-    return $status
-  end
+    set tree_args -a --filesfirst
 
-  # If there are no arguments, get files from fd since fd will exclude anything in a .gitignore or .ignore file.
-  if test (count $argv) -eq 0
-    fd | command tree -a --fromfile .
-    return $status
-  end
+    # If stdin is not connected to a terminal, we assume it's connected to a pipe.
+    # In which case, have tree take its input from stdin.
+    if not isatty stdin
+        command tree $tree_args --fromfile .
+    # If there are no arguments, get files from fd since fd will exclude anything in a .gitignore or .ignore file.
+    else if test (count $argv) -eq 0
+        fd | command tree $tree_args --fromfile .
+    # If there is just one argument, we'll assume that it's a directory and pass it to fd for reasons stated in the case
+    # above.
+    else if test (count $argv) -eq 1
+        fd . "$argv[1]" | command tree $tree_args --fromfile .
+    else
+        command tree $tree_args $argv
+    end
 
-  # If there is just one argument, we'll assume that it's a directory and pass it to fd for reasons stated in the case
-  # above.
-  if test (count $argv) -eq 1
-    fd . "$argv[1]" | command tree -a --fromfile .
     return $status
-  end
-
-  command tree -a $argv
-  return $status
 end
 
 function dig --wraps doggo
