@@ -7,7 +7,7 @@
 #
 # TODO: This won't be needed when fish adds support for rendering the prompt asynchronously.
 # issue: https://github.com/fish-shell/fish-shell/issues/1942
-function add_async_prompt_function --argument-names async_function_name loading_indicator_function_name
+function _add_async_prompt_function --argument-names async_function_name loading_indicator_function_name
     # fish-async-prompt will wrap the functions added here and make them run asynchronously.
     set --global --append async_prompt_functions $async_function_name
 

@@ -267,7 +267,7 @@ function _abbreviate_git_states --argument-names git_context
         # remove the parentheses around the states
         | string replace --all --regex '[\(,\)]'  ''
 end
-add_async_prompt_function _git_status _git_status_loading_indicator
+_add_async_prompt_function _git_status _git_status_loading_indicator
 
 function _status_context
     # I'd pass these in as two separate arguments, but fish doesn't support list arguments, all the arguments

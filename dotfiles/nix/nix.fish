@@ -12,7 +12,7 @@ fzf_key_bindings
 
 # If the user run a nix or hostctl command while in a git repository with untracked files, warn them since those
 # files will be ignored by any Nix Flake operation.
-function nix-unstaged-files-warning --on-event fish_preexec --argument-names commandline
+function _nix-unstaged-files-warning --on-event fish_preexec --argument-names commandline
     # Have to set these first before the $status changes
     set last_interactive_status $status
     set last_interactive_pipestatus $pipestatus
