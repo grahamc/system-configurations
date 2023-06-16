@@ -71,6 +71,7 @@
           "gitkraken"
           "firefox-developer-edition"
           "finicky"
+          "docker"
         ];
         taps = [
           "homebrew/cask-versions"
