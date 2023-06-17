@@ -39,11 +39,25 @@
     {
       nix = {
         useDaemon = true;
-        gc = {
-          automatic = true;
-          options = "--delete-old";
-          user = "biggs";
-        };
+      };
+
+      launchd.daemons.nix-gc = {
+        command = ''
+          /bin/sh -c ' \
+            export PATH="${config.nix.package}/bin:''$PATH"; \
+            nix-env --profile /nix/var/nix/profiles/system --delete-generations old; \
+            nix-env --profile /nix/var/nix/profiles/default --delete-generations old; \
+            nix-env --profile /nix/var/nix/profiles/per-user/root/profile --delete-generations old; \
+            nix-env --profile /nix/var/nix/profiles/per-user/root/channels --delete-generations old; \
+            nix-env --profile ${homeDirectory}/.local/state/nix/profiles/home-manager --delete-generations old; \
+            nix-env --profile ${homeDirectory}/.local/state/nix/profiles/profile --delete-generations old; \
+            nix-env --profile ${homeDirectory}/.local/state/nix/profiles/channels --delete-generations old; \
+            nix-collect-garbage --delete-old; \
+          '
+        '';
+        environment.NIX_REMOTE = "daemon";
+        serviceConfig.RunAtLoad = false;
+        serviceConfig.StartCalendarInterval = [ {Hour = 3; Minute = 15;} ];
       };
 
       users.users.${username} = {
