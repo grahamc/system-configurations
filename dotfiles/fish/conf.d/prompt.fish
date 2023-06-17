@@ -41,12 +41,12 @@ function fish_prompt --description 'Print the prompt'
         (_direnv_context) \
         (_nix_context) \
         (_python_context) \
-        (_git_context $max_length) \
         (_job_context) \
-        (_host_context) \
+        (_git_context $max_length) \
         (_path_context $max_length) \
+        (_user_context) \
         (_status_context $last_status $last_pipestatus) \
-        (_privilege_context)
+        ;
     set prompt_lines
     for context in $contexts
         if test -z $context
@@ -121,31 +121,31 @@ function _job_context
     echo "jobs: $formatted_job_commands"
 end
 
-function _privilege_context
-    set privilege_context
-    if test (id --user) -eq 0
-        set privilege_context 'user has admin privileges'
-    end
-
-    if test -z "$privilege_context"
-        return
-    end
-
-    echo $_color_warning_text$privilege_context$_color_normal
-end
-
-function _host_context
+function _user_context
     set container_name (_container_name)
     if test -n "$container_name"
-        set host "$container_name (container)"
+        set host $container_name
+        set special_host 'container'
     else if set --query SSH_TTY
-        set host "$(hostname) (ssh)"
-    else if test "$USER" != 'biggs'
+        set host (hostname)
+        set special_host 'ssh'
+    else
         set host (hostname)
     end
 
-    if test -n "$host"
-        echo "host: $USER on $host"
+    if fish_is_root_user
+        set privilege $_color_warning_text'superuser'$_color_normal
+    end
+
+    if set --query special_host
+    or set --query privilege
+    or test "$USER" != 'biggs'
+        set context "user: $USER on $host"
+        set more_info $special_host $privilege
+        if test (count $more_info) -gt 0
+            set context $context" ($(string join , $more_info))"
+        end
+        echo $context
     end
 end
 # Taken from Starship Prompt: https://github.com/starship/starship/blob/master/src/modules/container.rs
