@@ -29,7 +29,7 @@ set --global --export fish_pager_color_secondary
 set --global --export fish_color_cancel black
 set --global --export fish_color_valid_path
 
-abbr --add --global r 'reload-fish'
+abbr --add --global r 'fish-reload'
 
 # Don't print a greeting when a new interactive fish shell is started
 set --global --export fish_greeting ''
@@ -93,7 +93,7 @@ function __set_reload_keybind --on-event fish_prompt
 end
 
 # search variables
-function widget-variable --description 'Search environment variables'
+function variable-widget --description 'Search environment variables'
     for name in (set --names)
         set value (set --show $name)
         set entry "$name"\t"$(string join \n $value)"
@@ -120,7 +120,7 @@ function widget-variable --description 'Search environment variables'
 
     echo $chosen_names
 end
-abbr --add --global wv widget-variable
+abbr --add --global vw variable-widget
 
 # set terminal title
 echo -ne "\033]0;fish\007"
@@ -239,7 +239,7 @@ function _reload_fish --on-variable _fish_reload_indicator
     echo "$(set_color --reverse --bold brwhite) INFO $(set_color normal) Reloading the shell...$(set_color normal)"
     exec fish
 end
-function reload-fish
+function fish-reload
     set --universal _fish_reload_indicator (random)
 end
 

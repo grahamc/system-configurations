@@ -2,7 +2,7 @@ if not status is-interactive
     exit
 end
 
-function widget-grep --description 'Search by line, recursively, from current directory'
+function grep-widget --description 'Search by line, recursively, from current directory'
   set rg_command 'rg --hidden --column --line-number --no-heading --color=always --smart-case --follow --'
   set choice \
       ( \
@@ -29,9 +29,9 @@ function widget-grep --description 'Search by line, recursively, from current di
   # this should be done whenever a binding produces output (see: man bind)
   commandline -f repaint
 end
-mybind --no-focus \cg 'widget-grep'
+mybind --no-focus \cg 'grep-widget'
 
-function widget-man --description 'Search manpages'
+function man-widget --description 'Search manpages'
   # This command turns 'manpage_name(section) - description' into 'section manpage_name'.
   # The `\s?` is there because macOS separates the name and section with a space.
   set parse_entry_command "string replace --regex -- '(?<name>^.*)\s?\((?<section>.*)\)\s+.*\$' '\$section \$name'"
@@ -49,9 +49,9 @@ function widget-man --description 'Search manpages'
 
   eval 'man '(eval "$parse_entry_command '$choice'")
 end
-abbr --add --global wm widget-man
+abbr --add --global mw man-widget
 
-function widget-process --description 'Manage processes'
+function process-widget --description 'Manage processes'
   # I 'echo' the fzf placeholder in the grep regex to get around the fact that fzf substitutions are single quoted and the quotes
   # would mess up the grep regex.
   if uname | grep -q Linux
@@ -110,9 +110,9 @@ function widget-process --description 'Manage processes'
   end
   fish -c "$sudo kill --signal $signal $process_ids"
 end
-abbr --add --global wp widget-process
+abbr --add --global pw process-widget
 
-function widget-file --description 'Search files'
+function file-widget --description 'Search files'
   set dir "$(commandline -t)"
   if test "$(string sub --length 1 -- "$dir")" = '~'
     set dir (string replace '~' "$HOME" "$dir")
@@ -166,10 +166,10 @@ function widget-file --description 'Search files'
   # this should be done whenever a binding produces output (see: man bind)
   commandline -f repaint
 end
-mybind --no-focus \cf 'widget-file'
+mybind --no-focus \cf 'file-widget'
 
 # use ctrl+d for directory search instead of default alt+c
-function widget-directory --description 'Seach directories'
+function directory-widget --description 'Seach directories'
   set dir "$(commandline -t)"
   if test "$(string sub --length 1 -- "$dir")" = '~'
     set dir (string replace '~' "$HOME" "$dir")
@@ -203,9 +203,9 @@ function widget-directory --description 'Seach directories'
 
   commandline -f repaint
 end
-mybind --no-focus \ed 'widget-directory'
+mybind --no-focus \ed 'directory-widget'
 
-function widget-history --description 'Search history'
+function history-widget --description 'Search history'
   # I merge the history so that the search will search across all fish sessions' histories.
   history merge
 
@@ -231,5 +231,5 @@ end
 function __set_fzf_history_keybind --on-event fish_prompt
   # I only want this to run once so delete the function.
   functions -e (status current-function)
-  mybind --no-focus \ch widget-history
+  mybind --no-focus \ch history-widget
 end

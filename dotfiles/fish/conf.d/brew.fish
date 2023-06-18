@@ -6,8 +6,8 @@ if not uname | grep -q Darwin
   exit
 end
 
-abbr --add --global wbi 'widget-brew-install'
-abbr --add --global wbu 'widget-brew-uninstall'
+abbr --add --global biw 'brew-install-widget'
+abbr --add --global buw 'brew-uninstall-widget'
 
 # nix-darwin manages brew so I'll turn off all the automatic management.
 export HOMEBREW_NO_INSTALL_UPGRADE=1
@@ -22,7 +22,7 @@ if test -d (brew --prefix)"/share/fish/vendor_completions.d"
     set --global --prepend fish_complete_path (brew --prefix)/share/fish/vendor_completions.d
 end
 
-function widget-brew-install --description 'Install packages with brew'
+function brew-install-widget --description 'Install packages with brew'
   set choices \
     ( \
     FZF_DEFAULT_COMMAND='brew formulae' \
@@ -45,7 +45,7 @@ function widget-brew-install --description 'Install packages with brew'
   brew install $choices
 end
 
-function widget-brew-uninstall --description 'Uninstall packages with brew'
+function brew-uninstall-widget --description 'Uninstall packages with brew'
   set choices \
     ( \
       FZF_DEFAULT_COMMAND='brew leaves --installed-on-request; brew ls --cask' \

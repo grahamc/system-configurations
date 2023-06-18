@@ -11,14 +11,14 @@ if not string match --regex --quiet -- '256' $TERM
     set --global --export TERM xterm-256color
 end
 if uname | grep -q Linux
-    abbr --add --global reload-initramfs 'sudo update-initramfs -u -k all'
+    abbr --add --global initramfs-reload 'sudo update-initramfs -u -k all'
     abbr --add --global logout-all 'sudo killall -u $USER'
-    abbr --add --global reload-icons 'sudo update-icon-caches /usr/share/icons/* ~/.local/share/icons/*'
+    abbr --add --global icon-reload 'sudo update-icon-caches /usr/share/icons/* ~/.local/share/icons/*'
     # reload the database used to search for applications
-    abbr --add --global reload-desktop-entries 'sudo update-desktop-database; update-desktop-database ~/.local/share/applications'
+    abbr --add --global desktop-entry-reload 'sudo update-desktop-database; update-desktop-database ~/.local/share/applications'
     abbr --add --global ruhroh 'sudo truncate -s 0 /var/log/syslog'
     abbr --add --position anywhere --global trash 'trash put'
-    abbr --add --global reload-fonts 'fc-cache -vr'
+    abbr --add --global font-reload 'fc-cache -vr'
 end
 
 # sudo

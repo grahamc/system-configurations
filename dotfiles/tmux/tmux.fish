@@ -4,7 +4,7 @@ end
 
 abbr --add --global ta tmux attach-session
 
-function reload-tmux-server --description 'Reload tmux server'
+function tmux-server-reload --description 'Reload tmux server'
     function is_tmux_running
         tmux list-sessions &>/dev/null
     end
