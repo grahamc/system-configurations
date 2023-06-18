@@ -252,7 +252,16 @@ fish_add_path --global --prepend --move "$HOME/.local/bin"
 abbr --add --global chase 'chase --verbose'
 
 function cdi --wraps tere --description 'cd interactively'
-    set result (tere --gap-search --normal-search-anywhere --mouse=on $argv)
+    set result ( \
+        tere \
+            --gap-search \
+            --normal-search-anywhere \
+            --filter-search \
+            --mouse=on \
+            --map ctrl-h:ChangeDirParent,ctrl-j:CursorDown,ctrl-k:CursorUp,ctrl-l:ChangeDir \
+            --map down:CursorDownScreen,up:CursorUpScreen \
+            $argv \
+    )
     if test -n "$result"
         cd -- $result
     end
