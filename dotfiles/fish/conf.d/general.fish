@@ -97,15 +97,17 @@ end
 set --global --export RIPGREP_CONFIG_PATH "$HOME/.ripgreprc"
 
 # zoxide
-set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'lsd {2}' --keep-right --height 40% --preview-window '50%'"
-zoxide init --cmd cd fish | source
-# overwrite the cd function that zoxide creates to handle the '--' argument
+set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'lsd {2}' --keep-right"
+zoxide init --no-cmd fish | source
 function cd --wraps cd
     # zoxide does not support the '--' argument
     if set index (contains --index -- '--' $argv)
         set --erase argv[$index]
     end
     __zoxide_z $argv
+end
+function cdh --wraps=__zoxide_zi --description 'cd history'
+    __zoxide_zi $argv
 end
 
 # direnv
@@ -251,3 +253,14 @@ end
 fish_add_path --global --prepend --move "$HOME/.local/bin"
 
 abbr --add --global chase 'chase --verbose'
+
+function cdi --wraps tere --description 'cd interactively'
+    set result (tere --gap-search --normal-search-anywhere --mouse=on $argv)
+    if test -n "$result"
+        cd -- $result
+    end
+end
+
+# cd history keybinds. My terminal maps ctrl+[ and ctrl+] to f7 and f8
+mybind --key f7 prevd-or-backward-word
+mybind --key f8 nextd-or-forward-word

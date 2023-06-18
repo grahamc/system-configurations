@@ -40,6 +40,7 @@
         less
         # These weren't in a docker container
         gnused
+        tere
       ] ++ optionals isLinux [
         trashy
         pipr

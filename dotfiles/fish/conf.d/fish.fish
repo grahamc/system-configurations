@@ -270,7 +270,3 @@ abbr --add bash_style_history_expansion \
     --position anywhere \
     --regex '\!(\!|\^|\$|\-?\d+)' \
     --function _bash_style_history_expansion
-
-# History keybinds. My terminal maps ctrl+[ and ctrl+] to f7 and f8
-mybind --key f7 up-or-search
-mybind --key f8 down-or-search
