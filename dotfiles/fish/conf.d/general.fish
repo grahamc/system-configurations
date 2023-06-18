@@ -93,9 +93,6 @@ function python --wraps python
     command python $argv
 end
 
-# ripgrep
-set --global --export RIPGREP_CONFIG_PATH "$HOME/.ripgreprc"
-
 # zoxide
 set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'lsd {2}' --keep-right"
 zoxide init --no-cmd fish | source
