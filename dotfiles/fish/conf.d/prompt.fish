@@ -140,12 +140,16 @@ function _user_context
     if set --query special_host
     or set --query privilege
     or test "$USER" != 'biggs'
-        set context "user: $USER on $host"
-        set more_info $special_host $privilege
-        if test (count $more_info) -gt 0
-            set context $context" ($(string join , $more_info))"
+        set user $USER
+        if set --query privilege
+            set user "$user ($privilege)"
         end
-        echo $context
+
+        if set --query special_host
+            set host "$host ($special_host)"
+        end
+
+        echo "user: $user on $host"
     end
 end
 # Taken from Starship Prompt: https://github.com/starship/starship/blob/master/src/modules/container.rs
@@ -204,7 +208,7 @@ function _direnv_context
 
     set blocked ''
     if direnv status | grep --ignore-case --quiet 'Found RC allowed false'
-        set blocked $_color_error_text' (blocked)'$_color_normal
+        set blocked ' ('$_color_error_text'blocked'$_color_normal')'
     end
 
     echo "direnv: $directory$blocked"
