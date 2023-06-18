@@ -136,7 +136,7 @@ function _fzf_complete
                 '(?<prefix>^'(string escape --style regex -- "$current_token")')(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' \
                 (set_color brwhite)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
             | fzf \
-                --height '35%' \
+                --height '~35%' \
                 --min-height 8 \
                 --preview-window '2,border-left,right,60%' \
                 --margin 0 \

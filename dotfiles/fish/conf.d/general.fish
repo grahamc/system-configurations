@@ -22,8 +22,7 @@ if uname | grep -q Linux
 end
 
 # sudo
-abbr --add --global s 'sudo --preserve-env=PATH'
-abbr --add --global sudo 'sudo --preserve-env=PATH'
+abbr --add --global sudo 'sudo --preserve-env=PATH,SHLVL,TMUX,BANNER_WAS_PRINTED'
 
 # timg
 function timg --wraps timg
