@@ -3,10 +3,10 @@
     inherit (lib.lists) optionals;
     inherit (pkgs.stdenv) isLinux isDarwin;
     inherit (lib.attrsets) optionalAttrs;
-    fzfBinOnly = pkgs.buildEnv {
+    fzfWithoutShellConfig = pkgs.buildEnv {
       name = "fzf-bin-only";
       paths = [pkgs.fzf];
-      pathsToLink = ["/bin"];
+      pathsToLink = ["/bin" "/share/man"];
     };
   in
     {
@@ -19,7 +19,7 @@
         doggo
         duf
         fd
-        fzfBinOnly
+        fzfWithoutShellConfig
         gping
         jq
         lsd

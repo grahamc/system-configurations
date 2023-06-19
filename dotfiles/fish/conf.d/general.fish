@@ -258,8 +258,6 @@ function cdi --wraps tere --description 'cd interactively'
             --normal-search-anywhere \
             --filter-search \
             --mouse=on \
-            --map ctrl-h:ChangeDirParent,ctrl-j:CursorDown,ctrl-k:CursorUp,ctrl-l:ChangeDir \
-            --map down:CursorDownScreen,up:CursorUpScreen \
             $argv \
     )
     if test -n "$result"
