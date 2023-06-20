@@ -239,9 +239,14 @@ backspace [
 	* ~
 ]
 # Open bookmarks bar in Firefox
-# Ope Developer Edition bookmarks bar in Firefox
 ctrl - b [
 	"Firefox" : skhd -k "cmd - b"
 	"Firefox Developer Edition" : skhd -k "cmd - b"
+	* ~
+]
+# Open developer console in Firefox
+ctrl + shift - i [
+	"Firefox" : skhd -k "cmd + alt - i"
+	"Firefox Developer Edition" : skhd -k "cmd + alt - i"
 	* ~
 ]
