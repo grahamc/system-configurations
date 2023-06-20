@@ -206,6 +206,11 @@ local keybinds = {
       key = 'F8',
     },
   },
+  {
+    key = 'q',
+    mods = 'CMD',
+    action = wezterm.action.CloseCurrentTab { confirm = false },
+  },
 }
 
 local function generate_neovim_tab_navigation_keybinds()
