@@ -53,7 +53,7 @@ function _resume_job
 
     set entries
     for job_pid in (jobs --pid)
-        set job_command (ps -o command= --pid "$job_pid")
+        set job_command (ps -o command= -p "$job_pid")
         set --append entries "$job_pid:$job_command"
     end
 
