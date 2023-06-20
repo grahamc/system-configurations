@@ -19,6 +19,10 @@ if uname | grep -q Linux
     abbr --add --global ruhroh 'sudo truncate -s 0 /var/log/syslog'
     abbr --add --position anywhere --global trash 'trash put'
     abbr --add --global font-reload 'fc-cache -vr'
+    if type --query flatpak
+    and flatpak list --app | grep -q 'org.wezfurlong.wezterm'
+        alias wezterm 'flatpak run org.wezfurlong.wezterm'
+    end
 end
 
 # sudo
@@ -235,15 +239,7 @@ function sh --wraps yash
     yash $argv
 end
 
-if type --query flatpak
-and flatpak list --app | grep -q 'org.wezfurlong.wezterm'
-    alias wezterm 'flatpak run org.wezfurlong.wezterm'
-end
-
-# wrapping for the autocomplete
-function myssh --wraps ssh
-    command myssh $argv
-end
+complete myssh --wraps ssh
 
 # Sometimes vendor configs add to the PATH, but I want my ~/.local/bin to be first, in case I want to wrap one of
 # the vendor programs. Since this file is sourced after vendor configs I set it here.
