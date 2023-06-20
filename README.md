@@ -50,7 +50,7 @@ First, clone the repository and go into its directory by running `git clone http
 
 ### Using a Standalone Executable
 
-My home config is also available as an executable with no dependencies. The executable is self-extracting archive (SEA) that contains all the commandline programs I use, as well as my config files for them. Running it will start my shell which will have access to these programs and configs.
+My home config is also available as an executable with no dependencies. The executable is a self-extracting archive (SEA) that contains all the commandline programs I use, as well as my config files for them. Running it will start my shell which will have access to these programs and configs.
 
 * Run the shell with `sh -c "$(curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run-shell.sh)"`
 * Run a specific program in the shell with `sh -c "$(curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run-shell.sh)" shell -c 'nvim some-file.py'`
