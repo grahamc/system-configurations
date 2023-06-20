@@ -51,25 +51,30 @@ function _resume_job
         return
     end
 
+    set delimiter ':delim:'
     set entries
     for job_pid in (jobs --pid)
         set job_command (ps -o command= -p "$job_pid")
-        set --append entries "$job_pid:$job_command"
+        set --append entries "$job_pid$delimiter$job_command"
     end
 
     set choice \
         ( \
-            printf '%s\n' $entries \
+            # I'm using the NUL character to delimit entries since they may span multiple lines.
+            printf %s'\0' $entries \
                 | fzf  \
-                    --delimiter ':' \
+                    --read0 \
+                    --delimiter $delimiter \
                     --with-nth '2..' \
                     --no-preview \
                     --height ~30% \
                     --margin 0,2,0,2 \
                     --border rounded \
+                    --no-multi \
+                | string replace \n '␊' \
         )
-    and begin
-        set tokens (string split ':' "$choice")
+    if test -n "$choice"
+        set tokens (string split $delimiter "$choice")
         set pid $tokens[1]
         fg "$pid" 1>/dev/null 2>&1
     end
