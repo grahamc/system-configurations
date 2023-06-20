@@ -18,21 +18,6 @@
                 packageName
                 {}
                 ''mkdir -p $out/bin'';
-            makeStubPackage = bash: package:
-              pkgs.runCommand
-                "stub-package"
-                {}
-                ''
-                  mkdir -p $out/bin
-                  for PROGRAM in ${package}/bin/*; do
-                    name="$(basename "$PROGRAM")"
-                    echo >"$out/bin/$name"  "#!${bash}/bin/bash
-                      echo 'This program is not supported in portable mode.' >/dev/stderr
-                      exit 1
-                      "
-                    chmod 755 "$out/bin/$name"
-                  done
-                '';
             minimalFish = pkgs.fish.override {
               usePython = false;
             };
@@ -41,7 +26,7 @@
             minimalLocales = pkgs.glibcLocales.override { allLocales = false;  locales = ["en_US.UTF-8/UTF-8" "C.UTF-8/UTF-8"];};
             minimalOverlay = final: prev: {
               fish = minimalFish;
-              comma = makeStubPackage final.bash prev.comma;
+              comma = makeEmptyPackage "stub-comma";
               coreutils-full = prev.coreutils;
               gitMinimal = makeEmptyPackage "stub-git";
             } // optionalAttrs isLinux {
