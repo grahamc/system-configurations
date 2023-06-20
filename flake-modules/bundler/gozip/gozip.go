@@ -399,7 +399,7 @@ func GetNewStorePath() (prefix string, err error){
 		candidatePrefix = "/tmp/"
 
 		// needs to be <= 5 since it will be appended to '/tmp/' and needs to be <= '/nix/store'
-		stringLength := 4
+		stringLength := 5
 		for i := 1; i <= stringLength; i++ {
 			candidatePrefix = candidatePrefix + string(charset[rand.Intn(len(charset))])
 		}
