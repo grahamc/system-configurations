@@ -417,11 +417,8 @@ func GetNewStorePath() (prefix string, err error){
 }
 
 func ExtractArchiveAndRewritePaths() (extractedArchivePath string, executableCachePath string, err error) {
-	userCachePath, err := os.UserCacheDir()
-	if err != nil {
-		return "", "", err
-	}
-	cachePath := filepath.Join(userCachePath, "nix-rootless-bundler")
+	tempPath := os.TempDir()
+	cachePath := filepath.Join(tempPath, "nix-rootless-bundler")
 	err = CreateDirectoryIfNotExists(cachePath)
 	if err != nil {
 		return "", "", err
