@@ -101,19 +101,6 @@
             [
               {
                 configuration = {
-                  hostName = "laptop";
-                  modules = [
-                    "${moduleBaseDirectory}/profile/application-development.nix"
-                    "${moduleBaseDirectory}/profile/system-administration.nix"
-                    "${moduleBaseDirectory}/gnome-theme-fix.nix"
-                  ];
-                };
-                systems = with inputs.flake-utils.lib.system; [
-                  x86_64-linux
-                ];
-              }
-              {
-                configuration = {
                   hostName = "desktop";
                   modules = [
                     "${moduleBaseDirectory}/profile/application-development.nix"
