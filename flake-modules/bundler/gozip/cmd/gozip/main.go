@@ -30,11 +30,11 @@ func main() {
 	flagSet.Parse(os.Args[1:])
 
 	if !IsAnyInternalFlagPassed(flagSet) {
-		err := gozip.SelfExtractAndRunNixEntrypoint()
+		exitCode, err := gozip.SelfExtractAndRunNixEntrypoint()
 		if err != nil {
 			log.Fatal(err)
 		}
-		return
+		os.Exit(exitCode)
 	}
 
 	args := flagSet.Args()

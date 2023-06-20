@@ -514,10 +514,10 @@ func ExtractArchiveAndRewritePaths() (extractedArchivePath string, executableCac
 	return archiveContentsPath, executableCachePath, nil
 }
 
-func SelfExtractAndRunNixEntrypoint() (err error) {
+func SelfExtractAndRunNixEntrypoint() (exitCode int, err error) {
 	extractedArchivePath, cachePath, err := ExtractArchiveAndRewritePaths()
 	if err != nil {
-		return err
+		return -1, err
 	}
 	defer func() {
 		deleteCacheEnvVariable := os.Getenv("NIX_ROOTLESS_BUNDLER_DELETE_CACHE")
@@ -535,8 +535,13 @@ func SelfExtractAndRunNixEntrypoint() (err error) {
 	cmd.Stderr = os.Stderr
 	err = cmd.Run()
 	if err != nil {
-		return err
+		// I don't want to report an error if the command exited with a non-zero exit code. Instead I'll
+		// exit this process with that same exit code.
+		_, isExitError := err.(*exec.ExitError)
+		if !isExitError {
+			return -1, err
+		}
 	}
 
-	return nil
+	return cmd.ProcessState.ExitCode(), nil
 }
