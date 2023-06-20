@@ -38,15 +38,15 @@ First, clone the repository and go into its directory by running `git clone http
     * Setup Hammerspoon using the instructions in the [Hammerspoon Getting Started Guide](https://www.hammerspoon.org/go/).
 
     * Open SpaceID to set it as a login app
-    
+
     * open Finicky to set it as the default browser
 
 ## Running the home configuration
 
 ### Using Nix
 
-- Run the shell with `nix run github:bigolu/dotfiles`
-- Run a specific command in the shell with `nix run github:bigolu/dotfiles -- -c 'nvim some-file.py'`
+* Run the shell with `nix run github:bigolu/dotfiles`
+* Run a specific command in the shell with `nix run github:bigolu/dotfiles -- -c 'nvim some-file.py'`
 
 ### Using a Standalone Executable
 
@@ -72,8 +72,8 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 
 This uses the [Determinate Systems Installer](https://github.com/DeterminateSystems/nix-installer) with a few extra options set:
 
-- `trusted-users`: This adds the current user to the list of trusted users. In Nix, some actions require that your user is trusted, such as adding a cache ([explained below](#adding-the-cache)). Setting this allows you start using Nix immediately after installation without having to edit any configuration files.
-- `auto-optimise-store`: This feature can help decrease the amount of space used by the Nix store and so the installer enables it by default. However, there is also a bug related to this feature that you may encounter so I'd suggest leaving this off until the bug is fixed. You can find the issue for this bug [here](https://github.com/NixOS/nix/issues/7273).
+* `trusted-users`: This adds the current user to the list of trusted users. In Nix, some actions require that your user is trusted, such as adding a cache ([explained below](#adding-the-cache)). Setting this allows you start using Nix immediately after installation without having to edit any configuration files.
+* `auto-optimise-store`: This feature can help decrease the amount of space used by the Nix store and so the installer enables it by default. However, there is also a bug related to this feature that you may encounter so I'd suggest leaving this off until the bug is fixed. You can find the issue for this bug [here](https://github.com/NixOS/nix/issues/7273).
 
 Alternatively, you can use the [official installer](https://nixos.org/download.html), though this one has more steps. The README for the Determinate Systems installer lists the differences between the two.
 
@@ -87,7 +87,7 @@ To avoid building everything on your machine, you can configure Nix to use this 
 
 ## Troubleshooting
 
-- **Cache is being ignored**: First, [check to see if you are a trusted user](#check-trust). If you aren't, then [add yourself to trusted-users](#add-trust). Then enable the cache by adding the lines below to your config in `~/.config/nix/nix.conf` (If you have a multi-user Nix installation, you'll need to [restart the Nix daemon](#restart-daemon) afterward to apply the changes.):
+* **Cache is being ignored**: First, [check to see if you are a trusted user](#check-trust). If you aren't, then [add yourself to trusted-users](#add-trust). Then enable the cache by adding the lines below to your config in `~/.config/nix/nix.conf` (If you have a multi-user Nix installation, you'll need to [restart the Nix daemon](#restart-daemon) afterward to apply the changes.):
 
     ``` conf
         extra-substituters = https://bigolu.cachix.org
@@ -95,22 +95,22 @@ To avoid building everything on your machine, you can configure Nix to use this 
         extra-trusted-public-keys = bigolu.cachix.org-1:AJELdgYsv4CX7rJkuGu5HuVaOHcqlOgR07ZJfihVTIw=
     ```
 
-- **apfs.util isn't working**: Make sure that the `/etc/synthetic.conf` has the permission `0644`.
+* **apfs.util isn't working**: Make sure that the `/etc/synthetic.conf` has the permission `0644`.
 
 ## How To
 
-- <span id="restart-daemon">Restart the Nix daemon</span>:
+* <span id="restart-daemon">Restart the Nix daemon</span>:
 
-  - Linux: Run `systemctl restart nix-daemon.service`
+  * Linux: Run `systemctl restart nix-daemon.service`
 
-  - macOS: Run `sudo launchctl stop org.nixos.nix-daemon && sudo launchctl start org.nixos.nix-daemon`
+  * macOS: Run `sudo launchctl stop org.nixos.nix-daemon && sudo launchctl start org.nixos.nix-daemon`
 
-- <span id="check-trust">Check if you are a trusted user</span>:
+* <span id="check-trust">Check if you are a trusted user</span>:
 
-  - single-user Nix installation: The user that installed Nix is always trusted in a single user installation.
+  * single-user Nix installation: The user that installed Nix is always trusted in a single user installation.
 
-  - multi-user Nix installation: Run `nix show-config` and look for your `$USER` in the `trusted-users` key.
+  * multi-user Nix installation: Run `nix show-config` and look for your `$USER` in the `trusted-users` key.
 
-- <span id="add-trust">Add yourself to trusted-users</space>:
+* <span id="add-trust">Add yourself to trusted-users</space>:
 
-  - Run `echo "extra-trusted-users = $USER" | sudo tee -a /etc/nix/nix.conf` to add yourself as a trusted user in the Nix system configuration. Then [restart the Nix daemon](#restart-daemon) to apply the changes.
+  * Run `echo "extra-trusted-users = $USER" | sudo tee -a /etc/nix/nix.conf` to add yourself as a trusted user in the Nix system configuration. Then [restart the Nix daemon](#restart-daemon) to apply the changes.
