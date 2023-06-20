@@ -59,12 +59,14 @@ function _resume_job
 
     set choice \
         ( \
-            printf '%s\n' $entries | \
-            fzf  \
-            --delimiter ':' \
-            --with-nth '2..' \
-            --no-preview \
-            --height 30% \
+            printf '%s\n' $entries \
+                | fzf  \
+                    --delimiter ':' \
+                    --with-nth '2..' \
+                    --no-preview \
+                    --height ~30% \
+                    --margin 0,2,0,2 \
+                    --border rounded \
         )
     and begin
         set tokens (string split ':' "$choice")
