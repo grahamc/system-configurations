@@ -1073,7 +1073,6 @@ Plug(
         input = {enabled = false,},
         select = {
           telescope = require("telescope.themes").get_cursor({
-            border = false,
             layout_config = {
               height = 6,
             },
@@ -1083,7 +1082,6 @@ Plug(
               return {
                 telescope = {
                   layout_strategy = 'center',
-                  border = true,
                   layout_config = {
                     width = 0.6,
                     height = 0.6,
