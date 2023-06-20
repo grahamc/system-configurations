@@ -6,4 +6,4 @@
 
 --color=always
 
---style="numbers,header-filename,grid"
+--style="header-filename,grid"

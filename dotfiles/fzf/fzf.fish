@@ -64,7 +64,7 @@ scrollbar:15:dim\
     --preview-window=wrap,bottom,40% \
     --multi \
     --no-separator \
-    --scrollbar='🮉' \
+    --scrollbar='🮉 ' \
     --preview-label '$enter_help_hint' \
     --preview-label-pos '-3:bottom' \
     --ansi \

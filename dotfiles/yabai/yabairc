@@ -30,3 +30,4 @@ yabai -m config window_origin_display cursor
 yabai -m config window_opacity on
 yabai -m config window_topmost on
 yabai -m config mouse_drop_action swap
+yabai -m config window_zoom_persist off

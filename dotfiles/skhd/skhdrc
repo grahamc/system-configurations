@@ -107,7 +107,7 @@ cmd - backspace : yabai -m window --focus recent
 cmd + ctrl - backspace : yabai -m space --focus recent
 cmd + alt - backspace : yabai -m display --focus recent
 # enter adjustment mode
-:: adjustment : yabai -m config window_border on; yabai -m config window_border_hdpi on; yabai -m config active_window_border_color "0xfc00ffff"; yabai -m config normal_window_border_color "0x00ffffff"; yabai -m config active_window_opacity .8
+:: adjustment : yabai -m config window_border on; yabai -m config window_border_hdpi on; yabai -m config active_window_border_color "0xfc00ffff"; yabai -m config normal_window_border_color "0x00ffffff"; yabai -m config active_window_opacity .9
 cmd - return ; adjustment
 # move window
 adjustment < h : yabai-remove-from-stack west || yabai -m window --warp west || $(yabai -m window --display west; yabai -m display --focus west)
