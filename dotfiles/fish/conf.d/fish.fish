@@ -2,32 +2,32 @@ if not status is-interactive
     exit
 end
 
-set --global --export fish_color_normal
-set --global --export fish_color_command
-set --global --export fish_color_quote green
-set --global --export fish_color_redirection
-set --global --export fish_color_end
-set --global --export fish_color_error red
-set --global --export fish_color_param
-set --global --export fish_color_comment brwhite
-set --global --export fish_color_match
-set --global --export fish_color_search_match --background=brblack
+set --global fish_color_normal
+set --global fish_color_command
+set --global fish_color_quote green
+set --global fish_color_redirection
+set --global fish_color_end
+set --global fish_color_error red
+set --global fish_color_param
+set --global fish_color_comment brwhite
+set --global fish_color_match
+set --global fish_color_search_match --background=brblack
 # TODO: I want to remove the default bolding, but currently only the background is configurable.
 # Issue: https://github.com/fish-shell/fish-shell/issues/2442
-set --global --export fish_pager_color_selected_background --background=brblack
-set --global --export fish_color_operator
-set --global --export fish_color_escape
-set --global --export fish_color_cwd
-set --global --export fish_color_autosuggestion brwhite
-set --global --export fish_color_user
-set --global --export fish_color_host
-set --global --export fish_pager_color_prefix cyan
-set --global --export fish_pager_color_completion
-set --global --export fish_pager_color_description
-set --global --export fish_pager_color_progress --background=brblack normal
-set --global --export fish_pager_color_secondary
-set --global --export fish_color_cancel black
-set --global --export fish_color_valid_path
+set --global fish_pager_color_selected_background --background=brblack
+set --global fish_color_operator
+set --global fish_color_escape
+set --global fish_color_cwd
+set --global fish_color_autosuggestion brwhite
+set --global fish_color_user
+set --global fish_color_host
+set --global fish_pager_color_prefix cyan
+set --global fish_pager_color_completion
+set --global fish_pager_color_description
+set --global fish_pager_color_progress --background=brblack normal
+set --global fish_pager_color_secondary
+set --global fish_color_cancel black
+set --global fish_color_valid_path
 
 abbr --add --global r 'fish-reload'
 
