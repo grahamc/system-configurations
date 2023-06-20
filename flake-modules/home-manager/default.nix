@@ -4,7 +4,7 @@
 
     # This is the module that I always include. I put it in a list so it can easily be concatenated with other
     # module lists.
-    baseModuleAsList = ["${moduleBaseDirectory}/profile/base.nix"];
+    baseModule = "${moduleBaseDirectory}/profile/base.nix";
     # I made this function to ensure that I pass the correct `extraSpecialArgs` when using home-manager
     # directly and as a submodule, since I sometimes add an argument to one and not the other. If I don't
     # pass the correct arguments Nix will throw an error since I didn't call the function with the specified
@@ -38,7 +38,7 @@
             # it to false.
             useUserPackages = false;
             users.${username} = {
-              imports = modules ++ baseModuleAsList;
+              imports = modules ++ [baseModule];
             };
           };
         };
@@ -83,7 +83,7 @@
             # inside the `packages` attribute set must be derivations.
             # For more info: https://discourse.nixos.org/t/flake-questions/8741/2
             legacyPackages.homeConfigurations.${hostName} = inputs.home-manager.lib.homeManagerConfiguration {
-              modules = modules ++ baseModuleAsList;
+              modules = modules ++ [baseModule];
               inherit pkgs extraSpecialArgs;
             };
           };
