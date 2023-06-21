@@ -303,7 +303,18 @@ func IsFileExists(path string) (bool, error) {
 	}
 }
 
-func RewritePaths(archiveContentsPath string, newStorePath string) (error) {
+func IsSymlinkExists(path string) (bool, error) {
+	_, err := os.Lstat(path)
+	if err == nil {
+		return true, nil
+	} else if errors.Is(err, fs.ErrNotExist) {
+		return false, nil
+	} else {
+		return false, err
+	}
+}
+
+func RewritePaths(archiveContentsPath string, oldStorePath string, newStorePath string) (error) {
 	archiveContents, err := os.Open(archiveContentsPath)
 	if err != nil {
 		return err
@@ -319,7 +330,6 @@ func RewritePaths(archiveContentsPath string, newStorePath string) (error) {
 		return err
 	}
 	var oldAndNewPackagePaths []string
-	oldStorePath := "/nix/store"
 	extraSlashesCount := len(oldStorePath) - len(newStorePath)
 	// The new store path must be the same length as the old one or it messes up the binary.
 	newStorePathWithPadding := strings.Replace(newStorePath, "/", strings.Repeat("/", extraSlashesCount + 1), 1)
@@ -395,7 +405,7 @@ func GetNewStorePath() (prefix string, err error){
 	rand.Seed(time.Now().UnixNano())
 	charset := "abcdefghijklmnopqrstuvwxyz"
 	var candidatePrefix string
-	for i := 1; i <= 10; i++ {
+	for i := 1; i <= 1000; i++ {
 		candidatePrefix = "/tmp/"
 
 		// needs to be <= 5 since it will be appended to '/tmp/' and needs to be <= '/nix/store'
@@ -483,11 +493,50 @@ func ExtractArchiveAndRewritePaths() (extractedArchivePath string, executableCac
 		isNewExtraction = true
 	}
 
+	var currentStorePath string
+	var newStorePath string
 	isNewStorePath := false
-	linkToNewStorePath := filepath.Join(executableCachePath, "link-to-store")
-	newStorePath, _ := os.Readlink(linkToNewStorePath)
-	newStorePathTarget, _ := os.Readlink(newStorePath)
-	if newStorePathTarget != archiveContentsPath {
+	linkToCurrentStorePath := filepath.Join(executableCachePath, "link-to-store")
+	doesLinkToCurrentStorePathExist, err := IsSymlinkExists(linkToCurrentStorePath)
+	if err != nil {
+		return "", "", err
+	}
+	if doesLinkToCurrentStorePathExist {
+		currentStorePath, _ = os.Readlink(linkToCurrentStorePath)
+		doesCurrentStorePathExist, err := IsSymlinkExists(currentStorePath)
+		if err != nil {
+			return "", "", err
+		}
+		if doesCurrentStorePathExist {
+			// TODO: check that its a symlink, maybe another program made a file with the same name
+			currentStorePathTarget, _ := os.Readlink(currentStorePath)
+			if currentStorePathTarget != archiveContentsPath {
+				err = os.Remove(linkToCurrentStorePath)
+				if err != nil {
+					return "", "", err
+				}
+				newStorePath, err = GetNewStorePath()
+				if err != nil {
+					return "", "", err
+				}
+				err = os.Symlink(archiveContentsPath, newStorePath)
+				if err != nil {
+					return "", "", err
+				}
+				err = os.Symlink(newStorePath, linkToCurrentStorePath)
+				if err != nil {
+					return "", "", err
+				}
+				isNewStorePath = true
+			}
+		} else { // recreate it
+			err = os.Symlink(archiveContentsPath, currentStorePath)
+			if err != nil {
+				return "", "", err
+			}
+		}
+	} else { // if there's no link-to-store we must not have ever made a new store path so assume it's the original store path
+		currentStorePath = "/nix/store"
 		newStorePath, err = GetNewStorePath()
 		if err != nil {
 			return "", "", err
@@ -496,8 +545,7 @@ func ExtractArchiveAndRewritePaths() (extractedArchivePath string, executableCac
 		if err != nil {
 			return "", "", err
 		}
-		os.Remove(linkToNewStorePath)
-		err = os.Symlink(newStorePath, linkToNewStorePath)
+		err = os.Symlink(newStorePath, linkToCurrentStorePath)
 		if err != nil {
 			return "", "", err
 		}
@@ -505,7 +553,7 @@ func ExtractArchiveAndRewritePaths() (extractedArchivePath string, executableCac
 	}
 
 	if isNewExtraction || isNewStorePath {
-		err = RewritePaths(archiveContentsPath, newStorePath)
+		err = RewritePaths(archiveContentsPath, currentStorePath, newStorePath)
 		if err != nil {
 			return "", "", err
 		}
