@@ -141,7 +141,7 @@ function _fzf_complete
             # Use a different color for the completion item description
             | string replace --ignore-case --regex -- \
                 '(?<prefix>^'(string escape --style regex -- "$current_token")')(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' \
-                (set_color brwhite)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
+                (set_color cyan)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
             | fzf \
                 --height '~35%' \
                 --min-height 8 \
@@ -160,7 +160,6 @@ function _fzf_complete
                 --nth '2..' \
                 --border rounded \
                 --margin 0,2,0,2 \
-                --color 'prompt:15,preview-label:0' \
                 --prompt $current_token \
         )
     and begin
