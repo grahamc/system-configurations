@@ -33,7 +33,7 @@ First, clone the repository and go into its directory by running `git clone http
 
         * Disable the builtin keyboard shortcuts for switching workspaces, `ctrl+left` and `ctrl+right`.
 
-        * Open 9 desktops then open keyboard shortcuts and enable the shortcuts for jumping to a desktop, `ctrl+[1-9]` 
+        * Open 9 desktops then open keyboard shortcuts and enable the shortcuts for jumping to a desktop, `ctrl+[1-9]`
 
     * Setup Hammerspoon using the instructions in the [Hammerspoon Getting Started Guide](https://www.hammerspoon.org/go/).
 
@@ -46,14 +46,12 @@ First, clone the repository and go into its directory by running `git clone http
 ### Using Nix
 
 * Run the shell with `nix run github:bigolu/dotfiles`
-* Run a specific command in the shell with `nix run github:bigolu/dotfiles -- -c 'nvim some-file.py'`
 
 ### Using a Standalone Executable
 
 My home config is also available as an executable with no dependencies. The executable is a self-extracting archive (SEA) that contains all the commandline programs I use, as well as my config files for them. Running it will start my shell which will have access to these programs and configs.
 
 * Run the shell with `sh -c "$(curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run-shell.sh)"`
-* Run a specific program in the shell with `sh -c "$(curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run-shell.sh)" shell -c 'nvim some-file.py'`
 
   > NOTE: While the SEA doesn't depend on any programs on your computer, it does require that you have a `/tmp` directory. You can read this [GitHub issue comment](https://github.com/NixOS/nix/issues/1971#issue-304578884) regarding a "rootless Nix" to see why this is needed, as well as learn more about how this works.
 
