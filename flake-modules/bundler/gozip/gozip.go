@@ -507,33 +507,30 @@ func ExtractArchiveAndRewritePaths() (extractedArchivePath string, executableCac
 		if err != nil {
 			return "", "", err
 		}
+		// TODO: Should I worry about other programs making a file with the same name?
 		if doesCurrentStorePathExist {
-			// TODO: check that its a symlink, maybe another program made a file with the same name
 			currentStorePathTarget, _ := os.Readlink(currentStorePath)
 			if currentStorePathTarget != archiveContentsPath {
 				err = os.Remove(linkToCurrentStorePath)
 				if err != nil {
 					return "", "", err
 				}
-				newStorePath, err = GetNewStorePath()
+				// recreate it
+				err = os.Symlink(archiveContentsPath, currentStorePath)
 				if err != nil {
 					return "", "", err
 				}
-				err = os.Symlink(archiveContentsPath, newStorePath)
-				if err != nil {
-					return "", "", err
-				}
-				err = os.Symlink(newStorePath, linkToCurrentStorePath)
-				if err != nil {
-					return "", "", err
-				}
-				isNewStorePath = true
 			}
 		} else { // recreate it
 			err = os.Symlink(archiveContentsPath, currentStorePath)
 			if err != nil {
 				return "", "", err
 			}
+		}
+
+		if isNewExtraction {
+			newStorePath = currentStorePath
+			currentStorePath = "/nix/store"
 		}
 	} else { // if there's no link-to-store we must not have ever made a new store path so assume it's the original store path
 		currentStorePath = "/nix/store"
