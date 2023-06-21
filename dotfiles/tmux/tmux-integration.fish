@@ -14,7 +14,7 @@ function __last_command_output
 end
 
 function __view_last_command_output_in_less
-    echo "$(__last_command_output)" | less -+F
+    echo "$(__last_command_output)" | LESSCHARSET=utf-8 less -+F
 
     # this should be done whenever a binding produces output (see: man bind)
     commandline -f repaint
