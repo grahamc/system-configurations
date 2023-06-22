@@ -11,9 +11,9 @@ function get_symlink_chain --argument-names symlink
   # The lines have the form '-> <path>' so I'm removing the first 3 characters to get the <path>.
   set chase_output_only_filenames (printf '%s\n' $chase_output | string sub --start 4)
 
-  set chain (set_color blue)$symlink(set_color normal) $chase_output_only_filenames
+  set chase_output_only_filenames[1] (set_color blue)$chase_output_only_filenames[1](set_color normal)
 
-  set joined_chain (string join -- ' -> ' $chain)
+  set joined_chain (string join -- ' -> ' $chase_output_only_filenames)
 
   if test -n "$NIX_GCROOTS_INCLUDE_SIZE"
     # The out put of `du` looks like '<size> <filename>' so the `string match` removes everything after the size.
@@ -46,6 +46,9 @@ function print_roots_for_directory --argument-names directory
     if test -n "$NIX_GCROOTS_INCLUDE_SIZE"
       # sort by size, descending
       set chains (printf '%s\n' $chains | sort --human-numeric-sort --reverse)
+    else
+      # sort alphabetically, ascending
+      set chains (printf '%s\n' $chains | sort)
     end
     printf '%s\n' $chains
   end
