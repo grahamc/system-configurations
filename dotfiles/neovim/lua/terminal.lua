@@ -1240,6 +1240,7 @@ Plug(
         },
         view = {
           signcolumn = 'yes',
+          width = function() return math.max(30, math.floor(vim.o.columns * .20)) end,
         },
         renderer = {
           indent_markers = {
