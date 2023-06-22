@@ -1,5 +1,6 @@
 if [ -f ~/.profile ]; then
-  . ~/.profile
+  emulate sh -c '. ~/.profile'
+  emulate zsh
 fi
 
 if [ -f ~/.zshrc ]; then
