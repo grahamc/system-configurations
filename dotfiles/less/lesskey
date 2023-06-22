@@ -11,12 +11,10 @@
 # Set default less options:
 # '--RAW-CONTROL-CHARS' - process color (ANSI) and hyperlink (OSC 8) escape sequences.
 # '--ignore-case' - ignore case, except when the search term contains a capital letter.
-# '--quit-if-one-screen' - If the content can fit in one terminal window, print it and exit. Not entirely sure why I need this.
-# I just know that opening vim from within fzf does not work right unless I have this flag set.
 # '--incsearch' - incremental search meaning the search query gets searched as you type, before you even hit enter
 # '--quit-on-intr' - let ctrl+c exit less
 # '--jump-target=.5' - when jumping between search matches (n/N) center the screen on the line of the current match
 # '--hilite-search' - when searching, don't highlight all matches at once, only the current match
 # '--no-histdups' - no duplicate entries in the search history
 # '--save-marks' - save marks before less exits
-LESS = --RAW-CONTROL-CHARS --ignore-case --quit-if-one-screen --incsearch --quit-on-intr --jump-target=.5 --hilite-search --no-histdups --save-marks
+LESS = --RAW-CONTROL-CHARS --ignore-case --incsearch --quit-on-intr --jump-target=.5 --hilite-search --no-histdups --save-marks
