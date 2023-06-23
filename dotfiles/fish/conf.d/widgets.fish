@@ -69,7 +69,7 @@ function process-widget --description 'Manage processes'
         fzf \
             # only search on PID, PPID, and the command
             --nth '2,3,7..' \
-            --bind "ctrl-alt-o:execute@pout {2} 1>/dev/tty 2>&1 </dev/tty@,ctrl-alt-r:reload@$reload_command@+first" \
+            --bind "ctrl-alt-o:execute@process-output {2} 1>/dev/tty 2>&1 </dev/tty@,ctrl-alt-r:reload@$reload_command@+first" \
             --header-lines=1 \
             --prompt 'processes: ' \
             --preview "$preview_command" \
