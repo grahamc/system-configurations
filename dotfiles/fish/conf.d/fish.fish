@@ -276,3 +276,5 @@ abbr --add bash_style_history_expansion \
     --position anywhere \
     --regex '\!(\!|\^|\$|\-?\d+)' \
     --function _bash_style_history_expansion
+
+mybind --no-focus \ck __fish_man_page
