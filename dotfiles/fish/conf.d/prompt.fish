@@ -328,6 +328,7 @@ end
 
 function _nix_context
     if not set --query IN_NIX_SHELL
+    and not set --query IN_NIX_RUN
         return
     end
 
@@ -342,12 +343,16 @@ function _nix_context
         set packages " ($packages)"
     end
 
-    set color $_color_success_text
-    if test $IN_NIX_SHELL = 'impure'
-        set color $_color_warning_text
+    if set --query IN_NIX_SHELL
+        set color $_color_success_text
+        if test $IN_NIX_SHELL = 'impure'
+            set color $_color_warning_text
+        end
+        set type $color$IN_NIX_SHELL$_color_normal
+    else
+        set type $_color_warning_text'unknown'$_color_normal
     end
-    set purity $color$IN_NIX_SHELL$_color_normal
 
-    echo "nix: $purity$packages"
+    echo "nix: $type$packages"
 end
 
