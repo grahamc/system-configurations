@@ -1,0 +1,22 @@
+#!/usr/bin/env fish
+
+# Prints the output, both stdout and stderr, of a running process.
+# On macOS you have to disable dtrace SIP restriction with `csrutil enable --without dtrace`
+
+if test (count $argv) -ne 1
+  echo "Invalid usage. Correct usage: $(status basename) <pid>" >&2
+  exit 1
+end
+
+set pid $argv[1]
+if uname | grep -q Darwin
+  sudo dtrace -p $pid -qn '
+    syscall::write*:entry
+    /pid == $target && (arg0 == 1 || arg0 == 2)/ {
+      printf("%s", copyinstr(arg1, arg2));
+    }
+  '
+else
+  # TODO: Remove catp and use strace directly
+  sudo catp $pid
+end

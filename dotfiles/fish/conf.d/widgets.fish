@@ -57,11 +57,9 @@ function process-widget --description 'Manage processes'
   if uname | grep -q Linux
     set reload_command 'ps -e --format user,pid,ppid,nice=NICE,start_time,etime,command --sort=-start_time'
     set preview_command 'ps --pid {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree --hide-threads --long --show-pids --unicode --show-parents --arguments {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp "[^└|─]+,$(echo {2})( .*|\$)" --regexp "^"'
-    set catp_command 'sudo catp {2}'
   else
     set reload_command 'ps -e -o user,pid,ppid,nice=NICE,start,etime,command'
     set preview_command 'ps -p {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree -w -g 3 -p {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp " 0*$(echo {2}) $(echo {1}) .*" --regexp "^"'
-    set catp_command 'echo "Viewing process output is not supported on macOS. Press enter to continue" >/dev/tty; read </dev/tty'
   end
 
   set choice \
@@ -71,7 +69,7 @@ function process-widget --description 'Manage processes'
         fzf \
             # only search on PID, PPID, and the command
             --nth '2,3,7..' \
-            --bind "ctrl-alt-o:execute@$catp_command@,ctrl-alt-r:reload@$reload_command@+first" \
+            --bind "ctrl-alt-o:execute@pout {2} 1>/dev/tty 2>&1 </dev/tty@,ctrl-alt-r:reload@$reload_command@+first" \
             --header-lines=1 \
             --prompt 'processes: ' \
             --preview "$preview_command" \
