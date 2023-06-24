@@ -207,12 +207,6 @@ end
 # Keep normal tab complete on shift+tab to expand wildcards.
 mybind -k btab complete
 
-# Save command to history before executing it. This way long running commands, like ssh or watch, will show up in
-# the history immediately.
-function __save_history --on-event fish_preexec
-    history --save
-end
-
 function fish_title
     echo "$(status current-command) │ $TERM_PROGRAM"
 end
