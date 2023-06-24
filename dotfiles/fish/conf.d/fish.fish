@@ -213,7 +213,7 @@ function fish_title --argument-names current_commandline
     end
     # Get the first token from the commandline, the command. `_ignore` will have the rest of the tokens.
     echo $current_commandline | read --tokenize current_command _ignore
-    echo "$current_command │ $TERM_PROGRAM"
+    echo "$TERM_PROGRAM │ $current_command"
 end
 
 function _ls-after-directory-change --on-variable PWD

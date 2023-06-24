@@ -1,30 +1,26 @@
 local wezterm = require 'wezterm'
-
 local config = wezterm.config_builder()
 
-local function is_mac()
-	local fh,_ = assert(io.popen("uname 2>/dev/null","r"))
-	if fh then
-		local osname = fh:read()
-                return osname == "Darwin"
-	end
-
-        return false
+-- Utilities
+local function table_concat(t1,t2)
+  for i=1,#t2 do
+    t1[#t1+1] = t2[i]
+  end
+  return t1
 end
-
--- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system, but Flatpak apps
--- can't access my font configuration file from their sandbox so for now I'll hardcode a font.
--- issue: https://github.com/flatpak/flatpak/issues/1563
-config.font = wezterm.font_with_fallback({'JetBrains Mono NL', 'SymbolsNerdFontMono'})
-config.underline_position = -9
-config.font_size = 10.3
-if is_mac() then
-  config.font_size = 11.5
+local function merge_to_left(t1, t2)
+    for k, v in pairs(t2) do
+        if (type(v) == "table") and (type(t1[k] or false) == "table") then
+            merge_to_left(t1[k], t2[k])
+        else
+            t1[k] = v
+        end
+    end
+    return t1
 end
-config.cell_width = 1.04
-config.line_height = 1.3
-config.underline_thickness = "210%"
-config.hide_tab_bar_if_only_one_tab = true
+local is_mac = string.find(wezterm.target_triple, 'darwin')
+
+-- general
 config.window_background_opacity = 1
 config.window_close_confirmation = 'NeverPrompt'
 config.audible_bell = 'Disabled'
@@ -35,6 +31,34 @@ config.window_padding = {
   left = 0,
   right = 0,
 }
+
+-- font
+-- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system, but Flatpak apps
+-- can't access my font configuration file from their sandbox so for now I'll hardcode a font.
+-- issue: https://github.com/flatpak/flatpak/issues/1563
+config.font = wezterm.font_with_fallback({'JetBrains Mono NL', 'SymbolsNerdFontMono'})
+config.underline_position = -9
+config.font_size = 10.3
+if is_mac then
+  config.font_size = 12.2
+end
+config.cell_width = 1.04
+config.line_height = 1.3
+config.underline_thickness = "210%"
+
+-- titlebar
+config.hide_tab_bar_if_only_one_tab = false
+config.window_frame = {
+  active_titlebar_bg = '#1d212b',
+  inactive_titlebar_bg = '#333333',
+  font_size = 13,
+}
+config.show_new_tab_button_in_tab_bar = false
+config.show_tab_index_in_tab_bar = false
+config.use_fancy_tab_bar = true
+config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
+-- TODO: idk why I need this
+config.colors = {}
 
 local my_colors_per_color_scheme = {
   ['Biggs Nord'] = {
@@ -116,44 +140,79 @@ local function create_color_schemes(colors_per_color_scheme)
 
   return color_schemes
 end
-
 config.color_schemes = create_color_schemes(my_colors_per_color_scheme)
-local light_color_scheme = 'Biggs Light Owl'
-local dark_color_scheme = 'Biggs Nord'
 
--- Change color scheme automatically when the system changes
-local function scheme_for_appearance(appearance)
+local function create_theme_config(color_scheme_name)
+  local color_scheme = config.color_schemes[color_scheme_name]
+  local red = color_scheme.ansi[2]
+  local background = color_scheme.background
+  return {
+    color_scheme = color_scheme_name,
+    window_frame = {
+      active_titlebar_bg = background,
+      inactive_titlebar_bg = background,
+      font_size = 17,
+      font = wezterm.font { family = 'JetBrains Mono NL', weight = 'Bold' },
+    },
+    colors = {
+      tab_bar = {
+        background = background,
+        active_tab = {
+          bg_color = background,
+          fg_color = color_scheme.foreground,
+        },
+        inactive_tab = {
+          bg_color = background,
+          fg_color = color_scheme.foreground,
+        },
+        active_tab_hover = {
+          bg_color = background,
+          -- for the close button
+          fg_color = red,
+        },
+        inactive_tab_hover = {
+          bg_color = background,
+          -- for the close button
+          fg_color = red,
+        },
+      },
+    }
+  }
+end
+local light_theme_config = create_theme_config('Biggs Light Owl')
+local dark_theme_config = create_theme_config('Biggs Nord')
+
+-- Change theme automatically when the system theme changes
+local function get_theme_config_for_appearance(appearance)
   if appearance:find 'Dark' then
-    return dark_color_scheme
+    return dark_theme_config
   else
-    return light_color_scheme
+    return light_theme_config
   end
 end
 wezterm.on('window-config-reloaded', function(window)
-  if _G.reload_due_to_manual_color_scheme_toggle then
-    _G.reload_due_to_manual_color_scheme_toggle = false
+  if _G.reload_due_to_manual_theme_toggle then
+    _G.reload_due_to_manual_theme_toggle = false
     return
   end
 
   local overrides = window:get_config_overrides() or {}
   local appearance = window:get_appearance()
-  local scheme = scheme_for_appearance(appearance)
-  if overrides.color_scheme ~= scheme then
-    overrides.color_scheme = scheme
-    window:set_config_overrides(overrides)
-  end
+  local theme_config = get_theme_config_for_appearance(appearance)
+  merge_to_left(overrides, theme_config)
+  window:set_config_overrides(overrides)
 end)
 
 -- Toggle color scheme with alt+c
-wezterm.on('toggle-color-scheme', function(window)
+wezterm.on('toggle-theme', function(window)
   local overrides = window:get_config_overrides() or {}
-  if overrides.color_scheme == dark_color_scheme then
-    overrides.color_scheme = light_color_scheme
+  if overrides.color_scheme == dark_theme_config.color_scheme then
+    merge_to_left(overrides, light_theme_config)
   else
-    overrides.color_scheme = dark_color_scheme
+    merge_to_left(overrides, dark_theme_config)
   end
 
-  _G.reload_due_to_manual_color_scheme_toggle = true
+  _G.reload_due_to_manual_theme_toggle = true
   window:set_config_overrides(overrides)
 end)
 
@@ -161,7 +220,7 @@ local keybinds = {
   {
     key = 'c',
     mods = 'ALT',
-    action = wezterm.action.EmitEvent('toggle-color-scheme')
+    action = wezterm.action.EmitEvent('toggle-theme')
   },
   {
     key = 'v',
@@ -231,13 +290,6 @@ local function generate_neovim_tab_navigation_keybinds()
   end
 
   return result
-end
-
-local function table_concat(t1,t2)
-  for i=1,#t2 do
-    t1[#t1+1] = t2[i]
-  end
-  return t1
 end
 
 config.keys = table_concat(keybinds, generate_neovim_tab_navigation_keybinds())
