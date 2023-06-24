@@ -129,9 +129,6 @@ function variable-widget --description 'Search environment variables'
 end
 abbr --add --global vw variable-widget
 
-# set terminal title
-echo -ne "\033]0;fish\007"
-
 # Use shift+tab to select an autocomplete entry with fzf
 function _fzf_complete
     set current_token (commandline --current-token)
@@ -216,9 +213,8 @@ function __save_history --on-event fish_preexec
     history --save
 end
 
-# Don't update the window title
 function fish_title
-  true
+    echo "$(status current-command) │ $TERM_PROGRAM"
 end
 
 function _ls-after-directory-change --on-variable PWD
