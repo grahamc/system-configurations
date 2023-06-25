@@ -234,6 +234,11 @@ function _reload_fish --on-variable _fish_reload_indicator
     echo -n (clear | string replace \e\[3J "")
 
     echo "$(set_color --reverse --bold brwhite) INFO $(set_color normal) Reloading the shell...$(set_color normal)"
+
+    # TODO: Sleep for a random amount of time between 0 and 1 second so all the shells don't all reload at the exact
+    # same time. Doing so was causing crashes.
+    sleep (math (random 1 100) / 100)
+
     exec fish
 end
 function fish-reload
