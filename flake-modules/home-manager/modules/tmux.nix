@@ -16,7 +16,6 @@
   in
     {
       home.packages = [
-        # TODO: Include the manpage from the original tmux package in this wrapper.
         (
           # I'm intentionally not using `pkgs.writeShellApplication` so the original tmux doesn't get added
           # to the path.
@@ -35,6 +34,11 @@
               env -u SHLVL ${pkgs.tmux}/bin/tmux "$@"
             ''
         )
+        (pkgs.buildEnv {
+          name = "tmux-man-only";
+          paths = [pkgs.tmux];
+          pathsToLink = ["/share/man"];
+        })
       ]
       # Installing the plugins into my profile, instead of using programs.tmux.plugins, for two reasons:
       # - So that I can use the scripts defined in them. (They'll be added to <profile_path>/share/tmux-plugins)
