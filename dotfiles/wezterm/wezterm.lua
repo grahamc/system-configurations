@@ -223,7 +223,7 @@ wezterm.on('update-status', function(window, pane)
 
   local title = wezterm.format {
     { Foreground = { Color = foreground_color } },
-    { Text = pane:get_title() .. ' ' },
+    { Text = ' ' .. pane:get_title() .. ' ' },
   }
   if is_mac then
     window:set_right_status(title)
