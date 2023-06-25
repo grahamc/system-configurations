@@ -116,6 +116,7 @@ function variable-widget --description 'Search environment variables'
                 --delimiter \t \
                 --with-nth 1 \
                 --preview 'echo {2..}' \
+                --prompt '$' \
             | string split0 \
     )
     or return
