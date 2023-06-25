@@ -46,20 +46,6 @@ config.cell_width = 1.04
 config.line_height = 1.3
 config.underline_thickness = "210%"
 
--- titlebar
-config.hide_tab_bar_if_only_one_tab = false
-config.window_frame = {
-  active_titlebar_bg = '#1d212b',
-  inactive_titlebar_bg = '#333333',
-  font_size = 13,
-}
-config.show_new_tab_button_in_tab_bar = false
-config.show_tab_index_in_tab_bar = false
-config.use_fancy_tab_bar = true
-config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
--- TODO: idk why I need this
-config.colors = {}
-
 local my_colors_per_color_scheme = {
   ['Biggs Nord'] = {
     [0] = '#1d212b', [1] = '#BF616A', [2] = '#A3BE8C', [3] = '#EBCB8B', [4] = '#81A1C1', [5] = '#B48EAD', [6] = '#88C0D0', [7] = '#D8DEE9',
@@ -148,9 +134,9 @@ config.color_schemes = create_color_schemes(my_colors_per_color_scheme)
 
 local function create_theme_config(color_scheme_name)
   local color_scheme = config.color_schemes[color_scheme_name]
-  local red = color_scheme.ansi[2]
   local background = color_scheme.background
-  local foreground = color_scheme.background
+  -- This way I can hide the tab bar
+  local foreground = background
   return {
     color_scheme = color_scheme_name,
     window_frame = {
@@ -172,13 +158,11 @@ local function create_theme_config(color_scheme_name)
         },
         active_tab_hover = {
           bg_color = background,
-          -- for the close button
-          fg_color = red,
+          fg_color = foreground,
         },
         inactive_tab_hover = {
           bg_color = background,
-          -- for the close button
-          fg_color = red,
+          fg_color = foreground,
         },
       },
     }
@@ -207,7 +191,26 @@ wezterm.on('window-config-reloaded', function(window)
   merge_to_left(overrides, theme_config)
   window:set_config_overrides(overrides)
 end)
+-- Toggle theme with alt+c
+wezterm.on('toggle-theme', function(window)
+  local overrides = window:get_config_overrides() or {}
+  if overrides.color_scheme == dark_theme_config.color_scheme then
+    merge_to_left(overrides, light_theme_config)
+  else
+    merge_to_left(overrides, dark_theme_config)
+  end
 
+  _G.reload_due_to_manual_theme_toggle = true
+  window:set_config_overrides(overrides)
+end)
+
+-- titlebar
+config.use_fancy_tab_bar = true
+config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
+config.show_new_tab_button_in_tab_bar = false
+config.show_tab_index_in_tab_bar = false
+-- TODO: idk why I need this
+config.colors = {}
 -- Update the status bar with the current window title
 wezterm.on('update-status', function(window, pane)
   local effective_config = window:effective_config()
@@ -227,19 +230,6 @@ wezterm.on('update-status', function(window, pane)
   else
     window:set_left_status(title)
   end
-end)
-
--- Toggle color scheme with alt+c
-wezterm.on('toggle-theme', function(window)
-  local overrides = window:get_config_overrides() or {}
-  if overrides.color_scheme == dark_theme_config.color_scheme then
-    merge_to_left(overrides, light_theme_config)
-  else
-    merge_to_left(overrides, dark_theme_config)
-  end
-
-  _G.reload_due_to_manual_theme_toggle = true
-  window:set_config_overrides(overrides)
 end)
 
 local keybinds = {
