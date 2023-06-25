@@ -76,8 +76,8 @@
 
         # Show me what changed everytime I switch generations e.g. version updates or added/removed files.
         home.activation = {
-          printChanges = lib.hm.dag.entryAnywhere ''
-            ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
+          printGenerationDiff = lib.hm.dag.entryAnywhere ''
+            nix store diff-closures $oldGenPath $newGenPath
           '';
         };
 

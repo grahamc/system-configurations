@@ -47,9 +47,6 @@
                   enable = false;
                   symlinkToCacheHome = false;
                 };
-                # I do this to override the original 'printChanges' activation script so I can remove the dependency
-                # on `nvd`.
-                config.home.activation.printChanges = lib.mkForce "";
                 config.programs.home-manager.enable = lib.mkForce false;
                 # This removes the dependency on `sd-switch`.
                 config.systemd.user.startServices = lib.mkForce "suggest";

@@ -7,19 +7,22 @@
     packages = [
       (pkgs.writeShellApplication {
         name = "hostctl-switch";
-        runtimeInputs = with pkgs; [nvd coreutils-full];
+        runtimeInputs = with pkgs; [coreutils-full];
         text = ''
           oldGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
 
           darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" "''$@"
 
           newGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
-          nvd diff "''$oldGenerationPath" "''$newGenerationPath"
+
+          cyan='\033[1;0m'
+          printf "%bPrinting generation diff...\n" "$cyan"
+          nix store diff-closures "''$oldGenerationPath" "''$newGenerationPath"
         '';
       })
       (pkgs.writeShellApplication {
         name = "hostctl-upgrade";
-        runtimeInputs = with pkgs; [nvd coreutils-full];
+        runtimeInputs = with pkgs; [coreutils-full];
         text = ''
           oldGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
 
@@ -31,7 +34,10 @@
           brew cleanup
 
           newGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
-          nvd diff "''$oldGenerationPath" "''$newGenerationPath"
+
+          cyan='\033[1;0m'
+          printf "%bPrinting generation diff...\n" "$cyan"
+          nix store diff-closures "''$oldGenerationPath" "''$newGenerationPath"
         '';
       })
     ];
