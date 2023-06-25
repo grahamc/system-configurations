@@ -215,12 +215,7 @@ function fish_title --argument-names current_commandline
     # Get the first token from the commandline, the command. `_ignore` will have the rest of the tokens.
     echo $current_commandline | read --tokenize current_command _ignore
 
-    set terminal "$TERM_PROGRAM"
-    if test -z "$terminal"
-        set terminal '[Unknown Terminal]'
-    end
-
-    echo "$terminal / $current_command"
+    echo $current_command
 end
 
 function _ls-after-directory-change --on-variable PWD
