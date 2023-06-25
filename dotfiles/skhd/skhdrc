@@ -77,7 +77,7 @@ cmd - s : yabai -m window --insert stack
 # toggle sticky for current window
 cmd - p : yabai -m window --toggle sticky
 # maximize window, remove gaps, and hide stack icons
-cmd - m : yabai -m window --toggle zoom-fullscreen && yabai -m space --toggle padding && yabai -m space --toggle gap && hs -c 'stackline.config:set("appearance.alpha", stackline.config:get("appearance.alpha") == 1 and 0 or 1)'
+cmd - m : yabai -m window --toggle zoom-fullscreen
 cmd + shift - m : yabai -m window --toggle zoom-parent
 # make window fullscreen
 cmd - f : skhd -k "fn - f"
