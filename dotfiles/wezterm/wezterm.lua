@@ -95,6 +95,10 @@ local my_colors_per_color_scheme = {
     [50] = '#c96765',
   },
 }
+local dimmed_foreground_colors = {
+  ['#403f53'] = '#b1b0c4',
+  ['#d8dee9'] = '#767c87',
+}
 
 local function create_color_schemes(colors_per_color_scheme)
   local color_schemes = {}
@@ -146,24 +150,25 @@ local function create_theme_config(color_scheme_name)
   local color_scheme = config.color_schemes[color_scheme_name]
   local red = color_scheme.ansi[2]
   local background = color_scheme.background
+  local foreground = color_scheme.background
   return {
     color_scheme = color_scheme_name,
     window_frame = {
       active_titlebar_bg = background,
       inactive_titlebar_bg = background,
       font_size = 17,
-      font = wezterm.font { family = 'JetBrains Mono NL', weight = 'Bold' },
+      font = wezterm.font { family = 'JetBrains Mono NL', weight = 'Regular' },
     },
     colors = {
       tab_bar = {
         background = background,
         active_tab = {
           bg_color = background,
-          fg_color = color_scheme.foreground,
+          fg_color = foreground,
         },
         inactive_tab = {
           bg_color = background,
-          fg_color = color_scheme.foreground,
+          fg_color = foreground,
         },
         active_tab_hover = {
           bg_color = background,
@@ -201,6 +206,27 @@ wezterm.on('window-config-reloaded', function(window)
   local theme_config = get_theme_config_for_appearance(appearance)
   merge_to_left(overrides, theme_config)
   window:set_config_overrides(overrides)
+end)
+
+-- Update the status bar with the current window title
+wezterm.on('update-status', function(window, pane)
+  local effective_config = window:effective_config()
+  local foreground_color = effective_config.color_schemes[effective_config.color_scheme].foreground
+  if not window:is_focused() then
+    -- Using `:lower()` since WezTerm does that to all the colors I set
+    -- TODO: Dim the colors programatically
+    foreground_color = dimmed_foreground_colors[foreground_color:lower()]
+  end
+
+  local title = wezterm.format {
+    { Foreground = { Color = foreground_color } },
+    { Text = pane:get_title() .. ' ' },
+  }
+  if is_mac then
+    window:set_right_status(title)
+  else
+    window:set_left_status(title)
+  end
 end)
 
 -- Toggle color scheme with alt+c
