@@ -272,4 +272,53 @@ abbr --add bash_style_history_expansion \
     --regex '\!(\!|\^|\$|\-?\d+)' \
     --function _bash_style_history_expansion
 
-mybind --no-focus \ck __fish_man_page
+# Most of this was taken from fish's __fish_man_page, I just added flag searching.
+function _man_page
+    # Get all commandline tokens not starting with "-", up to and including the cursor's
+    set -l args (string match -rv '^-|^$' -- (commandline --cut-at-cursor --tokenize --current-process && commandline --current-token))
+
+    # If commandline is empty, exit.
+    if not set -q args[1]
+        printf \a
+        return
+    end
+
+    # Skip leading commands and display the manpage of following command
+    while set -q args[2]
+        and string match -qr -- '^(and|begin|builtin|caffeinate|command|doas|entr|env|exec|if|mosh|nice|not|or|pipenv|prime-run|setsid|sudo|systemd-nspawn|time|watch|while|xargs|.*=.*)$' $args[1]
+        set -e args[1]
+    end
+
+    # If there are at least two tokens not starting with "-", the second one might be a subcommand.
+    # Try "man first-second" and fall back to "man first" if that doesn't work out.
+    set -l maincmd (basename $args[1])
+    # HACK: If stderr is not attached to a terminal `less` (the default pager)
+    # wouldn't use the alternate screen.
+    # But since we don't know what pager it is, and because `man` is totally underspecified,
+    # the best we can do is to *try* the man page, and assume that `man` will return false if it fails.
+    # See #7863.
+    if set -q args[2]
+    and not string match -q -- '*/*' $args[2]
+    and man "$maincmd-$args[2]" &>/dev/null
+        set manpage_name "$maincmd-$args[2]"
+    else if man "$maincmd" &>/dev/null
+        set manpage_name "$maincmd"
+    else
+        printf \a
+        return
+    end
+
+    # If the token underneath or right before the cursor starts with a '-' try to search for that flag
+    set current_token (commandline --current-token)
+    if test -z "$current_token"
+        set current_token (commandline --cut-at-cursor --tokenize --current-process)[-1]
+    end
+    if string match --regex '^-' -- $current_token
+        man "$manpage_name" | less --pattern "^\s+(\-\-?[^\s]+\s+)*\K$(string escape --style regex -- $current_token)"
+    else
+        man "$manpage_name"
+    end
+
+    commandline -f repaint
+end
+mybind --no-focus \ck _man_page
