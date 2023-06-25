@@ -825,24 +825,6 @@ vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {desc = "Go to declaration"})
 vim.keymap.set('n', 'ghi', function() require('telescope.builtin').lsp_incoming_calls() end, {desc = "Show incoming calls"})
 vim.keymap.set('n', 'gho', function() require('telescope.builtin').lsp_outgoing_calls() end, {desc = "Show outgoing calls"})
 vim.keymap.set('n', 'gn', vim.lsp.buf.rename, {desc = "Rename"})
-
--- Create highlight groups for border and background
--- Set border
---
--- TODO: When this issue is resolved, there will be an option to configure the border.
--- issue: https://github.com/neovim/nvim-lspconfig/issues/2068
-local border = {
-  {" ", "LspFloatBorder"},
-}
-local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
-function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
-  opts = opts or {}
-  opts.border = opts.border or border
-  local original_return_value = {orig_util_open_floating_preview(contents, syntax, opts, ...)}
-  local window_number = original_return_value[2]
-  vim.fn.setwinvar(window_number, '&winhighlight', 'NormalFloat:LspFloatNormal')
-  return unpack(original_return_value)
-end
 -- }}}
 
 -- Plugins {{{
@@ -1715,7 +1697,14 @@ Plug(
   }
 )
 
-Plug('neovim/nvim-lspconfig')
+Plug(
+  'neovim/nvim-lspconfig',
+  {
+    config = function()
+      require('lspconfig.ui.windows').default_options.border = 'solid'
+    end
+  }
+)
 
 Plug('b0o/SchemaStore.nvim')
 
@@ -1869,8 +1858,7 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'WhichKeyFloat', {link = 'Float4Normal'})
   vim.api.nvim_set_hl(0, 'WhichKeyBorder', {link = 'Float4Border'})
   vim.api.nvim_set_hl(0, 'CodeActionSign', {ctermbg = 'NONE', ctermfg = 3,})
-  vim.api.nvim_set_hl(0, 'LspFloatNormal', {link = 'Float2Normal'})
-  vim.api.nvim_set_hl(0, 'LspFloatBorder', {link = 'Float2Border'})
+  vim.api.nvim_set_hl(0, 'LspInfoBorder', {link = 'Float1Border'})
   vim.api.nvim_set_hl(0, 'Float1Normal', {ctermbg = 16,})
   vim.api.nvim_set_hl(0, 'Float1Border', {link = 'Float1Normal'})
   vim.api.nvim_set_hl(0, 'Float2Normal', {ctermbg = 24,})
