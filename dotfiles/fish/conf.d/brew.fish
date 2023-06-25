@@ -35,7 +35,7 @@ function brew-install-widget --description 'Install packages with brew'
     # we first echo a blank line and then clear it.
     #
     # The grep command is to highlight the different section names in the output.
-    --preview 'echo ""; printf "\033[2J"; HOMEBREW_COLOR=1 brew info {} | grep --color=always --extended-regexp --regexp "^.*:\ " --regexp "^"' \
+    --preview 'echo ""; printf "\033[2J"; HOMEBREW_COLOR=1 brew info {} | grep --color=always --extended-regexp --regexp "^.*: " --regexp "^"' \
     --preview-window '75%' \
     --tiebreak=chunk,begin,end \
     )
@@ -56,7 +56,7 @@ function brew-uninstall-widget --description 'Uninstall packages with brew'
         # we first echo a blank line and then clear it.
         #
         # The grep command is to highlight the different section names in the output.
-        --preview 'echo ""; printf "\033[2J"; HOMEBREW_COLOR=1 brew info {} | grep --color=always --extended-regexp --regexp "^.*:\ " --regexp "^"' \
+        --preview 'echo ""; printf "\033[2J"; HOMEBREW_COLOR=1 brew info {} | grep --color=always --extended-regexp --regexp "^.*: " --regexp "^"' \
         --preview-window '75%' \
         --tiebreak=chunk,begin,end \
     )
