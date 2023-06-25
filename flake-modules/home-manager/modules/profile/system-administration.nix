@@ -2,6 +2,7 @@
   let
     inherit (lib.lists) optionals;
     inherit (pkgs.stdenv) isLinux isDarwin;
+    inherit (specialArgs) isGui;
     inherit (lib.attrsets) optionalAttrs;
     fzfWithoutShellConfig = pkgs.buildEnv {
       name = "fzf-bin-only";
@@ -75,5 +76,7 @@
       } // optionalAttrs isLinux {
         "pipr/pipr.toml".source = "pipr/pipr.toml";
         "fish/conf.d/pipr.fish".source = "pipr/pipr.fish";
+      } // optionalAttrs isGui {
+        "wezterm/wezterm.lua".source = "wezterm/wezterm.lua";
       };
     }

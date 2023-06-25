@@ -17,7 +17,6 @@
         ../home-manager.nix
         ../fonts.nix
         ../keyboard-shortcuts.nix
-        ../wezterm.nix
         ../tmux.nix
       ];
 
