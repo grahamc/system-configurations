@@ -44,7 +44,7 @@ function fish_prompt --description 'Print the prompt'
         (_job_context) \
         (_git_context $max_length) \
         (_path_context $max_length) \
-        (_user_context) \
+        (_login_context) \
         (_status_context $last_status $last_pipestatus) \
         ;
     set prompt_lines
@@ -121,7 +121,7 @@ function _job_context
     echo "jobs: $formatted_job_commands"
 end
 
-function _user_context
+function _login_context
     set container_name (_container_name)
     if test -n "$container_name"
         set host $container_name
@@ -149,7 +149,7 @@ function _user_context
             set host "$host ($special_host)"
         end
 
-        echo "user: $user on $host"
+        echo "login: $user on $host"
     end
 end
 # Taken from Starship Prompt: https://github.com/starship/starship/blob/master/src/modules/container.rs
