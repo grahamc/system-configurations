@@ -6,6 +6,10 @@ any-nix-shell fish | source
 
 # If the user run a nix or hostctl command while in a git repository with untracked files, warn them since those
 # files will be ignored by any Nix Flake operation.
+#
+# TODO: They're considering making this behaviour configurable though. In which case I can remove this.
+# issue: https://github.com/NixOS/nix/pull/6858
+# issue: https://github.com/NixOS/nix/issues/7107
 function _nix-unstaged-files-warning --on-event fish_preexec --argument-names commandline
     # Have to set these first before the $status changes
     set last_interactive_status $status
