@@ -241,10 +241,6 @@ end
 
 complete myssh --wraps ssh
 
-# Sometimes vendor configs add to the PATH, but I want my ~/.local/bin to be first, in case I want to wrap one of
-# the vendor programs. Since this file is sourced after vendor configs I set it here.
-fish_add_path --global --prepend --move "$HOME/.local/bin"
-
 abbr --add --global chase 'chase --verbose'
 
 function cdi --wraps tere --description 'cd interactively'
