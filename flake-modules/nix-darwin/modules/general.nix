@@ -118,6 +118,9 @@
           # One of hammerspoon's plugins, stackline, needs yabai.
           test -e /usr/local/bin/yabai && rm /usr/local/bin/yabai
           cp ${config.services.yabai.package}/bin/yabai /usr/local/bin/
+          # yabai needs jq since I use it in one of my signal handlers
+          test -e /usr/local/bin/jq && rm /usr/local/bin/jq
+          cp ${pkgs.jq}/bin/jq /usr/local/bin/
         '';
         defaults = {
           NSGlobalDomain = {
