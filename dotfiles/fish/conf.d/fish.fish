@@ -212,8 +212,16 @@ function fish_title --argument-names current_commandline
     if test -z "$current_commandline"
         set current_commandline fish
     end
-    # Get the first token from the commandline, the command. `_ignore` will have the rest of the tokens.
-    echo $current_commandline | read --tokenize current_command _ignore
+
+    # Get all commandline tokens not starting with "-"
+    echo $current_commandline | read --tokenize --list tokens
+    set tokens (string match -rv '^-|^$' -- $tokens)
+    # Skip leading commands
+    while set -q tokens[2]
+        and string match -qr -- '^(,|comma|and|begin|builtin|caffeinate|command|doas|entr|env|exec|if|mosh|nice|not|or|pipenv|prime-run|setsid|sudo|systemd-nspawn|time|watch|while|xargs|.*=.*)$' $tokens[1]
+        set -e tokens[1]
+    end
+    set current_command $tokens[1]
 
     echo $current_command
 end
