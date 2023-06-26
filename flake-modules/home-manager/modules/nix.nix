@@ -33,7 +33,6 @@
         comma
         nix-daemon-reload
         nix-info
-        manix
       ];
 
       repository.symlink.xdg.executable = {

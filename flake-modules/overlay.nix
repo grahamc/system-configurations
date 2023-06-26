@@ -109,28 +109,12 @@
                   eval ".any-nix-shell-wrapper fish -p ''$packages"
                 '';
               };
-            # This wrapper lets me search the manix entries and view their documentation inside of fzf.
-            # Since I only ever use `manix` this way, I'm just going shadow the original `manix` with this wrapper.
-            manix = prev.writeShellApplication
-              {
-                name = "manix";
-                runtimeInputs = [prev.manix];
-                text = ''
-                  # There's a bug in manix and certain options aren't being generated so I'm suppressing the errors printed
-                  # issue: https://github.com/mlvzk/manix/issues/24
-                  manix "" 2>/dev/null \
-                    | grep '^# ' \
-                    | sed 's/^# \(.*\) (.*/\1/;s/ (.*//;s/^# //' \
-                    | fzf --preview="manix '{}' 2>/dev/null" \
-                    | xargs manix 2>/dev/null
-                '';
-              };
 
             crossPlatformPackages = {
               vimPlugins = allVimPlugins;
               tmuxPlugins = allTmuxPlugins;
               fishPlugins = allFishPlugins;
-              inherit pynix manix;
+              inherit pynix;
             };
 
             linuxOnlyPackages = optionalAttrs isLinux {
