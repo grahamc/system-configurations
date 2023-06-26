@@ -82,15 +82,15 @@ abbr --add --global -- - 'cd -'
 # using the same formatting as the rest of my prompt.
 set --global --export VIRTUAL_ENV_DISABLE_PROMPT 1
 function python --wraps python
-    if type --query ipython
-    # Make sure ipython belongs to the current python installation.
-    #
-    # If I pipe the output of python to grep, python will raise a BrokenPipeError. To avoid this, I use echo to pipe
-    # the output.
-    and echo (command python -m pip list) | grep -q ipython
-        if test (count $argv) -eq 0
-        or contains -- '-i' $argv
-            ipython $argv
+    # Check if python is being run interactively
+    if test (count $argv) -eq 0
+    or contains -- '-i' $argv
+        # Check if python has the ipython package installed
+        #
+        # If I pipe the output of python to grep, python will raise a BrokenPipeError. To avoid this, I use echo to pipe
+        # the output.
+        if echo (command python -m pip list) | grep -q ipython
+            python -m IPython
             return
         end
     end
