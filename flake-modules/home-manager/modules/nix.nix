@@ -24,10 +24,7 @@
       repository.symlink.xdg.configFile = {
         "nix/nix.conf".source = "nix/nix.conf";
         "nix/repl-startup.nix".source = "nix/repl-startup.nix";
-        # I prefixed the name of this file with 'my-' because otherwise it would have the same name as the configuration
-        # file that comes with Nix. This is a problem because if fish sees two config files with the same basename, only
-        # one gets loaded: https://fishshell.com/docs/current/language.html#configuration-files.
-        "fish/conf.d/my-nix.fish".source = "nix/nix.fish";
+        "fish/conf.d/nix.fish".source = "nix/nix.fish";
       };
 
       home.packages = with pkgs; [
