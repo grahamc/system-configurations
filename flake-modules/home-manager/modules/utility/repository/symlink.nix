@@ -37,6 +37,21 @@
           };
         symlinkType = types.submodule symlinkOptions;
         symlinkSetType = types.attrsOf symlinkType;
+        executableSymlinkOptions = {name, config, ...}:
+          {
+            options = {
+              inherit source executable recursive;
+              target = lib.mkOption {
+                type = types.str;
+                apply = value: if config.recursive then ".local/bin" else ".local/bin/${value}";
+              };
+            };
+            config = {
+              target = lib.mkDefault name;
+            };
+          };
+        executableSymlinkType = types.submodule executableSymlinkOptions;
+        executableSymlinkSetType = types.attrsOf executableSymlinkType;
       in
         {
           makeCopiesInstead = lib.mkOption {
@@ -65,7 +80,7 @@
               default = {};
             };
             executable = lib.mkOption {
-              type = symlinkSetType;
+              type = executableSymlinkSetType;
               default = {};
             };
           };
@@ -167,17 +182,8 @@
       in
         {
           inherit assertions;
-          home.file =
-            let
-              executableSet = lib.attrsets.mapAttrs
-                (_ignored: value:
-                  # `target` isn't required when `recursive` is set
-                  value // {target = if value.recursive then ".local/bin" else ".local/bin/${value.target}";}
-                )
-                config.repository.symlink.xdg.executable;
-            in
-              (convertToHomeManagerSymlinkSet config.repository.symlink.home.file)
-                // (convertToHomeManagerSymlinkSet executableSet);
+          home.file = (convertToHomeManagerSymlinkSet config.repository.symlink.home.file)
+            // (convertToHomeManagerSymlinkSet config.repository.symlink.xdg.executable);
           xdg.configFile = convertToHomeManagerSymlinkSet config.repository.symlink.xdg.configFile;
           xdg.dataFile = convertToHomeManagerSymlinkSet config.repository.symlink.xdg.dataFile;
         };
