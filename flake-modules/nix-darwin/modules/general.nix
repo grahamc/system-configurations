@@ -108,19 +108,12 @@
           # When hibernating, actually power down instead of the default behaviour where a hibernation file is
           # created, but the computer stays in suspension.
           sudo pmset -b hibernatemode 25
-          # The services in `config.services.*` get launched before I login so the directory that nix-darwin installs
-          # packages to won't be on their $PATH. So here I'm making copying the programs needed by these services
-          # into a directory that's on the $PATH by default:
+          # Homebrew services won't have any of my nix profile /bin directories on their path so below I'm copying
+          # the programs they need into a directory that is on their $PATH.
           #
-          # skhd needs itself on the $PATH for any of the shortcuts in my skhdrc that use the skhd command to send keys.
-          test -e /usr/local/bin/skhd && rm /usr/local/bin/skhd
-          cp ${pkgs.skhd}/bin/skhd /usr/local/bin/
           # One of hammerspoon's plugins, stackline, needs yabai.
           test -e /usr/local/bin/yabai && rm /usr/local/bin/yabai
           cp ${config.services.yabai.package}/bin/yabai /usr/local/bin/
-          # yabai needs jq since I use it in one of my signal handlers
-          test -e /usr/local/bin/jq && rm /usr/local/bin/jq
-          cp ${pkgs.jq}/bin/jq /usr/local/bin/
         '';
         defaults = {
           NSGlobalDomain = {
@@ -148,11 +141,26 @@
           '';
         };
         systemPackages = packages;
+        # TODO: Adding my user profile here so that it's `/bin` directory gets added to the $PATH of
+        # `launchd.user.agents`. nix-darwin attempts to do this, but it uses '$HOME/.nix-profile' and '$HOME' never
+        # gets expanded.
+        # issue: https://github.com/LnL7/nix-darwin/issues/406
+        profiles = ["${homeDirectory}/.nix-profile"];
       };
 
       services = {
         yabai.enable = true;
-        skhd.enable = true;
+        skhd = {
+          enable = true;
+          # skhd needs itself on the $PATH for any of the shortcuts in my skhdrc that use the skhd command to send keys.
+          package = pkgs.writeShellApplication {
+            name = "skhd";
+            runtimeInputs = with pkgs; [skhd];
+            text = ''
+              exec skhd "''$@"
+            '';
+          };
+        };
       };
 
       programs.bash.enable = false;
