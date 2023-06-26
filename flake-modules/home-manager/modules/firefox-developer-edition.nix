@@ -14,7 +14,7 @@
           "applications/my-firefox.desktop".source = "firefox-developer-edition/my-firefox.desktop";
         };
 
-        repository.symlink.home.file.".local/bin/my-firefox".source = "firefox-developer-edition/my-firefox";
+        repository.symlink.xdg.executable."my-firefox".source = "firefox-developer-edition/my-firefox";
       };
     darwin = lib.mkIf
       (isGui && isDarwin)

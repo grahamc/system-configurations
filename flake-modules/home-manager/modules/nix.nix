@@ -39,8 +39,8 @@
         manix
       ];
 
-      repository.symlink.home.file = {
-        ".local/bin/nix".source = "nix/nix-repl-wrapper.fish";
-        ".local/bin/nix-gcroots".source = "nix/nix-gcroots.fish";
+      repository.symlink.xdg.executable = {
+        "nix".source = "nix/nix-repl-wrapper.fish";
+        "nix-gcroots".source = "nix/nix-gcroots.fish";
       };
     }

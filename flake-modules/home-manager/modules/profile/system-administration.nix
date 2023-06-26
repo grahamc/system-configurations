@@ -60,9 +60,12 @@
 
       repository.symlink.home.file = {
         ".ignore".source = "search/ignore";
-        ".local/bin/fzf-tmux-zoom".source = "fzf/fzf-tmux-zoom";
-        ".local/bin/fzf-help-preview".source = "fzf/fzf-help-preview";
-        ".local/bin/myssh".source = "ssh/myssh.sh";
+      };
+
+      repository.symlink.xdg.executable = {
+        "fzf-tmux-zoom".source = "fzf/fzf-tmux-zoom";
+        "fzf-help-preview".source = "fzf/fzf-help-preview";
+        "myssh".source = "ssh/myssh.sh";
       };
 
       repository.symlink.xdg.configFile = {

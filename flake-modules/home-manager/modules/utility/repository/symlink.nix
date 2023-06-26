@@ -15,13 +15,18 @@
         executable = lib.mkOption {
           type = types.nullOr types.bool;
           default = null;
+          # Marked `internal` and `readOnly` since it needs to be passed to home-manager, but the user shouldn't set it.
+          # This is because permissions on a symlink are ignored, only the source's permissions are considered. Also I
+          # got an error when I tried to set it to `true`.
+          internal = true;
+          readOnly = true;
         };
         recursive = lib.mkOption {
           type = types.bool;
           default = false;
           description = "This links top level files only.";
         };
-        fileOptions = {name, ...}:
+        symlinkOptions = {name, ...}:
           {
             options = {
               inherit target source executable recursive;
@@ -30,8 +35,8 @@
               target = lib.mkDefault name;
             };
           };
-        fileType = types.submodule fileOptions;
-        fileSetType = types.attrsOf fileType;
+        symlinkType = types.submodule symlinkOptions;
+        symlinkSetType = types.attrsOf symlinkType;
       in
         {
           makeCopiesInstead = lib.mkOption {
@@ -46,17 +51,21 @@
           };
 
           home.file = lib.mkOption {
-            type = fileSetType;
+            type = symlinkSetType;
             default = {};
           };
 
           xdg = {
             configFile = lib.mkOption {
-              type = fileSetType;
+              type = symlinkSetType;
               default = {};
             };
             dataFile = lib.mkOption {
-              type = fileSetType;
+              type = symlinkSetType;
+              default = {};
+            };
+            executable = lib.mkOption {
+              type = symlinkSetType;
               default = {};
             };
           };
@@ -127,7 +136,7 @@
             fileSet;
         assertions =
           let
-            fileSets = with config.repository.symlink; [home.file xdg.configFile xdg.dataFile];
+            fileSets = with config.repository.symlink; [home.file xdg.configFile xdg.dataFile xdg.executable];
             fileLists = map builtins.attrValues fileSets;
             files = lib.lists.flatten fileLists;
             getSource = builtins.getAttr "source";
@@ -158,7 +167,17 @@
       in
         {
           inherit assertions;
-          home.file = convertToHomeManagerSymlinkSet config.repository.symlink.home.file;
+          home.file =
+            let
+              executableSet = lib.attrsets.mapAttrs
+                (_ignored: value:
+                  # `target` isn't required when `recursive` is set
+                  value // {target = if value.recursive then ".local/bin" else ".local/bin/${value.target}";}
+                )
+                config.repository.symlink.xdg.executable;
+            in
+              (convertToHomeManagerSymlinkSet config.repository.symlink.home.file)
+                // (convertToHomeManagerSymlinkSet executableSet);
           xdg.configFile = convertToHomeManagerSymlinkSet config.repository.symlink.xdg.configFile;
           xdg.dataFile = convertToHomeManagerSymlinkSet config.repository.symlink.xdg.dataFile;
         };

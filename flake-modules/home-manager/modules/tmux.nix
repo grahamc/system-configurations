@@ -72,8 +72,8 @@
         ${myTmuxConfigPath}.source = "tmux/tmux.conf";
       };
 
-      repository.symlink.home.file = {
-        ".local/bin/tmux-click-url.py".source = "tmux/tmux-click-url.py";
+      repository.symlink.xdg.executable = {
+        "tmux-click-url.py".source = "tmux/tmux-click-url.py";
       };
 
       repository.git.onChange  = [
