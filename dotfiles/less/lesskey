@@ -17,4 +17,5 @@
 # '--hilite-search' - when searching, don't highlight all matches at once, only the current match
 # '--no-histdups' - no duplicate entries in the search history
 # '--save-marks' - save marks before less exits
-LESS = --RAW-CONTROL-CHARS --ignore-case --incsearch --quit-on-intr --jump-target=.5 --hilite-search --no-histdups --save-marks
+# '--clear-screen' - Doing this so content that is less than one screen starts from the top.
+LESS = --RAW-CONTROL-CHARS --ignore-case --incsearch --quit-on-intr --jump-target=.5 --hilite-search --no-histdups --save-marks --clear-screen

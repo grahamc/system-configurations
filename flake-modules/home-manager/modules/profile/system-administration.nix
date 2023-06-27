@@ -25,10 +25,8 @@
         jq
         lsd
         moreutils
-        ncdu
         xdgWrappers.ripgrep
         tealdeer
-        tree
         viddy
         zoxide
         file
@@ -41,7 +39,6 @@
         less
         # These weren't in a docker container
         gnused
-        tere
       ] ++ optionals isLinux [
         trashy
         pipr
@@ -57,6 +54,11 @@
         pstree
         trash
       ];
+
+      # I'm enabling this integration so home-manager can handle sourcing broot's shell config file.
+      programs.broot = {
+        enable = true;
+      };
 
       repository.symlink.home.file = {
         ".ignore".source = "search/ignore";
@@ -76,6 +78,7 @@
         "fish/conf.d/fzf.fish".source = "fzf/fzf.fish";
         "ripgrep/ripgreprc".source = "ripgrep/ripgreprc";
         "ssh/start-my-shell.sh".source = "ssh/start-my-shell.sh";
+        "broot/conf.hjson".source = "broot/conf.hjson";
       } // optionalAttrs isLinux {
         "pipr/pipr.toml".source = "pipr/pipr.toml";
         "fish/conf.d/pipr.fish".source = "pipr/pipr.fish";

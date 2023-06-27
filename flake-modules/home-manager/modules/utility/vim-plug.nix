@@ -88,5 +88,18 @@
                   rm -rf ${pluginDirectory}/*  
                 fi
               '';
+            # broot.vim needs to write to its plugin directory so I'm going to dereference the symlink.
+            home.activation.brootVimFix = lib.hm.dag.entryAfter
+              [ "linkGeneration" ]
+              ''
+                broot_path='${pluginDirectory}/broot.vim'
+                temp_broot_path="''$broot_path".temp
+
+                cp --recursive --dereference --no-preserve=ownership "''$broot_path" "''$temp_broot_path"
+                rm -rf "''$broot_path"
+                # so I can move it
+                chmod -R 777 "''$temp_broot_path"
+                mv "''$temp_broot_path" "''$broot_path"
+              '';
           };
     }

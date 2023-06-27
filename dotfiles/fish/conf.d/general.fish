@@ -125,9 +125,6 @@ abbr --add --global watch 'watch --no-title --differences --interval 0.5'
 # Also clearing the $TMUX variable so that the integrated terminal in vscode won't think it's in TMUX.
 abbr --add --global code 'TMUX= code'
 
-# ncdu
-alias ncdu 'ncdu --color off'
-
 # ulimit
 #
 # Increase maxixmum number of open file descriptors that a single process can have. This applies to the current
@@ -193,27 +190,6 @@ function rust --description 'run the given rust source file' --wraps rustc
     end
 end
 
-function tree --wraps tree
-    set tree_args -a --filesfirst
-
-    # If stdin is not connected to a terminal, we assume it's connected to a pipe.
-    # In which case, have tree take its input from stdin.
-    if not isatty stdin
-        command tree $tree_args --fromfile .
-    # If there are no arguments, get files from fd since fd will exclude anything in a .gitignore or .ignore file.
-    else if test (count $argv) -eq 0
-        fd | command tree $tree_args --fromfile .
-    # If there is just one argument, we'll assume that it's a directory and pass it to fd for reasons stated in the case
-    # above.
-    else if test (count $argv) -eq 1
-        fd . "$argv[1]" | command tree $tree_args --fromfile .
-    else
-        command tree $tree_args $argv
-    end
-
-    return $status
-end
-
 function dig --wraps doggo
     doggo --color=false $argv
 end
@@ -243,18 +219,14 @@ complete myssh --wraps ssh
 
 abbr --add --global chase 'chase --verbose'
 
-function cdi --wraps tere --description 'cd interactively'
-    set result ( \
-        tere \
-            --gap-search \
-            --normal-search-anywhere \
-            --filter-search \
-            --mouse=on \
-            $argv \
-    )
-    if test -n "$result"
-        cd -- $result
-    end
+function _mybr --wraps br
+    IN_BROOT=1 br $argv
+end
+function cdi --wraps broot --description 'cd interactively'
+    _mybr $argv
+end
+function dui --wraps broot --description 'Check disk usage interactively'
+    _mybr -w $argv
 end
 
 # cd history keybinds. My terminal maps ctrl+[ and ctrl+] to f7 and f8

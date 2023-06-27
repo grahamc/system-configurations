@@ -38,6 +38,7 @@ function fish_prompt --description 'Print the prompt'
     # characters that make up the border, see `_make_line`.
     set max_length (math $COLUMNS - 4)
     set contexts \
+        (_broot_context) \
         (_direnv_context) \
         (_nix_context) \
         (_python_context) \
@@ -356,3 +357,10 @@ function _nix_context
     echo "nix: $type$packages"
 end
 
+function _broot_context
+    if not set --query IN_BROOT
+        return
+    end
+
+    echo "broot: active"
+end
