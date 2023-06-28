@@ -195,7 +195,7 @@ function dig --wraps doggo
 end
 
 function df --wraps duf
-    env NO_COLOR=1 duf $argv
+    duf -theme ansi $argv
 end
 
 function ping --wraps gping
