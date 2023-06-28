@@ -318,7 +318,7 @@ vim.opt.fillchars:append('fold: ')
 vim.opt.fillchars:append('foldclose:›')
 vim.opt.fillchars:append('foldopen:⌄')
 vim.o.foldlevelstart = 99
-vim.keymap.set('n', '<Tab>', 'za', {silent = true})
+vim.keymap.set('n', '<Tab>', function() vim.cmd([[silent! normal! za]]) end)
 
 -- Setting this so that the fold column gets displayed
 vim.o.foldenable = true
@@ -407,7 +407,8 @@ vim.o.pumheight = 6
 -- on subsequent wildchar presses, cycle through matches
 vim.o.wildmode = 'longest:full,full'
 vim.o.wildoptions = 'pum'
-vim.o.cmdheight = 1
+vim.o.cmdheight = 0
+vim.o.showcmdloc = 'statusline'
 _G.smagic_abbrev = function()
   if vim.fn.getcmdtype() ~= ':' then
     return 's'
@@ -606,6 +607,22 @@ _G.StatusLine = function()
     readonly = '%#StatusLineStandoutText#' .. indicator
   end
 
+  local reg_recording = vim.fn.reg_recording()
+  if reg_recording ~= '' then
+    reg_recording = '%#StatusLine#[' .. '%#StatusLineRecordingIndicator#' .. unicode('f044a') .. ' %#StatusLine#REC@' .. reg_recording .. ']'
+  else
+    reg_recording = nil
+  end
+
+  local search_info = nil
+  local ok, czs = pcall(require, 'czs')
+  if ok then
+    if czs.display_results() then
+      local _, current, count = czs.output()
+      search_info = '%#StatusLine# ' .. unicode('f002') .. ' ' .. string.format("%s/%s", current, count)
+    end
+  end
+
   local diagnostic_count = {
     warning = GetDiagnosticCountForSeverity('warn'),
     error = GetDiagnosticCountForSeverity('error'),
@@ -643,6 +660,70 @@ _G.StatusLine = function()
   end
 
   local left_side_items = {}
+  local mode_map = {
+    ['n']      = 'NORMAL',
+    ['no']     = 'O-PENDING',
+    ['nov']    = 'O-PENDING',
+    ['noV']    = 'O-PENDING',
+    ['no\22'] = 'O-PENDING',
+    ['niI']    = 'NORMAL',
+    ['niR']    = 'NORMAL',
+    ['niV']    = 'NORMAL',
+    ['nt']     = 'NORMAL',
+    ['ntT']    = 'NORMAL',
+    ['v']      = 'VISUAL',
+    ['vs']     = 'VISUAL',
+    ['V']      = 'V-LINE',
+    ['Vs']     = 'V-LINE',
+    ['\22']   = 'V-BLOCK',
+    ['\22s']  = 'V-BLOCK',
+    ['s']      = 'SELECT',
+    ['S']      = 'S-LINE',
+    ['\19']   = 'S-BLOCK',
+    ['i']      = 'INSERT',
+    ['ic']     = 'INSERT',
+    ['ix']     = 'INSERT',
+    ['R']      = 'REPLACE',
+    ['Rc']     = 'REPLACE',
+    ['Rx']     = 'REPLACE',
+    ['Rv']     = 'V-REPLACE',
+    ['Rvc']    = 'V-REPLACE',
+    ['Rvx']    = 'V-REPLACE',
+    ['c']      = 'COMMAND',
+    ['cv']     = 'EX',
+    ['ce']     = 'EX',
+    ['r']      = 'REPLACE',
+    ['rm']     = 'MORE',
+    ['r?']     = 'CONFIRM',
+    ['!']      = 'SHELL',
+    ['t']      = 'TERMINAL',
+  }
+  local mode = mode_map[vim.api.nvim_get_mode().mode]
+  if mode == nil then
+    mode = '?'
+  end
+  local function make_highlight_names(name)
+    return {
+      mode = '%#' .. string.format('StatusLineMode%s', name) .. '#',
+      inner = '%#' .. string.format('StatusLineMode%sPowerlineInner', name) .. '#',
+      outer = '%#' .. string.format('StatusLineMode%sPowerlineOuter', name) .. '#',
+    }
+  end
+  local highlights = make_highlight_names('Other')
+  local function startswith(text, prefix)
+    return text:find(prefix, 1, true) == 1
+  end
+  if startswith(mode, 'V') then
+    highlights = make_highlight_names('Visual')
+  elseif startswith(mode, 'I') then
+    highlights = make_highlight_names('Insert')
+  elseif startswith(mode, 'N') then
+    highlights = make_highlight_names('Normal')
+  elseif startswith(mode, 'T') then
+    highlights = make_highlight_names('Terminal')
+  end
+  local mode_indicator = highlights.outer .. unicode('e0b6') .. highlights.mode .. ' ' .. mode .. ' ' .. highlights.inner .. unicode('e0b4')
+  table.insert(left_side_items, mode_indicator)
   if filetype then
     table.insert(left_side_items, filetype)
   end
@@ -653,6 +734,14 @@ _G.StatusLine = function()
   if readonly then
     table.insert(left_side_items, readonly)
   end
+  if reg_recording then
+    table.insert(left_side_items, reg_recording)
+  end
+  if search_info then
+    table.insert(left_side_items, search_info)
+  end
+  local showcmd = '%#StatusLineShowcmd# %S'
+  table.insert(left_side_items, showcmd)
   local left_side = table.concat(left_side_items, ' ')
 
   local right_side_items = {position}
@@ -663,7 +752,7 @@ _G.StatusLine = function()
 
   local statusline_separator = '%#StatusLine# %= '
   local padding = '%#StatusLine# '
-  local statusline = padding .. left_side .. statusline_separator .. right_side .. padding
+  local statusline = left_side .. statusline_separator .. right_side .. padding .. '%#StatusLinePowerlineOuter#' .. unicode('e0b4')
 
   return statusline
 end
@@ -1192,6 +1281,23 @@ Plug(
     end,
   }
 )
+
+Plug(
+  'oncomouse/czs.nvim',
+  {
+    config = function()
+      -- 'n' always searches forwards, 'N' always searches backwards
+      -- I have this set in base.lua, but since I need to use these czs mappings I had to redefine them.
+      vim.keymap.set({'n'}, 'n', "['<Plug>(czs-move-N)', '<Plug>(czs-move-n)'][v:searchforward]", {expr = true, replace_keycodes = false,})
+      vim.keymap.set({'x'}, 'n', "['<Plug>(czs-move-N)', '<Plug>(czs-move-n)'][v:searchforward]", {expr = true, replace_keycodes = false,})
+      vim.keymap.set({'o'}, 'n', "['<Plug>(czs-move-N)', '<Plug>(czs-move-n)'][v:searchforward]", {expr = true, replace_keycodes = false,})
+      vim.keymap.set({'n'}, 'N', "['<Plug>(czs-move-n)', '<Plug>(czs-move-N)'][v:searchforward]", {expr = true, replace_keycodes = false,})
+      vim.keymap.set({'x'}, 'N', "['<Plug>(czs-move-n)', '<Plug>(czs-move-N)'][v:searchforward]", {expr = true, replace_keycodes = false,})
+      vim.keymap.set({'o'}, 'N', "['<Plug>(czs-move-n)', '<Plug>(czs-move-N)'][v:searchforward]", {expr = true, replace_keycodes = false,})
+    end,
+  }
+)
+vim.g.czs_do_not_map = true
 -- }}}
 
 -- File Explorer {{{
@@ -1785,6 +1891,23 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'Float4Normal', {ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'Float4Border', {ctermbg = 'NONE', ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'String', {ctermfg = 50,})
+  vim.api.nvim_set_hl(0, 'StatusLineRecordingIndicator', {ctermbg = 8, ctermfg = 1,})
+  vim.api.nvim_set_hl(0, 'StatusLineShowcmd', {ctermbg = 8, ctermfg = 6,})
+  vim.api.nvim_set_hl(0, 'StatusLinePowerlineOuter', {ctermbg = 'NONE', ctermfg = 8,})
+  local mode_highlights = {
+    {mode = 'Normal', color = 6,},
+    {mode = 'Visual', color = 3,},
+    {mode = 'Insert', color = 5,},
+    {mode = 'Terminal', color = 2,},
+    {mode = 'Other', color = 4,},
+  }
+  for _, highlight in pairs(mode_highlights) do
+    local mode = highlight.mode
+    local color = highlight.color
+    vim.api.nvim_set_hl(0, string.format('StatusLineMode%s', mode), {ctermbg = 'NONE', ctermfg = color, reverse = true, bold = true,})
+    vim.api.nvim_set_hl(0, string.format('StatusLineMode%sPowerlineOuter', mode), {ctermbg = 'NONE', ctermfg = color,})
+    vim.api.nvim_set_hl(0, string.format('StatusLineMode%sPowerlineInner', mode), {ctermbg = 8, ctermfg = color,})
+  end
 end
 local group_id = vim.api.nvim_create_augroup('NordVim', {})
 vim.api.nvim_create_autocmd(

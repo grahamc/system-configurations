@@ -217,6 +217,7 @@
         "tmux-plugin-tmux-suspend": "tmux-plugin-tmux-suspend",
         "vim-plugin-broot-vim": "vim-plugin-broot-vim",
         "vim-plugin-cmp-env": "vim-plugin-cmp-env",
+        "vim-plugin-czs-nvim": "vim-plugin-czs-nvim",
         "vim-plugin-folding-nvim": "vim-plugin-folding-nvim",
         "vim-plugin-schemastore-nvim": "vim-plugin-schemastore-nvim",
         "vim-plugin-vim": "vim-plugin-vim",
@@ -332,6 +333,22 @@
       "original": {
         "owner": "bydlw98",
         "repo": "cmp-env",
+        "type": "github"
+      }
+    },
+    "vim-plugin-czs-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1673541598,
+        "narHash": "sha256-n6ajxLE9ONnar7fJb0BsqYuCv/3TuUpSKTjAHfWuExE=",
+        "owner": "oncomouse",
+        "repo": "czs.nvim",
+        "rev": "d74dd1fa7b6953055de939267eb0e21eb2147d95",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oncomouse",
+        "repo": "czs.nvim",
         "type": "github"
       }
     },
