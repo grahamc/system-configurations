@@ -9,13 +9,15 @@
 
 #env
 # Set default less options:
-# '--RAW-CONTROL-CHARS' - process color (ANSI) and hyperlink (OSC 8) escape sequences.
-# '--ignore-case' - ignore case, except when the search term contains a capital letter.
-# '--incsearch' - incremental search meaning the search query gets searched as you type, before you even hit enter
-# '--quit-on-intr' - let ctrl+c exit less
-# '--jump-target=.5' - when jumping between search matches (n/N) center the screen on the line of the current match
-# '--hilite-search' - when searching, don't highlight all matches at once, only the current match
-# '--no-histdups' - no duplicate entries in the search history
-# '--save-marks' - save marks before less exits
-# '--clear-screen' - Doing this so content that is less than one screen starts from the top.
-LESS = --RAW-CONTROL-CHARS --ignore-case --incsearch --quit-on-intr --jump-target=.5 --hilite-search --no-histdups --save-marks --clear-screen
+# --RAW-CONTROL-CHARS - process color (ANSI) and hyperlink (OSC 8) escape sequences.
+# --ignore-case - ignore case, except when the search term contains a capital letter.
+# --incsearch - incremental search meaning the search query gets searched as you type, before you even hit enter
+# --quit-on-intr - let ctrl+c exit less
+# --jump-target=.5 - when jumping between search matches (n/N) center the screen on the line of the current match
+# --hilite-search - when searching, don't highlight all matches at once, only the current match
+# --no-histdups - no duplicate entries in the search history
+# --save-marks - save marks before less exits
+# --clear-screen - Doing this so content that is less than one screen starts from the top.
+# --tilde -  Instead of putting a tilde on blank lines, leave them blank.
+# --LONG-PROMPT - Show the position in the file in the prompt.
+LESS = --RAW-CONTROL-CHARS --ignore-case --incsearch --quit-on-intr --jump-target=.5 --hilite-search --no-histdups --save-marks --clear-screen --tilde --LONG-PROMPT
