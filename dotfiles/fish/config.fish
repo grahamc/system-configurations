@@ -36,7 +36,10 @@ function _tmux_connect
     set normal (set_color normal)
     read --prompt "echo -n -s 'Hey $USER, would you like to connect to tmux? (' '$accent' 'y' '$normal' '/' '$accent' 'n' '$normal' '): ';" --nchars 1 response
     if test $response = y
-        tmux attach-session
+        # check if the server is running
+        tmux list-sessions &>/dev/null
+        and tmux attach-session
+        or tmux
     end
 end
 _tmux_connect
