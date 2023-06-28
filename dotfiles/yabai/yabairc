@@ -1,8 +1,5 @@
 #!/usr/bin/env sh
 
-yabai -m signal --add label=loadsa event=dock_did_restart action="sudo --non-interactive yabai --load-sa"
-sudo --non-interactive yabai --load-sa
-
 # Calling this when I'm already in tiling mode might change the order of my windows, which I don't want, so I only
 # set tiling mode if it isn't already set
 [ "$(yabai -m config layout)" != 'bsp' ] && yabai -m config layout bsp

@@ -133,13 +133,6 @@
       };
 
       environment = {
-        etc = {
-          "sudoers.d/10-my-commands".text = ''
-            # This allows yabai to inject code in Dock.app so it can properly function. Also lets me reload my config
-            # without a password
-            ALL ALL=NOPASSWD: /usr/local/bin/yabai
-          '';
-        };
         systemPackages = packages;
         # TODO: Adding my user profile here so that it's `/bin` directory gets added to the $PATH of
         # `launchd.user.agents`. nix-darwin attempts to do this, but it uses '$HOME/.nix-profile' and '$HOME' never
@@ -149,7 +142,10 @@
       };
 
       services = {
-        yabai.enable = true;
+        yabai = {
+          enable = true;
+          enableScriptingAddition = true;
+        };
         skhd = {
           enable = true;
           # skhd needs itself on the $PATH for any of the shortcuts in my skhdrc that use the skhd command to send keys.
