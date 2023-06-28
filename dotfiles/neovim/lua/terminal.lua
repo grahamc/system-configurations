@@ -1894,9 +1894,9 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'StatusLineShowcmd', {ctermbg = 8, ctermfg = 6,})
   vim.api.nvim_set_hl(0, 'StatusLinePowerlineOuter', {ctermbg = 'NONE', ctermfg = 8,})
   local mode_highlights = {
-    {mode = 'Normal', color = 6,},
+    {mode = 'Normal', color = 'NONE',},
     {mode = 'Visual', color = 3,},
-    {mode = 'Insert', color = 5,},
+    {mode = 'Insert', color = 6,},
     {mode = 'Terminal', color = 2,},
     {mode = 'Other', color = 4,},
   }
