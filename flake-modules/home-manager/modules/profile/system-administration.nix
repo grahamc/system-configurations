@@ -39,6 +39,7 @@
         less
         # These weren't in a docker container
         gnused
+        broot
       ] ++ optionals isLinux [
         trashy
         pipr
@@ -55,9 +56,21 @@
         trash
       ];
 
-      # I'm enabling this integration so home-manager can handle sourcing broot's shell config file.
-      programs.broot = {
-        enable = true;
+      # Taken from home-manager: https://github.com/nix-community/home-manager/blob/47c2adc6b31e9cff335010f570814e44418e2b3e/modules/programs/broot.nix#L151
+      # I'm doing this home-manager was bringing in the broot source code as a dependency.
+      #
+      # Using mkAfter to make it more likely to appear after other
+      # manipulations of the prompt.
+      programs.fish.shellInit = lib.mkAfter ''
+        source ${
+          pkgs.runCommand "br.fish" { nativeBuildInputs = [ pkgs.broot ]; }
+          "broot --print-shell-function fish > $out"
+        }
+      '';
+      # Dummy file to prevent broot from trying to reinstall itself
+      xdg.configFile."broot" = {
+        source = pkgs.writeTextDir "launcher/installed-v1" "";
+        recursive = true;
       };
 
       repository.symlink.home.file = {
