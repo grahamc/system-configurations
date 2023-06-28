@@ -585,16 +585,15 @@ end
 _G.StatusLine = function()
   local item_separator = '%#StatusLineSeparator# ∙ '
 
-  local line = '%#StatusLine#Ln %l/%L'
-  local column = '%#StatusLine#Col %c'
-  local position = line .. ', ' .. column
+  local position = '%#StatusLine#' .. unicode('e612') .. ' %l/%L:%c'
 
   local filetype = nil
   if string.len(vim.o.filetype) > 0 then
     filetype = '%#StatusLine#' .. vim.o.filetype
   end
 
-  local file_info = '%#StatusLine#%f%w%q'
+  local filename = vim.fn.pathshorten(vim.fn.expand('%:.'), 1)
+  local file_info = '%#StatusLine#' .. filename .. '%w%q'
 
   local fileformat = nil
   if vim.o.fileformat ~= 'unix' then
@@ -609,7 +608,7 @@ _G.StatusLine = function()
 
   local reg_recording = vim.fn.reg_recording()
   if reg_recording ~= '' then
-    reg_recording = '%#StatusLine#[' .. '%#StatusLineRecordingIndicator#' .. unicode('f044a') .. ' %#StatusLine#REC@' .. reg_recording .. ']'
+    reg_recording = '%#StatusLine# ' .. '%#StatusLineRecordingIndicator#' .. unicode('f044a') .. ' %#StatusLine#REC@' .. reg_recording
   else
     reg_recording = nil
   end
