@@ -93,7 +93,7 @@ skin: {
     help_headers: None None Underlined
     help_table_border: ansi(239) None
     preview_title: None None
-    preview: None ansi(0)
+    preview: ansi(7) ansi(0) / ansi(15) ansi(0)
     preview_line_number: ansi(0) ansi(0) / ansi(0) ansi(0)
     preview_match: ansi(3) ansi(8)
     good_to_bad_0: ansi(2)
