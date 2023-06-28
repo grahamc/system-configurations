@@ -1,4 +1,3 @@
-RegisterPlug('lewis6991/impatient.nvim')
 RegisterPlug('glacambre/firenvim')
 RegisterPlug('jeetsukumaran/vim-indentwise')
 RegisterPlug('andymass/vim-matchup')

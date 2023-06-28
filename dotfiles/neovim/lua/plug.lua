@@ -32,17 +32,6 @@ end
 function plug_begin()
   original_plug_begin()
 
-  -- Loading this now so that it caches any lua modules that are required after this point.
-  Plug(
-    'lewis6991/impatient.nvim',
-    {
-      ['on'] = {},
-      ['for'] = {},
-    }
-  )
-  pcall(vim.fn['plug#load'], 'impatient.nvim')
-  pcall(require, 'impatient')
-
   -- Register Plugins
   require('plugfile')
 end

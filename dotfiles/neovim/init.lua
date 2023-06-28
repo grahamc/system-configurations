@@ -1,3 +1,6 @@
+-- Enabling this will cache any lua modules that are required after this point.
+vim.loader.enable()
+
 -- Import my vim-plug wrapper
 require('plug')
 
