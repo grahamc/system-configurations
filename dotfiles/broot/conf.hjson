@@ -32,7 +32,7 @@ verbs: [
     {
         invocation: shell
         key: ctrl-s
-        apply_to: file
+        apply_to: any
         external: fish --init-command "cd {directory}"
         leave_broot: false
     }
