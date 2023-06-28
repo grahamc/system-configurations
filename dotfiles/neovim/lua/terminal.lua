@@ -739,8 +739,6 @@ _G.StatusLine = function()
   if search_info then
     table.insert(left_side_items, search_info)
   end
-  local showcmd = '%#StatusLineShowcmd# %S'
-  table.insert(left_side_items, showcmd)
   local left_side = table.concat(left_side_items, ' ')
 
   local right_side_items = {position}
@@ -749,7 +747,9 @@ _G.StatusLine = function()
   end
   local right_side = table.concat(right_side_items, item_separator)
 
-  local statusline_separator = '%#StatusLine# %= '
+  local showcmd = '%#StatusLineShowcmd#%S'
+  local statusline_separator = '%#StatusLine# %=' .. showcmd .. '%#StatusLine#%= '
+
   local padding = '%#StatusLine# '
   local statusline = left_side .. statusline_separator .. right_side .. padding .. '%#StatusLinePowerlineOuter#' .. unicode('e0b4')
 
