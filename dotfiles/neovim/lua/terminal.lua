@@ -949,6 +949,8 @@ Plug(
         -- ------------------------------------
         -- Disabling this mapping since I will add it through nvim-cmp.
         map_cr = false,
+        -- Don't add bracket pairs after quote.
+        enable_afterquote = false,
       })
     end
   }
