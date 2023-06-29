@@ -829,6 +829,22 @@ _G.Tabline = function()
 
   tabline = '%#TabLineFill#%=' .. tabline .. '%#TabLineFill#%='
 
+  local is_explorer_open = vim.fn.getwinvar(1, 'is_explorer', false)
+  if is_explorer_open then
+    local icon = unicode('f4d3')
+    local title = ' ' .. icon .. ' File Explorer'
+
+    local title_length = string.len(title)
+    local remaining_spaces_count = (vim.fn.winwidth(1) - title_length) + 2
+    local left_pad_length = math.floor(remaining_spaces_count / 2)
+    local right_pad_length = left_pad_length
+    if remaining_spaces_count % 2 == 1 then
+      right_pad_length = right_pad_length + 1
+    end
+
+    tabline = '%#ExplorerTabLine#' .. string.rep(' ', left_pad_length) .. title .. string.rep(' ', right_pad_length) .. '%#WinSeparator#' .. (vim.opt.fillchars:get().vert or '│') .. '%<' .. tabline
+  end
+
   return tabline
 end
 vim.o.tabline = '%!v:lua.Tabline()'
@@ -1319,19 +1335,88 @@ vim.g.czs_do_not_map = true
 
 -- File Explorer {{{
 Plug(
-  'lstwn/broot.vim',
+  'kyazdani42/nvim-tree.lua',
   {
     config = function()
-      vim.keymap.set("n", "<M-e>", vim.cmd.BrootCurrentDir, {silent = true})
+      require('nvim-tree').setup({
+        hijack_cursor = true,
+        sync_root_with_cwd = true,
+        open_on_tab = true,
+        update_focused_file = {
+          enable = true,
+        },
+        git = {
+          enable = false,
+        },
+        view = {
+          signcolumn = 'yes',
+          width = function() return math.max(30, math.floor(vim.o.columns * .20)) end,
+        },
+        renderer = {
+          indent_markers = {
+            enable = true,
+            icons = {
+              corner = " ",
+              edge = " ",
+              item = " ",
+              bottom = " ",
+            },
+          },
+          icons = {
+            show = {
+              file = false,
+              folder = false,
+            },
+            glyphs = {
+              folder = {
+                arrow_closed = '›',
+                arrow_open = '⌄',
+              },
+            },
+          },
+        },
+        actions = {
+          change_dir = {
+            enable = false,
+          },
+          open_file = {
+            window_picker = {
+              enable = false,
+            },
+          },
+        },
+        on_attach = function(buffer_number)
+          -- Set the default mappings
+          local api = require('nvim-tree.api')
+          api.config.mappings.default_on_attach(buffer_number)
+
+          vim.keymap.set('n', 'h', '<BS>', {buffer = buffer_number, remap = true})
+          vim.keymap.set('n', 'l', '<CR>', {buffer = buffer_number, remap = true})
+          vim.keymap.set('n', '<Tab>', '<CR>', {buffer = buffer_number, remap = true})
+        end,
+      })
+      vim.keymap.set("n", "<M-e>", '<cmd>NvimTreeFindFileToggle<cr>', {silent = true})
+
+      -- nvim-tree has an augroup named 'NvimTree' so I have to use a different name
+      local group_id = vim.api.nvim_create_augroup('__NvimTree', {})
+      local function configure_nvim_tree_window()
+        if vim.o.filetype ~= 'NvimTree' then
+          return
+        end
+
+        vim.w.is_explorer = true
+        vim.opt_local.winbar = '%#TabLineSel#%= Press %#NvimTreeWinBar#g?%#TabLineSel# for help%='
+      end
+      vim.api.nvim_create_autocmd(
+        {'BufWinEnter',},
+        {
+          callback = configure_nvim_tree_window,
+          group = group_id,
+        }
+      )
     end,
   }
 )
-local xdg_config_home = os.getenv('XDG_CONFIG_HOME')
-if xdg_config_home == nil then
-  xdg_config_home = string.format("%s/.config", vim.fn.expand('~'))
-end
-vim.g.broot_default_conf_path = string.format('%s/broot/conf.hjson', xdg_config_home)
-vim.g.broot_replace_netrw = 1
 -- }}}
 
 -- Autocomplete {{{
@@ -1911,6 +1996,9 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'StatusLineRecordingIndicator', {ctermbg = 8, ctermfg = 1,})
   vim.api.nvim_set_hl(0, 'StatusLineShowcmd', {ctermbg = 8, ctermfg = 6,})
   vim.api.nvim_set_hl(0, 'StatusLinePowerlineOuter', {ctermbg = 'NONE', ctermfg = 8,})
+  vim.api.nvim_set_hl(0, 'NvimTreeWinBar', {ctermfg = 6, ctermbg = 8,})
+  vim.api.nvim_set_hl(0, 'NvimTreeIndentMarker', {ctermfg = 15,})
+  vim.api.nvim_set_hl(0, 'ExplorerTabLine', {link = 'NvimTreeWinBar'})
   vim.api.nvim_set_hl(0, 'MsgArea', {link = 'StatusLine',})
   local mode_highlights = {
     {mode = 'Normal', color = 'NONE',},
