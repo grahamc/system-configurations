@@ -58,6 +58,13 @@ verbs: [
         key: h
         internal: ":root_up"
     }
+    {
+        key: enter
+        # TODO: I want to clear the filter too
+        internal: ":focus"
+        invocation: select
+        leave_broot: false
+    }
 ]
 
 skin: {
@@ -116,7 +123,7 @@ skin: {
     hex_ascii_other: ansi(1) None
     hex_non_ascii: ansi(1) None
     staging_area_title: ansi(1) None / ansi(15) None
-    mode_command_mark: ansi(1) None Bold
+    mode_command_mark: ansi(0) None
     sparse: ansi(1) None
     content_extract: ansi(3) None
     content_match: ansi(3) None

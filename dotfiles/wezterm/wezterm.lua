@@ -42,7 +42,7 @@ config.font = wezterm.font_with_fallback({'JetBrains Mono NL', 'SymbolsNerdFontM
 config.underline_position = -9
 config.font_size = 10.3
 if is_mac then
-  config.font_size = 12.2
+  config.font_size = 13
 end
 config.cell_width = 1.04
 config.line_height = 1.3
@@ -67,8 +67,8 @@ local my_colors_per_color_scheme = {
   },
 
   ['Biggs Light Owl'] = {
-    [0] = '#FFFFFF', [1] = '#ee3d3b', [2] = '#2AA298', [3] = '#e9873a', [4] = '#288ed7', [5] = '#2AA298', [6] = '#994cc3', [7] = '#403f53',
-    [8] = '#F0F0F0', [9] = '#ee3d3b', [10] = '#2AA298', [11] = '#c96765', [12] = '#288ed7', [13] = '#2AA298', [14] = '#d6438a', [15] = '#979893',
+    [0] = '#FFFFFF', [1] = '#ee3d3b', [2] = '#2AA298', [3] = '#e9873a', [4] = '#288ed7', [5] = '#994cc3', [6] = '#2AA298', [7] = '#403f53',
+    [8] = '#F0F0F0', [9] = '#ee3d3b', [10] = '#2AA298', [11] = '#c96765', [12] = '#288ed7', [13] = '#d6438a', [14] = '#2AA298', [15] = '#979893',
     -- Floating windows in neovim
     [16] = '#efefef',
     -- For folded lines
@@ -229,7 +229,7 @@ wezterm.on('update-status', function(window, pane)
     session_name = session_name .. line
   end
   if session_name == '' then
-    session_name = '[No Active TMUX Session]'
+    session_name = pane:get_title()
   end
 
   local title = wezterm.format {
