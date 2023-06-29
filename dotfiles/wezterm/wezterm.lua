@@ -30,6 +30,8 @@ config.disable_default_key_bindings = true
 config.window_padding = {
   left = 0,
   right = 0,
+  top = 0,
+  bottom = 0,
 }
 
 -- font
@@ -221,9 +223,18 @@ wezterm.on('update-status', function(window, pane)
     foreground_color = dimmed_foreground_colors[foreground_color:lower()]
   end
 
+  local session_name = ''
+	local fh,_ = assert(io.popen([[/bin/sh -c '$HOME/.nix-profile/bin/tmux ls -F "#{?session_attached,#{session_name},}"']]))
+  for line in fh:lines() do
+    session_name = session_name .. line
+  end
+  if session_name == '' then
+    session_name = '[No Active TMUX Session]'
+  end
+
   local title = wezterm.format {
     { Foreground = { Color = foreground_color } },
-    { Text = ' ' .. pane:get_title() .. ' ' },
+    { Text = ' ' .. session_name .. ' ' },
   }
   if is_mac then
     window:set_right_status(title)
