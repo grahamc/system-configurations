@@ -1,0 +1,8 @@
+verbs: [
+    {
+        invocation: edit_leave
+        key: enter
+        apply_to: file
+        external: nvim +{line} {file}
+    }
+]

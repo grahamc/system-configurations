@@ -20,7 +20,6 @@
             "vim-plugin-schemastore-nvim"
             "vim-plugin-vim"
             "vim-plugin-vim-caser"
-            "vim-plugin-broot-vim"
             "vim-plugin-czs-nvim"
             "tmux-plugin-resurrect"
             "tmux-plugin-tmux-suspend"

@@ -1317,19 +1317,43 @@ vim.g.czs_do_not_map = true
 
 -- File Explorer {{{
 Plug(
-  'lstwn/broot.vim',
+  'willothy/flatten.nvim',
   {
     config = function()
-      vim.keymap.set("n", "<M-e>", vim.cmd.BrootCurrentDir, {silent = true})
+      require('flatten').setup()
+      local function open_broot()
+        -- do not replace the current buffer
+        vim.cmd.enew()
+
+        local xdg_config_home = os.getenv('XDG_CONFIG_HOME')
+        if xdg_config_home == nil then
+          xdg_config_home = string.format("%s/.config", vim.fn.expand('~'))
+        end
+        local broot_config_directory = xdg_config_home .. '/broot'
+        local config = broot_config_directory .. '/conf.hjson'
+        local nvim_config = broot_config_directory .. '/nvim.hjson'
+
+        vim.fn.termopen(
+          string.format([[broot --conf '%s;%s']], config, nvim_config),
+          {
+            on_exit = function()
+              vim.cmd.bdelete({_G.broot_buffer, bang = true,})
+            end
+          }
+        )
+        _G.broot_buffer = vim.fn.bufnr()
+        -- rename the terminal buffer
+        vim.cmd.file('broot')
+        vim.cmd.startinsert()
+        vim.opt_local.number = false
+        vim.opt_local.relativenumber = false
+        vim.opt_local.signcolumn = 'no'
+        vim.opt_local.colorcolumn = '0'
+      end
+      vim.keymap.set("n", "<M-e>", open_broot, {silent = true})
     end,
   }
 )
-local xdg_config_home = os.getenv('XDG_CONFIG_HOME')
-if xdg_config_home == nil then
-  xdg_config_home = string.format("%s/.config", vim.fn.expand('~'))
-end
-vim.g.broot_default_conf_path = string.format('%s/broot/conf.hjson', xdg_config_home)
-vim.g.broot_replace_netrw = 1
 -- }}}
 
 -- Autocomplete {{{

@@ -51,7 +51,6 @@
     "vim-plugin-schemastore-nvim" = {url = "github:b0o/SchemaStore.nvim"; flake = false;};
     "vim-plugin-vim" = {url = "github:nordtheme/vim"; flake = false;};
     "vim-plugin-vim-caser" = {url = "github:arthurxavierx/vim-caser"; flake = false;};
-    "vim-plugin-broot-vim" = {url = "github:lstwn/broot.vim"; flake = false;};
     "vim-plugin-czs-nvim" = {url = "github:oncomouse/czs.nvim"; flake = false;};
     "tmux-plugin-resurrect" = {url = "github:tmux-plugins/tmux-resurrect"; flake = false;};
     "tmux-plugin-tmux-suspend" = {url = "github:MunifTanjim/tmux-suspend"; flake = false;};
