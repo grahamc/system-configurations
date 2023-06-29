@@ -213,7 +213,17 @@ config.show_new_tab_button_in_tab_bar = false
 config.show_tab_index_in_tab_bar = false
 -- TODO: idk why I need this
 config.colors = {}
--- Update the status bar with the current window title
+-- Update the status bar with the current tmux session
+--
+-- `popen` runs the specified program with a restricted $PATH so I am starting a login shell to add all of my paths
+-- back. Then I print the location of my tmux binary so I can use it when I update the status. Starting a login shell
+-- is pretty slow I'm disabling wezterm's auto-realoding.
+config.automatically_reload_config = false
+local tmux_command = ''
+local tmux_command_fh,_ = assert(io.popen([[/bin/sh -l -c 'command -v tmux']]))
+for line in tmux_command_fh:lines() do
+  tmux_command = tmux_command .. line
+end
 wezterm.on('update-status', function(window, pane)
   local effective_config = window:effective_config()
   local foreground_color = effective_config.color_schemes[effective_config.color_scheme].foreground
@@ -224,7 +234,7 @@ wezterm.on('update-status', function(window, pane)
   end
 
   local session_name = ''
-	local fh,_ = assert(io.popen([[/bin/sh -c '$HOME/.nix-profile/bin/tmux ls -F "#{?session_attached,#{session_name},}"']]))
+  local fh,_ = assert(io.popen(tmux_command .. [[ ls -F '#{?session_attached,#{session_name},}']]))
   for line in fh:lines() do
     session_name = session_name .. line
   end
@@ -296,6 +306,11 @@ local keybinds = {
     key = 'q',
     mods = 'CMD',
     action = wezterm.action.CloseCurrentTab { confirm = false },
+  },
+  {
+    key = 'r',
+    mods = 'CMD',
+    action = wezterm.action.ReloadConfiguration,
   },
 }
 
