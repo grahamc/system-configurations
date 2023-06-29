@@ -219,14 +219,11 @@ complete myssh --wraps ssh
 
 abbr --add --global chase 'chase --verbose'
 
-function _mybr --wraps br
-    IN_BROOT=1 br $argv
-end
 function cdi --wraps broot --description 'cd interactively'
-    _mybr $argv
+    br $argv
 end
 function dui --wraps broot --description 'Check disk usage interactively'
-    _mybr -w $argv
+    br -w $argv
 end
 
 # cd history keybinds. My terminal maps ctrl+[ and ctrl+] to f7 and f8

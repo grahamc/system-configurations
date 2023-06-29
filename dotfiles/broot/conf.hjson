@@ -33,7 +33,7 @@ verbs: [
         invocation: shell
         key: ctrl-s
         apply_to: any
-        external: fish --init-command "cd {directory}"
+        external: env IN_BROOT=1 fish --init-command "cd {directory}"
         leave_broot: false
     }
     {
