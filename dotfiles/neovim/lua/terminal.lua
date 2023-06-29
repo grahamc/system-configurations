@@ -286,6 +286,22 @@ vim.api.nvim_create_autocmd(
     group = group_id,
   }
 )
+
+local group_id = vim.api.nvim_create_augroup('ToggleCursorlineWithWindowFocus', {})
+vim.api.nvim_create_autocmd(
+  {'FocusGained'},
+  {
+    callback = function() vim.o.cursorline = true end,
+    group = group_id,
+  }
+)
+vim.api.nvim_create_autocmd(
+  {'FocusLost',},
+  {
+    callback = function() vim.o.cursorline = false end,
+    group = group_id,
+  }
+)
 -- }}}
 
 -- Tab pages {{{
