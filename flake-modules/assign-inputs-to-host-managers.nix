@@ -34,15 +34,20 @@
             "stackline"
           ];
         };
-        isInputListed = input:
+        uniqueAssignments = lib.lists.unique (lib.lists.flatten (builtins.attrValues inputListsByHostManager));
+        flakeInputNames = (lib.lists.remove "self" (builtins.attrNames inputs));
+        intersection = lib.lists.intersectLists uniqueAssignments flakeInputNames;
+        intersectionLength = builtins.length intersection;
+        isAssignmentsSameAsFlakeInputs = ((builtins.length uniqueAssignments) == intersectionLength)
+          && ((builtins.length flakeInputNames) == intersectionLength);
+        getExclusive = list:
           let
-            containsInput = builtins.elem input;
-            inputLists = builtins.attrValues inputListsByHostManager;
+            joined = lib.concatStringsSep ", " (lib.lists.subtractLists intersection list);
           in
-            builtins.any containsInput inputLists;
-        inputNames = (lib.lists.remove "self" (builtins.attrNames inputs));
-        unlistedInputs = builtins.filter (input: !(isInputListed input)) inputNames;
-        hasAllInputsListed = unlistedInputs == [];
+            if joined == "" then "<none>" else joined;
+        exclusiveAssignments = getExclusive uniqueAssignments;
+        exclusiveFlakeInputs = getExclusive flakeInputNames;
+
         convertInputListToUpdateFlags = inputList:
           let
             convertInputToUpdateFlag = input: ''--update-input ${lib.strings.escapeShellArgs [input]}'';
@@ -52,15 +57,14 @@
               updateFlags;
           in
             joinedUpdateFlags;
-        joinedUnlistedInputs = lib.concatStringsSep ", " unlistedInputs;
         updateFlagsByHostManager = lib.mapAttrs
           (_ignored: inputList: convertInputListToUpdateFlags inputList)
           inputListsByHostManager;
         # I'm converting the inputs to a set of `--update-input <input>` commandline flags so they be passed directly
         # to the host manager's switch command e.g. `home-manager --switch <update_input_flags>`.
-        updateFlags = if hasAllInputsListed
+        updateFlags = if isAssignmentsSameAsFlakeInputs
           then updateFlagsByHostManager
-          else abort "You need to specify when these inputs should be updated: ${joinedUnlistedInputs}";
+          else abort "The set of inputs assigned to host managers is not the same as the set of flake inputs. Exclusive flake inputs: ${exclusiveFlakeInputs}. Exclusive assignments: ${exclusiveAssignments}";
       in
         {
           lib = {
