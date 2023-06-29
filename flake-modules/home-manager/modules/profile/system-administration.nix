@@ -92,7 +92,6 @@
         "ripgrep/ripgreprc".source = "ripgrep/ripgreprc";
         "ssh/start-my-shell.sh".source = "ssh/start-my-shell.sh";
         "broot/conf.hjson".source = "broot/conf.hjson";
-        "broot/nvim.hjson".source = "broot/nvim.hjson";
       } // optionalAttrs isLinux {
         "pipr/pipr.toml".source = "pipr/pipr.toml";
         "fish/conf.d/pipr.fish".source = "pipr/pipr.fish";

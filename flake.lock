@@ -215,6 +215,7 @@
         "stackline": "stackline",
         "tmux-plugin-resurrect": "tmux-plugin-resurrect",
         "tmux-plugin-tmux-suspend": "tmux-plugin-tmux-suspend",
+        "vim-plugin-broot-vim": "vim-plugin-broot-vim",
         "vim-plugin-cmp-env": "vim-plugin-cmp-env",
         "vim-plugin-czs-nvim": "vim-plugin-czs-nvim",
         "vim-plugin-folding-nvim": "vim-plugin-folding-nvim",
@@ -300,6 +301,22 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "vim-plugin-broot-vim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1680537088,
+        "narHash": "sha256-A5XW+80Q9F0Dfaf6vCutV+ic1wMF3yFRT95UMaBkLBU=",
+        "owner": "lstwn",
+        "repo": "broot.vim",
+        "rev": "0f31a30e67b510661f06ece577225006e35cadcf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lstwn",
+        "repo": "broot.vim",
         "type": "github"
       }
     },
