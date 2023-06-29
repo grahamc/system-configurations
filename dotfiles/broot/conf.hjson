@@ -33,8 +33,10 @@ verbs: [
         invocation: shell
         key: ctrl-s
         apply_to: any
-        external: env IN_BROOT=1 fish --init-command "cd {directory}"
+        # Reconnect to the terminal since broot.vim disconnects from it.
+        external: env IN_BROOT=1 sh -c "exec fish 1>/dev/tty 2>/dev/tty </dev/tty"
         leave_broot: false
+        set_working_dir: true
     }
     {
         key: q
