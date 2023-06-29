@@ -337,3 +337,5 @@ function _man_page
     commandline -f repaint
 end
 mybind --no-focus \ck _man_page
+
+mybind --no-focus \ce edit_command_buffer
