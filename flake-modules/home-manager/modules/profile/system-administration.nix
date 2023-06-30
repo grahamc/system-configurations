@@ -40,6 +40,7 @@
         # These weren't in a docker container
         gnused
         broot
+        yash
       ] ++ optionals isLinux [
         trashy
         pipr
