@@ -78,25 +78,15 @@ function make_commit_in_dotfiles
     end
 end
 
-function is_multi_user_nix_installation
-    # TODO: Nix is considering including a command similar to nix-info in the official nix cli. If they do, use
-    # that instead.
-    # issue: https://github.com/NixOS/nix/issues/3085
-    nix-info | grep -q -E 'multi-user[^,]+yes,'
-end
-# There are two types of Nix installations, single and multi user. This function will run the specified nix command
-# for every user of the Nix installation. In the case of a single-user installation, there is only one user and
-# I assume it's the current user. For multi-user installations, I only ever have two users, root and myself, so
-# I run the command once for root and once for the current user, who I assume is myself.
+# There are two types of Nix installations, single and multi user. I use the multi-user installation with two users,
+# root and myself. Here I run each nix command once for root and once for the current user, who I assume is myself.
 function run_for_each_nix_user --argument-names nix_command
     # Run for the current user
     eval "$nix_command"
 
-    if is_multi_user_nix_installation
-        # Run for the root user. Nix determines the current user based on $HOME so I use --set-home to set $HOME to the
-        # root user's $HOME.
-        eval "sudo --set-home $nix_command"
-    end
+    # Run for the root user. Nix determines the current user based on $HOME so I use --set-home to set $HOME to the
+    # root user's $HOME.
+    eval "sudo --set-home $nix_command"
 end
 function upgrade-nix
     print_banner 'Nix'
