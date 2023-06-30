@@ -89,7 +89,7 @@
           # TODO: The indentation in the script isn't consistent.
           # issue: https://github.com/NixOS/nix/issues/543
           makeOnChangeHook = hookBase:
-            ''#!${pkgs.dash}/bin/dash
+            ''#!${pkgs.yash}/bin/yash
               
               # Assign stdin, stdout, and stderr to the terminal
               exec </dev/tty >/dev/tty 2>&1
