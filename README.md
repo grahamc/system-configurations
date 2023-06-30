@@ -64,14 +64,12 @@ I recommend installing Nix with the following command:
 ```sh
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- \
        install \
-         --extra-conf "trusted-users = $(whoami)" \
-         --extra-conf "auto-optimise-store = false"
+         --extra-conf "trusted-users = $(whoami)"
 ```
 
-This uses the [Determinate Systems Installer](https://github.com/DeterminateSystems/nix-installer) with a few extra options set:
+This uses the [Determinate Systems Installer](https://github.com/DeterminateSystems/nix-installer) with an extra option set:
 
 * `trusted-users`: This adds the current user to the list of trusted users. In Nix, some actions require that your user is trusted, such as adding a cache ([explained below](#adding-the-cache)). Setting this allows you start using Nix immediately after installation without having to edit any configuration files.
-* `auto-optimise-store`: This feature can help decrease the amount of space used by the Nix store and so the installer enables it by default. However, there is also a bug related to this feature that you may encounter so I'd suggest leaving this off until the bug is fixed. You can find the issue for this bug [here](https://github.com/NixOS/nix/issues/7273).
 
 Alternatively, you can use the [official installer](https://nixos.org/download.html), though this one has more steps. The README for the Determinate Systems installer lists the differences between the two.
 
