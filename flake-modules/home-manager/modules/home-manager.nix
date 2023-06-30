@@ -77,7 +77,10 @@
         # Show me what changed everytime I switch generations e.g. version updates or added/removed files.
         home.activation = {
           printGenerationDiff = lib.hm.dag.entryAnywhere ''
-            nix store diff-closures $oldGenPath $newGenPath
+            # On the first activation, there won't be an old generation.
+            if [ -n "''${oldGenPath+set}" ] ; then
+              nix store diff-closures $oldGenPath $newGenPath
+            fi
           '';
         };
 
