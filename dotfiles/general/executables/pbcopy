@@ -5,6 +5,45 @@
 
 set -eu
 
+if [ -n "${SSH_TTY-}" ]; then
+  target_tty="$SSH_TTY"
+elif [ -n "${TMUX-}" ]; then
+  # resolve target terminal to send escape sequence
+  # if we are on remote machine, send directly to SSH_TTY to transport escape sequence
+  # to terminal on local machine, so data lands in clipboard on our local machine
+  pane_active_tty=$(tmux list-panes -F "#{pane_active} #{pane_tty}" | awk '$1=="1" { print $2 }')
+  target_tty="$pane_active_tty"
+# This conditional checks if this process is connected to a terminal.
+# source: https://stackoverflow.com/a/69088164
+elif bash -c ": 1>/dev/tty" 1>/dev/null 2>&1; then
+  target_tty='/dev/tty'
+# If we don't have a terminal to send the escape sequence to, use the system copy utility. For example, when neovim
+# is running headless while embedded in another editor, like vscode.
+else
+  if uname | grep -q Linux; then
+    if command -v wl-copy 1>/dev/null 2>&1; then
+      wl-copy
+    elif command -v xclip 1>/dev/null 2>&1; then
+      xclip -selection clipboard
+    else
+      echo "Error: Can't find the system clipboard copying utility" 1>&2
+    fi
+  else 
+    # Full path for the current executable
+    my_pbcopy="$0"
+    # Find the system pbcopy. This is done by finding all the executables on the path with the name 'pbcopy'
+    # and picking the first one that isn't mine.
+    system_pbcopy="$(which -a pbcopy | grep -v -E "^${my_pbcopy}\$" | head -1)"
+    if [ -x "$system_pbcopy" ]; then
+      "$system_pbcopy"
+    else
+      echo "Error: Can't find the system pbcopy" 1>&2
+    fi
+  fi
+
+  exit
+fi
+
 # Get input either from stdin or a file.
 #
 # Command substitution removes trailing newlines, but I want to keep them so I add a character to the end of the input.
@@ -30,17 +69,5 @@ fi
 
 # build up OSC 52 ANSI escape sequence
 esc="\033]52;c;$( get_input | head -c $maxlen | base64 | tr -d '\r\n' )\a"
-
-if [ -n "${SSH_TTY-}" ]; then
-  target_tty="$SSH_TTY"
-elif [ -n "${TMUX-}" ]; then
-  # resolve target terminal to send escape sequence
-  # if we are on remote machine, send directly to SSH_TTY to transport escape sequence
-  # to terminal on local machine, so data lands in clipboard on our local machine
-  pane_active_tty=$(tmux list-panes -F "#{pane_active} #{pane_tty}" | awk '$1=="1" { print $2 }')
-  target_tty="$pane_active_tty"
-else
-  target_tty='/dev/tty'
-fi
 
 printf %b "$esc" > "$target_tty"
