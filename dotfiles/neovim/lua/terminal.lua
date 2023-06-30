@@ -1672,7 +1672,7 @@ Plug(
           width = 1,
           -- Ideally I'd use a function here so I could set it to '<screen_height> - 1', but this field doesn't support
           -- functions.
-          height = .96,
+          height = 1,
           icons = {
             package_installed = unicode('f0133') .. '  ',
             package_pending = unicode('f251') .. '  ',
