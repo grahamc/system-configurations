@@ -24,9 +24,11 @@ if [ -d "$nix_darwin_bin" ] && uname | grep -q Darwin; then
 fi
 
 # Homebrew
-brew="/usr/local/bin/brew"
-if [ -x "$brew" ]; then
-  eval "$("$brew" shellenv sh)"
+if uname | grep -q Darwin; then
+  brew="/usr/local/bin/brew"
+  if [ -x "$brew" ]; then
+    eval "$("$brew" shellenv sh)"
+  fi
 fi
 
 # go
