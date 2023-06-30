@@ -5,14 +5,9 @@
 
 set -eu
 
+# If we are SSH'd into a remote machine then use the host terminal.
 if [ -n "${SSH_TTY-}" ]; then
   target_tty="$SSH_TTY"
-elif [ -n "${TMUX-}" ]; then
-  # resolve target terminal to send escape sequence
-  # if we are on remote machine, send directly to SSH_TTY to transport escape sequence
-  # to terminal on local machine, so data lands in clipboard on our local machine
-  pane_active_tty=$(tmux list-panes -F "#{pane_active} #{pane_tty}" | awk '$1=="1" { print $2 }')
-  target_tty="$pane_active_tty"
 # This conditional checks if this process is connected to a terminal.
 # source: https://stackoverflow.com/a/69088164
 elif bash -c ": 1>/dev/tty" 1>/dev/null 2>&1; then
