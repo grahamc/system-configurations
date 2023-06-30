@@ -38,12 +38,12 @@ info:15,\
 gutter:-1,\
 pointer:6:bold,\
 prompt:6:regular,\
-border:15:dim,\
+border:15,\
 query:-1:regular,\
 marker:6:bold,\
 header:15,\
 spinner:yellow,\
-hl:cyan:dim,\
+hl:cyan,\
 hl+:regular:cyan:underline,\
 scrollbar:15:dim\
 ' \
