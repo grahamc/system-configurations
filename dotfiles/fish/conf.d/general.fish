@@ -23,6 +23,7 @@ if uname | grep -q Linux
     and flatpak list --app | grep -q 'org.wezfurlong.wezterm'
         alias wezterm 'flatpak run org.wezfurlong.wezterm'
     end
+    abbr --add --global open xdg-open
 end
 
 # sudo

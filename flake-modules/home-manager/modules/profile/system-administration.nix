@@ -46,7 +46,6 @@
         pipr
         clear
         catp
-        open
         # for pstree
         psmisc
         pbpaste
