@@ -16,7 +16,7 @@ vim.o.jumpoptions = 'stack'
 -- persist undo history to disk
 vim.o.undofile = true
 
-local group_id = vim.api.nvim_create_augroup('General', {})
+local general_group_id = vim.api.nvim_create_augroup('General', {})
 vim.api.nvim_create_autocmd(
   'FileType',
   {
@@ -24,7 +24,7 @@ vim.api.nvim_create_autocmd(
     callback = function()
       vim.opt_local.keywordprg = 'man'
     end,
-    group = group_id,
+    group = general_group_id,
   }
 )
 -- Highlight the word under the cursor
@@ -37,7 +37,7 @@ vim.api.nvim_create_autocmd(
         vim.fn.escape(vim.fn.expand([[<cword>]]), [[/\]])
       ))
     end,
-    group = group_id,
+    group = general_group_id,
   }
 )
 -- Don't highlight the word under the cursor for inactive windows
@@ -47,7 +47,7 @@ vim.api.nvim_create_autocmd(
     callback = function()
       vim.cmd('2match none')
     end,
-    group = group_id,
+    group = general_group_id,
   }
 )
 -- After a quickfix command is run, open the quickfix window , if there are results
@@ -58,7 +58,7 @@ vim.api.nvim_create_autocmd(
     callback = function()
       vim.cmd.cwindow()
     end,
-    group = group_id,
+    group = general_group_id,
   }
 )
 vim.api.nvim_create_autocmd(
@@ -68,7 +68,7 @@ vim.api.nvim_create_autocmd(
     callback = function()
       vim.cmd.lwindow()
     end,
-    group = group_id,
+    group = general_group_id,
   }
 )
 -- Put focus back in quickfix window after opening an entry
@@ -79,7 +79,7 @@ vim.api.nvim_create_autocmd(
     callback = function()
       vim.keymap.set('n', '<CR>', '<CR><C-W>p', {buffer = true})
     end,
-    group = group_id,
+    group = general_group_id,
   }
 )
 vim.api.nvim_create_autocmd(
@@ -91,7 +91,7 @@ vim.api.nvim_create_autocmd(
         vim.opt_local.colorcolumn = ''
       end
     end,
-    group = group_id,
+    group = general_group_id,
   }
 )
 vim.api.nvim_create_autocmd(
@@ -101,7 +101,7 @@ vim.api.nvim_create_autocmd(
     callback = function()
       vim.opt_local.colorcolumn = ''
     end,
-    group = group_id,
+    group = general_group_id,
   }
 )
 
@@ -138,8 +138,8 @@ vim.opt.formatoptions:append('r')
 
 -- Open link on mouse click. Works on urls that wrap on to the following line.
 _G.ClickLink = function()
-  cfile = vim.fn.expand('<cfile>')
-  is_url =
+  local cfile = vim.fn.expand('<cfile>')
+  local is_url =
     cfile:match("https?://(([%w_.~!*:@&+$/?%%#-]-)(%w[-.%w]*%.)(%w%w%w?%w?)(:?)(%d*)(/?)([%w_.~!*:@&+$/?%%#=-]*))")
     or cfile:match("ftps?://(([%w_.~!*:@&+$/?%%#-]-)(%w[-.%w]*%.)(%w%w%w?%w?)(:?)(%d*)(/?)([%w_.~!*:@&+$/?%%#=-]*))")
   if is_url then
@@ -165,7 +165,7 @@ vim.keymap.set({"n"}, "<S-u>", '<C-r>')
 
 -- Utilities {{{
 _G.unicode = function(hex)
-  hex_length = #hex
+  local hex_length = #hex
   local unicode_format_specifier = hex_length > 4 and 'U' or 'u'
   return vim.fn.execute(
     string.format(
@@ -195,7 +195,6 @@ end
 -- Autosave {{{
 _G.is_autosave_enabled = true
 _G.is_autosave_job_queued = false
-local group_id = vim.api.nvim_create_augroup('Autosave', {})
 vim.api.nvim_create_autocmd(
   {"TextChanged", "TextChangedI",},
   {
@@ -204,20 +203,20 @@ vim.api.nvim_create_autocmd(
         return
       end
 
-      if is_autosave_job_queued then
+      if _G.is_autosave_job_queued then
         return
       end
 
-      is_autosave_job_queued = true
+      _G.is_autosave_job_queued = true
       vim.defer_fn(
         function()
-          is_autosave_job_queued = false
+          _G.is_autosave_job_queued = false
           vim.cmd("silent! wall")
         end,
         500 -- time in milliseconds between saves
       )
     end,
-    group = group_id,
+    group = vim.api.nvim_create_augroup('Autosave', {}),
   }
 )
 -- }}}
@@ -269,7 +268,6 @@ local function maximize()
 end
 vim.keymap.set('n', '<Leader>m', maximize)
 
-local group_id = vim.api.nvim_create_augroup('Window', {})
 -- Automatically resize all splits to make them equal when the vim window is resized or a new window is created/closed.
 vim.api.nvim_create_autocmd(
   {'VimResized', 'WinNew', 'WinClosed', 'TabEnter',},
@@ -283,23 +281,23 @@ vim.api.nvim_create_autocmd(
       end
       vim.cmd.wincmd('=')
     end,
-    group = group_id,
+    group = vim.api.nvim_create_augroup('Window', {}),
   }
 )
 
-local group_id = vim.api.nvim_create_augroup('ToggleCursorlineWithWindowFocus', {})
+local toggle_cursor_line_group_id = vim.api.nvim_create_augroup('ToggleCursorlineWithWindowFocus', {})
 vim.api.nvim_create_autocmd(
   {'FocusGained'},
   {
     callback = function() vim.o.cursorline = true end,
-    group = group_id,
+    group = toggle_cursor_line_group_id,
   }
 )
 vim.api.nvim_create_autocmd(
   {'FocusLost',},
   {
     callback = function() vim.o.cursorline = false end,
-    group = group_id,
+    group = toggle_cursor_line_group_id,
   }
 )
 -- }}}
@@ -369,20 +367,19 @@ vim.keymap.set({'n', 'x'}, '[<Tab>', '[z')
 vim.keymap.set({'n', 'x'}, ']<Tab>', ']z')
 
 local function SetDefaultFoldMethod()
-  foldmethod = vim.o.foldmethod
-  isFoldmethodOverridable = foldmethod ~= 'marker'
+  local foldmethod = vim.o.foldmethod
+  local isFoldmethodOverridable = foldmethod ~= 'marker'
     and foldmethod ~= 'diff'
     and foldmethod ~= 'expr'
   if isFoldmethodOverridable then
     vim.o.foldmethod = 'indent'
   end
 end
-local group_id = vim.api.nvim_create_augroup('SetDefaultFoldMethod', {})
 vim.api.nvim_create_autocmd(
   'FileType',
   {
     callback = SetDefaultFoldMethod,
-    group = group_id,
+    group = vim.api.nvim_create_augroup('SetDefaultFoldMethod', {}),
   }
 )
 
@@ -480,7 +477,7 @@ local function restore_or_create_session()
   -- piped in and we should load that instead.
   local is_neovim_called_with_no_arguments = #vim.v.argv == 2
   if is_neovim_called_with_no_arguments and has_ttyin then
-    local session_name = string.gsub(os.getenv('PWD'), '/', '%%') .. '%vim'
+    local session_name = string.gsub(vim.fn.getcwd(), '/', '%%') .. '%vim'
     vim.fn.mkdir(session_dir, 'p')
     local session_full_path = session_dir .. '/' .. session_name
     local session_full_path_escaped = vim.fn.fnameescape(session_full_path)
@@ -494,14 +491,14 @@ local function restore_or_create_session()
       })
     end
 
-    local group_id = vim.api.nvim_create_augroup('SaveSession', {})
+    local save_session_group_id = vim.api.nvim_create_augroup('SaveSession', {})
 
     -- Save the session whenever the window layout or active window changes
     vim.api.nvim_create_autocmd(
       {'BufEnter',},
       {
         callback = save_session,
-        group = group_id,
+        group = save_session_group_id,
       }
     )
 
@@ -510,19 +507,18 @@ local function restore_or_create_session()
       {'VimLeavePre',},
       {
         callback = save_session,
-        group = group_id,
+        group = save_session_group_id,
       }
     )
   end
 end
 
 -- Restore/create session after vim starts.
-local group_id = vim.api.nvim_create_augroup('RestoreOrCreateSession', {})
 vim.api.nvim_create_autocmd(
   {'VimEnter',},
   {
     callback = restore_or_create_session,
-    group = group_id,
+    group = vim.api.nvim_create_augroup('RestoreOrCreateSession', {}),
     -- The 'nested' option tells vim to fire events normally while this autocommand is executing. By default, no events
     -- are fired during the execution of an autocommand to prevent infinite loops.
     nested = true,
@@ -618,7 +614,7 @@ _G.StatusLine = function()
 
   local readonly = nil
   if vim.o.readonly then
-    indicator = unicode('f0341')
+    local indicator = unicode('f0341')
     readonly = '%#StatusLineStandoutText#' .. indicator
   end
 
@@ -647,25 +643,25 @@ _G.StatusLine = function()
   local diagnostic_list = {}
   local error_count = diagnostic_count.error
   if error_count > 0 then
-    icon = unicode('f0159') .. ' '
+    local icon = unicode('f0159') .. ' '
     local error = '%#StatusLineErrorText#' .. icon .. error_count
     table.insert(diagnostic_list, error)
   end
   local warning_count = diagnostic_count.warning
   if warning_count > 0 then
-    icon = unicode('f0026') .. ' '
+    local icon = unicode('f0026') .. ' '
     local warning = '%#StatusLineWarningText#' .. icon  .. warning_count
     table.insert(diagnostic_list, warning)
   end
   local info_count = diagnostic_count.info
   if info_count > 0 then
-    icon = unicode('f05a') .. ' '
+    local icon = unicode('f05a') .. ' '
     local info = '%#StatusLineInfoText#' .. icon  .. info_count
     table.insert(diagnostic_list, info)
   end
   local hint_count = diagnostic_count.hint
   if hint_count > 0 then
-    icon = unicode('f0fd') .. ' '
+    local icon = unicode('f0fd') .. ' '
     local hint = '%#StatusLineHintText#' .. icon  .. hint_count
     table.insert(diagnostic_list, hint)
   end
@@ -864,19 +860,19 @@ local function reset_cursor()
   vim.o.guicursor = 'a:ver25-blinkwait0-blinkon200-blinkoff200'
 end
 
-local group_id = vim.api.nvim_create_augroup('Cursor', {})
+local cursor_group_id = vim.api.nvim_create_augroup('Cursor', {})
 vim.api.nvim_create_autocmd(
   {'VimLeave', 'VimSuspend',},
   {
     callback = reset_cursor,
-    group = group_id,
+    group = cursor_group_id,
   }
 )
 vim.api.nvim_create_autocmd(
   {'VimResume',},
   {
     callback = set_cursor,
-    group = group_id,
+    group = cursor_group_id,
   }
 )
 -- }}}
@@ -1042,12 +1038,11 @@ Plug(
     config = function()
       require("virt-column").setup({ char = "│" })
 
-      local group_id = vim.api.nvim_create_augroup('MyVirtColumn', {})
       vim.api.nvim_create_autocmd(
         {'BufWinEnter', 'VimResized',},
         {
           callback = function() vim.cmd.VirtColumnRefresh() end,
-          group = group_id,
+          group = vim.api.nvim_create_augroup('MyVirtColumn', {}),
         }
       )
     end,
@@ -1062,9 +1057,9 @@ Plug(
   {
     branch = '0.1.x',
     config = function()
-      telescope = require('telescope')
-      actions = require('telescope.actions')
-      resolve = require('telescope.config.resolve')
+      local telescope = require('telescope')
+      local actions = require('telescope.actions')
+      local resolve = require('telescope.config.resolve')
 
       telescope.setup({
         defaults = {
@@ -1202,7 +1197,7 @@ Plug(
           scroll_up = '<c-k>',
         },
         -- hide mapping boilerplate
-        hidden = {"<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ ", "<Plug>", "<plug>"}, 
+        hidden = {"<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ ", "<Plug>", "<plug>"},
         layout = {
           height = {
             max = math.floor(vim.o.lines * .25),
@@ -1252,8 +1247,8 @@ Plug(
       })
 
       _G.MaybeSetTreeSitterFoldmethod = function(_)
-        foldmethod = vim.o.foldmethod
-        is_foldmethod_overridable = foldmethod ~= 'manual'
+        local foldmethod = vim.o.foldmethod
+        local is_foldmethod_overridable = foldmethod ~= 'manual'
           and foldmethod ~= 'marker'
           and foldmethod ~= 'diff'
         if require('nvim-treesitter.parsers').has_parser() and is_foldmethod_overridable then
@@ -1279,6 +1274,9 @@ Plug(
       require('nvim_comment').setup({
         comment_empty = false,
         hook = function()
+          -- This is how the docs say it should be called.
+          -- docs: https://github.com/JoosepAlviste/nvim-ts-context-commentstring/wiki/Integrations#nvim-comment
+          ---@diagnostic disable-next-line: missing-parameter
           require("ts_context_commentstring.internal").update_commentstring()
         end,
       })
@@ -1397,8 +1395,6 @@ Plug(
       })
       vim.keymap.set("n", "<M-e>", '<cmd>NvimTreeFindFileToggle<cr>', {silent = true})
 
-      -- nvim-tree has an augroup named 'NvimTree' so I have to use a different name
-      local group_id = vim.api.nvim_create_augroup('__NvimTree', {})
       local function configure_nvim_tree_window()
         if vim.o.filetype ~= 'NvimTree' then
           return
@@ -1411,7 +1407,8 @@ Plug(
         {'BufWinEnter',},
         {
           callback = configure_nvim_tree_window,
-          group = group_id,
+          -- nvim-tree has an augroup named 'NvimTree' so I have to use a different name
+          group = vim.api.nvim_create_augroup('__NvimTree', {}),
         }
       )
     end,
@@ -1534,7 +1531,7 @@ Plug(
       cmp.setup({
         formatting = {
           fields = {'abbr', 'kind'},
-          format = function(entry, vim_item)
+          format = function(_, vim_item)
             vim_item.menu = nil
             vim_item.dup = 0
             return vim_item
@@ -1593,12 +1590,12 @@ Plug(
           end, { 'i', 's' }),
           ['<C-k>'] = cmp.mapping.scroll_docs(-4),
           ['<C-j>'] = cmp.mapping.scroll_docs(4),
-          ["<C-h>"] = cmp.mapping(function(fallback)
+          ["<C-h>"] = cmp.mapping(function(_)
             if luasnip.jumpable(-1) then
               luasnip.jump(-1)
             end
           end, { 'i', 's' }),
-          ["<C-l>"] = cmp.mapping(function(fallback)
+          ["<C-l>"] = cmp.mapping(function(_)
             if luasnip.jumpable(1) then
               luasnip.jump(1)
             end
@@ -2008,13 +2005,13 @@ local function SetNordOverrides()
     vim.api.nvim_set_hl(0, string.format('StatusLineMode%sPowerlineInner', mode), {ctermbg = 8, ctermfg = color,})
   end
 end
-local group_id = vim.api.nvim_create_augroup('NordVim', {})
+local nord_vim_group_id = vim.api.nvim_create_augroup('NordVim', {})
 vim.api.nvim_create_autocmd(
   'ColorScheme',
   {
     pattern = 'nord',
     callback = SetNordOverrides,
-    group = group_id,
+    group = nord_vim_group_id,
   }
 )
 vim.api.nvim_create_autocmd(
@@ -2027,7 +2024,7 @@ vim.api.nvim_create_autocmd(
       -- that even if the colorscheme doesn't exist, an error won't be printed.
       pcall(vim.cmd.colorscheme, 'nord')
     end,
-    group = group_id,
+    group = nord_vim_group_id,
     -- use nested so my colorscheme changes are loaded
     nested = true,
   }
@@ -2036,7 +2033,6 @@ vim.api.nvim_create_autocmd(
 
 -- Install Missing Plugins {{{
 -- Install any plugins that have been registered in the plugfile.vim, but aren't installed
-local group_id = vim.api.nvim_create_augroup('InstallMissingPlugins', {})
 vim.api.nvim_create_autocmd(
   'User',
   {
@@ -2075,7 +2071,7 @@ vim.api.nvim_create_autocmd(
         ))
       end
     end,
-    group = group_id,
+    group = vim.api.nvim_create_augroup('InstallMissingPlugins', {}),
   }
 )
 -- }}}

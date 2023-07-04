@@ -10,13 +10,13 @@ vim.o.fileformats = 'unix,dos,mac'
 vim.o.paragraphs = ''
 vim.o.sections = ''
 
-local group_id = vim.api.nvim_create_augroup('ExtendIskeyword', {})
+local extend_is_keyword_group_id = vim.api.nvim_create_augroup('ExtendIskeyword', {})
 vim.api.nvim_create_autocmd(
   'FileType',
   {
     pattern = 'txt',
     callback = function() vim.opt_local.iskeyword:append('_') end,
-    group = group_id,
+    group = extend_is_keyword_group_id,
   }
 )
 vim.api.nvim_create_autocmd(
@@ -24,7 +24,7 @@ vim.api.nvim_create_autocmd(
   {
     pattern = 'tmux',
     callback = function() vim.opt_local.iskeyword:append('-') end,
-    group = group_id,
+    group = extend_is_keyword_group_id,
   }
 )
 vim.api.nvim_create_autocmd(
@@ -32,7 +32,7 @@ vim.api.nvim_create_autocmd(
   {
     pattern = {'css', 'scss', 'javascriptreact', 'typescriptreact', 'javascript', 'typescript', 'sass', 'postcss',},
     callback = function() vim.opt_local.iskeyword:append('-,?,!') end,
-    group = group_id,
+    group = extend_is_keyword_group_id,
   }
 )
 
@@ -58,9 +58,9 @@ vim.keymap.set({'x'}, '<C-j>', '10j', {remap = true})
 vim.keymap.set({'x'}, '<C-k>', '10k', {remap = true})
 
 -- Always move by screen line, unless a count was specified or we're in a line-wise mode.
-function move_by_screen_line(direction)
-  mode = vim.fn.mode()
-  is_in_linewise_mode = mode == 'V' or mode == ''
+local function move_by_screen_line(direction)
+  local mode = vim.fn.mode()
+  local is_in_linewise_mode = mode == 'V' or mode == ''
   if is_in_linewise_mode then
     return direction
   end
@@ -124,11 +124,11 @@ local function get_char()
   return char
 end
 _G.fast_macro = function()
-  mode = vim.fn.mode()
-  count = vim.v.count1
+  local mode = vim.fn.mode()
+  local count = vim.v.count1
   vim.cmd('execute "normal \\<Esc>"')
 
-  range = ''
+  local range = ''
   for _, visual_mode in pairs({'v', 'V', ''}) do
     if mode == visual_mode then
       range = [['<,'>]]
@@ -157,13 +157,13 @@ _G.fast_macro = function()
   vim.o.lazyredraw = false
 end
 vim.keymap.set({'x', 'n'}, '@', '<Cmd>lua fast_macro()<CR>')
-local group_id = vim.api.nvim_create_augroup('FastMacro', {})
+local fast_macro_group_id = vim.api.nvim_create_augroup('FastMacro', {})
 vim.api.nvim_create_autocmd(
   'RecordingEnter',
   {
     callback = function()
       if _G.fast_macro_events == nil then
-        events = vim.fn.getcompletion('', 'event')
+        local events = vim.fn.getcompletion('', 'event')
 
         for index, event in ipairs(events) do
           if event == 'RecordingLeave' then
@@ -178,7 +178,7 @@ vim.api.nvim_create_autocmd(
       vim.g.old_eventignore = vim.o.eventignore
       vim.o.eventignore = _G.fast_macro_events
     end,
-    group = group_id,
+    group = fast_macro_group_id,
   }
 )
 vim.api.nvim_create_autocmd(
@@ -187,7 +187,7 @@ vim.api.nvim_create_autocmd(
     callback = function()
       vim.o.eventignore = vim.g.old_eventignore
     end,
-    group = group_id,
+    group = fast_macro_group_id,
   }
 )
 
@@ -199,7 +199,6 @@ vim.keymap.set({'n'}, '<C-e>', '$')
 vim.keymap.set({'i'}, '<C-a>', '<ESC>^i')
 vim.keymap.set({'i'}, '<C-e>', '<ESC>$a')
 
-local group_id = vim.api.nvim_create_augroup('Filetype Associations', {})
 vim.api.nvim_create_autocmd(
   {'BufRead', 'BufNewFile',},
   {
@@ -207,13 +206,13 @@ vim.api.nvim_create_autocmd(
     callback = function()
       vim.opt_local.filetype = 'sh'
     end,
-    group = group_id,
+    group = vim.api.nvim_create_augroup('Filetype Associations', {}),
   }
 )
 -- }}}
 
 -- Option overrides {{{
-local group_id = vim.api.nvim_create_augroup('VimDefaultOverrides', {})
+local vim_default_overrides_group_id = vim.api.nvim_create_augroup('VimDefaultOverrides', {})
 
 -- Vim's default filetype plugins get run when filetype detection is enabled (i.e. ':filetype plugin on').
 -- So in order to override settings from vim's filetype plugins, these FileType autocommands need to be registered
@@ -229,7 +228,7 @@ local function override_default_filetype_plugins()
         vim.opt_local.textwidth = 0
         vim.opt_local.wrapmargin = 0
       end,
-      group = group_id,
+      group = vim_default_overrides_group_id,
     }
   )
 
@@ -239,7 +238,7 @@ local function override_default_filetype_plugins()
     {
       pattern = 'vim',
       callback = function() vim.opt_local.keywordprg = ':tab help' end,
-      group = group_id,
+      group = vim_default_overrides_group_id,
     }
   )
 end
@@ -249,7 +248,7 @@ vim.api.nvim_create_autocmd(
   {
     pattern = 'PlugEndPost',
     callback = override_default_filetype_plugins,
-    group = group_id,
+    group = vim_default_overrides_group_id,
   }
 )
 -- }}}

@@ -29,14 +29,14 @@ local function PlugWrapperApplyImmediateConfigs()
   end
 end
 
-function plug_begin()
+_G.plug_begin = function()
   original_plug_begin()
 
   -- Register Plugins
   require('plugfile')
 end
 
-function plug_end()
+_G.plug_end = function()
   original_plug_end()
 
   -- This way code can be run after plugins are loaded, but before 'VimEnter'
