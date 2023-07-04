@@ -93,6 +93,8 @@
           "firefox-developer-edition"
           "finicky"
           "docker"
+          "unnaturalscrollwheels"
+          "MonitorControl"
         ];
         taps = [
           "homebrew/cask-versions"

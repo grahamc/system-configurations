@@ -41,6 +41,10 @@ First, clone the repository and go into its directory by running `git clone http
 
     * Open Finicky to set it as the default browser.
 
+    * Open UnnaturalScrollWheels and enable the alternate detection method.
+
+    * Open MonitorControl and configure it.
+
 ## Running the home configuration
 
 ### Using Nix
