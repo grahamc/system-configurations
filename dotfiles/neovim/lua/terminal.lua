@@ -1700,22 +1700,23 @@ Plug(
   {
     config = function()
       require("mason-lspconfig").setup()
+      local lspconfig = require('lspconfig')
 
       local on_attach = function(client, buffer_number)
-        capabilities = client.server_capabilities
-        buffer_keymap = vim.api.nvim_buf_set_keymap
-        keymap_opts = { noremap = true, silent = true }
+        local capabilities = client.server_capabilities
+        local buffer_keymap = vim.api.nvim_buf_set_keymap
+        local keymap_opts = { noremap = true, silent = true }
 
-        foldmethod = vim.o.foldmethod
-        isFoldmethodOverridable = foldmethod ~= 'marker'
+        local foldmethod = vim.o.foldmethod
+        local isFoldmethodOverridable = foldmethod ~= 'marker'
           and foldmethod ~= 'diff'
           and foldmethod ~= 'expr'
         if capabilities.foldingRangeProvider and isFoldmethodOverridable then
           require('folding').on_attach()
         end
 
-        filetype = vim.o.filetype
-        isKeywordprgOverridable = filetype ~= 'vim' and filetype ~= 'sh'
+        local filetype = vim.o.filetype
+        local isKeywordprgOverridable = filetype ~= 'vim' and filetype ~= 'sh'
         if capabilities.hoverProvider and isKeywordprgOverridable then
           buffer_keymap(buffer_number, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", keymap_opts)
 
@@ -1729,8 +1730,8 @@ Plug(
         end
       end
 
-      cmp_lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
-      folding_capabilities = {
+      local cmp_lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+      local folding_capabilities = {
         textDocument = {
           foldingRange = {
             dynamicRegistration = false,
@@ -1738,7 +1739,7 @@ Plug(
           },
         },
       }
-      capabilities = vim.tbl_deep_extend(
+      local capabilities = vim.tbl_deep_extend(
         'error',
         cmp_lsp_capabilities,
         folding_capabilities
@@ -1749,78 +1750,78 @@ Plug(
         on_attach = on_attach,
       }
 
-      local lspconfig = require('lspconfig')
-      require("mason-lspconfig").setup_handlers({
-        -- Default handler to be called for each installed server that doesn't have a dedicated handler.
-        function (server_name)
-          lspconfig[server_name].setup(default_server_config)
-        end,
+      -- Don't include my configs in the library. Otherwise when I'm working on my dotfiles those files will appear
+      -- twice and lua will tell me my global variables are being redefined.
+      local neovim_lua_library_directories = vim.api.nvim_get_runtime_file("", true)
+      for index,directory in ipairs(neovim_lua_library_directories) do
+        if directory == vim.fn.stdpath('config') then
+          neovim_lua_library_directories[index] = nil
+        end
+      end
+      local server_specific_configs = {
+        jsonls = {
+          settings = {
+            json = {
+              schemas = require('schemastore').json.schemas(),
+              validate = { enable = true },
+            },
+          },
+        },
 
-        ["jsonls"] = function()
-          lspconfig.jsonls.setup(
-            vim.tbl_deep_extend(
-              'force',
-              default_server_config,
-              {
-                settings = {
-                  json = {
-                    schemas = require('schemastore').json.schemas(),
-                    validate = { enable = true },
-                  },
-                },
-              }
-            )
-          )
-        end,
+        lua_ls = {
+          settings = {
+            Lua = {
+              runtime = {
+                -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+                version = 'LuaJIT',
+              },
+              diagnostics = {
+                -- Get the language server to recognize the `vim` global
+                globals = {'vim'},
+              },
+              workspace = {
+                -- Make the server aware of Neovim runtime files
+                library = neovim_lua_library_directories,
+                checkThirdParty = false,
+              },
+              telemetry = {
+                -- Do not send telemetry data containing a randomized but unique identifier
+                enable = false,
+              },
+            },
+          },
+        },
 
-        ["lua_ls"] = function()
-          lspconfig.lua_ls.setup(
-            vim.tbl_deep_extend(
-              'force',
-              default_server_config,
-              {
-                settings = {
-                  Lua = {
-                    runtime = {
-                      -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-                      version = 'LuaJIT',
-                    },
-                    diagnostics = {
-                      -- Get the language server to recognize the `vim` global
-                      globals = {'vim'},
-                    },
-                    workspace = {
-                      -- Make the server aware of Neovim runtime files
-                      library = vim.api.nvim_get_runtime_file("", true),
-                      checkThirdParty = false,
-                    },
-                    telemetry = {
-                      -- Do not send telemetry data containing a randomized but unique identifier
-                      enable = false,
-                    },
-                  },
-                },
-              }
-            )
-          )
-        end,
+        lemminx = {
+          settings = {
+            xml = {
+              catalogs = {'/etc/xml/catalog'},
+            },
+          },
+        },
 
-        ["lemminx"] = function()
-          lspconfig.lemminx.setup(
-            vim.tbl_deep_extend(
-              'force',
-              default_server_config,
-              {
-                settings = {
-                  xml = {
-                    catalogs = {'/etc/xml/catalog'},
-                  },
-                },
-              }
-            )
-          )
-        end,
-      })
+        vale_ls = {
+          filetypes = {
+            -- NOTE: This should have all of the programming languages listed here:
+            -- https://vale.sh/docs/topics/scoping/#code-1
+            'c', 'cs', 'cpp', 'css', 'go', 'haskell', 'java', 'javascript', 'less', 'lua', 'perl', 'php',
+            'python', 'r', 'ruby', 'sass', 'scala', 'swift',
+          },
+        },
+      }
+
+      local server_config_handlers = {}
+      -- Default handler to be called for each installed server that doesn't have a dedicated handler.
+      server_config_handlers[1] = function (server_name)
+        lspconfig[server_name].setup(default_server_config)
+      end
+      -- server-specific handlers
+      for server_name,server_specific_config in pairs(server_specific_configs) do
+        server_config_handlers[server_name] = function()
+          lspconfig[server_name].setup(vim.tbl_deep_extend('force', default_server_config, server_specific_config))
+        end
+      end
+      require("mason-lspconfig").setup_handlers(server_config_handlers)
     end,
   }
 )
@@ -1858,14 +1859,6 @@ Plug(
           }),
           builtins.diagnostics.fish,
           builtins.diagnostics.markdownlint,
-          builtins.diagnostics.vale.with({
-            -- NOTE: This should reflect all of the programming languages listed here:
-            -- https://vale.sh/docs/topics/scoping/#code-1
-            filetypes = {
-              'c', 'cs', 'cpp', 'css', 'go', 'haskell', 'java', 'javascript', 'less', 'lua', 'perl', 'php',
-              'python', 'r', 'ruby', 'sass', 'scala', 'swift',
-            },
-          }),
           builtins.diagnostics.actionlint,
         },
       })
