@@ -1245,7 +1245,7 @@ Plug(
         no_name_title = '[No Name]',
         icons = {
           buffer_index = 'superscript',
-          button = 'x',
+          button = false,
           filetype = {enabled = false,},
           separator = {left = '│', right = ''},
           modified = false,
