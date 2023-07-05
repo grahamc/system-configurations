@@ -397,9 +397,6 @@ vim.o.wildmode = 'longest:full,full'
 vim.o.wildoptions = 'pum'
 vim.o.cmdheight = 0
 vim.o.showcmdloc = 'statusline'
-vim.cmd([[
-  cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
-]])
 vim.keymap.set('c', '<C-a>', '<C-b>', {remap = true})
 -- }}}
 
