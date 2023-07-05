@@ -1267,6 +1267,7 @@ Plug(
           button = 'x',
           filetype = {enabled = false,},
           separator = {left = '│', right = ''},
+          modified = false,
           alternate = {filetype = {enabled = false}},
           current = {},
           inactive = {separator = {left = '│', right = ''},},
@@ -1878,7 +1879,7 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'BufferCurrent', {ctermbg = 8, ctermfg = 'NONE',})
   vim.api.nvim_set_hl(0, 'BufferCurrentIndex', {ctermbg = 8, ctermfg = 6,})
   vim.api.nvim_set_hl(0, 'BufferCurrentSign', {link = 'BufferCurrentIndex'})
-  vim.api.nvim_set_hl(0, 'BufferOffset', {link = 'BufferCurrent'})
+  vim.api.nvim_set_hl(0, 'BufferCurrentMod', {link = 'BufferCurrent'})
   vim.api.nvim_set_hl(0, 'BufferInactive', {ctermbg = 8, ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'BufferInactiveIndex', {link = 'BufferInactive'})
   vim.api.nvim_set_hl(0, 'BufferInactiveSign', {link = 'BufferInactive'})
@@ -1888,9 +1889,10 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'BufferAlternateSign', {link = 'BufferInactiveSign'})
   vim.api.nvim_set_hl(0, 'BufferAlternate', {link = 'BufferInactive'})
   vim.api.nvim_set_hl(0, 'BufferAlternateIndex', {link = 'BufferInactiveIndex'})
-  vim.api.nvim_set_hl(0, 'BufferTabpageFill', {link = 'BufferInactive'})
   vim.api.nvim_set_hl(0, 'BufferTabpages', {ctermbg = 8, ctermfg = 5,})
+  vim.api.nvim_set_hl(0, 'BufferTabpageFill', {link = 'BufferInactive'})
   vim.api.nvim_set_hl(0, 'BufferTabpagesSep', {link = 'BufferTabpages'})
+  vim.api.nvim_set_hl(0, 'BufferOffset', {link = 'BufferCurrent'})
   vim.api.nvim_set_hl(0, 'Explorer', {ctermbg = 'NONE', ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'ExplorerHint', {ctermbg = 'NONE', ctermfg = 6,})
   vim.api.nvim_set_hl(0, 'Comment', {ctermfg = 15, ctermbg = 'NONE',})
