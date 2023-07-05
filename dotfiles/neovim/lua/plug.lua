@@ -42,7 +42,11 @@ _G.plug_end = function()
   -- This way code can be run after plugins are loaded, but before 'VimEnter'
   vim.api.nvim_exec_autocmds('User', {pattern = 'PlugEndPost'})
 
-  PlugWrapperApplyImmediateConfigs()
+  -- Apply the configurations after everything else that is currently on the event loop. Now
+  -- configs are applied after any files specified on the commandline are opened and after sessions are restored.
+  -- This way, neovim shows me the first file "instantly" and by the time I've looked at the file and decided on my
+  -- first keypress, the plugin configs have already been applied.
+  vim.fn.timer_start(0, PlugWrapperApplyImmediateConfigs)
 end
 
 -- Similar to the vim-plug `Plug` command, but with an additional option to specify a function to run after a

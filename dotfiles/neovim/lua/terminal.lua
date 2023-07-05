@@ -1407,10 +1407,7 @@ Plug(
         history = true,
         delete_check_events = "TextChanged",
       })
-      local timer = vim.loop.new_timer()
-      timer:start(0, 0, vim.schedule_wrap(function()
-        require('luasnip.loaders.from_vscode').load()
-      end))
+      require('luasnip.loaders.from_vscode').lazy_load()
     end
   }
 )
