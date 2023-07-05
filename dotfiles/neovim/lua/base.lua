@@ -209,6 +209,25 @@ vim.api.nvim_create_autocmd(
     group = vim.api.nvim_create_augroup('Filetype Associations', {}),
   }
 )
+
+-- Autocommands get executed without smagic so I make sure that I explicitly specify it on the commandline
+-- so if my autocommand has a substitute command it will use smagic.
+_G.smagic_abbrev = function()
+  if vim.fn.getcmdtype() ~= ':' then
+    return 's'
+  end
+
+  local cmdline = vim.fn.getcmdline()
+  if cmdline == 's' or cmdline == [['<,'>s]] then
+    return 'smagic'
+  end
+
+  return 's'
+end
+vim.cmd([[
+  cnoreabbrev <expr> s v:lua.smagic_abbrev()
+  cnoreabbrev <expr> %s getcmdtype() == ':' && getcmdline() == '%s' ? '%smagic' : '%s'
+]])
 -- }}}
 
 -- Option overrides {{{
