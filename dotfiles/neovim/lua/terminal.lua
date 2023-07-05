@@ -1673,7 +1673,12 @@ Plug(
           and foldmethod ~= 'diff'
           and foldmethod ~= 'expr'
         if capabilities.foldingRangeProvider and isFoldmethodOverridable then
-          require('folding').on_attach()
+          -- folding-nvim prints a message if any attached language server does not support folding so I'm suppressing
+          -- that.
+          vim.cmd.lua({
+            args = {[[require('folding').on_attach()]]},
+            silent = true,
+          })
         end
 
         local filetype = vim.o.filetype
