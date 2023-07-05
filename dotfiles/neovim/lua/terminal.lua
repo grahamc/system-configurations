@@ -1269,7 +1269,7 @@ Plug(
         -- If this is the last window and tab, close the buffer and if that was the last buffer, close vim.
         local window_count = vim.fn.winnr('$')
         local tab_count = vim.fn.tabpagenr('$')
-        if tab_count == 1 and window_count == 1 then
+        if tab_count == 1 and (window_count == 1 or (window_count == 2 and require('nvim-tree.api').tree.is_visible())) then
           local buffer_count_before_closing = #vim.fn.getbufinfo({buflisted = 1,})
           vim.cmd.BufferClose()
           if buffer_count_before_closing == 1 then
