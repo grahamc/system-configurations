@@ -928,8 +928,30 @@ vim.keymap.set('n', 'gn', vim.lsp.buf.rename, {desc = "Rename"})
 -- }}}
 
 -- Terminal {{{
-vim.api.nvim_create_autocmd({"TermOpen"}, { callback = function() vim.o.showtabline = 0 end, })
-vim.api.nvim_create_autocmd({"TermClose"}, { callback = function() vim.o.showtabline = 1 end, })
+vim.api.nvim_create_autocmd(
+  "TermOpen",
+  {
+    callback = function()
+      vim.o.showtabline = 0
+      vim.opt_local.number = false
+      vim.opt_local.relativenumber = false
+      vim.opt_local.cursorline = false
+      vim.cmd.startinsert()
+    end,
+  }
+)
+vim.api.nvim_create_autocmd(
+  "TermClose",
+  {
+    callback = function()
+      vim.o.showtabline = 1
+      vim.cmd.bdelete({
+        args = {vim.fn.expand('<abuf>')},
+        bang = true,
+      })
+    end,
+  }
+)
 -- }}}
 
 -- Plugins {{{
