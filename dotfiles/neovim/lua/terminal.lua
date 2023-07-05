@@ -228,31 +228,6 @@ vim.o.splitbelow = true
 vim.keymap.set('n', '<Leader><Bar>', '<Cmd>vsplit<CR>')
 vim.keymap.set('n', '<Leader>-', '<Cmd>split<CR>')
 
--- close a window, quit if last window
--- also when closing a tab, go to the previously opened tab
-local function close()
-  -- TODO: Filter out floating windows or else it will throw an error when one editor and one floating window are open.
-  if vim.fn.winnr('$') > 1 then
-    vim.cmd.close()
-    return
-  end
-
-  local last_tab = vim.fn.tabpagenr('#')
-  vim.cmd.q()
-  vim.cmd(string.format(
-    [[silent! tabnext %s]],
-    last_tab
-  ))
-end
-vim.keymap.set(
-  'n',
-  '<C-q>',
-  close,
-  {
-    silent = true,
-  }
-)
-
 -- TODO: When tmux is able to differentiate between enter and ctrl+m this mapping should be updated.
 -- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
 --
@@ -300,17 +275,6 @@ vim.api.nvim_create_autocmd(
     group = toggle_cursor_line_group_id,
   }
 )
--- }}}
-
--- Tab pages {{{
-vim.keymap.set('n', '<C-t>', function() vim.cmd('$tabnew') end, {silent = true})
-vim.keymap.set({'n', 'i'}, '<F7>', vim.cmd.tabprevious, {silent = true})
-vim.keymap.set({'n', 'i'}, '<F8>', vim.cmd.tabnext, {silent = true})
-
--- Switch tabs with <Leader><tab number>
-for window_index=1,9 do
-  vim.keymap.set('n', '<Leader>' .. window_index, function() vim.cmd('silent! tabnext ' .. tostring(window_index)) end)
-end
 -- }}}
 
 -- Indentation {{{
@@ -770,80 +734,6 @@ end
 
 vim.o.laststatus = 3
 vim.o.statusline = '%!v:lua.StatusLine()'
--- }}}
-
--- Tabline {{{
-_G.superscript_numbers = {
-  "¹",
-  "²",
-  "³",
-  "⁴",
-  "⁵",
-  "⁶",
-  "⁷",
-  "⁸",
-  "⁹",
-}
-
-_G.Tabline = function()
-  local tabline = ''
-
-  local current_tab_index = vim.fn.tabpagenr()
-  for tab_index=1,vim.fn.tabpagenr('$') do
-    local is_current_tab = tab_index == current_tab_index
-
-    local tab_index_highlight = '%#TabLineIndex#'
-    if is_current_tab then
-      tab_index_highlight = '%#TabLineIndexSel#'
-    end
-
-    local window_number = vim.fn.tabpagewinnr(tab_index)
-    local buffer_list = vim.fn.tabpagebuflist(tab_index)
-    local buffer_number = buffer_list[window_number]
-    local buffer_name = vim.fn.bufname(buffer_number)
-    if buffer_name == '' then
-      buffer_name = '[No Name]'
-    else
-      buffer_name = vim.fn.fnamemodify(buffer_name, ':t')
-    end
-    local buffer_name_highlight = '%#TabLine#'
-    if is_current_tab then
-      buffer_name_highlight = '%#TabLineSel#'
-    end
-    local superscipt_tab_index = '⁺'
-    if tab_index <= 9 then
-      superscipt_tab_index = superscript_numbers[tab_index]
-    end
-    buffer_name = buffer_name_highlight .. '  ' .. tab_index_highlight .. superscipt_tab_index .. buffer_name_highlight .. ' ' .. buffer_name .. buffer_name_highlight .. '   '
-
-    local tab_marker = '%' .. tab_index .. 'T'
-
-    local tab = tab_marker .. buffer_name .. '%#TabLineFill# '
-
-    tabline = tabline .. tab
-  end
-
-  tabline = '%#TabLineFill#%=' .. tabline .. '%#TabLineFill#%='
-
-  local is_explorer_open = vim.fn.getwinvar(1, 'is_explorer', false)
-  if is_explorer_open then
-    local icon = unicode('f4d3')
-    local title = ' ' .. icon .. ' File Explorer'
-
-    local title_length = string.len(title)
-    local remaining_spaces_count = (vim.fn.winwidth(1) - title_length) + 2
-    local left_pad_length = math.floor(remaining_spaces_count / 2)
-    local right_pad_length = left_pad_length
-    if remaining_spaces_count % 2 == 1 then
-      right_pad_length = right_pad_length + 1
-    end
-
-    tabline = '%#ExplorerTabLine#' .. string.rep(' ', left_pad_length) .. title .. string.rep(' ', right_pad_length) .. '%#WinSeparator#' .. (vim.opt.fillchars:get().vert or '│') .. '%<' .. tabline
-  end
-
-  return tabline
-end
-vim.o.tabline = '%!v:lua.Tabline()'
 -- }}}
 
 -- Cursor {{{
@@ -1351,6 +1241,65 @@ Plug(
   }
 )
 vim.g.czs_do_not_map = true
+
+Plug(
+  'romgrk/barbar.nvim',
+  {
+    config = function()
+      require('barbar').setup({
+        auto_hide = true,
+        focus_on_close = 'previous',
+        insert_at_end = true,
+        no_name_title = '[No Name]',
+        icons = {
+          buffer_index = 'superscript',
+          button = 'x',
+          filetype = {enabled = false,},
+          separator = {left = '│', right = ''},
+          alternate = {filetype = {enabled = false}},
+          current = {},
+          inactive = {separator = {left = '│', right = ''},},
+          visible = {modified = {buffer_number = false}},
+        },
+        sidebar_filetypes = {NvimTree = {text = '' .. unicode('f4d3') .. ' File Explorer',},},
+      })
+
+      vim.keymap.set({'n', 'i'}, '<F7>', vim.cmd.BufferPrevious, {silent = true})
+      vim.keymap.set({'n', 'i'}, '<F8>', vim.cmd.BufferNext, {silent = true})
+
+      -- Switch tabs with <Leader><tab number>
+      for window_index=1,9 do
+        vim.keymap.set('n', '<Leader>' .. window_index, function() vim.cmd.BufferGoto(window_index) end)
+      end
+
+      local function close()
+        -- If this is the last window and tab, close the buffer and if that was the last buffer, close vim.
+        local window_count = vim.fn.winnr('$')
+        local tab_count = vim.fn.tabpagenr('$')
+        if tab_count == 1 and window_count == 1 then
+          local buffer_count_before_closing = #vim.fn.getbufinfo({buflisted = 1,})
+          vim.cmd.BufferClose()
+          if buffer_count_before_closing == 1 then
+            vim.cmd.quit()
+          end
+          return
+        end
+
+        -- If the buffer is only open in the current window, close the buffer
+        local buffer = vim.fn.bufnr()
+        local buffer_window_count = #vim.fn.win_findbuf(buffer)
+        if buffer_window_count == 1 then
+          vim.cmd.BufferClose()
+        end
+
+        -- Close the window
+        vim.cmd.close()
+      end
+      vim.keymap.set('n', '<C-q>', close, {silent = true,})
+    end,
+  }
+)
+vim.g.barbar_auto_setup = false
 -- }}}
 
 -- File Explorer {{{
@@ -1423,7 +1372,7 @@ Plug(
         end
 
         vim.w.is_explorer = true
-        vim.opt_local.winbar = '%#TabLineSel#%= Press %#NvimTreeWinBar#g?%#TabLineSel# for help%='
+        vim.opt_local.winbar = '%#BufferCurrent# Press %#BufferCurrentIndex#g?%#BufferCurrent# for help'
       end
       vim.api.nvim_create_autocmd(
         {'BufWinEnter',},
@@ -1915,11 +1864,10 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'LineNrBelow', {link = 'LineNrAbove'})
   vim.api.nvim_set_hl(0, 'WordUnderCursor', {ctermbg = 8,})
   vim.api.nvim_set_hl(0, 'IncSearch', {link = 'Search'})
-  vim.api.nvim_set_hl(0, 'TabLine', {ctermbg = 8, ctermfg = 15,})
-  vim.api.nvim_set_hl(0, 'TabLineSel', {ctermbg = 8, ctermfg = 'NONE',})
-  vim.api.nvim_set_hl(0, 'TabLineFill', {ctermbg = 8,})
-  vim.api.nvim_set_hl(0, 'TabLineIndexSel', {ctermbg = 8, ctermfg = 6,})
-  vim.api.nvim_set_hl(0, 'TabLineIndex', {link = 'TabLine'})
+  vim.api.nvim_set_hl(0, 'BufferCurrent', {ctermbg = 8, ctermfg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'BufferCurrentIndex', {ctermbg = 8, ctermfg = 6,})
+  vim.api.nvim_set_hl(0, 'BufferCurrentSign', {link = 'BufferCurrentIndex'})
+  vim.api.nvim_set_hl(0, 'BufferOffset', {link = 'BufferCurrent'})
   vim.api.nvim_set_hl(0, 'Comment', {ctermfg = 15, ctermbg = 'NONE',})
   -- This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
   -- By unsetting this, I ensure that terminals opened in vim will use the colors from the color palette of the
@@ -2010,7 +1958,6 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'StatusLinePowerlineOuter', {ctermbg = 'NONE', ctermfg = 8,})
   vim.api.nvim_set_hl(0, 'NvimTreeWinBar', {ctermfg = 6, ctermbg = 8,})
   vim.api.nvim_set_hl(0, 'NvimTreeIndentMarker', {ctermfg = 15,})
-  vim.api.nvim_set_hl(0, 'ExplorerTabLine', {link = 'NvimTreeWinBar'})
   vim.api.nvim_set_hl(0, 'MsgArea', {link = 'StatusLine',})
   local mode_highlights = {
     {mode = 'Normal', color = 'NONE',},
