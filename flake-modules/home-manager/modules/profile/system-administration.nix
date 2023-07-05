@@ -21,7 +21,12 @@
         duf
         fd
         fzfWithoutShellConfig
-        gping
+        # TODO: One of the check dependencies is a linux-only programs so I'm disabling the check to get this
+        # to build on macOS.
+        # pull request that introduced it: https://github.com/NixOS/nixpkgs/pull/240911
+        (gping.overrideAttrs
+          (old: {doCheck = false;})
+        )
         jq
         lsd
         moreutils
