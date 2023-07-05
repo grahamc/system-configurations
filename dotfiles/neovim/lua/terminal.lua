@@ -1272,7 +1272,7 @@ Plug(
           inactive = {separator = {left = '│', right = ''},},
           visible = {modified = {buffer_number = false}},
         },
-        sidebar_filetypes = {NvimTree = {text = '' .. unicode('f4d3') .. ' File Explorer',},},
+        sidebar_filetypes = {NvimTree = {text = unicode('f4d3') .. ' File Explorer',},},
       })
 
       vim.keymap.set({'n', 'i'}, '<F7>', vim.cmd.BufferPrevious, {silent = true})
