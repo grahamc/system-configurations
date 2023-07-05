@@ -122,7 +122,10 @@
             ApplePressAndHoldEnabled = false;
             NSAutomaticQuoteSubstitutionEnabled = false;
           };
-          dock.autohide = true;
+          dock = {
+            autohide = true;
+            mru-spaces = false;
+          };
           trackpad = {
             Clicking = true;
             Dragging = true;
