@@ -438,7 +438,7 @@ local function restore_or_create_session()
     local session_full_path = session_dir .. '/' .. session_name
     local session_full_path_escaped = vim.fn.fnameescape(session_full_path)
     if vim.fn.filereadable(session_full_path) ~= 0 then
-      vim.cmd.source(session_full_path_escaped)
+      vim.cmd('silent source ' .. session_full_path_escaped)
     else
       vim.cmd({
         cmd = 'mksession',
@@ -1672,10 +1672,7 @@ Plug(
         if capabilities.foldingRangeProvider and isFoldmethodOverridable then
           -- folding-nvim prints a message if any attached language server does not support folding so I'm suppressing
           -- that.
-          vim.cmd.lua({
-            args = {[[require('folding').on_attach()]]},
-            silent = true,
-          })
+          vim.cmd([[silent lua require('folding').on_attach()]])
         end
 
         local filetype = vim.o.filetype
