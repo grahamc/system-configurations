@@ -1014,7 +1014,7 @@ Plug(
           },
           borderchars = {'─', ' ', ' ', ' ', '─', '─', ' ', ' ',},
           dynamic_preview_title = true,
-          results_title = '(C-q: quickfix, C-t: new tab, C-{v,h}: vertical/horizontal split)',
+          results_title = '(C-q: quickfix, C-{v,h}: vertical/horizontal split)',
         },
         pickers = {
           find_files = {
