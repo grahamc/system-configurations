@@ -1383,7 +1383,7 @@ Plug(
         end
 
         vim.w.is_explorer = true
-        vim.opt_local.winbar = '%#BufferCurrent# Press %#BufferCurrentIndex#g?%#BufferCurrent# for help'
+        vim.opt_local.winbar = '%#Explorer# Press %#ExplorerHint#g?%#Explorer# for help'
       end
       vim.api.nvim_create_autocmd(
         {'BufWinEnter',},
@@ -1889,6 +1889,10 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'BufferAlternate', {link = 'BufferInactive'})
   vim.api.nvim_set_hl(0, 'BufferAlternateIndex', {link = 'BufferInactiveIndex'})
   vim.api.nvim_set_hl(0, 'BufferTabpageFill', {link = 'BufferInactive'})
+  vim.api.nvim_set_hl(0, 'BufferTabpages', {ctermbg = 8, ctermfg = 5,})
+  vim.api.nvim_set_hl(0, 'BufferTabpagesSep', {link = 'BufferTabpages'})
+  vim.api.nvim_set_hl(0, 'Explorer', {ctermbg = 'NONE', ctermfg = 15,})
+  vim.api.nvim_set_hl(0, 'ExplorerHint', {ctermbg = 'NONE', ctermfg = 6,})
   vim.api.nvim_set_hl(0, 'Comment', {ctermfg = 15, ctermbg = 'NONE',})
   -- This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
   -- By unsetting this, I ensure that terminals opened in vim will use the colors from the color palette of the
