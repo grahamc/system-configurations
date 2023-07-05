@@ -45,6 +45,8 @@ First, clone the repository and go into its directory by running `git clone http
 
     * Open MonitorControl and configure it.
 
+    * Get "Mac Mouse Fix" and configure it.
+
 ## Running the home configuration
 
 ### Using Nix
