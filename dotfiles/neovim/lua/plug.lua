@@ -40,7 +40,7 @@ _G.plug_end = function()
   original_plug_end()
 
   -- This way code can be run after plugins are loaded, but before 'VimEnter'
-  vim.cmd('doautocmd User PlugEndPost')
+  vim.api.nvim_exec_autocmds('User', {pattern = 'PlugEndPost'})
 
   PlugWrapperApplyImmediateConfigs()
 end
