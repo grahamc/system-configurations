@@ -35,6 +35,10 @@ fi
 export GOPATH="$HOME/.local/share/go"
 export PATH="$GOPATH/bin:$PATH"
 
+# python
+# Setting this so python doesn't create `__pycache__` folders in the current directory whenever I run a script
+export PYTHONDONTWRITEBYTECODE=1
+
 # Adding this to the PATH since this is where user-specific executables should go, per the
 # XDG Base Directory spec.
 # More info: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
