@@ -560,9 +560,6 @@ _G.StatusLine = function()
     filetype = '%#StatusLine#' .. vim.o.filetype
   end
 
-  local filename = vim.fn.pathshorten(vim.fn.expand('%:.'), 1)
-  local file_info = '%#StatusLine#' .. filename .. '%w%q'
-
   local fileformat = nil
   if vim.o.fileformat ~= 'unix' then
     fileformat = string.format('%%#StatusLineStandoutText#[%s]', vim.o.fileformat)
@@ -694,7 +691,6 @@ _G.StatusLine = function()
   if filetype then
     table.insert(left_side_items, filetype)
   end
-  table.insert(left_side_items, file_info)
   if fileformat then
     table.insert(left_side_items, fileformat)
   end
@@ -1239,7 +1235,6 @@ Plug(
   {
     config = function()
       require('barbar').setup({
-        auto_hide = true,
         focus_on_close = 'previous',
         insert_at_end = true,
         no_name_title = '[No Name]',
