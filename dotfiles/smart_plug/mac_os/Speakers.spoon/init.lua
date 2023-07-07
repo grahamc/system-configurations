@@ -30,7 +30,7 @@ local function execute(executable, arguments, callback)
 	):start()
 end
 
-local speakerctl_path = '/Users/biggs/.nix-profile/bin/speakerctl'
+local speakerctl_path = os.getenv('HOME') .. '/.nix-profile/bin/speakerctl'
 
 local function turn_on()
 	execute(
