@@ -59,6 +59,10 @@
                   LOCALE_ARCHIVE_2_11 = "";
                 });
                 config.xdg.mime.enable = lib.mkForce false;
+                config.home.file.".hammerspoon/Spoons/EmmyLua.spoon" = lib.mkForce {
+                  source = makeEmptyPackage "stub-spoon";
+                  recursive = false;
+                };
               };
             homeManagerOutput = self.lib.home.makeFlakeOutput system {
               inherit hostName;

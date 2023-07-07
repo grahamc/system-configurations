@@ -255,11 +255,11 @@
       "locked": {
         "lastModified": 1,
         "narHash": "sha256-dZSrWrKRYLF+YKg0Ir4C9S/hSRPm02gtwOTTrt04gow=",
-        "path": "/nix/store/qa8lkyg3physmwcfkrnkdkksvvhxwwfv-source/dotfiles/smart_plug",
+        "path": "/nix/store/zz1k0i67gl8683kr3v4x0i1wfhawf9ya-source/dotfiles/smart_plug",
         "type": "path"
       },
       "original": {
-        "path": "/nix/store/qa8lkyg3physmwcfkrnkdkksvvhxwwfv-source/dotfiles/smart_plug",
+        "path": "/nix/store/zz1k0i67gl8683kr3v4x0i1wfhawf9ya-source/dotfiles/smart_plug",
         "type": "path"
       }
     },
