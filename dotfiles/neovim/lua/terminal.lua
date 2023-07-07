@@ -538,7 +538,7 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.cursorline = true
 vim.o.cursorlineopt = 'number,screenline'
-vim.o.showtabline = 1
+vim.o.showtabline = 2
 vim.o.wrap = true
 -- chars to represent tabs and spaces when 'setlist' is enabled
 vim.o.listchars = 'tab:¬-,space:·'
@@ -1867,6 +1867,12 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'BufferTabpages', {ctermbg = 8, ctermfg = 5,})
   vim.api.nvim_set_hl(0, 'BufferTabpageFill', {link = 'BufferInactive'})
   vim.api.nvim_set_hl(0, 'BufferTabpagesSep', {link = 'BufferTabpages'})
+  -- The TabLine* highlights are the so the tabline looks blank before barbar populates it so it needs the same
+  -- background color as barbar. The foreground needs to match the background so you can't see the text from the
+  -- original tabline function.
+  vim.api.nvim_set_hl(0, 'TabLine', {ctermbg = 8, ctermfg = 8,})
+  vim.api.nvim_set_hl(0, 'TabLineFill', {link = 'TabLine'})
+  vim.api.nvim_set_hl(0, 'TabLineSel', {link = 'TabLine'})
   vim.api.nvim_set_hl(0, 'BufferOffset', {link = 'BufferCurrent'})
   vim.api.nvim_set_hl(0, 'Explorer', {ctermbg = 'NONE', ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'ExplorerHint', {ctermbg = 'NONE', ctermfg = 6,})
