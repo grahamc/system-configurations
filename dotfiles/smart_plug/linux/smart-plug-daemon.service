@@ -2,7 +2,7 @@
 Description=Smart Plug Daemon
 
 [Service]
-ExecStart=/home/biggs/.nix-profile/bin/nix run /home/biggs/.dotfiles/smart-plug
+ExecStart=/home/biggs/.nix-profile/bin/speakerctl
 
 [Install]
 WantedBy=multi-user.target

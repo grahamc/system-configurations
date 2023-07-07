@@ -68,6 +68,24 @@
         "type": "github"
       }
     },
+    "flake-utils_2": {
+      "inputs": {
+        "systems": "systems_2"
+      },
+      "locked": {
+        "lastModified": 1681202837,
+        "narHash": "sha256-H+Rh19JDwRtpVPAWp64F+rlEtxUWBAQW28eAi3SRSzg=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "cfacdce06f30d2b68473a46042957675eebb3401",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "gomod2nix": {
       "inputs": {
         "nixpkgs": [
@@ -212,6 +230,8 @@
         "nix-index-database": "nix-index-database",
         "nix-xdg": "nix-xdg",
         "nixpkgs": "nixpkgs",
+        "speakers": "speakers",
+        "spoons": "spoons",
         "stackline": "stackline",
         "tmux-plugin-resurrect": "tmux-plugin-resurrect",
         "tmux-plugin-tmux-suspend": "tmux-plugin-tmux-suspend",
@@ -223,6 +243,40 @@
         "vim-plugin-vim-CursorLineCurrentWindow": "vim-plugin-vim-CursorLineCurrentWindow",
         "vim-plugin-vim-caser": "vim-plugin-vim-caser",
         "vim-plugin-virt-column-nvim": "vim-plugin-virt-column-nvim"
+      }
+    },
+    "speakers": {
+      "inputs": {
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1,
+        "narHash": "sha256-dZSrWrKRYLF+YKg0Ir4C9S/hSRPm02gtwOTTrt04gow=",
+        "path": "/nix/store/qa8lkyg3physmwcfkrnkdkksvvhxwwfv-source/dotfiles/smart_plug",
+        "type": "path"
+      },
+      "original": {
+        "path": "/nix/store/qa8lkyg3physmwcfkrnkdkksvvhxwwfv-source/dotfiles/smart_plug",
+        "type": "path"
+      }
+    },
+    "spoons": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1680861546,
+        "narHash": "sha256-WglkABrf81CwCWXUj+Y7j1mVJo5hl8vr6RU/tyVCHzM=",
+        "owner": "Hammerspoon",
+        "repo": "Spoons",
+        "rev": "85c47f7abdd49b6d7dfe6ed90cf61e6800bfdda1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Hammerspoon",
+        "repo": "Spoons",
+        "type": "github"
       }
     },
     "stackline": {
@@ -242,6 +296,21 @@
       }
     },
     "systems": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_2": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",

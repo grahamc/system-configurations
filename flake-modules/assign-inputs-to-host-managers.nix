@@ -27,10 +27,12 @@
             "fish-plugin-async-prompt"
             "nix-xdg"
             "gomod2nix"
+            "speakers"
           ];
           darwin = home ++ [
             "nix-darwin"
             "stackline"
+            "spoons"
           ];
         };
         uniqueAssignments = lib.lists.unique (lib.lists.flatten (builtins.attrValues inputListsByHostManager));

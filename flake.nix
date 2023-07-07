@@ -34,8 +34,20 @@
       url = "github:AdamWagner/stackline";
       flake = false;
     };
+    # TODO: I should do a sparse checkout to get the single Spoon I need.
+    # issue: https://github.com/NixOS/nix/issues/5811
+    spoons = {
+      url = "github:Hammerspoon/Spoons";
+      flake = false;
+    };
     gomod2nix = {
       url = "github:nix-community/gomod2nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
+    speakers = {
+      url = "./dotfiles/smart_plug";
       inputs = {
         nixpkgs.follows = "nixpkgs";
       };

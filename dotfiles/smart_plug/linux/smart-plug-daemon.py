@@ -1,23 +1,32 @@
-import os, atexit, asyncio, sys, socket, time, signal
-from collections.abc import Callable, Awaitable
+import atexit
+import signal
+import socket
+import sys
+import time
+from collections.abc import Callable
+
+sys.path.append('..')
 
 import dbus
 from dbus.mainloop import glib
 from gi.repository import GLib
-from kasa import Discover
+from smart_plug import SmartPlugController
+
 
 class SleepWakeShutdownListener(object):
     def __init__(self,
                  sleep_handler: Callable = None,
                  wake_handler: Callable = None,
                  shutdown_handler: Callable = None):
-        # Doing this as early as possible since the main loop provider must be set before
-        # any communication over the bus occurs e.g. registering signal handlers, getting a bus object
+        # Doing this as early as possible since the main loop provider must be set
+        # before any communication over the bus occurs e.g. registering signal handlers,
+        # getting a bus object
         self._set_default_main_loop_provider()
 
         self._login1_manager = self._get_login1_manager()
-        # This main loop set here must match the main loop provider that dbus is configured to use.
-        # The dbus main loop provider is set in _set_default_main_loop_provider
+        # This main loop set here must match the main loop provider that dbus is
+        # configured to use. The dbus main loop provider is set in
+        # _set_default_main_loop_provider
         self._main_loop = GLib.MainLoop()
 
         self._register_sleep_signal_handlers(sleep_handler=sleep_handler,
@@ -64,24 +73,6 @@ class SleepWakeShutdownListener(object):
         login1_proxy = dbus.SystemBus().get_object(bus_name='org.freedesktop.login1',
                                                    object_path='/org/freedesktop/login1')
         return dbus.Interface(login1_proxy, 'org.freedesktop.login1.Manager')
-
-class SmartPlugController(object):
-    def __init__(self, plug_alias: str):
-        ip_address_to_device_map = self._block_until_complete(Discover.discover())
-        devices = ip_address_to_device_map.values()
-        for device in devices:
-            if device.alias == plug_alias and device.is_plug:
-                self.plug = device
-                break
-
-    def turn_off(self):
-        self._block_until_complete(self.plug.turn_off())
-
-    def turn_on(self):
-        self._block_until_complete(self.plug.turn_on())
-
-    def _block_until_complete(self, awaitable: Awaitable):
-        return asyncio.get_event_loop().run_until_complete(awaitable)
 
 def register_exit_handler(handler: Callable, listener: SleepWakeShutdownListener):
     atexit.register(handler)
@@ -135,7 +126,8 @@ if __name__ == '__main__':
     wait_for_network_online()
     plug_controller = SmartPlugController(plug_alias='plug')
     plug_controller.turn_on()
-    turn_on_plug_after_network_is_online = lambda: call_after_network_is_online(plug_controller.turn_on)
+    def turn_on_plug_after_network_is_online():
+        return call_after_network_is_online(plug_controller.turn_on)
     with SleepWakeShutdownListener(sleep_handler=plug_controller.turn_off,
                                    wake_handler=turn_on_plug_after_network_is_online,
                                    shutdown_handler=plug_controller.turn_off) as listener:

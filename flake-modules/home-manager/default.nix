@@ -106,6 +106,7 @@
                     "${moduleBaseDirectory}/profile/application-development.nix"
                     "${moduleBaseDirectory}/profile/system-administration.nix"
                     "${moduleBaseDirectory}/gnome-theme-fix.nix"
+                    "${moduleBaseDirectory}/speakers.nix"
                   ];
                 };
                 systems = with inputs.flake-utils.lib.system; [
