@@ -10,10 +10,9 @@ hs.ipc.cliInstall()
 
 hs.loadSpoon('Speakers')
 
-stackline = require "stackline"
-stackline:init()
+require("stackline"):init()
 
-icons = {
+local icons = {
 bsp = [[ASCII:
 1 · · · · · · 4 · 6 · · · · · · 9 
 · · · · · · · · · · · · · · · · · 
@@ -48,7 +47,7 @@ G · · · · · · · · F · · · · · · · ·
 ]],
 }
 
-function execute(executable, arguments, callback)
+local function execute(executable, arguments, callback)
 	-- I'm using hs.task because os.execute was really slow. For more on why os.execute was slow see here:
 	-- https://github.com/Hammerspoon/hammerspoon/issues/2570
 	hs.task.new(
@@ -59,22 +58,21 @@ function execute(executable, arguments, callback)
 end
 
 
-function toggle_stack_icon_style()
+local function toggle_stack_icon_style()
 	execute(
 		'/usr/local/bin/hs',
 		{'-c',  [[stackline.config:toggle("appearance.showIcons")]],}
 	)
 end
 
-function toggle_tiling_mode()
+local function toggle_tiling_mode()
 	execute(
 		'/usr/local/bin/yabai',
 		{'-m', 'config', 'layout',},
-		function(exit_code, stdout, stderr)
+		function(_, stdout, _)
+			local layout = 'bsp'
 			if stdout == 'bsp\n' then
 				layout = 'float'
-			else
-				layout = 'bsp'
 			end
 			execute(
 				'/usr/local/bin/yabai',
@@ -88,7 +86,7 @@ function toggle_tiling_mode()
 end
 
 local function getShortcutsHtml()
-    commandEnum = {
+    local commandEnum = {
         cmd = '⌘',
         shift = '⇧',
         alt = '⌥',
@@ -96,9 +94,9 @@ local function getShortcutsHtml()
 	fn = 'Fn',
     }
 
-    direction_key_label = '&lt;direction&gt;'
+    local direction_key_label = '&lt;direction&gt;'
 
-    shortcuts = {
+    local shortcuts = {
 	    {
 		title = 'Direction Keys',
 		items = {
@@ -240,17 +238,17 @@ local function generateHtml()
     local app_title = 'Tiling Mode Shortcuts'
     local shortcuts_html = getShortcutsHtml()
 
-    function rtrim(s)
+    local function rtrim(s)
       local n = #s
       while n > 0 and s:find("^%s", n) do n = n - 1 end
       return s:sub(1, n)
     end
-    stdout = hs.execute('defaults read -g AppleInterfaceStyle')
+    local stdout = hs.execute('defaults read -g AppleInterfaceStyle')
     -- Hammerspoon docs for hs.execute say that there may be an extra newline at the end
     stdout = rtrim(stdout)
-    is_dark_mode = stdout == 'Dark'
-    bg_color = is_dark_mode and '#111' or '#eee'
-    fg_color = is_dark_mode and '#eee' or '#111'
+    local is_dark_mode = stdout == 'Dark'
+    local bg_color = is_dark_mode and '#111' or '#eee'
+    local fg_color = is_dark_mode and '#eee' or '#111'
 
     local html = [[
         <!DOCTYPE html>
@@ -359,13 +357,13 @@ local function generateHtml()
 end
 
 
-function open_help_page()
-	screen_rect = hs.screen.mainScreen():fullFrame()
-	help_page = hs.webview.new({x = screen_rect.x+screen_rect.w*0.15/2, y = screen_rect.x+screen_rect.w*0.25/2, w = screen_rect.w * .85, h = screen_rect.h * .40}):windowStyle({'closable', 'titled', 'fullSizeContentView', 'texturedBackground', 'nonactivating',}):closeOnEscape(true):bringToFront(true):deleteOnClose(true):html(generateHtml())
+local function open_help_page()
+	local screen_rect = hs.screen.mainScreen():fullFrame()
+	local help_page = hs.webview.new({x = screen_rect.x+screen_rect.w*0.15/2, y = screen_rect.x+screen_rect.w*0.25/2, w = screen_rect.w * .85, h = screen_rect.h * .40}):windowStyle({'closable', 'titled', 'fullSizeContentView', 'texturedBackground', 'nonactivating',}):closeOnEscape(true):bringToFront(true):deleteOnClose(true):html(generateHtml())
 	help_page:show()
 end
 
-menu_items = {
+local menu_items = {
 	{
 		title = 'Show Shortcuts',
 		fn = open_help_page,
@@ -384,4 +382,4 @@ menu_items = {
 	},
 }
 
-menubar_item = hs.menubar.new():setIcon(icons['bsp']):setMenu(menu_items)
+_G.menubar_item = hs.menubar.new():setIcon(icons['bsp']):setMenu(menu_items)
