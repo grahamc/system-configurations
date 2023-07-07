@@ -1619,6 +1619,7 @@ Plug(
 Plug(
   'williamboman/mason.nvim',
   {
+    sync = true,
     config = function()
       require("mason").setup({
         ui = {
@@ -1651,6 +1652,7 @@ Plug(
 Plug(
   'williamboman/mason-lspconfig.nvim',
   {
+    sync = true,
     config = function()
       require("mason-lspconfig").setup()
       local lspconfig = require('lspconfig')
@@ -1784,9 +1786,10 @@ Plug(
 Plug(
   'neovim/nvim-lspconfig',
   {
+    sync = true,
     config = function()
       require('lspconfig.ui.windows').default_options.border = 'solid'
-    end
+    end,
   }
 )
 

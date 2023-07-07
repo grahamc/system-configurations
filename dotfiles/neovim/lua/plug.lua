@@ -9,22 +9,23 @@ local original_plug = vim.fn['plug#']
 _G.registered_plugs = {}
 
 -- Functions to be called after a plugin is loaded to configure it.
-local configs = {
-  immediate = {},
+local configs_by_type = {
+  async = {},
+  sync = {},
   lazy = {},
 }
 
 -- Calls the configuration function for the specified, lazy-loaded plugin.
 function PlugWrapperApplyLazyConfig(plugin_name)
-  local config = configs.lazy[plugin_name]
+  local config = configs_by_type.lazy[plugin_name]
   if type(config) == 'function' then
     config()
   end
 end
 
 -- Calls the configuration function for all non-lazy-loaded plugins.
-local function PlugWrapperApplyImmediateConfigs()
-  for _, config in pairs(configs.immediate) do
+local function ApplyConfigs(configs)
+  for _, config in pairs(configs) do
     config()
   end
 end
@@ -42,11 +43,13 @@ _G.plug_end = function()
   -- This way code can be run after plugins are loaded, but before 'VimEnter'
   vim.api.nvim_exec_autocmds('User', {pattern = 'PlugEndPost'})
 
-  -- Apply the configurations after everything else that is currently on the event loop. Now
+  ApplyConfigs(configs_by_type.sync)
+
+  -- Apply the async configurations after everything else that is currently on the event loop. Now
   -- configs are applied after any files specified on the commandline are opened and after sessions are restored.
   -- This way, neovim shows me the first file "instantly" and by the time I've looked at the file and decided on my
   -- first keypress, the plugin configs have already been applied.
-  vim.fn.timer_start(0, PlugWrapperApplyImmediateConfigs)
+  vim.fn.timer_start(0, function() ApplyConfigs(configs_by_type.async) end)
 end
 
 -- Similar to the vim-plug `Plug` command, but with an additional option to specify a function to run after a
@@ -57,14 +60,14 @@ function Plug(repo, options)
     return
   end
 
-  local original_plug_options = vim.tbl_deep_extend('force', options, {config = nil})
+  local original_plug_options = vim.tbl_deep_extend('force', options, {config = nil, sync = nil,})
   original_plug(repo, original_plug_options)
 
   local config = options.config
   if type(config) == 'function' then
     if options['on'] or options['for'] then
       local plugin_name = repo:match("^[%w-]+/([%w-_.]+)$")
-      configs.lazy[plugin_name] = config
+      configs_by_type.lazy[plugin_name] = config
       vim.api.nvim_create_autocmd(
         'User',
         {
@@ -74,8 +77,10 @@ function Plug(repo, options)
           once = true,
         }
       )
+    elseif options.sync then
+      table.insert(configs_by_type.sync, config)
     else
-      table.insert(configs.immediate, config)
+      table.insert(configs_by_type.async, config)
     end
   end
 end
