@@ -28,41 +28,41 @@ cmd + shift - u : skhd -k "cmd + shift - z"
 cmd - 0x2C : skhd -k "cmd - space"
 # move the cursor to the beginning/end of the line
 cmd - 0x21 [
-	"WezTerm" : skhd -k "ctrl - a"
-	* : skhd -k "cmd - left"
+  "WezTerm" : skhd -k "ctrl - a"
+  * : skhd -k "cmd - left"
 ]
 cmd - 0x1E [
-	"WezTerm" : skhd -k "ctrl - e"
-	* : skhd -k "cmd - right"
+  "WezTerm" : skhd -k "ctrl - e"
+  * : skhd -k "cmd - right"
 ]
 # move the cursor to the beginning/end of the word
 # TODO: fix the WezTerm ones, need to assign action in fish to hyper-something and add here
 cmd + shift - 0x21 [
-	"WezTerm" : skhd -k "ctrl - a"
-	* : skhd -k "alt - left"
+  "WezTerm" : skhd -k "ctrl - a"
+  * : skhd -k "alt - left"
 ]
 cmd + shift - 0x1E [
-	"WezTerm" : skhd -k "ctrl - e"
-	* : skhd -k "alt - right"
+  "WezTerm" : skhd -k "ctrl - e"
+  * : skhd -k "alt - right"
 ]
 # delete everything to the left/right of the cursor
 cmd + ctrl - 0x21 [
-	"WezTerm" : skhd -k "ctrl - u"
-	* : skhd -k "cmd + shift - left" && skhd -k "backspace"
+  "WezTerm" : skhd -k "ctrl - u"
+  * : skhd -k "cmd + shift - left" && skhd -k "backspace"
 ]
 cmd + ctrl - 0x1E [
-	"WezTerm" : skhd -k "ctrl - k"
-	* : skhd -k "cmd + shift - right" && skhd -k "backspace"
+  "WezTerm" : skhd -k "ctrl - k"
+  * : skhd -k "cmd + shift - right" && skhd -k "backspace"
 ]
 # delete everything to the left/right of the word under the cursor
 # TODO: fix the WezTerm ones, need to assign action in fish to hyper-something and add here
 cmd + ctrl + shift - 0x21 [
-	"WezTerm" : skhd -k "ctrl - w"
-	* : skhd -k "alt + shift - left" && skhd -k "backspace"
+  "WezTerm" : skhd -k "ctrl - w"
+  * : skhd -k "alt + shift - left" && skhd -k "backspace"
 ]
 cmd + ctrl + shift - 0x1E [
-	"WezTerm" : skhd -k "ctrl - k"
-	* : skhd -k "alt + shift - right" && skhd -k "backspace"
+  "WezTerm" : skhd -k "ctrl - k"
+  * : skhd -k "alt + shift - right" && skhd -k "backspace"
 ]
 
 # Yabai shortcuts
@@ -142,109 +142,109 @@ fn - k : skhd -k "up"
 fn - l : skhd -k "right"
 # Move back/forward through browser history
 alt - 0x21 [
-	"Firefox" : skhd -k "cmd - left"
-	"Firefox Developer Edition" : skhd -k "cmd - left"
-	* ~
+  "Firefox" : skhd -k "cmd - left"
+  "Firefox Developer Edition" : skhd -k "cmd - left"
+  * ~
 ]
 alt - 0x1E [
-	"Firefox" : skhd -k "cmd - right"
-	"Firefox Developer Edition" : skhd -k "cmd - right"
-	* ~
+  "Firefox" : skhd -k "cmd - right"
+  "Firefox Developer Edition" : skhd -k "cmd - right"
+  * ~
 ]
 # scroll
 ctrl - j [
-	"Firefox" : skhd -k "fn - down" && skhd -k "fn - down" && skhd -k "fn - down"
-	"Firefox Developer Edition" : skhd -k "fn - down" && skhd -k "fn - down" && skhd -k "fn - down"
-	* ~
+  "Firefox" : skhd -k "fn - down" && skhd -k "fn - down" && skhd -k "fn - down"
+  "Firefox Developer Edition" : skhd -k "fn - down" && skhd -k "fn - down" && skhd -k "fn - down"
+  * ~
 ]
 ctrl - k [
-	"Firefox" : skhd -k "fn - up" && skhd -k "fn - up" && skhd -k "fn - up"
-	"Firefox Developer Edition" : skhd -k "fn - up" && skhd -k "fn - up" && skhd -k "fn - up"
-	* ~
+  "Firefox" : skhd -k "fn - up" && skhd -k "fn - up" && skhd -k "fn - up"
+  "Firefox Developer Edition" : skhd -k "fn - up" && skhd -k "fn - up" && skhd -k "fn - up"
+  * ~
 ]
 ctrl - h [
-	"Firefox" : skhd -k "fn - left" && skhd -k "fn - left" && skhd -k "fn - left"
-	"Firefox Developer Edition" : skhd -k "fn - left" && skhd -k "fn - left" && skhd -k "fn - left"
-	* ~
+  "Firefox" : skhd -k "fn - left" && skhd -k "fn - left" && skhd -k "fn - left"
+  "Firefox Developer Edition" : skhd -k "fn - left" && skhd -k "fn - left" && skhd -k "fn - left"
+  * ~
 ]
 ctrl - l [
-	"Firefox" : skhd -k "fn - right" && skhd -k "fn - right" && skhd -k "fn - right"
-	"Firefox Developer Edition" : skhd -k "fn - right" && skhd -k "fn - right" && skhd -k "fn - right"
-	* ~
+  "Firefox" : skhd -k "fn - right" && skhd -k "fn - right" && skhd -k "fn - right"
+  "Firefox Developer Edition" : skhd -k "fn - right" && skhd -k "fn - right" && skhd -k "fn - right"
+  * ~
 ]
 # refresh
 ctrl - r [
-	"Firefox" : skhd -k "cmd - r"
-	"Firefox Developer Edition" : skhd -k "cmd - r"
-	* ~
+  "Firefox" : skhd -k "cmd - r"
+  "Firefox Developer Edition" : skhd -k "cmd - r"
+  * ~
 ]
 ctrl + shift - r [
-	"Firefox" : skhd -k "cmd + shift - r"
-	"Firefox Developer Edition" : skhd -k "cmd + shift - r"
-	* ~
+  "Firefox" : skhd -k "cmd + shift - r"
+  "Firefox Developer Edition" : skhd -k "cmd + shift - r"
+  * ~
 ]
 # close tab
 ctrl - q [
-	"Firefox" : skhd -k "cmd - w"
-	"Firefox Developer Edition" : skhd -k "cmd - w"
-	* ~
+  "Firefox" : skhd -k "cmd - w"
+  "Firefox Developer Edition" : skhd -k "cmd - w"
+  * ~
 ]
 # Go to last tab
 ctrl - backspace [
-	"Firefox" : skhd -k "cmd + shift - 1"
-	"Firefox Developer Edition" : skhd -k "cmd + shift - 1"
-	* ~
+  "Firefox" : skhd -k "cmd + shift - 1"
+  "Firefox Developer Edition" : skhd -k "cmd + shift - 1"
+  * ~
 ]
 # restore the last closed tab
 ctrl + shift - t [
-	"Firefox" : skhd -k "cmd + shift - t"
-	"Firefox Developer Edition" : skhd -k "cmd + shift - t"
-	* ~
+  "Firefox" : skhd -k "cmd + shift - t"
+  "Firefox Developer Edition" : skhd -k "cmd + shift - t"
+  * ~
 ]
 # new tab
 ctrl - t [
-	"Firefox" : skhd -k "cmd - t"
-	"Firefox Developer Edition" : skhd -k "cmd - t"
-	* ~
+  "Firefox" : skhd -k "cmd - t"
+  "Firefox Developer Edition" : skhd -k "cmd - t"
+  * ~
 ]
 # Go to next/previous tab
 ctrl - 0x21 [
-	"Firefox" : skhd -k "cmd + alt - left"
-	"Firefox Developer Edition" : skhd -k "cmd + alt - left"
-	* ~
+  "Firefox" : skhd -k "cmd + alt - left"
+  "Firefox Developer Edition" : skhd -k "cmd + alt - left"
+  * ~
 ]
 ctrl - 0x1E [
-	"Firefox" : skhd -k "cmd + alt - right"
-	"Firefox Developer Edition" : skhd -k "cmd + alt - right"
-	* ~
+  "Firefox" : skhd -k "cmd + alt - right"
+  "Firefox Developer Edition" : skhd -k "cmd + alt - right"
+  * ~
 ]
 # Find
 ctrl - f [
-	"Firefox" : skhd -k "hyper - 0x80" ; skhd -k "cmd - f" ; skhd -k "hyper - 0x80"
-	"Firefox Developer Edition" : skhd -k "hyper - 0x80" ; skhd -k "cmd - f" ; skhd -k "hyper - 0x80"
-	"Notesnook" : skhd -k "hyper - 0x80" ; skhd -k "cmd - f" ; skhd -k "hyper - 0x80"
-	* ~
+  "Firefox" : skhd -k "hyper - 0x80" ; skhd -k "cmd - f" ; skhd -k "hyper - 0x80"
+  "Firefox Developer Edition" : skhd -k "hyper - 0x80" ; skhd -k "cmd - f" ; skhd -k "hyper - 0x80"
+  "Notesnook" : skhd -k "hyper - 0x80" ; skhd -k "cmd - f" ; skhd -k "hyper - 0x80"
+  * ~
 ]
 # ctrl + / to go to address bar
 ctrl - 0x2C [
-	"Firefox" : skhd -k "f6"
-	"Firefox Developer Edition" : skhd -k "f6"
-	* ~
+  "Firefox" : skhd -k "f6"
+  "Firefox Developer Edition" : skhd -k "f6"
+  * ~
 ]
 # Move a file to the trash in Finder
 backspace [
-	"finder" : skhd -k "hyper - 0x80" ; skhd -k "cmd - backspace" ; skhd -k "hyper - 0x80"
-	* ~
+  "finder" : skhd -k "hyper - 0x80" ; skhd -k "cmd - backspace" ; skhd -k "hyper - 0x80"
+  * ~
 ]
 # Open bookmarks bar in Firefox
 ctrl - b [
-	"Firefox" : skhd -k "cmd - b"
-	"Firefox Developer Edition" : skhd -k "cmd - b"
-	* ~
+  "Firefox" : skhd -k "cmd - b"
+  "Firefox Developer Edition" : skhd -k "cmd - b"
+  * ~
 ]
 # Open developer console in Firefox
 ctrl + shift - i [
-	"Firefox" : skhd -k "cmd + alt - i"
-	"Firefox Developer Edition" : skhd -k "cmd + alt - i"
-	* ~
+  "Firefox" : skhd -k "cmd + alt - i"
+  "Firefox Developer Edition" : skhd -k "cmd + alt - i"
+  * ~
 ]

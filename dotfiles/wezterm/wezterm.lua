@@ -9,14 +9,14 @@ local function table_concat(t1,t2)
   return t1
 end
 local function merge_to_left(t1, t2)
-    for k, v in pairs(t2) do
-        if (type(v) == "table") and (type(t1[k] or false) == "table") then
-            merge_to_left(t1[k], t2[k])
-        else
-            t1[k] = v
-        end
+  for k, v in pairs(t2) do
+    if (type(v) == "table") and (type(t1[k] or false) == "table") then
+      merge_to_left(t1[k], t2[k])
+    else
+      t1[k] = v
     end
-    return t1
+  end
+  return t1
 end
 local is_mac = string.find(wezterm.target_triple, 'darwin')
 
@@ -224,7 +224,7 @@ wezterm.on('update-status', function(window, pane)
   end
 
   local session_name = ''
-	local fh,_ = assert(io.popen([[/bin/sh -c '$HOME/.nix-profile/bin/tmux ls -F "#{?session_attached,#{session_name},}"']]))
+  local fh,_ = assert(io.popen([[/bin/sh -c '$HOME/.nix-profile/bin/tmux ls -F "#{?session_attached,#{session_name},}"']]))
   for line in fh:lines() do
     session_name = session_name .. line
   end
