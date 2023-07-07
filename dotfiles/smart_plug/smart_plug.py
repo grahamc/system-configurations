@@ -17,6 +17,7 @@ class SmartPlugController(object):
         cache = Cache(user_cache_dir('my-speakers'))
         if plug_alias in cache:
             ip_address = cache[plug_alias]
+            assert isinstance(ip_address, str)
             plug = SmartPlug(ip_address)
             try:
                 self._block_until_complete(plug.update())
