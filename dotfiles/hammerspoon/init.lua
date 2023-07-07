@@ -265,71 +265,32 @@ local function generateHtml()
             a{
               text-decoration:none;
               color: ]] .. fg_color .. [[;
-              font-size:12px;
             }
-            li.title{ text-align:center;}
+            li.title > strong{text-align: center;}
+	    li {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 8px;
+	    }
             ul, li{list-style: inside none; padding: 0 0 5px;}
-            footer{
-              position: fixed;
-              left: 0;
-              right: 0;
-              height: 48px;
-              /*background-color:#eee;*/
-            }
-            header{
-              position: fixed;
-              top: 0;
-              left: 0;
-              right: 0;
-              height:48px;
-              /*background-color:#eee;*/
-              z-index:99;
-            }
-            footer{ bottom: 0; }
+	    ul {width: 20%;}
             header hr,
-            footer hr {
-              border: 0;
-              height: 0;
-              border-top: 1px solid rgba(0, 0, 0, 0.1);
-              border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-            }
             .title{
                 padding: 15px;
             }
-            li.title{padding: 0  10px 15px}
-            .content{
-              padding: 0 0 15px;
-              font-size:12px;
-              overflow:hidden;
-            }
-            .content.maincontent{
-            position: relative;
-              height: 577px;
-              margin-top: 46px;
-            }
-            .content > .col{
-              width: 23%;
-              padding:20px 0 20px 10px;
-            }
-            li:after{
-              visibility: hidden;
-              display: block;
-              font-size: 0;
-              content: " ";
-              clear: both;
-              height: 0;
+            .maincontent{
+	      display:flex;
+	      justify-content: space-around;
             }
             .cmdModifiers{
-              width: 110px;
+              width: 50%;
               padding-right: 15px;
               text-align: right;
-              float: left;
               font-weight: bold;
             }
             .cmdtext{
-              float: left;
-              overflow: hidden;
-              width: 150px;
+              width: 50%;
             }
         </style>
         </head>
@@ -339,16 +300,6 @@ local function generateHtml()
               <hr />
             </header>
             <div class="content maincontent">]] .. shortcuts_html .. [[</div>
-            <br>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js"></script>
-            <script type="text/javascript">
-              var elem = document.querySelector('.content');
-              var iso = new Isotope( elem, {
-                // options
-                itemSelector: '.col',
-                layoutMode: 'masonry'
-              });
-            </script>
           </body>
         </html>
         ]]
