@@ -12,6 +12,7 @@ vim.o.confirm = true
 vim.o.mouse = 'a'
 vim.o.scrolloff = 999
 vim.o.jumpoptions = 'stack'
+vim.o.mousemoveevent = true
 
 -- persist undo history to disk
 vim.o.undofile = true
@@ -1231,63 +1232,123 @@ Plug(
 vim.g.czs_do_not_map = true
 
 Plug(
-  'romgrk/barbar.nvim',
+  'akinsho/bufferline.nvim',
   {
     config = function()
-      require('barbar').setup({
-        focus_on_close = 'previous',
-        insert_at_end = true,
-        no_name_title = '[No Name]',
-        icons = {
-          buffer_index = 'superscript',
-          button = false,
-          filetype = {enabled = false,},
-          separator = {left = '│', right = ''},
-          modified = false,
-          alternate = {filetype = {enabled = false}},
-          current = {},
-          inactive = {separator = {left = '│', right = ''},},
-          visible = {modified = {buffer_number = false}},
-        },
-        sidebar_filetypes = {NvimTree = {text = unicode('f4d3') .. ' File Explorer',},},
-      })
-
-      vim.keymap.set({'n', 'i'}, '<F7>', vim.cmd.BufferPrevious, {silent = true})
-      vim.keymap.set({'n', 'i'}, '<F8>', vim.cmd.BufferNext, {silent = true})
-
-      -- Switch tabs with <Leader><tab number>
-      for window_index=1,9 do
-        vim.keymap.set('n', '<Leader>' .. window_index, function() vim.cmd.BufferGoto(window_index) end)
-      end
-
-      local function close()
+      local function close(buffer)
         -- If this is the last window and tab, close the buffer and if that was the last buffer, close vim.
         local window_count = vim.fn.winnr('$')
         local tab_count = vim.fn.tabpagenr('$')
         if tab_count == 1 and (window_count == 1 or (window_count == 2 and require('nvim-tree.api').tree.is_visible())) then
           local buffer_count_before_closing = #vim.fn.getbufinfo({buflisted = 1,})
-          vim.cmd.BufferClose()
+          vim.cmd('bdelete! ' .. buffer)
           if buffer_count_before_closing == 1 then
             vim.cmd.quit()
           end
           return
         end
 
-        -- If the buffer is only open in the current window, close the buffer
-        local buffer = vim.fn.bufnr()
+        -- If the buffer is only open in the current window, close the buffer and window. Otherwise just close
+        -- the window.
         local buffer_window_count = #vim.fn.win_findbuf(buffer)
         if buffer_window_count == 1 then
-          vim.cmd.BufferClose()
+          vim.cmd('bdelete! ' .. buffer)
+        else
+          vim.cmd.close()
         end
 
-        -- Close the window
-        vim.cmd.close()
       end
-      vim.keymap.set('n', '<C-q>', close, {silent = true,})
+
+      local close_icon = unicode('f467')
+      local separator_icon = ' │ '
+      require("bufferline").setup({
+        options = {
+          numbers = function(context) return context.raise(context.ordinal) end,
+          indicator= { style = 'none', },
+          close_icon = close_icon,
+          close_command = close,
+          buffer_close_icon = close_icon,
+          separator_style = {separator_icon, separator_icon,},
+          modified_icon = close_icon,
+          offsets = {
+            {
+              filetype = "NvimTree",
+              text = unicode('f4d3') .. " File Explorer",
+              text_align = "center",
+              separator = true,
+              highlight = 'Normal',
+            },
+          },
+          hover = {
+            enabled = true,
+            delay = 50,
+            reveal = {'close'},
+          },
+          themable = true,
+          max_name_length = 100,
+          max_prefix_length = 100,
+          tab_size = 1,
+        },
+        highlights = {
+          fill = { ctermbg = 8, ctermfg = 15, },
+          background = { ctermbg = 8, ctermfg = 15, },
+          buffer_visible = { ctermbg = 8, ctermfg = 15, },
+          buffer_selected = { ctermbg = 8, ctermfg = 'NONE', italic = false, },
+          duplicate = { ctermbg = 8, ctermfg = 15, italic = false,},
+          duplicate_selected = { ctermbg = 8, ctermfg = 'None', italic = false,},
+          duplicate_visible = { ctermbg = 8, ctermfg = 15, italic = false,},
+          numbers = { ctermbg = 8, ctermfg = 15, italic = false,},
+          numbers_visible = { ctermbg = 8, ctermfg = 15, italic = false,},
+          numbers_selected = { ctermbg = 8, ctermfg = 6, italic = false,},
+          close_button = { ctermbg = 8, ctermfg = 15, },
+          close_button_selected = { ctermbg = 8, ctermfg = 'None', },
+          close_button_visible = { ctermbg = 8, ctermfg = 15, },
+          modified = { ctermbg = 8, ctermfg = 15, },
+          modified_selected = { ctermbg = 8, ctermfg = 'None', },
+          modified_visible = { ctermbg = 8, ctermfg = 'None', },
+          tab = { ctermbg = 8, ctermfg = 15, bold = true, },
+          tab_selected = { ctermbg = 8, ctermfg = 6, bold = true, underline = true, },
+          tab_separator = { ctermbg = 8, ctermfg = 8, },
+          tab_separator_selected = { ctermbg = 8, ctermfg = 8, },
+          tab_close = { ctermbg = 8, ctermfg = 'NONE', bold = true,},
+          offset_separator = { ctermbg = 'NONE', ctermfg = 15, },
+          separator = { ctermbg = 8, ctermfg = 0, },
+          separator_visible = { ctermbg = 8, ctermfg = 0, },
+          separator_selected = { ctermbg = 8, ctermfg = 0, },
+          indicator_selected = { ctermbg = 8, ctermfg = 8, },
+          indicator_visible = { ctermbg = 8, ctermfg = 8, },
+        },
+      })
+
+      vim.keymap.set({'n', 'i'}, '<F7>', vim.cmd.BufferLineCyclePrev, {silent = true})
+      vim.keymap.set({'n', 'i'}, '<F8>', vim.cmd.BufferLineCycleNext, {silent = true})
+
+      -- Switch buffers with <Leader><tab number>
+      for buffer_index=1,9 do
+        vim.keymap.set('n', '<Leader>' .. buffer_index, function() require("bufferline").go_to(buffer_index, true) end)
+      end
+
+      vim.keymap.set('n', '<C-q>', function() close(vim.fn.bufnr()) end, {silent = true,})
+      function BufferlineWrapper()
+        local original = nvim_bufferline()
+        if string.find(original, unicode('f4d3')) then
+          local x = string.gsub(original, '│', '│' .. '%%#TabLineBorder#' .. unicode('e0b6'), 1) .. '%#TabLineBorder#' .. unicode('e0b4')
+          if string.sub(original, -2, -1) ~= '%=' then
+            x = string.gsub(x, '%=', '%=' .. '%%#TabLineBorder2#' .. unicode('e0b7'), 1)
+          end
+          return x
+        else
+          local x = '%#TabLineBorder#' .. unicode('e0b6') .. original .. '%#TabLineBorder#' .. unicode('e0b4')
+          if string.sub(original, -2, -1) ~= '%=' then
+            x = string.gsub(x, '%=', '%=' .. '%%#TabLineBorder2#' .. unicode('e0b7'), 1)
+          end
+          return x
+        end
+      end
+      vim.o.tabline = '%!v:lua.BufferlineWrapper()'
     end,
   }
 )
-vim.g.barbar_auto_setup = false
 -- }}}
 
 -- File Explorer {{{
@@ -1359,8 +1420,7 @@ Plug(
           return
         end
 
-        vim.w.is_explorer = true
-        vim.opt_local.winbar = '%#Explorer# Press %#ExplorerHint#g?%#Explorer# for help'
+        vim.opt_local.winbar = '%=%#Normal# Press %#ExplorerHint#g?%#Normal# for help%='
       end
       vim.api.nvim_create_autocmd(
         {'BufWinEnter',},
@@ -1854,30 +1914,14 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'LineNrBelow', {link = 'LineNrAbove'})
   vim.api.nvim_set_hl(0, 'WordUnderCursor', {ctermbg = 8,})
   vim.api.nvim_set_hl(0, 'IncSearch', {link = 'Search'})
-  vim.api.nvim_set_hl(0, 'BufferCurrent', {ctermbg = 8, ctermfg = 'NONE',})
-  vim.api.nvim_set_hl(0, 'BufferCurrentIndex', {ctermbg = 8, ctermfg = 6,})
-  vim.api.nvim_set_hl(0, 'BufferCurrentSign', {ctermbg = 8, ctermfg = 0,})
-  vim.api.nvim_set_hl(0, 'BufferCurrentMod', {link = 'BufferCurrent'})
-  vim.api.nvim_set_hl(0, 'BufferInactive', {ctermbg = 8, ctermfg = 15,})
-  vim.api.nvim_set_hl(0, 'BufferInactiveIndex', {link = 'BufferInactive'})
-  vim.api.nvim_set_hl(0, 'BufferInactiveSign', {ctermbg = 8, ctermfg = 0,})
-  vim.api.nvim_set_hl(0, 'BufferVisibleSign', {link = 'BufferInactiveSign'})
-  vim.api.nvim_set_hl(0, 'BufferVisible', {link = 'BufferInactive'})
-  vim.api.nvim_set_hl(0, 'BufferVisibleIndex', {link = 'BufferInactiveIndex'})
-  vim.api.nvim_set_hl(0, 'BufferAlternateSign', {link = 'BufferInactiveSign'})
-  vim.api.nvim_set_hl(0, 'BufferAlternate', {link = 'BufferInactive'})
-  vim.api.nvim_set_hl(0, 'BufferAlternateIndex', {link = 'BufferInactiveIndex'})
-  vim.api.nvim_set_hl(0, 'BufferTabpages', {ctermbg = 8, ctermfg = 5,})
-  vim.api.nvim_set_hl(0, 'BufferTabpageFill', {link = 'BufferInactive'})
-  vim.api.nvim_set_hl(0, 'BufferTabpagesSep', {link = 'BufferTabpages'})
-  -- The TabLine* highlights are the so the tabline looks blank before barbar populates it so it needs the same
-  -- background color as barbar. The foreground needs to match the background so you can't see the text from the
+  vim.api.nvim_set_hl(0, 'TabLineBorder', {ctermbg = 'NONE', ctermfg = 8,})
+  vim.api.nvim_set_hl(0, 'TabLineBorder2', {ctermbg = 8, ctermfg = 0,})
+  -- The TabLine* highlights are the so the tabline looks blank before bufferline populates it so it needs the same
+  -- background color as bufferline. The foreground needs to match the background so you can't see the text from the
   -- original tabline function.
   vim.api.nvim_set_hl(0, 'TabLine', {ctermbg = 8, ctermfg = 8,})
   vim.api.nvim_set_hl(0, 'TabLineFill', {link = 'TabLine'})
   vim.api.nvim_set_hl(0, 'TabLineSel', {link = 'TabLine'})
-  vim.api.nvim_set_hl(0, 'BufferOffset', {link = 'BufferCurrent'})
-  vim.api.nvim_set_hl(0, 'Explorer', {ctermbg = 'NONE', ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'ExplorerHint', {ctermbg = 'NONE', ctermfg = 6,})
   vim.api.nvim_set_hl(0, 'Comment', {ctermfg = 15, ctermbg = 'NONE',})
   -- This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
