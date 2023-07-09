@@ -760,7 +760,7 @@ vim.api.nvim_create_autocmd(
 
 -- LSP {{{
 vim.diagnostic.config({
-  virtual_text = false,
+  virtual_text = true,
   signs = {
     -- Make it high enough to have priority over vim-signify
     priority = 11,
