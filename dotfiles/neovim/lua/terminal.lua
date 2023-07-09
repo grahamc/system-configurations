@@ -1679,7 +1679,6 @@ Plug(
 Plug(
   'williamboman/mason.nvim',
   {
-    sync = true,
     config = function()
       require("mason").setup({
         ui = {
@@ -1712,7 +1711,6 @@ Plug(
 Plug(
   'williamboman/mason-lspconfig.nvim',
   {
-    sync = true,
     config = function()
       require("mason-lspconfig").setup()
       local lspconfig = require('lspconfig')
@@ -1839,6 +1837,14 @@ Plug(
         end
       end
       require("mason-lspconfig").setup_handlers(server_config_handlers)
+
+      -- Set the filetype of all the currently open buffers to trigger a 'FileType' event for each buffer so nvim_lsp
+      -- has a chance to attach to any buffers that were openeed before it was configured.
+      local buffer = vim.fn.bufnr()
+      vim.cmd([[
+        silent! bufdo silent! lua vim.o.filetype = vim.o.filetype
+      ]])
+      vim.cmd.b(buffer)
     end,
   }
 )
@@ -1846,7 +1852,6 @@ Plug(
 Plug(
   'neovim/nvim-lspconfig',
   {
-    sync = true,
     config = function()
       require('lspconfig.ui.windows').default_options.border = 'solid'
     end,
