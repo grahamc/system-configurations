@@ -92,13 +92,10 @@ cmd + alt - h : yabai -m display --focus west
 cmd + alt - j : yabai -m display --focus south
 cmd + alt - k : yabai -m display --focus north
 cmd + alt - l : yabai -m display --focus east
-# Go to next/previous window in stack
-cmd + shift - l : yabai -m window --focus stack.next || yabai -m window --focus stack.first
-cmd + shift - h : yabai -m window --focus stack.prev || yabai -m window --focus stack.last
 # change focus
 cmd - h : yabai -m window --focus west
-cmd - j : yabai -m window --focus south
-cmd - k : yabai -m window --focus north
+cmd - j : yabai-move down
+cmd - k : yabai-move up
 cmd - l : yabai -m window --focus east
 # Go to last focused window, workspace, and display
 cmd - backspace : yabai -m window --focus recent

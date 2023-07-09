@@ -139,11 +139,15 @@
 
       environment = {
         systemPackages = packages;
-        # TODO: Adding my user profile here so that it's `/bin` directory gets added to the $PATH of
-        # `launchd.user.agents`. nix-darwin attempts to do this, but it uses '$HOME/.nix-profile' and '$HOME' never
-        # gets expanded.
-        # issue: https://github.com/LnL7/nix-darwin/issues/406
-        profiles = ["${homeDirectory}/.nix-profile"];
+        profiles = [
+          # TODO: Adding my user profile here so that it's `/bin` directory gets added to the $PATH of
+          # `launchd.user.agents`. nix-darwin attempts to do this, but it uses '$HOME/.nix-profile' and '$HOME' never
+          # gets expanded.
+          # issue: https://github.com/LnL7/nix-darwin/issues/406
+          "${homeDirectory}/.nix-profile"
+          # skhd needs my yabai-* scripts
+          "${homeDirectory}/.local"
+        ];
       };
 
       services = {

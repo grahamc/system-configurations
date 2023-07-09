@@ -31,7 +31,10 @@
           "skhd/skhdrc".source = "skhd/skhdrc";
         };
 
-        repository.symlink.xdg.executable."yabai-remove-from-stack".source = "yabai/yabai-remove-from-stack";
+        repository.symlink.xdg.executable = {
+          "yabai-remove-from-stack".source = "yabai/yabai-remove-from-stack";
+          "yabai-move".source = "yabai/yabai-move.fish";
+        };
 
         repository.symlink.home.file = {
           ".hammerspoon/init.lua".source = "hammerspoon/init.lua";
