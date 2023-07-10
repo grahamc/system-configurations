@@ -336,7 +336,7 @@ vim.keymap.set('n', '<S-Tab>', fold_toggle, {silent = true, expr =true})
 -- 
 -- TODO: When this issue is resolved, I can set foldcolumn to 1 and remove the digits that signify a nested fold.
 -- issue: https://github.com/neovim/neovim/pull/17446
-vim.o.foldcolumn = 'auto:9'
+vim.o.foldcolumn = '0'
 
 -- Jump to the top and bottom of the current fold
 vim.keymap.set({'n', 'x'}, '[<Tab>', '[z')
