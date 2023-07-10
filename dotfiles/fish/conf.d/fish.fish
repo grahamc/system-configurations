@@ -339,3 +339,7 @@ end
 mybind --no-focus \ck _man_page
 
 mybind --no-focus \ce edit_command_buffer
+
+# navigate history
+mybind --key f7 up-or-search
+mybind --key f8 down-or-search

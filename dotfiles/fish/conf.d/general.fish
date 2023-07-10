@@ -226,7 +226,3 @@ end
 function dui --wraps broot --description 'Check disk usage interactively'
     br -w $argv
 end
-
-# cd history keybinds. My terminal maps ctrl+[ and ctrl+] to f7 and f8
-mybind --key f7 prevd-or-backward-word
-mybind --key f8 nextd-or-forward-word
