@@ -554,7 +554,7 @@ end
 _G.StatusLine = function()
   local item_separator = '%#StatusLineSeparator# ∙ '
 
-  local position = '%#StatusLine#' .. unicode('e612') .. ' %l/%L:%c'
+  local position = '%#StatusLine#' .. unicode('e612') .. ' %l:%c'
 
   local filetype = nil
   if string.len(vim.o.filetype) > 0 then
