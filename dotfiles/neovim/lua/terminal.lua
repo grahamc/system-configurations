@@ -706,10 +706,11 @@ _G.StatusLine = function()
   end
   local left_side = table.concat(left_side_items, ' ')
 
-  local right_side_items = {position}
+  local right_side_items = {}
   if diagnostics then
     table.insert(right_side_items, diagnostics)
   end
+  table.insert(right_side_items, position)
   local right_side = table.concat(right_side_items, item_separator)
 
   local showcmd = '%#StatusLineShowcmd#%S'
