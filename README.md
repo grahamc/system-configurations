@@ -16,12 +16,9 @@ First, clone the repository and go into its directory by running `git clone http
 
 2. I install some Homebrew packages through nix-darwin, but nix-darwin doesn't provide brew so you'll have to install it yourself. Check the site for instructions: [brew.sh](https://brew.sh/).
 
-3. Unlike Home Manager, nix-darwin doesn't have a flake app output (though there is an [open issue](https://github.com/LnL7/nix-darwin/issues/398) to add it) so it will need to be set up using the non-flake installer:
+3. Apply the nix-darwin configuration by running `nix run nix-darwin -- switch --flake .#<host_name>` where `<host_name>` is one of the hosts defined in the [nix-darwin flake module](https://github.com/bigolu/dotfiles/blob/master/flake-modules/nix-darwin/default.nix).
 
-    1. Run `nix build .#darwinConfigurations.<host_name>.system` where `<host_name>` is one of the hosts defined in the [nix-darwin flake module](https://github.com/bigolu/dotfiles/blob/master/flake-modules/nix-darwin/default.nix). This will build the nix-darwin configuration in a folder named `result` in the current directory.
-    2. Run `./result/sw/bin/darwin-rebuild switch --flake .#<host_name>` where `<host_name>` is the same one you used in the last step. This will apply the configuration to your host. You can now remove the `result` folder with `rm -rf ./result`.
-
-4. Some of the settings applied by nix-darwin only take effect after a restart so do a restart now.
+4. Some settings applied by nix-darwin only take effect after a restart so do a restart now.
 
 5. Additional Setup
 
@@ -41,11 +38,7 @@ First, clone the repository and go into its directory by running `git clone http
 
     * Open Finicky to set it as the default browser.
 
-    * Open UnnaturalScrollWheels and enable the alternate detection method.
-
-    * Open MonitorControl and configure it.
-
-    * Get "Mac Mouse Fix" and configure it.
+    * Open MonitorControl, UnnaturalScrollWheels, and "Mac Mouse Fix" to configure them.
 
 ## Running the home configuration
 
