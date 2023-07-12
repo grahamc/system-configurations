@@ -1,5 +1,13 @@
 # shellcheck shell=sh
 
+# Homebrew
+if uname | grep -q Darwin; then
+  brew="/usr/local/bin/brew"
+  if [ -x "$brew" ]; then
+    eval "$("$brew" shellenv sh)"
+  fi
+fi
+
 # Setup nix
 # For non-NixOS linux distributions
 # see: https://nixos.wiki/wiki/Locales
@@ -21,14 +29,6 @@ fi
 nix_darwin_bin='/run/current-system/sw/bin'
 if [ -d "$nix_darwin_bin" ] && uname | grep -q Darwin; then
   export PATH="$nix_darwin_bin:$PATH"
-fi
-
-# Homebrew
-if uname | grep -q Darwin; then
-  brew="/usr/local/bin/brew"
-  if [ -x "$brew" ]; then
-    eval "$("$brew" shellenv sh)"
-  fi
 fi
 
 # go
