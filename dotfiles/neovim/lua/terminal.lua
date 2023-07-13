@@ -1584,7 +1584,7 @@ Plug(
           end,
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
-              cmp.select_next_item()
+              cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
             elseif is_cursor_preceded_by_nonblank_character() then
               cmp.complete()
             else
@@ -1593,7 +1593,7 @@ Plug(
           end, { 'i', 's' }),
           ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
-              cmp.select_prev_item()
+              cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
             else
               fallback()
             end
