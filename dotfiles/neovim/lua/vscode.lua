@@ -122,3 +122,56 @@ local function clear_selection()
   return result
 end
 vim.keymap.set({'x'}, '<Esc>', clear_selection, {expr = true})
+
+-- TODO: These mappings should override the ones in base.lua since I `require()` this file after base.lua, but
+-- they arent so instead I define them at `VimEnter`.
+local function center_current_line()
+  local current_line = vim.api.nvim_win_get_cursor(0)[1]
+  vim.fn.VSCodeCall('revealLine', {lineNumber = current_line, at = 'center',})
+end
+local function moveCursor(line_count)
+  -- Move by screen line if the count is 1 or -1
+  if line_count == 1 then
+    vim.fn.VSCodeCall('cursorDown')
+  elseif line_count == -1 then
+    vim.fn.VSCodeCall('cursorUp')
+  else
+    local current_line = vim.api.nvim_win_get_cursor(0)[1]
+
+    local target_line = current_line + line_count
+    target_line = math.max(0, target_line)
+    target_line = math.min(vim.o.lines, target_line)
+
+    vim.cmd(tostring(target_line))
+  end
+
+  center_current_line()
+end
+vim.api.nvim_create_autocmd(
+  'VimEnter',
+  {
+    callback = function()
+      vim.keymap.set(
+        {'n', 'x'},
+        'j',
+        function() moveCursor(1) end
+      )
+      vim.keymap.set(
+        {'n', 'x'},
+        'k',
+        function() moveCursor(-1) end
+      )
+      vim.keymap.set(
+        {'n', 'x'},
+        '<C-j>',
+        function() moveCursor(10) end
+      )
+      vim.keymap.set(
+        {'n', 'x'},
+        '<C-k>',
+        function() moveCursor(-10) end
+      )
+    end,
+    group = vim.api.nvim_create_augroup('CursorMovement', {}),
+  }
+)
