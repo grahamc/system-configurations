@@ -385,9 +385,6 @@ vim.o.foldtext = 'v:lua.FoldText()'
 
 -- Autocomplete {{{
 vim.o.complete = '.,w,b,u'
--- - show the completion menu even if there is only one suggestion
--- - when autocomplete gets triggered, no suggestion is selected
-vim.o.completeopt = 'noselect'
 vim.o.pumheight = 6
 -- }}}
 
