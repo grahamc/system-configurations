@@ -84,7 +84,6 @@
         enable = true;
         onActivation.cleanup = "zap";
         casks = [
-          "spaceid"
           "wezterm"
           "xcodes"
           "hammerspoon"

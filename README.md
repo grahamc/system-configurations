@@ -34,8 +34,6 @@ First, clone the repository and go into its directory by running `git clone http
 
     * Setup Hammerspoon using the instructions in the [Hammerspoon Getting Started Guide](https://www.hammerspoon.org/go/).
 
-    * Open SpaceID, right click its icon, and select 'Launch on Login' to set it as a login app.
-
     * Open Finicky to set it as the default browser.
 
     * Open MonitorControl, UnnaturalScrollWheels, and "Mac Mouse Fix" to configure them.
