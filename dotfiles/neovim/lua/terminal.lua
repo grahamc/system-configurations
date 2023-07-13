@@ -1221,12 +1221,8 @@ Plug(
     config = function()
       -- 'n' always searches forwards, 'N' always searches backwards
       -- I have this set in base.lua, but since I need to use these czs mappings I had to redefine them.
-      vim.keymap.set({'n'}, 'n', "['<Plug>(czs-move-N)', '<Plug>(czs-move-n)'][v:searchforward]", {expr = true, replace_keycodes = false,})
-      vim.keymap.set({'x'}, 'n', "['<Plug>(czs-move-N)', '<Plug>(czs-move-n)'][v:searchforward]", {expr = true, replace_keycodes = false,})
-      vim.keymap.set({'o'}, 'n', "['<Plug>(czs-move-N)', '<Plug>(czs-move-n)'][v:searchforward]", {expr = true, replace_keycodes = false,})
-      vim.keymap.set({'n'}, 'N', "['<Plug>(czs-move-n)', '<Plug>(czs-move-N)'][v:searchforward]", {expr = true, replace_keycodes = false,})
-      vim.keymap.set({'x'}, 'N', "['<Plug>(czs-move-n)', '<Plug>(czs-move-N)'][v:searchforward]", {expr = true, replace_keycodes = false,})
-      vim.keymap.set({'o'}, 'N', "['<Plug>(czs-move-n)', '<Plug>(czs-move-N)'][v:searchforward]", {expr = true, replace_keycodes = false,})
+      vim.keymap.set({'n', 'x', 'o'}, 'n', "['<Plug>(czs-move-N)', '<Plug>(czs-move-n)'][v:searchforward]", {expr = true, replace_keycodes = false,})
+      vim.keymap.set({'n', 'x', 'x'}, 'N', "['<Plug>(czs-move-n)', '<Plug>(czs-move-N)'][v:searchforward]", {expr = true, replace_keycodes = false,})
     end,
   }
 )

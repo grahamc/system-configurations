@@ -52,10 +52,8 @@ vim.o.formatoptions = ''
 vim.opt.matchpairs:append('<:>')
 
 -- move ten lines at a time by holding ctrl and a directional key
-vim.keymap.set({'n'}, '<C-j>', '10j', {remap = true})
-vim.keymap.set({'n'}, '<C-k>', '10k', {remap = true})
-vim.keymap.set({'x'}, '<C-j>', '10j', {remap = true})
-vim.keymap.set({'x'}, '<C-k>', '10k', {remap = true})
+vim.keymap.set({'n', 'x'}, '<C-j>', '10j', {remap = true})
+vim.keymap.set({'n', 'x'}, '<C-k>', '10k', {remap = true})
 
 -- Always move by screen line, unless a count was specified or we're in a line-wise mode.
 local function move_by_screen_line(direction)
@@ -88,12 +86,8 @@ vim.keymap.set({'n'}, '}', [[<Cmd>keepjumps normal! }<CR>]])
 vim.keymap.set({'n'}, '{', [[<Cmd>keepjumps normal! {<CR>]])
 
 -- 'n' always searches forwards, 'N' always searches backwards
-vim.keymap.set({'n'}, 'n', "'Nn'[v:searchforward]", {expr = true})
-vim.keymap.set({'x'}, 'n', "'Nn'[v:searchforward]", {expr = true})
-vim.keymap.set({'o'}, 'n', "'Nn'[v:searchforward]", {expr = true})
-vim.keymap.set({'n'}, 'N', "'nN'[v:searchforward]", {expr = true})
-vim.keymap.set({'x'}, 'N', "'nN'[v:searchforward]", {expr = true})
-vim.keymap.set({'o'}, 'N', "'nN'[v:searchforward]", {expr = true})
+vim.keymap.set({'n', 'x', 'o'}, 'n', "'Nn'[v:searchforward]", {expr = true})
+vim.keymap.set({'n', 'x', 'o'}, 'N', "'nN'[v:searchforward]", {expr = true})
 
 -- Enter a newline above or below the current line.
 vim.keymap.set({'n'}, '<Enter>', 'o<ESC>')
