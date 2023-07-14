@@ -123,17 +123,17 @@ local function clear_selection()
 end
 vim.keymap.set({'x'}, '<Esc>', clear_selection, {expr = true})
 
--- TODO: These mappings should override the ones in base.lua since I `require()` this file after base.lua, but
--- they arent so instead I define them at `VimEnter`.
-local function center_current_line()
-  local current_line = vim.api.nvim_win_get_cursor(0)[1]
-  vim.fn.VSCodeCall('revealLine', {lineNumber = current_line, at = 'center',})
-end
 local function moveCursor(line_count)
-  -- Move by screen line if the count is 1 or -1
-  if line_count == 1 then
+  local is_count_provided = false
+  if vim.v.count > 0 then
+    is_count_provided = true
+    line_count = line_count * vim.v.count
+  end
+
+  -- Move by screen line if the count is 1 or -1 and no count is provided
+  if line_count == 1 and not is_count_provided then
     vim.fn.VSCodeCall('cursorDown')
-  elseif line_count == -1 then
+  elseif line_count == -1 and not is_count_provided then
     vim.fn.VSCodeCall('cursorUp')
   else
     local current_line = vim.api.nvim_win_get_cursor(0)[1]
@@ -145,12 +145,15 @@ local function moveCursor(line_count)
     vim.cmd(tostring(target_line))
   end
 
-  center_current_line()
+  -- center the current line
+  vim.fn.feedkeys('zz')
 end
 vim.api.nvim_create_autocmd(
   'VimEnter',
   {
     callback = function()
+      -- TODO: These mappings should override the ones in base.lua since I `require()` this file after base.lua, but
+      -- they arent so instead I define them at `VimEnter`.
       vim.keymap.set(
         {'n', 'x'},
         'j',
