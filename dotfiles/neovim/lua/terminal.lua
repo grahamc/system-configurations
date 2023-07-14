@@ -1267,10 +1267,10 @@ Plug(
           offsets = {
             {
               filetype = "NvimTree",
-              text = unicode('f4d3') .. " File Explorer",
+              text = unicode('f4d3') .. " File Explorer (Press g? for help)",
               text_align = "center",
               separator = true,
-              highlight = 'Normal',
+              highlight = 'StatusLine',
             },
           },
           hover = {
@@ -1362,7 +1362,7 @@ Plug(
         },
         view = {
           signcolumn = 'yes',
-          width = function() return math.max(30, math.floor(vim.o.columns * .20)) end,
+          width = function() return math.max(40, math.floor(vim.o.columns * .20)) end,
         },
         renderer = {
           indent_markers = {
@@ -1408,22 +1408,6 @@ Plug(
         end,
       })
       vim.keymap.set("n", "<M-e>", '<cmd>NvimTreeFindFileToggle<cr>', {silent = true})
-
-      local function configure_nvim_tree_window()
-        if vim.o.filetype ~= 'NvimTree' then
-          return
-        end
-
-        vim.opt_local.winbar = '%=%#Normal# Press %#ExplorerHint#g?%#Normal# for help%='
-      end
-      vim.api.nvim_create_autocmd(
-        {'BufWinEnter',},
-        {
-          callback = configure_nvim_tree_window,
-          -- nvim-tree has an augroup named 'NvimTree' so I have to use a different name
-          group = vim.api.nvim_create_augroup('__NvimTree', {}),
-        }
-      )
     end,
   }
 )
@@ -1921,7 +1905,6 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'TabLine', {ctermbg = 8, ctermfg = 8,})
   vim.api.nvim_set_hl(0, 'TabLineFill', {link = 'TabLine'})
   vim.api.nvim_set_hl(0, 'TabLineSel', {link = 'TabLine'})
-  vim.api.nvim_set_hl(0, 'ExplorerHint', {ctermbg = 'NONE', ctermfg = 6,})
   vim.api.nvim_set_hl(0, 'Comment', {ctermfg = 15, ctermbg = 'NONE',})
   -- This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
   -- By unsetting this, I ensure that terminals opened in vim will use the colors from the color palette of the
