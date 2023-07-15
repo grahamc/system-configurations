@@ -29,7 +29,7 @@
           darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" ${self.lib.updateFlags.darwin} "''$@"
 
           brew update
-          brew upgrade
+          brew upgrade --greedy
           brew autoremove
           brew cleanup
 
