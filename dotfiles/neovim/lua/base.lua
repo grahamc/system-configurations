@@ -72,12 +72,6 @@ end
 vim.keymap.set({'n', 'x'}, 'j', function() return move_by_screen_line('j') end, {expr =true})
 vim.keymap.set({'n', 'x'}, 'k', function() return move_by_screen_line('k') end, {expr =true})
 
--- Resizing panes
-vim.keymap.set({'n'}, '<C-Left>', [[<Cmd>vertical resize +1<CR>]], {silent = true})
-vim.keymap.set({'n'}, '<C-Right>', [[<Cmd>vertical resize -1<CR>]], {silent = true})
-vim.keymap.set({'n'}, '<C-Up>', [[<Cmd>resize +1<CR>]], {silent = true})
-vim.keymap.set({'n'}, '<C-Down>', [[<Cmd>resize -1<CR>]], {silent = true})
-
 -- Copy up to the end of line, not including the newline character
 vim.keymap.set({'n'}, 'Y', 'yg_')
 
@@ -344,10 +338,8 @@ Plug(
   {
     config = function()
       -- Make 'ai' and 'ii' behave like 'aI' and 'iI' respectively
-      vim.keymap.set('o', 'ai', 'aI', {remap = true})
-      vim.keymap.set('x', 'ai', 'aI', {remap = true})
-      vim.keymap.set('o', 'ii', 'iI', {remap = true})
-      vim.keymap.set('x', 'ii', 'iI', {remap = true})
+      vim.keymap.set({'x', 'o'}, 'ai', 'aI', {remap = true})
+      vim.keymap.set({'x', 'o'}, 'ii', 'iI', {remap = true})
     end,
   }
 )
@@ -415,10 +407,8 @@ Plug(
     end,
   }
 )
-vim.keymap.set("n", "+", '<Plug>(dial-increment)')
-vim.keymap.set("n", "-", '<Plug>(dial-decrement)')
-vim.keymap.set("v", "+", '<Plug>(dial-increment)')
-vim.keymap.set("v", "-", '<Plug>(dial-decrement)')
+vim.keymap.set({"n", "v"}, "+", '<Plug>(dial-increment)')
+vim.keymap.set({"n", "v"}, "-", '<Plug>(dial-decrement)')
 vim.keymap.set("v", "g+", 'g<Plug>(dial-increment)')
 vim.keymap.set("v", "g-", 'g<Plug>(dial-decrement)')
 

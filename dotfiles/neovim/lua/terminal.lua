@@ -287,6 +287,12 @@ vim.api.nvim_create_autocmd(
     group = toggle_cursor_line_group_id,
   }
 )
+
+-- Resize windows
+vim.keymap.set({'n'}, '<C-Left>', [[<Cmd>vertical resize +1<CR>]], {silent = true})
+vim.keymap.set({'n'}, '<C-Right>', [[<Cmd>vertical resize -1<CR>]], {silent = true})
+vim.keymap.set({'n'}, '<C-Up>', [[<Cmd>resize +1<CR>]], {silent = true})
+vim.keymap.set({'n'}, '<C-Down>', [[<Cmd>resize -1<CR>]], {silent = true})
 -- }}}
 
 -- Indentation {{{
