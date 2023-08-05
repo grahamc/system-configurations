@@ -45,6 +45,13 @@
     {
       nix = {
         useDaemon = true;
+        settings = {
+          trusted-users = [
+            "root"
+            "biggs"
+          ];
+
+        };
       };
 
       launchd.daemons.nix-gc = {
