@@ -70,59 +70,6 @@ vim.keymap.set({'n'}, '[c', function() vim.fn.VSCodeNotify('workbench.action.edi
 -- right click
 vim.keymap.set({'n', 'x'}, '<Leader><Leader>', function() vim.fn.VSCodeNotify('editor.action.showContextMenu') end)
 
--- Sync the visual mode selection with vscode's selection.
-local selection_sync_group_id = vim.api.nvim_create_augroup('SyncVisualSelectionWithVscode', {})
-vim.api.nvim_create_autocmd(
-  'ModeChanged',
-  {
-    pattern = '[^vV\x16]*:[vV\x16]*',
-    callback = function()
-      vim.api.nvim_create_autocmd(
-        'CursorMoved',
-        {
-          callback = function() vim.fn.VSCodeNotifyVisual('noop', true) end,
-          group = selection_sync_group_id,
-        }
-      )
-    end,
-    group = vim.api.nvim_create_augroup('StartSelectionSync', {}),
-  }
-)
-vim.api.nvim_create_autocmd(
-  'ModeChanged',
-  {
-    pattern = '[vV\x16]*:[^vV\x16]*',
-    callback = function()
-      -- Stop syncing the selection
-      pcall(vim.api.nvim_del_augroup_by_name, selection_sync_group_id)
-    end,
-    group = vim.api.nvim_create_augroup('StopSelectionSync', {}),
-  }
-)
--- Clear vscode selection along with neovim's.
---
--- First we press <Esc> to end visual mode. Now since vscode's selection doesn't update until the cursr is moved,
--- we see which direction we can move the cursor in, without hitting a boundary, and move the cursor once in that
--- direction and once back.
-local function clear_selection()
-  local result = '<Esc>'
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  local total_lines = vim.o.lines
-  local total_columns = vim.fn.col('$') - 1
-  if col - 1 >= 0 then
-    result = result .. '<Left><Right>'
-  elseif col + 1 < total_columns then
-    result = result .. '<Right><Left>'
-  elseif line + 1 <= total_lines then
-    result = result .. '<Down><Up>'
-  elseif line - 1 >= 1 then
-    result = result .. '<Up><Down>'
-  end
-
-  return result
-end
-vim.keymap.set({'x'}, '<Esc>', clear_selection, {expr = true})
-
 local function moveCursor(line_count)
   local is_count_provided = false
   if vim.v.count > 0 then
@@ -155,22 +102,22 @@ vim.api.nvim_create_autocmd(
       -- TODO: These mappings should override the ones in base.lua since I `require()` this file after base.lua, but
       -- they arent so instead I define them at `VimEnter`.
       vim.keymap.set(
-        {'n', 'x'},
+        {'n'},
         'j',
         function() moveCursor(1) end
       )
       vim.keymap.set(
-        {'n', 'x'},
+        {'n'},
         'k',
         function() moveCursor(-1) end
       )
       vim.keymap.set(
-        {'n', 'x'},
+        {'n'},
         '<C-j>',
         function() moveCursor(10) end
       )
       vim.keymap.set(
-        {'n', 'x'},
+        {'n'},
         '<C-k>',
         function() moveCursor(-10) end
       )

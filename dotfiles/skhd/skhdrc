@@ -97,8 +97,6 @@ cmd - h : yabai -m window --focus west
 cmd - j : yabai-move down
 cmd - k : yabai-move up
 cmd - l : yabai -m window --focus east
-# Go to last focused window, workspace, and display
-cmd - backspace : yabai -m window --focus recent
 cmd + ctrl - backspace : yabai -m space --focus recent
 cmd + alt - backspace : yabai -m display --focus recent
 # enter adjustment mode
@@ -188,8 +186,8 @@ ctrl - q [
 ]
 # Go to last tab
 ctrl - backspace [
-  "Firefox" : skhd -k "cmd + shift - 1"
-  "Firefox Developer Edition" : skhd -k "cmd + shift - 1"
+  "Firefox" : skhd -k "ctrl + shift - left"
+  "Firefox Developer Edition" : skhd -k "ctrl + shift - left"
   * ~
 ]
 # restore the last closed tab
@@ -226,11 +224,6 @@ ctrl - f [
 ctrl - 0x2C [
   "Firefox" : skhd -k "f6"
   "Firefox Developer Edition" : skhd -k "f6"
-  * ~
-]
-# Move a file to the trash in Finder
-backspace [
-  "finder" : skhd -k "hyper - 0x80" ; skhd -k "cmd - backspace" ; skhd -k "hyper - 0x80"
   * ~
 ]
 # Open bookmarks bar in Firefox

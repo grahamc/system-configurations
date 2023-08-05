@@ -557,7 +557,7 @@ end
 _G.StatusLine = function()
   local item_separator = '%#StatusLineSeparator# ∙ '
 
-  local position = '%#StatusLine#' .. unicode('e612') .. ' %l:%c'
+  local position = '%#StatusLine#' .. 'Ln %l, Col %c'
 
   local filetype = nil
   if string.len(vim.o.filetype) > 0 then
@@ -1260,7 +1260,7 @@ Plug(
       end
 
       local close_icon = unicode('f467')
-      local separator_icon = ' │ '
+      local separator_icon = '   '
       require("bufferline").setup({
         options = {
           numbers = function(context) return context.raise(context.ordinal) end,
