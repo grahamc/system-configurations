@@ -51,7 +51,7 @@ config.underline_thickness = "210%"
 local my_colors_per_color_scheme = {
   ['Biggs Nord'] = {
     [0] = '#1d212b', [1] = '#BF616A', [2] = '#A3BE8C', [3] = '#EBCB8B', [4] = '#81A1C1', [5] = '#B48EAD', [6] = '#88C0D0', [7] = '#D8DEE9',
-    [8] = '#2e3440', [9] = '#BF616A', [10] = '#A3BE8C', [11] = '#d08770', [12] = '#81A1C1', [13] = '#B48EAD', [14] = '#8FBCBB', [15] = '#626f89',
+    [8] = '#626f89', [9] = '#BF616A', [10] = '#A3BE8C', [11] = '#d08770', [12] = '#81A1C1', [13] = '#B48EAD', [14] = '#8FBCBB', [15] = '#626f89',
     -- Floating windows in neovim
     [16] = '#12151f',
     -- For folded lines
@@ -64,11 +64,13 @@ local my_colors_per_color_scheme = {
     [21] = '#60405a', [22] = '#306a7b',
     -- String in neovim
     [50] = '#A3BE8C',
+    -- highlight color
+    [51] = '#2e3440',
   },
 
   ['Biggs Light Owl'] = {
     [0] = '#FFFFFF', [1] = '#ee3d3b', [2] = '#2AA298', [3] = '#e9873a', [4] = '#288ed7', [5] = '#994cc3', [6] = '#2AA298', [7] = '#403f53',
-    [8] = '#F0F0F0', [9] = '#ee3d3b', [10] = '#2AA298', [11] = '#c96765', [12] = '#288ed7', [13] = '#d6438a', [14] = '#2AA298', [15] = '#979893',
+    [8] = '#979893', [9] = '#ee3d3b', [10] = '#2AA298', [11] = '#c96765', [12] = '#288ed7', [13] = '#d6438a', [14] = '#2AA298', [15] = '#979893',
     -- Floating windows in neovim
     [16] = '#efefef',
     -- For folded lines
@@ -81,6 +83,8 @@ local my_colors_per_color_scheme = {
     [21] = '#e99ac0', [22] = '#85dfd8',
     -- Strings in neovim
     [50] = '#c96765',
+    -- highlight color
+    [51] = '#F0F0F0',
   },
 }
 local dimmed_foreground_colors = {

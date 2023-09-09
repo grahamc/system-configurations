@@ -41,7 +41,7 @@
 [delta]
   navigate = true
   hyperlinks = true
-  syntax-theme = base16-brighter
+  syntax-theme = base256-brighter
   tabs = 2
   blame-palette = 0 8
   pager = "less -+F"

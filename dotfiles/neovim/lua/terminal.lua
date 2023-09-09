@@ -1290,33 +1290,34 @@ Plug(
           tab_size = 1,
         },
         highlights = {
-          fill = { ctermbg = 8, ctermfg = 15, },
-          background = { ctermbg = 8, ctermfg = 15, },
-          buffer_visible = { ctermbg = 8, ctermfg = 15, },
-          buffer_selected = { ctermbg = 8, ctermfg = 'NONE', italic = false, },
-          duplicate = { ctermbg = 8, ctermfg = 15, italic = false,},
-          duplicate_selected = { ctermbg = 8, ctermfg = 'None', italic = false,},
-          duplicate_visible = { ctermbg = 8, ctermfg = 15, italic = false,},
-          numbers = { ctermbg = 8, ctermfg = 15, italic = false,},
-          numbers_visible = { ctermbg = 8, ctermfg = 15, italic = false,},
-          numbers_selected = { ctermbg = 8, ctermfg = 6, italic = false,},
-          close_button = { ctermbg = 8, ctermfg = 15, },
-          close_button_selected = { ctermbg = 8, ctermfg = 'None', },
-          close_button_visible = { ctermbg = 8, ctermfg = 15, },
-          modified = { ctermbg = 8, ctermfg = 15, },
-          modified_selected = { ctermbg = 8, ctermfg = 'None', },
-          modified_visible = { ctermbg = 8, ctermfg = 'None', },
-          tab = { ctermbg = 8, ctermfg = 15, bold = true, },
-          tab_selected = { ctermbg = 8, ctermfg = 6, bold = true, underline = true, },
-          tab_separator = { ctermbg = 8, ctermfg = 8, },
-          tab_separator_selected = { ctermbg = 8, ctermfg = 8, },
-          tab_close = { ctermbg = 8, ctermfg = 'NONE', bold = true,},
+          fill = { ctermbg = 51, ctermfg = 15, },
+          background = { ctermbg = 51, ctermfg = 15, },
+          buffer_visible = { ctermbg = 51, ctermfg = 15, },
+          buffer_selected = { ctermbg = 51, ctermfg = 'NONE', italic = false, },
+          duplicate = { ctermbg = 51, ctermfg = 15, italic = false,},
+          duplicate_selected = { ctermbg = 51, ctermfg = 'None', italic = false,},
+          duplicate_visible = { ctermbg = 51, ctermfg = 15, italic = false,},
+          numbers = { ctermbg = 51, ctermfg = 15, italic = false,},
+          numbers_visible = { ctermbg = 51, ctermfg = 15, italic = false,},
+          numbers_selected = { ctermbg = 51, ctermfg = 6, italic = false,},
+          close_button = { ctermbg = 51, ctermfg = 15, },
+          close_button_selected = { ctermbg = 51, ctermfg = 'None', },
+          close_button_visible = { ctermbg = 51, ctermfg = 15, },
+          modified = { ctermbg = 51, ctermfg = 15, },
+          modified_selected = { ctermbg = 51, ctermfg = 'None', },
+          modified_visible = { ctermbg = 51, ctermfg = 'None', },
+          tab = { ctermbg = 51, ctermfg = 15, bold = true, },
+          tab_selected = { ctermbg = 51, ctermfg = 6, bold = true, underline = true, },
+          tab_separator = { ctermbg = 51, ctermfg = 51, },
+          tab_separator_selected = { ctermbg = 51, ctermfg = 51, },
+          tab_close = { ctermbg = 51, ctermfg = 'NONE', bold = true,},
           offset_separator = { ctermbg = 'NONE', ctermfg = 15, },
-          separator = { ctermbg = 8, ctermfg = 0, },
-          separator_visible = { ctermbg = 8, ctermfg = 0, },
-          separator_selected = { ctermbg = 8, ctermfg = 0, },
-          indicator_selected = { ctermbg = 8, ctermfg = 8, },
-          indicator_visible = { ctermbg = 8, ctermfg = 8, },
+          separator = { ctermbg = 51, ctermfg = 0, },
+          separator_visible = { ctermbg = 51, ctermfg = 0, },
+          separator_selected = { ctermbg = 51, ctermfg = 0, },
+          indicator_selected = { ctermbg = 51, ctermfg = 51, },
+          indicator_visible = { ctermbg = 51, ctermfg = 51, },
+          trunc_marker = { ctermbg = 51, ctermfg = 15, },
         },
       })
 
@@ -1885,13 +1886,13 @@ local function SetNordOverrides()
   -- Transparent vertical split
   vim.api.nvim_set_hl(0, 'WinSeparator', {ctermbg = 'NONE', ctermfg = 15,})
   -- statusline colors
-  vim.api.nvim_set_hl(0, 'StatusLine', {ctermbg = 8, ctermfg = 'NONE',})
-  vim.api.nvim_set_hl(0, 'StatusLineSeparator', {ctermfg = 8, ctermbg = 'NONE', reverse = true, bold = true,})
-  vim.api.nvim_set_hl(0, 'StatusLineErrorText', {ctermfg = 1, ctermbg = 8,})
-  vim.api.nvim_set_hl(0, 'StatusLineWarningText', {ctermfg = 3, ctermbg = 8,})
-  vim.api.nvim_set_hl(0, 'StatusLineInfoText', {ctermfg = 4, ctermbg = 8,})
-  vim.api.nvim_set_hl(0, 'StatusLineHintText', {ctermfg = 5, ctermbg = 8,})
-  vim.api.nvim_set_hl(0, 'StatusLineStandoutText', {ctermfg = 3, ctermbg = 8,})
+  vim.api.nvim_set_hl(0, 'StatusLine', {ctermbg = 51, ctermfg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'StatusLineSeparator', {ctermfg = 51, ctermbg = 'NONE', reverse = true, bold = true,})
+  vim.api.nvim_set_hl(0, 'StatusLineErrorText', {ctermfg = 1, ctermbg = 51,})
+  vim.api.nvim_set_hl(0, 'StatusLineWarningText', {ctermfg = 3, ctermbg = 51,})
+  vim.api.nvim_set_hl(0, 'StatusLineInfoText', {ctermfg = 4, ctermbg = 51,})
+  vim.api.nvim_set_hl(0, 'StatusLineHintText', {ctermfg = 5, ctermbg = 51,})
+  vim.api.nvim_set_hl(0, 'StatusLineStandoutText', {ctermfg = 3, ctermbg = 51,})
   vim.api.nvim_set_hl(0, 'CursorLine', {ctermfg = 'NONE', ctermbg = 'NONE', underline = true,})
   vim.api.nvim_set_hl(0, 'CursorLineNr', {link = 'CursorLine'})
   -- transparent background
@@ -1901,14 +1902,14 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'LineNr', {ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'LineNrAbove', {link = 'LineNr'})
   vim.api.nvim_set_hl(0, 'LineNrBelow', {link = 'LineNrAbove'})
-  vim.api.nvim_set_hl(0, 'WordUnderCursor', {ctermbg = 8,})
+  vim.api.nvim_set_hl(0, 'WordUnderCursor', {ctermbg = 51,})
   vim.api.nvim_set_hl(0, 'IncSearch', {link = 'Search'})
-  vim.api.nvim_set_hl(0, 'TabLineBorder', {ctermbg = 'NONE', ctermfg = 8,})
-  vim.api.nvim_set_hl(0, 'TabLineBorder2', {ctermbg = 8, ctermfg = 0,})
+  vim.api.nvim_set_hl(0, 'TabLineBorder', {ctermbg = 'NONE', ctermfg = 51,})
+  vim.api.nvim_set_hl(0, 'TabLineBorder2', {ctermbg = 51, ctermfg = 0,})
   -- The TabLine* highlights are the so the tabline looks blank before bufferline populates it so it needs the same
   -- background color as bufferline. The foreground needs to match the background so you can't see the text from the
   -- original tabline function.
-  vim.api.nvim_set_hl(0, 'TabLine', {ctermbg = 8, ctermfg = 8,})
+  vim.api.nvim_set_hl(0, 'TabLine', {ctermbg = 51, ctermfg = 51,})
   vim.api.nvim_set_hl(0, 'TabLineFill', {link = 'TabLine'})
   vim.api.nvim_set_hl(0, 'TabLineSel', {link = 'TabLine'})
   vim.api.nvim_set_hl(0, 'Comment', {ctermfg = 15, ctermbg = 'NONE',})
@@ -1991,15 +1992,15 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'Float1Border', {link = 'Float1Normal'})
   vim.api.nvim_set_hl(0, 'Float2Normal', {ctermbg = 24,})
   vim.api.nvim_set_hl(0, 'Float2Border', {link = 'Float2Normal'})
-  vim.api.nvim_set_hl(0, 'Float3Normal', {ctermbg = 8,})
+  vim.api.nvim_set_hl(0, 'Float3Normal', {ctermbg = 51,})
   vim.api.nvim_set_hl(0, 'Float3Border', {link = 'Float3Normal'})
   vim.api.nvim_set_hl(0, 'Float4Normal', {ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'Float4Border', {ctermbg = 'NONE', ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'String', {ctermfg = 50,})
-  vim.api.nvim_set_hl(0, 'StatusLineRecordingIndicator', {ctermbg = 8, ctermfg = 1,})
-  vim.api.nvim_set_hl(0, 'StatusLineShowcmd', {ctermbg = 8, ctermfg = 6,})
-  vim.api.nvim_set_hl(0, 'StatusLinePowerlineOuter', {ctermbg = 'NONE', ctermfg = 8,})
-  vim.api.nvim_set_hl(0, 'NvimTreeWinBar', {ctermfg = 6, ctermbg = 8,})
+  vim.api.nvim_set_hl(0, 'StatusLineRecordingIndicator', {ctermbg = 51, ctermfg = 1,})
+  vim.api.nvim_set_hl(0, 'StatusLineShowcmd', {ctermbg = 51, ctermfg = 6,})
+  vim.api.nvim_set_hl(0, 'StatusLinePowerlineOuter', {ctermbg = 'NONE', ctermfg = 51,})
+  vim.api.nvim_set_hl(0, 'NvimTreeWinBar', {ctermfg = 6, ctermbg = 51,})
   vim.api.nvim_set_hl(0, 'NvimTreeIndentMarker', {ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'MsgArea', {link = 'StatusLine',})
   local mode_highlights = {
@@ -2014,7 +2015,7 @@ local function SetNordOverrides()
     local color = highlight.color
     vim.api.nvim_set_hl(0, string.format('StatusLineMode%s', mode), {ctermbg = 'NONE', ctermfg = color, reverse = true, bold = true,})
     vim.api.nvim_set_hl(0, string.format('StatusLineMode%sPowerlineOuter', mode), {ctermbg = 'NONE', ctermfg = color,})
-    vim.api.nvim_set_hl(0, string.format('StatusLineMode%sPowerlineInner', mode), {ctermbg = 8, ctermfg = color,})
+    vim.api.nvim_set_hl(0, string.format('StatusLineMode%sPowerlineInner', mode), {ctermbg = 51, ctermfg = color,})
   end
 end
 local nord_vim_group_id = vim.api.nvim_create_augroup('NordVim', {})

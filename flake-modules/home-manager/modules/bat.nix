@@ -2,7 +2,7 @@
   {
     repository.symlink.xdg.configFile = {
       "bat/config".source = "bat/config";
-      "bat/themes/base16-brighter.tmTheme".source = "bat/base16-brighter.tmTheme";
+      "bat/themes/base256-brighter.tmTheme".source = "bat/base256-brighter.tmTheme";
     };
 
     home.packages = with pkgs; [
