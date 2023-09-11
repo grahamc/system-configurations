@@ -1,6 +1,6 @@
 color:
   when: always
-  theme: theme
+  theme: custom
 
 blocks:
   - permission
