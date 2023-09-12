@@ -34,7 +34,7 @@ function timg --wraps timg
     set pixelation_options
     # timg doesn't detect Wezterm or TMUX so I'll do it here
     if set --query TMUX
-        set pixelation_options '-p' 'quarter'
+        set pixelation_options '-p' 'sixel'
     else if test "$TERM_PROGRAM" = 'WezTerm'
         set pixelation_options '-p' 'kitty'
     end

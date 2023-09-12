@@ -123,11 +123,23 @@
                 };
               };
 
+            tmux = prev.tmux.overrideAttrs (old: {
+              src = prev.fetchFromGitHub {
+                owner = "tmux";
+                repo = "tmux";
+                rev = "f68d35c52962c095e81db0de28219529fd6f355e";
+                sha256 = "sha256-xxDPQE7OfsbKkOwZSclxu4qOXK6Ej1ktQ0fyXz65m3k=";
+              };
+              patches = [];
+              configureFlags = old.configureFlags ++ ["--enable-sixel"];
+            });
+
             crossPlatformPackages = {
               vimPlugins = allVimPlugins;
               tmuxPlugins = allTmuxPlugins;
               fishPlugins = allFishPlugins;
               inherit pynix;
+              inherit tmux;
               # I put these packages under 'xdgWrappers' so they don't overwrite the originals. This is to avoid
               # rebuilds of tools that depend on anything wrapped in this overlay. This is fine since I only need
               # XDG Base Directory compliance when I'm using a program directly.
