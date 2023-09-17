@@ -105,6 +105,17 @@ vim.api.nvim_create_autocmd(
     group = general_group_id,
   }
 )
+vim.api.nvim_create_autocmd(
+  'FileType',
+  {
+    pattern = {'help'},
+    callback = function()
+      -- so it shows up in the bufferline
+      vim.opt_local.buflisted = true
+    end,
+    group = general_group_id,
+  }
+)
 
 vim.keymap.set('', '<C-x>', '<Cmd>xa<CR>')
 
