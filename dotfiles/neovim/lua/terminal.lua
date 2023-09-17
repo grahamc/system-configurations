@@ -205,16 +205,11 @@ end
 -- }}}
 
 -- Autosave {{{
-_G.is_autosave_enabled = true
 _G.is_autosave_job_queued = false
 vim.api.nvim_create_autocmd(
   {"TextChanged", "TextChangedI",},
   {
     callback = function()
-      if not is_autosave_enabled then
-        return
-      end
-
       if _G.is_autosave_job_queued then
         return
       end
