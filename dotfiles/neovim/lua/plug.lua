@@ -29,11 +29,29 @@ local function ApplyConfigs(configs)
   end
 end
 
+-- This only registers the plugin, but it won't be loaded. This way if I run PlugClean from one profile it
+-- won't delete all the plugins from the other profiles since all plugins get registered here.
+local function RegisterPlugin(repo)
+  original_plug(repo, {['on'] = {}, ['for'] = {},})
+
+  local plugin_name = repo:match("^[%w-]+/([%w-_.]+)$")
+
+  _G.registered_plugs[plugin_name] = true
+end
+
 _G.plug_begin = function()
   original_plug_begin()
 
-  -- Register Plugins
-  require('plugfile')
+  for line in io.lines(vim.fn.stdpath('config') .. '/plugfile.txt') do
+    -- skip blank lines
+    if #line == 0 then
+      goto continue
+    end
+
+    RegisterPlugin(line)
+
+    ::continue::
+  end
 end
 
 _G.plug_end = function()
@@ -78,14 +96,4 @@ function Plug(repo, options)
       table.insert(configs_by_type.async, config)
     end
   end
-end
-
--- This command only registers the plugin, but it won't be loaded. This way if I run PlugClean from one profile it
--- won't delete all the plugins from the other profiles since all plugins get registered here.
-function RegisterPlug(repo)
-  original_plug(repo, {['on'] = {}, ['for'] = {},})
-
-  local plugin_name = repo:match("^[%w-]+/([%w-_.]+)$")
-
-  _G.registered_plugs[plugin_name] = true
 end

@@ -1,4 +1,4 @@
-# This module will fetch all the vim plugins specified in a `plugfile.lua` and copy them to the directory
+# This module will fetch all the vim plugins specified in a `plugfile.txt` and copy them to the directory
 # where vim-plug stores plugins. This way you can fetch your plugins with Nix, but still load them with vim-plug.
 # One advantage of this is that plugins can be stored in your Nix binary cache with all your other packages which
 # is particularly useful for plugins that require compilation like nvim-treesitter.
@@ -28,7 +28,7 @@
           pluginNames = map
             (line:
               let
-                matches = builtins.match "RegisterPlug\\('.*/(.*)'\\)" line;
+                matches = builtins.match ".*/(.*)" line;
                 pluginName = (builtins.elemAt matches 0);
               in
                 pluginName
