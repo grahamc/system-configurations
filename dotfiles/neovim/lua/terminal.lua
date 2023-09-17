@@ -397,6 +397,9 @@ vim.o.wildoptions = 'pum'
 vim.o.cmdheight = 0
 vim.o.showcmdloc = 'statusline'
 vim.keymap.set('c', '<C-a>', '<C-b>', {remap = true})
+vim.cmd([[
+  cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
+]])
 -- }}}
 
 -- Search {{{
@@ -1002,6 +1005,13 @@ Plug(
               '--hidden',
               '--smart-case',
               '--follow',
+            },
+          },
+          help_tags = {
+            mappings = {
+              i = {
+                ["<CR>"] = actions.select_tab,
+              },
             },
           },
         },
