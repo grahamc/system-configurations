@@ -39,7 +39,6 @@
               buildInputs = [gozip];
               installPhase = ''
                 mkdir deps
-                mkdir preDeps
                 cp --recursive $(cat ${pkgs.writeReferencesToFile derivation}) ./deps/
                 chmod -R 777 ./deps
                 cd ./flake-modules/bundler/gozip
