@@ -5,7 +5,7 @@ import sys
 from time import sleep
 
 normal = '\x1b[0m'
-code = '\x1b[35m\x1b[100m'
+code = '\x1b[48;5;51m\x1b[38;5;5m'
 
 # banner
 print(f'Python v{".".join(str(x) for x in sys.version_info[:3])}, IPython v{".".join(str(x) for x in IPython.version_info[:3])}. Type {code} ? {normal} for help.')
