@@ -130,7 +130,7 @@ function variable-widget --description 'Search environment variables'
 end
 abbr --add --global vw variable-widget
 
-# Use shift+tab to select an autocomplete entry with fzf
+# Use tab to select an autocomplete entry with fzf
 function _fzf_complete
     set current_token (commandline --current-token)
     set entries \
