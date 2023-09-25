@@ -196,7 +196,9 @@ function _path_context --argument-names max_length
         set dir_length (math $dir_length - 1)
     end
 
-    echo $context_prefix$path
+    set hyperlink '\e]8;;file://'(pwd)'\e\\'$path'\e]8;;\e\\'
+
+    echo $context_prefix$hyperlink
 end
 
 function _direnv_context
