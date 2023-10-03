@@ -56,6 +56,9 @@ function fish_prompt --description 'Print the prompt'
 
         # Truncate any contexts that wouldn't fit on one line.
         if test (string length --visible $context) -gt $max_length
+        # TODO: `string length --visible` doesn't report the correct size for OSC8 hyperlinks so I'm skipping
+        # truncation for any context that contains it.
+        and not string match --quiet '*\e]8;;file://*' $context
             set context (string shorten --max $max_length $context)
         end
 
@@ -194,6 +197,12 @@ function _path_context --argument-names max_length
         # Each segment of the path will be truncated to a length of `$dir_length`.
         set path (prompt_pwd --dir-length $dir_length)
         set dir_length (math $dir_length - 1)
+    end
+
+    # TODO: `string length --visible` doesn't report the correct size for OSC8 hyperlinks so I'm doing the truncation
+    # before making the hyperlink.
+    if test (string length --visible $path) -gt $max_path_length
+        set path (string shorten --max $max_path_length $path)
     end
 
     set hyperlink '\e]8;;file://'(pwd)'\e\\'$path'\e]8;;\e\\'
