@@ -951,14 +951,6 @@ Plug(
   {
     config = function()
       require("virt-column").setup({ char = "│" })
-
-      vim.api.nvim_create_autocmd(
-        {'BufWinEnter', 'VimResized',},
-        {
-          callback = function() vim.cmd.VirtColumnRefresh() end,
-          group = vim.api.nvim_create_augroup('MyVirtColumn', {}),
-        }
-      )
     end,
   }
 )
@@ -1950,7 +1942,6 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'FoldColumn', {ctermfg = 15, ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'SpecialKey', {ctermfg = 13, ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'NonText', {ctermfg = 15, ctermbg = 'NONE',})
-  vim.api.nvim_set_hl(0, 'VirtColumn', {ctermfg = 24,})
   vim.api.nvim_set_hl(0, 'DiagnosticSignError', {ctermfg = 1, ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'DiagnosticSignWarn', {ctermfg = 3, ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'DiagnosticSignInfo', {ctermfg = 4, ctermbg = 'NONE',})
