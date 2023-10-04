@@ -1186,12 +1186,7 @@ Plug(
     config = function()
       require('nvim_comment').setup({
         comment_empty = false,
-        hook = function()
-          -- This is how the docs say it should be called.
-          -- docs: https://github.com/JoosepAlviste/nvim-ts-context-commentstring/wiki/Integrations#nvim-comment
-          ---@diagnostic disable-next-line: missing-parameter
-          require("ts_context_commentstring.internal").update_commentstring()
-        end,
+        hook = require("ts_context_commentstring.internal").update_commentstring,
       })
     end,
   }
