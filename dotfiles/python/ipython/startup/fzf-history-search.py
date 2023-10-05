@@ -181,13 +181,18 @@ def _create_preview_fifos():
 
 
 def _create_fzf_process(initial_query, fifo_input_path, fifo_output_path):
+    xdg_data_directory = os.environ.get('XDG_DATA_HOME', f"{os.environ['HOME']}/.local/share")
+    fzf_history_directory = f"{xdg_data_directory}/fzf"
+    fzf_history_file = f"{fzf_history_directory}/fzf-ipython-history.txt"
+    subprocess.run(['mkdir', '-p', fzf_history_directory])
+    subprocess.run(['touch', fzf_history_file])
     return subprocess.Popen([
         'fzf',
         '--no-sort',
         '-n3..,..',
         '--with-nth=4..',
         '--tiebreak=index',
-        f"--history={os.environ['HOME']}/.config/fzf/fzf-ipython-history.txt",
+        f"--history={fzf_history_file}",
         '--exact',
         '--query={}'.format(initial_query),
         '--preview-window=35%',
