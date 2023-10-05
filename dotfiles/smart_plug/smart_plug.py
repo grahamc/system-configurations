@@ -41,7 +41,7 @@ class SmartPlugController(object):
         return self.plug.is_on
 
     def _block_until_complete(self, awaitable: Awaitable):
-        return asyncio.get_event_loop().run_until_complete(awaitable)
+        return asyncio.get_event_loop().run_until_complete(asyncio.wait_for(awaitable, timeout=1))
 
 if __name__ == "__main__":
     try:

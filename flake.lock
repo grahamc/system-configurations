@@ -272,12 +272,12 @@
       },
       "locked": {
         "lastModified": 1,
-        "narHash": "sha256-GGWr2Z2ZhisdfpTyZ4VsET3OOC7Nmui81UQRVl1ksx8=",
-        "path": "/nix/store/1wq1gk2rw58frv2mjc2vb7sf27zf566s-source/dotfiles/smart_plug",
+        "narHash": "sha256-FuI4Ag2p31xuxnX1Aw9i2R2M2ImiRA4pL3kf9Ni83A8=",
+        "path": "/nix/store/apkdib6szhaplffv16jc9lrmvjxkcbrh-source/dotfiles/smart_plug",
         "type": "path"
       },
       "original": {
-        "path": "/nix/store/1wq1gk2rw58frv2mjc2vb7sf27zf566s-source/dotfiles/smart_plug",
+        "path": "/nix/store/apkdib6szhaplffv16jc9lrmvjxkcbrh-source/dotfiles/smart_plug",
         "type": "path"
       }
     },
