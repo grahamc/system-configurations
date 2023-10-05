@@ -41,6 +41,7 @@
         gnused
         broot
         yash
+        hyperfine
       ] ++ optionals isLinux [
         trashy
         pipr
