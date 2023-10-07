@@ -53,7 +53,7 @@
             
             vimPluginRepositoryPrefix = "vim-plugin-";
             vimPluginBuilder = repositoryName: repositorySourceCode: date:
-              prev.vimUtils.buildVimPluginFrom2Nix {
+              prev.vimUtils.buildVimPlugin {
                 pname = repositoryName;
                 version = date;
                 src = repositorySourceCode;
