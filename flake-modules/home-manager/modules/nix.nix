@@ -32,11 +32,11 @@
         nix-tree
         comma
         nix-daemon-reload
-        nix-info
       ];
 
       repository.symlink.xdg.executable = {
         "nix".source = "nix/nix-repl-wrapper.fish";
         "nix-gcroots".source = "nix/nix-gcroots.fish";
+        "nix-info".source = "nix/nix-info.fish";
       };
     }
