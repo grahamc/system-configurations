@@ -37,7 +37,7 @@
         # Though less is on most machines by default, I added it here because I need a relatively recent version (600)
         # since that's when they added support for XDG Base Directories.
         less
-        # These weren't in a docker container
+        # This wasn't in a docker container
         gnused
         broot
         yash
