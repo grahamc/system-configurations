@@ -5,6 +5,7 @@ c = get_config()
 c.InteractiveShellApp.extensions = ['autoreload', 'storemagic']
 c.TerminalIPythonApp.display_banner = False
 c.TerminalInteractiveShell.confirm_exit = False
+c.TerminalInteractiveShell.shortcuts = [{'command': 'IPython:shortcuts.open_input_in_editor', 'new_keys': ['c-e']}]
 c.TerminalInteractiveShell.highlighting_style = 'bw'
 c.TerminalInteractiveShell.highlighting_style_overrides = {
     Token.Prompt: '',
