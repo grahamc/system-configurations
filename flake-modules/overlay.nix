@@ -169,18 +169,6 @@
                   cp $src/catp $out/bin/
                 '';
               };
-              pbpaste = prev.writeScriptBin "pbpaste"
-                ''
-                  #!${final.fish}/bin/fish
-
-                  if type --query wl-paste
-                    wl-paste
-                  else if type --query xclip
-                    xclip -selection clipboard -out
-                  else
-                    echo "Error: Can't find a program to pasting clipboard contents" 1>/dev/stderr
-                  end
-                '';
             };
 
             darwinOnlyPackages = optionalAttrs isDarwin {

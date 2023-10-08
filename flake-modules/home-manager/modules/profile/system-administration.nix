@@ -49,7 +49,6 @@
         catp
         # for pstree
         psmisc
-        pbpaste
       ] ++ optionals isDarwin [
         # macOS comes with a very old version of ncurses that doesn't have a terminfo entry for tmux, tmux-256color
         ncurses

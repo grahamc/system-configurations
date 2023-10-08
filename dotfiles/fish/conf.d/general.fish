@@ -24,6 +24,7 @@ if uname | grep -q Linux
         alias wezterm 'flatpak run org.wezfurlong.wezterm'
     end
     abbr --add --global open xdg-open
+    alias pbpaste fish_clipboard_paste
 end
 
 # sudo
