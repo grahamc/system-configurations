@@ -116,7 +116,6 @@ end
 # direnv
 if type --query direnv
     direnv hook fish | source
-    # toggle activation/deactivation messages
     set --global --export DIRENV_LOG_FORMAT (set_color brwhite)'[direnv] %s'(set_color normal)
 end
 
