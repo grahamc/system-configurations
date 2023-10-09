@@ -286,8 +286,8 @@ end
 _add_async_prompt_function _git_status _git_status_loading_indicator
 
 function _status_context
-    # I'd pass these in as two separate arguments, but fish doesn't support list arguments, all the arguments
-    # get flattened: https://github.com/fish-shell/fish-shell/issues/3375
+    # I'd pass these in as two separate arguments, but fish doesn't support list arguments.
+    # issue: https://github.com/fish-shell/fish-shell/issues/3375
     set last_status $argv[1]
     set last_pipestatus $argv[2..]
 
@@ -347,7 +347,7 @@ function _nix_context
     set packages ( \
         # Each package is separated by a space.
         string split --no-empty ' ' "$ANY_NIX_SHELL_PKGS" \
-        # Packages may be have dots, e.g. 'vimPlugins.vim-abolish', in which case I take the segment after the last
+        # Packages may have dots, e.g. 'vimPlugins.vim-abolish', in which case I take the segment after the last
         # dot, 'vim-abolish'.
         | xargs -I PACKAGE fish -c "string split --fields (count (string split '.' 'PACKAGE')) '.' 'PACKAGE'" \
     )
