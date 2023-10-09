@@ -64,7 +64,10 @@ _G.plug_end = function()
   -- configs are applied after any files specified on the commandline are opened and after sessions are restored.
   -- This way, neovim shows me the first file "instantly" and by the time I've looked at the file and decided on my
   -- first keypress, the plugin configs have already been applied.
-  vim.fn.timer_start(0, function() ApplyConfigs(configs_by_type.async) end)
+  local function ApplyAsyncConfigs()
+    ApplyConfigs(configs_by_type.async)
+  end
+  vim.defer_fn(ApplyAsyncConfigs, 0)
 end
 
 -- Similar to the vim-plug `Plug` command, but with an additional option to specify a function to run after a
