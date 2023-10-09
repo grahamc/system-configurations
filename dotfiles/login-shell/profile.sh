@@ -5,6 +5,10 @@ if uname | grep -q Darwin; then
   brew="/usr/local/bin/brew"
   if [ -x "$brew" ]; then
     eval "$("$brew" shellenv sh)"
+    # I need the brew prefix during my interactive shell startup, but `brew --prefix` runs relatively slow so instead
+    # I'll run it here and export the result.
+    HOMEBREW_PREFIX="$("$brew" --prefix)"
+    export HOMEBREW_PREFIX
   fi
 fi
 

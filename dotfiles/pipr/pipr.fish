@@ -2,7 +2,7 @@ if not status is-interactive
   exit
 end
 
-if not uname | grep -q Linux
+if test (uname) != Linux
   exit
 end
 

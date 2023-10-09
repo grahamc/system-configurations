@@ -1,26 +1,21 @@
-{ config, lib, pkgs, specialArgs, ... }:
+{ lib, pkgs, specialArgs, ... }:
   let
     inherit (lib.lists) optionals;
     inherit (pkgs.stdenv) isLinux isDarwin;
     inherit (specialArgs) isGui;
     inherit (lib.attrsets) optionalAttrs;
-    fzfWithoutShellConfig = pkgs.buildEnv {
-      name = "fzf-bin-only";
-      paths = [pkgs.fzf];
-      pathsToLink = ["/bin" "/share/man"];
-    };
   in
     {
       imports = [
         ../bat.nix
         ../git.nix
+        ../fzf.nix
       ];
 
       home.packages = with pkgs; [
         doggo
         duf
         fd
-        fzfWithoutShellConfig
         gping
         jq
         lsd
@@ -57,7 +52,7 @@
       ];
 
       # Taken from home-manager: https://github.com/nix-community/home-manager/blob/47c2adc6b31e9cff335010f570814e44418e2b3e/modules/programs/broot.nix#L151
-      # I'm doing this home-manager was bringing in the broot source code as a dependency.
+      # I'm doing this because home-manager was bringing in the broot source code as a dependency.
       #
       # Using mkAfter to make it more likely to appear after other
       # manipulations of the prompt.
@@ -67,10 +62,19 @@
           "broot --print-shell-function fish > $out"
         }
       '';
-      # Dummy file to prevent broot from trying to reinstall itself
-      xdg.configFile."broot" = {
-        source = pkgs.writeTextDir "launcher/installed-v1" "";
-        recursive = true;
+
+      xdg.configFile = {
+        "fish/conf.d/zoxide.fish".source = ''${
+          pkgs.runCommand "zoxide-config.fish" {} "${pkgs.zoxide}/bin/zoxide init --no-cmd fish > $out"
+        }'';
+
+        # Taken from home-manager: https://github.com/nix-community/home-manager/blob/47c2adc6b31e9cff335010f570814e44418e2b3e/modules/programs/broot.nix#L151
+        # I'm doing this because home-manager was bringing in the broot source code as a dependency.
+        # Dummy file to prevent broot from trying to reinstall itself
+        "broot" = {
+          source = pkgs.writeTextDir "launcher/installed-v1" "";
+          recursive = true;
+        };
       };
 
       repository.symlink.home.file = {
@@ -78,8 +82,6 @@
       };
 
       repository.symlink.xdg.executable = {
-        "fzf-tmux-zoom".source = "fzf/fzf-tmux-zoom";
-        "fzf-help-preview".source = "fzf/fzf-help-preview";
         "myssh".source = "ssh/myssh.sh";
       };
 
@@ -88,7 +90,6 @@
         "viddy.toml".source = "viddy/viddy.toml";
         "watchman/watchman.json".source = "watchman/watchman.json";
         "lesskey".source = "less/lesskey";
-        "fish/conf.d/fzf.fish".source = "fzf/fzf.fish";
         "ripgrep/ripgreprc".source = "ripgrep/ripgreprc";
         "ssh/start-my-shell.sh".source = "ssh/start-my-shell.sh";
         "broot/conf.hjson".source = "broot/conf.hjson";

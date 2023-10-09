@@ -27,6 +27,12 @@
         "fish/conf.d/nix.fish".source = "nix/nix.fish";
       };
 
+      xdg.configFile = {
+        "fish/conf.d/any-nix-shell.fish".source = ''${
+          pkgs.runCommand "any-nix-shell-config.fish" {} "${pkgs.any-nix-shell}/bin/any-nix-shell fish > $out"
+        }'';
+      };
+
       home.packages = with pkgs; [
         any-nix-shell
         nix-tree

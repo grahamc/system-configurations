@@ -70,6 +70,3 @@ scrollbar:15:dim\
     --ansi \
     --tabstop 2 \
     "
-
-mkdir -p (dirname $_fzf_history_file)
-touch $_fzf_history_file

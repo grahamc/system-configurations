@@ -2,8 +2,6 @@ if not status is-interactive
   exit
 end
 
-any-nix-shell fish | source
-
 # If the user run a nix or hostctl command while in a git repository with untracked files, warn them since those
 # files will be ignored by any Nix Flake operation.
 #

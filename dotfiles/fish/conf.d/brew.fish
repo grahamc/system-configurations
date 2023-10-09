@@ -2,7 +2,7 @@ if not status is-interactive
     exit
 end
 
-if not uname | grep -q Darwin
+if test (uname) != Darwin
   exit
 end
 
@@ -14,11 +14,11 @@ export HOMEBREW_NO_INSTALL_UPGRADE=1
 export HOMEBREW_NO_INSTALL_CLEANUP=1
 
 # autocomplete
-if test -d (brew --prefix)"/share/fish/completions"
-    set -global --prepend fish_complete_path (brew --prefix)/share/fish/completions
+if test -d $HOMEBREW_PREFIX/share/fish/completions
+    set -global --prepend fish_complete_path $HOMEBREW_PREFIX/share/fish/completions
 end
-if test -d (brew --prefix)"/share/fish/vendor_completions.d"
-    set --global --prepend fish_complete_path (brew --prefix)/share/fish/vendor_completions.d
+if test -d $HOMEBREW_PREFIX/share/fish/vendor_completions.d
+    set --global --prepend fish_complete_path $HOMEBREW_PREFIX/share/fish/vendor_completions.d
 end
 
 function brew-install-widget --description 'Install packages with brew'

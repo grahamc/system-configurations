@@ -10,7 +10,7 @@ abbr --add --global du 'du -shL'
 if not string match --regex --quiet -- '256' $TERM
     set --global --export TERM xterm-256color
 end
-if uname | grep -q Linux
+if test (uname) = Linux
     abbr --add --global initramfs-reload 'sudo update-initramfs -u -k all'
     abbr --add --global logout-all 'sudo killall -u $USER'
     abbr --add --global icon-reload 'sudo update-icon-caches /usr/share/icons/* ~/.local/share/icons/*'
@@ -101,23 +101,25 @@ end
 
 # zoxide
 set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'lsd {2}' --keep-right"
-zoxide init --no-cmd fish | source
-function cd --wraps cd
-    # zoxide does not support the '--' argument
-    if set index (contains --index -- '--' $argv)
-        set --erase argv[$index]
+# This needs to run after the zoxide.fish config file so I run it when the fish_prompt event fires.
+function __create_cd_function --on-event fish_prompt
+    # I only want this to run once so delete the function.
+    functions -e (status current-function)
+
+    function cd --wraps cd
+        # zoxide does not support the '--' argument
+        if set index (contains --index -- '--' $argv)
+            set --erase argv[$index]
+        end
+        __zoxide_z $argv
     end
-    __zoxide_z $argv
 end
 function cdh --wraps=__zoxide_zi --description 'cd history'
     __zoxide_zi $argv
 end
 
 # direnv
-if type --query direnv
-    direnv hook fish | source
-    set --global --export DIRENV_LOG_FORMAT (set_color brwhite)'[direnv] %s'(set_color normal)
-end
+set --global --export DIRENV_LOG_FORMAT (set_color brwhite)'[direnv] %s'(set_color normal)
 
 # watch
 abbr --add --global watch 'watch --no-title --differences --interval 0.5'
