@@ -301,6 +301,11 @@ vim.keymap.set({'n'}, '<C-Up>', [[<Cmd>resize +1<CR>]], {silent = true})
 vim.keymap.set({'n'}, '<C-Down>', [[<Cmd>resize -1<CR>]], {silent = true})
 -- }}}
 
+-- Tabs {{{
+vim.keymap.set({'n', 'i'}, '<C-M-[>', vim.cmd.tabprevious, {silent = true})
+vim.keymap.set({'n', 'i'}, '<C-M-]>', vim.cmd.tabnext, {silent = true})
+-- }}}
+
 -- Indentation {{{
 vim.o.expandtab = true
 vim.o.autoindent = true
