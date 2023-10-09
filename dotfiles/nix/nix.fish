@@ -9,10 +9,6 @@ end
 # issue: https://github.com/NixOS/nix/pull/6858
 # issue: https://github.com/NixOS/nix/issues/7107
 function _nix-unstaged-files-warning --on-event fish_preexec --argument-names commandline
-    # Have to set these first before the $status changes
-    set last_interactive_status $status
-    set last_interactive_pipestatus $pipestatus
-
     set command (string split ' ' -- "$commandline")[1]
     if not string match --regex --quiet -- 'nix' "$command"
     and not string match --regex --quiet -- 'hostctl' "$command"
