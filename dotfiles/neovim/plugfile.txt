@@ -55,3 +55,5 @@ arthurxavierx/vim-caser
 oncomouse/czs.nvim
 kyazdani42/nvim-tree.lua
 akinsho/bufferline.nvim
+j-hui/fidget.nvim
+rcarriga/nvim-notify

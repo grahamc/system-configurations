@@ -1358,6 +1358,65 @@ Plug(
     end,
   }
 )
+
+Plug(
+  'j-hui/fidget.nvim',
+  {
+    config = function()
+      local margin = ' '
+      local border = ' ┃'
+      require('fidget').setup({
+        text = {
+          spinner = 'dots',
+        },
+        window = {
+          blend = 0,
+          zindex = 99,
+        },
+        fmt = {
+          fidget = function(fidget_name, spinner)
+            return string.format('%s%s %s%s', margin, spinner, fidget_name, border)
+          end,
+          task = function(task_name, message, percentage)
+            return string.format(
+              '%s%s%s%s%s',
+              margin,
+              message,
+              percentage and string.format(' (%s%%)', percentage) or '',
+              task_name and string.format(' [%s]', task_name) or '',
+              border
+            )
+          end,
+        },
+        sources = {
+          ['null-ls'] = {
+            ignore = true,
+          },
+          ['ltex'] = {
+            ignore = true,
+          },
+        },
+      })
+    end,
+  }
+)
+
+Plug(
+  'rcarriga/nvim-notify',
+  {
+    config = function()
+      local notify = require('notify')
+      notify.setup({
+        stages = 'slide',
+        timeout = 3000,
+        render = 'wrapped-compact',
+        max_width = math.floor(vim.o.columns * .35),
+      })
+      vim.notify = notify
+      vim.keymap.set('n', '<Leader>n', '<Cmd>Telescope notify<CR>')
+    end,
+  }
+)
 -- }}}
 
 -- File Explorer {{{
@@ -2010,6 +2069,26 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'NvimTreeWinBar', {ctermfg = 6, ctermbg = 51,})
   vim.api.nvim_set_hl(0, 'NvimTreeIndentMarker', {ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'MsgArea', {link = 'StatusLine',})
+  vim.api.nvim_set_hl(0, 'FidgetTitle', {ctermbg = 'NONE', ctermfg = 15,italic = true,})
+  vim.api.nvim_set_hl(0, 'FidgetTask', {ctermbg = 'NONE', ctermfg = 15, italic = true,})
+
+  local level_highlights = {
+    {level = 'ERROR', color = 1},
+    {level = 'WARN', color = 3,},
+    {level = 'INFO', color = 4,},
+    {level = 'DEBUG', color = 15,},
+    {level = 'TRACE', color = 5,},
+  }
+  for _, highlight in pairs(level_highlights) do
+    local level = highlight.level
+    local color = highlight.color
+    vim.api.nvim_set_hl(0, string.format('Notify%sBorder', level), {ctermbg = 'NONE', ctermfg = color,})
+    vim.api.nvim_set_hl(0, string.format('Notify%sIcon', level), {ctermbg = 'NONE', ctermfg = color,})
+    vim.api.nvim_set_hl(0, string.format('Notify%sTitle', level), {ctermbg = 'NONE', ctermfg = color,})
+    -- I wanted to set ctermfg to NONE, but when I did it wouldn't override nvim-notify's default highlight.
+    vim.api.nvim_set_hl(0, string.format('Notify%sBody', level), {ctermbg = 'NONE', ctermfg = 7,})
+  end
+
   local mode_highlights = {
     {mode = 'Normal', color = 'NONE',},
     {mode = 'Visual', color = 3,},
