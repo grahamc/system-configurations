@@ -31,7 +31,7 @@
               set -o nounset
               set -o pipefail
 
-              env -u SHLVL ${pkgs.tmux}/bin/tmux "$@"
+              exec env -u SHLVL ${pkgs.tmux}/bin/tmux "$@"
             ''
         )
         (pkgs.buildEnv {
