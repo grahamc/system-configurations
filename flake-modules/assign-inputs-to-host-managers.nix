@@ -6,6 +6,14 @@
     flake =
       let
         inherit (inputs.nixpkgs) lib;
+        plugins = (builtins.filter
+          (inputName:
+            (lib.strings.hasPrefix "vim-plugin-" inputName)
+            || (lib.strings.hasPrefix "fish-plugin-" inputName)
+            || (lib.strings.hasPrefix "tmux-plugin-" inputName)
+          )
+          (builtins.attrNames inputs)
+        );
         inputListsByHostManager = rec {
           home = [
             "nixpkgs"
@@ -13,22 +21,10 @@
             "flake-parts"
             "home-manager"
             "nix-index-database"
-            "vim-plugin-vim-CursorLineCurrentWindow"
-            "vim-plugin-virt-column-nvim"
-            "vim-plugin-folding-nvim"
-            "vim-plugin-cmp-env"
-            "vim-plugin-schemastore-nvim"
-            "vim-plugin-vim"
-            "vim-plugin-vim-caser"
-            "vim-plugin-czs-nvim"
-            "tmux-plugin-resurrect"
-            "tmux-plugin-tmux-suspend"
-            "fish-plugin-autopair-fish"
-            "fish-plugin-async-prompt"
             "nix-xdg"
             "gomod2nix"
             "speakers"
-          ];
+          ] ++ plugins;
           darwin = home ++ [
             "nix-darwin"
             "stackline"
