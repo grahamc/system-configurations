@@ -73,7 +73,7 @@
       };
 
       repository.symlink.xdg.executable = {
-        "tmux-click-url.py".source = "tmux/tmux-click-url.py";
+        "tmux-click-url".source = "tmux/tmux-click-url.py";
       };
 
       repository.git.onChange  = [
