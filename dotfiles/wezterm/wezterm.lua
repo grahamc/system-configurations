@@ -61,6 +61,8 @@ local my_colors_per_color_scheme = {
     [50] = '#A3BE8C',
     -- highlight color
     [51] = '#2e3440',
+    -- nvim-telescope border
+    [52] = '#2b2e38',
   },
 
   ['Biggs Light Owl'] = {
@@ -81,6 +83,8 @@ local my_colors_per_color_scheme = {
     [50] = '#2AA298',
     -- highlight color
     [51] = '#F0F0F0',
+    -- nvim-telescope border
+    [52] = '#bfbfbf',
   },
 }
 local dimmed_foreground_colors = {

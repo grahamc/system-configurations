@@ -993,16 +993,16 @@ Plug(
             scroll_speed = 1,
             vertical = {
               height = .90,
-              width = .90,
+              width = .85,
               mirror = true,
               prompt_position = 'top',
               preview_cutoff = 5,
               preview_height = resolve.resolve_height(.60),
             },
           },
-          borderchars = {'─', ' ', ' ', ' ', '─', '─', ' ', ' ',},
+          borderchars = {'▔', ' ', '▁', ' ', '▔', '▔', '▁', '▁',},
           dynamic_preview_title = true,
-          results_title = '(C-q: quickfix, C-{v,h}: vertical/horizontal split)',
+          results_title = false,
         },
         pickers = {
           find_files = {
@@ -1021,6 +1021,12 @@ Plug(
                 ["<CR>"] = actions.select_tab,
               },
             },
+          },
+          command_history = {
+            borderchars = {'▔', ' ', ' ', ' ', '▔', '▔', ' ', ' ',},
+          },
+          commands = {
+            borderchars = {'▔', ' ', ' ', ' ', '▔', '▔', ' ', ' ',},
           },
         },
       })
@@ -1082,6 +1088,7 @@ Plug(
             layout_config = {
               height = 6,
             },
+            borderchars = {'▔', ' ', ' ', ' ', '▔', '▔', ' ', ' ',},
           }),
           get_config = function(options)
             if options.kind == 'mason.ui.language-filter' then
@@ -2026,19 +2033,19 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'PmenuSbar', {link = 'CmpNormal'})
   -- List of telescope highlight groups:
   -- https://github.com/nvim-telescope/telescope.nvim/blob/master/plugin/telescope.lua
-  vim.api.nvim_set_hl(0, 'TelescopePromptNormal', {ctermbg = 24,})
-  vim.api.nvim_set_hl(0, 'TelescopePromptBorder', {ctermbg = 24, ctermfg = 24,})
+  vim.api.nvim_set_hl(0, 'TelescopePromptNormal', {ctermbg = 16,})
+  vim.api.nvim_set_hl(0, 'TelescopePromptBorder', {ctermbg = 16, ctermfg = 16,})
   vim.api.nvim_set_hl(0, 'TelescopePromptTitle', {ctermbg = 24, ctermfg = 6, reverse = true, bold = true,})
   vim.api.nvim_set_hl(0, 'TelescopePreviewNormal', {ctermbg = 16,})
-  vim.api.nvim_set_hl(0, 'TelescopePreviewBorder', {ctermbg = 16, ctermfg = 15,})
-  vim.api.nvim_set_hl(0, 'TelescopePreviewTitle', {ctermbg = 16, ctermfg = 15,})
+  vim.api.nvim_set_hl(0, 'TelescopePreviewBorder', {ctermbg = 16, ctermfg = 16,})
+  vim.api.nvim_set_hl(0, 'TelescopePreviewTitle', {link = 'TelescopePromptTitle'})
   vim.api.nvim_set_hl(0, 'TelescopeResultsNormal', {ctermbg = 16,})
-  vim.api.nvim_set_hl(0, 'TelescopeResultsBorder', {ctermbg = 16, ctermfg = 16,})
-  vim.api.nvim_set_hl(0, 'TelescopeResultsTitle', {ctermbg = 16, ctermfg = 15, italic = true,})
-  vim.api.nvim_set_hl(0, 'TelescopePromptPrefix', {ctermbg = 24, ctermfg = 6,})
+  vim.api.nvim_set_hl(0, 'TelescopeResultsBorder', {ctermbg = 16, ctermfg = 52,})
+  vim.api.nvim_set_hl(0, 'TelescopeResultsTitle', {link = 'TelescopePromptTitle'})
+  vim.api.nvim_set_hl(0, 'TelescopePromptPrefix', {ctermbg = 16, ctermfg = 6,})
   vim.api.nvim_set_hl(0, 'TelescopeMatching', {ctermbg = 'NONE', ctermfg = 6,})
   vim.api.nvim_set_hl(0, 'TelescopeSelection', {ctermbg = 24,})
-  vim.api.nvim_set_hl(0, 'TelescopeSelectionCaret', {ctermbg = 24, ctermfg = 24,})
+  vim.api.nvim_set_hl(0, 'TelescopeSelectionCaret', {ctermbg = 24, ctermfg = 6, bold = true,})
   vim.api.nvim_set_hl(0, 'TelescopePromptCounter', {ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'MasonHeader', {ctermbg = 'NONE', ctermfg = 4, reverse = true, bold = true,})
   vim.api.nvim_set_hl(0, 'MasonHighlight', {ctermbg = 'NONE', ctermfg = 6,})
