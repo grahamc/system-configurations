@@ -11,6 +11,6 @@
       };
     };
 
-    vimPlug.plugfile = config.repository.directoryPath + "/dotfiles/neovim/plugfile.txt"; 
+    vimPlug.configDirectory = config.repository.directoryPath + "/dotfiles/neovim/lua"; 
     
   }

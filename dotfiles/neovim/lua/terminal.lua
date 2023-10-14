@@ -2131,19 +2131,16 @@ vim.api.nvim_create_autocmd(
 -- }}}
 
 -- Install Missing Plugins {{{
--- Install any plugins that have been registered in the plugfile.vim, but aren't installed
 vim.api.nvim_create_autocmd(
   'User',
   {
     pattern = 'PlugEndPost',
     callback = function()
       local plugs = vim.g.plugs or {}
-      -- Plugins registered in plugfile.vim will be in _G.registered_plugs
       local missing_plugins = {}
       for name, info in pairs(plugs) do
         local is_installed = vim.fn.isdirectory(info.dir) ~= 0
-        local is_registered = _G.registered_plugs[name] ~= nil
-        if not is_installed and is_registered then
+        if not is_installed then
           missing_plugins[name] = info
         end
       end

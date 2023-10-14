@@ -1,7 +1,7 @@
-# This module will fetch all the vim plugins specified in a `plugfile.txt` and copy them to the directory
-# where vim-plug stores plugins. This way you can fetch your plugins with Nix, but still load them with vim-plug.
-# One advantage of this is that plugins can be stored in your Nix binary cache with all your other packages which
-# is particularly useful for plugins that require compilation like nvim-treesitter.
+# This module will read all the config files in `config.vimPlug.configDirectory`, fetch the plugins specified in them,
+# and copy them to the directory where vim-plug stores plugins. This way you can fetch your plugins with Nix, but
+# still load them with vim-plug. One advantage of this is that plugins can be stored in your Nix binary cache with
+# all your other packages which is particularly useful for plugins that require compilation like nvim-treesitter.
 #
 # Caveats:
 #   - You can only install and remove plugins with vim-plug. This is because all the other commands, like PlugDiff,
@@ -16,34 +16,24 @@
   in
     {
       options.vimPlug = {
-        plugfile = lib.mkOption {
+        configDirectory = lib.mkOption {
           type = types.path;
         };
       };
 
       config =
         let
-          plugfile = builtins.readFile config.vimPlug.plugfile;
-          plugfile_lines = builtins.filter (line: line != "") (lib.strings.splitString "\n" plugfile);
-          pluginNames = map
-            (line:
-              let
-                matches = builtins.match ".*/(.*)" line;
-                pluginName = (builtins.elemAt matches 0);
-              in
-                pluginName
-            )
-            plugfile_lines;
+          vimConfigBasenames = builtins.attrNames (builtins.readDir config.vimPlug.configDirectory);
+          vimConfigPaths = builtins.map (basename: config.vimPlug.configDirectory + "/${basename}") vimConfigBasenames;
+          vimConfigContents = builtins.map builtins.readFile vimConfigPaths;
+          stringsSplitByPlug = lib.lists.flatten (builtins.map (lib.strings.splitString "Plug") vimConfigContents);
+          pluginNames = builtins.map (matchList: builtins.elemAt matchList 0) (builtins.filter (x: x != null) (builtins.map (builtins.match ''[( ][[:space:]]*['"][a-zA-Z0-9._-]+/([a-zA-Z0-9._-]+)['"].*'') stringsSplitByPlug));
           replaceDotsWithDashes = (builtins.replaceStrings ["."] ["-"]);
-          formatPluginName = pluginName:
-            lib.trivial.pipe
-              pluginName
-              [  lib.strings.toLower replaceDotsWithDashes ];
-          packages = map
+          plugins = map
             (pluginName:
               let
                 getPackageForPlugin = builtins.getAttr pluginName;
-                formattedPluginName = (formatPluginName pluginName);
+                formattedPluginName = (replaceDotsWithDashes pluginName);
                 package = if builtins.hasAttr pluginName pkgs.vimPlugins
                   then getPackageForPlugin pkgs.vimPlugins
                   else if builtins.hasAttr formattedPluginName pkgs.vimPlugins
@@ -57,7 +47,7 @@
           pluginBundlePackage = pkgs.vimUtils.packDir
             {
               "${pluginBundleName}" = {
-                start = packages;
+                start = plugins;
               };
             };
           pluginDirectoryRelativeToXdgDataHome = "nvim/plugged";
