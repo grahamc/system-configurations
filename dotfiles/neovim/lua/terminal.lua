@@ -704,7 +704,7 @@ _G.StatusLine = function()
   elseif startswith(mode, 'T') then
     highlights = make_highlight_names('Terminal')
   end
-  local mode_indicator = highlights.outer .. unicode('e0b6') .. highlights.mode .. ' ' .. mode .. ' ' .. highlights.inner .. unicode('e0b4')
+  local mode_indicator = highlights.outer .. unicode('e0b6') .. highlights.mode .. ' ' .. mode .. ' ' .. highlights.inner .. unicode('e0b5')
   table.insert(left_side_items, mode_indicator)
   if filetype then
     table.insert(left_side_items, filetype)
@@ -1301,7 +1301,7 @@ Plug(
           fill = { ctermbg = 51, ctermfg = 15, },
           background = { ctermbg = 51, ctermfg = 15, },
           buffer_visible = { ctermbg = 51, ctermfg = 15, },
-          buffer_selected = { ctermbg = 51, ctermfg = 'NONE', italic = false, },
+          buffer_selected = { ctermbg = 51, ctermfg = 'NONE', italic = false, bold = false, },
           duplicate = { ctermbg = 51, ctermfg = 15, italic = false,},
           duplicate_selected = { ctermbg = 51, ctermfg = 'None', italic = false,},
           duplicate_visible = { ctermbg = 51, ctermfg = 15, italic = false,},
@@ -1314,8 +1314,8 @@ Plug(
           modified = { ctermbg = 51, ctermfg = 15, },
           modified_selected = { ctermbg = 51, ctermfg = 'None', },
           modified_visible = { ctermbg = 51, ctermfg = 'None', },
-          tab = { ctermbg = 51, ctermfg = 15, bold = true, },
-          tab_selected = { ctermbg = 51, ctermfg = 6, bold = true, underline = true, },
+          tab = { ctermbg = 51, ctermfg = 15, },
+          tab_selected = { ctermbg = 51, ctermfg = 6, underline = true, },
           tab_separator = { ctermbg = 51, ctermfg = 51, },
           tab_separator_selected = { ctermbg = 51, ctermfg = 51, },
           tab_close = { ctermbg = 51, ctermfg = 'NONE', bold = true,},
@@ -2099,9 +2099,9 @@ local function SetNordOverrides()
   for _, highlight in pairs(mode_highlights) do
     local mode = highlight.mode
     local color = highlight.color
-    vim.api.nvim_set_hl(0, string.format('StatusLineMode%s', mode), {ctermbg = 'NONE', ctermfg = color, reverse = true, bold = true,})
-    vim.api.nvim_set_hl(0, string.format('StatusLineMode%sPowerlineOuter', mode), {ctermbg = 'NONE', ctermfg = color,})
-    vim.api.nvim_set_hl(0, string.format('StatusLineMode%sPowerlineInner', mode), {ctermbg = 51, ctermfg = color,})
+    vim.api.nvim_set_hl(0, string.format('StatusLineMode%s', mode), {ctermbg = 51, ctermfg = color, bold = true,})
+    vim.api.nvim_set_hl(0, string.format('StatusLineMode%sPowerlineOuter', mode), {ctermbg = 'NONE', ctermfg = 51,})
+    vim.api.nvim_set_hl(0, string.format('StatusLineMode%sPowerlineInner', mode), {ctermbg = 51, ctermfg = 0,})
   end
 end
 local nord_vim_group_id = vim.api.nvim_create_augroup('NordVim', {})
