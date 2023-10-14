@@ -27,12 +27,6 @@ config.audible_bell = 'Disabled'
 config.default_cursor_style = 'BlinkingBar'
 config.bold_brightens_ansi_colors = false
 config.disable_default_key_bindings = true
-config.window_padding = {
-  left = 0,
-  right = 0,
-  top = 0,
-  bottom = 0,
-}
 
 -- font
 -- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system, but Flatpak apps
@@ -43,7 +37,7 @@ config.font = wezterm.font_with_fallback({font, 'SymbolsNerdFontMono'})
 config.underline_position = -9
 config.font_size = 10.3
 if is_mac then
-  config.font_size = 13
+  config.font_size = 14
 end
 config.cell_width = 1.04
 config.line_height = 1.3
@@ -70,10 +64,10 @@ local my_colors_per_color_scheme = {
   },
 
   ['Biggs Light Owl'] = {
-    [0] = '#FFFFFF', [1] = '#ee3d3b', [2] = '#2AA298', [3] = '#e9873a', [4] = '#288ed7', [5] = '#994cc3', [6] = '#2AA298', [7] = '#403f53',
-    [8] = '#979893', [9] = '#ee3d3b', [10] = '#2AA298', [11] = '#c96765', [12] = '#288ed7', [13] = '#d6438a', [14] = '#2AA298', [15] = '#979893',
+    [0] = '#ffffff', [1] = '#ee3d3b', [2] = '#2AA298', [3] = '#e9873a', [4] = '#288ed7', [5] = '#994cc3', [6] = '#aa1515', [7] = '#403f53',
+    [8] = '#979893', [9] = '#ee3d3b', [10] = '#2AA298', [11] = '#c96765', [12] = '#288ed7', [13] = '#d6438a', [14] = '#2AA298', [15] = '#808080',
     -- Floating windows in neovim
-    [16] = '#efefef',
+    [16] = '#f0f0f0',
     -- For folded lines
     [24] = '#e5e5e5',
     -- Background color for the non-emphasized and emphasized part of a removed line in a git diff
@@ -83,13 +77,14 @@ local my_colors_per_color_scheme = {
     -- Background color for the source and destination of a moved line in a git diff
     [21] = '#e99ac0', [22] = '#85dfd8',
     -- Strings in neovim
-    [50] = '#c96765',
+    -- or maybe #c96765
+    [50] = '#2AA298',
     -- highlight color
     [51] = '#F0F0F0',
   },
 }
 local dimmed_foreground_colors = {
-  ['#403f53'] = '#b1b0c4',
+  ['#000000'] = '#808080',
   ['#d8dee9'] = '#767c87',
 }
 
