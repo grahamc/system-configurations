@@ -38,7 +38,8 @@ config.window_padding = {
 -- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system, but Flatpak apps
 -- can't access my font configuration file from their sandbox so for now I'll hardcode a font.
 -- issue: https://github.com/flatpak/flatpak/issues/1563
-config.font = wezterm.font_with_fallback({'JetBrains Mono NL', 'SymbolsNerdFontMono'})
+local font = 'Fira Mono'
+config.font = wezterm.font_with_fallback({font, 'SymbolsNerdFontMono'})
 config.underline_position = -9
 config.font_size = 10.3
 if is_mac then
@@ -149,7 +150,7 @@ local function create_theme_config(color_scheme_name)
       active_titlebar_bg = background,
       inactive_titlebar_bg = background,
       font_size = 17,
-      font = wezterm.font { family = 'JetBrains Mono NL', weight = 'Regular' },
+      font = wezterm.font { family = font, weight = 'Regular' },
     },
     colors = {
       tab_bar = {

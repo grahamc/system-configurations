@@ -10,7 +10,7 @@
     fonts.fontconfig.enable = true;
     home.packages = with pkgs; [
       (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
-      jetbrains-mono
+      fira-mono
     ];
 
     # Wezterm can't read my fonts from Nix despite the showing up in fontconfig so I copy all the Nix fonts to
