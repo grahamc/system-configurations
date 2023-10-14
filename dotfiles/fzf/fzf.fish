@@ -51,7 +51,7 @@ scrollbar:15:dim\
     --ellipsis='…' \
     --layout=reverse \
     --border=none \
-    --margin=3% \
+    --margin=5% \
     --height 100% \
     --min-height 4 \
     --prompt='$_magnifying_glass' \
