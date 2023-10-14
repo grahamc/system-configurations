@@ -63,6 +63,7 @@
                   source = makeEmptyPackage "stub-spoon";
                   recursive = false;
                 };
+                config.xdg.dataFile."fzf/fzf-history.txt".source = (pkgs.writeText "fzf-history.txt" "");
               };
             homeManagerOutput = self.lib.home.makeFlakeOutput system {
               inherit hostName;
