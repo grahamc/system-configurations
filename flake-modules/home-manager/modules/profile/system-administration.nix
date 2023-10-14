@@ -37,10 +37,21 @@
         broot
         yash
         hyperfine
+        (pkgs.symlinkJoin {
+          name = "toybox-partial";
+          paths = [pkgs.toybox];
+          buildInputs = [pkgs.makeWrapper];
+          # toybox is a multi-call binary so we are going to delete everything besides the toybox executable and
+          # the programs I need which are just symlinks to it
+          postBuild = ''
+            cd $out
+            find . ! -name 'tar' ! -name 'hostname' ${if isLinux then "! -name 'clear'" else ""} ! -name 'toybox' -type f,l -exec rm -f {} +
+          '';
+        })
+        gzip
       ] ++ optionals isLinux [
         trashy
         pipr
-        clear
         catp
         # for pstree
         psmisc

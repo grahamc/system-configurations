@@ -147,16 +147,6 @@
             };
 
             linuxOnlyPackages = optionalAttrs isLinux {
-              clear = prev.symlinkJoin {
-                name = "clear";
-                paths = [final.busybox];
-                buildInputs = [prev.makeWrapper];
-                # clear is a symlink to busybox so remove everything except those two.
-                postBuild = ''
-                  cd $out
-                  find . ! -name 'clear' ! -name 'busybox' -type f,l -exec rm -f {} +
-                '';
-              };
               catp = prev.stdenv.mkDerivation {
                 pname = "catp";
                 version = "0.2.0";
