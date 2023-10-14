@@ -99,13 +99,29 @@
             };
             shellBootstrapScript = import ./shell-bootstrap-script.nix shellBootstrapScriptDependencies;
             shellBootstrap = pkgs.writeScriptBin shellBootstrapScriptName shellBootstrapScript;
+            terminalBootstrapScriptName = "terminal";
+            terminalBootstrap = pkgs.writeScriptBin terminalBootstrapScriptName ''#!${pkgs.bash}/bin/bash
+              set -o errexit
+              set -o nounset
+              set -o pipefail
+              exec ${pkgs.wezterm}/bin/wezterm --config-file ${inputs.self.outPath}/dotfiles/wezterm/wezterm.lua start -- ${shellBootstrap}/bin/${shellBootstrapScriptName}
+            '';
           in
             {
-              apps.default = {
-                type = "app";
-                program = "${shellBootstrap}/bin/${shellBootstrapScriptName}";
+              apps = {
+                default = {
+                  type = "app";
+                  program = "${shellBootstrap}/bin/${shellBootstrapScriptName}";
+                };
+                terminal = {
+                  type = "app";
+                  program = "${terminalBootstrap}/bin/${terminalBootstrapScriptName}";
+                };
               };
-              packages.shell = shellBootstrap;
+              packages = {
+                shell = shellBootstrap;
+                terminal = terminalBootstrap;
+              };
             };
         supportedSystems = with inputs.flake-utils.lib.system; [ x86_64-linux x86_64-darwin ];
         isSupportedSystem = builtins.elem system supportedSystems;

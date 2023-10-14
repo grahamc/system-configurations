@@ -22,7 +22,14 @@
             optionalAttrs
               (hasAttrByPath shellOutputPath self')
               {shell = (getAttrFromPath shellOutputPath self');};
-        packagesToCacheByName = homeManagerPackagesByName // nixDarwinPackagesByName // shellPackageByName;
+        terminalPackageByName = 
+          let
+            terminalOutputPath = ["packages" "terminal"];
+          in
+            optionalAttrs
+              (hasAttrByPath terminalOutputPath self')
+              {terminal = (getAttrFromPath terminalOutputPath self');};
+        packagesToCacheByName = homeManagerPackagesByName // nixDarwinPackagesByName // shellPackageByName // terminalPackageByName;
         outputs = {
           packages.default = pkgs.linkFarm "packages-to-cache" packagesToCacheByName;
         };
