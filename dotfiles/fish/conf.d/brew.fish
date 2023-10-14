@@ -15,7 +15,7 @@ export HOMEBREW_NO_INSTALL_CLEANUP=1
 
 # autocomplete
 if test -d $HOMEBREW_PREFIX/share/fish/completions
-    set -global --prepend fish_complete_path $HOMEBREW_PREFIX/share/fish/completions
+    set --global --prepend fish_complete_path $HOMEBREW_PREFIX/share/fish/completions
 end
 if test -d $HOMEBREW_PREFIX/share/fish/vendor_completions.d
     set --global --prepend fish_complete_path $HOMEBREW_PREFIX/share/fish/vendor_completions.d
