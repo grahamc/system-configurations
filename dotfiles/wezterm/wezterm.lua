@@ -45,10 +45,10 @@ config.underline_thickness = "210%"
 
 local my_colors_per_color_scheme = {
   ['Biggs Nord'] = {
-    [0] = '#1d212b', [1] = '#BF616A', [2] = '#A3BE8C', [3] = '#EBCB8B', [4] = '#81A1C1', [5] = '#B48EAD', [6] = '#88C0D0', [7] = '#D8DEE9',
-    [8] = '#626f89', [9] = '#BF616A', [10] = '#A3BE8C', [11] = '#d08770', [12] = '#81A1C1', [13] = '#B48EAD', [14] = '#8FBCBB', [15] = '#626f89',
+    [0] = '#1d2129', [1] = '#BF616A', [2] = '#A3BE8C', [3] = '#EBCB8B', [4] = '#81A1C1', [5] = '#B48EAD', [6] = '#88C0D0', [7] = '#D8DEE9',
+    [8] = '#78849b', [9] = '#BF616A', [10] = '#A3BE8C', [11] = '#d08770', [12] = '#81A1C1', [13] = '#B48EAD', [14] = '#8FBCBB', [15] = '#78849b',
     -- Floating windows in neovim
-    [16] = '#12151f',
+    [16] = '#181c24',
     -- For folded lines
     [24] = '#2e3440',
     -- Background color for the non-emphasized and emphasized part of a removed line in a git diff
@@ -60,13 +60,13 @@ local my_colors_per_color_scheme = {
     -- String in neovim
     [50] = '#A3BE8C',
     -- highlight color
-    [51] = '#2e3440',
+    [51] = '#292e39',
     -- nvim-telescope border
-    [52] = '#2b2e38',
+    [52] = '#41444e',
   },
 
   ['Biggs Light Owl'] = {
-    [0] = '#ffffff', [1] = '#ee3d3b', [2] = '#2AA298', [3] = '#e9873a', [4] = '#288ed7', [5] = '#994cc3', [6] = '#aa1515', [7] = '#403f53',
+    [0] = '#ffffff', [1] = '#ee3d3b', [2] = '#2AA298', [3] = '#e9873a', [4] = '#288ed7', [5] = '#994cc3', [6] = '#aa1515', [7] = '#000000',
     [8] = '#979893', [9] = '#ee3d3b', [10] = '#2AA298', [11] = '#c96765', [12] = '#288ed7', [13] = '#d6438a', [14] = '#2AA298', [15] = '#808080',
     -- Floating windows in neovim
     [16] = '#f0f0f0',
