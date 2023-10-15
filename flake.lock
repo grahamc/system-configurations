@@ -276,6 +276,7 @@
         "vim-plugin-friendly-snippets": "vim-plugin-friendly-snippets",
         "vim-plugin-mason-lspconfig-nvim": "vim-plugin-mason-lspconfig-nvim",
         "vim-plugin-mason-nvim": "vim-plugin-mason-nvim",
+        "vim-plugin-nui-nvim": "vim-plugin-nui-nvim",
         "vim-plugin-null-ls-nvim": "vim-plugin-null-ls-nvim",
         "vim-plugin-nvim-autopairs": "vim-plugin-nvim-autopairs",
         "vim-plugin-nvim-cmp": "vim-plugin-nvim-cmp",
@@ -804,6 +805,22 @@
       "original": {
         "owner": "williamboman",
         "repo": "mason.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-nui-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1696824661,
+        "narHash": "sha256-pRruztD0S+x0M0jWfLnhGZXlIpka2hzlvnR10oZxa3Q=",
+        "owner": "MunifTanjim",
+        "repo": "nui.nvim",
+        "rev": "c0c8e347ceac53030f5c1ece1c5a5b6a17a25b32",
+        "type": "github"
+      },
+      "original": {
+        "owner": "MunifTanjim",
+        "repo": "nui.nvim",
         "type": "github"
       }
     },

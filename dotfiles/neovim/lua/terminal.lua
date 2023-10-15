@@ -124,6 +124,8 @@ vim.keymap.set({'n', 'i', 'x'}, '<C-z>', '<Cmd>suspend<CR>')
 
 -- Decide which actions to take when the enter key is pressed.
 local function get_enter_key_actions()
+  -- I confirmed that this variable is defined.
+  ---@diagnostic disable-next-line: undefined-global
   local autopairs_keys = MPairs.autopairs_cr()
   -- If only the enter key is returned, that means we aren't inside a pair.
   local is_cursor_in_empty_pair = vim.inspect(autopairs_keys) ~= [["\r"]]
@@ -964,17 +966,225 @@ Plug(
   }
 )
 
--- lua library specfically for use in neovim
+-- lua utility library specfically for use in neovim
 Plug('nvim-lua/plenary.nvim')
 
+-- Using this to create my nvim-telescope windows
+Plug('MunifTanjim/nui.nvim')
+
+-- Dependencies: plenary.nvim, nui.nvim, telescope-fzf-native.nvim
 Plug(
   'nvim-telescope/telescope.nvim',
   {
-    branch = '0.1.x',
     config = function()
-      local telescope = require('telescope')
+      local telescope = require("telescope")
+      local TSLayout = require("telescope.pickers.layout")
       local actions = require('telescope.actions')
-      local resolve = require('telescope.config.resolve')
+      local Layout = require("nui.layout")
+      local Popup = require("nui.popup")
+      local Text = require("nui.text")
+
+      local function make_two_pane_layout(target_layout)
+        return function(picker)
+          local border_chars = { top_left = "🭽", top = "▔", top_right = "🭾", right = "▕", bottom_right = "🭿", bottom = "▁", bottom_left = "🭼", left = "▏", }
+          local border = {
+            results = border_chars,
+            results_patch = { minimal = border_chars, },
+            prompt = border_chars,
+            prompt_patch = { minimal = { bottom_left = border_chars.left, bottom_right = border_chars.right, bottom = "", }, },
+          }
+
+          local results = Popup({
+            focusable = false,
+            border = { style = border.results, },
+            win_options = { winhighlight = "Normal:TelescopePromptNormal", },
+          })
+          results.border:set_highlight("TelescopeResultsBorder")
+
+          local prompt = Popup({
+            enter = true,
+            border = { style = border.prompt, text = { top = Text(string.format(" %s ", picker.prompt_title or ""), 'TelescopePromptTitle'), top_align = "center", }, },
+            win_options = { winhighlight = "Normal:TelescopePromptNormal", },
+          })
+          prompt.border:set_highlight("TelescopeResultsBorder")
+
+          local box_by_kind = {
+            minimal = Layout.Box(
+              { Layout.Box(prompt, { size = 3 }), Layout.Box(results, { grow = 1 }), },
+              { dir = "col" }
+            ),
+          }
+
+          local function get_box()
+            local box_kind = "minimal"
+            return box_by_kind[box_kind], box_kind
+          end
+
+          local function prepare_layout_parts(layout, box_type)
+            layout.results = TSLayout.Window(results)
+            results.border:set_style(border.results_patch[box_type])
+
+            layout.prompt = TSLayout.Window(prompt)
+            prompt.border:set_style(border.prompt_patch[box_type])
+
+            layout.preview = nil
+          end
+
+          local box, box_kind = get_box()
+          local layout = Layout(target_layout, box)
+
+          layout.picker = picker
+          prepare_layout_parts(layout, box_kind)
+
+          local layout_update = layout.update
+          function layout:update()
+            local new_box, new_box_kind = get_box()
+            prepare_layout_parts(layout, new_box_kind)
+            -- I confirmed this is the correct way to call it.
+            ---@diagnostic disable-next-line: redundant-parameter
+            layout_update(self, new_box)
+          end
+
+          return TSLayout(layout)
+        end
+      end
+
+      _G.big_editor_relative_two_pane_layout = make_two_pane_layout(
+        { relative = "win", position = "50%", size = { height = "80%", width = "90%", }, }
+      )
+      _G.small_editor_relative_two_pane_layout = make_two_pane_layout(
+        { relative = "win", position = "50%", size = { height = "40%", width = "50%", }, }
+      )
+      _G.cursor_relative_two_pane_layout = make_two_pane_layout(
+        { relative = "cursor", position = 1, size = { height = 8, width = 60, }, }
+      )
+
+      local three_pane_layout = function(picker)
+        local border_chars = { top_left = "🭽", top = "▔", top_right = "🭾", right = "▕", bottom_right = "🭿", bottom = "▁", bottom_left = "🭼", left = "▏", }
+        local default_border = { top_left = border_chars.top_left, top = border_chars.top, top_right = border_chars.top_right, right = border_chars.right, bottom_right = border_chars.bottom_right, bottom = border_chars.bottom, bottom_left = border_chars.bottom_left, left = border_chars.left, }
+        local border = {
+          results = default_border,
+          results_patch = {
+            minimal = { top_left = border_chars.left, top_right = border_chars.right, top = "", },
+            horizontal = { top_left = border_chars.left, top_right = border_chars.right, top = "", },
+            vertical = default_border,
+          },
+          prompt = default_border,
+          prompt_patch = {
+            minimal = { bottom_left = border_chars.left, bottom_right = border_chars.right, bottom = "", },
+            horizontal = { bottom_left = border_chars.left, bottom_right = border_chars.right, bottom = "", },
+            vertical = { bottom_left = border_chars.left, bottom_right = border_chars.right, bottom = "", },
+          },
+          preview = default_border,
+          preview_patch = {
+            minimal = {},
+            horizontal = { bottom_left = border_chars.bottom, left = "", top_left = border_chars.top, },
+            vertical = { top = "", top_left = border_chars.left, top_right = border_chars.right, },
+          },
+        }
+
+        local results = Popup({
+          focusable = false,
+          border = { style = border.results, },
+          win_options = { winhighlight = "Normal:TelescopePromptNormal", },
+        })
+        results.border:set_highlight("TelescopeResultsBorder")
+
+        local prompt = Popup({
+          enter = true,
+          border = {
+            style = border.prompt,
+            text = {
+              top = Text(string.format(" %s ", picker.prompt_title or ""), 'TelescopePromptTitle'),
+              top_align = "center",
+            },
+          },
+          win_options = { winhighlight = "Normal:TelescopePromptNormal", },
+        })
+        prompt.border:set_highlight("TelescopeResultsBorder")
+
+        local preview = Popup({
+          focusable = true,
+          border = {
+            style = border.preview,
+            text = {
+              top = Text(string.format(" %s ", picker.preview_title or ""), 'TelescopePromptTitle'),
+              top_align = "center",
+            },
+          },
+          win_options = { winhighlight = "Normal:TelescopePromptNormal", },
+        })
+        preview.border:set_highlight("TelescopeResultsBorder")
+
+        local box_by_kind = {
+          vertical = Layout.Box({
+            Layout.Box(prompt, { size = 3 }),
+            Layout.Box(results, { size = "25%" }),
+            Layout.Box(preview, { size = "75%" }),
+          }, { dir = "col" }),
+          horizontal = Layout.Box({
+            Layout.Box({
+              Layout.Box(prompt, { size = 3 }),
+              Layout.Box(results, { grow = 1 }),
+            }, { dir = "col", size = "50%" }),
+            Layout.Box(preview, { size = "50%" }),
+          }, { dir = "row" }),
+          minimal = Layout.Box({
+            Layout.Box(prompt, { size = 3, }),
+            Layout.Box(results, { size = "80%" }),
+          }, { dir = "col" }),
+        }
+
+        local function get_box()
+          local height, width = vim.o.lines, vim.o.columns
+          local box_kind = "vertical"
+          if width < 100 then
+            box_kind = "vertical"
+            if height < 40 then
+              box_kind = "minimal"
+            end
+          elseif width < 120 then
+            box_kind = "minimal"
+          end
+          return box_by_kind[box_kind], box_kind
+        end
+
+        local function prepare_layout_parts(layout, box_type)
+          layout.results = TSLayout.Window(results)
+          results.border:set_style(border.results_patch[box_type])
+
+          layout.prompt = TSLayout.Window(prompt)
+          prompt.border:set_style(border.prompt_patch[box_type])
+
+          if box_type == "minimal" then
+            layout.preview = nil
+          else
+            layout.preview = TSLayout.Window(preview)
+            preview.border:set_style(border.preview_patch[box_type])
+          end
+        end
+
+        local box, box_kind = get_box()
+        local layout = Layout({
+          relative = "win",
+          position = {col = "50%", row = "40%"},
+          size = { height = "80%", width = "90%", },
+        }, box)
+
+        layout.picker = picker
+        prepare_layout_parts(layout, box_kind)
+
+        local layout_update = layout.update
+        function layout:update()
+          local new_box, new_box_kind = get_box()
+          prepare_layout_parts(layout, new_box_kind)
+          -- I confirmed this is the correct way to call it.
+          ---@diagnostic disable-next-line: redundant-parameter
+          layout_update(self, new_box)
+        end
+
+        return TSLayout(layout)
+      end
 
       telescope.setup({
         defaults = {
@@ -992,21 +1202,9 @@ Plug(
           },
           prompt_prefix = unicode('f002') .. '  ',
           sorting_strategy = 'ascending',
-          layout_strategy = 'vertical',
-          layout_config = {
-            scroll_speed = 1,
-            vertical = {
-              height = .90,
-              width = .85,
-              mirror = true,
-              prompt_position = 'top',
-              preview_cutoff = 5,
-              preview_height = resolve.resolve_height(.60),
-            },
-          },
-          borderchars = {'▔', ' ', '▁', ' ', '▔', '▔', '▁', '▁',},
           dynamic_preview_title = true,
           results_title = false,
+          create_layout = three_pane_layout,
         },
         pickers = {
           find_files = {
@@ -1027,10 +1225,10 @@ Plug(
             },
           },
           command_history = {
-            borderchars = {'▔', ' ', ' ', ' ', '▔', '▔', ' ', ' ',},
+            create_layout = big_editor_relative_two_pane_layout,
           },
           commands = {
-            borderchars = {'▔', ' ', ' ', ' ', '▔', '▔', ' ', ' ',},
+            create_layout = big_editor_relative_two_pane_layout,
           },
         },
       })
@@ -1088,21 +1286,14 @@ Plug(
       require('dressing').setup({
         input = {enabled = false,},
         select = {
-          telescope = require("telescope.themes").get_cursor({
-            layout_config = {
-              height = 6,
-            },
-            borderchars = {'▔', ' ', ' ', ' ', '▔', '▔', ' ', ' ',},
-          }),
+          telescope = {
+            create_layout = cursor_relative_two_pane_layout,
+          },
           get_config = function(options)
             if options.kind == 'mason.ui.language-filter' then
               return {
                 telescope = {
-                  layout_strategy = 'center',
-                  layout_config = {
-                    width = 0.6,
-                    height = 0.6,
-                  },
+                  create_layout = small_editor_relative_two_pane_layout,
                 },
               }
             end
@@ -1350,6 +1541,8 @@ Plug(
 
       vim.keymap.set('n', '<C-q>', function() close(vim.fn.bufnr()) end, {silent = true,})
       function BufferlineWrapper()
+        -- It is defined idk why I'm getting this error
+        ---@diagnostic disable-next-line: undefined-global
         local original = nvim_bufferline()
         if string.find(original, unicode('f4d3')) then
           local x = string.gsub(original, '│', '│' .. '%%#TabLineBorder#' .. unicode('e0b6'), 1) .. '%#TabLineBorder#' .. unicode('e0b4')
@@ -2038,18 +2231,18 @@ local function SetNordOverrides()
   -- List of telescope highlight groups:
   -- https://github.com/nvim-telescope/telescope.nvim/blob/master/plugin/telescope.lua
   vim.api.nvim_set_hl(0, 'TelescopePromptNormal', {ctermbg = 16,})
-  vim.api.nvim_set_hl(0, 'TelescopePromptBorder', {ctermbg = 16, ctermfg = 16,})
-  vim.api.nvim_set_hl(0, 'TelescopePromptTitle', {ctermbg = 24, ctermfg = 6, reverse = true, bold = true,})
+  vim.api.nvim_set_hl(0, 'TelescopePromptBorder', {link = 'TelescopeResultsBorder',})
+  vim.api.nvim_set_hl(0, 'TelescopePromptTitle', {ctermbg = 'NONE', ctermfg = 6, reverse = true, bold = true,})
   vim.api.nvim_set_hl(0, 'TelescopePreviewNormal', {ctermbg = 16,})
-  vim.api.nvim_set_hl(0, 'TelescopePreviewBorder', {ctermbg = 16, ctermfg = 16,})
+  vim.api.nvim_set_hl(0, 'TelescopePreviewBorder', {link = 'TelescopeResultsBorder',})
   vim.api.nvim_set_hl(0, 'TelescopePreviewTitle', {link = 'TelescopePromptTitle'})
   vim.api.nvim_set_hl(0, 'TelescopeResultsNormal', {ctermbg = 16,})
   vim.api.nvim_set_hl(0, 'TelescopeResultsBorder', {ctermbg = 16, ctermfg = 52,})
   vim.api.nvim_set_hl(0, 'TelescopeResultsTitle', {link = 'TelescopePromptTitle'})
   vim.api.nvim_set_hl(0, 'TelescopePromptPrefix', {ctermbg = 16, ctermfg = 6,})
   vim.api.nvim_set_hl(0, 'TelescopeMatching', {ctermbg = 'NONE', ctermfg = 6,})
-  vim.api.nvim_set_hl(0, 'TelescopeSelection', {ctermbg = 24,})
-  vim.api.nvim_set_hl(0, 'TelescopeSelectionCaret', {ctermbg = 24, ctermfg = 6, bold = true,})
+  vim.api.nvim_set_hl(0, 'TelescopeSelection', {ctermfg = 6, bold = true,})
+  vim.api.nvim_set_hl(0, 'TelescopeSelectionCaret', {ctermfg = 6, bold = true,})
   vim.api.nvim_set_hl(0, 'TelescopePromptCounter', {ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'MasonHeader', {ctermbg = 'NONE', ctermfg = 4, reverse = true, bold = true,})
   vim.api.nvim_set_hl(0, 'MasonHighlight', {ctermbg = 'NONE', ctermfg = 6,})

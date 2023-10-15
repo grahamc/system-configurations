@@ -117,6 +117,7 @@
     "vim-plugin-bufferline-nvim" = {url = "github:akinsho/bufferline.nvim"; flake = false;};
     "vim-plugin-fidget-nvim" = {url = "github:j-hui/fidget.nvim"; flake = false;};
     "vim-plugin-nvim-notify" = {url = "github:rcarriga/nvim-notify"; flake = false;};
+    "vim-plugin-nui-nvim" = {url = "github:MunifTanjim/nui.nvim"; flake = false;};
 
     "tmux-plugin-resurrect" = {url = "github:tmux-plugins/tmux-resurrect"; flake = false;};
     "tmux-plugin-tmux-suspend" = {url = "github:MunifTanjim/tmux-suspend"; flake = false;};
