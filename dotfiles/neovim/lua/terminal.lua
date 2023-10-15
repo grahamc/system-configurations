@@ -282,7 +282,11 @@ local toggle_cursor_line_group_id = vim.api.nvim_create_augroup('ToggleCursorlin
 vim.api.nvim_create_autocmd(
   {'FocusGained'},
   {
-    callback = function() vim.o.cursorline = true end,
+    callback = function()
+      if vim.b["nocursorline"] == nil then
+        vim.o.cursorline = true
+      end
+    end,
     group = toggle_cursor_line_group_id,
   }
 )
@@ -1034,7 +1038,7 @@ Plug(
       vim.cmd([[
         augroup TelescopeNvim
           autocmd!
-          autocmd FileType TelescopePrompt setlocal nocursorline
+          autocmd FileType TelescopePrompt,TelescopeResults setlocal nocursorline | let b:nocursorline = v:true
         augroup END
       ]])
 
