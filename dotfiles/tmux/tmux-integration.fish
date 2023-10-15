@@ -82,3 +82,23 @@ function __mark_output_end --on-event fish_postexec
         echo -e "\n$(set_color --reverse --bold blue) TIP $(set_color normal) View the output of the last command in $(set_color blue)less$(set_color normal) with $(set_color blue)ctrl+o$(set_color normal) or $(set_color magenta)fzf$(set_color normal) with $(set_color magenta)alt+o$(set_color normal) or $(set_color green)vim$(set_color normal) with $(set_color green)alt+v$(set_color normal)"
     end
 end
+
+function __get_commandline --on-signal USR2
+    commandline > /tmp/fish-tmux-commandline
+end
+
+function __mark_prompt_y --on-event fish_prompt_post
+    # 0-based
+    tmux set-option -p '@prompt_y' (tmux display -p '#{cursor_y}')
+    tmux set-option -p '@prompt_x' (tmux display -p '#{cursor_x}')
+end
+
+function __fish_prompt_post --on-event fish_prompt
+    # I only want this to run once so delete the function.
+    functions -e (status current-function)
+    functions --copy fish_prompt __tmux_integration_old_fish_prompt
+    function fish_prompt
+        __tmux_integration_old_fish_prompt
+        emit fish_prompt_post
+    end
+end
