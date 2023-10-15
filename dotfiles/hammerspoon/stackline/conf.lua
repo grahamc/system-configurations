@@ -1,6 +1,6 @@
 -- default stackline config
 
-c = {}
+_G.c = {}
 c.paths = {}
 c.appearance = {}
 c.features = {}
