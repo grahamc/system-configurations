@@ -997,7 +997,7 @@ Plug(
           local results = Popup({
             focusable = false,
             border = { style = border.results, },
-            win_options = { winhighlight = "Normal:TelescopePromptNormal", },
+            win_options = { winhighlight = "Normal:TelescopeResultsNormal", },
           })
           results.border:set_highlight("TelescopeResultsBorder")
 
@@ -1006,7 +1006,7 @@ Plug(
             border = { style = border.prompt, text = { top = Text(string.format(" %s ", picker.prompt_title or ""), 'TelescopePromptTitle'), top_align = "center", }, },
             win_options = { winhighlight = "Normal:TelescopePromptNormal", },
           })
-          prompt.border:set_highlight("TelescopeResultsBorder")
+          prompt.border:set_highlight("TelescopePromptBorder")
 
           local box_by_kind = {
             minimal = Layout.Box(
@@ -1086,7 +1086,7 @@ Plug(
         local results = Popup({
           focusable = false,
           border = { style = border.results, },
-          win_options = { winhighlight = "Normal:TelescopePromptNormal", },
+          win_options = { winhighlight = "Normal:TelescopeResultsNormal", },
         })
         results.border:set_highlight("TelescopeResultsBorder")
 
@@ -1101,20 +1101,20 @@ Plug(
           },
           win_options = { winhighlight = "Normal:TelescopePromptNormal", },
         })
-        prompt.border:set_highlight("TelescopeResultsBorder")
+        prompt.border:set_highlight("TelescopePromptBorder")
 
         local preview = Popup({
           focusable = true,
           border = {
             style = border.preview,
             text = {
-              top = Text(string.format(" %s ", picker.preview_title or ""), 'TelescopePromptTitle'),
+              top = Text(string.format(" %s ", picker.preview_title or ""), 'TelescopePreviewTitle'),
               top_align = "center",
             },
           },
-          win_options = { winhighlight = "Normal:TelescopePromptNormal", },
+          win_options = { winhighlight = "Normal:TelescopePreviewNormal", },
         })
-        preview.border:set_highlight("TelescopeResultsBorder")
+        preview.border:set_highlight("TelescopePreviewBorder")
 
         local box_by_kind = {
           vertical = Layout.Box({
