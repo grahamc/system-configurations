@@ -2109,7 +2109,7 @@ Plug(
   'neovim/nvim-lspconfig',
   {
     config = function()
-      require('lspconfig.ui.windows').default_options.border = 'solid'
+      require('lspconfig.ui.windows').default_options.border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏", }
     end,
   }
 )
@@ -2257,7 +2257,7 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'WhichKeyFloat', {link = 'Float4Normal'})
   vim.api.nvim_set_hl(0, 'WhichKeyBorder', {link = 'Float4Border'})
   vim.api.nvim_set_hl(0, 'CodeActionSign', {ctermbg = 'NONE', ctermfg = 3,})
-  vim.api.nvim_set_hl(0, 'LspInfoBorder', {link = 'Float1Border'})
+  vim.api.nvim_set_hl(0, 'LspInfoBorder', {ctermbg = 16, ctermfg = 52,})
   vim.api.nvim_set_hl(0, 'Float1Normal', {ctermbg = 16,})
   vim.api.nvim_set_hl(0, 'Float1Border', {link = 'Float1Normal'})
   vim.api.nvim_set_hl(0, 'Float2Normal', {ctermbg = 24,})
