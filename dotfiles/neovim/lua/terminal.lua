@@ -1446,14 +1446,29 @@ Plug(
   {
     config = function()
       local function close(buffer)
-        -- If this is the last window and tab, close the buffer and if that was the last buffer, close vim.
+        local buffer_count = #vim.fn.getbufinfo({buflisted = 1,})
         local window_count = vim.fn.winnr('$')
         local tab_count = vim.fn.tabpagenr('$')
+
+        -- If the only other window in the tab page is nvim-tree, and only one tab is open, keep the window and
+        -- switch to another buffer.
+        if tab_count == 1
+        and window_count == 2
+        and require("nvim-tree.api").tree.is_visible()
+        and buffer_count > 1 then
+          -- `bdelete` closes the window if the buffer is open in one so we have to switch to a different buffer first.
+          vim.cmd.BufferLineCycleNext()
+          vim.cmd('bdelete! ' .. buffer)
+          return
+        end
+
+        -- If this is the last window and tab, close the buffer and if that was the last buffer, close vim.
         if tab_count == 1 and (window_count == 1 or (window_count == 2 and require('nvim-tree.api').tree.is_visible())) then
-          local buffer_count_before_closing = #vim.fn.getbufinfo({buflisted = 1,})
+          local buffer_count_before_closing = buffer_count
           vim.cmd('bdelete! ' .. buffer)
           if buffer_count_before_closing == 1 then
-            vim.cmd.quit()
+            -- Using `quitall` instead of quit so it closes both windows
+            vim.cmd.quitall()
           end
           return
         end
