@@ -144,6 +144,13 @@ _G.ClickLink = function()
   if is_url then
     vim.fn.jobstart({'open', cfile}, {detach = true})
   end
+
+  -- If we are in a float, jump back to previous window. This way I can click a link in a documentation/diagnostic
+  -- float and stay in the editing window.
+  local is_float = vim.api.nvim_win_get_config(0).relative ~= ''
+  if is_float then
+    vim.cmd.wincmd('p')
+  end
 end
 vim.keymap.set('n', '<C-LeftMouse>', '<LeftMouse><Cmd>lua ClickLink()<CR>')
 
@@ -780,6 +787,7 @@ vim.diagnostic.config({
   float = {
     source = true,
     focusable = false,
+    border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏", },
     format = function(diagnostic)
       local result = diagnostic.message
 
@@ -1845,7 +1853,7 @@ Plug(
         window = {
           documentation = {
             winhighlight = 'NormalFloat:CmpDocumentationNormal,FloatBorder:CmpDocumentationBorder',
-            border = 'solid',
+            border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏", },
           },
           completion = {
             winhighlight = 'NormalFloat:CmpNormal,Pmenu:CmpNormal,CursorLine:CmpCursorLine,PmenuSbar:CmpScrollbar',
@@ -2023,7 +2031,8 @@ Plug(
           vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
             vim.lsp.handlers.hover,
             {
-              focusable = false,
+              focusable = true,
+              border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏", },
             }
           )
         end
@@ -2252,8 +2261,8 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'CmpItemKind', {ctermbg = 'NONE', ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'CmpItemMenu', {link = 'CmpItemKind'})
   vim.api.nvim_set_hl(0, 'CmpNormal', {link = 'Float2Normal'})
-  vim.api.nvim_set_hl(0, 'CmpDocumentationNormal', {link = 'Float3Normal'})
-  vim.api.nvim_set_hl(0, 'CmpDocumentationBorder', {link = 'CmpDocumentationNormal'})
+  vim.api.nvim_set_hl(0, 'CmpDocumentationNormal', {link = 'Float1Normal'})
+  vim.api.nvim_set_hl(0, 'CmpDocumentationBorder', {link = 'Float1Border'})
   vim.api.nvim_set_hl(0, 'CmpCursorLine', {ctermfg = 6, ctermbg = 'NONE', reverse = true,})
   -- autocomplete popupmenu
   vim.api.nvim_set_hl(0, 'PmenuSel', {ctermfg = 6, ctermbg = 'NONE', reverse = true,})
@@ -2291,7 +2300,7 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'CodeActionSign', {ctermbg = 'NONE', ctermfg = 3,})
   vim.api.nvim_set_hl(0, 'LspInfoBorder', {ctermbg = 16, ctermfg = 52,})
   vim.api.nvim_set_hl(0, 'Float1Normal', {ctermbg = 16,})
-  vim.api.nvim_set_hl(0, 'Float1Border', {link = 'Float1Normal'})
+  vim.api.nvim_set_hl(0, 'Float1Border', {ctermbg = 16, ctermfg = 52,})
   vim.api.nvim_set_hl(0, 'Float2Normal', {ctermbg = 24,})
   vim.api.nvim_set_hl(0, 'Float2Border', {link = 'Float2Normal'})
   vim.api.nvim_set_hl(0, 'Float3Normal', {ctermbg = 51,})
