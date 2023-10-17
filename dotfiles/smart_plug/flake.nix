@@ -25,12 +25,17 @@
           pythonWithPackages = pkgs.python3.withPackages pythonPackages;
           scriptText = if pkgs.stdenv.isLinux
             then ''
-              #!${pythonWithPackages}/bin/python ${self}/linux/smart-plug-daemon.py
+              python ${self}/linux/smart-plug-daemon.py
             ''
             else ''
-              #!${pythonWithPackages}/bin/python ${self}/smart_plug.py
+              python ${self}/smart_plug.py "$@"
             '';
-          cli = pkgs.writeScriptBin "speakerctl" scriptText;
+          cli = pkgs.writeShellApplication
+            {
+              name = "speakerctl";
+              runtimeInputs = [pythonWithPackages];
+              text = scriptText;
+            };
         in {
           devShells.default = pkgs.mkShell { packages = [pythonWithPackages]; };
           packages.default = cli;
