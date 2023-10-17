@@ -28,9 +28,23 @@
       };
 
       xdg.configFile = {
-        "fish/conf.d/any-nix-shell.fish".source = ''${
-          pkgs.runCommand "any-nix-shell-config.fish" {} "${pkgs.any-nix-shell}/bin/any-nix-shell fish > $out"
-        }'';
+        "fish/conf.d/any-nix-shell.fish".source =
+          let
+            generateAnyNixShellFishConfig = pkgs.writeShellApplication {
+              name = "generate";
+              # any-nix-shell has to be on the $PATH when I generate the config file since the config generator will use
+              # `which` to embed the path to `.any-nix-shell-wrapper`.
+              runtimeInputs = with pkgs; [any-nix-shell which];
+              text = ''
+                any-nix-shell fish
+              '';
+            };
+            anyNixShellFishConfig = pkgs.runCommand
+              "any-nix-shell-config.fish"
+              {}
+              ''${generateAnyNixShellFishConfig}/bin/generate > $out'';
+          in
+            ''${anyNixShellFishConfig}'';
       };
 
       home.packages = with pkgs; [
