@@ -84,6 +84,7 @@ function __mark_output_end --on-event fish_postexec
 end
 
 function __get_commandline --on-signal USR2
+    commandline --cursor > /tmp/fish-tmux-cursor
     commandline > /tmp/fish-tmux-commandline
 end
 
