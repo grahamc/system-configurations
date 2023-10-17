@@ -1735,6 +1735,11 @@ Plug(
       local luasnip = require('luasnip')
       local cmp_buffer = require('cmp_buffer')
 
+      cmp.event:on(
+        'confirm_done',
+        require('nvim-autopairs.completion.cmp').on_confirm_done()
+      )
+
       -- sources
       local buffer = {
         name = 'buffer',
