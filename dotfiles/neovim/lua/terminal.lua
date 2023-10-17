@@ -772,6 +772,11 @@ vim.api.nvim_create_autocmd(
 )
 -- }}}
 
+-- Winbar {{{
+-- Adding a blank winbar as a placeholder so the screen doesn't shift once the real winbar loads.
+vim.o.winbar = ' '
+-- }}}
+
 -- }}}
 
 -- LSP {{{
