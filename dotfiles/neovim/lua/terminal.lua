@@ -1882,7 +1882,7 @@ Plug(
             winhighlight = 'NormalFloat:CmpNormal,Pmenu:CmpNormal,CursorLine:CmpCursorLine,PmenuSbar:CmpScrollbar',
             border = 'none',
             side_padding = 1,
-            col_offset = 4,
+            col_offset = 1,
           },
         },
         mapping = cmp.mapping.preset.insert({
