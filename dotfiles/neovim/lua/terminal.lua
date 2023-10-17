@@ -1797,7 +1797,6 @@ Plug(
       -- sources
       local buffer = {
         name = 'buffer',
-        priority = 2,
         option = {
           keyword_length = 2,
           get_bufnrs = function()
@@ -1818,33 +1817,29 @@ Plug(
           end,
         },
       }
-      local nvim_lsp = { name = 'nvim_lsp', priority = 8, }
-      local omni = { name = 'omni', priority = 3, }
+      local nvim_lsp = { name = 'nvim_lsp', }
+      local omni = { name = 'omni', }
       local path = {
         name = 'path',
-        priority = 9,
         option = {
           label_trailing_slash = false,
         },
       }
       local tmux = {
         name = 'tmux',
-        priority = 1,
         option = { all_panes = true, label = 'Tmux', },
       }
       local cmdline = { name = 'cmdline', priority = 9, }
       local cmdline_history = {
         name = 'cmdline_history',
-        priority = 2,
         max_item_count = 2,
       }
       local lsp_signature = { name = 'nvim_lsp_signature_help', priority = 8, }
       local luasnip_source = {
         name = 'luasnip',
-        priority = 6,
         option = {use_show_condition = false},
       }
-      local env = {name = 'env', priority = 6,}
+      local env = {name = 'env',}
 
       -- helpers
       local is_cursor_preceded_by_nonblank_character = function()
@@ -1947,8 +1942,32 @@ Plug(
           }
         ),
         sorting = {
-          priority_weight = 100.0,
+          -- Builtin comparators are defined here:
+          -- https://github.com/hrsh7th/nvim-cmp/blob/main/lua/cmp/config/compare.lua
           comparators = {
+            -- Sort by the item kind enum, lower ordinal values are ranked higher (except for text, make it rank the
+            -- lowest). Enum is defined here:
+            -- https://github.com/hrsh7th/nvim-cmp/blob/5dce1b778b85c717f6614e3f4da45e9f19f54435/lua/cmp/types/lsp.lua#L177
+            function(entry1, entry2)
+              local kind1 = entry1:get_kind()
+              local kind2 = entry2:get_kind()
+
+              -- Make text rank lowest
+              kind1 = kind1 == require('cmp.types').lsp.CompletionItemKind.Text and 100 or kind1
+              kind2 = kind2 == require('cmp.types').lsp.CompletionItemKind.Text and 100 or kind2
+
+              if kind1 ~= kind2 then
+                local diff = kind1 - kind2
+                if diff < 0 then
+                  return true
+                elseif diff > 0 then
+                  return false
+                end
+              end
+
+              return nil
+            end,
+
             function(...)
               return cmp_buffer:compare_locality(...)
             end,
