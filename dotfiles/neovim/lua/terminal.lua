@@ -122,21 +122,6 @@ vim.keymap.set('', '<C-x>', '<Cmd>xa<CR>')
 -- suspend vim
 vim.keymap.set({'n', 'i', 'x'}, '<C-z>', '<Cmd>suspend<CR>')
 
--- Decide which actions to take when the enter key is pressed.
-local function get_enter_key_actions()
-  -- I confirmed that this variable is defined.
-  ---@diagnostic disable-next-line: undefined-global
-  local autopairs_keys = MPairs.autopairs_cr()
-  -- If only the enter key is returned, that means we aren't inside a pair.
-  local is_cursor_in_empty_pair = vim.inspect(autopairs_keys) ~= [["\r"]]
-  if is_cursor_in_empty_pair then
-    return autopairs_keys
-  end
-
-  return [[<CR>]]
-end
-vim.keymap.set('i', '<CR>', get_enter_key_actions, {expr = true})
-
 vim.o.colorcolumn = '120'
 
 vim.o.shell = 'sh'
@@ -873,19 +858,17 @@ vim.g.signify_sign_add = '│'
 vim.g.signify_sign_change = '│'
 vim.g.signify_sign_show_count = 0
 
+-- Before        Input         After
+-- ------------------------------------
+-- {|}           <CR>          {
+--                                 |
+--                             }
+-- ------------------------------------
 Plug(
   'windwp/nvim-autopairs',
   {
     config = function()
       require("nvim-autopairs").setup({
-        -- Before        Input         After
-        -- ------------------------------------
-        -- {|}           <CR>          {
-        --                                 |
-        --                             }
-        -- ------------------------------------
-        -- Disabling this mapping since I will add it through nvim-cmp.
-        map_cr = false,
         -- Don't add bracket pairs after quote.
         enable_afterquote = false,
       })
