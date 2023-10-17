@@ -284,6 +284,7 @@
         "vim-plugin-nvim-lastplace": "vim-plugin-nvim-lastplace",
         "vim-plugin-nvim-lightbulb": "vim-plugin-nvim-lightbulb",
         "vim-plugin-nvim-lspconfig": "vim-plugin-nvim-lspconfig",
+        "vim-plugin-nvim-navic": "vim-plugin-nvim-navic",
         "vim-plugin-nvim-notify": "vim-plugin-nvim-notify",
         "vim-plugin-nvim-osc52": "vim-plugin-nvim-osc52",
         "vim-plugin-nvim-surround": "vim-plugin-nvim-surround",
@@ -932,6 +933,22 @@
       "original": {
         "owner": "neovim",
         "repo": "nvim-lspconfig",
+        "type": "github"
+      }
+    },
+    "vim-plugin-nvim-navic": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1695007994,
+        "narHash": "sha256-X4CFFihI5PFIiHlwQt6VoUIxhm5oBuUvIQxCo9k7zRE=",
+        "owner": "SmiteshP",
+        "repo": "nvim-navic",
+        "rev": "0ffa7ffe6588f3417e680439872f5049e38a24db",
+        "type": "github"
+      },
+      "original": {
+        "owner": "SmiteshP",
+        "repo": "nvim-navic",
         "type": "github"
       }
     },

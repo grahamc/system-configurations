@@ -1581,6 +1581,25 @@ Plug(
     end,
   }
 )
+
+-- Dependencies: nvim-lspconfig
+Plug(
+  'SmiteshP/nvim-navic',
+  {
+    config = function()
+      require("nvim-navic").setup({
+        -- only get update on CursorHold, not CursorMoved
+        lazy_update_context = true,
+        -- Allow control of the colors used through highlights
+        highlight = true,
+      })
+      -- click on a breadcrumb to jump there
+      -- TODO: The click setting does not get applied when supplied through setup so I have to set it here.
+      -- This is a bug I should submit a fix for.
+      vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location({'click': v:true})%}"
+    end,
+  }
+)
 -- }}}
 
 -- File Explorer {{{
@@ -1964,6 +1983,10 @@ Plug(
             }
           )
         end
+
+        if capabilities.documentSymbolProvider then
+          require("nvim-navic").attach(client, buffer_number)
+        end
       end
 
       local cmp_lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -2240,6 +2263,34 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'MsgArea', {link = 'StatusLine',})
   vim.api.nvim_set_hl(0, 'FidgetTitle', {ctermbg = 'NONE', ctermfg = 15,italic = true,})
   vim.api.nvim_set_hl(0, 'FidgetTask', {ctermbg = 'NONE', ctermfg = 15, italic = true,})
+  vim.api.nvim_set_hl(0, "NavicIconsFile",          {ctermfg = 2,})
+  vim.api.nvim_set_hl(0, "NavicIconsModule",        {ctermfg = 4,})
+  vim.api.nvim_set_hl(0, "NavicIconsNamespace",     {ctermfg = 5,})
+  vim.api.nvim_set_hl(0, "NavicIconsPackage",       {ctermfg = 6,})
+  vim.api.nvim_set_hl(0, "NavicIconsClass",         {ctermfg = 10,})
+  vim.api.nvim_set_hl(0, "NavicIconsMethod",        {ctermfg = 11,})
+  vim.api.nvim_set_hl(0, "NavicIconsProperty",      {ctermfg = 12,})
+  vim.api.nvim_set_hl(0, "NavicIconsField",         {ctermfg = 13,})
+  vim.api.nvim_set_hl(0, "NavicIconsConstructor",   {ctermfg = 14,})
+  vim.api.nvim_set_hl(0, "NavicIconsEnum",          {ctermfg = 2,})
+  vim.api.nvim_set_hl(0, "NavicIconsInterface",     {ctermfg = 4,})
+  vim.api.nvim_set_hl(0, "NavicIconsFunction",      {ctermfg = 5,})
+  vim.api.nvim_set_hl(0, "NavicIconsVariable",      {ctermfg = 6,})
+  vim.api.nvim_set_hl(0, "NavicIconsConstant",      {ctermfg = 10,})
+  vim.api.nvim_set_hl(0, "NavicIconsString",        {ctermfg = 11,})
+  vim.api.nvim_set_hl(0, "NavicIconsNumber",        {ctermfg = 12,})
+  vim.api.nvim_set_hl(0, "NavicIconsBoolean",       {ctermfg = 13,})
+  vim.api.nvim_set_hl(0, "NavicIconsArray",         {ctermfg = 14,})
+  vim.api.nvim_set_hl(0, "NavicIconsObject",        {ctermfg = 2,})
+  vim.api.nvim_set_hl(0, "NavicIconsKey",           {ctermfg = 4,})
+  vim.api.nvim_set_hl(0, "NavicIconsNull",          {ctermfg = 5,})
+  vim.api.nvim_set_hl(0, "NavicIconsEnumMember",    {ctermfg = 6,})
+  vim.api.nvim_set_hl(0, "NavicIconsStruct",        {ctermfg = 10,})
+  vim.api.nvim_set_hl(0, "NavicIconsEvent",         {ctermfg = 11,})
+  vim.api.nvim_set_hl(0, "NavicIconsOperator",      {ctermfg = 12,})
+  vim.api.nvim_set_hl(0, "NavicIconsTypeParameter", {ctermfg = 13,})
+  vim.api.nvim_set_hl(0, "NavicText",               {})
+  vim.api.nvim_set_hl(0, "NavicSeparator",          {ctermfg = 15,})
 
   local level_highlights = {
     {level = 'ERROR', color = 1},
