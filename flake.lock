@@ -310,6 +310,7 @@
         "vim-plugin-vim-signify": "vim-plugin-vim-signify",
         "vim-plugin-vim-sleuth": "vim-plugin-vim-sleuth",
         "vim-plugin-vim-tmux-navigator": "vim-plugin-vim-tmux-navigator",
+        "vim-plugin-virt-column-nvim": "vim-plugin-virt-column-nvim",
         "vim-plugin-which-key-nvim": "vim-plugin-which-key-nvim"
       }
     },
@@ -1349,6 +1350,22 @@
       "original": {
         "owner": "christoomey",
         "repo": "vim-tmux-navigator",
+        "type": "github"
+      }
+    },
+    "vim-plugin-virt-column-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1695104453,
+        "narHash": "sha256-VSeOw+MKLeR/iRRuMe4Ru2DNXWGQgObixfgqN9S7LBw=",
+        "owner": "lukas-reineke",
+        "repo": "virt-column.nvim",
+        "rev": "5fc72873dc3175eddbdbbedea8071919c99ad755",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lukas-reineke",
+        "repo": "virt-column.nvim",
         "type": "github"
       }
     },

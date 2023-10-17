@@ -84,6 +84,28 @@ vim.api.nvim_create_autocmd(
   }
 )
 vim.api.nvim_create_autocmd(
+  'OptionSet',
+  {
+    pattern = 'readonly',
+    callback = function()
+      if vim.v.option_new then
+        vim.opt_local.colorcolumn = ''
+      end
+    end,
+    group = general_group_id,
+  }
+)
+vim.api.nvim_create_autocmd(
+  'FileType',
+  {
+    pattern = {'qf', 'help'},
+    callback = function()
+      vim.opt_local.colorcolumn = ''
+    end,
+    group = general_group_id,
+  }
+)
+vim.api.nvim_create_autocmd(
   'FileType',
   {
     pattern = {'help'},
@@ -99,6 +121,8 @@ vim.keymap.set('', '<C-x>', '<Cmd>xa<CR>')
 
 -- suspend vim
 vim.keymap.set({'n', 'i', 'x'}, '<C-z>', '<Cmd>suspend<CR>')
+
+vim.o.colorcolumn = '120'
 
 vim.o.shell = 'sh'
 
@@ -136,6 +160,17 @@ vim.keymap.set({"n"}, "<F9>", '<C-i>')
 
 -- Use shift+u to redo the last undone change
 vim.keymap.set({"n"}, "<S-u>", '<C-r>')
+
+vim.api.nvim_create_autocmd(
+  'Filetype',
+  {
+    pattern = {'text', 'markdown', 'html', 'xhtml',},
+    group = vim.api.nvim_create_augroup('NoLineLengthForMarkup', {}),
+    callback = function()
+      vim.opt_local.colorcolumn = '0'
+    end,
+  }
+)
 -- }}}
 
 -- Utilities {{{
@@ -901,6 +936,15 @@ Plug(
           autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '+' && (!empty($SSH_CLIENT) || !empty($SSH_TTY)) | lua require('osc52').copy_register('+') | endif
         augroup END
       ]])
+    end,
+  }
+)
+
+Plug(
+  'lukas-reineke/virt-column.nvim',
+  {
+    config = function()
+      require("virt-column").setup({ char = "│" })
     end,
   }
 )
