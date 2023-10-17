@@ -1048,7 +1048,7 @@ Plug(
         local border = {
           results = default_border,
           results_patch = {
-            minimal = { top_left = border_chars.left, top_right = border_chars.right, top = "", },
+            minimal = default_border,
             horizontal = { top_left = border_chars.left, top_right = border_chars.right, top = "", },
             vertical = default_border,
           },
@@ -1068,7 +1068,13 @@ Plug(
 
         local results = Popup({
           focusable = false,
-          border = { style = border.results, },
+          border = {
+            style = border.results,
+            text = {
+              top = Text("", 'TelescopeResultsTitle'),
+              top_align = "center",
+            },
+          },
           win_options = { winhighlight = "Normal:TelescopeResultsNormal", },
         })
         results.border:set_highlight("TelescopeResultsBorder")
@@ -2235,7 +2241,7 @@ local function SetNordOverrides()
   -- https://github.com/nvim-telescope/telescope.nvim/blob/master/plugin/telescope.lua
   vim.api.nvim_set_hl(0, 'TelescopePromptNormal', {ctermbg = 16,})
   vim.api.nvim_set_hl(0, 'TelescopePromptBorder', {link = 'TelescopeResultsBorder',})
-  vim.api.nvim_set_hl(0, 'TelescopePromptTitle', {ctermbg = 'NONE', ctermfg = 6, reverse = true, bold = true,})
+  vim.api.nvim_set_hl(0, 'TelescopePromptTitle', {ctermbg = 52, ctermfg = 7, bold = true,})
   vim.api.nvim_set_hl(0, 'TelescopePreviewNormal', {ctermbg = 16,})
   vim.api.nvim_set_hl(0, 'TelescopePreviewBorder', {link = 'TelescopeResultsBorder',})
   vim.api.nvim_set_hl(0, 'TelescopePreviewTitle', {link = 'TelescopePromptTitle'})
