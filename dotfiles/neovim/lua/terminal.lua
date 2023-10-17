@@ -1498,7 +1498,7 @@ Plug(
               text = unicode('f4d3') .. " File Explorer (Press g? for help)",
               text_align = "center",
               separator = true,
-              highlight = 'StatusLine',
+              highlight = 'NvimTreeTitle',
             },
           },
           hover = {
@@ -1717,6 +1717,29 @@ Plug(
         end,
       })
       vim.keymap.set("n", "<M-e>", '<cmd>NvimTreeFindFileToggle<cr>', {silent = true})
+      local nvim_tree_group_id = vim.api.nvim_create_augroup('MyNvimTree', {})
+      vim.api.nvim_create_autocmd(
+        'BufEnter',
+        {
+          callback = function()
+            if vim.o.filetype == 'NvimTree' then
+              vim.api.nvim_set_hl(0, 'NvimTreeTitle', {link = 'BufferLineBufferSelected'})
+            end
+          end,
+          group = nvim_tree_group_id,
+        }
+      )
+      vim.api.nvim_create_autocmd(
+        'BufLeave',
+        {
+          callback = function()
+            if vim.o.filetype == 'NvimTree' then
+              vim.api.nvim_set_hl(0, 'NvimTreeTitle', {link = 'BufferLineBufferVisible'})
+            end
+          end,
+          group = nvim_tree_group_id,
+        }
+      )
     end,
   }
 )
@@ -2311,7 +2334,6 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'StatusLineRecordingIndicator', {ctermbg = 51, ctermfg = 1,})
   vim.api.nvim_set_hl(0, 'StatusLineShowcmd', {ctermbg = 51, ctermfg = 6,})
   vim.api.nvim_set_hl(0, 'StatusLinePowerlineOuter', {ctermbg = 'NONE', ctermfg = 51,})
-  vim.api.nvim_set_hl(0, 'NvimTreeWinBar', {ctermfg = 6, ctermbg = 51,})
   vim.api.nvim_set_hl(0, 'NvimTreeIndentMarker', {ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'MsgArea', {link = 'StatusLine',})
   vim.api.nvim_set_hl(0, 'FidgetTitle', {ctermbg = 'NONE', ctermfg = 15,italic = true,})
