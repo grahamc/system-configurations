@@ -106,12 +106,37 @@ vim.api.nvim_create_autocmd(
   }
 )
 vim.api.nvim_create_autocmd(
-  'FileType',
+  -- I'm using BufEnter as opposed to FileType because if you run `:help something` and the help buffer is already
+  -- open, vim will reset the buffer to not being listed so to get around that I set it back every time I enter the buffer.
+  'BufEnter',
   {
-    pattern = {'help'},
     callback = function()
-      -- so it shows up in the bufferline
-      vim.opt_local.buflisted = true
+      if vim.o.filetype == 'help' then
+        -- so it shows up in the bufferline
+        vim.opt_local.buflisted = true
+      end
+    end,
+    group = general_group_id,
+  }
+)
+-- Get help buffers to open in the current window by first opening it in a new tab (this is done elsewhere in my config),
+-- closing the tab and jumping to the previous buffer, the help buffer.
+vim.api.nvim_create_autocmd(
+  'BufEnter',
+  {
+    callback = function()
+      if vim.o.filetype == 'help' and vim.g.opening_help_in_tab ~= nil then
+        vim.g.opening_help_in_tab = nil
+        -- Calling `tabclose` here doesn't work without `defer_fn`, not sure why though.
+        vim.defer_fn(
+          function()
+            local help_buffer_number = vim.fn.bufnr()
+            vim.cmd.tabclose()
+            vim.cmd.buffer(help_buffer_number)
+          end,
+          0
+        )
+      end
     end,
     group = general_group_id,
   }
@@ -412,7 +437,7 @@ vim.o.cmdheight = 0
 vim.o.showcmdloc = 'statusline'
 vim.keymap.set('c', '<C-a>', '<C-b>', {remap = true})
 vim.cmd([[
-  cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
+  cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'let g#opening_help_in_tab = v:true \| tab help' : 'h'
 ]])
 -- }}}
 
@@ -1223,7 +1248,10 @@ Plug(
           help_tags = {
             mappings = {
               i = {
-                ["<CR>"] = actions.select_tab,
+                ["<CR>"] = function(...)
+                  vim.g.opening_help_in_tab = true
+                  actions.select_tab(...)
+                end,
               },
             },
           },
