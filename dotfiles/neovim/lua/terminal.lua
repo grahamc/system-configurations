@@ -1157,10 +1157,10 @@ Plug(
       end
 
       _G.big_editor_relative_two_pane_layout = make_two_pane_layout(
-        { relative = "win", position = "50%", size = { height = "80%", width = "90%", }, }
+        { relative = "editor", position = "50%", size = { height = "80%", width = "90%", }, }
       )
       _G.small_editor_relative_two_pane_layout = make_two_pane_layout(
-        { relative = "win", position = "50%", size = { height = "40%", width = "50%", }, }
+        { relative = "editor", position = "50%", size = { height = "40%", width = "50%", }, }
       )
       _G.cursor_relative_two_pane_layout = make_two_pane_layout(
         { relative = "cursor", position = 1, size = { height = 8, width = 60, }, }
@@ -1279,7 +1279,7 @@ Plug(
 
         local box, box_kind = get_box()
         local layout = Layout({
-          relative = "win",
+          relative = "editor",
           position = {col = "50%", row = "40%"},
           size = { height = "80%", width = "90%", },
         }, box)
