@@ -1760,10 +1760,16 @@ Plug(
   {
     config = function()
       require("nvim-navic").setup({
-        -- only get update on CursorHold, not CursorMoved
-        lazy_update_context = true,
         -- Allow control of the colors used through highlights
         highlight = true,
+      })
+      vim.api.nvim_create_autocmd("BufEnter", {
+        callback = function()
+          if vim.api.nvim_buf_line_count(0) > 10000 then
+            -- For large files, only get update on CursorHold, not CursorMoved.
+            vim.b.navic_lazy_update_context = true
+          end
+        end,
       })
       -- click on a breadcrumb to jump there
       -- TODO: The click setting does not get applied when supplied through setup so I have to set it here.
