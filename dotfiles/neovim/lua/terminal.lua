@@ -343,10 +343,6 @@ vim.o.softtabstop = tab_width
 -- }}}
 
 -- Folds {{{
-vim.opt.fillchars:append('foldsep: ')
-vim.opt.fillchars:append('fold: ')
-vim.opt.fillchars:append('foldclose:›')
-vim.opt.fillchars:append('foldopen:⌄')
 vim.o.foldlevelstart = 99
 vim.keymap.set('n', '<Tab>', function() vim.cmd([[silent! normal! za]]) end)
 
@@ -371,12 +367,6 @@ local function fold_toggle()
   end
 end
 vim.keymap.set('n', '<S-Tab>', fold_toggle, {silent = true, expr =true})
-
--- auto-resize the fold column
--- 
--- TODO: When this issue is resolved, I can set foldcolumn to 1 and remove the digits that signify a nested fold.
--- issue: https://github.com/neovim/neovim/pull/17446
-vim.o.foldcolumn = '0'
 
 -- Jump to the top and bottom of the current fold
 vim.keymap.set({'n', 'x'}, '[<Tab>', '[z')
@@ -575,8 +565,6 @@ vim.api.nvim_create_user_command('DeleteAllSessions', delete_all_sessions, {desc
 -- Miscellaneous {{{
 vim.o.linebreak = true
 vim.o.breakat = ' ^I'
-vim.o.number = true
-vim.o.relativenumber = true
 vim.o.cursorline = true
 vim.o.cursorlineopt = 'number,screenline'
 vim.o.showtabline = 2
@@ -766,6 +754,108 @@ vim.o.laststatus = 3
 vim.o.statusline = '%!v:lua.StatusLine()'
 -- }}}
 
+-- StatusColumn {{{
+local function is_virtual_line()
+  return vim.v.virtnum < 0
+end
+
+local function is_wrapped_line()
+  return vim.v.virtnum > 0
+end
+
+-- Fold column calculation was taken from the following files in the plugin statuscol.nvim:
+-- https://github.com/luukvbaal/statuscol.nvim/blob/98d02fc90ebd7c4674ec935074d1d09443d49318/lua/statuscol/ffidef.lua
+-- https://github.com/luukvbaal/statuscol.nvim/blob/98d02fc90ebd7c4674ec935074d1d09443d49318/lua/statuscol/builtin.lua
+local ffi = require("ffi")
+-- I moved this call to `cdef` outside of the fold function because I was getting the error "table overflow" a few
+-- seconds into using neovim. Plus, not calling this during the fold function is faster.
+ffi.cdef([[
+  int next_namespace_id;
+  uint64_t display_tick;
+  typedef struct {} Error;
+  typedef struct {} win_T;
+  typedef struct {
+    int start;  // line number where deepest fold starts
+    int level;  // fold level, when zero other fields are N/A
+    int llevel; // lowest level that starts in v:lnum
+    int lines;  // number of lines from v:lnum to end of closed fold
+  } foldinfo_T;
+  foldinfo_T fold_info(win_T* wp, int lnum);
+  win_T *find_window_by_handle(int Window, Error *err);
+  int compute_foldcolumn(win_T *wp, int col);
+  int win_col_off(win_T *wp);
+]])
+local function get_fold_section()
+  local wp = ffi.C.find_window_by_handle(vim.g.statusline_winid, ffi.new("Error"))
+  local foldinfo = ffi.C.fold_info(wp, vim.v.lnum)
+  local string = ""
+  local level = foldinfo.level
+
+  if is_virtual_line() or is_wrapped_line() or level == 0 then
+    return '  '
+  end
+
+  if foldinfo.start == vim.v.lnum then
+    local closed = foldinfo.lines > 0
+    if closed then
+      string = string..''
+    else
+      string = string..''
+    end
+  else
+    string = string..' '
+  end
+  string = string .. ' '
+
+  return string
+end
+
+_G.StatusColumn = function()
+  local buffer = vim.api.nvim_win_get_buf(vim.g.statusline_winid)
+
+  local border_highlight = '%#NonText#'
+  local gitHighlights = {
+    SignifyAdd = 'SignifyAdd',
+    SignifyRemoveFirstLine = 'SignifyDelete',
+    SignifyDelete = 'SignifyDelete',
+    SignifyDeleteMore = 'SignifyDelete',
+    SignifyChange = 'SignifyChange',
+  }
+  -- There will be one item at most in this list since I supplied a buffer number.
+  local signsPerBuffer = vim.fn.sign_getplaced(buffer, {lnum = vim.v.lnum, group = ''})
+  if next(signsPerBuffer) ~= nil then
+    for _,sign in ipairs(signsPerBuffer[1].signs) do
+      local name = sign.name
+      local highlight = gitHighlights[name]
+      if highlight ~= nil then
+        border_highlight = '%#' .. highlight .. '#'
+        break
+      end
+    end
+  end
+  local border_section = border_highlight .. '│'
+
+  local line_number_section = nil
+  local last_line_digit_count = #tostring(vim.fn.line('$', vim.g.statusline_winid))
+  if is_virtual_line() or is_wrapped_line() then
+    line_number_section = string.rep(" ", last_line_digit_count)
+  else
+    local line_number = tostring(vim.v.relnum ~= 0 and vim.v.relnum or vim.v.lnum)
+    local line_number_padding = string.rep(" ", last_line_digit_count - #line_number)
+    line_number_section = line_number_padding .. line_number
+  end
+
+  local fold_section = get_fold_section()
+  local sign_section = '%s'
+  local align_right = '%='
+  local padding = ' '
+
+  return align_right .. sign_section .. fold_section .. line_number_section .. border_section .. padding
+end
+
+vim.o.statuscolumn = '%!v:lua.StatusColumn()'
+-- }}}
+
 -- Cursor {{{
 local function set_cursor()
   -- Block cursor in normal mode, thin line in insert mode, and underline in replace mode
@@ -807,10 +897,6 @@ vim.o.winbar = ' '
 -- LSP {{{
 vim.diagnostic.config({
   virtual_text = true,
-  signs = {
-    -- Make it high enough to have priority over vim-signify
-    priority = 11,
-  },
   update_in_insert = true,
   -- With this enabled, sign priorities will become: hint=11, info=12, warn=13, error=14
   severity_sort = true,
@@ -884,16 +970,16 @@ vim.api.nvim_create_autocmd(
 
 -- Miscellaneous {{{
 -- Add icons to the gutter to represent version control changes (e.g. new lines, modified lines, etc.)
-Plug(
-  'mhinz/vim-signify',
-  {
-    config = function()
-      vim.keymap.set('n', 'zv', '<Cmd>SignifyHunkDiff<CR>')
-    end,
-  }
-)
-vim.g.signify_sign_add = '│'
-vim.g.signify_sign_change = '│'
+Plug('mhinz/vim-signify')
+-- I'm setting all of these so that the signify signs will be added to the sign column, but NOT be visible. I don't
+-- want them to be visible because I already change the color of my statuscolumn border to indicate git changes. I want
+-- them to be added to the sign column so I know where to color my statuscolumn border.
+vim.g.signify_sign_add = ''
+vim.g.signify_sign_delete = ''
+vim.g.signify_sign_delete_first_line = ''
+vim.g.signify_sign_change = ''
+vim.g.signify_sign_change_delete = ''
+vim.g.signify_priority = -100
 vim.g.signify_sign_show_count = 0
 
 -- Before        Input         After
@@ -1444,7 +1530,7 @@ Plug(
     config = function()
       require('nvim-lightbulb').setup({
         autocmd = {enabled = true},
-        -- Giving it a higher priority than diagnostics and vcs changes
+        -- Giving it a higher priority than diagnostics
         sign = {priority = 15},
       })
 
@@ -1769,6 +1855,17 @@ Plug(
           callback = function()
             if vim.o.filetype == 'NvimTree' then
               vim.api.nvim_set_hl(0, 'NvimTreeTitle', {link = 'BufferLineBufferVisible'})
+            end
+          end,
+          group = nvim_tree_group_id,
+        }
+      )
+      vim.api.nvim_create_autocmd(
+        'BufWinEnter',
+        {
+          callback = function()
+            if vim.o.filetype == 'NvimTree' then
+              vim.opt_local.statuscolumn = ''
             end
           end,
           group = nvim_tree_group_id,
@@ -2282,7 +2379,7 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'StatusLineHintText', {ctermfg = 5, ctermbg = 51,})
   vim.api.nvim_set_hl(0, 'StatusLineStandoutText', {ctermfg = 3, ctermbg = 51,})
   vim.api.nvim_set_hl(0, 'CursorLine', {ctermfg = 'NONE', ctermbg = 'NONE', underline = true,})
-  vim.api.nvim_set_hl(0, 'CursorLineNr', {link = 'CursorLine'})
+  vim.api.nvim_set_hl(0, 'CursorLineNr', {bold = true,})
   -- transparent background
   vim.api.nvim_set_hl(0, 'Normal', {ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'EndOfBuffer', {ctermbg = 'NONE',})
@@ -2419,6 +2516,9 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, "NavicIconsTypeParameter", {ctermfg = 13,})
   vim.api.nvim_set_hl(0, "NavicText",               {})
   vim.api.nvim_set_hl(0, "NavicSeparator",          {ctermfg = 15,})
+  vim.api.nvim_set_hl(0, "SignifyAdd", {ctermfg = 2,})
+  vim.api.nvim_set_hl(0, "SignifyDelete", {ctermfg = 1,})
+  vim.api.nvim_set_hl(0, "SignifyChange", {ctermfg = 3,})
 
   local level_highlights = {
     {level = 'ERROR', color = 1},
