@@ -1200,6 +1200,7 @@ Plug(
               ["<C-j>"] = actions.preview_scrolling_down,
               ["<C-k>"] = actions.preview_scrolling_up,
               ["<C-h>"] = actions.select_horizontal,
+              ["<C-u>"] = false,
             },
           },
           prompt_prefix = unicode('f002') .. '  ',
