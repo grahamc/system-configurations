@@ -1635,6 +1635,12 @@ Plug(
           max_name_length = 100,
           max_prefix_length = 100,
           tab_size = 1,
+          custom_filter = function(buf_number, _)
+            -- filter out filetypes you don't want to see
+            if vim.bo[buf_number].filetype ~= "qf" then
+              return true
+            end
+          end,
         },
         highlights = {
           fill = { ctermbg = 51, ctermfg = 15, },
