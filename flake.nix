@@ -73,7 +73,7 @@
     "vim-plugin-vim-signify" = {url = "github:mhinz/vim-signify"; flake = false;};
     "vim-plugin-nvim-autopairs" = {url = "github:windwp/nvim-autopairs"; flake = false;};
     "vim-plugin-vim-tmux-navigator" = {url = "github:christoomey/vim-tmux-navigator"; flake = false;};
-    "vim-plugin-vim-CursorLineCurrentWindow" = {url = "github:inkarkat/vim-CursorLineCurrentWindow"; flake = false;};
+    "vim-plugin-reticle-nvim" = {url = "github:Tummetott/reticle.nvim"; flake = false;};
     "vim-plugin-nvim-lastplace" = {url = "github:ethanholz/nvim-lastplace"; flake = false;};
     "vim-plugin-vim-plug" = {url = "github:junegunn/vim-plug"; flake = false;};
     "vim-plugin-traces-vim" = {url = "github:markonm/traces.vim"; flake = false;};

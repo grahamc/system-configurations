@@ -301,18 +301,14 @@ local toggle_cursor_line_group_id = vim.api.nvim_create_augroup('ToggleCursorlin
 vim.api.nvim_create_autocmd(
   {'FocusGained'},
   {
-    callback = function()
-      if vim.b["nocursorline"] == nil then
-        vim.o.cursorline = true
-      end
-    end,
+    callback = function() require'reticle'.enable_cursorline() end,
     group = toggle_cursor_line_group_id,
   }
 )
 vim.api.nvim_create_autocmd(
   {'FocusLost',},
   {
-    callback = function() vim.o.cursorline = false end,
+    callback = function() require'reticle'.disable_cursorline() end,
     group = toggle_cursor_line_group_id,
   }
 )
@@ -1016,7 +1012,23 @@ vim.g.tmux_navigator_no_mappings = 1
 vim.g.tmux_navigator_preserve_zoom = 1
 vim.g.tmux_navigator_disable_when_zoomed = 0
 
-Plug('inkarkat/vim-CursorLineCurrentWindow')
+Plug(
+  'Tummetott/reticle.nvim',
+  {
+    config = function()
+      require('reticle').setup({
+        on_startup = {
+          cursorline = true,
+          cursorcolumn = false,
+        },
+        disable_in_insert = false,
+        never = {
+          cursorline = {'TelescopeResults'},
+        },
+        always_highlight_number = true,
+      })
+    end,
+  })
 
 Plug(
   'ethanholz/nvim-lastplace',
@@ -1349,13 +1361,6 @@ Plug(
           },
         },
       })
-
-      vim.cmd([[
-        augroup TelescopeNvim
-          autocmd!
-          autocmd FileType TelescopePrompt,TelescopeResults setlocal nocursorline | let b:nocursorline = v:true
-        augroup END
-      ]])
 
       local telescope_builtins = require('telescope.builtin')
       local function call_with_visual_selection(picker)

@@ -293,11 +293,11 @@
         "vim-plugin-nvim-ts-autotag": "vim-plugin-nvim-ts-autotag",
         "vim-plugin-nvim-ts-context-commentstring": "vim-plugin-nvim-ts-context-commentstring",
         "vim-plugin-plenary-nvim": "vim-plugin-plenary-nvim",
+        "vim-plugin-reticle-nvim": "vim-plugin-reticle-nvim",
         "vim-plugin-targets-vim": "vim-plugin-targets-vim",
         "vim-plugin-telescope-nvim": "vim-plugin-telescope-nvim",
         "vim-plugin-traces-vim": "vim-plugin-traces-vim",
         "vim-plugin-vim": "vim-plugin-vim",
-        "vim-plugin-vim-CursorLineCurrentWindow": "vim-plugin-vim-CursorLineCurrentWindow",
         "vim-plugin-vim-abolish": "vim-plugin-vim-abolish",
         "vim-plugin-vim-caser": "vim-plugin-vim-caser",
         "vim-plugin-vim-exchange": "vim-plugin-vim-exchange",
@@ -1081,6 +1081,22 @@
         "type": "github"
       }
     },
+    "vim-plugin-reticle-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1697715153,
+        "narHash": "sha256-AF/JQJJbY3ojgA8t0z5hOSxe10yW/+RsqsgXlHtMXaM=",
+        "owner": "Tummetott",
+        "repo": "reticle.nvim",
+        "rev": "8313d1293a346b6b2d8fbc37fb07fcdad45a8b8e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Tummetott",
+        "repo": "reticle.nvim",
+        "type": "github"
+      }
+    },
     "vim-plugin-targets-vim": {
       "flake": false,
       "locked": {
@@ -1142,22 +1158,6 @@
       "original": {
         "owner": "nordtheme",
         "repo": "vim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-vim-CursorLineCurrentWindow": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1592423479,
-        "narHash": "sha256-rOdpyZR7UFPaMlRibv3RvlV9xis1s88GLXlujr1Z1lw=",
-        "owner": "inkarkat",
-        "repo": "vim-CursorLineCurrentWindow",
-        "rev": "6f0875f8db5754aceb2e36fb986179c3812b44b2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "inkarkat",
-        "repo": "vim-CursorLineCurrentWindow",
         "type": "github"
       }
     },
