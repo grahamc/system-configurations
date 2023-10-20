@@ -1861,6 +1861,7 @@ Plug(
           callback = function()
             if vim.o.filetype == 'NvimTree' then
               vim.api.nvim_set_hl(0, 'NvimTreeTitle', {link = 'BufferLineBufferSelected'})
+              vim.opt_local.cursorline = true
             end
           end,
           group = nvim_tree_group_id,
@@ -1872,6 +1873,7 @@ Plug(
           callback = function()
             if vim.o.filetype == 'NvimTree' then
               vim.api.nvim_set_hl(0, 'NvimTreeTitle', {link = 'BufferLineBufferVisible'})
+              vim.opt_local.cursorline = false
             end
           end,
           group = nvim_tree_group_id,
