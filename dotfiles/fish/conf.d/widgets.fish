@@ -134,9 +134,9 @@ function file-widget --description 'Search files'
       # This should have "-p sixel", but that won\'t work until fzf has support for sixel.
       timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" -p quarter {}
     else if test "$TERM_PROGRAM" = WezTerm
-      # This should have "-p kitty/sixel", but that won\'t work until fzf has support for sixel or Kitty\'s image format:
-      # issue for kitty image: https://github.com/junegunn/fzf/issues/3228
-      timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
+      # This should have "-p sixel", since TMUX supports sixel, but that won\'t work until fzf has support for the
+      # sixel image format.
+      timg -p kitty --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
     else
       timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
     end
