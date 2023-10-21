@@ -785,7 +785,7 @@ ffi.cdef([[
 local function get_fold_section()
   local wp = ffi.C.find_window_by_handle(vim.g.statusline_winid, ffi.new("Error"))
   local foldinfo = ffi.C.fold_info(wp, vim.v.lnum)
-  local string = ""
+  local string = "%#FoldColumn#"
   local level = foldinfo.level
 
   if is_virtual_line() or is_wrapped_line() or level == 0 then
@@ -845,9 +845,8 @@ _G.StatusColumn = function()
   local fold_section = get_fold_section()
   local sign_section = '%s'
   local align_right = '%='
-  local padding = ' '
 
-  return align_right .. sign_section .. fold_section .. line_number_section .. border_section .. padding
+  return align_right .. sign_section .. line_number_section .. border_section .. fold_section
 end
 
 vim.o.statuscolumn = '%!v:lua.StatusColumn()'
