@@ -340,6 +340,7 @@ vim.o.softtabstop = tab_width
 
 -- Folds {{{
 vim.o.foldlevelstart = 99
+vim.opt.fillchars:append('fold: ')
 vim.keymap.set('n', '<Tab>', function() vim.cmd([[silent! normal! za]]) end)
 
 -- Setting this so that the fold column gets displayed
