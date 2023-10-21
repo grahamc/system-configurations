@@ -1790,6 +1790,27 @@ Plug(
     end,
   }
 )
+
+Plug(
+  'f-person/git-blame.nvim',
+  {
+    config = function()
+      local message_prefix = '   ■ '
+      require('gitblame').setup({
+        message_template = message_prefix .. '<author>, <date> • <summary>',
+        message_when_not_committed = message_prefix .. 'Not committed yet',
+        date_format = '%r',
+        use_blame_commit_file_urls = true,
+        -- TODO: Workaround for a bug in neovim where virtual text highlight is being combined with the cursorline
+        -- highlight.
+        -- issue: https://github.com/neovim/neovim/issues/15485
+        set_extmark_options = {
+          hl_mode = "combine",
+        },
+      })
+    end,
+  }
+)
 -- }}}
 
 -- File Explorer {{{

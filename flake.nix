@@ -119,6 +119,7 @@
     "vim-plugin-nvim-notify" = {url = "github:rcarriga/nvim-notify"; flake = false;};
     "vim-plugin-nui-nvim" = {url = "github:MunifTanjim/nui.nvim"; flake = false;};
     "vim-plugin-nvim-navic" = {url = "github:SmiteshP/nvim-navic"; flake = false;};
+    "vim-plugin-git-blame-nvim" = {url = "github:f-person/git-blame.nvim"; flake = false;};
 
     "tmux-plugin-resurrect" = {url = "github:tmux-plugins/tmux-resurrect"; flake = false;};
     "tmux-plugin-tmux-suspend" = {url = "github:MunifTanjim/tmux-suspend"; flake = false;};

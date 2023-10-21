@@ -274,6 +274,7 @@
         "vim-plugin-firenvim": "vim-plugin-firenvim",
         "vim-plugin-folding-nvim": "vim-plugin-folding-nvim",
         "vim-plugin-friendly-snippets": "vim-plugin-friendly-snippets",
+        "vim-plugin-git-blame-nvim": "vim-plugin-git-blame-nvim",
         "vim-plugin-mason-lspconfig-nvim": "vim-plugin-mason-lspconfig-nvim",
         "vim-plugin-mason-nvim": "vim-plugin-mason-nvim",
         "vim-plugin-nui-nvim": "vim-plugin-nui-nvim",
@@ -774,6 +775,22 @@
       "original": {
         "owner": "rafamadriz",
         "repo": "friendly-snippets",
+        "type": "github"
+      }
+    },
+    "vim-plugin-git-blame-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1697724935,
+        "narHash": "sha256-jq3ii4CFa5hpbRMJe9zxl7fVMs/BgWfwBBmEtqn/Bok=",
+        "owner": "f-person",
+        "repo": "git-blame.nvim",
+        "rev": "1792125237260dc2a03ba57d31c39179e6049f07",
+        "type": "github"
+      },
+      "original": {
+        "owner": "f-person",
+        "repo": "git-blame.nvim",
         "type": "github"
       }
     },
