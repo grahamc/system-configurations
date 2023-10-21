@@ -32,15 +32,21 @@ config.disable_default_key_bindings = true
 -- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system, but Flatpak apps
 -- can't access my font configuration file from their sandbox so for now I'll hardcode a font.
 -- issue: https://github.com/flatpak/flatpak/issues/1563
-local font = 'Fira Mono'
+local font = 'Iosevka Biggs'
+config.font_rules = {
+  {
+    italic = true,
+    font = wezterm.font_with_fallback {font .. ' Oblique',},
+  },
+}
 config.font = wezterm.font_with_fallback({font, 'SymbolsNerdFontMono'})
 config.underline_position = -9
 config.font_size = 10.3
 if is_mac then
   config.font_size = 14
 end
-config.cell_width = 1.04
-config.line_height = 1.3
+config.cell_width = 1.08
+config.line_height = 1.25
 config.underline_thickness = "210%"
 
 local my_colors_per_color_scheme = {

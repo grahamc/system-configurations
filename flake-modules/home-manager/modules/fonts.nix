@@ -5,12 +5,15 @@
   in lib.mkIf (isLinux && isGui) {
     repository.symlink.xdg.configFile = {
       "fontconfig/fonts.conf".source = "fontconfig/local.conf";
+      # TODO: I should pull this file from the Nerdfont repository so it stays up to date, but nix can't do sparse
+      # checkouts and I don't want to download a ~3gb repo just for one file.
+      # issue: https://github.com/NixOS/nix/issues/5811
       "fontconfig/conf.d/10-nerd-font-symbols.conf".source = "fontconfig/10-nerd-font-symbols.conf";
     };
     fonts.fontconfig.enable = true;
     home.packages = with pkgs; [
       (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
-      fira-mono
+      iosevka
       inter
     ];
 

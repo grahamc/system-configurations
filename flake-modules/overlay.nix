@@ -144,6 +144,18 @@
               # rebuilds of tools that depend on anything wrapped in this overlay. This is fine since I only need
               # XDG Base Directory compliance when I'm using a program directly.
               xdgWrappers = xdgOverlay final prev;
+              iosevka = prev.iosevka.override rec {
+                privateBuildPlan = ''
+                  [buildPlans.iosevka-${set}]
+                  family = "Iosevka Biggs"
+                  spacing = "term"
+                  serifs = "sans"
+                  no-cv-ss = false
+                  export-glyph-names = false
+                  no-ligation = true
+                '';
+                set = "biggs";
+              };
             };
 
             linuxOnlyPackages = optionalAttrs isLinux {

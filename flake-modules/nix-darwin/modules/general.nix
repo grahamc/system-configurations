@@ -86,7 +86,7 @@
         fontDir.enable = true;
         fonts = with pkgs; [
           (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
-          fira-mono
+          iosevka
         ];
       };
 
