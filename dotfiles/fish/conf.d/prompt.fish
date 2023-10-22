@@ -58,7 +58,7 @@ function fish_prompt --description 'Print the prompt'
         if test (string length --visible $context) -gt $max_length
         # TODO: `string length --visible` doesn't report the correct size for OSC8 hyperlinks so I'm skipping
         # truncation for any context that contains it.
-        and not string match --quiet '*\e]8;;file://*' $context
+        and not string match --quiet '*\e]8;;*' $context
             set context (string shorten --max $max_length $context)
         end
 
@@ -250,7 +250,39 @@ function _git_context --argument-names max_length
         set formatted_status (_abbreviate_git_states $formatted_status)
     end
 
+    set branch_name (git branch --show-current)
+    if test -n "$branch_name"
+        set git_branch_hyperlink (_make_hyperlink_to_git_branch "$branch_name")
+
+        set branch_name_length (math (string length "$branch_name") + 1)
+        set formatted_status_without_git_branch (string sub --start "$branch_name_length" "$formatted_status")
+
+        set formatted_status "$git_branch_hyperlink$formatted_status_without_git_branch"
+    end
+
     echo "git: $formatted_status"
+end
+function _make_hyperlink_to_git_branch --argument-names branch_name
+    set hyperlink
+    set remote_url (git remote get-url origin)
+    set hosts 'github.com'
+    set patterns '^(https://|git@)github\.com[:/](?<owner>.*)/(?<repo>.*)\.git$'
+    set replacements 'https://github.com/$owner/$repo/tree/%s'
+    for index in (seq (count $hosts))
+        set host $hosts[$index]
+        set pattern $patterns[$index]
+        set replacement $replacements[$index]
+        if string match --entire --quiet "$host" "$remote_url"
+            set hyperlink (printf (string replace --regex -- "$pattern" "$replacement" "$remote_url") "$branch_name")
+            break
+        end
+    end
+
+    if test -n "$hyperlink"
+        echo '\e]8;;'$hyperlink'\e\\'$branch_name'\e]8;;\e\\'
+    else
+        echo $branch_name
+    end
 end
 function _git_status
     set --global __fish_git_prompt_showupstream 'informative'
