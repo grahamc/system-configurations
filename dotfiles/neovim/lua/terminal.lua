@@ -1185,7 +1185,7 @@ Plug(
           results = default_border,
           results_patch = {
             minimal = default_border,
-            horizontal = { top_left = border_chars.left, top_right = border_chars.right, top = "", },
+            horizontal = default_border,
             vertical = default_border,
           },
           prompt = default_border,
@@ -1261,15 +1261,10 @@ Plug(
         }
 
         local function get_box()
-          local height, width = vim.o.lines, vim.o.columns
-          local box_kind = "vertical"
-          if width < 100 then
+          local height = vim.o.lines
+          local box_kind = "minimal"
+          if height > 40 then
             box_kind = "vertical"
-            if height < 40 then
-              box_kind = "minimal"
-            end
-          elseif width < 120 then
-            box_kind = "minimal"
           end
           return box_by_kind[box_kind], box_kind
         end
@@ -1331,6 +1326,7 @@ Plug(
           dynamic_preview_title = true,
           results_title = false,
           create_layout = three_pane_layout,
+          path_display = {'truncate',}
         },
         pickers = {
           find_files = {
