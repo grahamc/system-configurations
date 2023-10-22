@@ -2112,16 +2112,22 @@ Plug(
           -- Builtin comparators are defined here:
           -- https://github.com/hrsh7th/nvim-cmp/blob/main/lua/cmp/config/compare.lua
           comparators = {
-            -- Sort by the item kind enum, lower ordinal values are ranked higher (except for text, make it rank the
-            -- lowest). Enum is defined here:
+            -- Sort by the item kind enum, lower ordinal values are ranked higher. Enum is defined here:
             -- https://github.com/hrsh7th/nvim-cmp/blob/5dce1b778b85c717f6614e3f4da45e9f19f54435/lua/cmp/types/lsp.lua#L177
             function(entry1, entry2)
-              local kind1 = entry1:get_kind()
-              local kind2 = entry2:get_kind()
-
-              -- Make text rank lowest
-              kind1 = kind1 == require('cmp.types').lsp.CompletionItemKind.Text and 100 or kind1
-              kind2 = kind2 == require('cmp.types').lsp.CompletionItemKind.Text and 100 or kind2
+              local text_kind = require('cmp.types').lsp.CompletionItemKind.Text
+              -- Adjust the rankings so the new rankings will be:
+              -- 1. Everything else
+              -- 2. Text
+              local function get_adjusted_ranking(kind)
+                if kind == text_kind then
+                  return 2
+                else
+                  return 1
+                end
+              end
+              local kind1 = get_adjusted_ranking(entry1:get_kind())
+              local kind2 = get_adjusted_ranking(entry2:get_kind())
 
               if kind1 ~= kind2 then
                 local diff = kind1 - kind2
