@@ -1,6 +1,7 @@
 import asyncio
 import sys
 from collections.abc import Awaitable
+from typing import Optional
 
 from kasa import Discover
 from kasa import SmartPlug
@@ -53,7 +54,8 @@ class SmartPlugController(object):
         return None
 
     def _find_plug(self):
-        ip_address_to_device_map = self._block_until_complete(Discover.discover(), timeout=10)
+        # discover() has its own timeout of 5 seconds so I don't need to set a timeout
+        ip_address_to_device_map = self._block_until_complete(Discover.discover(), timeout=None)
         for ip_address, device in ip_address_to_device_map.items():
             if device.alias == self._plug_alias and device.is_plug:
                 self._add_plug_address_to_cache(ip_address)
@@ -64,7 +66,7 @@ class SmartPlugController(object):
     def _add_plug_address_to_cache(self, ip_address):
         SmartPlugController._cache[self._plug_alias] = ip_address
 
-    def _block_until_complete(self, awaitable: Awaitable, timeout=1):
+    def _block_until_complete(self, awaitable: Awaitable, timeout: Optional[int] = 1):
         return asyncio.get_event_loop().run_until_complete(asyncio.wait_for(awaitable, timeout=timeout))
 
 if __name__ == "__main__":
