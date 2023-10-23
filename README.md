@@ -30,8 +30,6 @@ First, clone the repository and go into its directory by running `git clone http
 
         * Disable the builtin keyboard shortcuts for switching workspaces, `ctrl+left` and `ctrl+right`.
 
-        * Open 9 desktops then open keyboard shortcuts and enable the shortcuts for jumping to a desktop, `ctrl+[1-9]`
-
     * Setup Hammerspoon using the instructions in the [Hammerspoon Getting Started Guide](https://www.hammerspoon.org/go/).
 
     * Open Finicky to set it as the default browser.
