@@ -45,7 +45,7 @@
   tabs = 2
   blame-palette = 0 8
   pager = "less -+F"
-  file-decoration-style = "normal ul"
+  file-decoration-style = "bright-white ul"
   file-style = "normal"
   hunk-header-decoration-style = "bright-white box"
   hunk-header-line-number-style = "normal"
