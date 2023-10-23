@@ -18,6 +18,7 @@
             diskcache
             ipython
             platformdirs
+            psutil
           ] ++ pkgs.lib.lists.optionals pkgs.stdenv.isLinux [
             dbus-python
             pygobject3

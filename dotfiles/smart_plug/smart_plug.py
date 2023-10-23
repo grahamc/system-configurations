@@ -8,6 +8,7 @@ from kasa import SmartPlug
 from kasa import SmartDeviceException
 from diskcache import Cache
 from platformdirs import user_cache_dir
+import psutil
 
 
 class SmartPlugController(object):
@@ -54,14 +55,29 @@ class SmartPlugController(object):
         return None
 
     def _find_plug(self):
-        # discover() has its own timeout of 5 seconds so I don't need to set a timeout
-        ip_address_to_device_map = self._block_until_complete(Discover.discover(), timeout=None)
-        for ip_address, device in ip_address_to_device_map.items():
+        for ip_address, device in self._discover_devices().items():
             if device.alias == self._plug_alias and device.is_plug:
                 self._add_plug_address_to_cache(ip_address)
                 return device
 
         return None
+
+    # TODO: Kasa's discovery fails when I'm connected to a VPN. I don't completely understand why, but I know that
+    # it has something to do with the broadcast address that they use, 255.255.255.255. I'm guessing this is because
+    # that IP is supposed to be an alias for 'this network' which will mean that of the VPN network when I'm connected
+    # to it and not that of my actual wifi/ethernet network. To get around this, I look for the correct broadcast
+    # address myself using psutil which gives me all addresses assigned to each NIC on my machine. I then try discovery
+    # using all the addresses that are marked as broadcast addresses until I find a Kasa device.
+    def _discover_devices(self):
+        # return the first non-empty map of devices
+        return next(filter(bool, map(self._discover_devices_for_broadcast_address, self._get_broadcast_addresses())), {})
+
+    def _discover_devices_for_broadcast_address(self, broadcast_address):
+        # discover() has its own timeout of 5 seconds so I don't need to set a timeout
+        return self._block_until_complete(Discover.discover(target=broadcast_address), timeout=None)
+
+    def _get_broadcast_addresses(self):
+        return {address.broadcast for addresses in psutil.net_if_addrs().values() for address in addresses if address.broadcast is not None}
 
     def _add_plug_address_to_cache(self, ip_address):
         SmartPlugController._cache[self._plug_alias] = ip_address
