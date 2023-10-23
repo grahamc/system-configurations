@@ -1263,7 +1263,7 @@ Plug(
         local function get_box()
           local height = vim.o.lines
           local box_kind = "minimal"
-          if height > 40 then
+          if height >= 10 then
             box_kind = "vertical"
           end
           return box_by_kind[box_kind], box_kind
