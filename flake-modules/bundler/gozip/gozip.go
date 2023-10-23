@@ -35,9 +35,9 @@ func Zip(destinationPath string, filesToZip []string) (err error) {
   defer destinationFile.Close()
 
   // To make a self extracting archive, the `destinationPath` can be the executable that does the extraction.
-  // For this reason, we set the `startoffset` to `os.SEEK_END`. This way we append the contents of the archive
+  // For this reason, we set the `startoffset` to `io.SeekEnd`. This way we append the contents of the archive
   // after the executable. Check the README for an example of making a self-extracting archive.
-  _, err = destinationFile.Seek(0, os.SEEK_END)
+  _, err = destinationFile.Seek(0, io.SeekEnd)
   if err != nil {
     return err
   }
@@ -169,7 +169,7 @@ func SeekToTar(file os.File) (os.File) {
 
   payloadOff := bdyOff + len(boundary)
 
-  _, err = file.Seek(int64(payloadOff), os.SEEK_SET)
+  _, err = file.Seek(int64(payloadOff), io.SeekStart)
   if err != nil {
     log.Fatal("seeking to start of payload:", err)
   }
@@ -402,7 +402,7 @@ func RewritePaths(archiveContentsPath string, oldStorePath string, newStorePath 
 }
 
 func GetNewStorePath() (prefix string, err error){
-  rand.Seed(time.Now().UnixNano())
+  random := rand.New(rand.NewSource(time.Now().UnixNano()))
   charset := "abcdefghijklmnopqrstuvwxyz"
   var candidatePrefix string
   for i := 1; i <= 1000; i++ {
@@ -411,7 +411,7 @@ func GetNewStorePath() (prefix string, err error){
     // needs to be <= 5 since it will be appended to '/tmp/' and needs to be <= '/nix/store'
     stringLength := 5
     for i := 1; i <= stringLength; i++ {
-      candidatePrefix = candidatePrefix + string(charset[rand.Intn(len(charset))])
+      candidatePrefix = candidatePrefix + string(charset[random.Intn(len(charset))])
     }
 
     isFileExists, err := IsFileExists(candidatePrefix)
