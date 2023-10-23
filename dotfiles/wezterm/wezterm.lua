@@ -55,8 +55,6 @@ local my_colors_per_color_scheme = {
     [18] = '#12261e', [26] = '#1d572c',
     -- Background color for the source and destination of a moved line in a git diff
     [21] = '#60405a', [22] = '#306a7b',
-    -- String in neovim
-    [50] = '#A3BE8C',
     -- highlight color
     [51] = '#292e39',
     -- nvim-telescope border
@@ -76,9 +74,6 @@ local my_colors_per_color_scheme = {
     [18] = '#D7FFD7', [26] = '#96D596',
     -- Background color for the source and destination of a moved line in a git diff
     [21] = '#e99ac0', [22] = '#85dfd8',
-    -- Strings in neovim
-    -- or maybe #c96765
-    [50] = '#2AA298',
     -- highlight color
     [51] = '#F0F0F0',
     -- nvim-telescope border
