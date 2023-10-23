@@ -1707,7 +1707,6 @@ Plug(
   {
     config = function()
       local margin = ' '
-      local border = ' ┃'
       require('fidget').setup({
         text = {
           spinner = 'dots',
@@ -1718,16 +1717,15 @@ Plug(
         },
         fmt = {
           fidget = function(fidget_name, spinner)
-            return string.format('%s%s %s%s', margin, spinner, fidget_name, border)
+            return string.format('%s%s %s', margin, spinner, fidget_name)
           end,
           task = function(task_name, message, percentage)
             return string.format(
-              '%s%s%s%s%s',
+              '%s%s%s%s',
               margin,
               message,
               percentage and string.format(' (%s%%)', percentage) or '',
-              task_name and string.format(' [%s]', task_name) or '',
-              border
+              task_name and string.format(' [%s]', task_name) or ''
             )
           end,
         },
@@ -2528,7 +2526,7 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'StatusLinePowerlineOuter', {ctermbg = 'NONE', ctermfg = 51,})
   vim.api.nvim_set_hl(0, 'NvimTreeIndentMarker', {ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'MsgArea', {link = 'StatusLine',})
-  vim.api.nvim_set_hl(0, 'FidgetTitle', {ctermbg = 'NONE', ctermfg = 15,italic = true,})
+  vim.api.nvim_set_hl(0, 'FidgetTitle', {ctermbg = 'NONE', ctermfg = 7, italic = true,})
   vim.api.nvim_set_hl(0, 'FidgetTask', {ctermbg = 'NONE', ctermfg = 15, italic = true,})
   vim.api.nvim_set_hl(0, "NavicIconsFile",          {ctermfg = 2,})
   vim.api.nvim_set_hl(0, "NavicIconsModule",        {ctermfg = 4,})
