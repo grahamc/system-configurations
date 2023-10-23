@@ -1823,7 +1823,10 @@ Plug(
         },
         view = {
           signcolumn = 'yes',
-          width = function() return math.max(40, math.floor(vim.o.columns * .20)) end,
+          width = {
+            max = function() return math.max(40, math.floor(vim.o.columns * .20)) end,
+          },
+          preserve_window_proportions = true,
         },
         renderer = {
           indent_markers = {
