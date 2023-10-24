@@ -34,7 +34,7 @@ config.disable_default_key_bindings = true
 -- issue: https://github.com/flatpak/flatpak/issues/1563
 config.font = wezterm.font_with_fallback({'Iosevka Comfy Fixed', 'SymbolsNerdFontMono'})
 config.underline_position = -9
-config.font_size = 10.3
+config.font_size = 11.3
 if is_mac then
   config.font_size = 14
 end
