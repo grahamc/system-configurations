@@ -27,7 +27,7 @@ pane_id="$7"
 pane_pid="$8"
 
 # If the shell is running a program then exit.
-if pgrep -q -P "$pane_pid"; then
+if pgrep -P "$pane_pid" 1>/dev/null; then
   exit
 fi
 
