@@ -28,7 +28,7 @@ if test (uname) = Linux
 end
 
 # sudo
-abbr --add --global sudo 'sudo --preserve-env=PATH,SHLVL,TMUX,BANNER_WAS_PRINTED'
+abbr --add --global sudo 'sudo env "PATH=$PATH" "SHLVL=$SHLVL" "TMUX=$TMUX" "BANNER_WAS_PRINTED=$BANNER_WAS_PRINTED"'
 
 # timg
 function timg --wraps timg
