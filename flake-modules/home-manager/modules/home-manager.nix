@@ -74,6 +74,11 @@
         # Let Home Manager install and manage itself.
         programs.home-manager.enable = true;
 
+        # Don't notify me of news updates when I switch generation. Ideally, I'd disable news altogether since I don't
+        # read it:
+        # issue: https://github.com/nix-community/home-manager/issues/2033#issuecomment-1698406098
+        news.display = "silent";
+
         # Show me what changed everytime I switch generations e.g. version updates or added/removed files.
         home.activation = {
           printGenerationDiff = lib.hm.dag.entryAnywhere ''
