@@ -32,6 +32,22 @@
         "type": "github"
       }
     },
+    "fish-plugin-completion-sync": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1690910715,
+        "narHash": "sha256-wmtMUVi/NmbvJtrPbORPhAwXgnILvm4rjOtjl98GcWA=",
+        "owner": "pfgray",
+        "repo": "fish-completion-sync",
+        "rev": "f75ed04e98b3b39af1d3ce6256ca5232305565d8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pfgray",
+        "repo": "fish-completion-sync",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -240,6 +256,7 @@
       "inputs": {
         "fish-plugin-async-prompt": "fish-plugin-async-prompt",
         "fish-plugin-autopair-fish": "fish-plugin-autopair-fish",
+        "fish-plugin-completion-sync": "fish-plugin-completion-sync",
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
         "gomod2nix": "gomod2nix",

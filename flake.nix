@@ -128,6 +128,7 @@
 
     "fish-plugin-autopair-fish" = {url = "github:jorgebucaran/autopair.fish"; flake = false;};
     "fish-plugin-async-prompt" = {url = "github:acomagu/fish-async-prompt"; flake = false;};
+    "fish-plugin-completion-sync" = {url = "github:pfgray/fish-completion-sync"; flake = false;};
   };
 
   outputs = inputs@{ flake-parts, flake-utils, nixpkgs, ... }:

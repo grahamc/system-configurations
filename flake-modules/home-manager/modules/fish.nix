@@ -22,6 +22,9 @@
         plugins = with pkgs.fishPlugins; [
           {name = "autopair-fish"; src = autopair-fish;}
           {name = "async-prompt"; src = async-prompt;}
+          # Using this to get shell completion for programs added to the path through nix+direnv. Issue to upstream into direnv:
+          # https://github.com/direnv/direnv/issues/443
+          {name = "completion-sync"; src = completion-sync;}
         ];
       };
 
