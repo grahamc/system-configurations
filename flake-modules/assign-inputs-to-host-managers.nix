@@ -24,6 +24,7 @@
             "nix-xdg"
             "gomod2nix"
             "speakers"
+            "tree-sitter-just"
           ] ++ plugins;
           darwin = home ++ [
             "nix-darwin"

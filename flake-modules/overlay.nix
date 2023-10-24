@@ -134,8 +134,23 @@
               configureFlags = old.configureFlags ++ ["--enable-sixel"];
             });
 
+            nvim-treesitter =
+              let
+                package = prev.vimPlugins.nvim-treesitter.withPlugins
+                  (_:
+                    prev.vimPlugins.nvim-treesitter.allGrammars ++ [
+                      (final.tree-sitter.buildGrammar {
+                        language = "just";
+                        version = inputs.tree-sitter-just.rev;
+                        src = inputs.tree-sitter-just;
+                      })
+                    ]
+                  );
+              in
+               package // {withAllGrammars = package;};
+
             crossPlatformPackages = {
-              vimPlugins = allVimPlugins;
+              vimPlugins = allVimPlugins // { inherit nvim-treesitter; };
               tmuxPlugins = allTmuxPlugins;
               fishPlugins = allFishPlugins;
               inherit pynix;

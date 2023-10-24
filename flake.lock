@@ -253,6 +253,7 @@
         "stackline": "stackline",
         "tmux-plugin-resurrect": "tmux-plugin-resurrect",
         "tmux-plugin-tmux-suspend": "tmux-plugin-tmux-suspend",
+        "tree-sitter-just": "tree-sitter-just",
         "vim-plugin-CamelCaseMotion": "vim-plugin-CamelCaseMotion",
         "vim-plugin-LuaSnip": "vim-plugin-LuaSnip",
         "vim-plugin-SchemaStore-nvim": "vim-plugin-SchemaStore-nvim",
@@ -305,6 +306,7 @@
         "vim-plugin-vim-fish": "vim-plugin-vim-fish",
         "vim-plugin-vim-indent-object": "vim-plugin-vim-indent-object",
         "vim-plugin-vim-indentwise": "vim-plugin-vim-indentwise",
+        "vim-plugin-vim-just": "vim-plugin-vim-just",
         "vim-plugin-vim-matchup": "vim-plugin-vim-matchup",
         "vim-plugin-vim-plug": "vim-plugin-vim-plug",
         "vim-plugin-vim-repeat": "vim-plugin-vim-repeat",
@@ -439,6 +441,22 @@
       "original": {
         "owner": "MunifTanjim",
         "repo": "tmux-suspend",
+        "type": "github"
+      }
+    },
+    "tree-sitter-just": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1679148267,
+        "narHash": "sha256-Qs0Klt9uj6Vgs4vJrjKXYD8nNe8KYdWCnADvogm4/l0=",
+        "owner": "IndianBoy42",
+        "repo": "tree-sitter-just",
+        "rev": "4e5f5f3ff37b12a1bbf664eb3966b3019e924594",
+        "type": "github"
+      },
+      "original": {
+        "owner": "IndianBoy42",
+        "repo": "tree-sitter-just",
         "type": "github"
       }
     },
@@ -1271,6 +1289,22 @@
       "original": {
         "owner": "jeetsukumaran",
         "repo": "vim-indentwise",
+        "type": "github"
+      }
+    },
+    "vim-plugin-vim-just": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1697768619,
+        "narHash": "sha256-I6pn80ULBHSblQkGzA/+lup/hHbWdAOdlTq2m3JbDVU=",
+        "owner": "NoahTheDuke",
+        "repo": "vim-just",
+        "rev": "3029bdda0da9674682fe46bd6c4b946ad229dcaa",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NoahTheDuke",
+        "repo": "vim-just",
         "type": "github"
       }
     },

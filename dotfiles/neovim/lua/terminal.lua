@@ -1804,6 +1804,9 @@ Plug(
     end,
   }
 )
+
+-- For filetype detection
+Plug('NoahTheDuke/vim-just')
 -- }}}
 
 -- File Explorer {{{
