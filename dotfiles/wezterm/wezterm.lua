@@ -142,7 +142,7 @@ local function create_theme_config(color_scheme_name)
       active_titlebar_bg = background,
       inactive_titlebar_bg = background,
       font_size = 17,
-      font = wezterm.font { family = 'Iosevka Comfy Fixed', weight = 'Regular' },
+      font = wezterm.font { family = 'Iosevka Comfy Wide Duo', weight = 'Light' },
     },
     colors = {
       tab_bar = {

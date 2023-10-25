@@ -164,6 +164,7 @@
                 paths = with final; [
                   (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
                   iosevka-comfy.comfy-fixed
+                  iosevka-comfy.comfy-wide-duo
                 ];
               };
             };
