@@ -27,6 +27,10 @@ config.audible_bell = 'Disabled'
 config.default_cursor_style = 'BlinkingBar'
 config.bold_brightens_ansi_colors = false
 config.disable_default_key_bindings = true
+-- I had an issue where WezTerm would freeze sometimes when I input a key and I would have to input another key
+-- to fix it, but setting this to false seems to fix that. Solution came from here:
+-- https://www.reddit.com/r/commandline/comments/1621suy/help_issue_with_wezterm_and_vim_key_repeat/
+config.use_ime = false
 
 -- font
 -- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system, but Flatpak apps

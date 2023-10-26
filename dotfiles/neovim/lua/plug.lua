@@ -1,10 +1,5 @@
 -- Wrapper for vim-plug with a few new features.
 
--- Original vim-plug commands/functions
-local original_plug_begin = vim.fn['plug#begin']
-local original_plug_end = vim.fn['plug#end']
-local original_plug = vim.fn['plug#']
-
 -- Functions to be called after a plugin is loaded to configure it.
 local configs_by_type = {
   async = {},
@@ -12,7 +7,7 @@ local configs_by_type = {
 }
 
 -- Calls the configuration function for the specified, lazy-loaded plugin.
-function PlugWrapperApplyLazyConfig(plugin_name)
+local function plug_wrapper_apply_lazy_config(plugin_name)
   local config = configs_by_type.lazy[plugin_name]
   if type(config) == 'function' then
     config()
@@ -20,15 +15,19 @@ function PlugWrapperApplyLazyConfig(plugin_name)
 end
 
 -- Calls the configuration function for all non-lazy-loaded plugins.
-local function ApplyConfigs(configs)
+local function apply_configs(configs)
   for _, config in pairs(configs) do
     config()
   end
 end
 
-_G.plug_begin = original_plug_begin
+local original_plug_begin = vim.fn['plug#begin']
+function PlugBegin()
+  original_plug_begin()
+end
 
-_G.plug_end = function()
+local original_plug_end = vim.fn['plug#end']
+function PlugEnd()
   original_plug_end()
 
   -- This way code can be run after plugins are loaded, but before 'VimEnter'
@@ -39,11 +38,12 @@ _G.plug_end = function()
   -- This way, neovim shows me the first file "instantly" and by the time I've looked at the file and decided on my
   -- first keypress, the plugin configs have already been applied.
   local function ApplyAsyncConfigs()
-    ApplyConfigs(configs_by_type.async)
+    apply_configs(configs_by_type.async)
   end
   vim.defer_fn(ApplyAsyncConfigs, 0)
 end
 
+local original_plug = vim.fn['plug#']
 -- Similar to the vim-plug `Plug` command, but with an additional option to specify a function to run after a
 -- plugin is loaded.
 function Plug(repo, options)
@@ -64,7 +64,7 @@ function Plug(repo, options)
         'User',
         {
           pattern = plugin_name,
-          callback = function() _G.PlugWrapperApplyLazyConfig(plugin_name) end,
+          callback = function() plug_wrapper_apply_lazy_config(plugin_name) end,
           group = vim.api.nvim_create_augroup('PlugLua', {}),
           once = true,
         }

@@ -109,7 +109,7 @@
     "vim-plugin-mason-lspconfig-nvim" = {url = "github:williamboman/mason-lspconfig.nvim"; flake = false;};
     "vim-plugin-nvim-lspconfig" = {url = "github:neovim/nvim-lspconfig"; flake = false;};
     "vim-plugin-SchemaStore-nvim" = {url = "github:b0o/SchemaStore.nvim"; flake = false;};
-    "vim-plugin-null-ls-nvim" = {url = "github:jose-elias-alvarez/null-ls.nvim"; flake = false;};
+    "vim-plugin-none-ls-nvim" = {url = "github:nvimtools/none-ls.nvim"; flake = false;};
     "vim-plugin-vim" = {url = "github:nordtheme/vim"; flake = false;};
     "vim-plugin-vim-caser" = {url = "github:arthurxavierx/vim-caser"; flake = false;};
     "vim-plugin-czs-nvim" = {url = "github:oncomouse/czs.nvim"; flake = false;};
@@ -122,6 +122,8 @@
     "vim-plugin-git-blame-nvim" = {url = "github:f-person/git-blame.nvim"; flake = false;};
     "vim-plugin-vim-just" = {url = "github:NoahTheDuke/vim-just"; flake = false;};
     "tree-sitter-just" = {url = "github:IndianBoy42/tree-sitter-just"; flake = false;};
+    "neodev-nvim" = {url = "github:folke/neodev.nvim"; flake = false;};
+    "vim-plugin-aerial-nvim" = {url = "github:stevearc/aerial.nvim"; flake = false;};
 
     "tmux-plugin-resurrect" = {url = "github:tmux-plugins/tmux-resurrect"; flake = false;};
     "tmux-plugin-tmux-suspend" = {url = "github:MunifTanjim/tmux-suspend"; flake = false;};

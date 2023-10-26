@@ -161,6 +161,22 @@
         "type": "github"
       }
     },
+    "neodev-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1698300333,
+        "narHash": "sha256-mbdKwnk4i1q+J9/gPAHrqDagNrPMMlPH0+kKDfPYeZc=",
+        "owner": "folke",
+        "repo": "neodev.nvim",
+        "rev": "7b46fd0f81c9c9ef5d5898879e86ae271152c79f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "folke",
+        "repo": "neodev.nvim",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -261,6 +277,7 @@
         "flake-utils": "flake-utils",
         "gomod2nix": "gomod2nix",
         "home-manager": "home-manager",
+        "neodev-nvim": "neodev-nvim",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nix-xdg": "nix-xdg",
@@ -274,6 +291,7 @@
         "vim-plugin-CamelCaseMotion": "vim-plugin-CamelCaseMotion",
         "vim-plugin-LuaSnip": "vim-plugin-LuaSnip",
         "vim-plugin-SchemaStore-nvim": "vim-plugin-SchemaStore-nvim",
+        "vim-plugin-aerial-nvim": "vim-plugin-aerial-nvim",
         "vim-plugin-bufferline-nvim": "vim-plugin-bufferline-nvim",
         "vim-plugin-cmp-buffer": "vim-plugin-cmp-buffer",
         "vim-plugin-cmp-cmdline": "vim-plugin-cmp-cmdline",
@@ -295,8 +313,8 @@
         "vim-plugin-git-blame-nvim": "vim-plugin-git-blame-nvim",
         "vim-plugin-mason-lspconfig-nvim": "vim-plugin-mason-lspconfig-nvim",
         "vim-plugin-mason-nvim": "vim-plugin-mason-nvim",
+        "vim-plugin-none-ls-nvim": "vim-plugin-none-ls-nvim",
         "vim-plugin-nui-nvim": "vim-plugin-nui-nvim",
-        "vim-plugin-null-ls-nvim": "vim-plugin-null-ls-nvim",
         "vim-plugin-nvim-autopairs": "vim-plugin-nvim-autopairs",
         "vim-plugin-nvim-cmp": "vim-plugin-nvim-cmp",
         "vim-plugin-nvim-comment": "vim-plugin-nvim-comment",
@@ -522,6 +540,22 @@
       "original": {
         "owner": "b0o",
         "repo": "SchemaStore.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-aerial-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1697776532,
+        "narHash": "sha256-Fvl8kfMpcl6SjHSHPSI9tBQFpoK5Zfz/izWcBs3AZlk=",
+        "owner": "stevearc",
+        "repo": "aerial.nvim",
+        "rev": "3a3baf0930444c78d19964fdb401bd3a6a23270f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "stevearc",
+        "repo": "aerial.nvim",
         "type": "github"
       }
     },
@@ -861,6 +895,22 @@
         "type": "github"
       }
     },
+    "vim-plugin-none-ls-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1697600654,
+        "narHash": "sha256-dDMZEgT5uG31bEsLiX9r6MJlOJUdQyeTPJAeRcY2z7s=",
+        "owner": "nvimtools",
+        "repo": "none-ls.nvim",
+        "rev": "dc9b7e28f5573a1a2225ffb33893d23d3e052ed6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvimtools",
+        "repo": "none-ls.nvim",
+        "type": "github"
+      }
+    },
     "vim-plugin-nui-nvim": {
       "flake": false,
       "locked": {
@@ -874,22 +924,6 @@
       "original": {
         "owner": "MunifTanjim",
         "repo": "nui.nvim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-null-ls-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1691810493,
-        "narHash": "sha256-cWA0rzkOp/ekVKaFee7iea1lhnqKtWUIU+fW5M950wI=",
-        "owner": "jose-elias-alvarez",
-        "repo": "null-ls.nvim",
-        "rev": "0010ea927ab7c09ef0ce9bf28c2b573fc302f5a7",
-        "type": "github"
-      },
-      "original": {
-        "owner": "jose-elias-alvarez",
-        "repo": "null-ls.nvim",
         "type": "github"
       }
     },

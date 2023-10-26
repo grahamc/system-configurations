@@ -33,7 +33,7 @@ end
 vim.g.mapleader = ' '
 
 -- Calling this before I load the profiles so I can register plugins inside them
-plug_begin()
+PlugBegin()
 
 -- Load profiles
 require('base')
@@ -42,4 +42,4 @@ require('vscode')
 require('browser')
 
 -- Calling this after I load the profiles so I can register plugins inside them
-plug_end()
+PlugEnd()

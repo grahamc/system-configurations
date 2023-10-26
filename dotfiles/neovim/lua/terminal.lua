@@ -161,7 +161,7 @@ vim.opt.formatoptions:append('j')
 vim.opt.formatoptions:append('r')
 
 -- Open link on mouse click. Works on urls that wrap on to the following line.
-_G.ClickLink = function()
+function ClickLink()
   local cfile = vim.fn.expand('<cfile>')
   local is_url =
     cfile:match("https?://(([%w_.~!*:@&+$/?%%#-]-)(%w[-.%w]*%.)(%w%w%w?%w?)(:?)(%d*)(/?)([%w_.~!*:@&+$/?%%#=-]*))")
@@ -170,10 +170,11 @@ _G.ClickLink = function()
     vim.fn.jobstart({'open', cfile}, {detach = true})
   end
 
-  -- If we are in a float, jump back to previous window. This way I can click a link in a documentation/diagnostic
-  -- float and stay in the editing window.
+  -- If we are in a float that doesn't have a filetype, jump back to previous window. This way I can click a link in
+  -- a documentation/diagnostic float and stay in the editing window.
   local is_float = vim.api.nvim_win_get_config(0).relative ~= ''
-  if is_float then
+  if is_float
+  and (not vim.o.filetype or #vim.o.filetype == 0) then
     vim.cmd.wincmd('p')
   end
 end
@@ -206,7 +207,7 @@ vim.api.nvim_create_autocmd(
 -- }}}
 
 -- Utilities {{{
-_G.unicode = function(hex)
+local function unicode(hex)
   local hex_length = #hex
   local unicode_format_specifier = hex_length > 4 and 'U' or 'u'
   return vim.fn.execute(
@@ -217,7 +218,7 @@ _G.unicode = function(hex)
     )
   )
 end
-function vim.get_visual_selection()
+local function vim_get_visual_selection()
   local mode_char = vim.fn.mode()
   -- "\x16" is the code for ctrl+v i.e. visual-block mode
   local in_visual_mode = mode_char == 'v' or mode_char == 'V' or mode_char == "\x16"
@@ -386,7 +387,7 @@ vim.api.nvim_create_autocmd(
   }
 )
 
-_G.FoldText = function()
+function FoldText()
   local window_width = vim.fn.winwidth(0)
   local gutter_width = vim.fn.getwininfo(vim.fn.win_getid())[1].textoff
   local line_width = window_width - gutter_width
@@ -426,6 +427,7 @@ vim.keymap.set('c', '<C-a>', '<C-b>', {remap = true})
 vim.cmd([[
   cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'let g#opening_help_in_tab = v:true \| tab help' : 'h'
 ]])
+vim.cmd.cnoreabbrev('lua', 'lua=')
 -- }}}
 
 -- Search {{{
@@ -573,10 +575,10 @@ vim.opt.fillchars:append('eob: ')
 -- }}}
 
 -- Statusline {{{
-_G.GetDiagnosticCountForSeverity = function(severity)
+function GetDiagnosticCountForSeverity(severity)
   return #vim.diagnostic.get(0, {severity = severity})
 end
-_G.StatusLine = function()
+function StatusLine()
   local item_separator = '%#StatusLineSeparator# ∙ '
 
   local position = '%#StatusLine#' .. 'Ln %l, Col %c'
@@ -597,11 +599,10 @@ _G.StatusLine = function()
     readonly = '%#StatusLineStandoutText#' .. indicator
   end
 
-  local reg_recording = vim.fn.reg_recording()
-  if reg_recording ~= '' then
-    reg_recording = '%#StatusLine# ' .. '%#StatusLineRecordingIndicator#' .. unicode('f044a') .. ' %#StatusLine#REC@' .. reg_recording
-  else
-    reg_recording = nil
+  local reg_recording = nil
+  local recording_register = vim.fn.reg_recording()
+  if recording_register ~= '' then
+    reg_recording = '%#StatusLine# ' .. '%#StatusLineRecordingIndicator#' .. unicode('f044a') .. ' %#StatusLine#REC@' .. recording_register
   end
 
   local search_info = nil
@@ -807,7 +808,7 @@ local function get_fold_section()
   return string
 end
 
-_G.StatusColumn = function()
+function StatusColumn()
   local buffer = vim.api.nvim_win_get_buf(vim.g.statusline_winid)
 
   local border_highlight = '%#NonText#'
@@ -888,7 +889,7 @@ local path_segments_cache = {}
 local path_segment_delimiter = '%#NavicSeparator# > '
 local path_segment_delimiter_length = 3
 -- NOTE: I'm misusing the minwid parameter in order to signify which path segment to jump to.
-_G.WinbarPath = function(path_segment_index)
+function WinbarPath(path_segment_index)
   local buffer = vim.fn.winbufnr(vim.fn.getmousepos().winid)
   local path = vim.api.nvim_buf_get_name(buffer)
   local segments = vim.split(path, "/", { trimempty = true })
@@ -931,7 +932,7 @@ local function get_path_segments(path)
   path_segments_cache[path] = path_segments
   return path_segments
 end
-_G.Winbar = function()
+function Winbar()
   local buffer = vim.api.nvim_get_current_buf()
   local winbar = ""
   local winbar_length = 0
@@ -1231,9 +1232,11 @@ Plug(
           end
 
           local function prepare_layout_parts(layout, box_type)
+            ---@diagnostic disable-next-line: param-type-mismatch
             layout.results = TSLayout.Window(results)
             results.border:set_style(border.results_patch[box_type])
 
+            ---@diagnostic disable-next-line: param-type-mismatch
             layout.prompt = TSLayout.Window(prompt)
             prompt.border:set_style(border.prompt_patch[box_type])
 
@@ -1243,10 +1246,12 @@ Plug(
           local box, box_kind = get_box()
           local layout = Layout(target_layout, box)
 
+          ---@diagnostic disable-next-line: inject-field
           layout.picker = picker
           prepare_layout_parts(layout, box_kind)
 
           local layout_update = layout.update
+          ---@diagnostic disable-next-line: duplicate-set-field
           function layout:update()
             local new_box, new_box_kind = get_box()
             prepare_layout_parts(layout, new_box_kind)
@@ -1255,6 +1260,7 @@ Plug(
             layout_update(self, new_box)
           end
 
+          ---@diagnostic disable-next-line: param-type-mismatch
           return TSLayout(layout)
         end
       end
@@ -1361,15 +1367,18 @@ Plug(
         end
 
         local function prepare_layout_parts(layout, box_type)
+          ---@diagnostic disable-next-line: param-type-mismatch
           layout.results = TSLayout.Window(results)
           results.border:set_style(border.results_patch[box_type])
 
+          ---@diagnostic disable-next-line: param-type-mismatch
           layout.prompt = TSLayout.Window(prompt)
           prompt.border:set_style(border.prompt_patch[box_type])
 
           if box_type == "minimal" then
             layout.preview = nil
           else
+            ---@diagnostic disable-next-line: param-type-mismatch
             layout.preview = TSLayout.Window(preview)
             preview.border:set_style(border.preview_patch[box_type])
           end
@@ -1382,10 +1391,12 @@ Plug(
           size = { height = "80%", width = "90%", },
         }, box)
 
+        ---@diagnostic disable-next-line: inject-field
         layout.picker = picker
         prepare_layout_parts(layout, box_kind)
 
         local layout_update = layout.update
+        ---@diagnostic disable-next-line: duplicate-set-field
         function layout:update()
           local new_box, new_box_kind = get_box()
           prepare_layout_parts(layout, new_box_kind)
@@ -1394,6 +1405,7 @@ Plug(
           layout_update(self, new_box)
         end
 
+        ---@diagnostic disable-next-line: param-type-mismatch
         return TSLayout(layout)
       end
 
@@ -1404,8 +1416,8 @@ Plug(
               ["<Esc>"] = actions.close,
               ["<Tab>"] = actions.move_selection_next,
               ["<S-Tab>"] = actions.move_selection_previous,
-              ["<C-p>"] = actions.cycle_history_prev,
-              ["<C-n>"] = actions.cycle_history_next,
+              ["<F7>"] = actions.cycle_history_prev,
+              ["<F8>"] = actions.cycle_history_next,
               ["<C-j>"] = actions.preview_scrolling_down,
               ["<C-k>"] = actions.preview_scrolling_up,
               ["<C-h>"] = actions.select_horizontal,
@@ -1429,6 +1441,10 @@ Plug(
               '--smart-case',
               '--follow',
             },
+            mappings = {
+              i = { ["<c-f>"] = actions.to_fuzzy_refine, },
+            },
+            prompt_title = "Live Grep (Press <c-f> to fuzzy filter)",
           },
           help_tags = {
             mappings = {
@@ -1452,7 +1468,7 @@ Plug(
       local telescope_builtins = require('telescope.builtin')
       local function call_with_visual_selection(picker)
         local result = function()
-          local visual_selection = vim.get_visual_selection()
+          local visual_selection = vim_get_visual_selection()
           if #visual_selection > 0 then
             picker({default_text = visual_selection})
           else
@@ -1533,7 +1549,8 @@ Plug(
           },
         },
         window = {
-          border = 'rounded',
+          border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏", },
+          margin = {1, 4, 2, 2},
         },
       })
     end,
@@ -1546,6 +1563,7 @@ Plug(
   'nvim-treesitter/nvim-treesitter',
   {
     config = function()
+      ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup({
         auto_install = false,
         highlight = {
@@ -1696,7 +1714,9 @@ Plug(
       local close_icon = unicode('f467')
       local separator_icon = '   '
       require("bufferline").setup({
+        ---@diagnostic disable-next-line: missing-fields
         options = {
+          ---@diagnostic disable-next-line: undefined-field
           numbers = function(context) return context.raise(context.ordinal) end,
           indicator= { style = 'none', },
           close_icon = close_icon,
@@ -1711,6 +1731,13 @@ Plug(
               text_align = "center",
               separator = true,
               highlight = 'NvimTreeTitle',
+            },
+            {
+              filetype = "aerial",
+              text = unicode('f0645') .. " Outline (Press ? for help)",
+              text_align = "center",
+              separator = true,
+              highlight = 'OutlineTitle',
             },
           },
           hover = {
@@ -1727,9 +1754,11 @@ Plug(
             if vim.bo[buf_number].filetype ~= "qf" then
               return true
             end
+            return false
           end,
         },
         highlights = {
+          ---@diagnostic disable: missing-fields
           fill = { ctermbg = 51, ctermfg = 15, },
           background = { ctermbg = 51, ctermfg = 15, },
           buffer_visible = { ctermbg = 51, ctermfg = 15, },
@@ -1771,22 +1800,29 @@ Plug(
 
       vim.keymap.set('n', '<C-q>', function() close(vim.fn.bufnr()) end, {silent = true,})
       function BufferlineWrapper()
-        -- It is defined idk why I'm getting this error
-        ---@diagnostic disable-next-line: undefined-global
         local original = nvim_bufferline()
-        if string.find(original, unicode('f4d3')) then
-          local x = string.gsub(original, '│', '│' .. '%%#TabLineBorder#' .. unicode('e0b6'), 1) .. '%#TabLineBorder#' .. unicode('e0b4')
-          if string.sub(original, -2, -1) ~= '%=' then
-            x = string.gsub(x, '%=', '%=' .. '%%#TabLineBorder2#' .. unicode('e0b7'), 1)
-          end
-          return x
+        local result = original
+        local is_explorer_open = string.find(original, unicode('f4d3'))
+        local is_outline_open = string.find(original, unicode('f0645'))
+        local is_tab_section_visible = string.find(original, '%%=%%#BufferLineTab')
+
+        if is_outline_open then
+          result = string.gsub(result, '│%%#OutlineTitle#', '%%#TabLineBorder#' .. unicode('e0b4') .. '%%#BufferLineOffsetSeparator#%0', 1)
         else
-          local x = '%#TabLineBorder#' .. unicode('e0b6') .. original .. '%#TabLineBorder#' .. unicode('e0b4')
-          if string.sub(original, -2, -1) ~= '%=' then
-            x = string.gsub(x, '%=', '%=' .. '%%#TabLineBorder2#' .. unicode('e0b7'), 1)
-          end
-          return x
+          result = result .. '%#TabLineBorder#' .. unicode('e0b4')
         end
+
+        if is_explorer_open then
+          result = string.gsub(result, '│', '%0%%#TabLineBorder#' .. unicode('e0b6'), 1)
+        else
+          result = '%#TabLineBorder#' .. unicode('e0b6') .. result
+        end
+
+        if is_tab_section_visible then
+          result = string.gsub(result, '%%=%%#BufferLineTab', '%%=%%#TabLineBorder2#' .. unicode('e0b7') .. '%%#BufferLineTab', 1)
+        end
+
+        return result
       end
       vim.o.tabline = '%!v:lua.BufferlineWrapper()'
     end,
@@ -1838,6 +1874,7 @@ Plug(
   {
     config = function()
       local notify = require('notify')
+      ---@diagnostic disable-next-line: undefined-field
       notify.setup({
         stages = 'slide',
         timeout = 3000,
@@ -1863,6 +1900,7 @@ Plug(
         callback = function()
           if vim.api.nvim_buf_line_count(0) > 10000 then
             -- For large files, only get update on CursorHold, not CursorMoved.
+            ---@diagnostic disable-next-line: inject-field
             vim.b.navic_lazy_update_context = true
           end
         end,
@@ -1894,6 +1932,78 @@ Plug(
 
 -- For filetype detection
 Plug('NoahTheDuke/vim-just')
+
+Plug(
+  'stevearc/aerial.nvim',
+  {
+    config = function()
+      AerialIsFolded = false
+      local function aerial_fold_toggle()
+        if AerialIsFolded then
+          require('aerial.tree').open_all()
+          AerialIsFolded = false
+        else
+          require('aerial.tree').close_all()
+          AerialIsFolded = true
+        end
+      end
+      require('aerial').setup({
+        backends = { "lsp", "treesitter", "markdown", "man" },
+        layout = {
+          max_width = .5,
+          min_width = .2,
+          default_direction = "right",
+          placement = "edge",
+          -- When the symbols change, resize the aerial window (within min/max constraints) to fit
+          resize_to_content = true,
+        },
+        attach_mode = "global",
+        keymaps = {
+          ["<C-j>"] = false,
+          ["<C-k>"] = false,
+          ["<tab>"] = "actions.tree_toggle",
+          ["<S-tab>"] = {callback = aerial_fold_toggle,},
+          ["<CR>"] = {callback = function() require('aerial.navigation').select({jump = false,}) end,},
+          ["<LeftMouse>"] = [[<LeftMouse><Cmd>lua require('aerial.navigation').select({jump = false,})<CR>]],
+        },
+        lazy_load = true,
+        nerd_font = true,
+        show_guides = true,
+      })
+      vim.api.nvim_create_user_command('OutlineToggle', function() vim.cmd.AerialToggle() end, {desc = 'Toggle the symbol outline window'})
+      vim.keymap.set({'n'}, '<M-o>', vim.cmd.AerialToggle, {silent = true})
+      local aerial_group_id = vim.api.nvim_create_augroup('MyAerial', {})
+      vim.api.nvim_create_autocmd(
+        'BufEnter',
+        {
+          callback = function()
+            if vim.o.filetype == 'aerial' then
+              vim.opt_local.scrolloff = 0
+              vim.wo.statuscolumn = ' '
+              -- I want to disable it, but you can't if it has a global value:
+              -- https://github.com/neovim/neovim/issues/18660
+              vim.opt_local.winbar = ' '
+              vim.cmd([[highlight clear WordUnderCursor]])
+              vim.api.nvim_set_hl(0, 'OutlineTitle', {link = 'BufferLineBufferSelected'})
+            end
+          end,
+          group = aerial_group_id,
+        }
+      )
+      vim.api.nvim_create_autocmd(
+        'BufLeave',
+        {
+          callback = function()
+            if vim.o.filetype == 'aerial' then
+              vim.api.nvim_set_hl(0, 'OutlineTitle', {link = 'BufferLineBufferVisible'})
+            end
+          end,
+          group = aerial_group_id,
+        }
+      )
+    end,
+  }
+)
 -- }}}
 
 -- File Explorer {{{
@@ -1915,6 +2025,8 @@ Plug(
           signcolumn = 'yes',
           width = {
             max = function() return math.max(40, math.floor(vim.o.columns * .20)) end,
+            -- Enough to fit the title text
+            min = 45,
           },
           preserve_window_proportions = true,
         },
@@ -1962,6 +2074,7 @@ Plug(
         end,
       })
       vim.keymap.set("n", "<M-e>", '<cmd>NvimTreeFindFileToggle<cr>', {silent = true})
+      vim.api.nvim_create_user_command('ExplorerToggle', function() vim.cmd.NvimTreeFindFileToggle() end, {desc = 'Toggle the explorer window'})
       local nvim_tree_group_id = vim.api.nvim_create_augroup('MyNvimTree', {})
       vim.api.nvim_create_autocmd(
         'BufEnter',
@@ -2305,6 +2418,7 @@ Plug(
           autocmd FileType mason highlight clear WordUnderCursor
         augroup END
       ]])
+      vim.api.nvim_create_user_command('Extensions', function() vim.cmd.Mason() end, {desc = 'Manage external tooling such as language servers'})
     end,
   }
 )
@@ -2371,44 +2485,12 @@ Plug(
         on_attach = on_attach,
       }
 
-      -- Don't include my configs in the library. Otherwise when I'm working on my dotfiles those files will appear
-      -- twice and lua will tell me my global variables are being redefined.
-      local neovim_lua_library_directories = vim.api.nvim_get_runtime_file("", true)
-      for index,directory in ipairs(neovim_lua_library_directories) do
-        if directory == vim.fn.stdpath('config') then
-          neovim_lua_library_directories[index] = nil
-        end
-      end
       local server_specific_configs = {
         jsonls = {
           settings = {
             json = {
               schemas = require('schemastore').json.schemas(),
               validate = { enable = true },
-            },
-          },
-        },
-
-        lua_ls = {
-          settings = {
-            Lua = {
-              runtime = {
-                -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-                version = 'LuaJIT',
-              },
-              diagnostics = {
-                -- Get the language server to recognize the `vim` global
-                globals = {'vim'},
-              },
-              workspace = {
-                -- Make the server aware of Neovim runtime files
-                library = neovim_lua_library_directories,
-                checkThirdParty = false,
-              },
-              telemetry = {
-                -- Do not send telemetry data containing a randomized but unique identifier
-                enable = false,
-              },
             },
           },
         },
@@ -2430,6 +2512,37 @@ Plug(
           },
         },
       }
+
+      -- TODO: Ideally I would generate a .luarc.json with these contents using nix, but I couldn't figure out
+      -- how to get the nvim runtimepath programmatically AFTER vim-plug alters it.
+      if vim.startswith(vim.fn.getcwd(), os.getenv('HOME') .. '/.dotfiles') then
+        local neovim_lua_library_directories = vim.api.nvim_get_runtime_file("", true)
+        table.insert(neovim_lua_library_directories, vim.fn.stdpath('data') .. '/types')
+
+        -- Can't figure out how to merge these settings with a local .luarc.json so I'm just going to add its contents
+        -- here.
+        table.insert(neovim_lua_library_directories, "/Users/biggs/.hammerspoon/Spoons/EmmyLua.spoon/annotations")
+
+        server_specific_configs.lua_ls = {
+          settings = {
+            Lua = {
+              runtime = {
+                version = "LuaJIT"
+              },
+              workspace = {
+                -- Make the server aware of Neovim runtime files
+                library = neovim_lua_library_directories,
+                checkThirdParty = false,
+              },
+              telemetry = {
+                -- Do not send telemetry data containing a randomized but unique identifier
+                enable = false,
+              },
+            },
+          },
+        };
+      end
+
 
       local server_config_handlers = {}
       -- Default handler to be called for each installed server that doesn't have a dedicated handler.
@@ -2473,7 +2586,7 @@ Plug('b0o/SchemaStore.nvim')
 -- support the language server protocol. It does this by transforming the output of a commandline tool into the
 -- format specified by the language server protocol.
 Plug(
-  'jose-elias-alvarez/null-ls.nvim',
+  'nvimtools/none-ls.nvim',
   {
     config = function()
       local null_ls = require('null-ls')
@@ -2604,8 +2717,8 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'NormalFloat', {link = 'Float1Normal'})
   vim.api.nvim_set_hl(0, 'FloatBorder', {link = 'Float1Border'})
   vim.api.nvim_set_hl(0, 'LuaSnipNode', {ctermfg = 11,})
-  vim.api.nvim_set_hl(0, 'WhichKeyFloat', {link = 'Float4Normal'})
-  vim.api.nvim_set_hl(0, 'WhichKeyBorder', {link = 'Float4Border'})
+  vim.api.nvim_set_hl(0, 'WhichKeyFloat', {link = 'Float1Normal'})
+  vim.api.nvim_set_hl(0, 'WhichKeyBorder', {link = 'Float1Border'})
   vim.api.nvim_set_hl(0, 'CodeActionSign', {ctermbg = 'NONE', ctermfg = 3,})
   vim.api.nvim_set_hl(0, 'LspInfoBorder', {ctermbg = 16, ctermfg = 52,})
   vim.api.nvim_set_hl(0, 'Float1Normal', {ctermbg = 16,})
@@ -2654,6 +2767,7 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, "SignifyAdd", {ctermfg = 2,})
   vim.api.nvim_set_hl(0, "SignifyDelete", {ctermfg = 1,})
   vim.api.nvim_set_hl(0, "SignifyChange", {ctermfg = 3,})
+  vim.api.nvim_set_hl(0, "QuickFixLine", {ctermfg = 'NONE', ctermbg=51})
 
   local level_highlights = {
     {level = 'ERROR', color = 1},

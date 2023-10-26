@@ -25,6 +25,7 @@
             "gomod2nix"
             "speakers"
             "tree-sitter-just"
+            "neodev-nvim"
           ] ++ plugins;
           darwin = home ++ [
             "nix-darwin"
