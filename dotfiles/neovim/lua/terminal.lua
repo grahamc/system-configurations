@@ -2513,37 +2513,6 @@ Plug(
         },
       }
 
-      -- TODO: Ideally I would generate a .luarc.json with these contents using nix, but I couldn't figure out
-      -- how to get the nvim runtimepath programmatically AFTER vim-plug alters it.
-      if vim.startswith(vim.fn.getcwd(), os.getenv('HOME') .. '/.dotfiles') then
-        local neovim_lua_library_directories = vim.api.nvim_get_runtime_file("", true)
-        table.insert(neovim_lua_library_directories, vim.fn.stdpath('data') .. '/types')
-
-        -- Can't figure out how to merge these settings with a local .luarc.json so I'm just going to add its contents
-        -- here.
-        table.insert(neovim_lua_library_directories, "/Users/biggs/.hammerspoon/Spoons/EmmyLua.spoon/annotations")
-
-        server_specific_configs.lua_ls = {
-          settings = {
-            Lua = {
-              runtime = {
-                version = "LuaJIT"
-              },
-              workspace = {
-                -- Make the server aware of Neovim runtime files
-                library = neovim_lua_library_directories,
-                checkThirdParty = false,
-              },
-              telemetry = {
-                -- Do not send telemetry data containing a randomized but unique identifier
-                enable = false,
-              },
-            },
-          },
-        };
-      end
-
-
       local server_config_handlers = {}
       -- Default handler to be called for each installed server that doesn't have a dedicated handler.
       server_config_handlers[1] = function (server_name)
