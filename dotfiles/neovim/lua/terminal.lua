@@ -1922,6 +1922,7 @@ Plug(
   'f-person/git-blame.nvim',
   {
     config = function()
+      vim.g.gitblame_highlight_group = 'GitBlameVirtualText'
       local message_prefix = '   ■ '
       require('gitblame').setup({
         message_template = message_prefix .. '<author>, <date> • <summary>',
@@ -2650,6 +2651,10 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'DiagnosticSignWarn', {ctermfg = 3, ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'DiagnosticSignInfo', {ctermfg = 4, ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'DiagnosticSignHint', {ctermfg = 5, ctermbg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'DiagnosticVirtualTextError', {ctermfg = 1, italic = true,})
+  vim.api.nvim_set_hl(0, 'DiagnosticVirtualTextWarn', {ctermfg = 3, italic = true,})
+  vim.api.nvim_set_hl(0, 'DiagnosticVirtualTextInfo', {ctermfg = 4, italic = true,})
+  vim.api.nvim_set_hl(0, 'DiagnosticVirtualTextHint', {ctermfg = 5, italic = true,})
   vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', {link = 'Error'})
   vim.api.nvim_set_hl(0, 'DiagnosticUnderlineWarn', {link = 'Warning'})
   vim.api.nvim_set_hl(0, 'DiagnosticUnderlineInfo', {ctermfg = 4, ctermbg = 'NONE', undercurl = true,})
@@ -2746,6 +2751,7 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, "SignifyDelete", {ctermfg = 1,})
   vim.api.nvim_set_hl(0, "SignifyChange", {ctermfg = 3,})
   vim.api.nvim_set_hl(0, "QuickFixLine", {ctermfg = 'NONE', ctermbg=51})
+  vim.api.nvim_set_hl(0, 'GitBlameVirtualText', {ctermfg = 15, italic = true,})
 
   local level_highlights = {
     {level = 'ERROR', color = 1},
