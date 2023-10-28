@@ -61,6 +61,10 @@
     # nvim-treesitter
     # telescope-fzf-native
     # sqlite.lua
+    #
+    # TODO: For the plugins above, I should add them here and in my overlay I should check if nixpkgs already
+    # has a derivation for that plugin. If it does, override the source code it uses, otherwise make my own
+    # derivation.
     "vim-plugin-firenvim" = {url = "github:glacambre/firenvim"; flake = false;};
     "vim-plugin-vim-indentwise" = {url = "github:jeetsukumaran/vim-indentwise"; flake = false;};
     "vim-plugin-vim-matchup" = {url = "github:andymass/vim-matchup"; flake = false;};
