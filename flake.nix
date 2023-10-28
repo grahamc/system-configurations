@@ -60,6 +60,7 @@
     # plugins that aren't here because they have external dependencies:
     # nvim-treesitter
     # telescope-fzf-native
+    # sqlite.lua
     "vim-plugin-firenvim" = {url = "github:glacambre/firenvim"; flake = false;};
     "vim-plugin-vim-indentwise" = {url = "github:jeetsukumaran/vim-indentwise"; flake = false;};
     "vim-plugin-vim-matchup" = {url = "github:andymass/vim-matchup"; flake = false;};
@@ -124,6 +125,7 @@
     "tree-sitter-just" = {url = "github:IndianBoy42/tree-sitter-just"; flake = false;};
     "neodev-nvim" = {url = "github:folke/neodev.nvim"; flake = false;};
     "vim-plugin-aerial-nvim" = {url = "github:stevearc/aerial.nvim"; flake = false;};
+    "vim-plugin-telescope-smart-history-nvim" = {url = "github:nvim-telescope/telescope-smart-history.nvim"; flake = false;};
 
     "tmux-plugin-resurrect" = {url = "github:tmux-plugins/tmux-resurrect"; flake = false;};
     "tmux-plugin-tmux-suspend" = {url = "github:MunifTanjim/tmux-suspend"; flake = false;};

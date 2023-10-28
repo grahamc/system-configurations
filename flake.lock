@@ -333,6 +333,7 @@
         "vim-plugin-reticle-nvim": "vim-plugin-reticle-nvim",
         "vim-plugin-targets-vim": "vim-plugin-targets-vim",
         "vim-plugin-telescope-nvim": "vim-plugin-telescope-nvim",
+        "vim-plugin-telescope-smart-history-nvim": "vim-plugin-telescope-smart-history-nvim",
         "vim-plugin-traces-vim": "vim-plugin-traces-vim",
         "vim-plugin-vim": "vim-plugin-vim",
         "vim-plugin-vim-abolish": "vim-plugin-vim-abolish",
@@ -1212,6 +1213,22 @@
       "original": {
         "owner": "nvim-telescope",
         "repo": "telescope.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-telescope-smart-history-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1671132354,
+        "narHash": "sha256-riBl0vSkRtM9Gtw/FNSKodSmqgGUpDnH7d5w+uU4ReQ=",
+        "owner": "nvim-telescope",
+        "repo": "telescope-smart-history.nvim",
+        "rev": "81a4cceaa54d65d5f7c7c26178ee63b634d3e26d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-telescope",
+        "repo": "telescope-smart-history.nvim",
         "type": "github"
       }
     },

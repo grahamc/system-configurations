@@ -1429,7 +1429,11 @@ Plug(
           dynamic_preview_title = true,
           results_title = false,
           create_layout = three_pane_layout,
-          path_display = {'truncate',}
+          path_display = {'truncate',},
+          history = {
+            path = vim.fn.stdpath('data') .. '/telescope_history.sqlite3',
+            limit = 100,
+          },
         },
         pickers = {
           find_files = {
@@ -1498,11 +1502,16 @@ Plug(
       ]])
 
       telescope.load_extension('fzf')
+      telescope.load_extension('smart_history')
     end,
   }
 )
 
 Plug('nvim-telescope/telescope-fzf-native.nvim')
+
+Plug('kkharji/sqlite.lua')
+
+Plug('nvim-telescope/telescope-smart-history.nvim')
 
 Plug(
   'stevearc/dressing.nvim',
