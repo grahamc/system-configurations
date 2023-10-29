@@ -178,7 +178,7 @@ function ClickLink()
     vim.cmd.wincmd('p')
   end
 end
-vim.keymap.set('n', '<LeftMouse>', '<LeftMouse><Cmd>lua ClickLink()<CR>')
+vim.keymap.set('n', '<C-LeftMouse>', '<LeftMouse><Cmd>lua ClickLink()<CR>')
 
 vim.o.scroll = 1
 
