@@ -984,7 +984,9 @@ vim.o.winbar = "%{%v:lua.Winbar()%}"
 
 -- LSP {{{
 vim.diagnostic.config({
-  virtual_text = true,
+  virtual_text = {
+    prefix = unicode('f445'),
+  },
   update_in_insert = true,
   -- With this enabled, sign priorities will become: hint=11, info=12, warn=13, error=14
   severity_sort = true,
@@ -1926,7 +1928,7 @@ Plug(
   {
     config = function()
       vim.g.gitblame_highlight_group = 'GitBlameVirtualText'
-      local message_prefix = '   ■ '
+      local message_prefix = '   ' .. unicode('f445') .. ' '
       require('gitblame').setup({
         message_template = message_prefix .. '<author>, <date> • <summary>',
         message_when_not_committed = message_prefix .. 'Not committed yet',
