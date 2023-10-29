@@ -2606,7 +2606,9 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'StatusLineInfoText', {ctermfg = 4, ctermbg = 51,})
   vim.api.nvim_set_hl(0, 'StatusLineHintText', {ctermfg = 5, ctermbg = 51,})
   vim.api.nvim_set_hl(0, 'StatusLineStandoutText', {ctermfg = 3, ctermbg = 51,})
-  vim.api.nvim_set_hl(0, 'CursorLine', {ctermfg = 'NONE', ctermbg = 'NONE', underline = true,})
+  vim.cmd([[
+    hi CursorLine guisp='foreground' cterm=underline ctermbg='NONE'
+  ]])
   vim.api.nvim_set_hl(0, 'CursorLineNr', {bold = true,})
   -- transparent background
   vim.api.nvim_set_hl(0, 'Normal', {ctermbg = 'NONE',})
