@@ -2597,8 +2597,6 @@ Plug(
 -- Colorscheme {{{
 Plug('nordtheme/vim')
 vim.g.nord_bold = true
-vim.g.nord_italic = true
-vim.g.nord_italic_comments = true
 vim.g.nord_underline = true
 local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'MatchParen', {ctermfg = 'blue', ctermbg = 'NONE', underline = true,})
@@ -2753,13 +2751,14 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, "NavicIconsEvent",         {ctermfg = 11,})
   vim.api.nvim_set_hl(0, "NavicIconsOperator",      {ctermfg = 12,})
   vim.api.nvim_set_hl(0, "NavicIconsTypeParameter", {ctermfg = 13,})
-  vim.api.nvim_set_hl(0, "NavicText",               {})
+  vim.api.nvim_set_hl(0, "NavicText",               {italic = true,})
   vim.api.nvim_set_hl(0, "NavicSeparator",          {ctermfg = 15,})
   vim.api.nvim_set_hl(0, "SignifyAdd", {ctermfg = 2,})
   vim.api.nvim_set_hl(0, "SignifyDelete", {ctermfg = 1,})
   vim.api.nvim_set_hl(0, "SignifyChange", {ctermfg = 3,})
   vim.api.nvim_set_hl(0, "QuickFixLine", {ctermfg = 'NONE', ctermbg=51})
   vim.api.nvim_set_hl(0, 'GitBlameVirtualText', {ctermfg = 15, italic = true,})
+  vim.api.nvim_set_hl(0, 'Underlined', {})
   vim.api.nvim_set_hl(0, 'NullLsInfoBorder', {link = 'FloatBorder'})
 
   local level_highlights = {
