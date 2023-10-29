@@ -2574,6 +2574,7 @@ Plug(
       local null_ls = require('null-ls')
       local builtins = null_ls.builtins
       null_ls.setup({
+        border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏", },
         sources = {
           builtins.diagnostics.shellcheck.with({
             filetypes = { 'sh', 'bash' },
@@ -2757,6 +2758,7 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, "SignifyChange", {ctermfg = 3,})
   vim.api.nvim_set_hl(0, "QuickFixLine", {ctermfg = 'NONE', ctermbg=51})
   vim.api.nvim_set_hl(0, 'GitBlameVirtualText', {ctermfg = 15, italic = true,})
+  vim.api.nvim_set_hl(0, 'NullLsInfoBorder', {link = 'FloatBorder'})
 
   local level_highlights = {
     {level = 'ERROR', color = 1},
