@@ -1266,7 +1266,7 @@ Plug(
       end
 
       _G.big_editor_relative_two_pane_layout = make_two_pane_layout(
-        { relative = "editor", position = "50%", size = { height = "80%", width = "90%", }, }
+        { relative = "editor", position = "50%", size = { height = "75%", width = "75%", }, }
       )
       _G.small_editor_relative_two_pane_layout = make_two_pane_layout(
         { relative = "editor", position = "50%", size = { height = "40%", width = "50%", }, }
@@ -1333,6 +1333,7 @@ Plug(
               top = Text(string.format(" %s ", picker.preview_title or ""), 'TelescopePreviewTitle'),
               top_align = "center",
             },
+            padding = {1,}
           },
           win_options = { winhighlight = "Normal:TelescopePreviewNormal", },
         })
@@ -1388,7 +1389,7 @@ Plug(
         local layout = Layout({
           relative = "editor",
           position = {col = "50%", row = "40%"},
-          size = { height = "80%", width = "90%", },
+          size = { height = "75%", width = "75%", },
         }, box)
 
         ---@diagnostic disable-next-line: inject-field
@@ -1424,8 +1425,10 @@ Plug(
               ["<C-u>"] = false,
             },
           },
-          prompt_prefix = unicode('f002') .. '  ',
+          prompt_prefix = ' ' .. unicode('eb68') .. '  ',
           sorting_strategy = 'ascending',
+          selection_caret = " > ",
+          entry_prefix = "   ",
           dynamic_preview_title = true,
           results_title = false,
           create_layout = three_pane_layout,
@@ -2681,6 +2684,7 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'TelescopePromptNormal', {ctermbg = 16,})
   vim.api.nvim_set_hl(0, 'TelescopePromptBorder', {link = 'TelescopeResultsBorder',})
   vim.api.nvim_set_hl(0, 'TelescopePromptTitle', {ctermbg = 52, ctermfg = 7, bold = true,})
+  vim.api.nvim_set_hl(0, 'TelescopePromptCounter', {ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'TelescopePreviewNormal', {ctermbg = 16,})
   vim.api.nvim_set_hl(0, 'TelescopePreviewBorder', {link = 'TelescopeResultsBorder',})
   vim.api.nvim_set_hl(0, 'TelescopePreviewTitle', {link = 'TelescopePromptTitle'})
@@ -2691,7 +2695,6 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'TelescopeMatching', {ctermbg = 'NONE', ctermfg = 6,})
   vim.api.nvim_set_hl(0, 'TelescopeSelection', {ctermfg = 6, bold = true,})
   vim.api.nvim_set_hl(0, 'TelescopeSelectionCaret', {ctermfg = 6, bold = true,})
-  vim.api.nvim_set_hl(0, 'TelescopePromptCounter', {ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'MasonHeader', {ctermbg = 'NONE', ctermfg = 4, reverse = true, bold = true,})
   vim.api.nvim_set_hl(0, 'MasonHighlight', {ctermbg = 'NONE', ctermfg = 6,})
   vim.api.nvim_set_hl(0, 'MasonHighlightBlockBold', {ctermbg = 'NONE', ctermfg = 6, reverse = true, bold = true,})
