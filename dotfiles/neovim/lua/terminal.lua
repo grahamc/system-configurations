@@ -427,7 +427,9 @@ vim.keymap.set('c', '<C-a>', '<C-b>', {remap = true})
 vim.cmd([[
   cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'let g#opening_help_in_tab = v:true \| tab help' : 'h'
 ]])
-vim.cmd.cnoreabbrev('lua', 'lua=')
+vim.cmd([[
+  cnoreabbrev <expr> lua getcmdtype() == ":" && getcmdline() == 'lua' ? 'lua=' : 'lua'
+]])
 -- }}}
 
 -- Search {{{
