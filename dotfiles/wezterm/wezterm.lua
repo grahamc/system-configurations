@@ -21,7 +21,8 @@ end
 local is_mac = string.find(wezterm.target_triple, 'darwin')
 
 -- general
-config.window_background_opacity = 1
+config.window_background_opacity = .991
+config.text_background_opacity = .9
 config.window_close_confirmation = 'NeverPrompt'
 config.audible_bell = 'Disabled'
 config.default_cursor_style = 'BlinkingBar'
