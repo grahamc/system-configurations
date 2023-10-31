@@ -1567,6 +1567,9 @@ Plug(
           border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏", },
           margin = {1, 4, 2, 2},
         },
+        icons = {
+          separator = ' ',
+        },
       })
     end,
   }
@@ -2057,6 +2060,7 @@ Plug(
             },
           },
           icons = {
+            symlink_arrow = '   ',
             show = {
               file = false,
               folder = false,
