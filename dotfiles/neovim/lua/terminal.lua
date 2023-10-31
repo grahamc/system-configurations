@@ -2611,6 +2611,8 @@ local function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'StatusLineHintText', {ctermfg = 5, ctermbg = 51,})
   vim.api.nvim_set_hl(0, 'StatusLineStandoutText', {ctermfg = 3, ctermbg = 51,})
   vim.cmd([[
+    " Clearing the highlight first since highlights don't get overriden with the vimscript API, they get combined.
+    hi clear CursorLine
     hi CursorLine guisp='foreground' cterm=underline ctermbg='NONE'
   ]])
   vim.api.nvim_set_hl(0, 'CursorLineNr', {bold = true,})
