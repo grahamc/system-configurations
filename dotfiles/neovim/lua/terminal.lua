@@ -1989,6 +1989,7 @@ Plug(
         lazy_load = true,
         nerd_font = true,
         show_guides = true,
+        link_tree_to_folds = false,
       })
       vim.api.nvim_create_user_command('OutlineToggle', function() vim.cmd.AerialToggle() end, {desc = 'Toggle the symbol outline window'})
       vim.keymap.set({'n'}, '<M-o>', vim.cmd.AerialToggle, {silent = true})
