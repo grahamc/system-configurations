@@ -55,6 +55,10 @@ vim.opt.matchpairs:append('<:>')
 vim.keymap.set({'n', 'x'}, '<C-j>', '10j', {remap = true})
 vim.keymap.set({'n', 'x'}, '<C-k>', '10k', {remap = true})
 
+-- move ten columns at a time by holding ctrl and a directional key
+vim.keymap.set({'n', 'x'}, '<C-h>', '10h', {remap = true})
+vim.keymap.set({'n', 'x'}, '<C-l>', '10l', {remap = true})
+
 -- Always move by screen line, unless a count was specified or we're in a line-wise mode.
 local function move_by_screen_line(direction)
   local mode = vim.fn.mode()
