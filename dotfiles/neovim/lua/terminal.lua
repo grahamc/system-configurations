@@ -1035,7 +1035,8 @@ vim.api.nvim_create_autocmd(
   "TermOpen",
   {
     callback = function()
-      vim.o.showtabline = 0
+      vim.opt_local.signcolumn = 'no'
+      vim.opt_local.statuscolumn = ''
       vim.opt_local.number = false
       vim.opt_local.relativenumber = false
       vim.opt_local.cursorline = false
@@ -1047,7 +1048,6 @@ vim.api.nvim_create_autocmd(
   "TermClose",
   {
     callback = function()
-      vim.o.showtabline = 1
       vim.cmd.bdelete({
         args = {vim.fn.expand('<abuf>')},
         bang = true,
