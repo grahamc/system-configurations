@@ -1860,7 +1860,6 @@ Plug(
         },
         window = {
           blend = 0,
-          zindex = 99,
         },
         fmt = {
           fidget = function(fidget_name, spinner)
