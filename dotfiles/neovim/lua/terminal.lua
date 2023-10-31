@@ -1935,7 +1935,7 @@ Plug(
       vim.g.gitblame_highlight_group = 'GitBlameVirtualText'
       local message_prefix = '   ' .. unicode('f445') .. ' '
       require('gitblame').setup({
-        message_template = message_prefix .. '<author>, <date> • <summary>',
+        message_template = message_prefix .. '<author>, <date> ∙ <summary>',
         message_when_not_committed = message_prefix .. 'Not committed yet',
         date_format = '%r',
         use_blame_commit_file_urls = true,
