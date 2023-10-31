@@ -993,7 +993,7 @@ vim.diagnostic.config({
   severity_sort = true,
   float = {
     source = true,
-    focusable = false,
+    focusable = true,
     border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏", },
     format = function(diagnostic)
       local result = diagnostic.message
