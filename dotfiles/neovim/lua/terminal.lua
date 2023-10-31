@@ -236,24 +236,26 @@ end
 -- }}}
 
 -- Autosave {{{
-_G.is_autosave_job_queued = false
+_G.is_autosave_task_queued = false
+local function save()
+  _G.is_autosave_task_queued = false
+  vim.cmd("silent! update")
+end
+local function enqueue_save_task()
+  if _G.is_autosave_task_queued then
+    return
+  end
+
+  _G.is_autosave_task_queued = true
+  vim.defer_fn(
+    save,
+    500 -- time in milliseconds between saves
+  )
+end
 vim.api.nvim_create_autocmd(
   {"TextChanged", "TextChangedI",},
   {
-    callback = function()
-      if _G.is_autosave_job_queued then
-        return
-      end
-
-      _G.is_autosave_job_queued = true
-      vim.defer_fn(
-        function()
-          _G.is_autosave_job_queued = false
-          vim.cmd("silent! wall")
-        end,
-        500 -- time in milliseconds between saves
-      )
-    end,
+    callback = enqueue_save_task,
     group = vim.api.nvim_create_augroup('Autosave', {}),
   }
 )
