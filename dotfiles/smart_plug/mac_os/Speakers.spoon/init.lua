@@ -72,6 +72,8 @@ end
 
 local M = {}
 
+-- `setIcon` exists so I'm disabling this lint
+---@diagnostic disable-next-line: undefined-field
 M.menubar_item = hs.menubar.new():setIcon(icon):setMenu(make_menu)
 
 return M

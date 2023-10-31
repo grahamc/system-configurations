@@ -310,6 +310,8 @@ end
 
 local function open_help_page()
   local screen_rect = hs.screen.mainScreen():fullFrame()
+  -- `windowStyle` exists so I'm disabling this lint
+  ---@diagnostic disable-next-line: undefined-field
   local help_page = hs.webview.new({x = screen_rect.x+screen_rect.w*0.15/2, y = screen_rect.x+screen_rect.w*0.25/2, w = screen_rect.w * .85, h = screen_rect.h * .40}):windowStyle({'closable', 'titled', 'fullSizeContentView', 'texturedBackground', 'nonactivating',}):closeOnEscape(true):bringToFront(true):deleteOnClose(true):html(generateHtml())
   help_page:show()
 end
@@ -333,4 +335,6 @@ local menu_items = {
   },
 }
 
+-- `setIcon` exists so I'm disabling this lint
+---@diagnostic disable-next-line: undefined-field
 _G.menubar_item = hs.menubar.new():setIcon(icons['bsp']):setMenu(menu_items)
