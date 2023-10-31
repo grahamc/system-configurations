@@ -1969,7 +1969,7 @@ Plug(
       require('aerial').setup({
         backends = { "lsp", "treesitter", "markdown", "man" },
         layout = {
-          max_width = .5,
+          max_width = .3,
           min_width = .2,
           default_direction = "right",
           placement = "edge",
@@ -2043,7 +2043,7 @@ Plug(
         view = {
           signcolumn = 'yes',
           width = {
-            max = function() return math.max(40, math.floor(vim.o.columns * .20)) end,
+            max = function() return math.floor(vim.o.columns * .30) end,
             -- Enough to fit the title text
             min = 45,
           },
