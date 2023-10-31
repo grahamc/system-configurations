@@ -934,6 +934,7 @@ local function get_path_segments(path)
 end
 function Winbar()
   local buffer = vim.api.nvim_get_current_buf()
+  local window = vim.api.nvim_get_current_win()
   local winbar = ""
   local winbar_length = 0
 
@@ -953,7 +954,7 @@ function Winbar()
     local path = vim.api.nvim_buf_get_name(buffer)
     local path_segments = get_path_segments(path)
     local path_segments_count = #path_segments
-    local max_winbar_length = vim.o.columns
+    local max_winbar_length = vim.api.nvim_win_get_width(window)
     local abbreviation_text = '…' .. path_segment_delimiter
     local abbreviation_text_length = 1 + path_segment_delimiter_length
     for index,segment in ipairs(path_segments) do
