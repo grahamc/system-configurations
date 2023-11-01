@@ -130,6 +130,9 @@
     "neodev-nvim" = {url = "github:folke/neodev.nvim"; flake = false;};
     "vim-plugin-aerial-nvim" = {url = "github:stevearc/aerial.nvim"; flake = false;};
     "vim-plugin-telescope-smart-history-nvim" = {url = "github:nvim-telescope/telescope-smart-history.nvim"; flake = false;};
+    "vim-plugin-middleclass" = {url = "github:anuvyklack/middleclass"; flake = false;};
+    "vim-plugin-animation-nvim" = {url = "github:anuvyklack/animation.nvim"; flake = false;};
+    "vim-plugin-windows-nvim" = {url = "github:anuvyklack/windows.nvim"; flake = false;};
 
     "tmux-plugin-resurrect" = {url = "github:tmux-plugins/tmux-resurrect"; flake = false;};
     "tmux-plugin-tmux-suspend" = {url = "github:MunifTanjim/tmux-suspend"; flake = false;};

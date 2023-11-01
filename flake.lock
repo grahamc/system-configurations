@@ -292,6 +292,7 @@
         "vim-plugin-LuaSnip": "vim-plugin-LuaSnip",
         "vim-plugin-SchemaStore-nvim": "vim-plugin-SchemaStore-nvim",
         "vim-plugin-aerial-nvim": "vim-plugin-aerial-nvim",
+        "vim-plugin-animation-nvim": "vim-plugin-animation-nvim",
         "vim-plugin-bufferline-nvim": "vim-plugin-bufferline-nvim",
         "vim-plugin-cmp-buffer": "vim-plugin-cmp-buffer",
         "vim-plugin-cmp-cmdline": "vim-plugin-cmp-cmdline",
@@ -313,6 +314,7 @@
         "vim-plugin-git-blame-nvim": "vim-plugin-git-blame-nvim",
         "vim-plugin-mason-lspconfig-nvim": "vim-plugin-mason-lspconfig-nvim",
         "vim-plugin-mason-nvim": "vim-plugin-mason-nvim",
+        "vim-plugin-middleclass": "vim-plugin-middleclass",
         "vim-plugin-none-ls-nvim": "vim-plugin-none-ls-nvim",
         "vim-plugin-nui-nvim": "vim-plugin-nui-nvim",
         "vim-plugin-nvim-autopairs": "vim-plugin-nvim-autopairs",
@@ -350,7 +352,8 @@
         "vim-plugin-vim-sleuth": "vim-plugin-vim-sleuth",
         "vim-plugin-vim-tmux-navigator": "vim-plugin-vim-tmux-navigator",
         "vim-plugin-virt-column-nvim": "vim-plugin-virt-column-nvim",
-        "vim-plugin-which-key-nvim": "vim-plugin-which-key-nvim"
+        "vim-plugin-which-key-nvim": "vim-plugin-which-key-nvim",
+        "vim-plugin-windows-nvim": "vim-plugin-windows-nvim"
       }
     },
     "speakers": {
@@ -557,6 +560,22 @@
       "original": {
         "owner": "stevearc",
         "repo": "aerial.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-animation-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1663498646,
+        "narHash": "sha256-KyFzPI2B0ioIABnhC6MwaHYLcuUzSqCsmcGpMei4XXk=",
+        "owner": "anuvyklack",
+        "repo": "animation.nvim",
+        "rev": "fb77091ab72ec9971aee0562e7081182527aaa6a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anuvyklack",
+        "repo": "animation.nvim",
         "type": "github"
       }
     },
@@ -893,6 +912,22 @@
       "original": {
         "owner": "williamboman",
         "repo": "mason.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-middleclass": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1663692601,
+        "narHash": "sha256-scJX7ovVZ6YBRp2lTP7JswyZ0smvVZneGRGBvwFsyOQ=",
+        "owner": "anuvyklack",
+        "repo": "middleclass",
+        "rev": "9fab4d5bca67262614960960ca35c4740eb2be2c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anuvyklack",
+        "repo": "middleclass",
         "type": "github"
       }
     },
@@ -1501,6 +1536,22 @@
       "original": {
         "owner": "folke",
         "repo": "which-key.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-windows-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1673907386,
+        "narHash": "sha256-Nfzd8kFqA83/0RfMUAYF4XXqhihyb22OnxDBrWW1nzU=",
+        "owner": "anuvyklack",
+        "repo": "windows.nvim",
+        "rev": "c7492552b23d0ab30325e90b56066ec51242adc8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anuvyklack",
+        "repo": "windows.nvim",
         "type": "github"
       }
     }

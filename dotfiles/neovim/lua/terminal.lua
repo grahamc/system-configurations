@@ -278,23 +278,10 @@ vim.api.nvim_create_autocmd(
 -- open new horizontal and vertical panes to the right and bottom respectively
 vim.o.splitright = true
 vim.o.splitbelow = true
+vim.o.winminheight = 0
+vim.o.winminwidth = 0
 vim.keymap.set('n', '<Leader><Bar>', '<Cmd>vsplit<CR>')
 vim.keymap.set('n', '<Leader>-', '<Cmd>split<CR>')
-
--- TODO: When tmux is able to differentiate between enter and ctrl+m this mapping should be updated.
--- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
---
--- maximize a window by opening it in a new tab
-local function maximize()
-  if vim.fn.winnr('$') == 1 then
-    return
-  end
-
-  vim.cmd([[
-    tab split
-  ]])
-end
-vim.keymap.set('n', '<Leader>m', maximize)
 
 -- Automatically resize all splits to make them equal when the vim window is resized or a new window is created/closed.
 vim.api.nvim_create_autocmd(
@@ -2076,6 +2063,27 @@ Plug(
           group = aerial_group_id,
         }
       )
+    end,
+  }
+)
+
+Plug('anuvyklack/middleclass')
+
+Plug('anuvyklack/animation.nvim')
+
+Plug(
+  'anuvyklack/windows.nvim',
+  {
+    config = function()
+      require("windows").setup({
+        autowidth = {
+          enable = false,
+        },
+      })
+
+      -- TODO: When tmux is able to differentiate between enter and ctrl+m this mapping should be updated.
+      -- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
+      vim.keymap.set('n', '<Leader>m', function() vim.cmd.WindowsMaximize() end)
     end,
   }
 )
