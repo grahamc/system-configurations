@@ -147,7 +147,20 @@ vim.keymap.set('', '<C-x>', '<Cmd>xa<CR>')
 -- suspend vim
 vim.keymap.set({'n', 'i', 'x'}, '<C-z>', '<Cmd>suspend<CR>')
 
-vim.o.colorcolumn = '120'
+vim.api.nvim_create_autocmd(
+  'BufWinEnter',
+  {
+    callback = function()
+      local editorconfig = vim.b['editorconfig']
+      if editorconfig ~= nil and editorconfig.max_line_length ~= nil then
+        vim.wo.colorcolumn = editorconfig.max_line_length
+      else
+        vim.wo.colorcolumn = "120"
+      end
+    end,
+    group = general_group_id,
+  }
+)
 
 vim.o.shell = 'sh'
 
