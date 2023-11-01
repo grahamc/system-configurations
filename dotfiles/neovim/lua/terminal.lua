@@ -1254,10 +1254,14 @@ Plug(
         return function(picker)
           local border_chars = { top_left = "🭽", top = "▔", top_right = "🭾", right = "▕", bottom_right = "🭿", bottom = "▁", bottom_left = "🭼", left = "▏", }
           local border = {
-            results = border_chars,
-            results_patch = { minimal = border_chars, },
+            results = { top_left = border_chars.left, top = '', top_right = border_chars.right, right = "▕", bottom_right = "🭿", bottom = "▁", bottom_left = "🭼", left = "▏", },
+            results_patch = {
+              minimal = {top = ' ', top_left = ' ', top_right = ' ',},
+            },
             prompt = border_chars,
-            prompt_patch = { minimal = { bottom_left = border_chars.left, bottom_right = border_chars.right, bottom = "", }, },
+            prompt_patch = {
+              minimal = { bottom_left = border_chars.left, bottom_right = border_chars.right, bottom = "━", },
+            },
           }
 
           local results = Popup({
@@ -1276,7 +1280,7 @@ Plug(
 
           local box_by_kind = {
             minimal = Layout.Box(
-              { Layout.Box(prompt, { size = 3 }), Layout.Box(results, { grow = 1 }), },
+              { Layout.Box(prompt, { size = 3 }), Layout.Box(results, { size = '100%' }), },
               { dir = "col" }
             ),
           }
@@ -1327,7 +1331,7 @@ Plug(
         { relative = "editor", position = "50%", size = { height = "40%", width = "50%", }, }
       )
       _G.cursor_relative_two_pane_layout = make_two_pane_layout(
-        { relative = "cursor", position = 1, size = { height = 8, width = 60, }, }
+        { relative = "cursor", position = 1, size = { height = 5, width = 60, }, }
       )
 
       local three_pane_layout = function(picker)
@@ -1338,13 +1342,13 @@ Plug(
           results_patch = {
             minimal = default_border,
             horizontal = default_border,
-            vertical = default_border,
+            vertical = {top = '', bottom = '━', top_left = border_chars.left, top_right = border_chars.right, bottom_left = border_chars.left, bottom_right = border_chars.right,},
           },
           prompt = default_border,
           prompt_patch = {
             minimal = { bottom_left = border_chars.left, bottom_right = border_chars.right, bottom = "", },
             horizontal = { bottom_left = border_chars.left, bottom_right = border_chars.right, bottom = "", },
-            vertical = { bottom_left = border_chars.left, bottom_right = border_chars.right, bottom = "", },
+            vertical = { bottom_left = border_chars.left, bottom_right = border_chars.right, bottom = "━",},
           },
           preview = default_border,
           preview_patch = {
@@ -1388,7 +1392,7 @@ Plug(
               top = Text(string.format(" %s ", picker.preview_title or ""), 'TelescopePreviewTitle'),
               top_align = "center",
             },
-            padding = {1,}
+            padding = {left = 1, right = 1,}
           },
           win_options = { winhighlight = "Normal:TelescopePreviewNormal", },
         })
@@ -1480,7 +1484,7 @@ Plug(
               ["<C-u>"] = false,
             },
           },
-          prompt_prefix = ' ' .. unicode('eb68') .. '  ',
+          prompt_prefix = '   ',
           sorting_strategy = 'ascending',
           selection_caret = " > ",
           entry_prefix = "   ",
@@ -2755,13 +2759,13 @@ function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'TelescopePromptBorder', {link = 'TelescopeResultsBorder',})
   vim.api.nvim_set_hl(0, 'TelescopePromptTitle', {ctermbg = 52, ctermfg = 7, bold = true,})
   vim.api.nvim_set_hl(0, 'TelescopePromptCounter', {ctermfg = 15,})
+  vim.api.nvim_set_hl(0, 'TelescopePromptPrefix', {ctermbg = 16, ctermfg = 6,})
   vim.api.nvim_set_hl(0, 'TelescopePreviewNormal', {ctermbg = 16,})
   vim.api.nvim_set_hl(0, 'TelescopePreviewBorder', {link = 'TelescopeResultsBorder',})
   vim.api.nvim_set_hl(0, 'TelescopePreviewTitle', {link = 'TelescopePromptTitle'})
   vim.api.nvim_set_hl(0, 'TelescopeResultsNormal', {ctermbg = 16,})
   vim.api.nvim_set_hl(0, 'TelescopeResultsBorder', {ctermbg = 16, ctermfg = 52,})
   vim.api.nvim_set_hl(0, 'TelescopeResultsTitle', {link = 'TelescopePromptTitle'})
-  vim.api.nvim_set_hl(0, 'TelescopePromptPrefix', {ctermbg = 16, ctermfg = 6,})
   vim.api.nvim_set_hl(0, 'TelescopeMatching', {ctermbg = 'NONE', ctermfg = 6,})
   vim.api.nvim_set_hl(0, 'TelescopeSelection', {ctermfg = 6, bold = true,})
   vim.api.nvim_set_hl(0, 'TelescopeSelectionCaret', {ctermfg = 6, bold = true,})
