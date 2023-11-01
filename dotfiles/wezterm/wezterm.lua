@@ -21,8 +21,6 @@ end
 local is_mac = string.find(wezterm.target_triple, 'darwin')
 
 -- general
-config.window_background_opacity = .991
-config.text_background_opacity = .9
 config.window_close_confirmation = 'NeverPrompt'
 config.audible_bell = 'Disabled'
 config.default_cursor_style = 'BlinkingBar'
@@ -43,8 +41,8 @@ config.font_size = 11.3
 if is_mac then
   config.font_size = 14
 end
-config.line_height = 1.20
-config.underline_thickness = "210%"
+config.line_height = 1.2
+config.underline_thickness = "150%"
 
 local my_colors_per_color_scheme = {
   ['Biggs Nord'] = {
