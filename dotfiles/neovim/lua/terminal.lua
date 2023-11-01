@@ -2586,7 +2586,8 @@ Plug(
       require("mason-lspconfig").setup_handlers(server_config_handlers)
 
       -- Set the filetype of all the currently open buffers to trigger a 'FileType' event for each buffer so nvim_lsp
-      -- has a chance to attach to any buffers that were openeed before it was configured.
+      -- has a chance to attach to any buffers that were openeed before it was configured. This way I can load nvim_lsp
+      -- asynchronously.
       local buffer = vim.fn.bufnr()
       vim.cmd([[
         silent! bufdo silent! lua vim.o.filetype = vim.o.filetype
@@ -2639,10 +2640,19 @@ Plug(
 -- }}}
 
 -- Colorscheme {{{
-Plug('nordtheme/vim')
+Plug(
+  'nordtheme/vim',
+  {
+    -- I need this config to be applied earlier so you don't see a flash of the default colorscheme and then mine.
+    sync = true,
+    config = function()
+      vim.cmd.colorscheme('nord')
+    end,
+  }
+)
 vim.g.nord_bold = true
 vim.g.nord_underline = true
-local function SetNordOverrides()
+function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'MatchParen', {ctermfg = 'blue', ctermbg = 'NONE', underline = true,})
   -- Transparent vertical split
   vim.api.nvim_set_hl(0, 'WinSeparator', {ctermbg = 'NONE', ctermfg = 15,})
@@ -2846,21 +2856,6 @@ vim.api.nvim_create_autocmd(
     pattern = 'nord',
     callback = SetNordOverrides,
     group = nord_vim_group_id,
-  }
-)
-vim.api.nvim_create_autocmd(
-  'User',
-  {
-    pattern = "PlugEndPost",
-    callback = function()
-      -- Normally my plugin configuration code is inside a `config` function in the plugin definition, but I need
-      -- this loaded earlier so you don't see a flash of the default colorscheme and then mine. I use `pcall` so
-      -- that even if the colorscheme doesn't exist, an error won't be printed.
-      pcall(vim.cmd.colorscheme, 'nord')
-    end,
-    group = nord_vim_group_id,
-    -- use nested so my colorscheme changes are loaded
-    nested = true,
   }
 )
 -- }}}

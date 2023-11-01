@@ -2,6 +2,7 @@
 
 -- Functions to be called after a plugin is loaded to configure it.
 local configs_by_type = {
+  sync = {},
   async = {},
   lazy = {},
 }
@@ -33,6 +34,8 @@ function PlugEnd()
   -- This way code can be run after plugins are loaded, but before 'VimEnter'
   vim.api.nvim_exec_autocmds('User', {pattern = 'PlugEndPost'})
 
+  apply_configs(configs_by_type.sync)
+
   -- Apply the async configurations after everything else that is currently on the event loop. Now
   -- configs are applied after any files specified on the commandline are opened and after sessions are restored.
   -- This way, neovim shows me the first file "instantly" and by the time I've looked at the file and decided on my
@@ -52,7 +55,7 @@ function Plug(repo, options)
     return
   end
 
-  local original_plug_options = vim.tbl_deep_extend('force', options, {config = nil,})
+  local original_plug_options = vim.tbl_deep_extend('force', options, {config = nil, sync = nil,})
   original_plug(repo, original_plug_options)
 
   local config = options.config
@@ -69,6 +72,8 @@ function Plug(repo, options)
           once = true,
         }
       )
+    elseif options.sync then
+      table.insert(configs_by_type.sync, config)
     else
       table.insert(configs_by_type.async, config)
     end
