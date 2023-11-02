@@ -47,8 +47,6 @@ end
 # NOTE: Per the man manpage, spaces in $MANOPT must be escaped with a backslash
 set --global --export MANOPT '--no-hyphenation'
 
-# neovim
-#
 # Set preferred editor.
 #
 # BACKGROUND: Historically, EDITOR referred to a line editor (e.g. ed) and
@@ -60,10 +58,11 @@ set --global --export MANOPT '--no-hyphenation'
 # Since some programs just use the value in EDITOR without checking VISUAL, and vice-versa,
 # I set both to the same editor.
 # For more info: https://unix.stackexchange.com/questions/4859/visual-vs-editor-what-s-the-difference/302391#302391
-set --global --export VISUAL (command -v nvim)
+set --global --export VISUAL (command -v myeditor)
 set --global --export EDITOR $VISUAL
+# TODO: I should resolve the program to wrap at runtime, but for now I'll just put nvim here.
 function vim --wraps nvim
-    nvim $argv
+    myeditor $argv
 end
 
 # Change the color grep uses for highlighting matches to magenta
