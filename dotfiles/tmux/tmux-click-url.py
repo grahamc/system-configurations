@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 
 # NOTE: Characters I removed: '()
 VALID_URL_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&*+,;='
-MOUSE_PROGRAMS = ['vim', 'nvim']
+MOUSE_PROGRAMS = ['vim', 'nvim', 'myeditor']
 
 def main():
     # The x and y are 0-indexed

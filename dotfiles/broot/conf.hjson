@@ -26,7 +26,7 @@ verbs: [
         invocation: edit
         key: ctrl-e
         apply_to: file
-        external: nvim {file}
+        external: myeditor {file}
         leave_broot: false
     }
     {

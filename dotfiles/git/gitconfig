@@ -2,7 +2,6 @@
   name = Biggie Emmanuel
   email = hi@bigo.lu
 [core]
-  editor = nvim
   pager = delta
 [push]
   default = current
