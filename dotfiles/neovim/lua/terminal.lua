@@ -1659,13 +1659,14 @@ Plug(
         local is_foldmethod_overridable = foldmethod ~= 'manual'
           and foldmethod ~= 'marker'
           and foldmethod ~= 'diff'
+          and foldmethod ~= 'expr'
         if require('nvim-treesitter.parsers').has_parser() and is_foldmethod_overridable then
           vim.o.foldmethod = 'expr'
           vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
         end
       end
       vim.api.nvim_create_autocmd(
-        {'BufWinEnter',},
+        {'FileType',},
         {
           callback = maybe_set_treesitter_foldmethod,
           group = vim.api.nvim_create_augroup('TreesitterFoldmethod', {}),
@@ -2520,9 +2521,7 @@ Plug(
         local keymap_opts = { noremap = true, silent = true }
 
         local foldmethod = vim.o.foldmethod
-        local isFoldmethodOverridable = foldmethod ~= 'marker'
-          and foldmethod ~= 'diff'
-          and foldmethod ~= 'expr'
+        local isFoldmethodOverridable = foldmethod ~= 'marker' and foldmethod ~= 'diff'
         if capabilities.foldingRangeProvider and isFoldmethodOverridable then
           -- folding-nvim prints a message if any attached language server does not support folding so I'm suppressing
           -- that.
@@ -2730,7 +2729,7 @@ function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'Warning', {ctermfg = 3, ctermbg = 'NONE', undercurl = true,})
   vim.api.nvim_set_hl(0, 'SpellBad', {link = 'Error'})
   vim.api.nvim_set_hl(0, 'NvimInternalError', {link = 'ErrorMsg'})
-  vim.api.nvim_set_hl(0, 'Folded', {ctermfg = 15, italic = true,})
+  vim.api.nvim_set_hl(0, 'Folded', {ctermfg = 15, ctermbg = 53,})
   vim.api.nvim_set_hl(0, 'FoldColumn', {ctermfg = 15, ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'SpecialKey', {ctermfg = 13, ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'NonText', {ctermfg = 51, ctermbg = 'NONE',})
