@@ -87,7 +87,7 @@ local function moveCursor(line_count)
 
     local target_line = current_line + line_count
     target_line = math.max(0, target_line)
-    target_line = math.min(vim.o.lines, target_line)
+    target_line = math.min(vim.fn.line('$'), target_line)
 
     vim.cmd(tostring(target_line))
   end
