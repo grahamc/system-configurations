@@ -9,6 +9,9 @@
         name = "hostctl-switch";
         runtimeInputs = with pkgs; [coreutils-full];
         text = ''
+          # Get sudo authentication now so I don't have to wait for it to ask me later
+          sudo --validate
+
           oldGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
 
           darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" "''$@"
@@ -24,6 +27,9 @@
         name = "hostctl-upgrade";
         runtimeInputs = with pkgs; [coreutils-full];
         text = ''
+          # Get sudo authentication now so I don't have to wait for it to ask me later
+          sudo --validate
+
           oldGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
 
           darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" ${self.lib.updateFlags.darwin} "''$@"
