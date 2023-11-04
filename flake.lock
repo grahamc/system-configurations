@@ -285,6 +285,9 @@
         "speakers": "speakers",
         "spoons": "spoons",
         "stackline": "stackline",
+        "tmux-plugin-better-mouse-mode": "tmux-plugin-better-mouse-mode",
+        "tmux-plugin-continuum": "tmux-plugin-continuum",
+        "tmux-plugin-mode-indicator": "tmux-plugin-mode-indicator",
         "tmux-plugin-resurrect": "tmux-plugin-resurrect",
         "tmux-plugin-tmux-suspend": "tmux-plugin-tmux-suspend",
         "tree-sitter-just": "tree-sitter-just",
@@ -448,6 +451,54 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "tmux-plugin-better-mouse-mode": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1508174332,
+        "narHash": "sha256-nPNa3JvDgptGvy2vpo0WSZytyu7kFSEn/Jp/OGA0ZBg=",
+        "owner": "NHDaly",
+        "repo": "tmux-better-mouse-mode",
+        "rev": "aa59077c635ab21b251bd8cb4dc24c415e64a58e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NHDaly",
+        "repo": "tmux-better-mouse-mode",
+        "type": "github"
+      }
+    },
+    "tmux-plugin-continuum": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1658228904,
+        "narHash": "sha256-Z10DPP5svAL6E8ZETcosmj25RkA1DTBhn3AkJ7TDyN8=",
+        "owner": "tmux-plugins",
+        "repo": "tmux-continuum",
+        "rev": "3e4bc35da41f956c873aea716c97555bf1afce5d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tmux-plugins",
+        "repo": "tmux-continuum",
+        "type": "github"
+      }
+    },
+    "tmux-plugin-mode-indicator": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1679652372,
+        "narHash": "sha256-SAzsn4LoG8Ju5t13/U3/ctlJQPyPgv2FjpPkWSeKbP0=",
+        "owner": "MunifTanjim",
+        "repo": "tmux-mode-indicator",
+        "rev": "7027903adca37c54cb8f5fa99fc113b11c23c2c4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "MunifTanjim",
+        "repo": "tmux-mode-indicator",
         "type": "github"
       }
     },

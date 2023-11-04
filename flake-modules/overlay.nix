@@ -65,6 +65,7 @@
 
             rtpFilePathFixes = {
               "tmux-suspend" = "suspend.tmux";
+              "better-mouse-mode" = "scroll_copy_mode.tmux";
             };
             applyRtpFilePathFix = tmuxPluginInfo:
               let

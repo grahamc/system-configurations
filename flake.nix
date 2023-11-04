@@ -136,6 +136,9 @@
 
     "tmux-plugin-resurrect" = {url = "github:tmux-plugins/tmux-resurrect"; flake = false;};
     "tmux-plugin-tmux-suspend" = {url = "github:MunifTanjim/tmux-suspend"; flake = false;};
+    "tmux-plugin-better-mouse-mode" = {url = "github:NHDaly/tmux-better-mouse-mode"; flake = false;};
+    "tmux-plugin-mode-indicator" = {url = "github:MunifTanjim/tmux-mode-indicator"; flake = false;};
+    "tmux-plugin-continuum" = {url = "github:tmux-plugins/tmux-continuum"; flake = false;};
 
     "fish-plugin-autopair-fish" = {url = "github:jorgebucaran/autopair.fish"; flake = false;};
     "fish-plugin-async-prompt" = {url = "github:acomagu/fish-async-prompt"; flake = false;};
