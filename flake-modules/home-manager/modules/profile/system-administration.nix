@@ -49,6 +49,7 @@
           '';
         })
         gzip
+        wget
       ] ++ optionals isLinux [
         trashy
         pipr
