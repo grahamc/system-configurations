@@ -228,10 +228,15 @@ wezterm.on('update-status', function(window, pane)
   local session_name = ''
   local fh,_ = assert(io.popen([[/bin/sh -c '$HOME/.nix-profile/bin/tmux ls -F "#{?session_attached,#{session_name},}"']]))
   for line in fh:lines() do
+    if line == '' then
+      goto continue
+    end
     if session_name ~= '' then
       session_name = session_name .. ' / '
     end
     session_name = session_name .. line
+
+    ::continue::
   end
   if session_name == '' then
     session_name = pane:get_title()
