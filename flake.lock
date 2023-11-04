@@ -48,6 +48,22 @@
         "type": "github"
       }
     },
+    "fish-plugin-done": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1698312794,
+        "narHash": "sha256-7aeSE88tvLx64EWvHqLSikRjOjTrZRXj2fdK5vygsqA=",
+        "owner": "franciscolourenco",
+        "repo": "done",
+        "rev": "054347d2a4aa5e0e7920c850f5999651dc90219c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "franciscolourenco",
+        "repo": "done",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -273,6 +289,7 @@
         "fish-plugin-async-prompt": "fish-plugin-async-prompt",
         "fish-plugin-autopair-fish": "fish-plugin-autopair-fish",
         "fish-plugin-completion-sync": "fish-plugin-completion-sync",
+        "fish-plugin-done": "fish-plugin-done",
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
         "gomod2nix": "gomod2nix",
