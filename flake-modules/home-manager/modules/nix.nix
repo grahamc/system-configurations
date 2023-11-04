@@ -50,6 +50,7 @@
       home.packages = with pkgs; [
         any-nix-shell
         nix-tree
+        nix-melt
         comma
         nix-daemon-reload
       ];
