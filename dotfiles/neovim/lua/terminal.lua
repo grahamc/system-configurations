@@ -291,10 +291,29 @@ vim.api.nvim_create_autocmd(
       -- Don't equalize splits if the new window is floating, it won't get resized anyway.
       -- Don't equalize when vim is starting up or it will reset the window sizes from my session.
       local is_vim_starting = vim.fn.has('vim_starting') == 1
-      if vim.api.nvim_win_get_config(0).relative ~= '' or is_vim_starting then
+      local is_float = vim.api.nvim_win_get_config(0).relative ~= ''
+      if is_float or is_vim_starting then
         return
       end
       vim.cmd.wincmd('=')
+    end,
+    group = vim.api.nvim_create_augroup('Window', {}),
+  }
+)
+
+-- TODO: This won't work until I use a release of neovim that has this fix (right now it's only on nightly):
+-- https://github.com/neovim/neovim/pull/25096
+vim.api.nvim_create_autocmd(
+  {'WinNew',},
+  {
+    callback = function()
+      local is_float = vim.api.nvim_win_get_config(0).relative ~= ''
+      if is_float then
+        local ok, reticle = pcall(require, 'reticle')
+        if ok then
+          reticle.disable_cursorline()
+        end
+      end
     end,
     group = vim.api.nvim_create_augroup('Window', {}),
   }
@@ -2733,6 +2752,7 @@ function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'FoldColumn', {ctermfg = 15, ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'SpecialKey', {ctermfg = 13, ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'NonText', {ctermfg = 51, ctermbg = 'NONE',})
+  vim.api.nvim_set_hl(0, 'Whitespace', {ctermfg = 15, ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'DiagnosticSignError', {ctermfg = 1, ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'DiagnosticSignWarn', {ctermfg = 3, ctermbg = 'NONE',})
   vim.api.nvim_set_hl(0, 'DiagnosticSignInfo', {ctermfg = 4, ctermbg = 'NONE',})
