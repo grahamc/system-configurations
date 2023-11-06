@@ -58,7 +58,7 @@ scrollbar:15:dim\
     --tabstop=2 \
     --info=inline \
     --pointer='>' \
-    --marker='>' \
+    --marker='+' \
     --history='$_fzf_history_file' \
     --preview='echo {}' \
     --preview-window=wrap,bottom,40% \

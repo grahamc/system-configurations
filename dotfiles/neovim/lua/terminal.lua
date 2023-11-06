@@ -1488,6 +1488,7 @@ Plug(
               ["<C-k>"] = actions.preview_scrolling_up,
               ["<C-h>"] = actions.select_horizontal,
               ["<C-u>"] = false,
+              ["<M-CR>"] = actions.toggle_selection,
             },
           },
           prompt_prefix = '   ',
