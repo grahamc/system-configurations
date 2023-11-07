@@ -53,6 +53,7 @@
         nix-melt
         comma
         nix-daemon-reload
+        nil
       ];
 
       repository.symlink.xdg.executable = {
