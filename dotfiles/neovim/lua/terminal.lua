@@ -2674,7 +2674,7 @@ Plug(
             filetypes = { 'sh', 'bash' },
           }),
           builtins.diagnostics.fish,
-          builtins.diagnostics.markdownlint,
+          builtins.diagnostics.markdownlint_cli2,
           builtins.diagnostics.actionlint,
         },
       })
