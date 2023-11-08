@@ -65,11 +65,11 @@ function process-widget --description 'Manage processes'
   set choice \
       ( \
         FZF_DEFAULT_COMMAND="$reload_command" \
-        FZF_HINTS='ctrl+alt+r: refresh process list\nctrl+alt+o: view process output' \
+        FZF_HINTS='ctrl+alt+r: refresh process list\nctrl+alt+o: view process output\nctrl+alt+e: view environment variables (at the time the process was launched)' \
         fzf \
             # only search on PID, PPID, and the command
             --nth '2,3,7..' \
-            --bind "ctrl-alt-o:execute@process-output {2} 1>/dev/tty 2>&1 </dev/tty@,ctrl-alt-r:reload@$reload_command@+first" \
+            --bind "ctrl-alt-o:execute@process-output {2} 1>/dev/tty 2>&1 </dev/tty@,ctrl-alt-r:reload@$reload_command@+first,ctrl-alt-e:execute@ps -o command -Eww {2} | less 1>/dev/tty 2>&1@" \
             --header-lines=1 \
             --prompt 'processes: ' \
             --preview "$preview_command" \
