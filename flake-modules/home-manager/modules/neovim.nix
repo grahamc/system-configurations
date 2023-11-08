@@ -37,13 +37,14 @@
             "/Users/biggs/.hammerspoon/Spoons/EmmyLua.spoon/annotations"
           ] ++ runtimeDirectories;
           configAttrs = {
+            "$schema" = "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json";
             runtime = {
               version = "LuaJIT";
             };
             workspace = {
               # Make the server aware of Neovim runtime files
               library = workspaceDirectories;
-              checkThirdParty = false;
+              checkThirdParty = "Disable";
             };
             telemetry = {
               # Do not send telemetry data containing a randomized but unique identifier
