@@ -1,0 +1,7 @@
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qnix-darwin\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QI install some Homebrew packages through nix-darwin, but nix-darwin doesn't provide brew so you'll have to install it yourself.\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qsingle-user Nix installation: The user that installed Nix is always trusted in a single user installation.\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qmulti-user Nix installation: Run \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q and look for your \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q in the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q key.\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qapfs.util isn't working: Make sure that the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q has the permission \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Qapfs.util isn't working: Make sure that the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q has the permission \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qdotfiles\\E$"}

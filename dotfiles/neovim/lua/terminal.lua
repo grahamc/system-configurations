@@ -2528,6 +2528,9 @@ Plug(
   }
 )
 
+-- To read/write config files the way the vscode extension does.
+Plug('barreiroleo/ltex-extra.nvim')
+
 Plug(
   'williamboman/mason-lspconfig.nvim',
   {
@@ -2613,6 +2616,17 @@ Plug(
             'c', 'cs', 'cpp', 'css', 'go', 'haskell', 'java', 'javascript', 'less', 'lua', 'perl', 'php',
             'python', 'r', 'ruby', 'sass', 'scala', 'swift',
           },
+        },
+
+        ltex = {
+          on_attach = function(client, buffer_number)
+            on_attach(client, buffer_number)
+            require("ltex_extra").setup({
+              load_langs = {'en-US'},
+              -- For compatibility with the vscode extension
+              path = ".vscode",
+            })
+          end,
         },
       }
 

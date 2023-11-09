@@ -1,9 +1,17 @@
 {
+  "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json",
+
   // Disable line length
   "MD013": false,
 
   // Disable deprecated rules:
   "MD002": false,
-  "MD006": false
+  "MD006": false,
 
+  // HTML elements that can be used
+  "MD033": {
+    "allowed_elements": [
+      "span"
+    ]
+  }
 }

@@ -24,11 +24,11 @@ First, clone the repository and go into its directory by running `git clone http
 
     * Keyboard:
 
-        * Set the keyboard input source to 'Others -> (No Accent Keys)'.
+        * Set the keyboard input source to 'Others → (No Accent Keys)'.
 
-        * Disable the builtin keyboard shortcut for switching input sources, `ctrl+space`.
+        * Disable the built-in keyboard shortcut for switching input sources, `ctrl+space`.
 
-        * Disable the builtin keyboard shortcuts for switching workspaces, `ctrl+left` and `ctrl+right`.
+        * Disable the built-in keyboard shortcuts for switching workspaces, `ctrl+left` and `ctrl+right`.
 
     * Setup Hammerspoon using the instructions in the [Hammerspoon Getting Started Guide](https://www.hammerspoon.org/go/).
 
@@ -44,7 +44,7 @@ First, clone the repository and go into its directory by running `git clone http
 
 ### Using a Standalone Executable
 
-My home config is also available as an executable with no dependencies. The executable is a self-extracting archive (SEA) that contains all the commandline programs I use, as well as my config files for them. Running it will start my shell which will have access to these programs and configs.
+My home config is also available as an executable with no dependencies. The executable is a self-extracting archive (SEA) that contains all the command-line programs I use, as well as my config files for them. Running it will start my shell which will have access to these programs and configs.
 
 * Run the shell with `sh -c "$(curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run-shell.sh)"`
 
@@ -102,6 +102,6 @@ To avoid building everything on your machine, you can configure Nix to use this 
 
   * multi-user Nix installation: Run `nix show-config` and look for your `$USER` in the `trusted-users` key.
 
-* <span id="add-trust">Add yourself to trusted-users</space>:
+* <span id="add-trust">Add yourself to trusted-users</span>:
 
   * Run `echo "extra-trusted-users = $USER" | sudo tee -a /etc/nix/nix.conf` to add yourself as a trusted user in the Nix system configuration. Then [restart the Nix daemon](#restart-daemon) to apply the changes.
