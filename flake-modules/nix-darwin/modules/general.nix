@@ -54,7 +54,7 @@
         settings = {
           trusted-users = [
             "root"
-            "biggs"
+            username
           ];
           experimental-features = [
             "nix-command"

@@ -1,5 +1,5 @@
 {
-  description = "Biggs's host configurations";
+  description = "Biggie's host configurations";
 
   nixConfig = {
     extra-substituters = "https://bigolu.cachix.org";

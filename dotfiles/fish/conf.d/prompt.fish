@@ -143,7 +143,6 @@ function _login_context
 
     if set --query special_host
     or set --query privilege
-    or test "$USER" != 'biggs'
         set user $USER
         if set --query privilege
             set user "$user ($privilege)"

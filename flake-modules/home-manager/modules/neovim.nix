@@ -34,7 +34,7 @@
           workspaceDirectories = [
             "${specialArgs.flakeInputs.neodev-nvim}/types/stable"
             "${config.xdg.dataHome}/nvim/plugged"
-            "/Users/biggs/.hammerspoon/Spoons/EmmyLua.spoon/annotations"
+            "${specialArgs.homeDirectory}/.hammerspoon/Spoons/EmmyLua.spoon/annotations"
           ] ++ runtimeDirectories;
           configAttrs = {
             "$schema" = "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json";

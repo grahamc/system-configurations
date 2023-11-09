@@ -97,7 +97,7 @@
               };
               Service = {
                 Type = "oneshot";
-                ExecStart = "%h/.nix-profile/bin/home-manager expire-generations now";
+                ExecStart = "${config.home.profileDirectory}/bin/home-manager expire-generations now";
               };
             };
           };

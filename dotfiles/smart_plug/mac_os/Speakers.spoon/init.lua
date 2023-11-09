@@ -30,7 +30,12 @@ local function execute(executable, arguments, callback)
   ):start()
 end
 
-local speakerctl_path = os.getenv('HOME') .. '/.nix-profile/bin/speakerctl'
+local speakerctl_path = nil
+-- Source login shell config so I can find `speakerctl`. I'm using `printf` so there's no trailing newline.
+---@diagnostic disable-next-line: unused-local
+execute('/bin/sh', {'-c', [[. ~/.profile; printf "$(command -v speakerctl)"]]}, function (exit_code, stdout, stderr)
+  speakerctl_path = stdout
+end):waitUntilExit()
 
 local function turn_on()
   execute(
