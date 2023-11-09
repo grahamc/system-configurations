@@ -28,7 +28,8 @@ ctrl-t:track+unbind(change),\
 focus:rebind(change)+change-preview-label($enter_help_hint),\
 f7:prev-history,\
 f8:next-history,\
-ctrl-p:toggle-preview\
+ctrl-p:toggle-preview,\
+alt-a:toggle-all\
 ' \
 --color '\
 16,\
