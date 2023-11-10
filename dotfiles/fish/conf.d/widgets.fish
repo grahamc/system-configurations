@@ -61,7 +61,9 @@ function process-widget --description 'Manage processes'
     set reload_command 'ps -e -o user,pid,ppid,nice=NICE,start,etime,command'
     set preview_command 'ps -p {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree -w -g 3 -p {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp " 0*$(echo {2}) $(echo {1}) .*" --regexp "^"'
   end
-  set environment_command 'eval (test (ps -o user= -p {2}) = root && echo "sudo ")"ps -o command -Eww {2}" | less 1>/dev/tty 2>&1'
+  # TODO: I have to add `|| echo` because if the command substitution doesn't print anything, even the quoted string
+  # next to it won't print
+  set environment_command 'eval (test (ps -o user= -p {2}) = root && echo "sudo " || echo)"ps -o command -Eww {2}" | less 1>/dev/tty 2>&1'
 
   set choice \
       ( \
