@@ -27,6 +27,9 @@
   mt = mergetool
   dt = difftool
   f = fetch
+  # A safer force push. For more info read this:
+  # https://stackoverflow.com/questions/65837109/when-should-i-use-git-push-force-if-includes
+  force-push = push --force-with-lease --force-if-includes
 [init]
   defaultBranch = master
 [merge]
