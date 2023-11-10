@@ -133,6 +133,7 @@
     "vim-plugin-middleclass" = {url = "github:anuvyklack/middleclass"; flake = false;};
     "vim-plugin-animation-nvim" = {url = "github:anuvyklack/animation.nvim"; flake = false;};
     "vim-plugin-windows-nvim" = {url = "github:anuvyklack/windows.nvim"; flake = false;};
+    "vim-plugin-ltex-extra-nvim" = {url = "github:barreiroleo/ltex-extra.nvim"; flake = false;};
 
     "tmux-plugin-resurrect" = {url = "github:tmux-plugins/tmux-resurrect"; flake = false;};
     "tmux-plugin-tmux-suspend" = {url = "github:MunifTanjim/tmux-suspend"; flake = false;};

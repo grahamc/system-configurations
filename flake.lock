@@ -332,6 +332,7 @@
         "vim-plugin-folding-nvim": "vim-plugin-folding-nvim",
         "vim-plugin-friendly-snippets": "vim-plugin-friendly-snippets",
         "vim-plugin-git-blame-nvim": "vim-plugin-git-blame-nvim",
+        "vim-plugin-ltex-extra-nvim": "vim-plugin-ltex-extra-nvim",
         "vim-plugin-mason-lspconfig-nvim": "vim-plugin-mason-lspconfig-nvim",
         "vim-plugin-mason-nvim": "vim-plugin-mason-nvim",
         "vim-plugin-middleclass": "vim-plugin-middleclass",
@@ -948,6 +949,22 @@
       "original": {
         "owner": "f-person",
         "repo": "git-blame.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-ltex-extra-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1690583338,
+        "narHash": "sha256-LzgAICiGuaHfYkQq7/4bRJ1M5KopFBcSTVTHrb3rm+w=",
+        "owner": "barreiroleo",
+        "repo": "ltex-extra.nvim",
+        "rev": "9bed99b2b8488cc2daf66c76d2e0cf051ee80d13",
+        "type": "github"
+      },
+      "original": {
+        "owner": "barreiroleo",
+        "repo": "ltex-extra.nvim",
         "type": "github"
       }
     },
