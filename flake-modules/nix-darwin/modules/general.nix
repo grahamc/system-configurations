@@ -126,12 +126,16 @@
           # When hibernating, actually power down instead of the default behaviour where a hibernation file is
           # created, but the computer stays in suspension.
           sudo pmset -b hibernatemode 25
+
           # Homebrew services won't have any of my nix profile /bin directories on their path so below I'm copying
           # the programs they need into a directory that is on their $PATH.
           #
           # One of hammerspoon's plugins, stackline, needs yabai.
           test -e /usr/local/bin/yabai && rm /usr/local/bin/yabai
           cp ${config.services.yabai.package}/bin/yabai /usr/local/bin/
+
+          # Disable the Gatekeeper so I can open apps that weren't codesigned without being warned.
+          sudo spctl --master-disable
         '';
         defaults = {
           NSGlobalDomain = {
