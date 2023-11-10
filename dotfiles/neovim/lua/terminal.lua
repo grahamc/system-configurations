@@ -2543,6 +2543,8 @@ Plug(
         local buffer_keymap = vim.api.nvim_buf_set_keymap
         local keymap_opts = { noremap = true, silent = true }
 
+        -- TODO: foldmethod is window-local, but I want to set it per buffer. Possible solution here:
+        -- https://github.com/ii14/dotfiles/blob/e40d2b8316ec72b5b06b9e7a1d997276ff4ddb6a/.config/nvim/lua/m/opt.lua
         local foldmethod = vim.o.foldmethod
         local isFoldmethodOverridable = foldmethod ~= 'marker' and foldmethod ~= 'diff'
         if capabilities.foldingRangeProvider and isFoldmethodOverridable then
