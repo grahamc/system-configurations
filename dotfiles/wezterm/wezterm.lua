@@ -60,7 +60,7 @@ local my_colors_per_color_scheme = {
     -- highlight color
     [51] = '#292e39',
     -- nvim-telescope border
-    [52] = '#41444e',
+    [52] = '#31353d',
     -- For folded lines
     [53] = '#232832',
   },
