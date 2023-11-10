@@ -105,7 +105,7 @@
           "xcodes"
           "hammerspoon"
           "visual-studio-code"
-          "gitkraken"
+          "gitnuro"
           "firefox-developer-edition"
           "finicky"
           "docker"
@@ -114,6 +114,7 @@
         ];
         taps = [
           "homebrew/cask-versions"
+          "jetpackduba/apps"
         ];
       };
 
