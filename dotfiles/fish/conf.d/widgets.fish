@@ -212,7 +212,8 @@ function history-widget --description 'Search history'
     history --null \
       | fzf-tmux-zoom  \
         --prompt 'history: ' \
-        --preview-window '20%' \
+        --preview-window 'follow' \
+        --preview='printf %s\n {+} | bat --language fish --style plain --color always' \
         --scheme history \
         --read0 \
         --print0 \

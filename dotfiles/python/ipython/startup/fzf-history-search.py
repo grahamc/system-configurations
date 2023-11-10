@@ -134,7 +134,7 @@ class _HistoryPreviewThread(threading.Thread):
                         break
                     indices = [int(s) for s in data.split()]
                     entries = [self.history_getter(i)[1] for i in indices]
-                    code = '\n\n'.join(entries)
+                    code = '\n'.join(entries)
                     highlighted_code = _highlight_code(code)
                     with open(self.fifo_output_path, 'w') as fifo_output:
                         fifo_output.write(highlighted_code)
@@ -195,7 +195,7 @@ def _create_fzf_process(initial_query, fifo_input_path, fifo_output_path):
         f"--history={fzf_history_file}",
         '--exact',
         '--query={}'.format(initial_query),
-        '--preview-window=35%',
+        '--preview-window=follow',
         '--preview={}'.format(_FZF_PREVIEW_SCRIPT %
                               (fifo_input_path, fifo_output_path)),
     ],

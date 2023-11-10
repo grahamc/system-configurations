@@ -61,7 +61,7 @@ scrollbar:15:dim\
     --pointer='>' \
     --marker='+' \
     --history='$_fzf_history_file' \
-    --preview='echo {}' \
+    --preview='printf %s\n {+}' \
     --preview-window=wrap,bottom,40% \
     --multi \
     --no-separator \
