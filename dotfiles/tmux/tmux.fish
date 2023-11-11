@@ -51,9 +51,13 @@ function __fish_prompt_post --on-event fish_prompt
     functions -e (status current-function)
     functions --copy fish_prompt __tmux_integration_old_fish_prompt
     function fish_prompt
-        # \u00A0 is a non-breaking space. I use it to determine where my prompt starts and ends so I can view the
-        # output of the last command. (see: tmux-last-command-output.bash).
-        echo \u00A0"$(__tmux_integration_old_fish_prompt)"\u00A0
+        set prompt "$(__tmux_integration_old_fish_prompt)"
+        # If the original prompt function didn't print anything we shouldn't either since not printing anything
+        # will cause the shell to redraw the prompt in place, but if we add the spaces the prompt won't redraw
+        # in place.
+        if test -n "$prompt"
+            echo \u00A0"$prompt"\u00A0
+        end
     end
 end
 mybind --no-focus \co 'tmux-last-command-output; commandline -f repaint'
