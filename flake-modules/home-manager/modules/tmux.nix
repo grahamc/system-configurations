@@ -67,13 +67,13 @@
       };
 
       repository.symlink.xdg.configFile = {
-        "fish/conf.d/tmux-integration.fish".source = "tmux/tmux-integration.fish";
         "fish/conf.d/tmux.fish".source = "tmux/tmux.fish";
         ${myTmuxConfigPath}.source = "tmux/tmux.conf";
       };
 
       repository.symlink.xdg.executable = {
         "tmux-click-url".source = "tmux/tmux-click-url.py";
+        "tmux-last-command-output".source = "tmux/tmux-last-command-output.bash";
       };
 
       repository.git.onChange  = [
