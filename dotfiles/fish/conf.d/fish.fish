@@ -144,7 +144,6 @@ function _fzf_complete
                 --height '~35%' \
                 --min-height 8 \
                 --preview-window '2,border-left,right,60%' \
-                --margin 0 \
                 --no-header \
                 --bind 'backward-eof:abort,start:toggle-preview,ctrl-o:change-preview-window(bottom,75%,border-top|right,60%,border-left)+refresh-preview' \
                 --select-1 \
