@@ -74,7 +74,6 @@
 
       repository.symlink.xdg.executable = {
         "tmux-click-url".source = "tmux/tmux-click-url.py";
-        "tmux-move-cursor".source = "tmux/tmux-move-cursor.sh";
       };
 
       repository.git.onChange  = [
