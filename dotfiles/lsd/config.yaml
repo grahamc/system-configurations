@@ -23,6 +23,6 @@ total-size: false
 
 hyperlink: always
 
-symlink-arrow: "\uea9c " # 
+symlink-arrow: " "
 
 display: almost-all
