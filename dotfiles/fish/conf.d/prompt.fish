@@ -17,7 +17,7 @@ function fish_prompt --description 'Print the prompt'
     # TODO: This clears the text in the terminal after the cursor. If we don't do this, multiline
     # prompts might not display properly.
     # issue: https://github.com/fish-shell/fish-shell/issues/8418
-    printf \e\[0J 1>/dev/tty
+    printf \e\[0J
 
     # This is what I want to display on the line that separates my prompt from the output of the last command.
     set separator ''

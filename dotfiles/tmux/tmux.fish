@@ -52,12 +52,15 @@ function __fish_prompt_post --on-event fish_prompt
     functions --copy fish_prompt __tmux_integration_old_fish_prompt
     function fish_prompt
         set prompt "$(__tmux_integration_old_fish_prompt)"
+
         # If the original prompt function didn't print anything we shouldn't either since not printing anything
         # will cause the shell to redraw the prompt in place, but if we add the spaces the prompt won't redraw
         # in place.
-        if test -n "$prompt"
-            echo \u00A0"$prompt"\u00A0
+        if test "$(string length --visible -- "$prompt")" = 0
+            return
         end
+
+        echo \u00A0"$prompt"\u00A0
     end
 end
 mybind --no-focus \co 'tmux-last-command-output; commandline -f repaint'
