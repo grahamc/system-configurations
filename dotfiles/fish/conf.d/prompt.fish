@@ -144,6 +144,10 @@ function _login_context
     if set --query special_host
     or set --query privilege
         set user $USER
+        if test -z "$user"
+            set user (set_color --italics)"no name"(set_color normal)
+        end
+
         if set --query privilege
             set user "$user ($privilege)"
         end
