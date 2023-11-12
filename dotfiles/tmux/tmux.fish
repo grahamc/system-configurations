@@ -49,22 +49,15 @@ end
 function __fish_prompt_post --on-event fish_prompt
     # I only want this to run once so delete the function.
     functions -e (status current-function)
-
     functions --copy fish_prompt __tmux_integration_old_fish_prompt
     function fish_prompt
-        set original_prompt "$(__tmux_integration_old_fish_prompt)"
-
+        set prompt "$(__tmux_integration_old_fish_prompt)"
         # If the original prompt function didn't print anything we shouldn't either since not printing anything
-        # will cause the shell to redraw the prompt in place, but if we add the zero-width chars the prompt won't redraw
+        # will cause the shell to redraw the prompt in place, but if we add the spaces the prompt won't redraw
         # in place.
-        if test -z "$original_prompt"
-            return
+        if test -n "$prompt"
+            echo \u00A0"$prompt"\u00A0
         end
-
-        # I use this zero-width char to mark the start/end of my prompt. This way I can extract the last command's
-        # output. (see: tmux-last-command-output.bash for the command output extraction).
-        set zero_width_char \u200D
-        echo $zero_width_char"$original_prompt"$zero_width_char
     end
 end
 mybind --no-focus \co 'tmux-last-command-output; commandline -f repaint'
