@@ -91,7 +91,7 @@ function _make_line --argument-names position context
 end
 
 function _arrows
-    echo (string repeat -n $SHLVL '>')' '
+    echo (string repeat -n $SHLVL '>')
 end
 
 function _python_context
