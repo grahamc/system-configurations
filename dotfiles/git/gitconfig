@@ -45,7 +45,7 @@
   hyperlinks = true
   syntax-theme = base256-brighter
   tabs = 2
-  blame-palette = 0 8
+  blame-palette = 0 51
   pager = "less -+F"
   file-decoration-style = "bright-white ul"
   file-style = "normal"
