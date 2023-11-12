@@ -26,14 +26,19 @@
         zoxide
         file
         chase
+
         # Useful for commands that don't work quite the same way between macOS and Linux
         coreutils-full
+
         gnugrep
+
         # Though less is on most machines by default, I added it here because I need a relatively recent version (600)
         # since that's when they added support for XDG Base Directories.
         less
+
         # This wasn't in a docker container
         gnused
+
         broot
         yash
         hyperfine
@@ -50,6 +55,13 @@
         })
         gzip
         wget
+        which
+
+        # for xargs
+        findutils
+
+        # for ps
+        procps
       ] ++ optionals isLinux [
         trashy
         pipr
