@@ -41,11 +41,7 @@
         patterns.modified = [''^dotfiles/fish/conf\.d/'' ''^dotfiles/fish/config.fish$''];
         confirmation = "A fish configuration has changed, would you like to reload all fish shells?";
         action = ''
-          fish -c 'set --universal _fish_reload_indicator (random)'
-          '';
-      }
-    ];
-  }
+          fish -c 'fish-reload'
         '';
       }
     ];

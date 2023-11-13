@@ -1,3 +1,9 @@
+# I'm defining this before the interactivity check so I can call this from non-interactive shells. This way I can
+# reload my shells from a script.
+function fish-reload
+    set --universal _fish_reload_indicator (random)
+end
+
 if not status is-interactive
     exit
 end
@@ -253,9 +259,6 @@ function _reload_fish --on-variable _fish_reload_indicator
     sleep (math (random 1 100) / 100)
 
     exec fish
-end
-function fish-reload
-    set --universal _fish_reload_indicator (random)
 end
 
 # BASH-style history expansion
