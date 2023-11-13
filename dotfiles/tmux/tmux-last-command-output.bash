@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+set -o errexit
+set -o nounset
+set -o pipefail
+
 # Logic adapted from here:
 # https://github.com/artemave/tmux_capture_last_command_output/blob/bd2cca21bc32c2d6652d7b6fdc36cd61409ddd73/plugin.sh
 
