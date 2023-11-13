@@ -22,7 +22,7 @@
   some = add -u
   undocommit = reset "HEAD^"
   co = checkout
-  gui = "!open -a Gitnuro --args \"$(git rev-parse --show-toplevel)\""
+  gui = "!gitkraken --path \"$(git rev-parse --show-toplevel)\" --log-file /dev/null --show-splash-screen false"
   l = log
   mt = mergetool
   dt = difftool
