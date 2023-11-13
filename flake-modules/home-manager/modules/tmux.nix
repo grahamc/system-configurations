@@ -74,13 +74,14 @@
       repository.symlink.xdg.executable = {
         "tmux-click-url".source = "tmux/tmux-click-url.py";
         "tmux-last-command-output".source = "tmux/tmux-last-command-output.bash";
+        "tmux-config-reload".source = "tmux/tmux-config-reload.bash";
       };
 
       repository.git.onChange  = [
         {
           patterns.modified = [''^dotfiles/tmux/tmux\.conf$''];
           confirmation = "The tmux configuration has changed, would you like to reload tmux?";
-          action = "tmux source-file ~/.config/tmux/tmux.conf";
+          action = "tmux-config-reload";
         }
       ];
     }
