@@ -1498,6 +1498,7 @@ Plug(
         pickers = {
           find_files = {
             hidden = true,
+            follow = true,
           },
           live_grep = {
             additional_args = {
