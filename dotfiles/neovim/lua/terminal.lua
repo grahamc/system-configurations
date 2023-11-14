@@ -217,6 +217,14 @@ vim.api.nvim_create_autocmd(
     end,
   }
 )
+
+local copy = {'pbcopy'}
+local paste = {'pbpaste'}
+vim.g.clipboard = {
+  name = 'my-copy-paste',
+  copy = {['+'] = copy, ['*'] = copy},
+  paste = {['+'] = paste, ['*'] = paste},
+}
 -- }}}
 
 -- Utilities {{{
@@ -1209,23 +1217,6 @@ Plug(
       -- this way endwise triggers on 'o'
       vim.keymap.set('n', 'o', 'A<CR>', {remap = true})
     end
-  }
-)
-
--- Use the ANSI OSC52 sequence to copy text to the system clipboard
-Plug(
-  'ojroques/nvim-osc52',
-  {
-    config = function()
-      require('osc52').setup({ silent = true, })
-
-      vim.cmd([[
-        augroup Osc52
-          autocmd!
-          autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '+' && (!empty($SSH_CLIENT) || !empty($SSH_TTY)) | lua require('osc52').copy_register('+') | endif
-        augroup END
-      ]])
-    end,
   }
 )
 

@@ -83,7 +83,6 @@
     "vim-plugin-vim-plug" = {url = "github:junegunn/vim-plug"; flake = false;};
     "vim-plugin-traces-vim" = {url = "github:markonm/traces.vim"; flake = false;};
     "vim-plugin-nvim-treesitter-endwise" = {url = "github:RRethy/nvim-treesitter-endwise"; flake = false;};
-    "vim-plugin-nvim-osc52" = {url = "github:ojroques/nvim-osc52"; flake = false;};
     "vim-plugin-virt-column-nvim" = {url = "github:lukas-reineke/virt-column.nvim"; flake = false;};
     "vim-plugin-plenary-nvim" = {url = "github:nvim-lua/plenary.nvim"; flake = false;};
     "vim-plugin-telescope-nvim" = {url = "github:nvim-telescope/telescope.nvim"; flake = false;};

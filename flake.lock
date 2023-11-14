@@ -346,7 +346,6 @@
         "vim-plugin-nvim-lspconfig": "vim-plugin-nvim-lspconfig",
         "vim-plugin-nvim-navic": "vim-plugin-nvim-navic",
         "vim-plugin-nvim-notify": "vim-plugin-nvim-notify",
-        "vim-plugin-nvim-osc52": "vim-plugin-nvim-osc52",
         "vim-plugin-nvim-surround": "vim-plugin-nvim-surround",
         "vim-plugin-nvim-tree-lua": "vim-plugin-nvim-tree-lua",
         "vim-plugin-nvim-treesitter-endwise": "vim-plugin-nvim-treesitter-endwise",
@@ -1173,22 +1172,6 @@
       "original": {
         "owner": "rcarriga",
         "repo": "nvim-notify",
-        "type": "github"
-      }
-    },
-    "vim-plugin-nvim-osc52": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1697352069,
-        "narHash": "sha256-ulQsckgz1bOuAQpFZJ18aPpNc8eQz5n84H1vl4FDBl8=",
-        "owner": "ojroques",
-        "repo": "nvim-osc52",
-        "rev": "5689dc08ee1ade3feb7f74bdd6e539fba70f3064",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ojroques",
-        "repo": "nvim-osc52",
         "type": "github"
       }
     },
