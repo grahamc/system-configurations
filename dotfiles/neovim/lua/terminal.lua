@@ -1212,19 +1212,23 @@ Plug(
   }
 )
 
--- Use the ANSI OSC52 sequence to copy text to the system clipboard
+-- Use the ANSI OSC52 sequence to copy text to the system clipboard.
+-- TODO This is being upstreamed so I'll be able to remove this.
+-- issue: https://github.com/neovim/neovim/pull/25872
 Plug(
   'ojroques/nvim-osc52',
   {
     config = function()
-      require('osc52').setup({ silent = true, })
+      local osc = require('osc52')
 
-      vim.cmd([[
-        augroup Osc52
-          autocmd!
-          autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '+' && (!empty($SSH_CLIENT) || !empty($SSH_TTY)) | lua require('osc52').copy_register('+') | endif
-        augroup END
-      ]])
+      osc.setup({ silent = true, })
+
+      local function copy()
+        if vim.v.event.operator == 'y' and vim.v.event.regname == '+' then
+          osc.copy_register('+')
+        end
+      end
+      vim.api.nvim_create_autocmd('TextYankPost', {callback = copy})
     end,
   }
 )
