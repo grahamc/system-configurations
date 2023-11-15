@@ -111,6 +111,7 @@
           "docker"
           "unnaturalscrollwheels"
           "MonitorControl"
+          "responsively"
         ];
         taps = [
           "homebrew/cask-versions"
