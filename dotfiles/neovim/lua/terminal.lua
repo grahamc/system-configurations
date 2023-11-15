@@ -220,17 +220,6 @@ vim.api.nvim_create_autocmd(
 -- }}}
 
 -- Utilities {{{
-local function unicode(hex)
-  local hex_length = #hex
-  local unicode_format_specifier = hex_length > 4 and 'U' or 'u'
-  return vim.fn.execute(
-    string.format(
-      [[echon "\%s%s"]],
-      unicode_format_specifier,
-      hex
-    )
-  )
-end
 local function vim_get_visual_selection()
   local mode_char = vim.fn.mode()
   -- "\x16" is the code for ctrl+v i.e. visual-block mode
@@ -618,14 +607,14 @@ function StatusLine()
 
   local readonly = nil
   if vim.o.readonly then
-    local indicator = unicode('f0341')
+    local indicator = '󰍁'
     readonly = '%#StatusLineStandoutText#' .. indicator
   end
 
   local reg_recording = nil
   local recording_register = vim.fn.reg_recording()
   if recording_register ~= '' then
-    reg_recording = '%#StatusLine# ' .. '%#StatusLineRecordingIndicator#' .. unicode('f044a') .. ' %#StatusLine#REC@' .. recording_register
+    reg_recording = '%#StatusLine# ' .. '%#StatusLineRecordingIndicator#󰑊 %#StatusLine#REC@' .. recording_register
   end
 
   local search_info = nil
@@ -633,7 +622,7 @@ function StatusLine()
   if ok then
     if czs.display_results() then
       local _, current, count = czs.output()
-      search_info = '%#StatusLine# ' .. unicode('f002') .. ' ' .. string.format("%s/%s", current, count)
+      search_info = '%#StatusLine#  ' .. string.format("%s/%s", current, count)
     end
   end
 
@@ -646,25 +635,25 @@ function StatusLine()
   local diagnostic_list = {}
   local error_count = diagnostic_count.error
   if error_count > 0 then
-    local icon = unicode('f0159') .. ' '
+    local icon = '󰅙 '
     local error = '%#StatusLineErrorText#' .. icon .. error_count
     table.insert(diagnostic_list, error)
   end
   local warning_count = diagnostic_count.warning
   if warning_count > 0 then
-    local icon = unicode('f0026') .. ' '
+    local icon = '󰀦 '
     local warning = '%#StatusLineWarningText#' .. icon  .. warning_count
     table.insert(diagnostic_list, warning)
   end
   local info_count = diagnostic_count.info
   if info_count > 0 then
-    local icon = unicode('f05a') .. ' '
+    local icon = ' '
     local info = '%#StatusLineInfoText#' .. icon  .. info_count
     table.insert(diagnostic_list, info)
   end
   local hint_count = diagnostic_count.hint
   if hint_count > 0 then
-    local icon = unicode('f0fd') .. ' '
+    local icon = ' '
     local hint = '%#StatusLineHintText#' .. icon  .. hint_count
     table.insert(diagnostic_list, hint)
   end
@@ -736,7 +725,7 @@ function StatusLine()
   elseif startswith(mode, 'T') then
     highlights = make_highlight_names('Terminal')
   end
-  local mode_indicator = highlights.outer .. unicode('e0b6') .. highlights.mode .. ' ' .. mode .. ' ' .. highlights.inner .. unicode('e0b5')
+  local mode_indicator = highlights.outer .. '' .. highlights.mode .. ' ' .. mode .. ' ' .. highlights.inner .. ''
   table.insert(left_side_items, mode_indicator)
   if filetype then
     table.insert(left_side_items, filetype)
@@ -766,7 +755,7 @@ function StatusLine()
   local statusline_separator = '%#StatusLine# %=' .. showcmd .. '%#StatusLine#%= '
 
   local padding = '%#StatusLine# '
-  local statusline = left_side .. statusline_separator .. right_side .. padding .. '%#StatusLinePowerlineOuter#' .. unicode('e0b4')
+  local statusline = left_side .. statusline_separator .. right_side .. padding .. '%#StatusLinePowerlineOuter#' .. ''
 
   return statusline
 end
@@ -1009,7 +998,7 @@ vim.o.winbar = "%{%v:lua.Winbar()%}"
 -- LSP {{{
 vim.diagnostic.config({
   virtual_text = {
-    prefix = unicode('f445'),
+    prefix = '',
   },
   update_in_insert = true,
   -- With this enabled, sign priorities will become: hint=11, info=12, warn=13, error=14
@@ -1750,7 +1739,7 @@ Plug(
       vim.fn.sign_define(
         'LightBulbSign',
         {
-          text = unicode('f0335'),
+          text = '󰌵',
           texthl = 'CodeActionSign',
         }
       )
@@ -1814,7 +1803,7 @@ Plug(
 
       end
 
-      local close_icon = unicode('f467')
+      local close_icon = ''
       local separator_icon = '   '
       require("bufferline").setup({
         ---@diagnostic disable-next-line: missing-fields
@@ -1830,14 +1819,14 @@ Plug(
           offsets = {
             {
               filetype = "NvimTree",
-              text = unicode('f4d3') .. " File Explorer (Press g? for help)",
+              text = " File Explorer (Press g? for help)",
               text_align = "center",
               separator = true,
               highlight = 'NvimTreeTitle',
             },
             {
               filetype = "aerial",
-              text = unicode('f0645') .. " Outline (Press ? for help)",
+              text = "󰙅 Outline (Press ? for help)",
               text_align = "center",
               separator = true,
               highlight = 'OutlineTitle',
@@ -1905,24 +1894,24 @@ Plug(
       function BufferlineWrapper()
         local original = nvim_bufferline()
         local result = original
-        local is_explorer_open = string.find(original, unicode('f4d3'))
-        local is_outline_open = string.find(original, unicode('f0645'))
+        local is_explorer_open = string.find(original, '')
+        local is_outline_open = string.find(original, '󰙅')
         local is_tab_section_visible = string.find(original, '%%=%%#BufferLineTab')
 
         if is_outline_open then
-          result = string.gsub(result, '│%%#OutlineTitle#', '%%#TabLineBorder#' .. unicode('e0b4') .. '%%#BufferLineOffsetSeparator#%0', 1)
+          result = string.gsub(result, '│%%#OutlineTitle#', '%%#TabLineBorder#%%#BufferLineOffsetSeparator#%0', 1)
         else
-          result = result .. '%#TabLineBorder#' .. unicode('e0b4')
+          result = result .. '%#TabLineBorder#'
         end
 
         if is_explorer_open then
-          result = string.gsub(result, '│', '%0%%#TabLineBorder#' .. unicode('e0b6'), 1)
+          result = string.gsub(result, '│', '%0%%#TabLineBorder#', 1)
         else
-          result = '%#TabLineBorder#' .. unicode('e0b6') .. result
+          result = '%#TabLineBorder#' .. result
         end
 
         if is_tab_section_visible then
-          result = string.gsub(result, '%%=%%#BufferLineTab', '%%=%%#TabLineBorder2#' .. unicode('e0b7') .. '%%#BufferLineTab', 1)
+          result = string.gsub(result, '%%=%%#BufferLineTab', '%%=%%#TabLineBorder2#%%#BufferLineTab', 1)
         end
 
         return result
@@ -2011,7 +2000,7 @@ Plug(
   {
     config = function()
       vim.g.gitblame_highlight_group = 'GitBlameVirtualText'
-      local message_prefix = '   ' .. unicode('f445') .. ' '
+      local message_prefix = '    '
       require('gitblame').setup({
         message_template = message_prefix .. '<author>, <date> ∙ <summary>',
         message_when_not_committed = message_prefix .. 'Not committed yet',
@@ -2522,9 +2511,9 @@ Plug(
           -- functions.
           height = 1,
           icons = {
-            package_installed = unicode('f0133') .. '  ',
-            package_pending = unicode('f251') .. '  ',
-            package_uninstalled = unicode('f0766') .. '  ',
+            package_installed =  '󰄳  ',
+            package_pending = '  ',
+            package_uninstalled = '󰝦  ',
           },
           keymaps = {
             toggle_package_expand = "<Tab>",
