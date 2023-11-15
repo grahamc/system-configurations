@@ -187,7 +187,7 @@ function directory-widget --description 'Seach directories'
         FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' '$dir'; fd \$_args --follow --hidden --type directory --type symlink" \
         fzf-tmux-zoom \
             --prompt "$prompt" \
-            --preview 'echo -s {} \n (set_color brwhite)(string repeat --count $FZF_PREVIEW_COLUMNS ─); lsd {}' \
+            --preview 'echo -s {} \n (set_color brwhite)(string repeat --count $FZF_PREVIEW_COLUMNS ─); lsd --color always --hyperlink always {}' \
             --preview-window '75%,~2' \
             --keep-right \
       )

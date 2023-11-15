@@ -1,5 +1,5 @@
 color:
-  when: always
+  when: auto
   theme: custom
 
 blocks:
@@ -21,7 +21,7 @@ indicators: true
 
 total-size: false
 
-hyperlink: always
+hyperlink: auto
 
 symlink-arrow: " "
 
