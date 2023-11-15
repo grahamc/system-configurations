@@ -1936,34 +1936,29 @@ Plug(
   'j-hui/fidget.nvim',
   {
     config = function()
-      local margin = ' '
       require('fidget').setup({
-        text = {
-          spinner = 'dots',
-        },
-        window = {
-          blend = 0,
-        },
-        fmt = {
-          fidget = function(fidget_name, spinner)
-            return string.format('%s%s %s', margin, spinner, fidget_name)
-          end,
-          task = function(task_name, message, percentage)
-            return string.format(
-              '%s%s%s%s',
-              margin,
-              message,
-              percentage and string.format(' (%s%%)', percentage) or '',
-              task_name and string.format(' [%s]', task_name) or ''
-            )
-          end,
-        },
-        sources = {
-          ['null-ls'] = {
-            ignore = true,
+        progress = {
+          ignore_done_already = true,
+          ignore = {'null-ls',},
+          display = {
+            render_limit = 5,
+            done_ttl = 0.1,
+            done_icon = '󰄬',
+            done_style = 'FidgetNormal',
+            progress_style = 'FidgetAccent',
+            group_style = "FidgetAccent",
+            icon_style = "FidgetIcon",
+            progress_icon = {'dots'},
           },
-          ['ltex'] = {
-            ignore = true,
+        },
+        notification = {
+          view = {
+            group_separator = '─────',
+          },
+          window = {
+            normal_hl = 'FidgetNormal',
+            winblend = 0,
+            zindex = 1,
           },
         },
       })
@@ -2861,8 +2856,9 @@ function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'StatusLinePowerlineOuter', {ctermbg = 'NONE', ctermfg = 51,})
   vim.api.nvim_set_hl(0, 'NvimTreeIndentMarker', {ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'MsgArea', {link = 'StatusLine',})
-  vim.api.nvim_set_hl(0, 'FidgetTitle', {ctermbg = 'NONE', ctermfg = 7, italic = true,})
-  vim.api.nvim_set_hl(0, 'FidgetTask', {ctermbg = 'NONE', ctermfg = 15, italic = true,})
+  vim.api.nvim_set_hl(0, 'FidgetAccent', {ctermbg = 'NONE', ctermfg = 7, italic = true,})
+  vim.api.nvim_set_hl(0, 'FidgetNormal', {ctermbg = 'NONE', ctermfg = 15, italic = true,})
+  vim.api.nvim_set_hl(0, 'FidgetIcon', {ctermbg = 'NONE', ctermfg = 5, italic = true,})
   vim.api.nvim_set_hl(0, "NavicIconsFile",          {ctermfg = 2,})
   vim.api.nvim_set_hl(0, "NavicIconsModule",        {ctermfg = 4,})
   vim.api.nvim_set_hl(0, "NavicIconsNamespace",     {ctermfg = 5,})

@@ -134,8 +134,7 @@ function file-widget --description 'Search files'
   set preview_command '
   if file --brief --mime-type {} | grep -q -i image
     if set --query TMUX
-      # This should have "-p sixel", but that won\'t work until fzf has support for sixel.
-      timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" -p quarter {}
+      timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" -p sixel {}
     else if test "$TERM_PROGRAM" = WezTerm
       timg -p kitty --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
     else
