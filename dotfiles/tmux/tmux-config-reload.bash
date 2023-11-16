@@ -4,7 +4,14 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-tmux display-message -p "#{config_files}" | tr "," "\n" | xargs -I CONFIG tmux source-file CONFIG
+# TODO: Ideally I would get my config file(s) straight from tmux with the command below, but the problem is that
+# if my config file is a symlink, tmux will return the destination of the symlink and since I use nix to manage my
+# config files, the destination of the symlink will change every time my nix generation changes. I should see if
+# tmux would be willing to provide a way to get the symlink path instead of the destination path. In the meantime,
+# I'll just hardcode it since it probably won't change anytime soon.
+#
+# tmux display-message -p "#{config_files}" | tr "," "\n" | xargs -I CONFIG tmux source-file CONFIG
+tmux source-file "${XDG_CONFIG_HOME:-$HOME/.config}/tmux/tmux.conf"
 
 # Display an indicator to let the user know the config has reloaded. I added an extra space before 'RELOADED' so the
 # indicator would take up as much space as the 'RELOADING' one
