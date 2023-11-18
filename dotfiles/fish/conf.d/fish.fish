@@ -325,6 +325,11 @@ function _man_page
         return
     end
 
+    set wrapped (string match --groups-only --regex -- '.*\-\-wraps (.*)' (complete -c $manpage_name))
+    if test -n "$wrapped"
+        set manpage_name $wrapped
+    end
+
     # If the token underneath or right before the cursor starts with a '-' try to search for that flag
     set current_token (commandline --current-token)
     if test -z "$current_token"
