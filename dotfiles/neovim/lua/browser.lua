@@ -15,9 +15,9 @@ Plug(
       vim.g.firenvim_config =  {
         localSettings = {
           ['.*'] = {
-            -- Don't automatically load firenvim in text areas, I'll do it manually with a keybind
+            -- Don't automatically load firenvim in text areas, I'll do it manually with a key bind
             takeover = 'never',
-            -- Use firenvim's commandline instead of neovims
+            -- Use firenvim's commandline instead of neovim's
             cmdline = 'firenvim',
             -- A second after the cursor moves, hide the commandline. This is a workaround for a bug:
             -- https://github.com/glacambre/firenvim#configuring-message-timeout

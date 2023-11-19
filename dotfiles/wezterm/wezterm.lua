@@ -26,7 +26,7 @@ config.audible_bell = 'Disabled'
 config.default_cursor_style = 'BlinkingBar'
 config.bold_brightens_ansi_colors = false
 config.disable_default_key_bindings = true
--- I had an issue where WezTerm would freeze sometimes when I input a key and I would have to input another key
+-- I had an issue where WezTerm would sometimes freeze when I input a key and I would have to input another key
 -- to fix it, but setting this to false seems to fix that. Solution came from here:
 -- https://www.reddit.com/r/commandline/comments/1621suy/help_issue_with_wezterm_and_vim_key_repeat/
 config.use_ime = false
@@ -113,7 +113,7 @@ local function create_color_schemes(colors_per_color_scheme)
       elseif index == 7 then
         color_scheme['foreground'] = color
         color_scheme['cursor_border'] = color
-        -- TODO: For cursor_border to work, cursor_bg needs to be set to the same color
+        -- TODO: For `cursor_border` to work, `cursor_bg` needs to be set to the same color
         -- issue: https://github.com/wez/wezterm/issues/1494
         color_scheme['cursor_bg'] = color
       elseif index == 15 then
@@ -208,12 +208,12 @@ wezterm.on('toggle-theme', function(window)
   window:set_config_overrides(overrides)
 end)
 
--- titlebar
+-- Title bar
 config.use_fancy_tab_bar = true
 config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 config.show_new_tab_button_in_tab_bar = false
 config.show_tab_index_in_tab_bar = false
--- TODO: idk why I need this
+-- TODO: I don't know why I need this
 config.colors = {}
 -- Update the status bar with the current window title
 wezterm.on('update-status', function(window, pane)
@@ -221,7 +221,7 @@ wezterm.on('update-status', function(window, pane)
   local foreground_color = effective_config.color_schemes[effective_config.color_scheme].foreground
   if not window:is_focused() then
     -- Using `:lower()` since WezTerm does that to all the colors I set
-    -- TODO: Dim the colors programatically
+    -- TODO: Dim the colors programmatically
     foreground_color = dimmed_foreground_colors[foreground_color:lower()]
   end
 

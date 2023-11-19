@@ -38,7 +38,7 @@ vim.api.nvim_create_autocmd(
 
 vim.keymap.set({'i'}, 'jk', '<Esc>')
 
--- 1. reindent the pasted text
+-- 1. re-indent the pasted text
 -- 2. move to the end of the pasted text
 vim.keymap.set({'n'}, 'p', 'p=`]', {silent = true})
 
@@ -94,9 +94,9 @@ vim.keymap.set({'n'}, '<Enter>', 'o<ESC>')
 -- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
 vim.keymap.set({'n'}, '<S-Enter>', 'O<ESC>')
 
--- Disable language providers. Feels like a lot of trouble to install neovim bindings for all these languages
--- so I'll just avoid plugins that require them. By disabling the providers, I won't get a warning about
--- missing bindings when I run ':checkhealth'.
+-- Disable language providers. Feels like a lot of trouble to install neovim bindings for all these languages so
+-- I'll just avoid plugins that require them. By disabling the providers, I won't get a warning about
+-- missing bindings when I run `:checkhealth`.
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_node_provider = 0
@@ -104,7 +104,7 @@ vim.g.loaded_perl_provider = 0
 
 vim.keymap.set({'n'}, 'Q', '<Nop>')
 
--- Execute macros more quickly by enabling lazyredraw and disabling events while the macro is running
+-- Execute macros more quickly by enabling `lazyredraw` and disabling events while the macro is running
 local function get_char()
   local ret_val, char_num = pcall(vim.fn.getchar)
   -- Return nil if error (e.g. <C-c>) or for control characters
@@ -202,8 +202,8 @@ vim.api.nvim_create_autocmd(
   }
 )
 
--- Autocommands get executed without smagic so I make sure that I explicitly specify it on the commandline
--- so if my autocommand has a substitute command it will use smagic.
+-- Autocommands get executed without `smagic` so I make sure that I explicitly specify it on the commandline
+-- so if my autocommand has a substitute command it will use `smagic`.
 SmagicAbbreviation = function()
   local cmdline = vim.fn.getcmdline()
   if vim.fn.getcmdtype() == ':'
@@ -224,8 +224,8 @@ local vim_default_overrides_group_id = vim.api.nvim_create_augroup('VimDefaultOv
 
 -- Vim's default filetype plugins get run when filetype detection is enabled (i.e. ':filetype plugin on').
 -- So in order to override settings from vim's filetype plugins, these FileType autocommands need to be registered
--- after filetype detection is enabled. Filetype detection is turned on in plug_end() so this function gets called at
--- PlugEndPost, which is right after plug_end() is called.
+-- after filetype detection is enabled. File type detection is turned on in plug_end() so this function gets called at
+-- `PlugEndPost`, which is right after plug_end() is called.
 local function override_default_filetype_plugins()
   -- Don't automatically hard-wrap text
   vim.api.nvim_create_autocmd(
@@ -240,7 +240,7 @@ local function override_default_filetype_plugins()
     }
   )
 
-  -- Use vim help pages for keywordprg in vim files
+  -- Use vim help pages for `keywordprg` in vim files
   vim.api.nvim_create_autocmd(
     'FileType',
     {
@@ -262,11 +262,11 @@ vim.api.nvim_create_autocmd(
 -- }}}
 
 -- Searching {{{
--- searching is only case sensitive when the query contains an uppercase letter
+-- searching is only case-sensitive when the query contains an uppercase letter
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
--- Use ripgrep as the grep program, if it's available. Otherwise use the internal
+-- Use ripgrep as the grep program, if it's available. Otherwise, use the internal
 -- grep implementation since it's cross-platform
 vim.o.grepprg = vim.fn.executable('rg') and 'rg --vimgrep --smart-case --follow' or 'internal'
 
@@ -304,7 +304,7 @@ vim.g.indentwise_suppress_keymaps = 1
 
 -- replacement for matchit since matchit wasn't working for me
 Plug('andymass/vim-matchup')
--- Don't display offscreen matches in my statusline or a popup window
+-- Don't display off-screen matches in my statusline or a popup window
 vim.g.matchup_matchparen_offscreen = {}
 
 -- Additional text objects and motions
@@ -328,8 +328,8 @@ Plug(
 Plug('tommcdo/vim-exchange')
 
 -- Commands/mappings for working with variants of words:
--- - A command for performing substitutions. More features than vim's builtin :substitution
--- - A command for creating abbreviations. More features than vim's builtin :iabbrev
+-- - A command for performing substitutions. More features than vim's built-in :substitution
+-- - A command for creating abbreviations. More features than vim's built-in `:iabbrev`
 -- - Mappings for case switching e.g. mixed-case, title-case, etc.
 Plug('tpope/vim-abolish')
 
@@ -338,7 +338,7 @@ Plug(
   'michaeljsmith/vim-indent-object',
   {
     config = function()
-      -- Make 'ai' and 'ii' behave like 'aI' and 'iI' respectively
+      -- Make `ai` and `ii` behave like `aI` and `iI` respectively
       vim.keymap.set({'x', 'o'}, 'ai', 'aI', {remap = true})
       vim.keymap.set({'x', 'o'}, 'ii', 'iI', {remap = true})
     end,
@@ -387,7 +387,7 @@ Plug(
           augend.integer.alias.binary,
           -- octal: 0o00
           augend.integer.alias.octal,
-          -- semver: 1.22.1
+          -- Semantic Versioning: 1.22.1
           augend.semver.alias.semver,
           -- uppercase letter: A
           augend.constant.alias.Alpha,

@@ -5,3 +5,62 @@
 {"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qapfs.util isn't working: Make sure that the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q has the permission \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Qapfs.util isn't working: Make sure that the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q has the permission \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
 {"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qdotfiles\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QMiscellaneous {{{\\E$"}
+{"rule":"PCT_SINGULAR_NOUN_PLURAL_VERB_AGREEMENT","sentence":"^\\QGet help buffers to open in the current window by first opening it in a new tab (this is done elsewhere in my config),\nclosing the tab and jumping to the previous buffer, the help buffer.\\E$"}
+{"rule":"CONSECUTIVE_SPACES","sentence":"^\\QI have a mapping in my terminal for  that sends F9 to get around the fact that TMUX considers  the\nsame as  right now since TMUX lost support for extended keys.\\E$"}
+{"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q}}}\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QUtilities {{{\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QAutosave {{{\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QWindows {{{\nopen new horizontal and vertical panes to the right and bottom respectively\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QDon't equalize when vim is starting up so it doesn't reset the window sizes from my session.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QTabs {{{\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QIndentation {{{\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QFolds {{{\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QAutocomplete {{{\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QCommand line {{{\non first wildchar press (), show all matches and complete the longest common substring among them.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QSearch {{{\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QSessions {{{\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QIf neovim's stdin isn't the terminal, then that means content is being\npiped in and we should load that instead.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QAesthetics {{{\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QStatusline {{{\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QStatusColumn {{{\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QCursor {{{\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QWinbar {{{\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\Qthe 5 is for the delimiter ' > ' and 2 more for the icon\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QLSP {{{\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QTerminal {{{\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QPlugins {{{\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QPlugins {{{\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QMiscellaneous {{{\nAdd icons to the gutter to represent version control changes (e.g. new lines, modified lines, etc.)\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QMiscellaneous {{{\nAdd icons to the gutter to represent version control changes (e.g. new lines, modified lines, etc.)\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QI want\nthem to be added to the sign column so I know where to color my statuscolumn border.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\Q{|}                     {\n|\n}\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QOSC52 is also being upstreamed so I may be able to just use that depending on how they do it:\nhttps://github.com/neovim/neovim/pull/25872 .\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QOSC52 is also being upstreamed so I may be able to just use that depending on how they do it:\nhttps://github.com/neovim/neovim/pull/25872.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QOutside TMUX the above won't work, I have to use , so I just map both.\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\Q\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q closes the window if the buffer is open in one so we have to switch to a different buffer first.\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\Q}}}\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QFile Explorer {{{\\E$"}
+{"rule":"CONSECUTIVE_SPACES","sentence":"^\\QTODO: Don't block  if signature help is active\nhttps://github.com/hrsh7th/cmp-nvim-lsp-signature-help/issues/13\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE_2","sentence":"^\\QAdjust the rankings so the new rankings will be:\nEverything else\nText\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QTool Manager {{{\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QIdeally I'd use a function here so I could set it to '<screen_height> - 1', but this field doesn't support\nfunctions.\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\Qfolding-nvim prints a message if any attached language server does not support folding so I'm suppressing\nthat.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QSet the filetype of all the currently open buffers to trigger a 'FileType' event for each buffer so nvim_lsp\nhas a chance to attach to any buffers that were openeed before it was configured.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QCLI to LSP {{{\nA language server that acts as a bridge between neovim's language server client and commandline tools that don't\nsupport the language server protocol.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QColor scheme {{{\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QI need this config to be applied earlier so you don't see a flash of the default colorscheme and then mine.\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QI need this config to be applied earlier so you don't see a flash of the default color scheme and then mine.\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QThe \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q highlights are the so the tabline looks blank before bufferline populates it so it needs the same\nbackground color as bufferline.\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QThe foreground needs to match the background so you can't see the text from the\noriginal tabline function.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QInstall Missing Plugins {{{\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QAlways move by screen line, unless a count was specified or we're in a line-wise mode.\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QFeels like a lot of trouble to install neovim bindings for all these languages so\nI'll just avoid plugins that require them.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QReturn nil if error (e.g. ) or for control characters\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QExecute silently so I don't get prompted to press enter if an error is thrown.\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QAutocommands get executed without \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q so I make sure that I explicitly specify it on the commandline\nso if my autocommand has a substitute command it will use \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Qfont\nI'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system, but Flatpak apps\ncan't access my font configuration file from their sandbox so for now I'll hardcode a font.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QSearching {{{\nsearching is only case sensitive when the query contains an uppercase letter\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QPlugins {{{\nMotions for levels of indentation\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QOption overrides {{{\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QSearching {{{\nsearching is only case-sensitive when the query contains an uppercase letter\\E$"}

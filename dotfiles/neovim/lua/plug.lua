@@ -36,10 +36,10 @@ function PlugEnd()
 
   apply_configs(configs_by_type.sync)
 
-  -- Apply the async configurations after everything else that is currently on the event loop. Now
+  -- Apply the asynchronous configurations after everything else that is currently on the event loop. Now
   -- configs are applied after any files specified on the commandline are opened and after sessions are restored.
   -- This way, neovim shows me the first file "instantly" and by the time I've looked at the file and decided on my
-  -- first keypress, the plugin configs have already been applied.
+  -- first key press, the plugin configs have already been applied.
   local function ApplyAsyncConfigs()
     apply_configs(configs_by_type.async)
   end

@@ -1,5 +1,5 @@
 -- vim:foldmethod=marker
--- Exit if vim is not running in a terminal (also referred to as a tty). I detect this by
+-- Exit if vim is not running in a terminal (also referred to as a TTY). I detect this by
 -- checking if the input to vim is coming from a terminal or vim is outputting to a terminal.
 local has_ttyin = vim.fn.has('ttyin') == 1
 local has_ttyout = vim.fn.has('ttyout') == 1
@@ -51,7 +51,7 @@ vim.api.nvim_create_autocmd(
     group = general_group_id,
   }
 )
--- After a quickfix command is run, open the quickfix window , if there are results
+-- After a quickfix command is run, open the quickfix window, if there are results
 vim.api.nvim_create_autocmd(
   'QuickFixCmdPost',
   {
@@ -173,7 +173,7 @@ vim.o.ttimeoutlen = 50
 vim.opt.formatoptions:append('j')
 vim.opt.formatoptions:append('r')
 
--- Open link on mouse click. Works on urls that wrap on to the following line.
+-- Open link on mouse click. Works on URLs that wrap on to the following line.
 function ClickLink()
   local cfile = vim.fn.expand('<cfile>')
   local is_url =
@@ -278,7 +278,7 @@ vim.api.nvim_create_autocmd(
   {
     callback = function()
       -- Don't equalize splits if the new window is floating, it won't get resized anyway.
-      -- Don't equalize when vim is starting up or it will reset the window sizes from my session.
+      -- Don't equalize when vim is starting up so it doesn't reset the window sizes from my session.
       local is_vim_starting = vim.fn.has('vim_starting') == 1
       local is_float = vim.api.nvim_win_get_config(0).relative ~= ''
       if is_float or is_vim_starting then
@@ -339,7 +339,6 @@ vim.keymap.set({'n', 'i'}, '<C-M-]>', vim.cmd.tabnext, {silent = true})
 -- Indentation {{{
 vim.o.expandtab = true
 vim.o.autoindent = true
--- vim.o.smartindent = true
 vim.o.smarttab = true
 -- Round indent to multiple of shiftwidth (applies to < and >)
 vim.o.shiftround = true
@@ -468,8 +467,8 @@ end
 
 local function restore_or_create_session()
   -- We only want to restore/create a session if:
-  --  1. neovim was called with no arguments. The first element in vim.v.argv will always be the path to the vim
-  -- executable and the second will be '--embed' so if no arguments were passed to neovim, the size of vim.v.argv
+  --  1. neovim was called with no arguments. The first element in `vim.v.argv` will always be the path to the vim
+  -- executable and the second will be '--embed' so if no arguments were passed to neovim, the size of `vim.v.argv`
   -- will be two.
   --  2. neovim's stdin is a terminal. If neovim's stdin isn't the terminal, then that means content is being
   -- piped in and we should load that instead.
@@ -777,7 +776,7 @@ end
 -- https://github.com/luukvbaal/statuscol.nvim/blob/98d02fc90ebd7c4674ec935074d1d09443d49318/lua/statuscol/ffidef.lua
 -- https://github.com/luukvbaal/statuscol.nvim/blob/98d02fc90ebd7c4674ec935074d1d09443d49318/lua/statuscol/builtin.lua
 local ffi = require("ffi")
--- I moved this call to `cdef` outside of the fold function because I was getting the error "table overflow" a few
+-- I moved this call to `cdef` outside the fold function because I was getting the error "table overflow" a few
 -- seconds into using neovim. Plus, not calling this during the fold function is faster.
 ffi.cdef([[
   int next_namespace_id;
@@ -900,7 +899,7 @@ vim.api.nvim_create_autocmd(
 local path_segments_cache = {}
 local path_segment_delimiter = '%#NavicSeparator# > '
 local path_segment_delimiter_length = 3
--- NOTE: I'm misusing the minwid parameter in order to signify which path segment to jump to.
+-- NOTE: I'm misusing the `minwid` parameter in order to signify which path segment to jump to.
 function WinbarPath(path_segment_index)
   local buffer = vim.fn.winbufnr(vim.fn.getmousepos().winid)
   local path = vim.api.nvim_buf_get_name(buffer)
@@ -957,7 +956,7 @@ function Winbar()
     -- This is a bug I should submit a fix for.
     winbar = nvim_navic.get_location({click = true,}, buffer)
     for _,datum in ipairs(nvim_navic.get_data(buffer) or {}) do
-      -- the 5 is for the delimite: ' > ' and 2 more for the icon
+      -- the 5 is for the delimiter ' > ' and 2 more for the icon
       winbar_length = winbar_length + #datum.name + 5
     end
   end
@@ -1077,7 +1076,7 @@ Plug(
   'mhinz/vim-signify',
   {
     config = function()
-      -- Make [c and ]c wrap around. Taken from here:
+      -- Make `[c` and `]c` wrap around. Taken from here:
       -- https://github.com/mhinz/vim-signify/issues/239#issuecomment-305499283
       vim.cmd([[
         function! s:signify_hunk_next(count) abort
@@ -1195,7 +1194,7 @@ Plug(
   'RRethy/nvim-treesitter-endwise',
   {
     config = function()
-      -- this way endwise triggers on 'o'
+      -- this way endwise triggers on `o`
       vim.keymap.set('n', 'o', 'A<CR>', {remap = true})
     end
   }
@@ -1215,7 +1214,7 @@ Plug(
 -- https://github.com/neovim/neovim/issues/3344#issuecomment-1808677428
 -- I'd also have to set my `pbpaste` as the provider since you can't set just copy or paste it has to be both.
 --     2. OSC52 is also being upstreamed so I may be able to just use that depending on how they do it:
--- https://github.com/neovim/neovim/pull/25872 . I have a feeling the upstreamed support won't work for me
+-- https://github.com/neovim/neovim/pull/25872. I have a feeling the upstreamed support won't work for me
 -- because they'll probably only use OSC52 if both copy _and_ paste are supported, but I'd like each one to
 -- fallback separately, not as a pair.
 Plug(
@@ -1227,7 +1226,7 @@ Plug(
       osc.setup({ silent = true, })
 
       local function copy()
-        -- Use OSC 52 to set the clipboard whenver the '+' register is written to. Since the clipboard provider
+        -- Use OSC 52 to set the clipboard whenever the `+` register is written to. Since the clipboard provider
         -- is probably setting the clipboard as well this means we do it twice.
         if vim.v.event.operator == 'y' and vim.v.event.regname == '+' then
           osc.copy_register('+')
@@ -1247,7 +1246,7 @@ Plug(
   }
 )
 
--- lua utility library specfically for use in neovim
+-- lua utility library specifically for use in neovim
 Plug('nvim-lua/plenary.nvim')
 
 -- Using this to create my nvim-telescope windows
@@ -1792,7 +1791,7 @@ Plug(
           return
         end
 
-        -- If the buffer is only open in the current window, close the buffer and window. Otherwise just close
+        -- If the buffer is only open in the current window, close the buffer and window. Otherwise, just close
         -- the window.
         local buffer_window_count = #vim.fn.win_findbuf(buffer)
         if buffer_window_count == 1 then
@@ -1842,7 +1841,7 @@ Plug(
           max_prefix_length = 100,
           tab_size = 1,
           custom_filter = function(buf_number, _)
-            -- filter out filetypes you don't want to see
+            -- filter out file types you don't want to see
             if vim.bo[buf_number].filetype ~= "qf" then
               return true
             end
@@ -2618,7 +2617,7 @@ Plug(
 
         vale_ls = {
           filetypes = {
-            -- NOTE: This should have all of the programming languages listed here:
+            -- NOTE: This should have all the programming languages listed here:
             -- https://vale.sh/docs/topics/scoping/#code-1
             'c', 'cs', 'cpp', 'css', 'go', 'haskell', 'java', 'javascript', 'less', 'lua', 'perl', 'php',
             'python', 'r', 'ruby', 'sass', 'scala', 'swift',
@@ -2634,7 +2633,7 @@ Plug(
               path = ".vscode",
             })
           end,
-          -- This should have filetypes for all the languages specified in settings.ltex.enabled
+          -- This should have file types for all the languages specified in `settings.ltex.enabled`
           filetypes = {
             "bib",
             "gitcommit",
@@ -2703,7 +2702,7 @@ Plug(
                 "restructuredtext",
                 "rsweave",
 
-                -- This block of languages should contain all of the languages here:
+                -- This block of languages should contain all the languages here:
                 -- https://github.com/valentjn/ltex-ls/blob/7c031d792110a824951aa003acd3ada158a515b4/src/main/kotlin/org/bsplines/ltexls/parsing/program/ProgramCommentRegexs.kt
                 "c",
                 "cpp",
@@ -2788,7 +2787,7 @@ Plug('b0o/SchemaStore.nvim')
 
 -- }}}
 
--- CLI -> LSP {{{
+-- CLI to LSP {{{
 -- A language server that acts as a bridge between neovim's language server client and commandline tools that don't
 -- support the language server protocol. It does this by transforming the output of a commandline tool into the
 -- format specified by the language server protocol.
@@ -2817,11 +2816,11 @@ Plug(
 )
 -- }}}
 
--- Colorscheme {{{
+-- Color scheme {{{
 Plug(
   'nordtheme/vim',
   {
-    -- I need this config to be applied earlier so you don't see a flash of the default colorscheme and then mine.
+    -- I need this config to be applied earlier so you don't see a flash of the default color scheme and then mine.
     sync = true,
     config = function()
       vim.cmd.colorscheme('nord')
@@ -2859,7 +2858,7 @@ function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'IncSearch', {link = 'Search'})
   vim.api.nvim_set_hl(0, 'TabLineBorder', {ctermbg = 'NONE', ctermfg = 51,})
   vim.api.nvim_set_hl(0, 'TabLineBorder2', {ctermbg = 51, ctermfg = 0,})
-  -- The TabLine* highlights are the so the tabline looks blank before bufferline populates it so it needs the same
+  -- The `TabLine*` highlights are the so the tabline looks blank before bufferline populates it so it needs the same
   -- background color as bufferline. The foreground needs to match the background so you can't see the text from the
   -- original tabline function.
   vim.api.nvim_set_hl(0, 'TabLine', {ctermbg = 51, ctermfg = 51,})
@@ -3010,7 +3009,7 @@ function SetNordOverrides()
     vim.api.nvim_set_hl(0, string.format('Notify%sBorder', level), {ctermbg = 'NONE', ctermfg = color,})
     vim.api.nvim_set_hl(0, string.format('Notify%sIcon', level), {ctermbg = 'NONE', ctermfg = color,})
     vim.api.nvim_set_hl(0, string.format('Notify%sTitle', level), {ctermbg = 'NONE', ctermfg = color,})
-    -- I wanted to set ctermfg to NONE, but when I did it wouldn't override nvim-notify's default highlight.
+    -- I wanted to set ctermfg to NONE, but when I did, it wouldn't override nvim-notify's default highlight.
     vim.api.nvim_set_hl(0, string.format('Notify%sBody', level), {ctermbg = 'NONE', ctermfg = 7,})
   end
 
