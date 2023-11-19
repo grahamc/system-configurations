@@ -228,7 +228,12 @@ function fish_title --argument-names current_commandline
     end
     set current_command $tokens[1]
 
-    echo $current_command
+    if test "$TERM_PROGRAM" = 'WezTerm'
+        printf '\033]1337;SetUserVar=%s=%s\007' title (echo -n $current_command | base64) 1>/dev/tty
+        commandline -f repaint
+    end
+
+    echo "$current_command"
 end
 
 function _ls-after-directory-change --on-variable PWD

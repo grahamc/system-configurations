@@ -225,9 +225,16 @@ wezterm.on('update-status', function(window, pane)
     foreground_color = dimmed_foreground_colors[foreground_color:lower()]
   end
 
+  local pane_title = pane:get_user_vars().title
+  local icon = ''
+  if string.find(pane_title, 'tmux') then
+    icon = ''
+  end
+  pane_title = icon .. ' ' .. pane_title
+
   local title = wezterm.format {
     { Foreground = { Color = foreground_color } },
-    { Text = ' ' .. pane:get_title() .. ' ' },
+    { Text = pane_title .. ' ' },
   }
   if is_mac then
     window:set_right_status(title)
