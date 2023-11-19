@@ -226,11 +226,11 @@ wezterm.on('update-status', function(window, pane)
   end
 
   local pane_title = pane:get_user_vars().title
-  local icon = ''
   if string.find(pane_title, 'tmux') then
-    icon = ''
+    pane_title = ' tmux'
+  else
+    pane_title = ' ' .. pane_title
   end
-  pane_title = icon .. ' ' .. pane_title
 
   local title = wezterm.format {
     { Foreground = { Color = foreground_color } },
