@@ -113,6 +113,10 @@
           "MonitorControl"
           "responsively"
         ];
+        caskArgs = {
+          # Don't quarantine the casks so macOS doesn't warn me before opening any of them.
+          no_quarantine = true;
+        };
         taps = [
           "homebrew/cask-versions"
         ];
@@ -150,6 +154,9 @@
           trackpad = {
             Clicking = true;
             Dragging = true;
+          };
+          LaunchServices = {
+            LSQuarantine = false;
           };
         };
         # With Nix's new `auto-allocate-uids` feature, build users get created on demand. This means this check
