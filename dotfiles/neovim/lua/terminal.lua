@@ -2636,7 +2636,7 @@ Plug(
           -- This should have file types for all the languages specified in `settings.ltex.enabled`
           filetypes = {
             "bib",
-            "gitcommit",
+            "gitcommit", -- The LSP language ID is `git-commit`, but neovim uses `gitcommit`.
             "markdown",
             "org",
             "plaintex",
@@ -2685,23 +2685,16 @@ Plug(
             "erlang",
             "fortran-modern",
             "vb",
+
+            -- neovim gives plain text files the file type `text`, but ltex-ls only supports the LSP language ID
+            -- for plain text, `plaintext`. However, since ltex-ls treats unsupported file types as plain text, it
+            -- works out.
+            "text",
           },
           settings = {
             ltex = {
               completionEnabled = true,
               enabled = {
-                -- This block of languages should match the default value here:
-                -- https://valentjn.github.io/ltex/settings.html#ltexenabled
-                "bibtex",
-                "context",
-                "context.tex",
-                "html",
-                "latex",
-                "markdown",
-                "org",
-                "restructuredtext",
-                "rsweave",
-
                 -- This block of languages should contain all the languages here:
                 -- https://github.com/valentjn/ltex-ls/blob/7c031d792110a824951aa003acd3ada158a515b4/src/main/kotlin/org/bsplines/ltexls/parsing/program/ProgramCommentRegexs.kt
                 "c",
@@ -2743,6 +2736,30 @@ Plug(
                 "erlang",
                 "fortran-modern",
                 "vb",
+
+                -- This block of languages should contain all the languages here:
+                -- https://github.com/valentjn/ltex-ls/blob/1193c9959aa87b3d36ca436060447330bf735a9d/src/main/kotlin/org/bsplines/ltexls/parsing/CodeFragmentizer.kt
+                "bib",
+                "bibtex",
+                "gitcommit", -- The LSP language ID is `git-commit`, but neovim uses `gitcommit`.
+                "html",
+                "xhtml",
+                "context",
+                "context.tex",
+                "latex",
+                "plaintex",
+                "rsweave",
+                "tex",
+                "markdown",
+                "nop",
+                "org",
+                "plaintext",
+                "restructuredtext",
+
+                -- neovim gives plain text files the file type `text`, but ltex-ls only supports the LSP language ID
+                -- for plain text, `plaintext`. However, since ltex-ls treats unsupported file types as plain text, it
+                -- works out.
+                "text",
               },
             },
           },
