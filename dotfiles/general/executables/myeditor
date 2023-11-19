@@ -3,7 +3,7 @@
 # If we're in TMUX and we're attached from a vscode terminal, use the same vscode instance we are in as our editor.
 if test -n "$TMUX"
 and test "$(tmux show-environment VSCODE_INJECTION)" != '-VSCODE_INJECTION'
-    code --reuse-window --wait $argv
+    exec code --reuse-window --wait $argv
 else
-    nvim $argv
+    exec nvim $argv
 end
