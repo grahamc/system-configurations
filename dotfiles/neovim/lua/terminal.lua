@@ -2558,7 +2558,7 @@ Plug(
         end
 
         local filetype = vim.o.filetype
-        local isKeywordprgOverridable = filetype ~= 'vim' and filetype ~= 'sh'
+        local isKeywordprgOverridable = filetype ~= 'vim'
         if capabilities.hoverProvider and isKeywordprgOverridable then
           buffer_keymap(buffer_number, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", keymap_opts)
 
@@ -2817,9 +2817,6 @@ Plug(
       null_ls.setup({
         border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏", },
         sources = {
-          builtins.diagnostics.shellcheck.with({
-            filetypes = { 'sh', 'bash' },
-          }),
           builtins.code_actions.shellcheck.with({
             filetypes = { 'sh', 'bash' },
           }),
