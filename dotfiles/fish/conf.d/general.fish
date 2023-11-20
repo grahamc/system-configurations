@@ -60,10 +60,7 @@ set --global --export MANOPT '--no-hyphenation'
 # For more info: https://unix.stackexchange.com/questions/4859/visual-vs-editor-what-s-the-difference/302391#302391
 set --global --export VISUAL (command -v myeditor)
 set --global --export EDITOR $VISUAL
-# TODO: I should resolve the program to wrap at runtime, but for now I'll just put nvim here.
-function vim --wraps nvim
-    myeditor $argv
-end
+abbr --add --global -- vim nvim
 
 # Change the color grep uses for highlighting matches to magenta
 set --global --export GREP_COLORS 'ms=00;35'
