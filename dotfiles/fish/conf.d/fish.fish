@@ -223,7 +223,7 @@ function fish_title --argument-names current_commandline
     set tokens (string match -rv '^-|^$' -- $tokens)
     # Skip leading commands
     while set -q tokens[2]
-        and string match -qr -- '^(,|comma|and|begin|builtin|caffeinate|command|doas|entr|env|exec|if|mosh|nice|not|or|pipenv|prime-run|setsid|sudo|systemd-nspawn|time|watch|while|xargs|.*=.*)$' $tokens[1]
+        and string match -qr -- '^(,|comma|and|begin|builtin|caffeinate|command|doas|entr|env|exec|if|mosh|nice|not|or|pipenv|prime-run|setsid|sudo|systemd-nspawn|time|while|xargs|.*=.*)$' $tokens[1]
         set -e tokens[1]
     end
     set current_command $tokens[1]
