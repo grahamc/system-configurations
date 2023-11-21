@@ -2,6 +2,9 @@
   {
     home.packages = with pkgs; [
       neovim-unwrapped
+      # TODO: Text will be lost on reflow until this issue is resolved:
+      # https://github.com/neovim/neovim/issues/2514
+      page
     ];
 
     repository.symlink.xdg.configFile = {

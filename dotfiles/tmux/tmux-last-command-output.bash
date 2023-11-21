@@ -25,7 +25,7 @@ case "$choice" in
     echo "$last_command_output" | fzf --preview-window 35%
   ;;
   nvim)
-    echo "$last_command_output" | strip-ansi-escapes | nvim - +'set buftype=nofile' +'set foldlevel=99' +'file command output'
+    echo "$last_command_output" | PAGE_BUFFER_NAME='command output' page
   ;;
   *)
     echo 'Error: unknown choice' 1>&2

@@ -64,3 +64,11 @@
 {"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QPlugins {{{\nMotions for levels of indentation\\E$"}
 {"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QOption overrides {{{\\E$"}
 {"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QSearching {{{\nsearching is only case-sensitive when the query contains an uppercase letter\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QTabs {{{\nString that will append to buffer name\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QPager {{{\nString that will append to buffer name\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QPager (https://github.com/I60R/page) {{{\nString that will append to buffer name\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QTODO: \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q doesn't offer a way to disable the centering of the cursor so I'm using an autocommand to reset\nthe cursor after it's centered.\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QIf the row count is odd, I don't want this check to be dependent on \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q rounding up or down so I check\nboth.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QPager (https://github.com/I60R/page) {{{\nString that will be appended to the buffer name\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QPager (https://github.com/I60R/page) {{{\nString that will be appended to the buffer name\nTODO: \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q adds quotations around these strings and I want to remove them\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE_2","sentence":"^\\QI can't imagine where else \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q would\nmove the cursor besides the center so this should be ok.\\E$"}
