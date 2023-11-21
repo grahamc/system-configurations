@@ -349,12 +349,15 @@
         "vim-plugin-nvim-osc52": "vim-plugin-nvim-osc52",
         "vim-plugin-nvim-surround": "vim-plugin-nvim-surround",
         "vim-plugin-nvim-tree-lua": "vim-plugin-nvim-tree-lua",
+        "vim-plugin-nvim-treesitter": "vim-plugin-nvim-treesitter",
         "vim-plugin-nvim-treesitter-endwise": "vim-plugin-nvim-treesitter-endwise",
         "vim-plugin-nvim-ts-autotag": "vim-plugin-nvim-ts-autotag",
         "vim-plugin-nvim-ts-context-commentstring": "vim-plugin-nvim-ts-context-commentstring",
         "vim-plugin-plenary-nvim": "vim-plugin-plenary-nvim",
         "vim-plugin-reticle-nvim": "vim-plugin-reticle-nvim",
+        "vim-plugin-sqlite-lua": "vim-plugin-sqlite-lua",
         "vim-plugin-targets-vim": "vim-plugin-targets-vim",
+        "vim-plugin-telescope-fzf-native": "vim-plugin-telescope-fzf-native",
         "vim-plugin-telescope-nvim": "vim-plugin-telescope-nvim",
         "vim-plugin-telescope-smart-history-nvim": "vim-plugin-telescope-smart-history-nvim",
         "vim-plugin-traces-vim": "vim-plugin-traces-vim",
@@ -1224,6 +1227,22 @@
         "type": "github"
       }
     },
+    "vim-plugin-nvim-treesitter": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1700497578,
+        "narHash": "sha256-msgNbwgOr94nrq4pg05IroA6cBhpQhOHz8FJ+pwLTNg=",
+        "owner": "nvim-treesitter",
+        "repo": "nvim-treesitter",
+        "rev": "1610b1aafb9b7b3a7b54c853ed45c6cb1a3d0df2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-treesitter",
+        "repo": "nvim-treesitter",
+        "type": "github"
+      }
+    },
     "vim-plugin-nvim-treesitter-endwise": {
       "flake": false,
       "locked": {
@@ -1304,6 +1323,22 @@
         "type": "github"
       }
     },
+    "vim-plugin-sqlite-lua": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1681923697,
+        "narHash": "sha256-XElCJGganIIh4T5K5kKZTbVYwVOXCtLF1fdc95NopDc=",
+        "owner": "kkharji",
+        "repo": "sqlite.lua",
+        "rev": "b7e28c8463254c46a8e61c52d27d6a2040492fc3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kkharji",
+        "repo": "sqlite.lua",
+        "type": "github"
+      }
+    },
     "vim-plugin-targets-vim": {
       "flake": false,
       "locked": {
@@ -1317,6 +1352,22 @@
       "original": {
         "owner": "wellle",
         "repo": "targets.vim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-telescope-fzf-native": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1694359266,
+        "narHash": "sha256-Hob1x/jwQYfphYGWQ/i44NVyCM+WFT5/4+J5J4/tLYA=",
+        "owner": "nvim-telescope",
+        "repo": "telescope-fzf-native.nvim",
+        "rev": "6c921ca12321edaa773e324ef64ea301a1d0da62",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-telescope",
+        "repo": "telescope-fzf-native.nvim",
         "type": "github"
       }
     },

@@ -53,11 +53,19 @@
             
             vimPluginRepositoryPrefix = "vim-plugin-";
             vimPluginBuilder = repositoryName: repositorySourceCode: date:
-              prev.vimUtils.buildVimPlugin {
-                pname = repositoryName;
-                version = date;
-                src = repositorySourceCode;
-              };
+              if builtins.hasAttr repositoryName prev.vimPlugins
+                then
+                  (builtins.getAttr repositoryName prev.vimPlugins).overrideAttrs (old: {
+                    name = "${repositoryName}-${date}";
+                    version = date;
+                    src = repositorySourceCode;
+                  })
+                else
+                  prev.vimUtils.buildVimPlugin {
+                    pname = repositoryName;
+                    version = date;
+                    src = repositorySourceCode;
+                  };
             newVimPlugins = makePackages
               vimPluginRepositoryPrefix
               vimPluginBuilder;
@@ -85,7 +93,14 @@
                 };
                 pluginInfoWithFix = applyRtpFilePathFix pluginInfo;
               in
-                prev.tmuxPlugins.mkTmuxPlugin pluginInfoWithFix;
+                if builtins.hasAttr repositoryName prev.tmuxPlugins
+                  then
+                    (builtins.getAttr repositoryName prev.tmuxPlugins).overrideAttrs (old: {
+                      version = date;
+                      src = repositorySourceCode;
+                    })
+                  else
+                    prev.tmuxPlugins.mkTmuxPlugin pluginInfoWithFix;
             tmuxPluginRepositoryPrefix = "tmux-plugin-";
             newTmuxPlugins = makePackages
               tmuxPluginRepositoryPrefix

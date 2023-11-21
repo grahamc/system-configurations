@@ -57,14 +57,6 @@
       };
     };
 
-    # plugins that aren't here because they have external dependencies:
-    # nvim-treesitter
-    # telescope-fzf-native
-    # sqlite.lua
-    #
-    # TODO: For the plugins above, I should add them here and in my overlay I should check if nixpkgs already
-    # has a derivation for that plugin. If it does, override the source code it uses, otherwise make my own
-    # derivation.
     "vim-plugin-firenvim" = {url = "github:glacambre/firenvim"; flake = false;};
     "vim-plugin-vim-indentwise" = {url = "github:jeetsukumaran/vim-indentwise"; flake = false;};
     "vim-plugin-vim-matchup" = {url = "github:andymass/vim-matchup"; flake = false;};
@@ -134,6 +126,9 @@
     "vim-plugin-animation-nvim" = {url = "github:anuvyklack/animation.nvim"; flake = false;};
     "vim-plugin-windows-nvim" = {url = "github:anuvyklack/windows.nvim"; flake = false;};
     "vim-plugin-ltex-extra-nvim" = {url = "github:barreiroleo/ltex-extra.nvim"; flake = false;};
+    "vim-plugin-nvim-treesitter" = {url = "github:nvim-treesitter/nvim-treesitter"; flake = false;};
+    "vim-plugin-sqlite-lua" = {url = "github:kkharji/sqlite.lua"; flake = false;};
+    "vim-plugin-telescope-fzf-native" = {url = "github:nvim-telescope/telescope-fzf-native.nvim"; flake = false;};
 
     "tmux-plugin-resurrect" = {url = "github:tmux-plugins/tmux-resurrect"; flake = false;};
     "tmux-plugin-tmux-suspend" = {url = "github:MunifTanjim/tmux-suspend"; flake = false;};
