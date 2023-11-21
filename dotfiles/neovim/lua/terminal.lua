@@ -1055,17 +1055,6 @@ vim.api.nvim_create_autocmd(
     end,
   }
 )
-vim.api.nvim_create_autocmd(
-  "TermClose",
-  {
-    callback = function()
-      vim.cmd.bdelete({
-        args = {vim.fn.expand('<abuf>')},
-        bang = true,
-      })
-    end,
-  }
-)
 -- }}}
 
 -- Plugins {{{
