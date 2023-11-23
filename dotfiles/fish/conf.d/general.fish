@@ -224,3 +224,4 @@ end
 function dui --wraps broot --description 'Check disk usage interactively'
     br -w $argv
 end
+abbr --add --global tree broot
