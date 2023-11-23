@@ -1308,7 +1308,7 @@ Plug(
             },
             prompt = border_chars,
             prompt_patch = {
-              minimal = { bottom_left = border_chars.left, bottom_right = border_chars.right, bottom = "━", },
+              minimal = { bottom_left = border_chars.left, bottom_right = border_chars.right, bottom = "―", },
             },
           }
 
@@ -1390,13 +1390,13 @@ Plug(
           results_patch = {
             minimal = default_border,
             horizontal = default_border,
-            vertical = {top = '', bottom = '━', top_left = border_chars.left, top_right = border_chars.right, bottom_left = border_chars.left, bottom_right = border_chars.right,},
+            vertical = {top = '', bottom = '―', top_left = border_chars.left, top_right = border_chars.right, bottom_left = border_chars.left, bottom_right = border_chars.right,},
           },
           prompt = default_border,
           prompt_patch = {
             minimal = { bottom_left = border_chars.left, bottom_right = border_chars.right, bottom = "", },
             horizontal = { bottom_left = border_chars.left, bottom_right = border_chars.right, bottom = "", },
-            vertical = { bottom_left = border_chars.left, bottom_right = border_chars.right, bottom = "━",},
+            vertical = { bottom_left = border_chars.left, bottom_right = border_chars.right, bottom = "―",},
           },
           preview = default_border,
           preview_patch = {
