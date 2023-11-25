@@ -341,7 +341,7 @@ function _man_page
         set current_token (commandline --cut-at-cursor --tokenize --current-process)[-1]
     end
     if string match --regex '^-' -- $current_token
-        man "$manpage_name" | less --pattern "^\s+(\-\-?[^\s]+\s+)*\K$(string escape --style regex -- $current_token)"
+        man "$manpage_name" | less --pattern "^\s+(\-\-?[^\s]+[,/\s]+)*\K$(string escape --style regex -- $current_token)"
     else
         man "$manpage_name"
     end
