@@ -41,10 +41,10 @@ function _tmux_connect
     end
     read --prompt "echo -n -s 'Hey$user, would you like to connect to tmux? (' '$accent' 'y' '$normal' '/' '$accent' 'n' '$normal' '): ';" --nchars 1 response
     if test $response = y
-        # check if the server is running
-        tmux list-sessions &>/dev/null
-        and tmux attach-session
-        or tmux
+        set session_name main
+        if not tmux attach-session -t "$session_name"
+            tmux new-session -s "$session_name"
+        end
     end
 end
 _tmux_connect
