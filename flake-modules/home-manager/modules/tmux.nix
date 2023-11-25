@@ -75,6 +75,7 @@
         "tmux-click-url".source = "tmux/tmux-click-url.py";
         "tmux-last-command-output".source = "tmux/tmux-last-command-output.bash";
         "tmux-config-reload".source = "tmux/tmux-config-reload.bash";
+        "tmux-attach-to-project".source = "tmux/tmux-attach-to-project.fish";
       };
 
       repository.git.onChange  = [
