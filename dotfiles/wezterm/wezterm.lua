@@ -255,22 +255,6 @@ local keybinds = {
     action = wezterm.action.PasteFrom('Clipboard')
   },
 
-  -- Doing this since TMUX doesn't support extended keys anymore.
-  -- issue: https://github.com/tmux/tmux/issues/2705
-  {
-    key = '[',
-    mods = 'ALT',
-    action = wezterm.action.SendKey {
-      key = 'F10',
-    },
-  },
-  {
-    key = ']',
-    mods = 'ALT',
-    action = wezterm.action.SendKey {
-      key = 'F12',
-    },
-  },
   {
     key = 'i',
     mods = 'CTRL',
