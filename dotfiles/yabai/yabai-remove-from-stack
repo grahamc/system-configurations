@@ -6,7 +6,7 @@ set -eu
 # argument one should be a direction: east, west, north, south
 [ -z "$1" ] && exit
 
-OTHER_STACKED_WINDOW_ID="$(printf %s "$(yabai -m query --windows --window stack.prev 2>/dev/null || yabai -m query --windows --window stack.next 2>/dev/null)" | jq -r '.id')"
+OTHER_STACKED_WINDOW_ID="$(printf %s "$(yabai -m query --windows --window stack.prev 2>/dev/null || yabai -m query --windows --window stack.next 2>/dev/null)" | jq --raw-output '.id')"
 if [ -z "$OTHER_STACKED_WINDOW_ID" ]; then
   exit 1
 fi
