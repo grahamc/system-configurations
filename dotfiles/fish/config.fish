@@ -16,7 +16,7 @@ end
 
 # Ask the user to connect to tmux.
 # Wrapping this in a function so that I am able to exit early with 'return'
-function _tmux_connect
+function tmux_attach_to_main
     if test -n "$TMUX_CONNECT_WAS_RUN"
         return
     end
@@ -27,11 +27,6 @@ function _tmux_connect
     # - We use the export flag so that it isn't run in child shells.
     set --global --export TMUX_CONNECT_WAS_RUN 1
 
-    # User is already in TMUX so no need to connect
-    if test -n "$TMUX"
-        return
-    end
-
     set accent (set_color cyan)
     set normal (set_color normal)
 
@@ -39,7 +34,7 @@ function _tmux_connect
     if test -n "$USER"
         set user " $USER"
     end
-    read --prompt "echo -n -s 'Hey$user, would you like to connect to tmux? (' '$accent' 'y' '$normal' '/' '$accent' 'n' '$normal' '): ';" --nchars 1 response
+    read --prompt-str "Hey$user, would you like to connect to tmux? ($accent""y$normal/$accent""n$normal): " --nchars 1 response
     if test $response = y
         set session_name main
         if not tmux attach-session -t "$session_name"
@@ -47,7 +42,13 @@ function _tmux_connect
         end
     end
 end
-_tmux_connect
+if test -z "$TMUX"
+    if set --query VSCODE_INJECTION
+        tmux-attach-to-project
+    else
+        tmux_attach_to_main
+    end
+end
 
 if type --query direnv
     # TODO: Trigger direnv. This way if a terminal or tmux-pane gets spawned in a directory that has
