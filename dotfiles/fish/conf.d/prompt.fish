@@ -25,7 +25,7 @@ function fish_prompt --description 'Print the prompt'
     # transient prompt
     if set --query TRANSIENT
         set --erase TRANSIENT
-        echo -n -e $separator\n$_color_border(_arrows)$_color_normal
+        printf $separator\n$_color_border(_arrows)$_color_normal
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY
@@ -35,8 +35,8 @@ function fish_prompt --description 'Print the prompt'
     end
 
     # The max number of screen columns a context can use and still fit on one line. The 4 accounts for the 4
-    # characters that make up the border, see `_make_line`.
-    set max_length (math $COLUMNS - 4)
+    # characters that make up the border, see `_make_line`. The max() is there so the value is never negative
+    set max_length (math max\($COLUMNS - 4, 1\))
     set contexts \
         (_broot_context) \
         (_direnv_context) \
@@ -56,9 +56,6 @@ function fish_prompt --description 'Print the prompt'
 
         # Truncate any contexts that wouldn't fit on one line.
         if test (string length --visible $context) -gt $max_length
-        # TODO: `string length --visible` doesn't report the correct size for OSC8 hyperlinks so I'm skipping
-        # truncation for any context that contains it.
-        and not string match --quiet '*\e]8;;*' $context
             set context (string shorten --max $max_length $context)
         end
 
@@ -70,7 +67,7 @@ function fish_prompt --description 'Print the prompt'
     end
     set --append prompt_lines (_make_line last)
     set --prepend prompt_lines $separator
-    echo -e -n (string join '\n' $prompt_lines)
+    printf (string join '\n' $prompt_lines)
 end
 
 function _make_line --argument-names position context
@@ -79,19 +76,19 @@ function _make_line --argument-names position context
 
     if test $position = first
         set line_connector $_color_border'┌'$_color_normal
-        echo $line_connector$left_border$context$right_border
+        printf $line_connector$left_border$context$right_border
     else if test $position = middle
         set line_connector $_color_border'├'$_color_normal
-        echo $line_connector$left_border$context$right_border
+        printf $line_connector$left_border$context$right_border
     else if test $position = last
         set line_connector $_color_border'└'$_color_normal
         set arrows (set_color cyan)(_arrows)$_color_normal
-        echo $line_connector$arrows
+        printf $line_connector$arrows
     end
 end
 
 function _arrows
-    echo (string repeat -n $SHLVL '>')
+    printf (string repeat -n $SHLVL '>')
 end
 
 function _python_context
@@ -99,7 +96,7 @@ function _python_context
         return
     end
 
-    echo "venv: $(_python_venv_name)"
+    printf "venv: $(_python_venv_name)"
 end
 function _python_venv_name
     set -l path_segments (string split -- / $VIRTUAL_ENV)
@@ -108,11 +105,11 @@ function _python_venv_name
     # If the folder containing the virtualenv is named .venv, use the parent folder instead
     # since that should be more descriptive
     if test $last_path_segment = '.venv'
-        echo $path_segments[-2]
+        printf $path_segments[-2]
         return
     end
 
-    echo $last_path_segment
+    printf $last_path_segment
 end
 
 function _job_context
@@ -122,7 +119,7 @@ function _job_context
 
     set job_commands (jobs --command)
     set formatted_job_commands (string join , $job_commands)
-    echo "jobs: $formatted_job_commands"
+    printf "jobs: $formatted_job_commands"
 end
 
 function _login_context
@@ -156,35 +153,35 @@ function _login_context
             set host "$host ($special_host)"
         end
 
-        echo "login: $user on $host"
+        printf "login: $user on $host"
     end
 end
 # Taken from Starship Prompt: https://github.com/starship/starship/blob/master/src/modules/container.rs
 function _container_name
     if test -e /proc/vz
     and not test -e /proc/bc
-        echo 'OpenVZ'
+        printf 'OpenVZ'
         return
     end
 
     if test -e /run/host/container-manager
-        echo 'OCI'
+        printf 'OCI'
         return
     end
 
     if test -e /run/.containerenv
         # TODO: The image name is in this file, I should extract it and return that instead.
-        echo 'podman'
+        printf 'podman'
         return
     end
 
     set systemd_container_path '/run/systemd/container'
     if test -e "$systemd_container_path"
-        echo (cat "$systemd_container_path")
+        printf (cat "$systemd_container_path")
     end
 
     if test -e /.dockerenv
-        echo 'Docker'
+        printf 'Docker'
         return
     end
 end
@@ -202,15 +199,9 @@ function _path_context --argument-names max_length
         set dir_length (math $dir_length - 1)
     end
 
-    # TODO: `string length --visible` doesn't report the correct size for OSC8 hyperlinks so I'm doing the truncation
-    # before making the hyperlink.
-    if test (string length --visible $path) -gt $max_path_length
-        set path (string shorten --max $max_path_length $path)
-    end
-
     set hyperlink '\e]8;;file://'(pwd)'\e\\'$path'\e]8;;\e\\'
 
-    echo $context_prefix$hyperlink
+    printf $context_prefix$hyperlink
 end
 
 function _direnv_context
@@ -226,7 +217,7 @@ function _direnv_context
         set blocked ' ('$_color_error_text'blocked'$_color_normal')'
     end
 
-    echo "direnv: $directory$blocked"
+    printf "direnv: $directory$blocked"
 end
 
 function _git_context --argument-names max_length
@@ -237,7 +228,7 @@ function _git_context --argument-names max_length
         return
     end
     if test $git_status = (_git_status_loading_indicator)
-        echo $context_prefix$git_status
+        printf $context_prefix$git_status
         return
     end
 
@@ -265,7 +256,7 @@ function _git_context --argument-names max_length
         set formatted_status "$git_branch_hyperlink$formatted_status_without_git_branch"
     end
 
-    echo "git: $formatted_status"
+    printf "git: $formatted_status"
 end
 function _make_hyperlink_to_git_branch --argument-names branch_name
     set hyperlink
@@ -284,9 +275,9 @@ function _make_hyperlink_to_git_branch --argument-names branch_name
     end
 
     if test -n "$hyperlink"
-        echo '\e]8;;'$hyperlink'\e\\'$branch_name'\e]8;;\e\\'
+        printf '\e]8;;'$hyperlink'\e\\'$branch_name'\e]8;;\e\\'
     else
-        echo $branch_name
+        printf $branch_name
     end
 end
 function _git_status
@@ -303,7 +294,7 @@ function _git_status
     fish_git_prompt
 end
 function _git_status_loading_indicator
-    echo (set_color --dim --italics)'loading…'$_color_normal
+    printf (set_color --dim --italics)'loading…'$_color_normal
 end
 function _abbreviate_git_states --argument-names git_context
     set long_states 'ahead:' 'behind:' 'untracked' 'dirty' 'staged' 'invalid'
@@ -314,7 +305,7 @@ function _abbreviate_git_states --argument-names git_context
         set git_context (string replace --regex "(\(.*)$long_state(.*\))" "\${1}$abbreviated_state\${2}" $git_context)
     end
 
-    echo -n $git_context \
+    printf $git_context \
         # remove the commas in between states
         | string replace --all --regex '(\(.*),(.*\))' '${1}${2}' \
         # remove the parentheses around the states
@@ -349,7 +340,7 @@ function _status_context
         set context "$context (pipe: $pipestatus_formatted)"
     end
 
-    echo $context
+    printf $context
 end
 function format_exit_code --argument-names exit_code
     set color (color_for_exit_code $exit_code)
@@ -361,7 +352,7 @@ function format_exit_code --argument-names exit_code
         set formatted_exit_code $formatted_exit_code$formatted_signal
     end
 
-    echo $formatted_exit_code
+    printf $formatted_exit_code
 end
 function color_for_exit_code --argument-names exit_code
     set warning_codes 130
@@ -372,7 +363,7 @@ function color_for_exit_code --argument-names exit_code
         set color $_color_error_text
     end
 
-    echo $color
+    printf $color
 end
 
 function _nix_context
@@ -402,7 +393,7 @@ function _nix_context
         set type $_color_warning_text'unknown'$_color_normal
     end
 
-    echo "nix: $type$packages"
+    printf "nix: $type$packages"
 end
 
 function _broot_context
@@ -410,5 +401,5 @@ function _broot_context
         return
     end
 
-    echo "broot: active"
+    printf "broot: active"
 end
