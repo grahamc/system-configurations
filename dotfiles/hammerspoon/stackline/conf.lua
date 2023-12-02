@@ -12,7 +12,7 @@ c.paths.yabai                         = '/usr/local/bin/yabai'
 -- Appearance
 c.appearance.color                    = { white = 0.90, }    -- Indicator background color, e.g., {red = 0.5, blue = 0 }
 c.appearance.alpha                    = 1                   -- Opacity of active indicators
-c.appearance.dimmer                   = 1.5                 -- Higher numbers increase contrast b/n focused & unfocused state
+c.appearance.dimmer                   = 2.5                 -- Higher numbers increase contrast b/n focused & unfocused state
 c.appearance.iconDimmer               = 1.1                 -- Higher numbers dim inactive icons *less* than the non-icon indicators
 c.appearance.showIcons                = false                -- Window indicator style ('lozenge'-shaped when false)
 c.appearance.size                     = 32                  -- Size of window indicators (height when icons off)
