@@ -1711,10 +1711,6 @@ Plug(
         autotag = {
           enable = true,
         },
-        context_commentstring = {
-          enable = true,
-          enable_autocmd = false,
-        },
       })
 
       local function maybe_set_treesitter_foldmethod()
@@ -1757,7 +1753,18 @@ Plug('blankname/vim-fish')
 
 Plug('windwp/nvim-ts-autotag')
 
-Plug('JoosepAlviste/nvim-ts-context-commentstring')
+Plug(
+  'JoosepAlviste/nvim-ts-context-commentstring',
+  {
+    config = function()
+      ---@diagnostic disable-next-line: missing-fields
+      require('ts_context_commentstring').setup({
+        enable_autocmd = false,
+      })
+    end
+  }
+)
+vim.g.skip_ts_context_commentstring_module = true
 
 Plug(
   'kosayoda/nvim-lightbulb',
