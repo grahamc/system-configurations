@@ -996,10 +996,7 @@ function Winbar()
 
   local ok, nvim_navic = pcall(require, 'nvim-navic')
   if ok and nvim_navic and nvim_navic.is_available(buffer) then
-    -- click on a breadcrumb to jump there
-    -- TODO: The click setting does not get applied when supplied through setup() so I have to set it here.
-    -- This is a bug I should submit a fix for.
-    winbar = nvim_navic.get_location({click = true,}, buffer)
+    winbar = nvim_navic.get_location(nil, buffer)
     for _,datum in ipairs(nvim_navic.get_data(buffer) or {}) do
       -- the 5 is for the delimiter ' > ' and 2 more for the icon
       winbar_length = winbar_length + #datum.name + 5
@@ -2035,6 +2032,8 @@ Plug(
       require("nvim-navic").setup({
         -- Allow control of the colors used through highlights
         highlight = true,
+        -- click on a breadcrumb to jump there
+        click = true,
       })
       vim.api.nvim_create_autocmd("BufEnter", {
         callback = function()
