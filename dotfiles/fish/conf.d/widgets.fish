@@ -24,6 +24,12 @@ function __widgets_format_directory_for_prompt --argument-names dir
   echo $prompt
 end
 
+function __widgets_replace_current_commandline_token
+  set replacement_tokens $argv
+  set escaped_replacement_tokens (string escape --style script --no-quoted -- $replacement_tokens)
+  commandline --current-token --replace "$escaped_replacement_tokens"
+end
+
 function grep-widget --description 'Search by line, recursively, from current directory'
   set dir (__widgets_get_directory_from_current_token)
 
@@ -37,7 +43,7 @@ function grep-widget --description 'Search by line, recursively, from current di
   end
 
   set rg_command 'rg --hidden --column --line-number --no-heading --color=always --smart-case --follow --'
-  set choice \
+  set choices \
       ( \
         FZF_DEFAULT_COMMAND="echo -n ''" \
         FZF_HINTS='ctrl+e: edit in neovim' \
@@ -55,9 +61,8 @@ function grep-widget --description 'Search by line, recursively, from current di
       )
   or return
 
-  set tokens (string split ':' $choice)
-  set filename $tokens[1]
-  commandline --insert $filename
+  set choices (string split --fields 1 -- ':' $choices)
+  __widgets_replace_current_commandline_token $choices
 
   # this should be done whenever a binding produces output (see: man bind)
   commandline -f repaint
@@ -178,12 +183,7 @@ function file-widget --description 'Search files'
       )
   or return
 
-  set escaped_choices
-  for choice in $choices
-    set --append escaped_choices (string escape --style script --no-quoted "$choice")
-  end
-
-  commandline --current-token --replace "$escaped_choices"
+  __widgets_replace_current_commandline_token $choices
 
   # this should be done whenever a binding produces output (see: man bind)
   commandline -f repaint
@@ -206,12 +206,7 @@ function directory-widget --description 'Seach directories'
       )
   or return
 
-  set escaped_choices
-  for choice in $choices
-    set --append escaped_choices (string escape --style script --no-quoted "$choice")
-  end
-
-  commandline --current-token --replace "$escaped_choices"
+  __widgets_replace_current_commandline_token $choices
 
   commandline -f repaint
 end
