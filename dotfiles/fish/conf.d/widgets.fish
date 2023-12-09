@@ -2,7 +2,40 @@ if not status is-interactive
     exit
 end
 
+function __widgets_get_directory_from_current_token
+  set dir "$(commandline -t)"
+  if test "$(string sub --length 1 -- "$dir")" = '~'
+    set dir (string replace '~' "$HOME" "$dir")
+  end
+  if not test -d (string unescape --style=script "$dir")
+    set dir '.'
+  end
+
+  echo $dir
+end
+
+function __widgets_format_directory_for_prompt --argument-names dir
+  set dir (string unescape $dir)
+  set prompt (string replace "$HOME" '~' "$dir")
+  if test "$(string sub --start -1 "$dir")" != '/'
+    set prompt "$prompt/"
+  end
+
+  echo $prompt
+end
+
 function grep-widget --description 'Search by line, recursively, from current directory'
+  set dir (__widgets_get_directory_from_current_token)
+
+  set prompt_directory ''
+  if test $dir != '.'
+    set prompt_directory $dir
+    if test "$(string sub --start -1 "$dir")" = '/'
+      set prompt_directory (string sub --end=-1 $prompt_directory)
+    end
+    set prompt_directory '('(string unescape --style=script $prompt_directory)') '
+  end
+
   set rg_command 'rg --hidden --column --line-number --no-heading --color=always --smart-case --follow --'
   set choice \
       ( \
@@ -11,9 +44,9 @@ function grep-widget --description 'Search by line, recursively, from current di
         fzf-tmux-zoom \
             --disabled \
             # we refresh-preview after executing vim in the event that the file gets modified by vim
-            --bind "ctrl-e:execute(nvim '+call cursor({2},{3})' {1} < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $rg_command {q} || true" \
+            --bind "ctrl-e:execute(nvim '+call cursor({2},{3})' {1} < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $rg_command {q} $dir || true" \
             --delimiter ':' \
-            --prompt 'lines: ' \
+            --prompt $prompt_directory'lines: ' \
             --preview-window '+{2}/3,75%,~2' \
             # the minus 2 prevents a weird line wrap issue
             # The head and tail commands are there to remove the first and last line of output of bat
@@ -114,18 +147,8 @@ end
 abbr --add --global pw process-widget
 
 function file-widget --description 'Search files'
-  set dir "$(commandline -t)"
-  if test "$(string sub --length 1 -- "$dir")" = '~'
-    set dir (string replace '~' "$HOME" "$dir")
-  end
-  if not test -d "$dir"
-    set dir '.'
-  end
-
-  set prompt (string replace "$HOME" '~' "$dir")
-  if test "$(string sub --start -1 "$dir")" != '/'
-    set prompt "$prompt/"
-  end
+  set dir (__widgets_get_directory_from_current_token)
+  set prompt (__widgets_format_directory_for_prompt $dir)
 
   # Regarding the bat command:
   # - the minus 2 prevents a weird line wrap issue
@@ -147,7 +170,7 @@ function file-widget --description 'Search files'
 
   set choices \
       ( \
-        FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' '$dir'; fd \$_args --follow --hidden --type file --type symlink" \
+        FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' $dir; fd \$_args --follow --hidden --type file --type symlink" \
         fzf-tmux-zoom \
             --prompt "$prompt" \
             --preview "$preview_command" \
@@ -169,22 +192,12 @@ mybind --no-focus \cf 'file-widget'
 
 # use ctrl+d for directory search instead of default alt+c
 function directory-widget --description 'Seach directories'
-  set dir "$(commandline -t)"
-  if test "$(string sub --length 1 -- "$dir")" = '~'
-    set dir (string replace '~' "$HOME" "$dir")
-  end
-  if not test -d "$dir"
-    set dir '.'
-  end
-
-  set prompt (string replace "$HOME" '~' "$dir")
-  if test "$(string sub --start -1 "$dir")" != '/'
-    set prompt "$prompt/"
-  end
+  set dir (__widgets_get_directory_from_current_token)
+  set prompt (__widgets_format_directory_for_prompt $dir)
 
   set choices \
       ( \
-        FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' '$dir'; fd \$_args --follow --hidden --type directory --type symlink" \
+        FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' $dir; fd \$_args --follow --hidden --type directory --type symlink" \
         fzf-tmux-zoom \
             --prompt "$prompt" \
             --preview 'echo -s {} \n (set_color brwhite)(string repeat --count $FZF_PREVIEW_COLUMNS ─); lsd --color always --hyperlink always {}' \
