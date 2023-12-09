@@ -34,7 +34,7 @@ First, clone the repository and go into its directory by running `git clone http
 
     * Open Finicky to set it as the default browser.
 
-    * Open MonitorControl, UnnaturalScrollWheels, and "Mac Mouse Fix" to configure them.
+    * Open MonitorControl, UnnaturalScrollWheels, Nightfall, and "Mac Mouse Fix" to configure them.
 
 ## Running the home configuration
 
