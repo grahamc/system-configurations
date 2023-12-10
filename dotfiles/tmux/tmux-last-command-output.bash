@@ -13,14 +13,11 @@ pane_contents=$(tmux capture-pane -e -p -S '-' -J)
 prompt_pattern="$(printf '\u00A0')"
 last_command_output=$(echo "$pane_contents" | tac | sed -e "0,/$prompt_pattern/d" | sed -e "0,/$prompt_pattern/d" | sed "/$prompt_pattern/,\$d" | tac)
 
-if ! choice="$(printf "%s\n" less fzf nvim | fzf --prompt 'command output viewer: ' --no-preview --height ~100% --margin 0,2,0,2 --border rounded)"; then
+if ! choice="$(printf "%s\n" fzf nvim | fzf --prompt 'command output viewer: ' --no-preview --height ~100% --margin 0,2,0,2 --border rounded)"; then
   exit
 fi
 
 case "$choice" in
-  less)
-    echo "$last_command_output" | LESSCHARSET=utf-8 less -+F
-  ;;
   fzf)
     echo "$last_command_output" | fzf --preview-window 35%
   ;;
