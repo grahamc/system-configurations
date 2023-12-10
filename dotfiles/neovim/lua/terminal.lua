@@ -377,6 +377,7 @@ vim.keymap.set({'n', 'i'}, '<C-M-]>', vim.cmd.tabnext, {silent = true})
     callback = function()
       disable_winbar()
       reset_cursor_position()
+      vim.o.showtabline = 0
     end,
   })
 -- }}}
