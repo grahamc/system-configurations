@@ -701,6 +701,10 @@ function StatusLine()
     local hint = '%#StatusLineHintText#' .. icon  .. hint_count
     table.insert(diagnostic_list, hint)
   end
+  if _G.mason_update_available_count and _G.mason_update_available_count > 0 then
+    local mason_update_indicator = '%#StatusLineMasonUpdateIndicator# ' .. _G.mason_update_available_count
+    table.insert(diagnostic_list, mason_update_indicator)
+  end
   local diagnostics = nil
   if #diagnostic_list > 0 then
     diagnostics = table.concat(diagnostic_list, ' ')
@@ -2586,6 +2590,18 @@ Plug(
         augroup END
       ]])
       vim.api.nvim_create_user_command('Extensions', function() vim.cmd.Mason() end, {desc = 'Manage external tooling such as language servers'})
+
+      -- Store the number of packages that have an update available so I can put it in my statusline.
+      local packages = require('mason-registry').get_installed_packages()
+      _G.mason_update_available_count = 0
+      local function maybe_set_update_flag(success, _)
+        if success then
+          _G.mason_update_available_count = _G.mason_update_available_count + 1
+        end
+      end
+      for _, package in ipairs(packages) do
+        package:check_new_version(maybe_set_update_flag)
+      end
     end,
   }
 )
@@ -2945,6 +2961,7 @@ function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'Float4Border', {ctermbg = 'NONE', ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'StatusLineRecordingIndicator', {ctermbg = 51, ctermfg = 1,})
   vim.api.nvim_set_hl(0, 'StatusLineShowcmd', {ctermbg = 51, ctermfg = 6,})
+  vim.api.nvim_set_hl(0, 'StatusLineMasonUpdateIndicator', {ctermbg = 51, ctermfg = 2,})
   vim.api.nvim_set_hl(0, 'StatusLinePowerlineOuter', {ctermbg = 'NONE', ctermfg = 51,})
   vim.api.nvim_set_hl(0, 'NvimTreeIndentMarker', {ctermfg = 15,})
   vim.api.nvim_set_hl(0, 'MsgArea', {link = 'StatusLine',})
