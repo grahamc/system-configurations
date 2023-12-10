@@ -679,25 +679,25 @@ function StatusLine()
   local diagnostic_list = {}
   local error_count = diagnostic_count.error
   if error_count > 0 then
-    local icon = '󰅙 '
+    local icon = ' '
     local error = '%#StatusLineErrorText#' .. icon .. error_count
     table.insert(diagnostic_list, error)
   end
   local warning_count = diagnostic_count.warning
   if warning_count > 0 then
-    local icon = '󰀦 '
+    local icon = ' '
     local warning = '%#StatusLineWarningText#' .. icon  .. warning_count
     table.insert(diagnostic_list, warning)
   end
   local info_count = diagnostic_count.info
   if info_count > 0 then
-    local icon = ' '
+    local icon = ' '
     local info = '%#StatusLineInfoText#' .. icon  .. info_count
     table.insert(diagnostic_list, info)
   end
   local hint_count = diagnostic_count.hint
   if hint_count > 0 then
-    local icon = ' '
+    local icon = ' '
     local hint = '%#StatusLineHintText#' .. icon  .. hint_count
     table.insert(diagnostic_list, hint)
   end
