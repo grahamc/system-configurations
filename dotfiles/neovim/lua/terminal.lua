@@ -2171,6 +2171,8 @@ Plug(
     end,
   }
 )
+
+Plug('iamcco/markdown-preview.nvim')
 -- }}}
 
 -- File Explorer {{{
