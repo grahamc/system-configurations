@@ -18,7 +18,7 @@ If you leave studio monitors on while turning off the sound source, you will get
 
 ## Installation
 
-- Run `install.bash`. You'll have to change the paths in systemd service based on where things are on your machine.
+- Run `install.bash`.
 
 ## Development
 
