@@ -311,6 +311,7 @@
         "vim-plugin-CamelCaseMotion": "vim-plugin-CamelCaseMotion",
         "vim-plugin-LuaSnip": "vim-plugin-LuaSnip",
         "vim-plugin-SchemaStore-nvim": "vim-plugin-SchemaStore-nvim",
+        "vim-plugin-actions-preview-nvim": "vim-plugin-actions-preview-nvim",
         "vim-plugin-aerial-nvim": "vim-plugin-aerial-nvim",
         "vim-plugin-animation-nvim": "vim-plugin-animation-nvim",
         "vim-plugin-bufferline-nvim": "vim-plugin-bufferline-nvim",
@@ -617,6 +618,22 @@
       "original": {
         "owner": "b0o",
         "repo": "SchemaStore.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-actions-preview-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1701784064,
+        "narHash": "sha256-3VURlbunovftW2+wqRPGFDVwrx7bErbrc2Zjkd3MOUM=",
+        "owner": "aznhe21",
+        "repo": "actions-preview.nvim",
+        "rev": "8f79029a36ab6807478f157538a91ccd4af5858f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "aznhe21",
+        "repo": "actions-preview.nvim",
         "type": "github"
       }
     },

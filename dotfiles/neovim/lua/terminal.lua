@@ -1073,7 +1073,6 @@ for type, icon in pairs(signs) do
   vim.fn.sign_define(hl, { text = icon, texthl = hl})
 end
 
-vim.keymap.set({'n', 'v'}, 'ga', vim.lsp.buf.code_action, {desc = 'Choose code action'})
 vim.keymap.set('n', '<S-l>', vim.diagnostic.open_float, {desc = 'Show diagnostics'})
 vim.keymap.set('n', '[l', vim.diagnostic.goto_prev, {desc = "Go to previous diagnostic"})
 vim.keymap.set('n', ']l', vim.diagnostic.goto_next, {desc = "Go to next diagnostic"})
@@ -1384,7 +1383,7 @@ Plug(
         { relative = "cursor", position = 1, size = { height = 5, width = 75, }, }
       )
 
-      local three_pane_layout = function(picker)
+      _G.three_pane_layout = function(picker)
         local border_chars = { top_left = "🭽", top = "▔", top_right = "🭾", right = "▕", bottom_right = "🭿", bottom = "▁", bottom_left = "🭼", left = "▏", }
         local default_border = { top_left = border_chars.top_left, top = border_chars.top, top_right = border_chars.top_right, right = border_chars.right, bottom_right = border_chars.bottom_right, bottom = border_chars.bottom, bottom_left = border_chars.bottom_left, left = border_chars.left, }
         local border = {
@@ -2173,6 +2172,21 @@ Plug(
 )
 
 Plug('iamcco/markdown-preview.nvim')
+
+Plug(
+  'aznhe21/actions-preview.nvim',
+  {
+    config = function()
+      local actions_preview = require("actions-preview")
+      actions_preview.setup({
+        telescope = {
+          create_layout = _G.three_pane_layout,
+        },
+      })
+      vim.keymap.set({'n', 'v'}, 'ga', actions_preview.code_actions, {desc = 'Choose code action'})
+    end,
+  }
+)
 -- }}}
 
 -- File Explorer {{{
