@@ -1518,6 +1518,21 @@ Plug(
         return TSLayout(layout)
       end
 
+      local select_one_or_multiple_files = function(prompt_buffer_number)
+        local current_picker = require('telescope.actions.state').get_current_picker(prompt_buffer_number)
+        local multi_selections = current_picker:get_multi_selection()
+        if not vim.tbl_isempty(multi_selections) then
+          actions.close(prompt_buffer_number)
+          for _, multi_selection in pairs(multi_selections) do
+            if multi_selection.path ~= nil then
+              vim.cmd(string.format('edit %s', multi_selection.path))
+            end
+          end
+        else
+          actions.select_default(prompt_buffer_number)
+        end
+      end
+
       telescope.setup({
         defaults = {
           mappings = {
@@ -1532,6 +1547,7 @@ Plug(
               ["<C-h>"] = actions.select_horizontal,
               ["<C-u>"] = false,
               ["<M-CR>"] = actions.toggle_selection,
+              ["<M-a>"] = actions.toggle_all,
             },
           },
           prompt_prefix = '   ',
@@ -1551,6 +1567,11 @@ Plug(
           find_files = {
             hidden = true,
             follow = true,
+            mappings = {
+              i = {
+                ['<CR>'] = select_one_or_multiple_files,
+              },
+            },
           },
           live_grep = {
             additional_args = {
