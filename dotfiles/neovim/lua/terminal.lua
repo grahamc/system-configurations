@@ -672,6 +672,12 @@ function StatusLine()
     end
   end
 
+  local lsp_info = nil
+  local language_server_count_for_current_buffer = #vim.lsp.get_active_clients({bufnr = vim.api.nvim_get_current_buf()})
+  if language_server_count_for_current_buffer > 0 then
+    lsp_info = '%#StatusLine#  ' .. language_server_count_for_current_buffer
+  end
+
   local diagnostic_count = {
     warning = GetDiagnosticCountForSeverity('warn'),
     error = GetDiagnosticCountForSeverity('error'),
@@ -785,6 +791,9 @@ function StatusLine()
   end
   if readonly then
     table.insert(left_side_items, readonly)
+  end
+  if lsp_info then
+    table.insert(left_side_items, lsp_info)
   end
   if reg_recording then
     table.insert(left_side_items, reg_recording)
