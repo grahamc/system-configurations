@@ -629,6 +629,7 @@ vim.o.wrap = true
 vim.o.listchars = 'tab:¬-,space:·'
 vim.o.signcolumn = 'yes:2'
 vim.opt.fillchars:append('eob: ')
+vim.o.termguicolors = false
 -- }}}
 
 -- Statusline {{{
