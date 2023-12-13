@@ -639,7 +639,7 @@ end
 function StatusLine()
   local item_separator = '%#StatusLineSeparator# ∙ '
 
-  local position = '%#StatusLine#' .. 'Ln %l, Col %c'
+  local position = '%#StatusLine#' .. ' %l:%c'
 
   local filetype = nil
   if string.len(vim.o.filetype) > 0 then
