@@ -1393,6 +1393,8 @@ Plug(
         { relative = "cursor", position = 1, size = { height = 5, width = 75, }, }
       )
 
+      -- It's not a duplicate, not sure why other globals aren't triggering this...
+      ---@diagnostic disable-next-line: duplicate-set-field
       _G.three_pane_layout = function(picker)
         local border_chars = { top_left = "🭽", top = "▔", top_right = "🭾", right = "▕", bottom_right = "🭿", bottom = "▁", bottom_left = "🭼", left = "▏", }
         local default_border = { top_left = border_chars.top_left, top = border_chars.top, top_right = border_chars.top_right, right = border_chars.right, bottom_right = border_chars.bottom_right, bottom = border_chars.bottom, bottom_left = border_chars.bottom_left, left = border_chars.left, }
@@ -1698,6 +1700,8 @@ Plug(
           scroll_up = '<c-k>',
         },
         -- hide mapping boilerplate
+        -- This is the correct type.
+        ---@diagnostic disable-next-line: assign-type-mismatch
         hidden = {"<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ ", "<Plug>", "<plug>"},
         layout = {
           height = {
