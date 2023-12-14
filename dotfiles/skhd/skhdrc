@@ -68,6 +68,8 @@ cmd + ctrl + shift - 0x1E [
 # Yabai shortcuts
 # TODO: Put these in their own file
 ########################################
+# refresh Hammerspoon
+cmd - r : hs -c 'hs.reload()'
 # reset window sizes to be equal
 cmd + shift - 0 : yabai -m space --balance
 # toggle float mode on the current window
