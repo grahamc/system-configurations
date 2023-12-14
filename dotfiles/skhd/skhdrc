@@ -169,8 +169,8 @@ ctrl - l [
 ]
 # refresh
 ctrl - r [
-  "Firefox" : skhd -k "cmd - r"
-  "Firefox Developer Edition" : skhd -k "cmd - r"
+  "Firefox" : skhd -k "f5"
+  "Firefox Developer Edition" : skhd -k "f5"
   * ~
 ]
 ctrl + shift - r [
