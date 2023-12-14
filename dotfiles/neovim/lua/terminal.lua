@@ -1808,16 +1808,12 @@ Plug(
       require('nvim-lightbulb').setup({
         autocmd = {enabled = true},
         -- Giving it a higher priority than diagnostics
-        sign = {priority = 15},
+        sign = {
+          priority = 15,
+          text = '',
+          hl = 'CodeActionSign',
+        },
       })
-
-      vim.fn.sign_define(
-        'LightBulbSign',
-        {
-          text = '󰌵',
-          texthl = 'CodeActionSign',
-        }
-      )
     end,
   }
 )
