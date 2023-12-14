@@ -1,4 +1,4 @@
-{ config, lib, specialArgs, pkgs, ... }:
+{ config, specialArgs, pkgs, ... }:
   let
     inherit (specialArgs) hostName homeDirectory username repositoryDirectory;
     inherit (specialArgs.flakeInputs) self;
@@ -86,13 +86,6 @@
 
       users.users.${username} = {
         home = homeDirectory;
-      };
-
-      fonts = {
-        fontDir.enable = true;
-        fonts = with pkgs; [
-          myFonts
-        ];
       };
 
       security.pam.enableSudoTouchIdAuth = true;
