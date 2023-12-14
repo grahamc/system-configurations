@@ -1610,6 +1610,9 @@ Plug(
           commands = {
             create_layout = big_editor_relative_two_pane_layout,
           },
+          keymaps = {
+            create_layout = big_editor_relative_two_pane_layout,
+          },
         },
       })
 
@@ -1627,23 +1630,23 @@ Plug(
         return result
       end
       vim.keymap.set({'n', 'v'}, '<Leader>h', call_with_visual_selection(telescope_builtins.command_history))
-      vim.keymap.set('n', '<Leader>b', '<Cmd>Telescope buffers<CR>')
+      -- TODO: I need to fix the previewer so it works with `page`. This way I get I get a live preview when I
+      -- search manpages.
+      vim.keymap.set('n', '<Leader>b', telescope_builtins.current_buffer_fuzzy_find)
       -- This is actually ctrl+/, see :help :map-special-keys
-      vim.keymap.set('n', '<C-_>', '<Cmd>Telescope commands<CR>')
+      vim.keymap.set('n', '<C-_>', telescope_builtins.commands)
       -- Outside TMUX the above won't work, I have to use <C-/>, so I just map both.
-      vim.keymap.set('n', '<C-/>', '<Cmd>Telescope commands<CR>')
+      vim.keymap.set('n', '<C-/>', telescope_builtins.commands)
       vim.keymap.set({'n', 'v'}, '<Leader>k', call_with_visual_selection(telescope_builtins.help_tags))
       vim.keymap.set({'n', 'v'}, '<Leader>g', call_with_visual_selection(telescope_builtins.live_grep))
-      vim.keymap.set('n', '<Leader>f', '<Cmd>Telescope find_files<CR>')
-      vim.keymap.set('n', '<Leader>j', '<Cmd>Telescope jumplist<CR>')
-      vim.keymap.set('n', '<Leader><Leader>', '<Cmd>Telescope resume<CR>')
+      vim.keymap.set('n', '<Leader>f', telescope_builtins.find_files)
+      vim.keymap.set('n', '<Leader>j', telescope_builtins.jumplist)
+      vim.keymap.set('n', '<Leader><Leader>', telescope_builtins.resume)
       vim.keymap.set({'n', 'v'}, '<Leader>s', call_with_visual_selection(telescope_builtins.lsp_dynamic_workspace_symbols))
-      vim.keymap.set('n', '<Leader>l', '<Cmd>Telescope diagnostics<CR>')
-      vim.cmd([[
-        command! Highlights Telescope highlights
-        command! Autocommands Telescope autocommands
-        command! Mappings Telescope keymaps
-      ]])
+      vim.keymap.set('n', '<Leader>l', telescope_builtins.diagnostics)
+      vim.api.nvim_create_user_command('Highlights', telescope_builtins.highlights, {})
+      vim.api.nvim_create_user_command('Autocommands', telescope_builtins.autocommands, {})
+      vim.api.nvim_create_user_command('Mappings', telescope_builtins.keymaps, {})
 
       telescope.load_extension('fzf')
       telescope.load_extension('smart_history')
