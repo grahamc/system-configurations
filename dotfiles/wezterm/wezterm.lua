@@ -41,7 +41,7 @@ config.font_size = 11.3
 if is_mac then
   config.font_size = 14
 end
-config.line_height = 1.2
+config.line_height = 1.35
 config.underline_thickness = "150%"
 
 local my_colors_per_color_scheme = {
