@@ -2639,16 +2639,22 @@ Plug(
       vim.api.nvim_create_user_command('Extensions', function() vim.cmd.Mason() end, {desc = 'Manage external tooling such as language servers'})
 
       -- Store the number of packages that have an update available so I can put it in my statusline.
-      local packages = require('mason-registry').get_installed_packages()
-      _G.mason_update_available_count = 0
+      local registry = require('mason-registry')
       local function maybe_set_update_flag(success, _)
         if success then
           _G.mason_update_available_count = _G.mason_update_available_count + 1
         end
       end
-      for _, package in ipairs(packages) do
-        package:check_new_version(maybe_set_update_flag)
+      local function set_mason_update_count()
+        _G.mason_update_available_count = 0
+        local packages = registry.get_installed_packages()
+        for _, package in ipairs(packages) do
+          package:check_new_version(maybe_set_update_flag)
+        end
       end
+      -- Set the count once now and once every time we install/update a package.
+      set_mason_update_count()
+      registry:on("package:install:success", vim.schedule_wrap(set_mason_update_count))
     end,
   }
 )
