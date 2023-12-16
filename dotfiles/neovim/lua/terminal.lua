@@ -2656,8 +2656,17 @@ Plug(
           package:check_new_version(maybe_set_update_flag)
         end
       end
-      -- Set the count once now and once every time we install/update a package.
-      set_mason_update_count()
+      -- Update the registry first so we get the latest package versions.
+      registry.update(function(was_successful, registry_sources_or_error)
+        if not was_successful then
+          vim.notify('Failed to check for mason updates: ' .. registry_sources_or_error, "error")
+          return
+        end
+        set_mason_update_count()
+      end)
+      -- Set the count every time we update a package so it gets decremented accordingly.
+      -- TODO: This event also fires when a new package is installed, but we aren't interested in that event. This
+      -- means we'll set the count more often than we need to.
       registry:on("package:install:success", vim.schedule_wrap(set_mason_update_count))
     end,
   }
