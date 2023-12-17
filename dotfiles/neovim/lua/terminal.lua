@@ -718,6 +718,13 @@ function StatusLine()
     diagnostics = table.concat(diagnostic_list, ' ')
   end
 
+  local mixed_indentation_indicator = nil
+  -- Taken from here:
+  -- https://github.com/vim-airline/vim-airline/blob/3b9e149e19ed58dee66e4842626751e329e1bd96/autoload/airline/extensions/whitespace.vim#L30
+  if vim.fn.search([[\v(^\t+ +)|(^ +\t+)]], 'nw', 0, 500) > 0 then
+    mixed_indentation_indicator = '%#StatusLineErrorText#[  mixed indent]'
+  end
+
   local left_side_items = {}
   local mode_map = {
     ['n']      = 'NORMAL',
@@ -806,6 +813,9 @@ function StatusLine()
   local right_side_items = {}
   if diagnostics then
     table.insert(right_side_items, diagnostics)
+  end
+  if mixed_indentation_indicator then
+    table.insert(right_side_items, mixed_indentation_indicator)
   end
   table.insert(right_side_items, position)
   local right_side = table.concat(right_side_items, item_separator)
