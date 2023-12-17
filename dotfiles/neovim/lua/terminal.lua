@@ -641,26 +641,36 @@ function StatusLine()
 
   local position = '%#StatusLine#' .. ' %l:%c'
 
+  local fileformat = vim.o.fileformat
+  if fileformat == 'unix' then
+    fileformat = ' LF'
+  elseif fileformat == 'mac' then
+    fileformat = ' CR'
+  else
+    fileformat = ' CRLF'
+  end
+  fileformat = '%#StatusLine#' .. fileformat
+
+  local fileencoding = nil
+  if #vim.o.fileencoding > 0 then
+    fileencoding = '%#StatusLine#' .. vim.o.fileencoding
+  end
+
   local filetype = nil
   if string.len(vim.o.filetype) > 0 then
     filetype = '%#StatusLine#' .. vim.o.filetype
   end
 
-  local fileformat = nil
-  if vim.o.fileformat ~= 'unix' then
-    fileformat = string.format('%%#StatusLineStandoutText#[%s]', vim.o.fileformat)
-  end
-
   local readonly = nil
   if vim.o.readonly then
-    local indicator = '󰍁'
+    local indicator = '󰍁 '
     readonly = '%#StatusLineStandoutText#' .. indicator
   end
 
   local reg_recording = nil
   local recording_register = vim.fn.reg_recording()
   if recording_register ~= '' then
-    reg_recording = '%#StatusLine# ' .. '%#StatusLineRecordingIndicator# %#StatusLine#REC@' .. recording_register
+    reg_recording = '%#StatusLineRecordingIndicator# %#StatusLine#REC@' .. recording_register
   end
 
   local search_info = nil
@@ -668,14 +678,14 @@ function StatusLine()
   if ok then
     if czs.display_results() then
       local _, current, count = czs.output()
-      search_info = '%#StatusLine#  ' .. string.format("%s/%s", current, count)
+      search_info = '%#StatusLine# ' .. string.format("%s/%s", current, count)
     end
   end
 
   local lsp_info = nil
   local language_server_count_for_current_buffer = #vim.lsp.get_active_clients({bufnr = vim.api.nvim_get_current_buf()})
   if language_server_count_for_current_buffer > 0 then
-    lsp_info = '%#StatusLine#  ' .. language_server_count_for_current_buffer
+    lsp_info = '%#StatusLine# ' .. language_server_count_for_current_buffer
   end
 
   local diagnostic_count = {
@@ -718,11 +728,30 @@ function StatusLine()
     diagnostics = table.concat(diagnostic_list, ' ')
   end
 
+  local function is_pattern_in_buffer(pattern)
+    return vim.fn.search(pattern, 'nw', 0, 500) > 0
+  end
+
   local mixed_indentation_indicator = nil
   -- Taken from here:
   -- https://github.com/vim-airline/vim-airline/blob/3b9e149e19ed58dee66e4842626751e329e1bd96/autoload/airline/extensions/whitespace.vim#L30
-  if vim.fn.search([[\v(^\t+ +)|(^ +\t+)]], 'nw', 0, 500) > 0 then
+  if is_pattern_in_buffer([[\v(^\t+ +)|(^ +\t+)]]) then
     mixed_indentation_indicator = '%#StatusLineErrorText#[  mixed indent]'
+  end
+
+  local mixed_line_endings = nil
+  local line_ending_types_found = 0
+  if is_pattern_in_buffer([[\v\n]]) then
+    line_ending_types_found = line_ending_types_found + 1
+  end
+  if is_pattern_in_buffer([[\v\r]]) then
+    line_ending_types_found = line_ending_types_found + 1
+  end
+  if is_pattern_in_buffer([[\v\r\n]]) then
+    line_ending_types_found = line_ending_types_found + 1
+  end
+  if line_ending_types_found > 1 then
+    mixed_line_endings = '%#StatusLineErrorText#[ mixed line-endings]'
   end
 
   local left_side_items = {}
@@ -788,13 +817,11 @@ function StatusLine()
   elseif startswith(mode, 'T') then
     highlights = make_highlight_names('Terminal')
   end
-  local mode_indicator = highlights.outer .. '' .. highlights.mode .. ' ' .. mode .. ' ' .. highlights.inner .. ''
-  table.insert(left_side_items, mode_indicator)
+  local mode_indicator = highlights.outer .. '' .. highlights.mode .. ' ' .. mode .. ' ' .. highlights.inner .. ' '
+  table.insert(left_side_items, fileencoding)
+  table.insert(left_side_items, fileformat)
   if filetype then
     table.insert(left_side_items, filetype)
-  end
-  if fileformat then
-    table.insert(left_side_items, fileformat)
   end
   if readonly then
     table.insert(left_side_items, readonly)
@@ -808,7 +835,7 @@ function StatusLine()
   if search_info then
     table.insert(left_side_items, search_info)
   end
-  local left_side = table.concat(left_side_items, ' ')
+  local left_side = mode_indicator .. table.concat(left_side_items, '  ')
 
   local right_side_items = {}
   if diagnostics then
@@ -816,6 +843,9 @@ function StatusLine()
   end
   if mixed_indentation_indicator then
     table.insert(right_side_items, mixed_indentation_indicator)
+  end
+  if mixed_line_endings then
+    table.insert(right_side_items, mixed_line_endings)
   end
   table.insert(right_side_items, position)
   local right_side = table.concat(right_side_items, item_separator)
