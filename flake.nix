@@ -12,6 +12,7 @@
   # There is also an issue open for relaxing the constraints in this regex: https://github.com/NixOS/nix/issues/7703
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs-for-wezterm.url = "github:nixos/nixpkgs?rev=ff0a5a776b56e0ca32d47a4a47695452ec7f7d80";
     flake-utils.url = "github:numtide/flake-utils";
     flake-parts.url = "github:hercules-ci/flake-parts";
     home-manager = {

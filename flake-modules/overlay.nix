@@ -245,6 +245,9 @@
                           '       move file(s) to Trash\n' % os.path.basename(sys.argv[0]))
                       sys.exit(64) # matches what rm does on my system
                 '';
+                # TODO: WezTerm is building on macOS in CI so I'm rolling back to the last version that worked in CI.
+                # I think it's related to this: https://github.com/NixOS/nixpkgs/issues/101229
+                wezterm = (import inputs.nixpkgs-for-wezterm {inherit (final) system;}).wezterm;
             };
 
             allPackages = crossPlatformPackages // linuxOnlyPackages // darwinOnlyPackages;

@@ -31,6 +31,7 @@
             "nix-darwin"
             "stackline"
             "spoons"
+            "nixpkgs-for-wezterm"
           ];
         };
         uniqueAssignments = lib.lists.unique (lib.lists.flatten (builtins.attrValues inputListsByHostManager));

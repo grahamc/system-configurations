@@ -266,6 +266,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-for-wezterm": {
+      "locked": {
+        "lastModified": 1697730408,
+        "narHash": "sha256-Ww//zzukdTrwTrCUkaJA/NsaLEfUfQpWZXBdXBYfhak=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "ff0a5a776b56e0ca32d47a4a47695452ec7f7d80",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "ff0a5a776b56e0ca32d47a4a47695452ec7f7d80",
+        "type": "github"
+      }
+    },
     "nixpkgs-lib": {
       "locked": {
         "dir": "lib",
@@ -299,6 +315,7 @@
         "nix-index-database": "nix-index-database",
         "nix-xdg": "nix-xdg",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-for-wezterm": "nixpkgs-for-wezterm",
         "speakers": "speakers",
         "spoons": "spoons",
         "stackline": "stackline",
