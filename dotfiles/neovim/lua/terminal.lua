@@ -658,7 +658,16 @@ function StatusLine()
 
   local filetype = nil
   if string.len(vim.o.filetype) > 0 then
-    filetype = '%#StatusLine#' .. vim.o.filetype
+    local buffer_name = vim.api.nvim_buf_get_name(0)
+    local basename = vim.fs.basename(buffer_name)
+    local extension = vim.fn.fnamemodify(basename, ':e')
+    local icon = require('nvim-web-devicons').get_icon_colors(basename, extension)
+    if icon ~= nil then
+      icon = icon .. ' '
+    else
+      icon = ''
+    end
+    filetype = '%#StatusLine#' .. icon .. vim.o.filetype
   end
 
   local readonly = nil
@@ -1624,6 +1633,7 @@ Plug(
                 ['<CR>'] = select_one_or_multiple_files,
               },
             },
+            disable_devicons = true,
           },
           live_grep = {
             additional_args = {
@@ -1635,6 +1645,7 @@ Plug(
               i = { ["<c-f>"] = actions.to_fuzzy_refine, },
             },
             prompt_title = "Live Grep (Press <c-f> to fuzzy filter)",
+            disable_devicons = true,
           },
           help_tags = {
             mappings = {
@@ -1963,6 +1974,7 @@ Plug(
             end
             return false
           end,
+          show_buffer_icons = false,
         },
         highlights = {
           ---@diagnostic disable: missing-fields
@@ -2261,6 +2273,8 @@ Plug(
     end,
   }
 )
+
+Plug('nvim-tree/nvim-web-devicons')
 -- }}}
 
 -- File Explorer {{{

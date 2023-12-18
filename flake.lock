@@ -355,6 +355,7 @@
         "vim-plugin-nvim-treesitter-endwise": "vim-plugin-nvim-treesitter-endwise",
         "vim-plugin-nvim-ts-autotag": "vim-plugin-nvim-ts-autotag",
         "vim-plugin-nvim-ts-context-commentstring": "vim-plugin-nvim-ts-context-commentstring",
+        "vim-plugin-nvim-web-devicons": "vim-plugin-nvim-web-devicons",
         "vim-plugin-plenary-nvim": "vim-plugin-plenary-nvim",
         "vim-plugin-reticle-nvim": "vim-plugin-reticle-nvim",
         "vim-plugin-sqlite-lua": "vim-plugin-sqlite-lua",
@@ -1322,6 +1323,22 @@
       "original": {
         "owner": "JoosepAlviste",
         "repo": "nvim-ts-context-commentstring",
+        "type": "github"
+      }
+    },
+    "vim-plugin-nvim-web-devicons": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1702476661,
+        "narHash": "sha256-xzh9fOOFl0ibLSq8d1O0+RuSU9yN8JrzzuuaFdIOT4U=",
+        "owner": "nvim-tree",
+        "repo": "nvim-web-devicons",
+        "rev": "a1425903ab52a0a0460622519e827f224e5b4fee",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-tree",
+        "repo": "nvim-web-devicons",
         "type": "github"
       }
     },

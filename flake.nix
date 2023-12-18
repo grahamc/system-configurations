@@ -131,6 +131,7 @@
     vim-plugin-telescope-fzf-native = {url = "github:nvim-telescope/telescope-fzf-native.nvim"; flake = false;};
     vim-plugin-markdown-preview-nvim = {url = "github:iamcco/markdown-preview.nvim"; flake = false;};
     vim-plugin-actions-preview-nvim = {url = "github:aznhe21/actions-preview.nvim"; flake = false;};
+    vim-plugin-nvim-web-devicons = {url = "github:nvim-tree/nvim-web-devicons"; flake = false;};
 
     tmux-plugin-resurrect = {url = "github:tmux-plugins/tmux-resurrect"; flake = false;};
     tmux-plugin-tmux-suspend = {url = "github:MunifTanjim/tmux-suspend"; flake = false;};
