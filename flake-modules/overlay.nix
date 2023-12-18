@@ -53,19 +53,33 @@
             
             vimPluginRepositoryPrefix = "vim-plugin-";
             vimPluginBuilder = repositoryName: repositorySourceCode: date:
-              if builtins.hasAttr repositoryName prev.vimPlugins
-                then
-                  (builtins.getAttr repositoryName prev.vimPlugins).overrideAttrs (old: {
-                    name = "${repositoryName}-${date}";
-                    version = date;
-                    src = repositorySourceCode;
-                  })
-                else
-                  prev.vimUtils.buildVimPlugin {
-                    pname = repositoryName;
-                    version = date;
-                    src = repositorySourceCode;
-                  };
+              let
+                package = if builtins.hasAttr repositoryName prev.vimPlugins
+                  then
+                    (builtins.getAttr repositoryName prev.vimPlugins).overrideAttrs (old: {
+                      name = "${repositoryName}-${date}";
+                      version = date;
+                      src = repositorySourceCode;
+                    })
+                  else
+                    prev.vimUtils.buildVimPlugin {
+                      pname = repositoryName;
+                      version = date;
+                      src = repositorySourceCode;
+                    };
+              in
+                # TODO: I'm doing this because vim-plug won't let me lazy-load a plugin unless it has a folder
+                # named 'plugin'.
+                final.pkgs.symlinkJoin {
+                  name = repositoryName;
+                  version = date;
+                  paths = [ package ];
+                  postBuild = ''
+                    cd $out
+                    [ -d ./plugin ] || mkdir plugin
+                  '';
+                };
+
             newVimPlugins = makePackages
               vimPluginRepositoryPrefix
               vimPluginBuilder;
