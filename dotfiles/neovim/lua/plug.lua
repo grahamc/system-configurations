@@ -46,6 +46,7 @@ function PlugEnd()
   vim.defer_fn(ApplyAsyncConfigs, 0)
 end
 
+local group_id = vim.api.nvim_create_augroup('PlugLua', {})
 local original_plug = vim.fn['plug#']
 -- Similar to the vim-plug `Plug` command, but with an additional option to specify a function to run after a
 -- plugin is loaded.
@@ -68,7 +69,7 @@ function Plug(repo, options)
         {
           pattern = plugin_name,
           callback = function() plug_wrapper_apply_lazy_config(plugin_name) end,
-          group = vim.api.nvim_create_augroup('PlugLua', {}),
+          group = group_id,
           once = true,
         }
       )
