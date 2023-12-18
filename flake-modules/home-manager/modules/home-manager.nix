@@ -10,6 +10,7 @@
       {
         name = "hostctl-switch";
         text = ''
+          cd "${config.repository.directory}"
           home-manager switch --flake "${config.repository.directory}#${hostName}" "''$@"
         '';
       };
@@ -17,6 +18,7 @@
       {
         name = "hostctl-upgrade";
         text = ''
+          cd "${config.repository.directory}"
           home-manager switch --flake "${config.repository.directory}#${hostName}" ${self.lib.updateFlags.home} "''$@"
         '';
       };

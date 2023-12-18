@@ -9,6 +9,8 @@
         name = "hostctl-switch";
         runtimeInputs = with pkgs; [coreutils-full];
         text = ''
+          cd "${repositoryDirectory}"
+
           # Get sudo authentication now so I don't have to wait for it to ask me later
           sudo --validate
 
@@ -27,6 +29,8 @@
         name = "hostctl-upgrade";
         runtimeInputs = with pkgs; [coreutils-full];
         text = ''
+          cd "${repositoryDirectory}"
+
           # Get sudo authentication now so I don't have to wait for it to ask me later
           sudo --validate
 
