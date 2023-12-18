@@ -2345,8 +2345,8 @@ Plug(
           vim.keymap.set('n', '<Tab>', '<CR>', {buffer = buffer_number, remap = true})
         end,
       })
-      vim.keymap.set("n", "<M-e>", '<cmd>NvimTreeFindFileToggle<cr>', {silent = true})
       vim.api.nvim_create_user_command('ExplorerToggle', function() vim.cmd.NvimTreeFindFileToggle() end, {desc = 'Toggle the explorer window'})
+      vim.keymap.set("n", "<M-e>", vim.cmd.ExplorerToggle, {silent = true})
       local nvim_tree_group_id = vim.api.nvim_create_augroup('MyNvimTree', {})
       vim.api.nvim_create_autocmd(
         'BufEnter',
@@ -2689,13 +2689,17 @@ Plug(
         log_level = vim.log.levels.DEBUG,
       })
 
-      vim.cmd([[
-        augroup MasonNvim
-          autocmd!
-          autocmd FileType mason highlight clear WordUnderCursor
-        augroup END
-      ]])
-      vim.api.nvim_create_user_command('Extensions', function() vim.cmd.Mason() end, {desc = 'Manage external tooling such as language servers'})
+      vim.api.nvim_create_autocmd(
+        'FileType',
+        {
+          pattern = 'mason',
+          callback = function()
+            vim.cmd([[highlight clear WordUnderCursor]])
+          end,
+          group = vim.api.nvim_create_augroup('MyMason', {}),
+        }
+      )
+      vim.api.nvim_create_user_command('Extensions', vim.cmd.Mason, {desc = 'Manage external tooling such as language servers'})
 
       -- Store the number of packages that have an update available so I can put it in my statusline.
       local registry = require('mason-registry')
