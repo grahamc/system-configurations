@@ -1,0 +1,7 @@
+update_check = false
+sync_frequency = "1m"
+
+[stats]
+common_subcommands = [
+  ",",
+]

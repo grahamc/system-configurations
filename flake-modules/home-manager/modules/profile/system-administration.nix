@@ -62,6 +62,8 @@
 
         # for ps
         procps
+
+        atuin
       ] ++ optionals isLinux [
         trashy
         pipr
@@ -75,21 +77,14 @@
         trash
       ];
 
-      # Taken from home-manager: https://github.com/nix-community/home-manager/blob/47c2adc6b31e9cff335010f570814e44418e2b3e/modules/programs/broot.nix#L151
-      # I'm doing this because home-manager was bringing in the broot source code as a dependency.
-      #
-      # Using mkAfter to make it more likely to appear after other
-      # manipulations of the prompt.
-      programs.fish.shellInit = lib.mkAfter ''
-        source ${
-          pkgs.runCommand "br.fish" { nativeBuildInputs = [ pkgs.broot ]; }
-          "broot --print-shell-function fish > $out"
-        }
-      '';
-
       xdg.configFile = {
         "fish/conf.d/zoxide.fish".source = ''${
           pkgs.runCommand "zoxide-config.fish" {} "${pkgs.zoxide}/bin/zoxide init --no-cmd fish > $out"
+        }'';
+
+        "fish/conf.d/atuin.fish".source = ''${
+          pkgs.runCommand "atuin-config.fish" { nativeBuildInputs = [ pkgs.atuin ]; }
+          "atuin init fish --disable-up-arrow --disable-ctrl-r > $out"
         }'';
 
         # Taken from home-manager: https://github.com/nix-community/home-manager/blob/47c2adc6b31e9cff335010f570814e44418e2b3e/modules/programs/broot.nix#L151
@@ -99,6 +94,14 @@
           source = pkgs.writeTextDir "launcher/installed-v1" "";
           recursive = true;
         };
+        "fish/conf.d/broot.fish".source = ''${
+          pkgs.runCommand "broot.fish" { nativeBuildInputs = [ pkgs.broot ]; }
+          "broot --print-shell-function fish > $out"
+        }'';
+      };
+
+      xdg.dataFile = {
+        "fish/vendor_completions.d/atuin.fish".source = "${pkgs.atuin}/share/fish/vendor_completions.d/atuin.fish";
       };
 
       repository.symlink.home.file = {
@@ -117,6 +120,7 @@
         "ripgrep/ripgreprc".source = "ripgrep/ripgreprc";
         "ssh/start-my-shell.sh".source = "ssh/start-my-shell.sh";
         "broot/conf.hjson".source = "broot/conf.hjson";
+        "atuin/config.toml".source = "atuin/config.toml";
       } // optionalAttrs isLinux {
         "pipr/pipr.toml".source = "pipr/pipr.toml";
         "fish/conf.d/pipr.fish".source = "pipr/pipr.fish";
