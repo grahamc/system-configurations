@@ -29,6 +29,9 @@
               comma = makeEmptyPackage "stub-comma";
               coreutils-full = prev.coreutils;
               gitMinimal = makeEmptyPackage "stub-git";
+              vimPlugins = prev.vimPlugins // {
+                markdown-preview-nvim = makeEmptyPackage "markdown-preview-nvim";
+              };
             } // optionalAttrs isLinux {
               fzf = prev.fzf.override {
                 glibcLocales = minimalLocales;
