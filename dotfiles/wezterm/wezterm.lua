@@ -30,6 +30,8 @@ config.disable_default_key_bindings = true
 -- to fix it, but setting this to false seems to fix that. Solution came from here:
 -- https://www.reddit.com/r/commandline/comments/1621suy/help_issue_with_wezterm_and_vim_key_repeat/
 config.use_ime = false
+config.enable_kitty_keyboard = true
+config.enable_kitty_graphics = true
 
 -- font
 -- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system, but Flatpak apps
