@@ -2684,7 +2684,6 @@ Plug(
           keymaps = {
             toggle_package_expand = "<Tab>",
           },
-          check_outdated_packages_on_open = false,
         },
         log_level = vim.log.levels.DEBUG,
       })
