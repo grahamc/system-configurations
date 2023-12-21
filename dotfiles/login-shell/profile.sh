@@ -18,12 +18,11 @@ fi
 if uname | grep -q Linux; then
   export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
 fi
-# TODO: For the Determinate Systems multi-user installer. The installer adds a snippet to the shell profiles in /etc,
-# but macOS overwrites the shell profiles during a system update.
-# issues:
-#   - https://github.com/NixOS/nix/issues/8385
-#   - https://github.com/NixOS/nix/issues/3616
-#   - https://github.com/NixOS/nix/issues/6117
+# TODO: I have to configure the Determinate Systems Nix installer to add configs for all shells not just the one I
+# run the installer command in. This way all shells with have Nix set up properly. I also need to make sure fish picks up
+# the config because based on this issue dont think it will:
+# https://github.com/DeterminateSystems/nix-installer/issues/576
+# Until I do the above, I'll manually source the config.
 nix_daemon_script='/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
 if [ -e "$nix_daemon_script" ]; then
   # shellcheck source=/dev/null
