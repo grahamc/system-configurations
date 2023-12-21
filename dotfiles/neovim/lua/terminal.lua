@@ -2939,6 +2939,7 @@ Plug(
           }),
           builtins.diagnostics.fish,
           builtins.diagnostics.markdownlint_cli2,
+          builtins.diagnostics.markdownlint,
           builtins.diagnostics.actionlint,
         },
       })
