@@ -63,9 +63,11 @@
           experimental-features = [
             "nix-command"
             "flakes"
+            "repl-flake"
             "auto-allocate-uids"
           ];
           auto-allocate-uids = true;
+          extra-nix-path = "nixpkgs=flake:nixpkgs";
         };
       };
 
