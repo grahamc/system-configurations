@@ -19,6 +19,23 @@ local function merge_to_left(t1, t2)
   return t1
 end
 local is_mac = string.find(wezterm.target_triple, 'darwin')
+local CustomEvent = {
+  ThemeChanged = "theme-changed",
+  ThemeToggleRequested = "theme-toggled",
+  SystemAppearanceChanged = "system-appearance-changed",
+}
+-- Taken from here:
+-- https://stackoverflow.com/questions/72424838/programmatically-lighten-or-darken-a-hex-color-in-lua-nvim-highlight-colors
+local function clamp(component)
+  return math.min(math.max(component, 0), 255)
+end
+local function lighten_or_darken_color(col, amt)
+  local num = tonumber(string.sub(col, 2), 16)
+  local r = math.floor(num / 0x10000) + amt
+  local g = (math.floor(num / 0x100) % 0x100) + amt
+  local b = (num % 0x100) + amt
+  return '#' .. string.sub(string.format("%#x", clamp(r) * 0x10000 + clamp(g) * 0x100 + clamp(b)), 3)
+end
 
 -- general
 config.window_close_confirmation = 'NeverPrompt'
@@ -32,6 +49,7 @@ config.disable_default_key_bindings = true
 config.use_ime = false
 config.enable_kitty_keyboard = true
 config.enable_kitty_graphics = true
+config.automatically_reload_config = false
 
 -- font
 -- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system, but Flatpak apps
@@ -86,10 +104,6 @@ local my_colors_per_color_scheme = {
     -- For folded lines
     [53] = '#f5f5f5',
   },
-}
-local dimmed_foreground_colors = {
-  ['#000000'] = '#808080',
-  ['#d8dee9'] = '#767c87',
 }
 
 local function create_color_schemes(colors_per_color_scheme)
@@ -174,40 +188,93 @@ local function create_theme_config(color_scheme_name)
     }
   }
 end
-local light_theme_config = create_theme_config('Biggs Light Owl')
-local dark_theme_config = create_theme_config('Biggs Nord')
-
--- Change theme automatically when the system theme changes
-local function get_theme_config_for_appearance(appearance)
+local Theme = {
+  Dark = {
+    as_string = "dark",
+    config = create_theme_config('Biggs Nord'),
+  },
+  Light = {
+    as_string = "light",
+    config = create_theme_config('Biggs Light Owl'),
+  },
+}
+Theme.for_system_appearance = function(appearance)
   if appearance:find 'Dark' then
-    return dark_theme_config
+    return Theme.Dark
   else
-    return light_theme_config
+    return Theme.Light
   end
 end
-wezterm.on('window-config-reloaded', function(window)
-  if _G.reload_due_to_manual_theme_toggle then
-    _G.reload_due_to_manual_theme_toggle = false
-    return
-  end
-
+Theme.from_window = function(window)
   local overrides = window:get_config_overrides() or {}
-  local appearance = window:get_appearance()
-  local theme_config = get_theme_config_for_appearance(appearance)
-  merge_to_left(overrides, theme_config)
-  window:set_config_overrides(overrides)
-end)
--- Toggle theme with alt+c
-wezterm.on('toggle-theme', function(window)
-  local overrides = window:get_config_overrides() or {}
-  if overrides.color_scheme == dark_theme_config.color_scheme then
-    merge_to_left(overrides, light_theme_config)
+  if Theme.Light.config.color_scheme == overrides.color_scheme then
+    return Theme.Light
   else
-    merge_to_left(overrides, dark_theme_config)
+    return Theme.Dark
   end
+end
+Theme.inverse = function(theme)
+  if theme == Theme.Dark then
+    return Theme.Light
+  else
+    return Theme.Dark
+  end
+end
 
-  _G.reload_due_to_manual_theme_toggle = true
+local function set_theme(window, theme)
+  local overrides = window:get_config_overrides() or {}
+  merge_to_left(overrides, theme.config)
   window:set_config_overrides(overrides)
+  wezterm.emit(CustomEvent.ThemeChanged, theme)
+end
+
+-- Change theme automatically when the system theme changes
+--
+-- There is no event for when the system appearance changes. Instead, when the appearance changes, the
+-- 'window-config-reloaded' event is fired. To get around this, I keep track of the current system appearance fire my
+-- own event when I detect a change.
+local current_system_appearance = nil
+wezterm.on('window-config-reloaded', function(window)
+  local new_system_appearance = wezterm.gui.get_appearance()
+  if current_system_appearance ~= new_system_appearance then
+    current_system_appearance = new_system_appearance
+    wezterm.emit(CustomEvent.SystemAppearanceChanged, window, current_system_appearance)
+  end
+end)
+wezterm.on(CustomEvent.SystemAppearanceChanged, function(window, new_appearance)
+  set_theme(window, Theme.for_system_appearance(new_appearance))
+end)
+
+-- Toggle the current theme. This event is fired from a keybinding
+wezterm.on(CustomEvent.ThemeToggleRequested, function(window)
+  set_theme(window, Theme.inverse(Theme.from_window(window)))
+end)
+
+-- Sync theme with neovim
+local function fire_theme_event_in_neovim(theme)
+  local run_path = (os.getenv('XDG_RUNTIME_DIR') or os.getenv('TMPDIR') or '/tmp') .. '/nvim-wezterm/pipes'
+  local event_name = 'ColorSchemeLight'
+  if theme == Theme.Dark then
+    event_name = 'ColorSchemeDark'
+  end
+  os.execute(string.format(
+    [[find '%s' -type s -o -type p | xargs -I PIPE ~/.nix-profile/bin/nvim --server PIPE --remote-expr 'v:lua.vim.api.nvim_exec_autocmds("User", {"pattern": "%s"})']],
+    run_path, event_name
+  ))
+end
+local function set_theme_in_state_file(theme)
+  local state_dir = (os.getenv('XDG_STATE_HOME') or (os.getenv('HOME') .. '/.local/state')) .. '/wezterm'
+  local theme_file = state_dir .. '/current-theme.txt'
+  os.execute(string.format(
+    [[mkdir -p '%s' && echo '%s' > '%s']],
+    state_dir, theme.as_string, theme_file
+  ))
+end
+---@diagnostic disable-next-line: unused-local
+wezterm.on(CustomEvent.ThemeChanged, function(theme)
+  fire_theme_event_in_neovim(theme)
+  -- This way neovim can get the current wezterm theme on startup
+  set_theme_in_state_file(theme)
 end)
 
 -- Title bar
@@ -222,9 +289,11 @@ wezterm.on('update-status', function(window, pane)
   local effective_config = window:effective_config()
   local foreground_color = effective_config.color_schemes[effective_config.color_scheme].foreground
   if not window:is_focused() then
-    -- Using `:lower()` since WezTerm does that to all the colors I set
-    -- TODO: Dim the colors programmatically
-    foreground_color = dimmed_foreground_colors[foreground_color:lower()]
+    local amount = -100
+    if Theme.from_window(window) == Theme.Light then
+      amount = amount * -1
+    end
+    foreground_color = lighten_or_darken_color(foreground_color, amount)
   end
 
   local pane_title = pane:get_user_vars().title
@@ -249,7 +318,7 @@ local keybinds = {
   {
     key = 'c',
     mods = 'ALT',
-    action = wezterm.action.EmitEvent('toggle-theme')
+    action = wezterm.action.EmitEvent(CustomEvent.ThemeToggleRequested)
   },
   {
     key = 'v',
@@ -282,6 +351,11 @@ local keybinds = {
     key = 'q',
     mods = 'CMD',
     action = wezterm.action.CloseCurrentTab { confirm = false },
+  },
+  {
+    key = 'r',
+    mods = 'ALT|SHIFT',
+    action = wezterm.action.ReloadConfiguration,
   },
 }
 
