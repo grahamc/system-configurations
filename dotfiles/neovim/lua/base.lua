@@ -51,14 +51,6 @@ vim.o.joinspaces = false
 vim.o.formatoptions = ''
 vim.opt.matchpairs:append('<:>')
 
--- move ten lines at a time by holding ctrl and a directional key
-vim.keymap.set({'n', 'x'}, '<C-j>', '10j', {remap = true})
-vim.keymap.set({'n', 'x'}, '<C-k>', '10k', {remap = true})
-
--- move ten columns at a time by holding ctrl and a directional key
-vim.keymap.set({'n', 'x'}, '<C-h>', '10h', {remap = true})
-vim.keymap.set({'n', 'x'}, '<C-l>', '10l', {remap = true})
-
 -- Always move by screen line, unless a count was specified or we're in a line-wise mode.
 local function move_by_screen_line(direction)
   local mode = vim.fn.mode()
@@ -75,6 +67,14 @@ local function move_by_screen_line(direction)
 end
 vim.keymap.set({'n', 'x'}, 'j', function() return move_by_screen_line('j') end, {expr =true})
 vim.keymap.set({'n', 'x'}, 'k', function() return move_by_screen_line('k') end, {expr =true})
+
+-- move ten lines at a time by holding ctrl and a directional key
+vim.keymap.set({'n', 'x'}, '<C-j>', '10j')
+vim.keymap.set({'n', 'x'}, '<C-k>', '10k')
+
+-- move ten columns at a time by holding ctrl and a directional key
+vim.keymap.set({'n', 'x'}, '<C-h>', '10h')
+vim.keymap.set({'n', 'x'}, '<C-l>', '10l')
 
 -- Copy up to the end of line, not including the newline character
 vim.keymap.set({'n'}, 'Y', 'yg_')
