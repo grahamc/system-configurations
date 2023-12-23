@@ -2587,6 +2587,9 @@ Plug(
             col_offset = 1,
           },
         },
+        experimental = {
+          ghost_text = {hl_group = 'CmpGhostText',},
+        },
         mapping = cmp.mapping.preset.insert({
           ['<CR>'] = function(fallback)
             -- TODO: Don't block <CR> if signature help is active
@@ -3098,6 +3101,7 @@ function SetNordOverrides()
   vim.api.nvim_set_hl(0, 'CmpDocumentationNormal', {ctermbg = 51})
   vim.api.nvim_set_hl(0, 'CmpDocumentationBorder', {ctermbg = 51, ctermfg = 52})
   vim.api.nvim_set_hl(0, 'CmpCursorLine', {ctermfg = 6, ctermbg = 'NONE', reverse = true,})
+  vim.api.nvim_set_hl(0, 'CmpGhostText', {link = 'GitBlameVirtualText'})
   -- autocomplete popupmenu
   vim.api.nvim_set_hl(0, 'PmenuSel', {ctermfg = 6, ctermbg = 'NONE', reverse = true,})
   vim.api.nvim_set_hl(0, 'Pmenu', {ctermfg = 'NONE', ctermbg = 24,})
