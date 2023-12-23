@@ -260,4 +260,3 @@ function __set_fzf_history_keybind --on-event fish_prompt
   functions -e (status current-function)
   mybind --no-focus \ch history-widget
 end
-mybind --no-focus \e\[A 'history-widget reverse'
