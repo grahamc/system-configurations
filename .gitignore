@@ -2,3 +2,5 @@
 .direnv/
 .DS_Store
 .luarc.json
+secrets/**
+!secrets/.gitkeep
