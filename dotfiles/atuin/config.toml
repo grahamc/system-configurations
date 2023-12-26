@@ -5,3 +5,10 @@ sync_frequency = "1m"
 common_subcommands = [
   ",",
 ]
+# TODO: There is a bug that throws an error if you configure only `common_subcommands` and not `common_prefix` so as a
+# workaround I'm setting `common_prefix` here to its default value. The fix has been merged into master, but is not
+# included in the latest release so I'll have to wait until it is.
+# fix: https://github.com/atuinsh/atuin/pull/1437
+common_prefix = [
+  "sudo",
+]
