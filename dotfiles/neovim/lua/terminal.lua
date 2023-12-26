@@ -328,6 +328,8 @@ vim.o.winminwidth = 0
 vim.keymap.set('n', '<Leader><Bar>', '<Cmd>vsplit<CR>')
 vim.keymap.set('n', '<Leader>-', '<Cmd>split<CR>')
 
+local window_group_id = vim.api.nvim_create_augroup('Window', {})
+
 -- Automatically resize all splits to make them equal when the vim window is resized or a new window is created/closed.
 vim.api.nvim_create_autocmd(
   {'VimResized', 'WinNew', 'WinClosed', 'TabEnter',},
@@ -342,7 +344,7 @@ vim.api.nvim_create_autocmd(
       end
       vim.cmd.wincmd('=')
     end,
-    group = vim.api.nvim_create_augroup('Window', {}),
+    group = window_group_id,
   }
 )
 
@@ -360,7 +362,7 @@ vim.api.nvim_create_autocmd(
         end
       end
     end,
-    group = vim.api.nvim_create_augroup('Window', {}),
+    group = window_group_id,
   }
 )
 
