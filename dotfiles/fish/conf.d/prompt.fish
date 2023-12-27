@@ -213,7 +213,8 @@ function _direnv_context
     set directory (basename (string sub --start 2 -- $DIRENV_DIR))
 
     set blocked ''
-    if direnv status | grep --ignore-case --quiet 'Found RC allowed false'
+    # TODO: A faster, stable way to check this is in the works: https://github.com/direnv/direnv/pull/1010
+    if direnv status | grep --ignore-case --quiet 'Found RC allowed 1'
         set blocked ' ('$_color_error_text'blocked'$_color_normal')'
     end
 
