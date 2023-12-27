@@ -33,9 +33,6 @@
                 markdown-preview-nvim = makeEmptyPackage "markdown-preview-nvim";
               };
             } // optionalAttrs isLinux {
-              fzf = prev.fzf.override {
-                glibcLocales = minimalLocales;
-              };
               tmux = prev.tmux.override {
                 withSystemd = false;
               };
