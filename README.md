@@ -56,7 +56,7 @@ My home config is also available as an executable with no dependencies. The exec
 
 #### Determinate Systems Installer (recommended)
 
-I recommend using the [Determinate Systems Installer][ds-installer] with an extra option set:
+I recommend using the [Determinate Systems Installer][determinate-systems-installer] with an extra option set:
 
 * `trusted-users`: This adds the current user to the list of trusted users. In Nix, some actions require that your user is trusted, such as adding a cache ([explained below](#adding-the-cache)). Setting this allows you start using Nix immediately after installation without having to edit any configuration files.
 
@@ -68,11 +68,11 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
          --extra-conf "trusted-users = $(whoami)"
 ```
 
-> NOTE: Please confirm that everything in the command provided above, besides the extra option, is up-to-date with what is currently listed on the [Installer Website][ds-installer].
+> NOTE: Please confirm that everything in the command provided above, besides the extra option, is up-to-date with what is currently listed on the [Installer Website][determinate-systems-installer].
 
 #### Official Installer
 
-Alternatively, you can use the [official installer][official-installer], though this one has more steps. The README for the [Determinate Systems installer][ds-installer] lists the differences between the two.
+Alternatively, you can use the [official installer][official-installer], though this one has more steps. The README for the [Determinate Systems installer][determinate-systems-installer] lists the differences between the two.
 
 ### Adding the Cache
 
@@ -112,7 +112,7 @@ To avoid building everything on your machine, you can configure Nix to use this 
 
   * Run `echo "extra-trusted-users = $USER" | sudo tee -a /etc/nix/nix.conf` to add yourself as a trusted user in the Nix system configuration. Then [restart the Nix daemon](#restart-daemon) to apply the changes.
 
-[ds-installer]:https://github.com/DeterminateSystems/nix-installer
+[determinate-systems-installer]:https://github.com/DeterminateSystems/nix-installer
 [official-installer]:https://nixos.org/download.html
 [home-manager]:https://github.com/nix-community/home-manager
 [nix-darwin]:https://github.com/LnL7/nix-darwin
@@ -122,3 +122,4 @@ To avoid building everything on your machine, you can configure Nix to use this 
 [nix-darwin-flake-module]:https://github.com/bigolu/dotfiles/blob/master/flake-modules/nix-darwin/default.nix
 [hammerspoon-guide]:https://www.hammerspoon.org/go/
 [rootless-nix]:https://github.com/NixOS/nix/issues/1971#issue-304578884
+[built-with-nix-badge]:https://builtwithnix.org/badge.svg
