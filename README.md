@@ -1,5 +1,7 @@
 # System Config
 
+[![built with nix][built-with-nix-badge]][built-with-nix-site]
+
 The configuration for my development environment. Uses [Home Manager][home-manager] and [nix-darwin][nix-darwin]. Works on Linux and macOS.
 
 ## Applying the configuration
@@ -122,4 +124,5 @@ To avoid building everything on your machine, you can configure Nix to use this 
 [nix-darwin-flake-module]:https://github.com/bigolu/dotfiles/blob/master/flake-modules/nix-darwin/default.nix
 [hammerspoon-guide]:https://www.hammerspoon.org/go/
 [rootless-nix]:https://github.com/NixOS/nix/issues/1971#issue-304578884
+[built-with-nix-site]:https://builtwithnix.org
 [built-with-nix-badge]:https://builtwithnix.org/badge.svg
