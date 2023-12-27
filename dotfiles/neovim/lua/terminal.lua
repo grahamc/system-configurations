@@ -1196,13 +1196,27 @@ vim.keymap.set('n', '[l', vim.diagnostic.goto_prev, {desc = "Go to previous diag
 vim.keymap.set('n', ']l', vim.diagnostic.goto_next, {desc = "Go to next diagnostic"})
 vim.keymap.set('n', 'gi', function() require('telescope.builtin').lsp_implementations() end, {desc = "Go to implementation"})
 vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, {desc = "Show signature help"})
-vim.keymap.set('n', 'gr', function() require('telescope.builtin').lsp_references() end, {desc = "Go to reference"})
 vim.keymap.set('n', 'gt', function() require('telescope.builtin').lsp_type_definitions() end, {desc = "Go to type definition"})
 vim.keymap.set('n', 'gd', function() require('telescope.builtin').lsp_definitions() end, {desc = "Go to definition"})
 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {desc = "Go to declaration"})
 vim.keymap.set('n', 'ghi', function() require('telescope.builtin').lsp_incoming_calls() end, {desc = "Show incoming calls"})
 vim.keymap.set('n', 'gho', function() require('telescope.builtin').lsp_outgoing_calls() end, {desc = "Show outgoing calls"})
 vim.keymap.set('n', 'gn', vim.lsp.buf.rename, {desc = "Rename"})
+
+-- TODO: When there is only one result, it doesn't add to the jumplist so I'm adding that here. I should upstream this.
+local function lsp_reference_with_jump()
+  local row_before, column_before = vim.api.nvim_win_get_cursor(0)
+  require('telescope.builtin').lsp_references()
+  local row_after, column_after = vim.api.nvim_win_get_cursor(0)
+
+  local has_cursor_moved = row_before ~= row_after or column_before ~= column_after
+  if has_cursor_moved then
+    vim.cmd([[
+      normal! m'
+    ]])
+  end
+end
+vim.keymap.set('n', 'gr', lsp_reference_with_jump, {desc = "Go to reference"})
 -- }}}
 
 -- Terminal {{{
