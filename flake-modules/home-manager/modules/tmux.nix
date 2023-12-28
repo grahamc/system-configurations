@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, specialArgs, ... }:
   let
     tmuxPlugins = with pkgs.tmuxPlugins; [
       better-mouse-mode
@@ -13,6 +13,7 @@
     getPluginName = p: if types.package.check p then p.pname else p.plugin.pname;
     # relative to $XDG_CONFIG_HOME
     myTmuxConfigPath = "tmux/my-tmux.conf";
+    tmuxReloadScriptName = "tmux-config-reload";
   in
     {
       home.packages = [
@@ -74,7 +75,7 @@
       repository.symlink.xdg.executable = {
         "tmux-click-url".source = "tmux/tmux-click-url.py";
         "tmux-last-command-output".source = "tmux/tmux-last-command-output.bash";
-        "tmux-config-reload".source = "tmux/tmux-config-reload.bash";
+        ${tmuxReloadScriptName}.source = "tmux/${tmuxReloadScriptName}.bash";
         "tmux-attach-to-project".source = "tmux/tmux-attach-to-project.fish";
       };
 
@@ -82,7 +83,15 @@
         {
           patterns.modified = [''^dotfiles/tmux/tmux\.conf$''];
           confirmation = "The tmux configuration has changed, would you like to reload tmux?";
-          action = "tmux-config-reload";
+          action = tmuxReloadScriptName;
         }
       ];
-    }
+
+      # I reload tmux every time I switch generations because tmux-suspend uses the canonical path to its script
+      # when making a key mapping and that path may change when I switch generations.
+      home.activation.reloadTmux = lib.hm.dag.entryAfter
+        ["linkGeneration"]
+        ''
+          PATH='${pkgs.tmux}/bin:${pkgs.bash}/bin:${pkgs.coreutils-full}/bin:$PATH' ${specialArgs.homeDirectory}/.local/bin/${tmuxReloadScriptName} &
+        '';
+      }
