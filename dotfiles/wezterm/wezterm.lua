@@ -24,6 +24,16 @@ local CustomEvent = {
   ThemeToggleRequested = "theme-toggled",
   SystemAppearanceChanged = "system-appearance-changed",
 }
+local function exists(file)
+  local ok, err, code = os.rename(file, file)
+  if not ok then
+    if code == 13 then
+      -- Permission denied, but it exists
+      return true
+    end
+  end
+  return ok, err
+end
 -- Taken from here:
 -- https://stackoverflow.com/questions/72424838/programmatically-lighten-or-darken-a-hex-color-in-lua-nvim-highlight-colors
 local function clamp(component)
@@ -252,15 +262,17 @@ end)
 
 -- Sync theme with neovim
 local function fire_theme_event_in_neovim(theme)
-  local run_path = (os.getenv('XDG_RUNTIME_DIR') or os.getenv('TMPDIR') or '/tmp') .. '/nvim-wezterm/pipes'
+  local pipe_directory = (os.getenv('XDG_RUNTIME_DIR') or os.getenv('TMPDIR') or '/tmp') .. '/nvim-wezterm/pipes'
   local event_name = 'ColorSchemeLight'
   if theme == Theme.Dark then
     event_name = 'ColorSchemeDark'
   end
-  os.execute(string.format(
-    [[find '%s' -type s -o -type p | xargs -I PIPE ~/.nix-profile/bin/nvim --server PIPE --remote-expr 'v:lua.vim.api.nvim_exec_autocmds("User", {"pattern": "%s"})']],
-    run_path, event_name
-  ))
+  if exists(pipe_directory) then
+    os.execute(string.format(
+      [[find '%s' -type s -o -type p | xargs -I PIPE ~/.nix-profile/bin/nvim --server PIPE --remote-expr 'v:lua.vim.api.nvim_exec_autocmds("User", {"pattern": "%s"})']],
+      pipe_directory, event_name
+    ))
+  end
 end
 local function set_theme_in_state_file(theme)
   local state_dir = (os.getenv('XDG_STATE_HOME') or (os.getenv('HOME') .. '/.local/state')) .. '/wezterm'
@@ -287,7 +299,14 @@ config.colors = {}
 -- Update the status bar with the current window title
 wezterm.on('update-status', function(window, pane)
   local effective_config = window:effective_config()
-  local foreground_color = effective_config.color_schemes[effective_config.color_scheme].foreground
+  local color_schemes = effective_config.color_schemes or {}
+  local color_scheme = color_schemes[effective_config.color_scheme]
+  local foreground_color = nil
+  if color_scheme ~= nil then
+    foreground_color = color_scheme.foreground
+  else
+    foreground_color = effective_config.colors.foreground or '#000000'
+  end
   if not window:is_focused() then
     local amount = -100
     if Theme.from_window(window) == Theme.Light then
@@ -296,7 +315,7 @@ wezterm.on('update-status', function(window, pane)
     foreground_color = lighten_or_darken_color(foreground_color, amount)
   end
 
-  local pane_title = pane:get_user_vars().title
+  local pane_title = pane:get_user_vars().title or ''
   if string.find(pane_title, 'tmux') then
     pane_title = ' tmux'
   else
