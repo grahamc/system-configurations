@@ -206,17 +206,6 @@ vim.keymap.set({"n"}, "<F9>", '<C-i>')
 
 -- Use shift+u to redo the last undone change
 vim.keymap.set({"n"}, "<S-u>", '<C-r>')
-
-vim.api.nvim_create_autocmd(
-  'Filetype',
-  {
-    pattern = {'text', 'markdown', 'html', 'xhtml',},
-    group = vim.api.nvim_create_augroup('NoLineLengthForMarkup', {}),
-    callback = function()
-      vim.opt_local.colorcolumn = '0'
-    end,
-  }
-)
 -- }}}
 
 -- Utilities {{{

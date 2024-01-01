@@ -2,8 +2,9 @@
 
 set -o errexit
 set -o nounset
+set -o pipefail
 
-name="shell-$(uname -m)-$(uname -s | tr '[:upper:]' '[:lower:]')"
+name="$1-$(uname -m)-$(uname -s | tr '[:upper:]' '[:lower:]')"
 # shellcheck disable=2034
 # It gets used in an `eval`
 download_url="https://github.com/bigolu/dotfiles/releases/download/master/$name"
