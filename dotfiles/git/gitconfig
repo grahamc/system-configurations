@@ -69,4 +69,4 @@
   oldMoved = normal 21
   newMoved = normal 22
 [status]
-	showUntrackedFiles = all
+  showUntrackedFiles = all
