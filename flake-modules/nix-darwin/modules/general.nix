@@ -75,14 +75,14 @@
         command = ''
           /bin/sh -c ' \
             export PATH="${config.nix.package}/bin:''$PATH"; \
-            nix-env --profile /nix/var/nix/profiles/system --delete-generations old; \
-            nix-env --profile /nix/var/nix/profiles/default --delete-generations old; \
-            nix-env --profile /nix/var/nix/profiles/per-user/root/profile --delete-generations old; \
-            nix-env --profile /nix/var/nix/profiles/per-user/root/channels --delete-generations old; \
-            nix-env --profile ${homeDirectory}/.local/state/nix/profiles/home-manager --delete-generations old; \
-            nix-env --profile ${homeDirectory}/.local/state/nix/profiles/profile --delete-generations old; \
-            nix-env --profile ${homeDirectory}/.local/state/nix/profiles/channels --delete-generations old; \
-            nix-collect-garbage --delete-old; \
+            nix-env --profile /nix/var/nix/profiles/system --delete-generations +5; \
+            nix-env --profile /nix/var/nix/profiles/default --delete-generations +5; \
+            nix-env --profile /nix/var/nix/profiles/per-user/root/profile --delete-generations +5; \
+            nix-env --profile /nix/var/nix/profiles/per-user/root/channels --delete-generations +5; \
+            nix-env --profile ${homeDirectory}/.local/state/nix/profiles/home-manager --delete-generations +5; \
+            nix-env --profile ${homeDirectory}/.local/state/nix/profiles/profile --delete-generations +5; \
+            nix-env --profile ${homeDirectory}/.local/state/nix/profiles/channels --delete-generations +5; \
+            nix-collect-garbage --delete-older-than 180d; \
           '
         '';
         environment.NIX_REMOTE = "daemon";

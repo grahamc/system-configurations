@@ -99,7 +99,7 @@
               };
               Service = {
                 Type = "oneshot";
-                ExecStart = "${config.home.profileDirectory}/bin/home-manager expire-generations now";
+                ExecStart = "${config.home.profileDirectory}/bin/home-manager expire-generations '-180 days'";
               };
             };
           };
