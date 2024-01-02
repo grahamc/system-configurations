@@ -215,10 +215,9 @@ function _direnv_context
     set blocked ''
     # TODO: A better way to check this is in the works: https://github.com/direnv/direnv/pull/1010
     #
-    # This enum is defined here:
+    # The number I'm matching is the value of an enum that's defined here:
     # https://github.com/direnv/direnv/blob/f5deb57e5944978c6a0017bbcb2a808e3e59fb21/internal/cmd/rc.go#L145-L149
-    set enum (direnv status | string match --regex --groups-only 'Loaded RC allowed ([1,2])')
-    if test -n "$enum"
+    if direnv status | string match --regex --quiet 'Loaded RC allowed [1,2]'
         set blocked ' ('$_color_error_text'blocked'$_color_normal')'
     end
 
