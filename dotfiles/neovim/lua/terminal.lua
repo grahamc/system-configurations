@@ -155,7 +155,7 @@ vim.api.nvim_create_autocmd(
       if editorconfig ~= nil and editorconfig.max_line_length ~= nil then
         vim.wo.colorcolumn = editorconfig.max_line_length
       else
-        vim.wo.colorcolumn = "120"
+        vim.wo.colorcolumn = "100"
       end
     end,
     group = general_group_id,
