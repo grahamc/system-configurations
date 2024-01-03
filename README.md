@@ -49,7 +49,7 @@ You can find more differences between the two in the
 ["Installation Differences" section of the Determinate Systems Installer README][determinate-systems-installer-differences].
 
 When using the installer I suggest adding an extra option, `trusted-users`, which will add the current user to the list
-of trusted users. This is helpful since some actions in Nix require that the current user be trusted, such as using a
+of trusted users. This is helpful since some actions in Nix require that the user be trusted, such as using a
 binary cache ([explained below](#using-the-binary-cache-optional)). Below is the installation command with the
 extra option:
 
