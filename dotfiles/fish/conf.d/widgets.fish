@@ -213,24 +213,14 @@ end
 mybind --no-focus \ed 'directory-widget'
 
 function history-widget --description 'Search history' --argument-names ui_direction
-
-  if test "$ui_direction" = 'reverse'
-    set layout 'default'
-    set preview_window_position 'up'
-    set input_format '--read0'
-
-    # TODO: Until I can filter altuin's history through the CLI, I'll use fish's for up-arrow search. Ideally, I
-    # would use atuiun with a filter for only commands from this host.
-    set default_command "history --null"
-  else
-    set layout 'reverse'
-    set preview_window_position 'down'
-    set input_format
-
+  # I don't include atuin in the portable shell so I need to check for it.
+  if command --query atuin
     # TODO: Until I can dedup commands in atuin, I'll do it with awk which means I can't show other columns. The command
     # below is what I'll use when I can print other columns.
     # set default_command "printf DATE\t\t\t\t\t\t\t\t\tDURATION\tEXIT_CODE\t\t\tCOMMAND; printf '\x00'; atuin history list --print0 --human --format '{time}\t\t{duration}\t\t\t\t{exit}\t\t\t\t\t\t\t{command}' | tac --separator=''"
     set default_command "printf %s\n (string replace --all \n '␊' -- (atuin history list --print0 --format '{command}' | string split0))[-1..1] | awk '!x[\$0]++'"
+  else
+    set default_command "history --null"
   end
 
   # I'm using the NUL character to delimit history entries since they may span multiple lines.
@@ -238,12 +228,10 @@ function history-widget --description 'Search history' --argument-names ui_direc
     FZF_DEFAULT_COMMAND="$default_command" \
       fzf-tmux-zoom  \
       --prompt 'history: ' \
-      --layout "$layout" \
-      --preview-window "$preview_window_position,4" \
+      --preview-window "4" \
       --preview='printf %s\n {+} | bat --language fish --style plain --color always' \
       --scheme history \
       --no-hscroll \
-      $input_format \
       --print0 \
       --query (commandline) \
     | string split0 \
