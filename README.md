@@ -2,8 +2,10 @@
 
 [![built with nix][built-with-nix-badge]][built-with-nix-site]
 
-The configuration for my development environment on Linux and macOS. Uses [Home Manager][home-manager]
-and [nix-darwin][nix-darwin].
+The configuration for my development environment on Linux and macOS. Uses
+[Home Manager][home-manager] and [nix-darwin][nix-darwin]. I don't expect anyone else to use this,
+but I figured I'd leave the repository public as a resource for people who want to manage
+their systems similarly.
 
 Table of Contents
 
@@ -55,7 +57,7 @@ extra option:
 
 <pre>
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix \
-  | sh -s -- install <mark>--extra-conf "trusted-users = $(whoami)"</mark>
+  | sh -s -- install --extra-conf "trusted-users = $(whoami)"
 </pre>
 
 > NOTE: Please confirm that everything in the command provided above, besides the extra option, is up-to-date with
