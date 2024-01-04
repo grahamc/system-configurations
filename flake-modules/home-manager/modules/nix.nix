@@ -61,4 +61,10 @@
         "nix-gcroots".source = "nix/nix-gcroots.fish";
         "nix-info".source = "nix/nix-info.fish";
       };
+
+      # Use the nixpkgs in this flake in the system flake registry. By default, it pulls the
+      # latest version of nixokgs-unstable.
+      nix.registry = {
+        nixpkgs.flake = flakeInputs.nixpkgs; 
+      };
     }

@@ -55,19 +55,29 @@
     {
       nix = {
         useDaemon = true;
+
         settings = {
           trusted-users = [
             "root"
             username
           ];
+
           experimental-features = [
             "nix-command"
             "flakes"
             "repl-flake"
             "auto-allocate-uids"
           ];
+
           auto-allocate-uids = true;
-          extra-nix-path = "nixpkgs=flake:nixpkgs";
+        };
+
+        nixPath = "nixpkgs=flake:nixpkgs";
+
+        # Use the nixpkgs in this flake in the system flake registry. By default, it pulls the
+        # latest version of nixokgs-unstable.
+        registry = {
+          nixpkgs.flake = specialArgs.flakeInputs.nixpkgs; 
         };
       };
 
