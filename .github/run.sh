@@ -30,4 +30,4 @@ eval "$download_command"
 
 chmod +x "$name"
 
-"./$name" "$@"
+exec "./$name"

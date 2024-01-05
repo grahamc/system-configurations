@@ -72,7 +72,9 @@
           auto-allocate-uids = true;
         };
 
-        nixPath = "nixpkgs=flake:nixpkgs";
+        nixPath = [
+          { nixpkgs = "flake:nixpkgs"; }
+        ];
 
         # Use the nixpkgs in this flake in the system flake registry. By default, it pulls the
         # latest version of nixokgs-unstable.
@@ -139,10 +141,6 @@
           remapCapsLockToControl = true;
         };
         activationScripts.postActivation.text = ''
-          # When hibernating, actually power down instead of the default behaviour where a hibernation file is
-          # created, but the computer stays in suspension.
-          sudo pmset -b hibernatemode 25
-
           # Homebrew services won't have any of my nix profile /bin directories on their path so below I'm copying
           # the programs they need into a directory that is on their $PATH.
           #

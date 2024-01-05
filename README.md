@@ -145,7 +145,7 @@ shell/terminal that will have access to these programs and configs.
 `curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run.sh | sh -s -- terminal`
 
 > NOTE: While the SEA doesn't depend on any programs on your computer, it does require that you have a `/tmp`
-directory. You can read this [GitHub issue comment][rootless-nix] regarding a "rootless Nix" to see why this is
+directory. You can read this [GitHub issue comment regarding a "rootless Nix"][rootless-nix] to see why this is
 needed, as well as learn more about how this works.
 
 ## Troubleshooting

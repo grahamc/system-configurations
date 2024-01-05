@@ -87,6 +87,6 @@
     # Compile my custom themes for bat.
     chronic bat cache --build
 
-    ''$SHELL ''$argv
+    exec ''$SHELL ''$argv </dev/tty >/dev/tty 2>&1
     ''
 

@@ -1275,12 +1275,6 @@ vim.g.signify_sign_change_delete = ''
 vim.g.signify_priority = -100
 vim.g.signify_sign_show_count = 0
 
--- Before        Input         After
--- ------------------------------------
--- {|}           <CR>          {
---                                 |
---                             }
--- ------------------------------------
 Plug(
   'windwp/nvim-autopairs',
   {
