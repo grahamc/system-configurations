@@ -72,6 +72,7 @@
             findutils
             # for ps
             procps
+            ast-grep
           ] ++ optionals isLinux [
             trashy
             pipr

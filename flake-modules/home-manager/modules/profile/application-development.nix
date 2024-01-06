@@ -21,6 +21,7 @@
       xdgWrappers.watchman
       nil
       pynix
+      ast-grep
     ];
 
     repository.symlink.home.file = {
