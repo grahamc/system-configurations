@@ -1,8 +1,8 @@
 [Unit]
-Description=Collect garbage in the Nix store weekly
+Description=Collect garbage in the Nix store
 
 [Timer]
-OnCalendar=weekly
+OnCalendar=monthly
 Persistent=true
 
 [Install]

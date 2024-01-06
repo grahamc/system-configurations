@@ -108,10 +108,10 @@
           user.timers = {
             home-manager-delete-old-generations = {
               Unit = {
-                Description = "Delete old generations of home-manager weekly";
+                Description = "Delete old generations of home-manager";
               };
               Timer = {
-                OnCalendar = "weekly";
+                OnCalendar = "monthly";
                 Persistent = true;
               };
               Install = {

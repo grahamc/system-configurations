@@ -98,7 +98,10 @@
         '';
         environment.NIX_REMOTE = "daemon";
         serviceConfig.RunAtLoad = false;
-        serviceConfig.StartCalendarInterval = [ {Hour = 3; Minute = 15;} ];
+        serviceConfig.StartCalendarInterval = [
+          # once a month
+          {Day = 1; Hour = 0; Minute = 0;}
+        ];
       };
 
       users.users.${username} = {

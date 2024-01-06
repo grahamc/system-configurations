@@ -6,4 +6,4 @@ Type=oneshot
 # Wait 1 minute for home-manager to delete its old generations. I would schedule home-manager to run before
 # this, but I can't since the home-manager service is a user service and this is a system service and systemd
 # doesn't allow user services to reference system services and vice-versa.
-ExecStart=/bin/sh -c '/bin/sleep 60 && /nix/var/nix/profiles/default/bin/nix-collect-garbage --delete-old'
+ExecStart=/bin/sh -c '/bin/sleep 60 && /nix/var/nix/profiles/default/bin/nix-collect-garbage --delete-older-than 180d'
