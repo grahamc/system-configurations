@@ -37,17 +37,19 @@
           };
         symlinkType = types.submodule symlinkOptions;
         symlinkSetType = types.attrsOf symlinkType;
-        executableSymlinkOptions = {name, config, ...}:
+        executableSymlinkOptions = submoduleContext@{name, ...}:
           {
             options = {
               inherit source executable recursive;
               target = lib.mkOption {
                 type = types.str;
-                apply = value: if config.recursive then ".local/bin" else ".local/bin/${value}";
+                apply = value: if submoduleContext.config.recursive
+                  then config.repository.symlink.xdg.executableHome
+                  else "${config.repository.symlink.xdg.executableHome}/${value}";
               };
             };
             config = {
-              target = lib.mkDefault name;
+              target = lib.mkDefault submoduleContext.name;
             };
           };
         executableSymlinkType = types.submodule executableSymlinkOptions;
@@ -82,6 +84,11 @@
             executable = lib.mkOption {
               type = executableSymlinkSetType;
               default = {};
+            };
+            executableHome = lib.mkOption {
+              type = types.path;
+              default = "${config.home.homeDirectory}/.local/bin";
+              readOnly = true;
             };
           };
         };

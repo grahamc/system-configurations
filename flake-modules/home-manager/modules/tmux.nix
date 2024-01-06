@@ -92,6 +92,6 @@
       home.activation.reloadTmux = lib.hm.dag.entryAfter
         ["linkGeneration"]
         ''
-          PATH='${pkgs.tmux}/bin:${pkgs.bash}/bin:${pkgs.coreutils-full}/bin:$PATH' ${specialArgs.homeDirectory}/.local/bin/${tmuxReloadScriptName} &
+          PATH='${config.repository.symlink.xdg.executableHome}:${config.home.profileDirectory}/bin:$PATH' ${tmuxReloadScriptName} &
         '';
       }
