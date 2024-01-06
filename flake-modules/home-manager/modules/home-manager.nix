@@ -20,6 +20,7 @@
         text = ''
           cd "${config.repository.directory}"
           home-manager switch --flake "${config.repository.directory}#${hostName}" ${self.lib.updateFlags.home} "''$@"
+          nix-upgrade-profiles
         '';
       };
   in

@@ -37,6 +37,7 @@
           oldGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
 
           darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" ${self.lib.updateFlags.darwin} "''$@"
+          nix-upgrade-profiles
 
           brew update
           brew upgrade --greedy
@@ -90,10 +91,8 @@
             nix-env --profile /nix/var/nix/profiles/system --delete-generations +5; \
             nix-env --profile /nix/var/nix/profiles/default --delete-generations +5; \
             nix-env --profile /nix/var/nix/profiles/per-user/root/profile --delete-generations +5; \
-            nix-env --profile /nix/var/nix/profiles/per-user/root/channels --delete-generations +5; \
             nix-env --profile ${homeDirectory}/.local/state/nix/profiles/home-manager --delete-generations +5; \
             nix-env --profile ${homeDirectory}/.local/state/nix/profiles/profile --delete-generations +5; \
-            nix-env --profile ${homeDirectory}/.local/state/nix/profiles/channels --delete-generations +5; \
             nix-collect-garbage --delete-older-than 180d; \
           '
         '';

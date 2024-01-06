@@ -77,23 +77,8 @@ function make_commit_in_dotfiles
     end
 end
 
-# There are two types of Nix installations, single and multi user. I use the multi-user installation with two users,
-# root and myself. Here I run each nix command once for root and once for the current user, who I assume is myself.
-function run_for_each_nix_user --argument-names nix_command
-    # Run for the current user
-    eval "$nix_command"
-
-    # Run for the root user. Nix determines the current user based on $HOME so I use --set-home to set $HOME to the
-    # root user's $HOME.
-    eval "sudo --set-home $nix_command"
-end
 function upgrade-nix
     print_banner 'Nix'
-
-    run_for_each_nix_user 'nix-channel --update'
-
-    # Now that the channels are updated, upgrade the packages.
-    run_for_each_nix_user 'nix profile upgrade'
 
     # Upgrade my host manager flake. This could be home-manager, nix-darwin, etc.
     hostctl-upgrade
