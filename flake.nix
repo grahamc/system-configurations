@@ -58,6 +58,8 @@
       };
     };
 
+    tree-sitter-just = {url = "github:IndianBoy42/tree-sitter-just"; flake = false;};
+    neodev-nvim = {url = "github:folke/neodev.nvim"; flake = false;};
     vim-plugin-firenvim = {url = "github:glacambre/firenvim"; flake = false;};
     vim-plugin-vim-indentwise = {url = "github:jeetsukumaran/vim-indentwise"; flake = false;};
     vim-plugin-vim-matchup = {url = "github:andymass/vim-matchup"; flake = false;};
@@ -119,8 +121,6 @@
     vim-plugin-nvim-navic = {url = "github:SmiteshP/nvim-navic"; flake = false;};
     vim-plugin-git-blame-nvim = {url = "github:f-person/git-blame.nvim"; flake = false;};
     vim-plugin-vim-just = {url = "github:NoahTheDuke/vim-just"; flake = false;};
-    tree-sitter-just = {url = "github:IndianBoy42/tree-sitter-just"; flake = false;};
-    neodev-nvim = {url = "github:folke/neodev.nvim"; flake = false;};
     vim-plugin-aerial-nvim = {url = "github:stevearc/aerial.nvim"; flake = false;};
     vim-plugin-telescope-smart-history-nvim = {url = "github:nvim-telescope/telescope-smart-history.nvim"; flake = false;};
     vim-plugin-middleclass = {url = "github:anuvyklack/middleclass"; flake = false;};

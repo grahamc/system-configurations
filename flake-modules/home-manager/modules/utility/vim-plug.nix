@@ -25,9 +25,17 @@
         let
           vimConfigBasenames = builtins.attrNames (builtins.readDir config.vimPlug.configDirectory);
           vimConfigPaths = builtins.map (basename: config.vimPlug.configDirectory + "/${basename}") vimConfigBasenames;
-          vimConfigContents = builtins.map builtins.readFile vimConfigPaths;
-          stringsSplitByPlug = lib.lists.flatten (builtins.map (lib.strings.splitString "Plug") vimConfigContents);
-          pluginNames = builtins.map (matchList: builtins.elemAt matchList 0) (builtins.filter (x: x != null) (builtins.map (builtins.match ''[( ][[:space:]]*['"][a-zA-Z0-9._-]+/([a-zA-Z0-9._-]+)['"].*'') stringsSplitByPlug));
+          vimConfigPathsJoined = lib.strings.escapeShellArgs vimConfigPaths;
+          pluginNamesFile = pkgs.runCommand
+            "plugin-names.txt"
+            {nativeBuildInputs = with pkgs; [ast-grep jq];}
+            ''
+              cat \
+                <(sg --lang lua --pattern "Plug '"'$ARG'"'" --json=pretty ${vimConfigPathsJoined} | jq --raw-output '.[].metaVariables.single.ARG.text') \
+                <(sg --lang lua --pattern 'Plug "$ARG"' --json=pretty ${vimConfigPathsJoined} | jq --raw-output '.[].metaVariables.single.ARG.text') \
+              | sort | uniq | cut -d'/' -f2 | head -c -1 > $out
+            '';
+          pluginNames = lib.strings.splitString "\n" (builtins.readFile pluginNamesFile);
           replaceDotsWithDashes = (builtins.replaceStrings ["."] ["-"]);
           plugins = map
             (pluginName:
