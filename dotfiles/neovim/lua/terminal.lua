@@ -224,6 +224,15 @@ local function vim_get_visual_selection()
 
   return text
 end
+
+local function set_jump_before(fn)
+  return function(...)
+    vim.cmd([[
+      normal! m'
+    ]])
+    fn(...)
+  end
+end
 -- }}}
 
 -- System Theme Synchronization {{{
@@ -1193,19 +1202,7 @@ vim.keymap.set('n', 'gho', function() require('telescope.builtin').lsp_outgoing_
 vim.keymap.set('n', 'gn', vim.lsp.buf.rename, {desc = "Rename"})
 
 -- TODO: When there is only one result, it doesn't add to the jumplist so I'm adding that here. I should upstream this.
-local function lsp_reference_with_jump()
-  local row_before, column_before = vim.api.nvim_win_get_cursor(0)
-  require('telescope.builtin').lsp_references()
-  local row_after, column_after = vim.api.nvim_win_get_cursor(0)
-
-  local has_cursor_moved = row_before ~= row_after or column_before ~= column_after
-  if has_cursor_moved then
-    vim.cmd([[
-      normal! m'
-    ]])
-  end
-end
-vim.keymap.set('n', 'gr', lsp_reference_with_jump, {desc = "Go to reference"})
+vim.keymap.set('n', 'gr', set_jump_before(function() require('telescope.builtin').lsp_references() end), {desc = "Go to reference"})
 -- }}}
 
 -- Terminal {{{
@@ -1747,7 +1744,7 @@ Plug(
       -- Outside TMUX the above won't work, I have to use <C-/>, so I just map both.
       vim.keymap.set('n', '<C-/>', telescope_builtins.commands)
       vim.keymap.set({'n', 'v'}, '<Leader>k', call_with_visual_selection(telescope_builtins.help_tags))
-      vim.keymap.set({'n', 'v'}, '<Leader>g', call_with_visual_selection(telescope_builtins.live_grep))
+      vim.keymap.set({'n', 'v'}, '<Leader>g', set_jump_before(call_with_visual_selection(telescope_builtins.live_grep)))
       vim.keymap.set('n', '<Leader>f', telescope_builtins.find_files)
       vim.keymap.set('n', '<Leader>j', telescope_builtins.jumplist)
       vim.keymap.set('n', '<Leader><Leader>', telescope_builtins.resume)
