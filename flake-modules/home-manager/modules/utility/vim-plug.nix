@@ -33,7 +33,7 @@
               cat \
                 <(sg --lang lua --pattern "Plug '"'$ARG'"'" --json=pretty ${vimConfigPathsJoined} | jq --raw-output '.[].metaVariables.single.ARG.text') \
                 <(sg --lang lua --pattern 'Plug "$ARG"' --json=pretty ${vimConfigPathsJoined} | jq --raw-output '.[].metaVariables.single.ARG.text') \
-              | sort | uniq | cut -d'/' -f2 | head -c -1 > $out
+              | sort --unique | cut -d'/' -f2 | head -c -1 > $out
             '';
           pluginNames = lib.strings.splitString "\n" (builtins.readFile pluginNamesFile);
           replaceDotsWithDashes = (builtins.replaceStrings ["."] ["-"]);
