@@ -384,7 +384,7 @@ function _nix_context
         | xargs -I PACKAGE fish -c "string split --fields (count (string split '.' 'PACKAGE')) '.' 'PACKAGE'" \
     )
     if test -n "$packages"
-        set packages " ($packages)"
+        set packages "($packages)"
     end
 
     if set --query IN_NIX_SHELL
@@ -392,9 +392,7 @@ function _nix_context
         if test $IN_NIX_SHELL = 'impure'
             set color $_color_warning_text
         end
-        set type $color$IN_NIX_SHELL$_color_normal
-    else
-        set type $_color_warning_text'unknown'$_color_normal
+        set type $color$IN_NIX_SHELL$_color_normal' '
     end
 
     printf "nix: $type$packages"
