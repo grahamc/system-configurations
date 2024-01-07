@@ -6,24 +6,54 @@
     extra-trusted-public-keys = "bigolu.cachix.org-1:AJELdgYsv4CX7rJkuGu5HuVaOHcqlOgR07ZJfihVTIw=";
   };
 
+  outputs = inputs@{ flake-parts, flake-utils, nixpkgs, ... }:
+    flake-parts.lib.mkFlake
+      { inherit inputs; }
+      {
+        imports = [
+          ./flake-modules/cache.nix
+          ./flake-modules/nix-darwin
+          ./flake-modules/overlay.nix
+          ./flake-modules/shell
+          ./flake-modules/bundler
+          ./flake-modules/home-manager
+          ./flake-modules/lib.nix
+          ./flake-modules/assign-inputs-to-host-managers.nix
+        ];
+
+        systems = with flake-utils.lib.system; [
+          x86_64-linux
+          x86_64-darwin
+        ];
+      };
+
   # These names need to match the flake ID regex. The regex can be found here:
   # https://github.com/NixOS/nix/blob/ccaadc957593522e9b46336eb5afa45ff876f13f/src/libutil/url-parts.hh#L42
   #
   # There is also an issue open for relaxing the constraints in this regex: https://github.com/NixOS/nix/issues/7703
   inputs = {
+    # sub-flakes
+    ######################################## 
+    speakers = {
+      url = "./dotfiles/smart_plug";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
+
+    # nix
+    ######################################## 
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nixpkgs-for-wezterm.url = "github:nixos/nixpkgs?rev=ff0a5a776b56e0ca32d47a4a47695452ec7f7d80";
-    flake-utils.url = "github:numtide/flake-utils";
-    flake-parts.url = "github:hercules-ci/flake-parts";
+    nix-index-database = {
+      url = "github:Mic92/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs = {
         nixpkgs.follows = "nixpkgs";
       };
-    };
-    nix-index-database = {
-      url = "github:Mic92/nix-index-database";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-darwin = {
       url = "github:lnl7/nix-darwin/master";
@@ -35,6 +65,32 @@
       url = "github:infinisil/nix-xdg";
       flake = false;
     };
+    gomod2nix = {
+      url = "github:nix-community/gomod2nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
+    flake-utils.url = "github:numtide/flake-utils";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+
+    # tmux
+    ######################################## 
+    tmux-plugin-resurrect = {url = "github:tmux-plugins/tmux-resurrect"; flake = false;};
+    tmux-plugin-tmux-suspend = {url = "github:MunifTanjim/tmux-suspend"; flake = false;};
+    tmux-plugin-better-mouse-mode = {url = "github:NHDaly/tmux-better-mouse-mode"; flake = false;};
+    tmux-plugin-mode-indicator = {url = "github:MunifTanjim/tmux-mode-indicator"; flake = false;};
+    tmux-plugin-continuum = {url = "github:tmux-plugins/tmux-continuum"; flake = false;};
+
+    # fish
+    ######################################## 
+    fish-plugin-autopair-fish = {url = "github:jorgebucaran/autopair.fish"; flake = false;};
+    fish-plugin-async-prompt = {url = "github:acomagu/fish-async-prompt"; flake = false;};
+    fish-plugin-completion-sync = {url = "github:pfgray/fish-completion-sync"; flake = false;};
+    fish-plugin-done = {url = "github:franciscolourenco/done"; flake = false;};
+
+    # Misc.
+    ######################################## 
     stackline = {
       url = "github:AdamWagner/stackline";
       flake = false;
@@ -45,19 +101,9 @@
       url = "github:Hammerspoon/Spoons";
       flake = false;
     };
-    gomod2nix = {
-      url = "github:nix-community/gomod2nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
-    speakers = {
-      url = "./dotfiles/smart_plug";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
 
+    # vim
+    ######################################## 
     tree-sitter-just = {url = "github:IndianBoy42/tree-sitter-just"; flake = false;};
     neodev-nvim = {url = "github:folke/neodev.nvim"; flake = false;};
     vim-plugin-firenvim = {url = "github:glacambre/firenvim"; flake = false;};
@@ -133,35 +179,5 @@
     vim-plugin-markdown-preview-nvim = {url = "github:iamcco/markdown-preview.nvim"; flake = false;};
     vim-plugin-actions-preview-nvim = {url = "github:aznhe21/actions-preview.nvim"; flake = false;};
     vim-plugin-nvim-web-devicons = {url = "github:nvim-tree/nvim-web-devicons"; flake = false;};
-
-    tmux-plugin-resurrect = {url = "github:tmux-plugins/tmux-resurrect"; flake = false;};
-    tmux-plugin-tmux-suspend = {url = "github:MunifTanjim/tmux-suspend"; flake = false;};
-    tmux-plugin-better-mouse-mode = {url = "github:NHDaly/tmux-better-mouse-mode"; flake = false;};
-    tmux-plugin-mode-indicator = {url = "github:MunifTanjim/tmux-mode-indicator"; flake = false;};
-    tmux-plugin-continuum = {url = "github:tmux-plugins/tmux-continuum"; flake = false;};
-
-    fish-plugin-autopair-fish = {url = "github:jorgebucaran/autopair.fish"; flake = false;};
-    fish-plugin-async-prompt = {url = "github:acomagu/fish-async-prompt"; flake = false;};
-    fish-plugin-completion-sync = {url = "github:pfgray/fish-completion-sync"; flake = false;};
-    fish-plugin-done = {url = "github:franciscolourenco/done"; flake = false;};
   };
-
-  outputs = inputs@{ flake-parts, flake-utils, nixpkgs, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [
-        ./flake-modules/cache.nix
-        ./flake-modules/nix-darwin
-        ./flake-modules/overlay.nix
-        ./flake-modules/shell
-        ./flake-modules/bundler
-        ./flake-modules/home-manager
-        ./flake-modules/lib.nix
-        ./flake-modules/assign-inputs-to-host-managers.nix
-      ];
-
-      systems = with flake-utils.lib.system; [
-        x86_64-linux
-        x86_64-darwin
-      ];
-    };
 }
