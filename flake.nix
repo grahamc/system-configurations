@@ -13,7 +13,7 @@
         imports = [
           ./flake-modules/cache.nix
           ./flake-modules/nix-darwin
-          ./flake-modules/overlay.nix
+          ./flake-modules/overlay
           ./flake-modules/shell
           ./flake-modules/bundler
           ./flake-modules/home-manager

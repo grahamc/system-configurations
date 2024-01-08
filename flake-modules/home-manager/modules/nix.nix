@@ -61,6 +61,7 @@
         "nix-gcroots".source = "nix/nix-gcroots.fish";
         "nix-info".source = "nix/nix-info.fish";
         "nix-upgrade-profiles".source = "nix/nix-upgrade-profiles.fish";
+        "pynix".source = "nix/pynix.bash";
       };
 
       # Use the nixpkgs in this flake in the system flake registry. By default, it pulls the

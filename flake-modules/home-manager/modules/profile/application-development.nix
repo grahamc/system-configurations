@@ -20,7 +20,6 @@
       timg
       xdgWrappers.watchman
       nil
-      pynix
       ast-grep
     ];
 
