@@ -38,6 +38,7 @@
       url = "./dotfiles/smart_plug";
       inputs = {
         nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
       };
     };
 
