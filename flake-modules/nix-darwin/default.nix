@@ -44,7 +44,7 @@
             configuration = {
               hostName = "bigmac";
               modules = [
-                ./modules/general.nix
+                ./modules/profile/base.nix
               ];
               homeModules = [
                 "${self.lib.home.moduleBaseDirectory}/profile/system-administration.nix"
