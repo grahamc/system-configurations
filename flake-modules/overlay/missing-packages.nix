@@ -2,7 +2,7 @@
   {
     flake =
       let
-        overlay = final: prev:
+        overlay = _final: prev:
           let
             inherit (prev.stdenv) isLinux;
             inherit (prev.lib.attrsets) optionalAttrs;

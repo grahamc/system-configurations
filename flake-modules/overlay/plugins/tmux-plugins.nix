@@ -1,7 +1,7 @@
 { self, ... }:
   {
     flake = let
-      overlay = final: prev:
+      overlay = _final: prev:
         let
           rtpFilePathFixes = {
             "tmux-suspend" = "suspend.tmux";
@@ -27,7 +27,7 @@
             in
               if builtins.hasAttr repositoryName prev.tmuxPlugins
                 then
-                  (builtins.getAttr repositoryName prev.tmuxPlugins).overrideAttrs (old: {
+                  (builtins.getAttr repositoryName prev.tmuxPlugins).overrideAttrs (_old: {
                     version = date;
                     src = repositorySourceCode;
                   })

@@ -1,5 +1,5 @@
 # This module has the configuration that I always want applied.
-{ config, lib, pkgs, specialArgs, ... }:
+{ lib, pkgs, specialArgs, ... }:
   let
     inherit (specialArgs) repositoryDirectory flakeInputs;
     inherit (lib.attrsets) optionalAttrs;

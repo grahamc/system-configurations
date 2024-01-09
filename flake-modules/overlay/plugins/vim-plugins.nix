@@ -9,7 +9,7 @@
             let
               package = if builtins.hasAttr repositoryName prev.vimPlugins
                 then
-                  (builtins.getAttr repositoryName prev.vimPlugins).overrideAttrs (old: {
+                  (builtins.getAttr repositoryName prev.vimPlugins).overrideAttrs (_old: {
                     name = "${repositoryName}-${date}";
                     version = date;
                     src = repositorySourceCode;

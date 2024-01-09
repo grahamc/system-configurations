@@ -1,6 +1,6 @@
 # This module makes it easy to create symlinks to a file in your Home Manager flake. This way you
 # can edit a file and have the changes applied instantly without having to switch generations.
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
   {
     # For consistency, these options are made to resemble Home Manager's options for linking files.
     options.repository.symlink =

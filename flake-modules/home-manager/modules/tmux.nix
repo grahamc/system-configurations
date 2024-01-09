@@ -1,4 +1,4 @@
-{ config, lib, pkgs, specialArgs, ... }:
+{ config, lib, pkgs, ... }:
   let
     tmuxPlugins = with pkgs.tmuxPlugins; [
       better-mouse-mode

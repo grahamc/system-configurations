@@ -24,7 +24,7 @@
             # "C.UTF-8/UTF-8" is the locacle the perl said wasn't supported so I added it here.
             # "en_US.UTF-8/UTF-8" was the default locacle so I'm keeping it just in case.
             minimalLocales = pkgs.glibcLocales.override { allLocales = false;  locales = ["en_US.UTF-8/UTF-8" "C.UTF-8/UTF-8"];};
-            minimalOverlay = final: prev: {
+            minimalOverlay = _final: prev: {
               fish = minimalFish;
               comma = makeEmptyPackage "stub-comma";
               coreutils-full = prev.coreutils;
@@ -40,7 +40,7 @@
                 withSystemd = false;
               };
             };
-            shellModule = {config, ...}:
+            shellModule = {...}:
               {
                 # I want a self contained executable so I can't have symlinks that point outside the Nix store.
                 repository.symlink.makeCopiesInstead = true;
@@ -99,16 +99,15 @@
             # $PATH before the script executes. In this case, I don't want the programs that the script depends on to
             # be in the $PATH because I don't want them on the $PATH of the shell that gets launched at the end of the
             # script. Instead, I'll supply the dependencies through the variables listed below.
-            shellBootstrapScriptDependencies = rec {
+            coreutilsBinaryPath = "${pkgs.coreutils}/bin";
+            shellBootstrapScriptDependencies = {
               inherit (homeManagerOutput.legacyPackages.homeConfigurations.${hostName}) activationPackage;
-              coreutilsBinaryPath = "${pkgs.coreutils}/bin";
               mktemp = "${coreutilsBinaryPath}/mktemp";
               copy = "${coreutilsBinaryPath}/cp";
               chmod = "${coreutilsBinaryPath}/chmod";
               basename = "${coreutilsBinaryPath}/basename";
               fish = "${minimalFish}/bin/fish";
               which = "${pkgs.which}/bin/which";
-              foreignEnvFunctionPath = "${pkgs.fishPlugins.foreign-env}/share/fish/vendor_functions.d";
             } // optionalAttrs isLinux {
               localeArchive = "${minimalLocales}/lib/locale/locale-archive";
             };

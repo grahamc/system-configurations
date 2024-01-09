@@ -1,4 +1,4 @@
-{ config, lib, pkgs, specialArgs, ... }:
+{ pkgs, specialArgs, ... }:
   let
     inherit (specialArgs) flakeInputs;
     nix-daemon-reload = pkgs.writeShellApplication

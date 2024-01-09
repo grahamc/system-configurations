@@ -1,4 +1,4 @@
-{ config, pkgs, specialArgs, ... }:
+{ pkgs, ... }:
   {
     home.packages = with pkgs; [
       direnv

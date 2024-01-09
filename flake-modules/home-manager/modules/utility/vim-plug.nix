@@ -45,7 +45,7 @@
                 package = if builtins.hasAttr pluginName pkgs.vimPlugins
                   then getPackageForPlugin pkgs.vimPlugins
                   else if builtins.hasAttr formattedPluginName pkgs.vimPlugins
-                  then (builtins.getAttr "overrideAttrs" (builtins.getAttr formattedPluginName pkgs.vimPlugins)) (old: {pname = pluginName;})
+                  then (builtins.getAttr "overrideAttrs" (builtins.getAttr formattedPluginName pkgs.vimPlugins)) (_old: {pname = pluginName;})
                   else abort "Failed to find vim plugin: ${pluginName}";
               in
                 package

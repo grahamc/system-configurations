@@ -1,4 +1,4 @@
-{lib, inputs, self, ... }:
+{ inputs, self, ... }:
   {
     imports = [
       # I defined this in a separate file to avoid an infinite recursion. The function use in option.nix that makes
@@ -9,7 +9,7 @@
       ./option.nix
     ];
 
-    perSystem = {lib, system, pkgs, self', ...}:
+    perSystem = {lib, system, pkgs, ...}:
       let
         inherit (lib.attrsets) optionalAttrs;
         makeExecutable = {derivation, entrypoint, name}:

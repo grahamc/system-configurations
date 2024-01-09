@@ -1,7 +1,7 @@
 { self, ... }:
   {
     flake = let
-      overlay = final: prev:
+      overlay = _final: prev:
         let
           fishPluginRepositoryPrefix = "fish-plugin-";
           fishPluginBuilder = _ignored: repositorySourceCode: _ignored: repositorySourceCode;

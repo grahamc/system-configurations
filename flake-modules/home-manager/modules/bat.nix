@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ lib, pkgs, ... }:
   {
     repository.symlink.xdg.configFile = {
       "bat/config".source = "bat/config";

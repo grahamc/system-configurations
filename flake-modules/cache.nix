@@ -9,12 +9,12 @@
           let
             homeManagerOutputsByHostName = attrByPath ["legacyPackages" "homeConfigurations"] {} self';
           in
-            (mapAttrs (hostName: output: output.activationPackage) homeManagerOutputsByHostName);
+            (mapAttrs (_hostName: output: output.activationPackage) homeManagerOutputsByHostName);
         nixDarwinPackagesByName =
           let
             nixDarwinOutputsByHostName = attrByPath ["legacyPackages" "darwinConfigurations"] {} self';
           in
-            (mapAttrs (hostName: output: output.system) nixDarwinOutputsByHostName);
+            (mapAttrs (_hostName: output: output.system) nixDarwinOutputsByHostName);
         shellPackageByName = 
           let
             shellOutputPath = ["packages" "shell"];

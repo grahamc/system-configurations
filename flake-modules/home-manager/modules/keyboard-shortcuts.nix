@@ -1,4 +1,4 @@
-{ config, lib, pkgs, specialArgs, ... }:
+{ lib, pkgs, specialArgs, ... }:
   let
     inherit (specialArgs) isGui flakeInputs;
     inherit (pkgs.stdenv) isLinux isDarwin;

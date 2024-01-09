@@ -1,5 +1,5 @@
 # Utilities for working with the repository that contains your Home Manager configuration.
-{ config, lib, pkgs, ... }:
+{ lib, ... }:
   let
     inherit (lib) types;
   in

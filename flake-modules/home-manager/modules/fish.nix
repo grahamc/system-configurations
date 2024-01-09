@@ -1,4 +1,4 @@
-{ config, lib, pkgs, specialArgs, ... }:
+{ pkgs, ... }:
   let
     # relative to $XDG_CONFIG_HOME
     myFishConfigPath = "fish/my-config.fish";

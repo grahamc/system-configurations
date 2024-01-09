@@ -3,10 +3,8 @@
   copy,
   chmod,
   fish,
-  coreutilsBinaryPath,
   basename,
   which,
-  foreignEnvFunctionPath,
   activationPackage,
   # Not applicable to macOS
   localeArchive ? null,
