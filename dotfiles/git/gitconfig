@@ -31,6 +31,7 @@
   # A safer force push. For more info read this:
   # https://stackoverflow.com/questions/65837109/when-should-i-use-git-push-force-if-includes
   force-push = push --force-with-lease --force-if-includes
+  untracked = "!git ls-files --others --exclude-standard | xargs -I FILE git add --intent-to-add FILE"
 [init]
   defaultBranch = master
 [merge]
