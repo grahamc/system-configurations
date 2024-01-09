@@ -38,10 +38,17 @@ function _nix-unstaged-files-warning --on-event fish_preexec --argument-names co
       return
     end
 
-    # If there are untracked or removed files, warn the user since they'll be ignored by any Nix Flake
-    if test -n "$(git ls-files --others --exclude-standard)"
-    or test -n "$(git ls-files --deleted --exclude-standard)"
-      echo -e -n "\n$(set_color --reverse --bold yellow) WARNING $(set_color normal) THE UNTRACKED/REMOVED FILES IN THIS REPOSITORY WILL BE IGNORED BY ANY NIX FLAKE OPERATION! Press enter to acknowledge:" >/dev/stderr
-      read --prompt ''
+    set untracked_or_deleted_files "$(git ls-files --deleted --others --exclude-standard)"
+
+    # If there are untracked or removed files, offer to add them to the index since they would
+    # otherwise be ignored by any Nix flake.
+    if test -n "$untracked_or_deleted_files"
+      echo -e -n "\n$(set_color --reverse --bold yellow) WARNING $(set_color normal) THE FOLLOWING UNTRACKED/REMOVED FILES IN THIS REPOSITORY WILL BE IGNORED BY ANY NIX FLAKE OPERATION:\n$untracked_or_deleted_files\n" >/dev/stderr
+      set choices 'Add them, using --intent-to-add, to the index' 'Continue without adding them'
+      set choice (printf %s\n $choices | fzf --no-preview --height ~100% --margin 1,2,0,2 --prompt 'What would you like to do?')
+      or return
+      if test "$choice" = "$choices[1]"
+        git add --intent-to-add (printf $untracked_or_deleted_files | string split '\n')
+      end
     end
 end
