@@ -25,6 +25,14 @@
           x86_64-linux
           x86_64-darwin
         ];
+
+        perSystem = {system, self', ...}: {
+          _module.args.pkgs = import nixpkgs
+            {
+              inherit system;
+              overlays = [self'.overlays.default];
+            };
+        };
       };
 
   # These names need to match the flake ID regex. The regex can be found here:

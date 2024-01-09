@@ -115,12 +115,11 @@
             shellBootstrapScript = import ./shell-bootstrap-script.nix shellBootstrapScriptDependencies;
             shellBootstrap = pkgs.writeScriptBin shellBootstrapScriptName shellBootstrapScript;
             terminalBootstrapScriptName = "terminal";
-            pkgsWithMyOverlay = import inputs.nixpkgs {inherit system; overlays = [self.overlays.default];};
             terminalBootstrap = pkgs.writeScriptBin terminalBootstrapScriptName ''#!${pkgs.bash}/bin/bash
               set -o errexit
               set -o nounset
               set -o pipefail
-              exec ${pkgsWithMyOverlay.wezterm}/bin/wezterm --config-file ${inputs.self.outPath}/dotfiles/wezterm/wezterm.lua --config 'font_locator="ConfigDirsOnly"' --config 'font_dirs={"${pkgsWithMyOverlay.myFonts}"}' start -- ${shellBootstrap}/bin/${shellBootstrapScriptName}
+              exec ${pkgs.wezterm}/bin/wezterm --config-file ${inputs.self.outPath}/dotfiles/wezterm/wezterm.lua --config 'font_locator="ConfigDirsOnly"' --config 'font_dirs={"${pkgs.myFonts}"}' start -- ${shellBootstrap}/bin/${shellBootstrapScriptName}
             '';
           in
             {
