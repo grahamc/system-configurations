@@ -14,7 +14,7 @@
           ./flake-modules/cache.nix
           ./flake-modules/nix-darwin
           ./flake-modules/overlay
-          ./flake-modules/shell
+          ./flake-modules/portable-home
           ./flake-modules/bundler
           ./flake-modules/home-manager
           ./flake-modules/lib.nix
