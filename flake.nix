@@ -9,31 +9,33 @@
   outputs = inputs@{ flake-parts, flake-utils, nixpkgs, ... }:
     flake-parts.lib.mkFlake
       { inherit inputs; }
-      {
-        imports = [
-          ./flake-modules/cache.nix
-          ./flake-modules/nix-darwin
-          ./flake-modules/overlay
-          ./flake-modules/portable-home
-          ./flake-modules/bundler
-          ./flake-modules/home-manager
-          ./flake-modules/lib.nix
-          ./flake-modules/assign-inputs-to-host-managers.nix
-        ];
+      (
+        { self, ... }: {
+          imports = [
+            ./flake-modules/cache.nix
+            ./flake-modules/nix-darwin
+            ./flake-modules/overlay
+            ./flake-modules/portable-home
+            ./flake-modules/bundler
+            ./flake-modules/home-manager
+            ./flake-modules/lib.nix
+            ./flake-modules/assign-inputs-to-host-managers.nix
+          ];
 
-        systems = with flake-utils.lib.system; [
-          x86_64-linux
-          x86_64-darwin
-        ];
+          systems = with flake-utils.lib.system; [
+            x86_64-linux
+            x86_64-darwin
+          ];
 
-        perSystem = {system, self', ...}: {
-          _module.args.pkgs = import nixpkgs
-            {
-              inherit system;
-              overlays = [self'.overlays.default];
-            };
-        };
-      };
+          perSystem = {system, self', ...}: {
+            _module.args.pkgs = import nixpkgs
+              {
+                inherit system;
+                overlays = [self.overlays.default];
+              };
+          };
+        }
+      );
 
   # These names need to match the flake ID regex. The regex can be found here:
   # https://github.com/NixOS/nix/blob/ccaadc957593522e9b46336eb5afa45ff876f13f/src/libutil/url-parts.hh#L42
