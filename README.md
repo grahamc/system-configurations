@@ -130,8 +130,8 @@ need to use the configuration temporarily and not apply it, like when using SSH.
 
 ### Using Nix
 
-* Run the shell with `nix run --no-write-lock-file github:bigolu/dotfiles#shell`
-* Run the terminal with `nix run --no-write-lock-file github:bigolu/dotfiles#terminal`
+* Run the shell with `nix run github:bigolu/dotfiles#shell`
+* Run the terminal with `nix run github:bigolu/dotfiles#terminal`
 
 ### Using a Standalone Executable
 

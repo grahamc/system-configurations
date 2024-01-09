@@ -23,7 +23,6 @@
             "nix-index-database"
             "nix-xdg"
             "gomod2nix"
-            "speakers"
             "tree-sitter-just"
             "neodev-nvim"
           ] ++ plugins;

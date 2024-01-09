@@ -298,7 +298,6 @@
         "nix-xdg": "nix-xdg",
         "nixpkgs": "nixpkgs",
         "nixpkgs-for-wezterm": "nixpkgs-for-wezterm",
-        "speakers": "speakers",
         "spoons": "spoons",
         "stackline": "stackline",
         "tmux-plugin-better-mouse-mode": "tmux-plugin-better-mouse-mode",
@@ -380,26 +379,6 @@
         "vim-plugin-virt-column-nvim": "vim-plugin-virt-column-nvim",
         "vim-plugin-which-key-nvim": "vim-plugin-which-key-nvim",
         "vim-plugin-windows-nvim": "vim-plugin-windows-nvim"
-      }
-    },
-    "speakers": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-Tcl+xwr2BvQBwlFjD2zhqqGeYd0tnGa2LxLD/DAOXkw=",
-        "path": "/nix/store/5nkzlcgqifl3mbf27iilmz0phicf33hd-source/dotfiles/smart_plug",
-        "type": "path"
-      },
-      "original": {
-        "path": "/nix/store/5nkzlcgqifl3mbf27iilmz0phicf33hd-source/dotfiles/smart_plug",
-        "type": "path"
       }
     },
     "spoons": {

@@ -5,6 +5,6 @@
     };
 
     home.packages = [
-      specialArgs.flakeInputs.speakers.packages.${pkgs.system}.default
+      specialArgs.flakeInputs.self.packages.${pkgs.system}.smartPlug
     ];
   }

@@ -1,30 +1,37 @@
 # Smart Plug Controller
 
-Turns on a smart plug after the computer starts up or is woken up. Turns the plug off before the computer suspends, hibernates, restarts, or shuts down.
+This project contains:
+
+- A script to turn a Kasa smart plug on and off.
+
+- A [systemd](https://systemd.io/) service to automatically turn it on after the computer starts
+up or is woken up and turn it off before the computer suspends, hibernates, restarts, or shuts
+down. (**TODO:** Need to document this)
+
+- A macOS tray icon to turn the plug on and off. (**TODO:** Need to document this)
 
 ## Why
 
-If you leave studio monitors on while turning off the sound source, you will get a loud POP noise, which [isn't good for the speakers](https://www.sweetwater.com/insync/power-power-off-sequence/). With this script, I can make sure that my monitors are always turned off before my computer, the source, turns off.
+If you leave studio monitors on while turning off the sound source, you will get a loud POP
+noise, which
+[isn't good for the speakers](https://www.sweetwater.com/insync/power-power-off-sequence/).
 
 ## Requirements
 
-- [nix](https://nixos.org/) -- for dependencies
-- A linux distribution that uses [systemd](https://systemd.io/) -- for scheduling when the controller should run
+- [nix](https://nixos.org/) -- For dependencies. See the README at the root of this repository for
+installation instructions.
+- direnv -- To manage the development environment
 - A Kasa smart plug with the alias 'plug'
 
 ## Run
 
-- Run `nix run` in this directory.
-
-## Installation
-
-- Run `install.bash`.
+- Run `python smart_plug.py [(on|off)]` in this directory. If you don't pass an argument, it
+exits with `0` if the plug is on, `1` if it's off, and `2` if there's an error.
 
 ## Development
 
-- In your terminal, run `nix develop` in this directory and all the dependencies will be loaded into that shell. To get autocomplete in your IDE, launch it from this shell. This way it will refer to the correct `python` executable, the one provided by nix. Alternatively, there may be an extension for your IDE that can load a nix shell. This way you don't have to launch it from the terminal.
-
-> **TIP**: If you have [direnv](https://direnv.net) installed, it will automatically load the nix dependencies when you enter this directory and unload it when you leave the directory :)
+- direnv will automatically setup the development environment when you enter this directory
+and remove when you leave.
 
 ## Resources
 
