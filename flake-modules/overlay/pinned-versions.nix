@@ -6,6 +6,7 @@
           let
             inherit (prev.stdenv) isDarwin;
             inherit (prev.lib.attrsets) optionalAttrs;
+            wezterm = (import inputs.nixpkgs-for-wezterm {inherit (final) system;}).wezterm;
 
             tmux = prev.tmux.overrideAttrs (old: {
               src = prev.fetchFromGitHub {
@@ -17,8 +18,6 @@
               patches = [];
               configureFlags = old.configureFlags ++ ["--enable-sixel"];
             });
-
-            wezterm = (import inputs.nixpkgs-for-wezterm {inherit (final) system;}).wezterm;
           in
             {
               inherit tmux;
