@@ -38,7 +38,7 @@
       shellBootstrap = pkgs.writeScriptBin shellBootstrapScriptName shellBootstrapScript;
     in {
       apps = {
-        default = {
+        shell = {
           type = "app";
           program = "${shellBootstrap}/bin/${shellBootstrapScriptName}";
         };

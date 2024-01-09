@@ -29,7 +29,7 @@
     ];
   };
 
-  activationScripts.postActivation.text = ''
+  system.activationScripts.postActivation.text = ''
     # Homebrew services won't have any of my nix profile /bin directories on their path so below I'm copying
     # the programs they need into a directory that is on their $PATH.
     #

@@ -1,5 +1,5 @@
-{ inputs, self, ... }: {
-  perSystem = {lib, system, pkgs, ...}: let
+{ inputs, ... }: {
+  perSystem = {lib, system, pkgs, self', ...}: let
     inherit (lib.attrsets) optionalAttrs;
     supportedSystems = with inputs.flake-utils.lib.system; [ x86_64-linux x86_64-darwin ];
     isSupportedSystem = builtins.elem system supportedSystems;
@@ -21,7 +21,7 @@
             --config 'font_dirs={"${pkgs.myFonts}"}' \
             start \
             -- \
-            ${self.apps.shell.program}
+            ${self'.apps.shell.program}
         '';
     in {
       apps = {
