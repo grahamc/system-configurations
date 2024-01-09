@@ -49,7 +49,7 @@
               homeModules = [
                 "${self.lib.home.moduleBaseDirectory}/profile/system-administration.nix"
                 "${self.lib.home.moduleBaseDirectory}/profile/application-development.nix"
-                "${self.lib.home.moduleBaseDirectory}/speakers.nix"
+                "${self.lib.home.moduleBaseDirectory}/profile/personal.nix"
               ];
             };
             systems = with inputs.flake-utils.lib.system; [
