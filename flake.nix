@@ -43,14 +43,15 @@
   #
   # There is also an issue open for relaxing the constraints in this regex: https://github.com/NixOS/nix/issues/7703
   inputs = {
-    # sub-flakes
-    ######################################## 
-    speakers = {
-      url = "./dotfiles/smart_plug";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
+    stackline = {
+      url = "github:AdamWagner/stackline";
+      flake = false;
+    };
+    # TODO: I should do a sparse checkout to get the single Spoon I need.
+    # issue: https://github.com/NixOS/nix/issues/5811
+    spoons = {
+      url = "github:Hammerspoon/Spoons";
+      flake = false;
     };
 
     # nix
@@ -100,19 +101,6 @@
     fish-plugin-async-prompt = {url = "github:acomagu/fish-async-prompt"; flake = false;};
     fish-plugin-completion-sync = {url = "github:pfgray/fish-completion-sync"; flake = false;};
     fish-plugin-done = {url = "github:franciscolourenco/done"; flake = false;};
-
-    # Misc.
-    ######################################## 
-    stackline = {
-      url = "github:AdamWagner/stackline";
-      flake = false;
-    };
-    # TODO: I should do a sparse checkout to get the single Spoon I need.
-    # issue: https://github.com/NixOS/nix/issues/5811
-    spoons = {
-      url = "github:Hammerspoon/Spoons";
-      flake = false;
-    };
 
     # vim
     ######################################## 

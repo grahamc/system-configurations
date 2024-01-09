@@ -1,4 +1,4 @@
-{ lib, inputs, self, ... }:
+{ inputs, self, ... }:
   let
     moduleBaseDirectory = ./modules;
 
