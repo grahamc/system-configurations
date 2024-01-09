@@ -11,7 +11,7 @@
         name = "hostctl-switch";
         text = ''
           cd "${config.repository.directory}"
-          home-manager switch --flake "${config.repository.directory}#${hostName}" "''$@"
+          home-manager switch --flake "${config.repository.directory}#${hostName}" "''$@" |& nom
         '';
       };
     hostctl-upgrade = pkgs.writeShellApplication
@@ -19,7 +19,7 @@
         name = "hostctl-upgrade";
         text = ''
           cd "${config.repository.directory}"
-          home-manager switch --flake "${config.repository.directory}#${hostName}" ${self.lib.updateFlags.home} "''$@"
+          home-manager switch --flake "${config.repository.directory}#${hostName}" ${self.lib.updateFlags.home} "''$@" |& nom
           nix-upgrade-profiles
         '';
       };

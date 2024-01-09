@@ -54,6 +54,7 @@
         comma
         nix-daemon-reload
         nil
+        nix-output-monitor
       ];
 
       repository.symlink.xdg.executable = {

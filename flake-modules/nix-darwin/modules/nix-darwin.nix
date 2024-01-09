@@ -13,7 +13,7 @@
 
       oldGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
 
-      darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" "''$@"
+      darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" "''$@" |& nom
 
       newGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
 
@@ -34,7 +34,7 @@
 
       oldGenerationPath="''$(readlink --canonicalize ${config.system.profile})"
 
-      darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" ${self.lib.updateFlags.darwin} "''$@"
+      darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" ${self.lib.updateFlags.darwin} "''$@" |& nom
       nix-upgrade-profiles
 
       brew update
