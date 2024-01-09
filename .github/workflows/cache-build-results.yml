@@ -6,6 +6,7 @@ on:
       - 'flake.nix'
       - 'flake.lock'
       - 'flake-modules/**'
+      - 'dotfiles/**'
     branches:
       - master
 env:
