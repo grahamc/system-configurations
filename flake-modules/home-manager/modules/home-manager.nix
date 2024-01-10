@@ -6,14 +6,29 @@
     inherit (pkgs.stdenv) isLinux;
 
     # Scripts for switching generations and upgrading flake inputs.
-    hostctl-switch = pkgs.writeShellApplication
-      {
-        name = "hostctl-switch";
-        text = ''
-          cd "${config.repository.directory}"
-          home-manager switch --flake "${config.repository.directory}#${hostName}" "''$@" |& nom
-        '';
-      };
+    hostctl-switch = pkgs.writeShellApplication {
+      name = "hostctl-switch";
+      text = ''
+        cd "${config.repository.directory}"
+        home-manager switch --flake "${config.repository.directory}#${hostName}" "''$@" |& nom
+      '';
+    };
+
+    hostctl-preview-switch = pkgs.writeShellApplication {
+      name = "hostctl-preview-switch";
+      text = ''
+        cd "${config.repository.directory}"
+
+        oldGenerationPath="$(home-manager generations | head -1 | grep -E --only-matching '/nix.*$')"
+
+        newGenerationPath="$(nix build --no-link --print-out-paths .#homeConfigurations.${hostName}.activationPackage)"
+
+        cyan='\033[1;0m'
+        printf "%bPrinting switch preview...\n" "$cyan"
+        nix store diff-closures "''$oldGenerationPath" "''$newGenerationPath"
+      '';
+    };
+
     hostctl-upgrade = pkgs.writeShellApplication
       {
         name = "hostctl-upgrade";
@@ -23,6 +38,21 @@
           nix-upgrade-profiles
         '';
       };
+
+    hostctl-preview-upgrade = pkgs.writeShellApplication {
+      name = "hostctl-preview-upgrade";
+      text = ''
+        cd "${config.repository.directory}"
+
+        oldGenerationPath="$(home-manager generations | head -1 | grep -E --only-matching '/nix.*$')"
+
+        newGenerationPath="$(nix build --no-write-lock-file ${self.lib.updateFlags.home} --no-link --print-out-paths .#homeConfigurations.${hostName}.activationPackage)"
+
+        cyan='\033[1;0m'
+        printf "%bPrinting upgrade preview...\n" "$cyan"
+        nix store diff-closures "''$oldGenerationPath" "''$newGenerationPath"
+      '';
+    };
   in
     lib.mkMerge [
       {
@@ -72,6 +102,8 @@
         home.packages = [
           hostctl-switch
           hostctl-upgrade
+          hostctl-preview-switch
+          hostctl-preview-upgrade
         ];
 
         # Let Home Manager install and manage itself.

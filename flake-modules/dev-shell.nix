@@ -6,7 +6,10 @@
       packages = with pkgs; [
         just
         lefthook
+        fzf
         bashInteractive
+        coreutils-full
+        moreutils
         nodejs
       ];
     };
