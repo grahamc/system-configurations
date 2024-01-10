@@ -21,6 +21,7 @@
             ./flake-modules/lib.nix
             ./flake-modules/assign-inputs-to-host-managers.nix
             ./flake-modules/smart-plug.nix
+            ./flake-modules/dev-shell.nix
           ];
 
           systems = with flake-utils.lib.system; [
