@@ -82,18 +82,22 @@ the cache.
 
 ## Applying the Configuration
 
-> Tip: To apply the configuration you can use a shell, or entire terminal, with the home configuration already loaded.
-This is helpful for debugging any problems you encounter while applying the config since you'll have access to all the tools/shortcuts included in the home
-config. Check the ["Running the Home Configuration" section](#running-the-home-configuration) for instructions.
+1. Start up a home-config shell it comes with direnv, which we'll need in future steps.
+Check the ["Running the Home Configuration" section](#running-the-home-configuration) for
+instructions. NOTE: This shell will also be helpful for debugging any problems you encounter
+while applying the config since you'll have access to all the tools/shortcuts included in the home
+config.
 
-1. Clone the repository and go into its directory by running
+2. Clone the repository and go into its directory by running
 `git clone https://github.com/bigolu/dotfiles.git ~/.dotfiles && cd ~/.dotfiles`
+
+3. Run `direnv allow` to set up the development environment.
 
 The next steps depend on the operating system you're using:
 
 ### Linux
 
-1. Apply the Home Manager configuration by running `nix run home-manager/master -- switch --flake .#<host_name>`
+1. Apply the Home Manager configuration by running `just init-home-manager <host_name>`
 where `<host_name>` is one of the hosts defined in the [Home Manager flake module][home-manager-flake-module].
 
 ### macOS
@@ -103,7 +107,7 @@ where `<host_name>` is one of the hosts defined in the [Home Manager flake modul
 2. I install some Homebrew packages through nix-darwin, but nix-darwin doesn't provide brew so you'll have to install
 it yourself. Check the site for instructions: [brew.sh][brew].
 
-3. Apply the nix-darwin configuration by running `nix run nix-darwin -- switch --flake .#<host_name>` where
+3. Apply the nix-darwin configuration by running `just init-nix-darwin <host_name>` where
 `<host_name>` is one of the hosts defined in the [nix-darwin flake module][nix-darwin-flake-module].
 
 4. Some settings applied by nix-darwin only take effect after a restart so do a restart now.

@@ -10,6 +10,7 @@
         ../bat.nix
         ../git.nix
         ../fzf.nix
+        ../direnv.nix
       ];
 
       home.packages =

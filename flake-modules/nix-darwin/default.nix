@@ -1,7 +1,14 @@
 { self, inputs, ... }:
   {
-    perSystem = {system, ...}:
+    perSystem = {system, lib, inputs', ...}:
       let
+        inherit (lib.attrsets) optionalAttrs;
+        supportedSystems = with inputs.flake-utils.lib.system; [ x86_64-darwin ];
+        isSupportedSystem = builtins.elem system supportedSystems;
+        initOutput = optionalAttrs isSupportedSystem {
+          packages.nixDarwin = inputs'.nix-darwin.packages.default;
+        };
+
         makeFlakeOutput = {
           hostName,
           modules,
@@ -60,8 +67,9 @@
         isCurrentSystemSupportedByHost = host: builtins.elem system host.systems;
         supportedHosts = builtins.filter isCurrentSystemSupportedByHost hosts;
         makeFlakeOutputForHost = host: makeFlakeOutput host.configuration;
-        flakeOutputs = map makeFlakeOutputForHost supportedHosts;
-        mergedFlakeOutputs = self.lib.recursiveMerge flakeOutputs;
+        hostOutputs = map makeFlakeOutputForHost supportedHosts;
+
+        mergedFlakeOutputs = self.lib.recursiveMerge (hostOutputs ++ [initOutput]);
       in
         mergedFlakeOutputs;
   }
