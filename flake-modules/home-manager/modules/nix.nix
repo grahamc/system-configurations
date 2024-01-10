@@ -24,7 +24,7 @@
       repository.symlink.xdg.configFile = {
         "nix/nix.conf".source = "nix/nix.conf";
         "nix/repl-startup.nix".source = "nix/repl-startup.nix";
-        "fish/conf.d/nix.fish".source = "nix/nix.fish";
+        "fish/conf.d/zz-nix.fish".source = "nix/zz-nix.fish";
       };
 
       xdg.configFile = {
@@ -58,7 +58,6 @@
       ];
 
       repository.symlink.xdg.executable = {
-        "nix".source = "nix/nix-repl-wrapper.fish";
         "nix-gcroots".source = "nix/nix-gcroots.fish";
         "nix-info".source = "nix/nix-info.fish";
         "nix-upgrade-profiles".source = "nix/nix-upgrade-profiles.fish";
