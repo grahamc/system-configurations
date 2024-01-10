@@ -8,6 +8,10 @@ default:
 help:
     @just --list --justfile {{ justfile() }} --unsorted
 
+# Reload direnv
+reload:
+    nix-direnv-reload
+
 # Apply the first generation of a home-manager configuration.
 init-home-manager host_name: install-git-hooks
     nix run .#homeManager -- switch --flake .#{{host_name}}
@@ -35,6 +39,10 @@ preview-switch:
 # Preview changes from upgrading
 preview-upgrade:
     hostctl-preview-upgrade
+
+[private]
+fix-nix *files:
+    deadnix --quiet --edit {{files}}
 
 # Install git hooks
 [private]

@@ -7,7 +7,10 @@ colors:
 
 pre-commit:
   commands:
-    generate-toc:
+    generate-toc-readme:
       glob: "README.md"
       run: just generate-toc
+    fix-nix:
+      glob: "*.nix"
+      run: just fix-nix {staged_files}
 

@@ -11,6 +11,7 @@
         coreutils-full
         moreutils
         nodejs
+        deadnix
       ];
     };
 
