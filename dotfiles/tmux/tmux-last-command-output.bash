@@ -22,14 +22,14 @@ if ! choice="$(printf "%s\n" fzf nvim | fzf --prompt 'command output viewer: ' -
 fi
 
 case "$choice" in
-  fzf)
-    echo "$last_command_output" | fzf --preview-window 35%
+fzf)
+  echo "$last_command_output" | fzf --preview-window 35%
   ;;
-  nvim)
-    echo "$last_command_output" | page
+nvim)
+  echo "$last_command_output" | page
   ;;
-  *)
-    echo 'Error: unknown choice' 1>&2
-    exit 1
+*)
+  echo 'Error: unknown choice' 1>&2
+  exit 1
   ;;
 esac

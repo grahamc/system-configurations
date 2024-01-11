@@ -1,6 +1,5 @@
 # This module has the configuration that I always want applied.
-
-{ specialArgs, ... }: let
+{specialArgs, ...}: let
   inherit (specialArgs) homeDirectory;
 in {
   imports = [

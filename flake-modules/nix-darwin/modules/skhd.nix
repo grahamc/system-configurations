@@ -1,4 +1,8 @@
-{ specialArgs, pkgs, ... }: let
+{
+  specialArgs,
+  pkgs,
+  ...
+}: let
   inherit (specialArgs) homeDirectory;
 in {
   environment = {
@@ -17,7 +21,7 @@ in {
       package = pkgs.writeShellApplication {
         name = "skhd";
         runtimeInputs = with pkgs; [skhd];
-        text = '' exec skhd "$@" '';
+        text = ''exec skhd "$@" '';
       };
     };
   };

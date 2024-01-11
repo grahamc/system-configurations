@@ -1,4 +1,8 @@
-{ config, specialArgs, ... }: let
+{
+  config,
+  specialArgs,
+  ...
+}: let
   inherit (specialArgs) homeDirectory username;
 in {
   nix = {
@@ -23,10 +27,10 @@ in {
     # Use the nixpkgs in this flake in the system flake registry. By default, it pulls the
     # latest version of nixokgs-unstable.
     registry = {
-      nixpkgs.flake = specialArgs.flakeInputs.nixpkgs; 
+      nixpkgs.flake = specialArgs.flakeInputs.nixpkgs;
     };
     nixPath = [
-      { nixpkgs = "flake:nixpkgs"; }
+      {nixpkgs = "flake:nixpkgs";}
     ];
   };
 
@@ -36,7 +40,11 @@ in {
 
     serviceConfig.StartCalendarInterval = [
       # once a month
-      {Day = 1; Hour = 0; Minute = 0;}
+      {
+        Day = 1;
+        Hour = 0;
+        Minute = 0;
+      }
     ];
 
     command = ''

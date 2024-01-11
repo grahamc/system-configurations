@@ -3,48 +3,48 @@ if not status is-interactive
 end
 
 function __widgets_get_directory_from_current_token
-  set dir "$(commandline -t)"
-  if test "$(string sub --length 1 -- "$dir")" = '~'
-    set dir (string replace '~' "$HOME" "$dir")
-  end
-  if not test -d (string unescape --style=script "$dir")
-    set dir '.'
-  end
+    set dir "$(commandline -t)"
+    if test "$(string sub --length 1 -- "$dir")" = '~'
+        set dir (string replace '~' "$HOME" "$dir")
+    end
+    if not test -d (string unescape --style=script "$dir")
+        set dir '.'
+    end
 
-  echo $dir
+    echo $dir
 end
 
 function __widgets_format_directory_for_prompt --argument-names dir
-  set dir (string unescape $dir)
-  set prompt (string replace "$HOME" '~' "$dir")
-  if test "$(string sub --start -1 "$dir")" != '/'
-    set prompt "$prompt/"
-  end
+    set dir (string unescape $dir)
+    set prompt (string replace "$HOME" '~' "$dir")
+    if test "$(string sub --start -1 "$dir")" != /
+        set prompt "$prompt/"
+    end
 
-  echo $prompt
+    echo $prompt
 end
 
 function __widgets_replace_current_commandline_token
-  set replacement_tokens $argv
-  set escaped_replacement_tokens (string escape --style script --no-quoted -- $replacement_tokens)
-  commandline --current-token --replace "$escaped_replacement_tokens"
+    set replacement_tokens $argv
+    set escaped_replacement_tokens (string escape --style script --no-quoted -- $replacement_tokens)
+    commandline --current-token --replace "$escaped_replacement_tokens"
 end
 
 function grep-widget --description 'Search by line, recursively, from current directory'
-  set dir (__widgets_get_directory_from_current_token)
+    set dir (__widgets_get_directory_from_current_token)
 
-  set prompt_directory ''
-  if test $dir != '.'
-    set prompt_directory $dir
-    if test "$(string sub --start -1 "$dir")" = '/'
-      set prompt_directory (string sub --end=-1 $prompt_directory)
+    set prompt_directory ''
+    if test $dir != '.'
+        set prompt_directory $dir
+        if test "$(string sub --start -1 "$dir")" = /
+            set prompt_directory (string sub --end=-1 $prompt_directory)
+        end
+        set prompt_directory '('(string unescape --style=script $prompt_directory)') '
     end
-    set prompt_directory '('(string unescape --style=script $prompt_directory)') '
-  end
 
-  set rg_command 'rg --hidden --column --line-number --no-heading --color=always --smart-case --follow --'
-  set choices \
-      ( \
+    set rg_command 'rg --hidden --column --line-number --no-heading --color=always --smart-case --follow --'
+    set choices \
+        ( \
         FZF_DEFAULT_COMMAND="echo -n ''" \
         FZF_HINTS='ctrl+e: edit in neovim' \
         fzf-tmux-zoom \
@@ -59,23 +59,23 @@ function grep-widget --description 'Search by line, recursively, from current di
             # i.e. the top and bottom border of bat since I don't like how they look
             --preview 'bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {1} --highlight-line {2} | tail -n +2 | head -n -1' \
       )
-  or return
+    or return
 
-  set choices (string split --fields 1 -- ':' $choices)
-  __widgets_replace_current_commandline_token $choices
+    set choices (string split --fields 1 -- ':' $choices)
+    __widgets_replace_current_commandline_token $choices
 
-  # this should be done whenever a binding produces output (see: man bind)
-  commandline -f repaint
+    # this should be done whenever a binding produces output (see: man bind)
+    commandline -f repaint
 end
-mybind --no-focus \cg 'grep-widget'
+mybind --no-focus \cg grep-widget
 
 function man-widget --description 'Search manpages'
-  # This command turns 'manpage_name(section) - description' into 'section manpage_name'.
-  # The `\s?` is there because macOS separates the name and section with a space.
-  set parse_entry_command "string replace --regex -- '(?<name>^.*)\s?\((?<section>.*)\)\s+.*\$' '\$section \$name'"
+    # This command turns 'manpage_name(section) - description' into 'section manpage_name'.
+    # The `\s?` is there because macOS separates the name and section with a space.
+    set parse_entry_command "string replace --regex -- '(?<name>^.*)\s?\((?<section>.*)\)\s+.*\$' '\$section \$name'"
 
-  set choice \
-      ( \
+    set choice \
+        ( \
         FZF_DEFAULT_COMMAND='man -k . --long' \
          fzf-tmux-zoom  \
             --tiebreak=chunk,begin,end \
@@ -83,28 +83,28 @@ function man-widget --description 'Search manpages'
             --preview "eval 'MANWIDTH=\$FZF_PREVIEW_COLUMNS man '($parse_entry_command {})" \
             --preview-window '75%' \
       )
-  or return
+    or return
 
-  eval 'man '(eval "$parse_entry_command '$choice'")
+    eval 'man '(eval "$parse_entry_command '$choice'")
 end
 abbr --add --global mw man-widget
 
 function process-widget --description 'Manage processes'
-  # I 'echo' the fzf placeholder in the grep regex to get around the fact that fzf substitutions are single quoted and the quotes
-  # would mess up the grep regex.
-  if test (uname) = Linux
-    set reload_command 'ps -e --format user,pid,ppid,nice=NICE,start_time,etime,command --sort=-start_time'
-    set preview_command 'ps --pid {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree --hide-threads --long --show-pids --unicode --show-parents --arguments {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp "[^└|─]+,$(echo {2})( .*|\$)" --regexp "^"'
-  else
-    set reload_command 'ps -e -o user,pid,ppid,nice=NICE,start,etime,command'
-    set preview_command 'ps -p {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree -w -g 3 -p {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp " 0*$(echo {2}) $(echo {1}) .*" --regexp "^"'
-  end
-  # TODO: I have to add `|| echo` because if the command substitution doesn't print anything, even the quoted string
-  # next to it won't print
-  set environment_command 'eval (test (ps -o user= -p {2}) = root && echo "sudo " || echo)"ps -o command -Eww {2}" | less 1>/dev/tty 2>&1'
+    # I 'echo' the fzf placeholder in the grep regex to get around the fact that fzf substitutions are single quoted and the quotes
+    # would mess up the grep regex.
+    if test (uname) = Linux
+        set reload_command 'ps -e --format user,pid,ppid,nice=NICE,start_time,etime,command --sort=-start_time'
+        set preview_command 'ps --pid {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree --hide-threads --long --show-pids --unicode --show-parents --arguments {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp "[^└|─]+,$(echo {2})( .*|\$)" --regexp "^"'
+    else
+        set reload_command 'ps -e -o user,pid,ppid,nice=NICE,start,etime,command'
+        set preview_command 'ps -p {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree -w -g 3 -p {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp " 0*$(echo {2}) $(echo {1}) .*" --regexp "^"'
+    end
+    # TODO: I have to add `|| echo` because if the command substitution doesn't print anything, even the quoted string
+    # next to it won't print
+    set environment_command 'eval (test (ps -o user= -p {2}) = root && echo "sudo " || echo)"ps -o command -Eww {2}" | less 1>/dev/tty 2>&1'
 
-  set choice \
-      ( \
+    set choice \
+        ( \
         FZF_DEFAULT_COMMAND="$reload_command" \
         FZF_HINTS='ctrl+alt+r: refresh process list\nctrl+alt+o: view process output\nctrl+alt+e: view environment variables (at the time the process was launched)' \
         fzf \
@@ -118,48 +118,48 @@ function process-widget --description 'Manage processes'
             --no-hscroll \
             --preview-window 'nowrap,75%' \
       )
-  or return
+    or return
 
-  set process_ids (printf %s\n $choice | awk '{print $2}')
-  set process_command_names (printf %s\n $choice | awk '{print $7}')
-  for index in (seq (count $process_ids))
-    set --append process_ids_names "$process_ids[$index] ($process_command_names[$index])"
-  end
+    set process_ids (printf %s\n $choice | awk '{print $2}')
+    set process_command_names (printf %s\n $choice | awk '{print $7}')
+    for index in (seq (count $process_ids))
+        set --append process_ids_names "$process_ids[$index] ($process_command_names[$index])"
+    end
 
-  set signal \
-      ( \
+    set signal \
+        ( \
         FZF_DEFAULT_COMMAND="string split ' ' (kill -l)" \
         fzf \
             --header 'Select a signal to send or exit to print the PIDs' \
             --prompt 'signals: ' \
             --preview '' \
       )
-  or begin
-    printf %s\n $process_ids
-    return
-  end
-
-  echo "Sending SIG$signal to the following processes: $(string join ', ' $process_ids_names)"
-  set sudo ''
-  for process_id in $process_ids
-    if test "$(ps -o user= -p $process_id)" = 'root'
-      set sudo 'sudo'
-      break
+    or begin
+        printf %s\n $process_ids
+        return
     end
-  end
-  fish -c "$sudo kill --signal $signal $process_ids"
+
+    echo "Sending SIG$signal to the following processes: $(string join ', ' $process_ids_names)"
+    set sudo ''
+    for process_id in $process_ids
+        if test "$(ps -o user= -p $process_id)" = root
+            set sudo sudo
+            break
+        end
+    end
+    fish -c "$sudo kill --signal $signal $process_ids"
 end
 abbr --add --global pw process-widget
 
 function file-widget --description 'Search files'
-  set dir (__widgets_get_directory_from_current_token)
-  set prompt (__widgets_format_directory_for_prompt $dir)
+    set dir (__widgets_get_directory_from_current_token)
+    set prompt (__widgets_format_directory_for_prompt $dir)
 
-  # Regarding the bat command:
-  # - the minus 2 prevents a weird line wrap issue
-  # - The head and tail commands are there to remove the first and last line of output of bat i.e. the top and bottom
-  # border of bat since I don't like how they look
-  set preview_command '
+    # Regarding the bat command:
+    # - the minus 2 prevents a weird line wrap issue
+    # - The head and tail commands are there to remove the first and last line of output of bat i.e. the top and bottom
+    # border of bat since I don't like how they look
+    set preview_command '
   if file --brief --mime-type {} | grep -q -i image
     if set --query TMUX
       timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" -p sixel {}
@@ -173,30 +173,30 @@ function file-widget --description 'Search files'
   end
   '
 
-  set choices \
-      ( \
+    set choices \
+        ( \
         FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' $dir; fd \$_args --follow --hidden --type file --type symlink" \
         fzf-tmux-zoom \
             --prompt "$prompt" \
             --preview "$preview_command" \
             --preview-window '75%,~2' \
       )
-  or return
+    or return
 
-  __widgets_replace_current_commandline_token $choices
+    __widgets_replace_current_commandline_token $choices
 
-  # this should be done whenever a binding produces output (see: man bind)
-  commandline -f repaint
+    # this should be done whenever a binding produces output (see: man bind)
+    commandline -f repaint
 end
-mybind --no-focus \cf 'file-widget'
+mybind --no-focus \cf file-widget
 
 # use ctrl+d for directory search instead of default alt+c
 function directory-widget --description 'Seach directories'
-  set dir (__widgets_get_directory_from_current_token)
-  set prompt (__widgets_format_directory_for_prompt $dir)
+    set dir (__widgets_get_directory_from_current_token)
+    set prompt (__widgets_format_directory_for_prompt $dir)
 
-  set choices \
-      ( \
+    set choices \
+        ( \
         FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' $dir; fd \$_args --follow --hidden --type directory --type symlink" \
         fzf-tmux-zoom \
             --prompt "$prompt" \
@@ -204,27 +204,27 @@ function directory-widget --description 'Seach directories'
             --preview-window '75%,~2' \
             --keep-right \
       )
-  or return
+    or return
 
-  __widgets_replace_current_commandline_token $choices
+    __widgets_replace_current_commandline_token $choices
 
-  commandline -f repaint
+    commandline -f repaint
 end
-mybind --no-focus \ed 'directory-widget'
+mybind --no-focus \ed directory-widget
 
 function history-widget --description 'Search history' --argument-names ui_direction
-  # I don't include atuin in the portable shell so I need to check for it.
-  if command --query atuin
-    # TODO: Until I can dedup commands in atuin, I'll do it with awk which means I can't show other columns. The command
-    # below is what I'll use when I can print other columns.
-    # set default_command "printf DATE\t\t\t\t\t\t\t\t\tDURATION\tEXIT_CODE\t\t\tCOMMAND; printf '\x00'; atuin history list --print0 --human --format '{time}\t\t{duration}\t\t\t\t{exit}\t\t\t\t\t\t\t{command}' | tac --separator=''"
-    set default_command "printf %s\n (string replace --all \n '␊' -- (atuin history list --print0 --format '{command}' | string split0))[-1..1] | awk '!x[\$0]++'"
-  else
-    set default_command "history --null"
-  end
+    # I don't include atuin in the portable shell so I need to check for it.
+    if command --query atuin
+        # TODO: Until I can dedup commands in atuin, I'll do it with awk which means I can't show other columns. The command
+        # below is what I'll use when I can print other columns.
+        # set default_command "printf DATE\t\t\t\t\t\t\t\t\tDURATION\tEXIT_CODE\t\t\tCOMMAND; printf '\x00'; atuin history list --print0 --human --format '{time}\t\t{duration}\t\t\t\t{exit}\t\t\t\t\t\t\t{command}' | tac --separator=''"
+        set default_command "printf %s\n (string replace --all \n '␊' -- (atuin history list --print0 --format '{command}' | string split0))[-1..1] | awk '!x[\$0]++'"
+    else
+        set default_command "history --null"
+    end
 
-  # I'm using the NUL character to delimit history entries since they may span multiple lines.
-  set choices ( \
+    # I'm using the NUL character to delimit history entries since they may span multiple lines.
+    set choices ( \
     FZF_DEFAULT_COMMAND="$default_command" \
       fzf-tmux-zoom  \
       --prompt 'history: ' \
@@ -236,15 +236,15 @@ function history-widget --description 'Search history' --argument-names ui_direc
       --query (commandline) \
     | string split0 \
   )
-  or return
+    or return
 
-  commandline --replace -- $choices
+    commandline --replace -- $choices
 end
 # The script in conf.d for the plugin 'jorgebucaran/autopair.fish' is deleting my ctrl+h keybind
 # that I define in here. As a workaround, I set this keybind when the first prompt is loaded which should be after
 # autopair is loaded.
 function __set_fzf_history_keybind --on-event fish_prompt
-  # I only want this to run once so delete the function.
-  functions -e (status current-function)
-  mybind --no-focus \ch history-widget
+    # I only want this to run once so delete the function.
+    functions -e (status current-function)
+    mybind --no-focus \ch history-widget
 end

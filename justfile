@@ -2,7 +2,7 @@ set shell := ["bash", "-uc"]
 
 # Choose a task. Only includes tasks that don't take arguments.
 default:
-  @just --choose
+    @just --choose
 
 # Display a list of all tasks.
 help:
@@ -14,11 +14,11 @@ reload:
 
 # Apply the first generation of a home-manager configuration.
 init-home-manager host_name: install-git-hooks
-    nix run .#homeManager -- switch --flake .#{{host_name}}
+    nix run .#homeManager -- switch --flake .#{{ host_name }}
 
 # Apply the first generation of a nix-darwin configuration.
 init-nix-darwin host_name: install-git-hooks
-    nix run .#nixDarwin -- switch --flake .#{{host_name}}
+    nix run .#nixDarwin -- switch --flake .#{{ host_name }}
 
 # Switch to a new generation
 switch:
@@ -58,7 +58,7 @@ run-precommit-hook:
 # Generate the Table of Contents in the README
 [private]
 generate-toc:
-    npm exec --package=markdown-toc -- markdown-toc --bullets '*' -i README.md
+    npm exec --package=markdown-toc -- markdown-toc --bullets '-' -i README.md
 
 # Pull changes from git remote
 [private]
@@ -104,4 +104,3 @@ commit:
     else
         echo 'Nothing to commit.'
     end
-

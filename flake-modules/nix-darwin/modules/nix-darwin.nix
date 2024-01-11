@@ -1,4 +1,9 @@
-{ config, specialArgs, pkgs, ... }: let
+{
+  config,
+  specialArgs,
+  pkgs,
+  ...
+}: let
   inherit (specialArgs) hostName homeDirectory username repositoryDirectory;
   inherit (specialArgs.flakeInputs) self;
 

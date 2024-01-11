@@ -36,8 +36,8 @@ function _load_transient_prompt_and_execute
         # command
         if commandline --is-valid
             _transient_repaint
-        # Make a distinction for an empty commandline. With this, I could insert a blank
-        # line when the commandline is empty, giving me a way to separate commands visually
+            # Make a distinction for an empty commandline. With this, I could insert a blank
+            # line when the commandline is empty, giving me a way to separate commands visually
         else if test -z "$commandline_contents"
             _transient_empty_repaint
         end
@@ -68,7 +68,7 @@ function _delete_or_load_transient_prompt_and_exit
 
     # I do this instead of 'commandline -f exit' so that this way the word exit will be left on the previous prompt
     # instead of it just being blank. This way it's clear that the previous command was to exit from a shell.
-    commandline --replace 'exit'
+    commandline --replace exit
     commandline -f execute
 
     commandline -f repaint

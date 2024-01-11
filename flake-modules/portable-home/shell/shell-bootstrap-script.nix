@@ -9,11 +9,11 @@
   # Not applicable to macOS
   localeArchive ? null,
 }: let
-  setLocaleArchive = if localeArchive == null
+  setLocaleArchive =
+    if localeArchive == null
     then ""
     else "set --global --export LOCALE_ARCHIVE '${localeArchive}'";
-in
-  ''
+in ''
   #!${fish}
 
   set mutable_bin (${mktemp} --directory)
@@ -85,5 +85,4 @@ in
   chronic bat cache --build
 
   exec ''$SHELL ''$argv </dev/tty >/dev/tty 2>&1
-  ''
-
+''

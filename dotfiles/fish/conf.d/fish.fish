@@ -35,7 +35,7 @@ set --global fish_pager_color_secondary
 set --global fish_color_cancel black
 set --global fish_color_valid_path
 
-abbr --add --global r 'fish-reload'
+abbr --add --global r fish-reload
 
 # Don't print a greeting when a new interactive fish shell is started
 set --global --export fish_greeting ''
@@ -88,7 +88,7 @@ function _resume_job
     # this should be done whenever a binding produces output (see: man bind)
     commandline -f repaint
 end
-mybind --no-focus \cz '_resume_job'
+mybind --no-focus \cz _resume_job
 
 # use ctrl+right-arrow to accept the next suggested word
 mybind \e\[1\;3C forward-word
@@ -182,7 +182,7 @@ function _fzf_complete
         # We trim spaces because spaces don't count as tokens.
         set trimmed_commandline (string trim "$(commandline)")
         if abbr --query -- "$entry"
-        and test -z "$trimmed_commandline"
+            and test -z "$trimmed_commandline"
             set space ''
         end
 
@@ -195,7 +195,7 @@ function _fzf_complete
             set expanded_entry "$entry"
         end
         if test -d (string unescape -- "$expanded_entry")
-        and test (string sub --start -1 -- "$expanded_entry") = '/'
+            and test (string sub --start -1 -- "$expanded_entry") = /
             set space ''
         end
 
@@ -228,7 +228,7 @@ function fish_title --argument-names current_commandline
     end
     set current_command $tokens[1]
 
-    if test "$TERM_PROGRAM" = 'WezTerm'
+    if test "$TERM_PROGRAM" = WezTerm
         printf '\033]1337;SetUserVar=%s=%s\007' title (echo -n $current_command | base64) 1>/dev/tty
         commandline -f repaint
     end
@@ -237,13 +237,13 @@ function fish_title --argument-names current_commandline
 end
 
 function _ls-after-directory-change --on-variable PWD
-  # These directories have too many files to always call ls on
-  set blacklist /nix/store /tmp
-  if contains "$PWD" $blacklist
-    return
-  end
+    # These directories have too many files to always call ls on
+    set blacklist /nix/store /tmp
+    if contains "$PWD" $blacklist
+        return
+    end
 
-  ls --hyperlink=auto
+    ls --hyperlink=auto
 end
 
 # Reload all fish instances
@@ -320,8 +320,8 @@ function _man_page
     # the best we can do is to *try* the man page, and assume that `man` will return false if it fails.
     # See #7863.
     if set -q args[2]
-    and not string match -q -- '*/*' $args[2]
-    and man "$maincmd-$args[2]" &>/dev/null
+        and not string match -q -- '*/*' $args[2]
+        and man "$maincmd-$args[2]" &>/dev/null
         set manpage_name "$maincmd-$args[2]"
     else if man "$maincmd" &>/dev/null
         set manpage_name "$maincmd"

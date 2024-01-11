@@ -2,7 +2,7 @@
 vim.loader.enable()
 
 -- Import my vim-plug wrapper
-require('plug')
+require("plug")
 
 -- Disable unused builtin plugins.
 local plugins_to_disable = {
@@ -30,16 +30,16 @@ for _, plugin in pairs(plugins_to_disable) do
 end
 
 -- Variables used across config files
-vim.g.mapleader = ' '
+vim.g.mapleader = " "
 
 -- Calling this before I load the profiles so I can register plugins inside them
 PlugBegin()
 
 -- Load profiles
-require('base')
-require('terminal')
-require('vscode')
-require('browser')
+require("base")
+require("terminal")
+require("vscode")
+require("browser")
 
 -- Calling this after I load the profiles so I can register plugins inside them
 PlugEnd()

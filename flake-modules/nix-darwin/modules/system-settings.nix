@@ -1,4 +1,4 @@
-{ ... }: {
+{...}: {
   security.pam.enableSudoTouchIdAuth = true;
 
   system = {

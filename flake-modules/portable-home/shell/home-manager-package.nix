@@ -1,27 +1,35 @@
-{ pkgs, inputs, self, minimalFish }: let
+{
+  pkgs,
+  self,
+  minimalFish,
+}: let
   inherit (pkgs) lib system;
   inherit (lib.attrsets) optionalAttrs;
   inherit (pkgs.stdenv) isLinux;
   hostName = "guest-host";
   makeEmptyPackage = packageName: pkgs.runCommand packageName {} ''mkdir -p $out/bin'';
 
-  minimalOverlay = _final: prev: {
-    fish = minimalFish;
-    comma = makeEmptyPackage "stub-comma";
-    coreutils-full = prev.coreutils;
-    gitMinimal = makeEmptyPackage "stub-git";
+  minimalOverlay = _final: prev:
+    {
+      fish = minimalFish;
+      comma = makeEmptyPackage "stub-comma";
+      coreutils-full = prev.coreutils;
+      gitMinimal = makeEmptyPackage "stub-git";
 
-    vimPlugins = prev.vimPlugins // {
-      markdown-preview-nvim = makeEmptyPackage "markdown-preview-nvim";
-    };
+      vimPlugins =
+        prev.vimPlugins
+        // {
+          markdown-preview-nvim = makeEmptyPackage "markdown-preview-nvim";
+        };
 
-    # `atuin uuid` kept calling itself so I'm removing it
-    atuin = makeEmptyPackage "stub-atuin";
-  } // optionalAttrs isLinux {
-    tmux = prev.tmux.override {
-      withSystemd = false;
+      # `atuin uuid` kept calling itself so I'm removing it
+      atuin = makeEmptyPackage "stub-atuin";
+    }
+    // optionalAttrs isLinux {
+      tmux = prev.tmux.override {
+        withSystemd = false;
+      };
     };
-  };
 
   shellModule = {...}: {
     # I want a self contained executable so I can't have symlinks that point outside the Nix store.
@@ -55,7 +63,7 @@
       mime.enable = lib.mkForce false;
 
       dataFile = {
-        "fzf/fzf-history.txt".source = (pkgs.writeText "fzf-history.txt" "");
+        "fzf/fzf-history.txt".source = pkgs.writeText "fzf-history.txt" "";
 
         # I do this to override the original link to the treesitter parsers.
         "nvim/site/parser".source = lib.mkForce (makeEmptyPackage "stub-parser");

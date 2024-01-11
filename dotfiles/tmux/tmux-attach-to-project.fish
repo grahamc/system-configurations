@@ -7,5 +7,5 @@
 set session_name (prompt_pwd --dir-length 0 | string replace --all '.' '_')
 
 if not tmux attach-session -t "$session_name"
-  tmux new-session -s "$session_name"
+    tmux new-session -s "$session_name"
 end

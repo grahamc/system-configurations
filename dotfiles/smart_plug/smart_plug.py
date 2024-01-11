@@ -12,7 +12,7 @@ import psutil
 
 
 class SmartPlugController(object):
-    _cache = Cache(user_cache_dir('my-speakers'))
+    _cache = Cache(user_cache_dir("my-speakers"))
 
     def __init__(self, plug_alias: str):
         self._plug_alias = plug_alias
@@ -70,30 +70,49 @@ class SmartPlugController(object):
     # using all the addresses that are marked as broadcast addresses until I find a Kasa device.
     def _discover_devices(self):
         # return the first non-empty map of devices
-        return next(filter(bool, map(self._discover_devices_for_broadcast_address, self._get_broadcast_addresses())), {})
+        return next(
+            filter(
+                bool,
+                map(
+                    self._discover_devices_for_broadcast_address,
+                    self._get_broadcast_addresses(),
+                ),
+            ),
+            {},
+        )
 
     def _discover_devices_for_broadcast_address(self, broadcast_address):
         # discover() has its own timeout of 5 seconds so I don't need to set a timeout
-        return self._block_until_complete(Discover.discover(target=broadcast_address), timeout=None)
+        return self._block_until_complete(
+            Discover.discover(target=broadcast_address), timeout=None
+        )
 
     def _get_broadcast_addresses(self):
-        return {address.broadcast for addresses in psutil.net_if_addrs().values() for address in addresses if address.broadcast is not None}
+        return {
+            address.broadcast
+            for addresses in psutil.net_if_addrs().values()
+            for address in addresses
+            if address.broadcast is not None
+        }
 
     def _add_plug_address_to_cache(self, ip_address):
         SmartPlugController._cache[self._plug_alias] = ip_address
 
     def _block_until_complete(self, awaitable: Awaitable, timeout: Optional[int] = 1):
-        return asyncio.get_event_loop().run_until_complete(asyncio.wait_for(awaitable, timeout=timeout))
+        return asyncio.get_event_loop().run_until_complete(
+            asyncio.wait_for(awaitable, timeout=timeout)
+        )
+
 
 if __name__ == "__main__":
     try:
-        plug_controller = SmartPlugController(plug_alias='plug')
+        plug_controller = SmartPlugController(plug_alias="plug")
     except Exception as exception:
         sys.exit(2)
 
     if len(sys.argv) == 1:
         sys.exit(0 if plug_controller.is_on() else 1)
-    elif sys.argv[1] == 'on':
+    elif sys.argv[1] == "on":
         plug_controller.turn_on()
-    elif sys.argv[1] == 'off':
+    elif sys.argv[1] == "off":
         plug_controller.turn_off()

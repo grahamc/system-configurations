@@ -10,7 +10,7 @@ local configs_by_type = {
 -- Calls the configuration function for the specified, lazy-loaded plugin.
 local function plug_wrapper_apply_lazy_config(plugin_name)
   local config = configs_by_type.lazy[plugin_name]
-  if type(config) == 'function' then
+  if type(config) == "function" then
     config()
   end
 end
@@ -22,17 +22,17 @@ local function apply_configs(configs)
   end
 end
 
-local original_plug_begin = vim.fn['plug#begin']
+local original_plug_begin = vim.fn["plug#begin"]
 function PlugBegin()
   original_plug_begin()
 end
 
-local original_plug_end = vim.fn['plug#end']
+local original_plug_end = vim.fn["plug#end"]
 function PlugEnd()
   original_plug_end()
 
   -- This way code can be run after plugins are loaded, but before 'VimEnter'
-  vim.api.nvim_exec_autocmds('User', {pattern = 'PlugEndPost'})
+  vim.api.nvim_exec_autocmds("User", { pattern = "PlugEndPost" })
 
   apply_configs(configs_by_type.sync)
 
@@ -46,8 +46,8 @@ function PlugEnd()
   vim.defer_fn(ApplyAsyncConfigs, 0)
 end
 
-local group_id = vim.api.nvim_create_augroup('PlugLua', {})
-local original_plug = vim.fn['plug#']
+local group_id = vim.api.nvim_create_augroup("PlugLua", {})
+local original_plug = vim.fn["plug#"]
 -- Similar to the vim-plug `Plug` command, but with an additional option to specify a function to run after a
 -- plugin is loaded.
 function Plug(repo, options)
@@ -56,23 +56,22 @@ function Plug(repo, options)
     return
   end
 
-  local original_plug_options = vim.tbl_deep_extend('force', options, {config = nil, sync = nil,})
+  local original_plug_options = vim.tbl_deep_extend("force", options, { config = nil, sync = nil })
   original_plug(repo, original_plug_options)
 
   local config = options.config
-  if type(config) == 'function' then
-    if options['on'] or options['for'] then
+  if type(config) == "function" then
+    if options["on"] or options["for"] then
       local plugin_name = repo:match("^[%w-]+/([%w-_.]+)$")
       configs_by_type.lazy[plugin_name] = config
-      vim.api.nvim_create_autocmd(
-        'User',
-        {
-          pattern = plugin_name,
-          callback = function() plug_wrapper_apply_lazy_config(plugin_name) end,
-          group = group_id,
-          once = true,
-        }
-      )
+      vim.api.nvim_create_autocmd("User", {
+        pattern = plugin_name,
+        callback = function()
+          plug_wrapper_apply_lazy_config(plugin_name)
+        end,
+        group = group_id,
+        once = true,
+      })
     elseif options.sync then
       table.insert(configs_by_type.sync, config)
     else

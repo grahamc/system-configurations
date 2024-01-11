@@ -1,4 +1,4 @@
-{ config, ... }: {
+{config, ...}: {
   homebrew = {
     enable = true;
     onActivation.cleanup = "zap";

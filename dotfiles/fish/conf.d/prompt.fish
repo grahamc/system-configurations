@@ -46,8 +46,7 @@ function fish_prompt --description 'Print the prompt'
         (_git_context $max_length) \
         (_path_context $max_length) \
         (_login_context) \
-        (_status_context $last_status $last_pipestatus) \
-        ;
+        (_status_context $last_status $last_pipestatus)
     set prompt_lines
     for context in $contexts
         if test -z $context
@@ -126,10 +125,10 @@ function _login_context
     set container_name (_container_name)
     if test -n "$container_name"
         set host $container_name
-        set special_host 'container'
+        set special_host container
     else if set --query SSH_TTY
         set host (hostname)
-        set special_host 'ssh'
+        set special_host ssh
     else
         set host (hostname)
     end
@@ -139,7 +138,7 @@ function _login_context
     end
 
     if set --query special_host
-    or set --query privilege
+        or set --query privilege
         set user $USER
         if test -z "$user"
             set user (set_color --italics)"no name"(set_color normal)
@@ -159,29 +158,29 @@ end
 # Taken from Starship Prompt: https://github.com/starship/starship/blob/master/src/modules/container.rs
 function _container_name
     if test -e /proc/vz
-    and not test -e /proc/bc
-        printf 'OpenVZ'
+        and not test -e /proc/bc
+        printf OpenVZ
         return
     end
 
     if test -e /run/host/container-manager
-        printf 'OCI'
+        printf OCI
         return
     end
 
     if test -e /run/.containerenv
         # TODO: The image name is in this file, I should extract it and return that instead.
-        printf 'podman'
+        printf podman
         return
     end
 
-    set systemd_container_path '/run/systemd/container'
+    set systemd_container_path /run/systemd/container
     if test -e "$systemd_container_path"
         printf (cat "$systemd_container_path")
     end
 
     if test -e /.dockerenv
-        printf 'Docker'
+        printf Docker
         return
     end
 end
@@ -285,7 +284,7 @@ function _make_hyperlink_to_git_branch --argument-names branch_name
     end
 end
 function _git_status
-    set --global __fish_git_prompt_showupstream 'informative'
+    set --global __fish_git_prompt_showupstream informative
     set --global __fish_git_prompt_showdirtystate 1
     set --global __fish_git_prompt_showuntrackedfiles 1
     set --global __fish_git_prompt_char_upstream_ahead ',ahead:'
@@ -301,7 +300,7 @@ function _git_status_loading_indicator
     printf (set_color --dim --italics)'loading…'$_color_normal
 end
 function _abbreviate_git_states --argument-names git_context
-    set long_states 'ahead:' 'behind:' 'untracked' 'dirty' 'staged' 'invalid'
+    set long_states 'ahead:' 'behind:' untracked dirty staged invalid
     set abbreviated_states '↑' '↓' '?' '!' '+' '#'
     for index in (seq (count $long_states))
         set long_state $long_states[$index]
@@ -313,7 +312,7 @@ function _abbreviate_git_states --argument-names git_context
         # remove the commas in between states
         | string replace --all --regex '(\(.*),(.*\))' '${1}${2}' \
         # remove the parentheses around the states
-        | string replace --all --regex '[\(,\)]'  ''
+        | string replace --all --regex '[\(,\)]' ''
 end
 _add_async_prompt_function _git_status _git_status_loading_indicator
 
@@ -326,7 +325,7 @@ function _status_context
     # If there aren't any non-zero exit codes in the last $pipestatus and the last $status is 0, then that means
     # everything succeeded and I won't print anything
     if not string match --quiet --invert 0 $last_pipestatus
-    and test $last_status -eq 0
+        and test $last_status -eq 0
         return
     end
 
@@ -363,7 +362,7 @@ function color_for_exit_code --argument-names exit_code
     set color $_color_success_text
     if contains $exit_code $warning_codes
         set color $_color_warning_text
-    else if test $exit_code != '0'
+    else if test $exit_code != 0
         set color $_color_error_text
     end
 
@@ -372,7 +371,7 @@ end
 
 function _nix_context
     if not set --query IN_NIX_SHELL
-    and not set --query IN_NIX_RUN
+        and not set --query IN_NIX_RUN
         return
     end
 
@@ -389,7 +388,7 @@ function _nix_context
 
     if set --query IN_NIX_SHELL
         set color $_color_success_text
-        if test $IN_NIX_SHELL = 'impure'
+        if test $IN_NIX_SHELL = impure
             set color $_color_warning_text
         end
         set type $color$IN_NIX_SHELL$_color_normal

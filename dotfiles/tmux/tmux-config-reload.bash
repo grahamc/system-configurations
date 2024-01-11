@@ -26,7 +26,7 @@ tmux \
 
 # We wait for the amount of time specfied in the tmux option `display-time`. This way the indicator stays up for the
 # same amount of time as normal messages.
-sleep $(( $(tmux display -p "#{display-time}") / 1000 ))
+sleep $(($(tmux display -p "#{display-time}") / 1000))
 
 # Remove the indicator.
 #
@@ -37,4 +37,3 @@ sleep $(( $(tmux display -p "#{display-time}") / 1000 ))
 tmux \
   set -u @mode_indicator_custom_prompt \
   \; refresh-client -S
-

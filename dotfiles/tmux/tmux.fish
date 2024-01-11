@@ -37,7 +37,7 @@ function tmux-server-reload --description 'Reload tmux server'
         tmux kill-server
         set max_poll_attempts 5
         while is_tmux_running
-        and test $max_poll_attempts -gt 0
+            and test $max_poll_attempts -gt 0
             sleep 1
             set max_poll_attempts (math $max_poll_attempts - 1)
         end

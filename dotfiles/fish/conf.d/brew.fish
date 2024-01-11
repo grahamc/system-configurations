@@ -3,11 +3,11 @@ if not status is-interactive
 end
 
 if test (uname) != Darwin
-  exit
+    exit
 end
 
-abbr --add --global biw 'brew-install-widget'
-abbr --add --global buw 'brew-uninstall-widget'
+abbr --add --global biw brew-install-widget
+abbr --add --global buw brew-uninstall-widget
 
 # nix-darwin manages brew so I'll turn off all the automatic management.
 export HOMEBREW_NO_INSTALL_UPGRADE=1
@@ -22,8 +22,8 @@ if test -d $HOMEBREW_PREFIX/share/fish/vendor_completions.d
 end
 
 function brew-install-widget --description 'Install packages with brew'
-  set choices \
-    ( \
+    set choices \
+        ( \
     FZF_DEFAULT_COMMAND='brew formulae' \
     FZF_HINTS='ctrl+alt+o: search online' \
     fzf-tmux-zoom \
@@ -38,15 +38,15 @@ function brew-install-widget --description 'Install packages with brew'
     --preview-window '75%' \
     --tiebreak=chunk,begin,end \
     )
-  or return
+    or return
 
-  echo "Running command 'brew install $choices'..."
-  brew install $choices
+    echo "Running command 'brew install $choices'..."
+    brew install $choices
 end
 
 function brew-uninstall-widget --description 'Uninstall packages with brew'
-  set choices \
-    ( \
+    set choices \
+        ( \
       FZF_DEFAULT_COMMAND='brew leaves --installed-on-request; brew ls --cask' \
       fzf-tmux-zoom \
         --prompt 'brew uninstall ' \
@@ -59,8 +59,8 @@ function brew-uninstall-widget --description 'Uninstall packages with brew'
         --preview-window '75%' \
         --tiebreak=chunk,begin,end \
     )
-  or return
+    or return
 
-  echo "Running command 'brew uninstall $choices'..."
-  brew uninstall $choices
+    echo "Running command 'brew uninstall $choices'..."
+    brew uninstall $choices
 end

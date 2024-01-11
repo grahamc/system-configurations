@@ -15,8 +15,8 @@ abbr --add --global as apt-show
 abbr --add --global ap 'apt policy'
 abbr --add --global alu 'apt list --upgradeable'
 abbr --add --global ap 'sudo apt purge'
-abbr --add --global aiw 'apt-install-widget'
-abbr --add --global arw 'apt-remove-widget'
+abbr --add --global aiw apt-install-widget
+abbr --add --global arw apt-remove-widget
 
 function apt-show --description "'apt show' with each section name highlighted, paged with less" --wraps 'apt show'
     # I supress stderr to remove the warning that apt prints out when you use apt
@@ -25,8 +25,8 @@ function apt-show --description "'apt show' with each section name highlighted, 
 end
 
 function apt-install-widget --description 'Install packages with apt'
-  set choices \
-      ( \
+    set choices \
+        ( \
         FZF_DEFAULT_COMMAND='apt-cache pkgnames' \
         fzf-tmux-zoom \
             --prompt 'apt install: ' \
@@ -34,15 +34,15 @@ function apt-install-widget --description 'Install packages with apt'
             --preview-window '75%' \
             --tiebreak=chunk,begin,end \
       )
-  or return
+    or return
 
-  echo "Running command 'sudo apt-get install $choices'..."
-  sudo apt-get install --assume-yes $choices
+    echo "Running command 'sudo apt-get install $choices'..."
+    sudo apt-get install --assume-yes $choices
 end
 
 function apt-remove-widget --description 'Remove packages with apt'
-  set choices \
-      ( \
+    set choices \
+        ( \
         FZF_DEFAULT_COMMAND='apt list --installed 2>/dev/null | string split --no-empty --fields 1 -- \'/\' | tail -n +2' \
         fzf-tmux-zoom \
             --prompt 'apt remove: ' \
@@ -50,9 +50,8 @@ function apt-remove-widget --description 'Remove packages with apt'
             --preview-window '75%' \
             --tiebreak=chunk,begin,end \
       )
-  or return
+    or return
 
-  echo "Running command 'sudo apt-get remove $choices'..."
-  sudo apt-get remove --assume-yes $choices
+    echo "Running command 'sudo apt-get remove $choices'..."
+    sudo apt-get remove --assume-yes $choices
 end
-

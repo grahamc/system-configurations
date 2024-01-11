@@ -1,12 +1,19 @@
-{ inputs, ... }: {
-  perSystem = {lib, system, pkgs, self', ...}: let
+{inputs, ...}: {
+  perSystem = {
+    lib,
+    system,
+    pkgs,
+    self',
+    ...
+  }: let
     inherit (lib.attrsets) optionalAttrs;
-    supportedSystems = with inputs.flake-utils.lib.system; [ x86_64-linux x86_64-darwin ];
+    supportedSystems = with inputs.flake-utils.lib.system; [x86_64-linux x86_64-darwin];
     isSupportedSystem = builtins.elem system supportedSystems;
 
     terminalOutputs = let
       terminalBootstrapScriptName = "terminal";
-      terminalBootstrap = pkgs.writeScriptBin
+      terminalBootstrap =
+        pkgs.writeScriptBin
         terminalBootstrapScriptName
         ''
           #!${pkgs.bash}/bin/bash

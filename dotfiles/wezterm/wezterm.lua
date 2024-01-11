@@ -1,10 +1,10 @@
-local wezterm = require 'wezterm'
+local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 
 -- Utilities
-local function table_concat(t1,t2)
-  for i=1,#t2 do
-    t1[#t1+1] = t2[i]
+local function table_concat(t1, t2)
+  for i = 1, #t2 do
+    t1[#t1 + 1] = t2[i]
   end
   return t1
 end
@@ -18,7 +18,7 @@ local function merge_to_left(t1, t2)
   end
   return t1
 end
-local is_mac = string.find(wezterm.target_triple, 'darwin')
+local is_mac = string.find(wezterm.target_triple, "darwin")
 local CustomEvent = {
   ThemeChanged = "theme-changed",
   ThemeToggleRequested = "theme-toggled",
@@ -44,13 +44,14 @@ local function lighten_or_darken_color(col, amt)
   local r = math.floor(num / 0x10000) + amt
   local g = (math.floor(num / 0x100) % 0x100) + amt
   local b = (num % 0x100) + amt
-  return '#' .. string.sub(string.format("%#x", clamp(r) * 0x10000 + clamp(g) * 0x100 + clamp(b)), 3)
+  return "#"
+    .. string.sub(string.format("%#x", clamp(r) * 0x10000 + clamp(g) * 0x100 + clamp(b)), 3)
 end
 
 -- general
-config.window_close_confirmation = 'NeverPrompt'
-config.audible_bell = 'Disabled'
-config.default_cursor_style = 'BlinkingBar'
+config.window_close_confirmation = "NeverPrompt"
+config.audible_bell = "Disabled"
+config.default_cursor_style = "BlinkingBar"
 config.bold_brightens_ansi_colors = false
 config.disable_default_key_bindings = true
 -- I had an issue where WezTerm would sometimes freeze when I input a key and I would have to input another key
@@ -65,7 +66,7 @@ config.automatically_reload_config = false
 -- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system, but Flatpak apps
 -- can't access my font configuration file from their sandbox so for now I'll hardcode a font.
 -- issue: https://github.com/flatpak/flatpak/issues/1563
-config.font = wezterm.font_with_fallback({'Iosevka Comfy Fixed', 'SymbolsNerdFontMono'})
+config.font = wezterm.font_with_fallback({ "Iosevka Comfy Fixed", "SymbolsNerdFontMono" })
 config.underline_position = -9
 config.font_size = 11.3
 if is_mac then
@@ -75,44 +76,78 @@ config.line_height = 1.4
 config.underline_thickness = "150%"
 
 local my_colors_per_color_scheme = {
-  ['Biggs Nord'] = {
-    [0] = '#1d2129', [1] = '#BF616A', [2] = '#A3BE8C', [3] = '#EBCB8B', [4] = '#81A1C1', [5] = '#B48EAD', [6] = '#88C0D0', [7] = '#D8DEE9',
-    [8] = '#78849b', [9] = '#BF616A', [10] = '#A3BE8C', [11] = '#d08770', [12] = '#81A1C1', [13] = '#B48EAD', [14] = '#8FBCBB', [15] = '#78849b',
+  ["Biggs Nord"] = {
+    [0] = "#1d2129",
+    [1] = "#BF616A",
+    [2] = "#A3BE8C",
+    [3] = "#EBCB8B",
+    [4] = "#81A1C1",
+    [5] = "#B48EAD",
+    [6] = "#88C0D0",
+    [7] = "#D8DEE9",
+    [8] = "#78849b",
+    [9] = "#BF616A",
+    [10] = "#A3BE8C",
+    [11] = "#d08770",
+    [12] = "#81A1C1",
+    [13] = "#B48EAD",
+    [14] = "#8FBCBB",
+    [15] = "#78849b",
     -- Floating windows in neovim
-    [16] = '#181c24',
-    [24] = '#2e3440',
+    [16] = "#181c24",
+    [24] = "#2e3440",
     -- Background color for the non-emphasized and emphasized part of a removed line in a git diff
-    [17] = '#301a1f', [25] = '#803030',
+    [17] = "#301a1f",
+    [25] = "#803030",
     -- Background color for the non-emphasized and emphasized part of an added line in a git diff
-    [18] = '#12261e', [26] = '#1d572c',
+    [18] = "#12261e",
+    [26] = "#1d572c",
     -- Background color for the source and destination of a moved line in a git diff
-    [21] = '#60405a', [22] = '#306a7b',
+    [21] = "#60405a",
+    [22] = "#306a7b",
     -- highlight color
-    [51] = '#292e39',
+    [51] = "#292e39",
     -- nvim-telescope border
-    [52] = '#31353d',
+    [52] = "#31353d",
     -- For folded lines
-    [53] = '#232832',
+    [53] = "#232832",
   },
 
-  ['Biggs Light Owl'] = {
-    [0] = '#ffffff', [1] = '#ee3d3b', [2] = '#2AA298', [3] = '#e9873a', [4] = '#288ed7', [5] = '#994cc3', [6] = '#037A98', [7] = '#000000',
-    [8] = '#979893', [9] = '#ee3d3b', [10] = '#2AA298', [11] = '#c96765', [12] = '#288ed7', [13] = '#d6438a', [14] = '#2AA298', [15] = '#808080',
+  ["Biggs Light Owl"] = {
+    [0] = "#ffffff",
+    [1] = "#ee3d3b",
+    [2] = "#2AA298",
+    [3] = "#e9873a",
+    [4] = "#288ed7",
+    [5] = "#994cc3",
+    [6] = "#037A98",
+    [7] = "#000000",
+    [8] = "#979893",
+    [9] = "#ee3d3b",
+    [10] = "#2AA298",
+    [11] = "#c96765",
+    [12] = "#288ed7",
+    [13] = "#d6438a",
+    [14] = "#2AA298",
+    [15] = "#808080",
     -- Floating windows in neovim
-    [16] = '#f0f0f0',
-    [24] = '#e5e5e5',
+    [16] = "#f0f0f0",
+    [24] = "#e5e5e5",
     -- Background color for the non-emphasized and emphasized part of a removed line in a git diff
-    [17] = '#FFD7D7', [25] = '#FFAFAF',
+    [17] = "#FFD7D7",
+    [25] = "#FFAFAF",
     -- Background color for the non-emphasized and emphasized part of an added line in a git diff
-    [18] = '#D7FFD7', [26] = '#96D596',
+    [18] = "#D7FFD7",
+    [26] = "#96D596",
     -- Background color for the source and destination of a moved line in a git diff
-    [21] = '#e99ac0', [22] = '#85dfd8',
+    [21] = "#e99ac0",
+    [22] = "#85dfd8",
     -- highlight color
-    [51] = '#F0F0F0',
+    [51] = "#F0F0F0",
     -- nvim-telescope border
-    [52] = '#d0d0d0',
+    [52] = "#d0d0d0",
     -- For folded lines
-    [53] = '#f5f5f5',
+    [53] = "#f5f5f5",
   },
 }
 
@@ -122,36 +157,36 @@ local function create_color_schemes(colors_per_color_scheme)
   for color_scheme_name, colors in pairs(colors_per_color_scheme) do
     -- Make a skeleton for the color scheme that we'll fill in below
     local color_scheme = {
-      ['ansi'] = {},
-      ['brights'] = {},
-      ['indexed'] = {},
+      ["ansi"] = {},
+      ["brights"] = {},
+      ["indexed"] = {},
     }
 
     for index, color in pairs(colors) do
       if index == 0 then
-        color_scheme['background'] = color
-        color_scheme['cursor_fg'] = color_scheme['background']
-        color_scheme['selection_fg'] = color
+        color_scheme["background"] = color
+        color_scheme["cursor_fg"] = color_scheme["background"]
+        color_scheme["selection_fg"] = color
       elseif index == 3 then
-        color_scheme['selection_bg'] = color
+        color_scheme["selection_bg"] = color
       elseif index == 5 then
-        color_scheme['scrollbar_thumb'] = color
+        color_scheme["scrollbar_thumb"] = color
       elseif index == 7 then
-        color_scheme['foreground'] = color
-        color_scheme['cursor_border'] = color
+        color_scheme["foreground"] = color
+        color_scheme["cursor_border"] = color
         -- TODO: For `cursor_border` to work, `cursor_bg` needs to be set to the same color
         -- issue: https://github.com/wez/wezterm/issues/1494
-        color_scheme['cursor_bg'] = color
+        color_scheme["cursor_bg"] = color
       elseif index == 15 then
-        color_scheme['split'] = color
+        color_scheme["split"] = color
       end
 
       if index >= 0 and index <= 7 then
-        color_scheme['ansi'][index + 1] = color
+        color_scheme["ansi"][index + 1] = color
       elseif index >= 8 and index <= 15 then
-        color_scheme['brights'][index - 7] = color
+        color_scheme["brights"][index - 7] = color
       elseif index >= 16 then
-        color_scheme['indexed'][index] = color
+        color_scheme["indexed"][index] = color
       end
     end
 
@@ -173,7 +208,7 @@ local function create_theme_config(color_scheme_name)
       active_titlebar_bg = background,
       inactive_titlebar_bg = background,
       font_size = 17,
-      font = wezterm.font { family = 'Iosevka Comfy Wide Duo', weight = 'Light' },
+      font = wezterm.font({ family = "Iosevka Comfy Wide Duo", weight = "Light" }),
     },
     colors = {
       tab_bar = {
@@ -195,21 +230,21 @@ local function create_theme_config(color_scheme_name)
           fg_color = foreground,
         },
       },
-    }
+    },
   }
 end
 local Theme = {
   Dark = {
     as_string = "dark",
-    config = create_theme_config('Biggs Nord'),
+    config = create_theme_config("Biggs Nord"),
   },
   Light = {
     as_string = "light",
-    config = create_theme_config('Biggs Light Owl'),
+    config = create_theme_config("Biggs Light Owl"),
   },
 }
 Theme.for_system_appearance = function(appearance)
-  if appearance:find 'Dark' then
+  if appearance:find("Dark") then
     return Theme.Dark
   else
     return Theme.Light
@@ -244,7 +279,7 @@ end
 -- 'window-config-reloaded' event is fired. To get around this, I keep track of the current system appearance fire my
 -- own event when I detect a change.
 local current_system_appearance = nil
-wezterm.on('window-config-reloaded', function(window)
+wezterm.on("window-config-reloaded", function(window)
   local new_system_appearance = wezterm.gui.get_appearance()
   if current_system_appearance ~= new_system_appearance then
     current_system_appearance = new_system_appearance
@@ -262,25 +297,29 @@ end)
 
 -- Sync theme with neovim
 local function fire_theme_event_in_neovim(theme)
-  local pipe_directory = (os.getenv('XDG_RUNTIME_DIR') or os.getenv('TMPDIR') or '/tmp') .. '/nvim-wezterm/pipes'
-  local event_name = 'ColorSchemeLight'
+  local pipe_directory = (os.getenv("XDG_RUNTIME_DIR") or os.getenv("TMPDIR") or "/tmp")
+    .. "/nvim-wezterm/pipes"
+  local event_name = "ColorSchemeLight"
   if theme == Theme.Dark then
-    event_name = 'ColorSchemeDark'
+    event_name = "ColorSchemeDark"
   end
   if exists(pipe_directory) then
-    os.execute(string.format(
-      [[find '%s' -type s -o -type p | xargs -I PIPE ~/.nix-profile/bin/nvim --server PIPE --remote-expr 'v:lua.vim.api.nvim_exec_autocmds("User", {"pattern": "%s"})']],
-      pipe_directory, event_name
-    ))
+    os.execute(
+      string.format(
+        [[find '%s' -type s -o -type p | xargs -I PIPE ~/.nix-profile/bin/nvim --server PIPE --remote-expr 'v:lua.vim.api.nvim_exec_autocmds("User", {"pattern": "%s"})']],
+        pipe_directory,
+        event_name
+      )
+    )
   end
 end
 local function set_theme_in_state_file(theme)
-  local state_dir = (os.getenv('XDG_STATE_HOME') or (os.getenv('HOME') .. '/.local/state')) .. '/wezterm'
-  local theme_file = state_dir .. '/current-theme.txt'
-  os.execute(string.format(
-    [[mkdir -p '%s' && echo '%s' > '%s']],
-    state_dir, theme.as_string, theme_file
-  ))
+  local state_dir = (os.getenv("XDG_STATE_HOME") or (os.getenv("HOME") .. "/.local/state"))
+    .. "/wezterm"
+  local theme_file = state_dir .. "/current-theme.txt"
+  os.execute(
+    string.format([[mkdir -p '%s' && echo '%s' > '%s']], state_dir, theme.as_string, theme_file)
+  )
 end
 ---@diagnostic disable-next-line: unused-local
 wezterm.on(CustomEvent.ThemeChanged, function(theme)
@@ -297,7 +336,7 @@ config.show_tab_index_in_tab_bar = false
 -- TODO: I don't know why I need this
 config.colors = {}
 -- Update the status bar with the current window title
-wezterm.on('update-status', function(window, pane)
+wezterm.on("update-status", function(window, pane)
   local effective_config = window:effective_config()
   local color_schemes = effective_config.color_schemes or {}
   local color_scheme = color_schemes[effective_config.color_scheme]
@@ -305,7 +344,7 @@ wezterm.on('update-status', function(window, pane)
   if color_scheme ~= nil then
     foreground_color = color_scheme.foreground
   else
-    foreground_color = effective_config.colors.foreground or '#000000'
+    foreground_color = effective_config.colors.foreground or "#000000"
   end
   if not window:is_focused() then
     local amount = -100
@@ -315,17 +354,17 @@ wezterm.on('update-status', function(window, pane)
     foreground_color = lighten_or_darken_color(foreground_color, amount)
   end
 
-  local pane_title = pane:get_user_vars().title or ''
-  if string.find(pane_title, 'tmux') then
-    pane_title = ' tmux'
+  local pane_title = pane:get_user_vars().title or ""
+  if string.find(pane_title, "tmux") then
+    pane_title = " tmux"
   else
-    pane_title = ' ' .. pane_title
+    pane_title = " " .. pane_title
   end
 
-  local title = wezterm.format {
+  local title = wezterm.format({
     { Foreground = { Color = foreground_color } },
-    { Text = pane_title .. ' ' },
-  }
+    { Text = pane_title .. " " },
+  })
   if is_mac then
     window:set_right_status(title)
   else
@@ -335,61 +374,61 @@ end)
 
 local keybinds = {
   {
-    key = 'c',
-    mods = 'ALT',
-    action = wezterm.action.EmitEvent(CustomEvent.ThemeToggleRequested)
+    key = "c",
+    mods = "ALT",
+    action = wezterm.action.EmitEvent(CustomEvent.ThemeToggleRequested),
   },
   {
-    key = 'v',
-    mods = 'SUPER',
-    action = wezterm.action.PasteFrom('Clipboard')
+    key = "v",
+    mods = "SUPER",
+    action = wezterm.action.PasteFrom("Clipboard"),
   },
 
   {
-    key = 'i',
-    mods = 'CTRL',
-    action = wezterm.action.SendKey {
-      key = 'F9',
-    },
+    key = "i",
+    mods = "CTRL",
+    action = wezterm.action.SendKey({
+      key = "F9",
+    }),
   },
   {
-    key = '[',
-    mods = 'CTRL',
-    action = wezterm.action.SendKey {
-      key = 'F7',
-    },
+    key = "[",
+    mods = "CTRL",
+    action = wezterm.action.SendKey({
+      key = "F7",
+    }),
   },
   {
-    key = ']',
-    mods = 'CTRL',
-    action = wezterm.action.SendKey {
-      key = 'F8',
-    },
+    key = "]",
+    mods = "CTRL",
+    action = wezterm.action.SendKey({
+      key = "F8",
+    }),
   },
   {
-    key = 'q',
-    mods = 'CMD',
-    action = wezterm.action.CloseCurrentTab { confirm = false },
+    key = "q",
+    mods = "CMD",
+    action = wezterm.action.CloseCurrentTab({ confirm = false }),
   },
   {
-    key = 'r',
-    mods = 'ALT|SHIFT',
+    key = "r",
+    mods = "ALT|SHIFT",
     action = wezterm.action.ReloadConfiguration,
   },
 }
 
 local function generate_neovim_tab_navigation_keybinds()
   local result = {}
-  for tab_number=1,9 do
+  for tab_number = 1, 9 do
     local tab_number_string = tostring(tab_number)
 
     local keybind = {
       key = tab_number_string,
-      mods = 'CTRL',
-      action = wezterm.action.Multiple {
-        wezterm.action.SendKey {key = 'Space'},
-        wezterm.action.SendKey {key = tab_number_string},
-      },
+      mods = "CTRL",
+      action = wezterm.action.Multiple({
+        wezterm.action.SendKey({ key = "Space" }),
+        wezterm.action.SendKey({ key = tab_number_string }),
+      }),
     }
 
     table.insert(result, keybind)

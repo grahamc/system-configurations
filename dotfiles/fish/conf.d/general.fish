@@ -7,7 +7,7 @@ set --global --export PAGER less
 abbr --add --global x 'chmod +x'
 abbr --add --global du 'du -shL'
 # Set the terminal's color capability to 256 colors if it isn't already. 
-if not string match --regex --quiet -- '256' $TERM
+if not string match --regex --quiet -- 256 $TERM
     set --global --export TERM xterm-256color
 end
 if test (uname) = Linux
@@ -20,7 +20,7 @@ if test (uname) = Linux
     abbr --add --position anywhere --global trash 'trash put'
     abbr --add --global font-reload 'fc-cache -vr'
     if type --query flatpak
-    and flatpak list --app | grep -q 'org.wezfurlong.wezterm'
+        and flatpak list --app | grep -q 'org.wezfurlong.wezterm'
         alias wezterm 'flatpak run org.wezfurlong.wezterm'
     end
     abbr --add --global open xdg-open
@@ -35,9 +35,9 @@ function timg --wraps timg
     set pixelation_options
     # timg doesn't detect Wezterm or TMUX so I'll do it here
     if set --query TMUX
-        set pixelation_options '-p' 'sixel'
-    else if test "$TERM_PROGRAM" = 'WezTerm'
-        set pixelation_options '-p' 'kitty'
+        set pixelation_options -p sixel
+    else if test "$TERM_PROGRAM" = WezTerm
+        set pixelation_options -p kitty
     end
 
     command timg --center $pixelation_options $argv
@@ -45,7 +45,7 @@ end
 
 # man
 # NOTE: Per the man manpage, spaces in $MANOPT must be escaped with a backslash
-set --global --export MANOPT '--no-hyphenation'
+set --global --export MANOPT --no-hyphenation
 # There's an environment variable you can set to change man's pager (MANPAGER), but I'm not using it because I only
 # want to change the pager in interactive mode.
 abbr --add --global -- man 'man -P "page -t man"'
@@ -85,7 +85,7 @@ set --global --export VIRTUAL_ENV_DISABLE_PROMPT 1
 function python --wraps python
     # Check if python is being run interactively
     if test (count $argv) -eq 0
-    or contains -- '-i' $argv
+        or contains -- -i $argv
         # Check if python has the ipython package installed
         #
         # If I pipe the output of python to grep, python will raise a BrokenPipeError. To avoid this, I use echo to pipe
@@ -156,12 +156,12 @@ end
 # I should write my own completion script though since this will
 # also autocomplete sudo flags.
 function detach --wraps sudo
-  # Redirecting the i/o files on the command itself still resulted in some output being sent to the
-  # terminal, but putting the command in a block and redirecting the i/o files of the block does
-  # the trick.
-  begin
-    $argv & disown
-  end >/dev/null 2>/dev/null </dev/null
+    # Redirecting the i/o files on the command itself still resulted in some output being sent to the
+    # terminal, but putting the command in a block and redirecting the i/o files of the block does
+    # the trick.
+    begin
+        $argv & disown
+    end >/dev/null 2>/dev/null </dev/null
 end
 
 function tunnel --description 'Connect my cloudflare tunnel to the specified port on localhost' --argument-names port

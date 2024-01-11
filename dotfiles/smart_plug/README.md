@@ -5,8 +5,8 @@ This project contains:
 - A script to turn a Kasa smart plug on and off.
 
 - A [systemd](https://systemd.io/) service to automatically turn it on after the computer starts
-up or is woken up and turn it off before the computer suspends, hibernates, restarts, or shuts
-down. (**TODO:** Need to document this)
+  up or is woken up and turn it off before the computer suspends, hibernates, restarts, or shuts
+  down. (**TODO:** Need to document this)
 
 - A macOS tray icon to turn the plug on and off. (**TODO:** Need to document this)
 
@@ -19,19 +19,19 @@ noise, which
 ## Requirements
 
 - [nix](https://nixos.org/) -- For dependencies. See the README at the root of this repository for
-installation instructions.
+  installation instructions.
 - direnv -- To manage the development environment
 - A Kasa smart plug with the alias 'plug'
 
 ## Run
 
 - Run `python smart_plug.py [(on|off)]` in this directory. If you don't pass an argument, it
-exits with `0` if the plug is on, `1` if it's off, and `2` if there's an error.
+  exits with `0` if the plug is on, `1` if it's off, and `2` if there's an error.
 
 ## Development
 
 - direnv will automatically setup the development environment when you enter this directory
-and remove when you leave.
+  and remove when you leave.
 
 ## Resources
 

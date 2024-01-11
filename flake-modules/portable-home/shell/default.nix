@@ -1,8 +1,17 @@
-{ inputs, self, ... }: {
-  perSystem = {lib, system, pkgs, ...}: let
+{
+  inputs,
+  self,
+  ...
+}: {
+  perSystem = {
+    lib,
+    system,
+    pkgs,
+    ...
+  }: let
     inherit (lib.attrsets) optionalAttrs;
     inherit (pkgs.stdenv) isLinux;
-    supportedSystems = with inputs.flake-utils.lib.system; [ x86_64-linux x86_64-darwin ];
+    supportedSystems = with inputs.flake-utils.lib.system; [x86_64-linux x86_64-darwin];
     isSupportedSystem = builtins.elem system supportedSystems;
 
     shellOutputs = let
@@ -12,7 +21,10 @@
 
       # "C.UTF-8/UTF-8" is the locacle the perl said wasn't supported so I added it here.
       # "en_US.UTF-8/UTF-8" was the default locacle so I'm keeping it just in case.
-      minimalLocales = pkgs.glibcLocales.override { allLocales = false;  locales = ["en_US.UTF-8/UTF-8" "C.UTF-8/UTF-8"];};
+      minimalLocales = pkgs.glibcLocales.override {
+        allLocales = false;
+        locales = ["en_US.UTF-8/UTF-8" "C.UTF-8/UTF-8"];
+      };
 
       shellBootstrapScriptName = "shell";
 
@@ -22,17 +34,19 @@
       # be in the $PATH because I don't want them on the $PATH of the shell that gets launched at the end of the
       # script. Instead, I'll supply the dependencies through the variables listed below.
       coreutilsBinaryPath = "${pkgs.coreutils}/bin";
-      shellBootstrapScriptDependencies = {
-        activationPackage = import ./home-manager-package.nix {inherit pkgs inputs self minimalFish;};
-        mktemp = "${coreutilsBinaryPath}/mktemp";
-        copy = "${coreutilsBinaryPath}/cp";
-        chmod = "${coreutilsBinaryPath}/chmod";
-        basename = "${coreutilsBinaryPath}/basename";
-        fish = "${minimalFish}/bin/fish";
-        which = "${pkgs.which}/bin/which";
-      } // optionalAttrs isLinux {
-        localeArchive = "${minimalLocales}/lib/locale/locale-archive";
-      };
+      shellBootstrapScriptDependencies =
+        {
+          activationPackage = import ./home-manager-package.nix {inherit pkgs inputs self minimalFish;};
+          mktemp = "${coreutilsBinaryPath}/mktemp";
+          copy = "${coreutilsBinaryPath}/cp";
+          chmod = "${coreutilsBinaryPath}/chmod";
+          basename = "${coreutilsBinaryPath}/basename";
+          fish = "${minimalFish}/bin/fish";
+          which = "${pkgs.which}/bin/which";
+        }
+        // optionalAttrs isLinux {
+          localeArchive = "${minimalLocales}/lib/locale/locale-archive";
+        };
       shellBootstrapScript = import ./shell-bootstrap-script.nix shellBootstrapScriptDependencies;
 
       shellBootstrap = pkgs.writeScriptBin shellBootstrapScriptName shellBootstrapScript;

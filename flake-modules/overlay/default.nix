@@ -1,4 +1,4 @@
-{ self, ... }: {
+{self, ...}: {
   imports = [
     ./plugins
     ./xdg.nix
@@ -8,15 +8,15 @@
   ];
 
   flake = let
-    makeMetaOverlay = overlays:
-      final: prev: let
-        callOverlay = overlay: overlay final prev;
-        overlayResults = builtins.map callOverlay overlays;
-        mergedOverlayResults = self.lib.recursiveMerge overlayResults;
-      in
-        mergedOverlayResults;
+    makeMetaOverlay = overlays: final: prev: let
+      callOverlay = overlay: overlay final prev;
+      overlayResults = builtins.map callOverlay overlays;
+      mergedOverlayResults = self.lib.recursiveMerge overlayResults;
+    in
+      mergedOverlayResults;
 
-    metaOverlay = makeMetaOverlay
+    metaOverlay =
+      makeMetaOverlay
       [
         self.overlays.plugins
         self.overlays.xdg
@@ -25,7 +25,7 @@
         self.overlays.metaPackages
       ];
   in {
-    lib.overlay = { inherit makeMetaOverlay; };
+    lib.overlay = {inherit makeMetaOverlay;};
     overlays.default = metaOverlay;
   };
 }
