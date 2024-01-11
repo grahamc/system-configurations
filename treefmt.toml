@@ -1,0 +1,47 @@
+[formatter.prettier]
+command = "prettier"
+options = ["--write"]
+includes = ["*.js", "*.json", "*.md", "*.yml",]
+
+[formatter.bash]
+command = "shfmt"
+options = ["--language-dialect", "bash", "--write", "--indent", "2",]
+includes = [".envrc", "*.bash",]
+
+[formatter.fish]
+command = "fish_indent"
+options = ["--write",]
+includes = ["*.fish",]
+
+# TODO: Nix is planning to make an official linter based off of nixfmt one so I should move to that
+# when it's ready: https://github.com/serokell/nixfmt/issues/129
+[formatter.nix]
+command = "bash"
+options = [
+    "-eucx",
+    """
+deadnix --edit "$@"
+nixfmt --width 100 "$@"
+    """,
+    "--",
+]
+includes = [ "*.nix" ]
+
+[formatter.justfile]
+command = "just"
+options = ["--unstable", "--fmt", "--justfile",]
+includes = ["justfile",]
+
+[formatter.lua]
+command = "stylua"
+options = ["--column-width", "100",]
+includes = ["*.lua",]
+
+[formatter.go]
+command = "gofmt"
+options = ["-w"]
+includes = ["*.go"]
+
+[formatter.python]
+command = "black"
+includes = ["*.py"]

@@ -12,6 +12,14 @@
         moreutils
         nodejs
         deadnix
+        treefmt
+        nodePackages.prettier
+        shfmt
+        nixfmt
+        stylua
+        go
+        black
+          fish
       ];
     };
 

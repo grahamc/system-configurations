@@ -40,9 +40,10 @@ preview-switch:
 preview-upgrade:
     hostctl-preview-upgrade
 
+# Format all source code
 [private]
-fix-nix *files:
-    deadnix --quiet --edit {{files}}
+format:
+    treefmt
 
 # Install git hooks
 [private]
