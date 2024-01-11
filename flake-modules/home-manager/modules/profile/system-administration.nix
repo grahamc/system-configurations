@@ -78,6 +78,7 @@ in {
         # for ps
         procps
         ast-grep
+        watchexec
       ]
       ++ optionals isLinux [
         trashy

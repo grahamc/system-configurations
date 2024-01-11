@@ -17,9 +17,9 @@
     yash
     cloudflared
     timg
-    xdgWrappers.watchman
     nil
     ast-grep
+    watchexec
   ];
 
   repository.symlink.home.file = {
