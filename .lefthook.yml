@@ -9,8 +9,10 @@ pre-commit:
   piped: true
   commands:
     generate-toc-readme:
+      priority: 1
       glob: "README.md"
       run: just generate-toc
     format:
+      priority: 2
       run: just format
 
