@@ -11,8 +11,8 @@ pre-commit:
     generate-toc-readme:
       priority: 1
       glob: "README.md"
-      run: just generate-toc
+      run: direnv exec "$PWD" just generate-toc
     format:
       priority: 2
-      run: just format
+      run: direnv exec "$PWD" just format
 
