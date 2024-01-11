@@ -137,7 +137,6 @@ in {
         {
           "lsd".source = "lsd";
           "viddy.toml".source = "viddy/viddy.toml";
-          "watchman/watchman.json".source = "watchman/watchman.json";
           "lesskey".source = "less/lesskey";
           "ripgrep/ripgreprc".source = "ripgrep/ripgreprc";
           "ssh/start-my-shell.sh".source = "ssh/start-my-shell.sh";

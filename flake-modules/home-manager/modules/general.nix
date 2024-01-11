@@ -12,7 +12,6 @@ in {
       "myeditor".source = "general/executables/myeditor";
       "pbcopy".source = "general/executables/pbcopy";
       "process-output".source = "general/executables/process-output";
-      "upgrade".source = "general/executables/upgrade";
     }
     // optionalAttrs isDarwin {
       "trash".source = "general/executables/trash.py";

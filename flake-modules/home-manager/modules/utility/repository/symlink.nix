@@ -170,6 +170,14 @@
       sourcesOutsideFlakeJoined = lib.concatStringsSep " " sourcesOutsideFlake;
       areAllSourcesInsideFlakeDirectory = sourcesOutsideFlake == [];
       isBaseDirectoryInsideFlakeDirectory = lib.strings.hasPrefix flakeDirectory config.repository.symlink.baseDirectory;
+
+      doesSourceExist = source:
+        lib.trivial.pipe
+        source
+        [makePathStringAbsolute convertAbsolutePathStringToPath builtins.pathExists];
+      nonexistentSources = builtins.filter (s: !(doesSourceExist s)) sources;
+      doAllSymlinkSourcesExist = nonexistentSources == [];
+      brokenSymlinksJoined = lib.concatStringsSep " " nonexistentSources;
     in [
       # If you try to link files from outside the flake you get a strange error along the lines of
       # 'no such file/directory' so instead I make an assertion here since my error will be much clearer.
@@ -182,6 +190,10 @@
       {
         assertion = isBaseDirectoryInsideFlakeDirectory;
         message = "config.repository.symlink.baseDirectory must be inside the home-manager flake directory. Base directory: ${config.repository.symlink.baseDirectory}";
+      }
+      {
+        assertion = doAllSymlinkSourcesExist;
+        message = "The following symlink sources do not exist: ${brokenSymlinksJoined}";
       }
     ];
   in {

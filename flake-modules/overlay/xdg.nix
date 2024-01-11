@@ -14,7 +14,6 @@
         {
           specs = {
             ripgrep.env.RIPGREP_CONFIG_PATH = {config}: "${config}/ripgreprc";
-            watchman.env.WATCHMAN_CONFIG_FILE = {config}: "${config}/watchman.json";
             figlet.env.FIGLET_FONTDIR = {data}: data;
           };
         };
