@@ -36,6 +36,14 @@ preview-upgrade:
 format:
     treefmt
 
+# Rerun the on change actions that run after a git merge or rebase
+run-on-change-actions:
+    bash ./.git-hook-assets/on-change.bash
+
+# Install git hooks
+install-git-hooks:
+    lefthook install
+
 # Run all tests
 test:
   #!/usr/bin/env bash
@@ -64,11 +72,6 @@ init-home-manager host_name: install-git-hooks
 [private]
 init-nix-darwin host_name: install-git-hooks
     nix run .#nixDarwin -- switch --flake .#{{ host_name }}
-
-# Install git hooks
-[private]
-install-git-hooks:
-    lefthook install
 
 # Generate the Table of Contents in the README
 [private]

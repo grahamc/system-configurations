@@ -4,7 +4,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: let
   inherit (lib) types;
@@ -41,7 +40,7 @@ in {
   };
 
   config = let
-    mapOnChangeEntryToScript = onChangeEntry: let
+    mapOnChangeEntryToSnippet = onChangeEntry: let
       # changeType is the name of a function in the script
       makeIfConditionForChangeTypeAndPattern = changeType: pattern: "${changeType} ${lib.strings.escapeShellArgs [pattern]}";
       changeTypes = builtins.attrNames onChangeEntry.patterns;
@@ -66,70 +65,52 @@ in {
             ${onChangeEntry.action}
           fi
         '';
-      script = ''
+      snippet = ''
         if ${joinedConditions}; then
           ${action}
         fi
       '';
     in
-      script;
+      snippet;
+
     # This sorts in increasing order, but I want decreasing order since higher priorities should go first.
     # To reverse the sort order I negate the comparator return value.
     sortedOnChangeEntries =
       lib.lists.sort
       (a: b: !(a.priority < b.priority))
       config.repository.git.onChange;
-    onChangeScripts =
-      map
-      mapOnChangeEntryToScript
-      sortedOnChangeEntries;
-    joinedOnChangeScripts =
-      lib.strings.concatStringsSep
-      "\n\n"
-      onChangeScripts;
-    gitHookDirectory = "${config.repository.directory}/.git/hooks";
-    onChangeScript = ''
-      ${builtins.readFile ./on-change-base.sh}
-      ${joinedOnChangeScripts}
-    '';
-    # TODO: The indentation in the script isn't consistent.
-    # issue: https://github.com/NixOS/nix/issues/543
-    makeOnChangeHook = hookBase: ''      #!${pkgs.bash}/bin/bash
 
-                    # Assign stdin, stdout, and stderr to the terminal
-                    exec </dev/tty >/dev/tty 2>&1
+    snippets = map mapOnChangeEntryToSnippet sortedOnChangeEntries;
 
-                    # Exit if a command returns a non-zero exit code
-                    set -o errexit
+    mapWithIndex = function: list: let
+      inherit (lib.lists) range zipLists;
+      indices = range 1 (builtins.length list);
+      zippedList = zipLists list indices;
+      zippedListRenamed =
+        map (x: {
+          item = x.fst;
+          index = x.snd;
+        })
+        zippedList;
+    in
+      map function zippedListRenamed;
 
-                    # Exit if an unset variable is referenced
-                    set -o nounset
-
-                    ${
-        if hookBase != null
-        then hookBase
-        else ""
-      }
-
-                    ${onChangeScript}
-    '';
-    hooks = {
-      "${gitHookDirectory}/post-merge" = {
-        text = makeOnChangeHook null;
-        executable = true;
-      };
-      "${gitHookDirectory}/post-rewrite" = {
-        text =
-          makeOnChangeHook
-          ''
-            if [ "''$1" != 'rebase' ]; then
-              exit
-            fi
-          '';
-        executable = true;
-      };
-    };
+    onChangeFiles =
+      builtins.listToAttrs
+      (
+        mapWithIndex
+        (
+          {
+            item,
+            index,
+          }: {
+            name = "${config.repository.directory}/.git-hook-assets/actions/${toString index}";
+            value = {text = item;};
+          }
+        )
+        snippets
+      );
   in {
-    home.file = hooks;
+    home.file = onChangeFiles;
   };
 }

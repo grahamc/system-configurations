@@ -1,4 +1,9 @@
-# shellcheck shell=sh
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# Assign stdin, stdout, and stderr to the terminal
+exec </dev/tty >/dev/tty 2>&1
 
 # Contains each added/deleted/changed file. Each file is on its own line.
 #
@@ -34,3 +39,10 @@ banner_messsage='POST MERGE HOOK'
 banner_underline="$(printf %40s '' | sed 's/ /─/g')"
 printf "%b\n%s\n%s\n%b" "$blue" "$banner_messsage" "$banner_underline" "$reset"
 printf "Checking to see if any actions should be taken as a result of the merge:\n\n"
+
+# Sorting the files will allow me to control the order that the actions get run in.
+# For example, I can prefix a script with '00-' to make sure it gets run first.
+for action in $(find -L ./.git-hook-assets/actions -type f | sort); do
+  # shellcheck disable=1090
+  source "$action"
+done

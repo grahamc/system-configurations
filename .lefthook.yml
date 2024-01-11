@@ -16,3 +16,13 @@ pre-commit:
       priority: 2
       run: direnv exec "$PWD" just format
 
+post-merge:
+  scripts:
+    "post-merge.bash":
+      runner: bash
+
+post-rewrite:
+  scripts:
+    "post-rewrite.bash":
+      runner: bash
+
