@@ -392,10 +392,15 @@ function _nix_context
         if test $IN_NIX_SHELL = 'impure'
             set color $_color_warning_text
         end
-        set type $color$IN_NIX_SHELL$_color_normal' '
+        set type $color$IN_NIX_SHELL$_color_normal
     end
 
-    printf "nix: $type$packages"
+    set space ' '
+    if test -z "$type" -o -z "$packages"
+        set space ''
+    end
+
+    printf "nix: $type$space$packages"
 end
 
 function _broot_context
