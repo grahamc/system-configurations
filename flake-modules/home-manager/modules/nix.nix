@@ -24,12 +24,6 @@ in {
   # Don't make a command_not_found handler
   programs.nix-index.enableFishIntegration = false;
 
-  repository.symlink.xdg.configFile = {
-    "nix/nix.conf".source = "nix/nix.conf";
-    "nix/repl-startup.nix".source = "nix/repl-startup.nix";
-    "fish/conf.d/zz-nix.fish".source = "nix/zz-nix.fish";
-  };
-
   xdg.configFile = {
     "fish/conf.d/any-nix-shell.fish".source = let
       generateAnyNixShellFishConfig = pkgs.writeShellApplication {
@@ -59,11 +53,36 @@ in {
     nix-output-monitor
   ];
 
-  repository.symlink.xdg.executable = {
-    "nix-gcroots".source = "nix/nix-gcroots.fish";
-    "nix-info".source = "nix/nix-info.fish";
-    "nix-upgrade-profiles".source = "nix/nix-upgrade-profiles.fish";
-    "pynix".source = "nix/pynix.bash";
+  repository = {
+    symlink.xdg = {
+      executable = {
+        "nix-gcroots".source = "nix/nix-gcroots.fish";
+        "nix-info".source = "nix/nix-info.fish";
+        "nix-upgrade-profiles".source = "nix/nix-upgrade-profiles.fish";
+        "pynix".source = "nix/pynix.bash";
+        "nix".source = "nix/nix-wrapper.fish";
+      };
+
+      configFile = {
+        "nix/nix.conf".source = "nix/nix.conf";
+        "nix/repl-startup.nix".source = "nix/repl-startup.nix";
+        "fish/conf.d/zz-nix.fish".source = "nix/zz-nix.fish";
+      };
+    };
+
+    git.onChange = [
+      {
+        patterns = {
+          modified = [''^flake\.lock$''];
+        };
+
+        action = ''
+          # If the lock file changed then it's possible that some of the flakes in my registry
+          # have changed so I'll upgrade the packages installed from those registries.
+          nix-upgrade-profiles
+        '';
+      }
+    ];
   };
 
   # Use the nixpkgs in this flake in the system flake registry. By default, it pulls the
@@ -71,17 +90,4 @@ in {
   nix.registry = {
     nixpkgs.flake = flakeInputs.nixpkgs;
   };
-
-  repository.git.onChange = [
-    {
-      patterns = {
-        modified = [''^flake\.lock$''];
-      };
-      action = ''
-        # If the lock file changed then it's possible that some of the flakes in my registry
-        # have changed so I'll upgrade the packages installed from those registries.
-        nix-upgrade-profiles
-      '';
-    }
-  ];
 }
