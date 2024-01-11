@@ -15,11 +15,11 @@
         treefmt
         nodePackages.prettier
         shfmt
-        nixfmt
+        alejandra
         stylua
         go
         black
-          fish
+        fish
       ];
     };
 

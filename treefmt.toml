@@ -13,15 +13,13 @@ command = "fish_indent"
 options = ["--write",]
 includes = ["*.fish",]
 
-# TODO: Nix is planning to make an official linter based off of nixfmt one so I should move to that
-# when it's ready: https://github.com/serokell/nixfmt/issues/129
 [formatter.nix]
 command = "bash"
 options = [
     "-eucx",
     """
 deadnix --edit "$@"
-nixfmt --width 100 "$@"
+alejandra "$@"
     """,
     "--",
 ]
