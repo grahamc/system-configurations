@@ -79,31 +79,6 @@ in
       # the Home Manager release notes for a list of state version
       # changes in each release.
       home.stateVersion = "23.11";
-
-      repository.git.onChange = [
-        {
-          # This should be the first check since other checks might depend on new files
-          # being linked, or removed files being unlinked, in order to work. For example, if a new
-          # bat theme is added, the theme needs to be linked before we can rebuild the bat cache.
-          priority = 100;
-          patterns = {
-            added = [".*"];
-            deleted = [".*"];
-            modified = [''^flake-modules/'' ''^flake\.nix$'' ''^flake\.lock$''];
-          };
-          action = ''
-            just switch
-          '';
-        }
-        {
-          patterns = {
-            modified = [''^\.lefthook.yml$''];
-          };
-          action = ''
-            just install-git-hooks
-          '';
-        }
-      ];
     }
     # These are all things that don't need to be done when home manager is being run as a submodule inside of
     # another host manager, like nix-darwin. They don't need to be done because the outer host manager will do them.

@@ -3,7 +3,7 @@
   inherit (lib) types;
 in {
   imports = [
-    ./git
+    ./git.nix
     ./symlink.nix
   ];
 
