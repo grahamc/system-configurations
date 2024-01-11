@@ -6,6 +6,7 @@ colors:
   yellow: 3
 
 pre-commit:
+  piped: true
   commands:
     generate-toc-readme:
       glob: "README.md"
