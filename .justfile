@@ -1,8 +1,8 @@
-set shell := ["bash", "-uc"]
+set shell := ["bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
 # Choose a task. Only includes tasks that don't take arguments.
 default:
-    @just --choose
+    @just --choose --unsorted
 
 # Display a list of all tasks.
 help:
@@ -11,14 +11,6 @@ help:
 # Reload direnv
 reload:
     nix-direnv-reload
-
-# Apply the first generation of a home-manager configuration.
-init-home-manager host_name: install-git-hooks
-    nix run .#homeManager -- switch --flake .#{{ host_name }}
-
-# Apply the first generation of a nix-darwin configuration.
-init-nix-darwin host_name: install-git-hooks
-    nix run .#nixDarwin -- switch --flake .#{{ host_name }}
 
 # Switch to a new generation
 switch:
@@ -41,19 +33,23 @@ preview-upgrade:
     hostctl-preview-upgrade
 
 # Format all source code
-[private]
 format:
     treefmt
+
+# Apply the first generation of a home-manager configuration.
+[private]
+init-home-manager host_name: install-git-hooks
+    nix run .#homeManager -- switch --flake .#{{ host_name }}
+
+# Apply the first generation of a nix-darwin configuration.
+[private]
+init-nix-darwin host_name: install-git-hooks
+    nix run .#nixDarwin -- switch --flake .#{{ host_name }}
 
 # Install git hooks
 [private]
 install-git-hooks:
     lefthook install
-
-# Run precommit git hook
-[private]
-run-precommit-hook:
-    lefthook run pre-commit
 
 # Generate the Table of Contents in the README
 [private]
