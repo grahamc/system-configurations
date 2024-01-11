@@ -36,7 +36,7 @@
       coreutilsBinaryPath = "${pkgs.coreutils}/bin";
       shellBootstrapScriptDependencies =
         {
-          activationPackage = import ./home-manager-package.nix {inherit pkgs inputs self minimalFish;};
+          activationPackage = import ./home-manager-package.nix {inherit pkgs self minimalFish;};
           mktemp = "${coreutilsBinaryPath}/mktemp";
           copy = "${coreutilsBinaryPath}/cp";
           chmod = "${coreutilsBinaryPath}/chmod";
