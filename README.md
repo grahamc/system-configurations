@@ -18,17 +18,17 @@ Table of Contents
 
 <!-- toc -->
 
-* [Setting up Nix](#setting-up-nix)
-  * [Installation](#installation)
-  * [Using the Binary Cache (optional)](#using-the-binary-cache-optional)
-* [Applying the Configuration](#applying-the-configuration)
-  * [Linux](#linux)
-  * [macOS](#macos)
-* [Running the Home Configuration](#running-the-home-configuration)
-  * [Using Nix](#using-nix)
-  * [Using a Standalone Executable](#using-a-standalone-executable)
-* [Troubleshooting](#troubleshooting)
-* [How To](#how-to)
+- [Setting up Nix](#setting-up-nix)
+  - [Installation](#installation)
+  - [Using the Binary Cache (optional)](#using-the-binary-cache-optional)
+- [Applying the Configuration](#applying-the-configuration)
+  - [Linux](#linux)
+  - [macOS](#macos)
+- [Running the Home Configuration](#running-the-home-configuration)
+  - [Using Nix](#using-nix)
+  - [Using a Standalone Executable](#using-a-standalone-executable)
+- [Troubleshooting](#troubleshooting)
+- [How To](#how-to)
 
 <!-- tocstop -->
 
