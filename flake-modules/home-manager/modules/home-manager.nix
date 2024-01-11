@@ -92,7 +92,15 @@ in
             modified = [''^flake-modules/'' ''^flake\.nix$'' ''^flake\.lock$''];
           };
           action = ''
-            hostctl-switch
+            just switch
+          '';
+        }
+        {
+          patterns = {
+            modified = [''^\.lefthook.yml$''];
+          };
+          action = ''
+            just install-git-hooks
           '';
         }
       ];

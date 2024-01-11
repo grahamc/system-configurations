@@ -51,7 +51,7 @@ function maybe_warn
             chronic git add --intent-to-add $untracked_or_deleted_file_list
         end
         set printed_line_count (math (count $untracked_or_deleted_file_list) + 2)
-        printf (string repeat --count $printed_line_count "\33[2K\r\033[A")
+        printf (string repeat --count $printed_line_count "\33[2K\r\033[A") >/dev/tty
     end
 end
 
