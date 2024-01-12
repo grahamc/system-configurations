@@ -99,7 +99,7 @@ The next steps depend on the operating system you're using:
 ### Linux
 
 1. Apply the Home Manager configuration by running `just init-home-manager <host_name>`
-   where `<host_name>` is one of the hosts defined in the [Home Manager flake module][home-manager-flake-module].
+   where `<host_name>` is one of the hosts defined in the [Home Manager flake module](flake-modules/home-manager/default.nix).
 
 ### macOS
 
@@ -109,7 +109,7 @@ The next steps depend on the operating system you're using:
    it yourself. Check the site for instructions: [brew.sh][brew].
 
 3. Apply the nix-darwin configuration by running `just init-nix-darwin <host_name>` where
-   `<host_name>` is one of the hosts defined in the [nix-darwin flake module][nix-darwin-flake-module].
+   `<host_name>` is one of the hosts defined in the [nix-darwin flake module](flake-modules/nix-darwin/default.nix).
 
 4. Some settings applied by nix-darwin only take effect after a restart so do a restart now.
 
@@ -193,10 +193,8 @@ shell/terminal that will have access to these programs and configs.
 [official-installer]: https://nixos.org/download.html
 [home-manager]: https://github.com/nix-community/home-manager
 [nix-darwin]: https://github.com/LnL7/nix-darwin
-[home-manager-flake-module]: https://github.com/bigolu/dotfiles/blob/master/flake-modules/home-manager/default.nix
 [yabai-wiki]: https://github.com/koekeishiya/yabai/wiki/Disabling-System-Integrity-Protection
 [brew]: https://brew.sh/
-[nix-darwin-flake-module]: https://github.com/bigolu/dotfiles/blob/master/flake-modules/nix-darwin/default.nix
 [hammerspoon-guide]: https://www.hammerspoon.org/go/
 [rootless-nix]: https://github.com/NixOS/nix/issues/1971#issue-304578884
 [built-with-nix-site]: https://builtwithnix.org
