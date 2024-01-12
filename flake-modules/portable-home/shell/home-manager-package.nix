@@ -31,7 +31,7 @@
       };
     };
 
-  shellModule = {...}: {
+  shellModule = _: {
     # I want a self contained executable so I can't have symlinks that point outside the Nix store.
     repository.symlink.makeCopiesInstead = true;
 

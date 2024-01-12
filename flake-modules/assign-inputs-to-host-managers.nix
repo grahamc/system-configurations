@@ -4,7 +4,7 @@
 {inputs, ...}: {
   flake = let
     inherit (inputs.nixpkgs) lib;
-    plugins = (
+    plugins =
       builtins.filter
       (
         inputName:
@@ -12,8 +12,7 @@
           || (lib.strings.hasPrefix "fish-plugin-" inputName)
           || (lib.strings.hasPrefix "tmux-plugin-" inputName)
       )
-      (builtins.attrNames inputs)
-    );
+      (builtins.attrNames inputs);
     inputListsByHostManager = rec {
       home =
         [
@@ -64,7 +63,7 @@
       joinedUpdateFlags;
     updateFlagsByHostManager =
       lib.mapAttrs
-      (_ignored: inputList: convertInputListToUpdateFlags inputList)
+      (_ignored: convertInputListToUpdateFlags)
       inputListsByHostManager;
     # I'm converting the inputs to a set of `--update-input <input>` commandline flags so they be passed directly
     # to the host manager's switch command e.g. `home-manager --switch <update_input_flags>`.

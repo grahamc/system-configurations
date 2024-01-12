@@ -3,7 +3,7 @@
     overlay = final: prev: let
       inherit (prev.stdenv) isDarwin;
       inherit (prev.lib.attrsets) optionalAttrs;
-      wezterm = (import inputs.nixpkgs-for-wezterm {inherit (final) system;}).wezterm;
+      inherit ((import inputs.nixpkgs-for-wezterm {inherit (final) system;})) wezterm;
 
       tmux = prev.tmux.overrideAttrs (old: {
         src = prev.fetchFromGitHub {

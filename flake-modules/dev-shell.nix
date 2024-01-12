@@ -28,6 +28,7 @@
         go
         black
         fish
+        statix
       ];
     };
 

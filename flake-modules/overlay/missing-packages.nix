@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake = let
     overlay = _final: prev: let
       inherit (prev.stdenv) isLinux;

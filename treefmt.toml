@@ -16,9 +16,13 @@ includes = ["*.fish",]
 [formatter.nix]
 command = "bash"
 options = [
-    "-eucx",
+    "-euc",
     """
 deadnix --edit "$@"
+for file in "$@"; do
+  statix fix "$file"
+  statix check "$file"
+done
 alejandra "$@"
     """,
     "--",

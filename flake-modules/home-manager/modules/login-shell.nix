@@ -1,4 +1,4 @@
-{...}: {
+_: {
   repository = {
     symlink.home.file = {
       ".profile".source = "login-shell/profile.sh";

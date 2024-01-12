@@ -43,16 +43,18 @@ in {
     pkgs.xdgWrappers.figlet
   ];
 
-  repository.symlink.xdg.configFile = {
-    "fish/conf.d" = {
-      source = "fish/conf.d";
-      recursive = true;
+  repository.symlink.xdg = {
+    configFile = {
+      "fish/conf.d" = {
+        source = "fish/conf.d";
+        recursive = true;
+      };
+      ${myFishConfigPath}.source = "fish/config.fish";
     };
-    ${myFishConfigPath}.source = "fish/config.fish";
-  };
 
-  repository.symlink.xdg.dataFile = {
-    "figlet/smblock.tlf".source = "fish/figlet/smblock.tlf";
+    dataFile = {
+      "figlet/smblock.tlf".source = "fish/figlet/smblock.tlf";
+    };
   };
 
   repository.git.onChange = [

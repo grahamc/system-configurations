@@ -1,4 +1,4 @@
-{...}: {
+_: {
   flake = let
     overlay = final: prev: let
       myFonts = prev.pkgs.symlinkJoin {

@@ -22,38 +22,49 @@
   myTmuxConfigPath = "tmux/my-tmux.conf";
   tmuxReloadScriptName = "tmux-config-reload";
 in {
-  home.packages =
-    [
-      (
-        # I'm intentionally not using `pkgs.writeShellApplication` so the original tmux doesn't get added
-        # to the path.
-        pkgs.writeScriptBin
-        "tmux"
-        # I want the $SHLVL to start from one for any shells launched in TMUX since they technically aren't
-        # children of the shell that I launched TMUX with. I would do this with TMUX's `default-command`, but
-        # that may break tmux-resurrect, as explained in my tmux.conf.
-        ''
-          #!${pkgs.bash}/bin/bash
+  home = {
+    packages =
+      [
+        (
+          # I'm intentionally not using `pkgs.writeShellApplication` so the original tmux doesn't get added
+          # to the path.
+          pkgs.writeScriptBin
+          "tmux"
+          # I want the $SHLVL to start from one for any shells launched in TMUX since they technically aren't
+          # children of the shell that I launched TMUX with. I would do this with TMUX's `default-command`, but
+          # that may break tmux-resurrect, as explained in my tmux.conf.
+          ''
+            #!${pkgs.bash}/bin/bash
 
-          set -o errexit
-          set -o nounset
-          set -o pipefail
+            set -o errexit
+            set -o nounset
+            set -o pipefail
 
-          exec env -u SHLVL ${pkgs.tmux}/bin/tmux "$@"
-        ''
-      )
-      (pkgs.buildEnv {
-        name = "tmux-man-only";
-        paths = [pkgs.tmux];
-        pathsToLink = ["/share/man"];
-      })
-    ]
-    # Installing the plugins into my profile, instead of using programs.tmux.plugins, for two reasons:
-    # - So that I can use the scripts defined in them. (They'll be added to <profile_path>/share/tmux-plugins)
-    # - So I can keep the plugin settings in my config. Settings need to be defined before the plugin is loaded
-    # and programs.tmux loads my configuration _after_ loading plugins so it wouldn't work. Instead I load
-    # them my self.
-    ++ tmuxPlugins;
+            exec env -u SHLVL ${pkgs.tmux}/bin/tmux "$@"
+          ''
+        )
+        (pkgs.buildEnv {
+          name = "tmux-man-only";
+          paths = [pkgs.tmux];
+          pathsToLink = ["/share/man"];
+        })
+      ]
+      # Installing the plugins into my profile, instead of using programs.tmux.plugins, for two reasons:
+      # - So that I can use the scripts defined in them. (They'll be added to <profile_path>/share/tmux-plugins)
+      # - So I can keep the plugin settings in my config. Settings need to be defined before the plugin is loaded
+      # and programs.tmux loads my configuration _after_ loading plugins so it wouldn't work. Instead I load
+      # them my self.
+      ++ tmuxPlugins;
+
+    # I reload tmux every time I switch generations because tmux-suspend uses the canonical path to its script
+    # when making a key mapping and that path may change when I switch generations.
+    activation.reloadTmux =
+      lib.hm.dag.entryAfter
+      ["linkGeneration"]
+      ''
+        PATH='${config.repository.symlink.xdg.executableHome}:${config.home.profileDirectory}/bin:$PATH' ${tmuxReloadScriptName} &
+      '';
+  };
 
   xdg.configFile = {
     "tmux/tmux.conf".text = ''
@@ -79,32 +90,27 @@ in {
     '';
   };
 
-  repository.symlink.xdg.configFile = {
-    "fish/conf.d/tmux.fish".source = "tmux/tmux.fish";
-    ${myTmuxConfigPath}.source = "tmux/tmux.conf";
+  repository = {
+    symlink.xdg = {
+      configFile = {
+        "fish/conf.d/tmux.fish".source = "tmux/tmux.fish";
+        ${myTmuxConfigPath}.source = "tmux/tmux.conf";
+      };
+
+      executable = {
+        "tmux-click-url".source = "tmux/tmux-click-url.py";
+        "tmux-last-command-output".source = "tmux/tmux-last-command-output.bash";
+        ${tmuxReloadScriptName}.source = "tmux/${tmuxReloadScriptName}.bash";
+        "tmux-attach-to-project".source = "tmux/tmux-attach-to-project.fish";
+      };
+    };
+
+    git.onChange = [
+      {
+        patterns.modified = [''^dotfiles/tmux/tmux\.conf$''];
+        confirmation = "The tmux configuration has changed, would you like to reload tmux?";
+        action = tmuxReloadScriptName;
+      }
+    ];
   };
-
-  repository.symlink.xdg.executable = {
-    "tmux-click-url".source = "tmux/tmux-click-url.py";
-    "tmux-last-command-output".source = "tmux/tmux-last-command-output.bash";
-    ${tmuxReloadScriptName}.source = "tmux/${tmuxReloadScriptName}.bash";
-    "tmux-attach-to-project".source = "tmux/tmux-attach-to-project.fish";
-  };
-
-  repository.git.onChange = [
-    {
-      patterns.modified = [''^dotfiles/tmux/tmux\.conf$''];
-      confirmation = "The tmux configuration has changed, would you like to reload tmux?";
-      action = tmuxReloadScriptName;
-    }
-  ];
-
-  # I reload tmux every time I switch generations because tmux-suspend uses the canonical path to its script
-  # when making a key mapping and that path may change when I switch generations.
-  home.activation.reloadTmux =
-    lib.hm.dag.entryAfter
-    ["linkGeneration"]
-    ''
-      PATH='${config.repository.symlink.xdg.executableHome}:${config.home.profileDirectory}/bin:$PATH' ${tmuxReloadScriptName} &
-    '';
 }

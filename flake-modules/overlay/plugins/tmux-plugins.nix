@@ -6,7 +6,7 @@
         "better-mouse-mode" = "scroll_copy_mode.tmux";
       };
       applyRtpFilePathFix = tmuxPluginInfo: let
-        pluginName = tmuxPluginInfo.pluginName;
+        inherit (tmuxPluginInfo) pluginName;
         hasFix = builtins.hasAttr pluginName rtpFilePathFixes;
         getFix = pluginName: {rtpFilePath = builtins.getAttr pluginName rtpFilePathFixes;};
       in

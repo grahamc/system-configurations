@@ -92,7 +92,7 @@
           makeExecutable {
             derivation = drv;
             entrypoint = program drv;
-            name = drv.name;
+            inherit (drv) name;
           };
       };
       known-types = builtins.concatStringsSep ", " (builtins.attrNames handler);

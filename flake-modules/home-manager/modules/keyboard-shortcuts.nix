@@ -33,20 +33,24 @@
     lib.mkIf
     (isGui && isDarwin)
     {
-      repository.symlink.xdg.configFile = {
-        "yabai/yabairc".source = "yabai/yabairc";
-        "skhd/skhdrc".source = "skhd/skhdrc";
-      };
+      repository.symlink = {
+        xdg = {
+          configFile = {
+            "yabai/yabairc".source = "yabai/yabairc";
+            "skhd/skhdrc".source = "skhd/skhdrc";
+          };
 
-      repository.symlink.xdg.executable = {
-        "yabai-remove-from-stack".source = "yabai/yabai-remove-from-stack";
-        "yabai-move".source = "yabai/yabai-move.fish";
-      };
+          executable = {
+            "yabai-remove-from-stack".source = "yabai/yabai-remove-from-stack";
+            "yabai-move".source = "yabai/yabai-move.fish";
+          };
+        };
 
-      repository.symlink.home.file = {
-        ".hammerspoon/init.lua".source = "hammerspoon/init.lua";
-        ".hammerspoon/stackline/conf.lua".source = "hammerspoon/stackline/conf.lua";
-        "Library/Keyboard Layouts/NoAccentKeys.bundle".source = "keyboard/US keyboard - no accent keys.bundle";
+        home.file = {
+          ".hammerspoon/init.lua".source = "hammerspoon/init.lua";
+          ".hammerspoon/stackline/conf.lua".source = "hammerspoon/stackline/conf.lua";
+          "Library/Keyboard Layouts/NoAccentKeys.bundle".source = "keyboard/US keyboard - no accent keys.bundle";
+        };
       };
 
       home.file = {
