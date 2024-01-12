@@ -32,7 +32,7 @@ preview-switch:
 preview-upgrade:
     hostctl-preview-upgrade
 
-# Format all source code
+# Format, lint, and fix all source code
 format:
     treefmt
 
