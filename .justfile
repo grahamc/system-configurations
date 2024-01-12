@@ -42,7 +42,7 @@ run-on-change-actions:
 
 # Install git hooks
 install-git-hooks:
-    lefthook install
+    lefthook install --force
 
 # Run all tests
 test: && format
