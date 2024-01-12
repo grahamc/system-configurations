@@ -19,26 +19,13 @@
   inherit (lib) types;
 in {
   options.vimPlug = {
-    configDirectory = lib.mkOption {
+    pluginFile = lib.mkOption {
       type = types.path;
     };
   };
 
   config = let
-    vimConfigBasenames = builtins.attrNames (builtins.readDir config.vimPlug.configDirectory);
-    vimConfigPaths = builtins.map (basename: config.vimPlug.configDirectory + "/${basename}") vimConfigBasenames;
-    vimConfigPathsJoined = lib.strings.escapeShellArgs vimConfigPaths;
-    pluginNamesFile =
-      pkgs.runCommand
-      "plugin-names.txt"
-      {nativeBuildInputs = with pkgs; [ast-grep jq];}
-      ''
-        cat \
-          <(sg --lang lua --pattern "Plug '"'$ARG'"'" --json=pretty ${vimConfigPathsJoined} | jq --raw-output '.[].metaVariables.single.ARG.text') \
-          <(sg --lang lua --pattern 'Plug "$ARG"' --json=pretty ${vimConfigPathsJoined} | jq --raw-output '.[].metaVariables.single.ARG.text') \
-        | sort --unique | cut -d'/' -f2 | head -c -1 > $out
-      '';
-    pluginNames = lib.strings.splitString "\n" (builtins.readFile pluginNamesFile);
+    pluginNames = lib.strings.splitString "\n" (builtins.readFile config.vimPlug.pluginFile);
     replaceDotsWithDashes = builtins.replaceStrings ["."] ["-"];
     plugins =
       map

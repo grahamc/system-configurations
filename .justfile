@@ -44,6 +44,17 @@ run-on-change-actions:
 install-git-hooks:
     lefthook install
 
+# Generate a file with a list of all my neovim plugins
+codegen-neovim:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    readarray -t config_files < <(find ./dotfiles/neovim/lua -type f -name '*.lua')
+    cat \
+        <(sg --lang lua --pattern "Plug '"'$ARG'"'" --json=compact "${config_files[@]}" | jq --raw-output '.[].metaVariables.single.ARG.text') \
+        <(sg --lang lua --pattern 'Plug "$ARG"' --json=compact "${config_files[@]}" | jq --raw-output '.[].metaVariables.single.ARG.text') \
+    | sort --unique | cut -d'/' -f2 | head -c -1 > ./dotfiles/neovim/plugin-names.txt
+
 # Run all tests
 test:
   #!/usr/bin/env bash

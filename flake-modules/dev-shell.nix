@@ -29,6 +29,8 @@
         black
         fish
         statix
+        ast-grep
+        jq
       ];
     };
 

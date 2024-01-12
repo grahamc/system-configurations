@@ -34,48 +34,27 @@
       '';
 
     file = {
-      "${config.repository.directory}/.luarc.json".source = let
-        runtimeDirectories =
-          lib.strings.splitString
-          "\n"
-          (builtins.readFile (
-            pkgs.runCommand
-            "runtime-directories.txt"
-            {}
-            # Read this to see why the `tr` command is needed:
-            # https://stackoverflow.com/questions/16739300/redirect-ex-command-to-stdout-in-vim
-            #
-            # The command is there to filter out any messages that get printed on startup.
-            # I'm redirecting stderr to stdout because neovim prints its output on stderr.
-            ''
-              ${pkgs.neovim-unwrapped}/bin/nvim --headless  -c 'lua for _,directory in ipairs(vim.api.nvim_get_runtime_file("", true)) do print(directory) end' -c 'quit' 2>&1 | tr -d '\r' | grep -E '^/' > $out
-            ''
-          ));
-        workspaceDirectories =
-          [
-            "${specialArgs.flakeInputs.neodev-nvim}/types/stable"
-            "${config.xdg.dataHome}/nvim/plugged"
-            "${specialArgs.homeDirectory}/.hammerspoon/Spoons/EmmyLua.spoon/annotations"
-          ]
-          ++ runtimeDirectories;
-        configAttrs = {
-          "$schema" = "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json";
-          runtime = {
-            version = "LuaJIT";
-          };
-          workspace = {
-            # Make the server aware of Neovim runtime files
-            library = workspaceDirectories;
-            checkThirdParty = "Disable";
-          };
-          telemetry = {
-            # Do not send telemetry data containing a randomized but unique identifier
-            enable = false;
-          };
-        };
-        luarc = pkgs.writeText ".luarc.json" (builtins.toJSON configAttrs);
-      in
-        luarc;
+      "${config.repository.directory}/.luarc.json".source =
+        pkgs.runCommand
+        "runtime-directories.txt"
+        {nativeBuildInputs = with pkgs; [neovim-unwrapped jq];}
+        ''
+          # Read this to see why the `tr` command is needed:
+          # https://stackoverflow.com/questions/16739300/redirect-ex-command-to-stdout-in-vim
+          #
+          # The command is there to filter out any messages that get printed on startup.
+          # I'm redirecting stderr to stdout because neovim prints its output on stderr.
+          readarray -t runtime_dirs < <(nvim --headless  -c 'lua for _,directory in ipairs(vim.api.nvim_get_runtime_file("", true)) do print(directory) end' -c 'quit' 2>&1 | tr -d '\r' | grep -E '^/')
+          jq \
+            --null-input \
+            '{"$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json", "workspace": {"library": $ARGS.positional, "checkThirdParty": "Disable"}, "runtime": {"version": "LuaJIT"}, "telemetry": {"enable": false}}' \
+            --args \
+              '${specialArgs.flakeInputs.neodev-nvim}/types/stable' \
+              '${config.xdg.dataHome}/nvim/plugged' \
+              '${specialArgs.homeDirectory}/.hammerspoon/Spoons/EmmyLua.spoon/annotations' \
+              "''${runtime_dirs[@]}" \
+            > $out
+        '';
     };
   };
 
@@ -86,5 +65,5 @@
     };
   };
 
-  vimPlug.configDirectory = config.repository.directoryPath + "/dotfiles/neovim/lua";
+  vimPlug.pluginFile = config.repository.directoryPath + "/dotfiles/neovim/plugin-names.txt";
 }
