@@ -31,6 +31,8 @@
         statix
         ast-grep
         jq
+        git
+        nix
       ];
     };
 
