@@ -45,8 +45,7 @@ function maybe_warn
     if test -n "$untracked_or_deleted_files"
         echo -e -n "\n$(set_color --reverse --bold yellow) WARNING $(set_color normal) THE FOLLOWING UNTRACKED/REMOVED FILES IN THIS REPOSITORY WILL BE IGNORED BY ANY NIX FLAKE OPERATION:\n$untracked_or_deleted_files\n" </dev/tty >/dev/tty 2>&1
         set choices 'Add them, using --intent-to-add, to the index' 'Continue without adding them'
-        set choice (printf %s\n $choices | fzf --no-preview --height ~100% --margin 1,2,0,2 --prompt 'What would you like to do?' </dev/tty >/dev/tty 2>&1)
-        or return
+        set choice (printf %s\n $choices | fzf --no-preview --height ~100% --margin 1,2,0,2 --prompt 'What would you like to do?' </dev/tty 2>/dev/tty)
         if test "$choice" = "$choices[1]"
             chronic git add --intent-to-add $untracked_or_deleted_file_list
         end
