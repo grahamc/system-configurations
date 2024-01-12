@@ -12,6 +12,10 @@ pre-commit:
       priority: 1
       glob: "README.md"
       run: direnv exec "$PWD" just codegen-readme
+    codegen-neovim:
+      priority: 1
+      glob: "*neovim/lua/*.lua"
+      run: direnv exec "$PWD" just codegen-neovim
     format:
       priority: 2
       run: direnv exec "$PWD" just format
