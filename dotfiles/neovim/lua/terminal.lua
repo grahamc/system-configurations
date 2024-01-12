@@ -44,21 +44,6 @@ vim.api.nvim_create_autocmd("WinLeave", {
   end,
   group = general_group_id,
 })
--- After a quickfix command is run, open the quickfix window, if there are results
-vim.api.nvim_create_autocmd("QuickFixCmdPost", {
-  pattern = "[^l]*",
-  callback = function()
-    vim.cmd.cwindow()
-  end,
-  group = general_group_id,
-})
-vim.api.nvim_create_autocmd("QuickFixCmdPost", {
-  pattern = "l*",
-  callback = function()
-    vim.cmd.lwindow()
-  end,
-  group = general_group_id,
-})
 -- Put focus back in quickfix window after opening an entry
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "qf",
