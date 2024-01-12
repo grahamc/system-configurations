@@ -45,7 +45,7 @@ install-git-hooks:
     lefthook install
 
 # Run all tests
-test:
+test: && format
   #!/usr/bin/env bash
   set -euo pipefail
 
