@@ -86,7 +86,7 @@ init-nix-darwin host_name: install-git-hooks
 
 # Generate the Table of Contents in the README
 [private]
-generate-toc:
+codegen-readme:
     npm exec --package=markdown-toc -- markdown-toc --bullets '-' -i README.md
 
 # Pull changes from git remote

@@ -8,10 +8,10 @@ colors:
 pre-commit:
   piped: true
   commands:
-    generate-toc-readme:
+    codegen-readme:
       priority: 1
       glob: "README.md"
-      run: direnv exec "$PWD" just generate-toc
+      run: direnv exec "$PWD" just codegen-readme
     format:
       priority: 2
       run: direnv exec "$PWD" just format
