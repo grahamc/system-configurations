@@ -2,7 +2,6 @@
   flake = let
     overlay = final: _prev: let
       inherit (final.stdenv) isLinux;
-      inherit (lib.lists) optionals;
       inherit (lib.attrsets) optionalAttrs;
 
       filterPrograms = package: programsToKeep: let
@@ -30,8 +29,7 @@
       # toybox executable and the programs I need which are just symlinks to it.
       toybox =
         filterPrograms final.toybox
-        (["toybox" "tar" "hostname"]
-          ++ optionals isLinux ["clear"]);
+        ["toybox" "tar" "hostname"];
     in {
       partialPackages =
         {
