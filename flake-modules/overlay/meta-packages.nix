@@ -1,7 +1,7 @@
 _: {
   flake = let
-    overlay = final: prev: let
-      myFonts = prev.pkgs.symlinkJoin {
+    overlay = final: _prev: let
+      myFonts = final.symlinkJoin {
         name = "my-fonts";
         paths = with final; [
           (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"];})

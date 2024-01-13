@@ -1,12 +1,10 @@
 {
   lib,
   pkgs,
-  specialArgs,
   ...
 }: let
   inherit (lib.lists) optionals;
   inherit (pkgs.stdenv) isLinux isDarwin;
-  inherit (specialArgs) isGui;
   inherit (lib.attrsets) optionalAttrs;
 in {
   imports = [
@@ -17,80 +15,51 @@ in {
     ../wezterm.nix
   ];
 
-  home.packages = let
-    toyboxPartial = let
-      programsToKeep =
-        [
-          "toybox"
-          "tar"
-          "hostname"
-        ]
-        ++ optionals isLinux [
-          "clear"
-        ];
-      findFilters = builtins.map (program: "! -name '${program}'") programsToKeep;
-      findFiltersAsString = lib.strings.concatStringsSep " " findFilters;
-    in
-      pkgs.symlinkJoin {
-        name = "toybox-partial";
-        paths = [pkgs.toybox];
-        buildInputs = [pkgs.makeWrapper];
-        # toybox is a multi-call binary so we are going to delete everything besides the toybox executable and
-        # the programs I need which are just symlinks to it
-        postBuild = ''
-          cd $out
-          find . ${findFiltersAsString} -type f,l -exec rm -f {} +
-        '';
-      };
-  in
-    with pkgs;
-      [
-        doggo
-        duf
-        fd
-        gping
-        jq
-        lsd
-        moreutils
-        xdgWrappers.ripgrep
-        tealdeer
-        viddy
-        zoxide
-        file
-        chase
-        gnugrep
-        broot
-        yash
-        hyperfine
-        gzip
-        wget
-        which
-        atuin
-        toyboxPartial
-        # Useful for commands that don't work quite the same way between macOS and Linux
-        coreutils-full
-        # Though less is on most machines by default, I added it here because I need a relatively recent version (600)
-        # since that's when they added support for XDG Base Directories.
-        less
-        # This wasn't in a docker container
-        gnused
-        # for xargs
-        findutils
-        # for ps
-        procps
-        ast-grep
-        watchexec
-      ]
-      ++ optionals isLinux [
-        trashy
-        pipr
-        catp
-        # for pstree
-        psmisc
-      ]
-      ++ optionals isDarwin [
-        pstree
-      ];
+  home.packages = with pkgs;
+    [
+      doggo
+      duf
+      fd
+      gping
+      jq
+      lsd
+      moreutils
+      xdgWrappers.ripgrep
+      tealdeer
+      viddy
+      zoxide
+      file
+      chase
+      gnugrep
+      broot
+      yash
+      hyperfine
+      gzip
+      wget
+      which
+      atuin
+      partialPackages.toybox
+      partialPackages.xargs
+      partialPackages.ps
+      ast-grep
+      watchexec
+      # Useful for commands that don't work quite the same way between macOS and Linux
+      coreutils-full
+      # Though less is on most machines by default, I added it here because I need a relatively recent version (600)
+      # since that's when they added support for XDG Base Directories.
+      less
+      # This wasn't in a docker container
+      gnused
+    ]
+    ++ optionals isLinux [
+      trashy
+      pipr
+      catp
+      partialPackages.pstree
+    ]
+    ++ optionals isDarwin [
+      pstree
+    ];
 
   xdg = {
     configFile = {

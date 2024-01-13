@@ -44,19 +44,20 @@
 
     # This removes the dependency on `sd-switch`.
     systemd.user.startServices = lib.mkForce "suggest";
+    home = {
+      # These variables contain the path to the locale archive in pkgs.glibcLocales.
+      # There is no option to prevent Home Manager from making these environment variables and overriding
+      # glibcLocales in an overlay would cause too many rebuild so instead I overwrite the environment
+      # variables. Now, glibcLocales won't be a dependency.
+      sessionVariables = optionalAttrs isLinux (lib.mkForce {
+        LOCALE_ARCHIVE_2_27 = "";
+        LOCALE_ARCHIVE_2_11 = "";
+      });
 
-    # These variables contain the path to the locale archive in pkgs.glibcLocales.
-    # There is no option to prevent Home Manager from making these environment variables and overriding
-    # glibcLocales in an overlay would cause too many rebuild so instead I overwrite the environment
-    # variables. Now, glibcLocales won't be a dependency.
-    home.sessionVariables = optionalAttrs isLinux (lib.mkForce {
-      LOCALE_ARCHIVE_2_27 = "";
-      LOCALE_ARCHIVE_2_11 = "";
-    });
-
-    home.file.".hammerspoon/Spoons/EmmyLua.spoon" = lib.mkForce {
-      source = makeEmptyPackage "stub-spoon";
-      recursive = false;
+      file.".hammerspoon/Spoons/EmmyLua.spoon" = lib.mkForce {
+        source = makeEmptyPackage "stub-spoon";
+        recursive = false;
+      };
     };
 
     xdg = {

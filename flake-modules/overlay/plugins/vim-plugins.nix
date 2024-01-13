@@ -29,7 +29,7 @@
         # I merge this new package with the old one so I can retain any attributes from
         # the old one that the new one doesn't have, like nvim-treesitter.withPlugins.
         package
-        // (final.pkgs.symlinkJoin {
+        // (final.symlinkJoin {
           name = repositoryName;
           version = date;
           paths = [package];

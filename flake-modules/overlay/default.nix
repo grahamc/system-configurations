@@ -5,6 +5,7 @@
     ./pinned-versions.nix
     ./missing-packages.nix
     ./meta-packages.nix
+    ./partial-packages.nix
     ./misc.nix
   ];
 
@@ -24,6 +25,7 @@
         self.overlays.pinnedVersions
         self.overlays.missingPackages
         self.overlays.metaPackages
+        self.overlays.partialPackages
         self.overlays.misc
       ];
   in {
