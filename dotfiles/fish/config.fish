@@ -49,12 +49,3 @@ if test -z "$TMUX"
         tmux_attach_to_main
     end
 end
-
-if type --query direnv
-    # TODO: Trigger direnv. This way if a terminal or tmux-pane gets spawned in a directory that has
-    # a .envrc file, it will get loaded automatically. There's an open issue for adding an official way to
-    # trigger direnv when the shell starts up: https://github.com/direnv/direnv/issues/614.
-    direnv reload 2>/dev/null
-    # Added this so that even if the previous command fails, this script won't return a non-zero exit code
-    or true
-end
