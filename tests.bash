@@ -2,7 +2,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-just format
+just check
 
 # verify flake output format and build packages
 nix flake check

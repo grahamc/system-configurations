@@ -34,6 +34,10 @@ preview-upgrade:
 
 # Format, lint, and fix all source code
 format:
+    treefmt
+
+# Check all source code for formatting and lint issues.
+check:
     treefmt --fail-on-change
 
 # Rerun the on change actions that run after a git merge or rebase
