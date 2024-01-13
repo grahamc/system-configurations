@@ -41,7 +41,7 @@
       text = ''
         cd "${config.repository.directory}"
         home-manager switch --flake "${config.repository.directory}#${hostName}" ${self.lib.updateFlags.home} "''$@" |& nom
-        nix-upgrade-profiles
+        chronic nix-upgrade-profiles
       '';
     };
 

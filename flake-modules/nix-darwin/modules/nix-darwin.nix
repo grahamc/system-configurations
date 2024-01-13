@@ -53,18 +53,18 @@
       oldGenerationPath="$(readlink --canonicalize ${config.system.profile})"
 
       darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" ${self.lib.updateFlags.darwin} "$@" |& nom
-      nix-upgrade-profiles
-
-      brew update
-      brew upgrade --greedy
-      brew autoremove
-      brew cleanup
+      chronic nix-upgrade-profiles
 
       newGenerationPath="$(readlink --canonicalize ${config.system.profile})"
 
       cyan='\033[1;0m'
       printf "%bPrinting generation diff...\n" "$cyan"
       nix store diff-closures "$oldGenerationPath" "$newGenerationPath"
+
+      chronic brew update
+      brew upgrade --greedy
+      chronic brew autoremove
+      chronic brew cleanup
     '';
   };
 
