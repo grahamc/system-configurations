@@ -61,6 +61,7 @@ config.use_ime = false
 config.enable_kitty_keyboard = true
 config.enable_kitty_graphics = true
 config.automatically_reload_config = false
+config.term = "wezterm"
 
 -- font
 -- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system, but Flatpak apps

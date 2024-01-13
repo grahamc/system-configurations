@@ -6,9 +6,9 @@ abbr --add --global g git
 set --global --export PAGER less
 abbr --add --global x 'chmod +x'
 abbr --add --global du 'du -shL'
-# Set the terminal's color capability to 256 colors if it isn't already. 
-if not string match --regex --quiet -- 256 $TERM
-    set --global --export TERM xterm-256color
+# If for some reason the $TERM isn't one of the values I'm expecting, default to wezterm
+if test "$TERM" != tmux-256color -a "$TERM" != wezterm
+    set --global --export TERM wezterm
 end
 if test (uname) = Linux
     abbr --add --global initramfs-reload 'sudo update-initramfs -u -k all'

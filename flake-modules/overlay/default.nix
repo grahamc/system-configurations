@@ -5,6 +5,7 @@
     ./pinned-versions.nix
     ./missing-packages.nix
     ./meta-packages.nix
+    ./misc.nix
   ];
 
   flake = let
@@ -23,6 +24,7 @@
         self.overlays.pinnedVersions
         self.overlays.missingPackages
         self.overlays.metaPackages
+        self.overlays.misc
       ];
   in {
     lib.overlay = {inherit makeMetaOverlay;};

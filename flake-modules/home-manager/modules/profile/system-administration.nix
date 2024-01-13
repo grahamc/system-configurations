@@ -14,6 +14,7 @@ in {
     ../git.nix
     ../fzf.nix
     ../direnv.nix
+    ../wezterm.nix
   ];
 
   home.packages = let
@@ -89,8 +90,6 @@ in {
       ]
       ++ optionals isDarwin [
         pstree
-        # macOS comes with a very old version of ncurses that doesn't have a terminfo entry for tmux, tmux-256color
-        ncurses
       ];
 
   xdg = {
@@ -146,9 +145,6 @@ in {
         // optionalAttrs isLinux {
           "pipr/pipr.toml".source = "pipr/pipr.toml";
           "fish/conf.d/pipr.fish".source = "pipr/pipr.fish";
-        }
-        // optionalAttrs isGui {
-          "wezterm/wezterm.lua".source = "wezterm/wezterm.lua";
         };
     };
   };

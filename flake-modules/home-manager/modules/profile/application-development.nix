@@ -3,6 +3,7 @@
     ../direnv.nix
     ../firefox-developer-edition.nix
     ../git.nix
+    ../wezterm.nix
   ];
 
   home.packages = with pkgs; [
