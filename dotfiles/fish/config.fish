@@ -16,7 +16,7 @@ end
 
 # Ask the user to connect to tmux.
 # Wrapping this in a function so that I am able to exit early with 'return'
-function tmux_attach_to_main
+function tmux_attach
     if test -n "$TMUX_CONNECT_WAS_RUN"
         return
     end
@@ -36,16 +36,13 @@ function tmux_attach_to_main
     end
     read --prompt-str "Hey$user, would you like to connect to tmux? ($accent""y$normal/$accent""n$normal): " --nchars 1 response
     if test $response = y
-        set session_name main
-        if not tmux attach-session -t "$session_name"
-            tmux new-session -s "$session_name"
-        end
+        tmux attach-session
     end
 end
 if test -z "$TMUX"
     if set --query VSCODE_INJECTION
         tmux-attach-to-project
     else
-        tmux_attach_to_main
+        tmux_attach
     end
 end
