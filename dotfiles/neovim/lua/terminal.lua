@@ -627,12 +627,97 @@ vim.o.termguicolors = false
 -- }}}
 
 -- Statusline {{{
+local function make_statusline(left_items, right_items)
+  local mode_map = {
+    ["n"] = "NORMAL",
+    ["no"] = "O-PENDING",
+    ["nov"] = "O-PENDING",
+    ["noV"] = "O-PENDING",
+    ["no\22"] = "O-PENDING",
+    ["niI"] = "NORMAL",
+    ["niR"] = "NORMAL",
+    ["niV"] = "NORMAL",
+    ["nt"] = "NORMAL",
+    ["ntT"] = "NORMAL",
+    ["v"] = "VISUAL",
+    ["vs"] = "VISUAL",
+    ["V"] = "V-LINE",
+    ["Vs"] = "V-LINE",
+    ["\22"] = "V-BLOCK",
+    ["\22s"] = "V-BLOCK",
+    ["s"] = "SELECT",
+    ["S"] = "S-LINE",
+    ["\19"] = "S-BLOCK",
+    ["i"] = "INSERT",
+    ["ic"] = "INSERT",
+    ["ix"] = "INSERT",
+    ["R"] = "REPLACE",
+    ["Rc"] = "REPLACE",
+    ["Rx"] = "REPLACE",
+    ["Rv"] = "V-REPLACE",
+    ["Rvc"] = "V-REPLACE",
+    ["Rvx"] = "V-REPLACE",
+    ["c"] = "COMMAND",
+    ["cv"] = "EX",
+    ["ce"] = "EX",
+    ["r"] = "REPLACE",
+    ["rm"] = "MORE",
+    ["r?"] = "CONFIRM",
+    ["!"] = "SHELL",
+    ["t"] = "TERMINAL",
+  }
+  local mode = mode_map[vim.api.nvim_get_mode().mode]
+  if mode == nil then
+    mode = "?"
+  end
+  local function make_highlight_names(name)
+    return {
+      mode = "%#" .. string.format("StatusLineMode%s", name) .. "#",
+      inner = "%#" .. string.format("StatusLineMode%sPowerlineInner", name) .. "#",
+      outer = "%#" .. string.format("StatusLineMode%sPowerlineOuter", name) .. "#",
+    }
+  end
+  local highlights = make_highlight_names("Other")
+  local function startswith(text, prefix)
+    return text:find(prefix, 1, true) == 1
+  end
+  if startswith(mode, "V") then
+    highlights = make_highlight_names("Visual")
+  elseif startswith(mode, "I") then
+    highlights = make_highlight_names("Insert")
+  elseif startswith(mode, "N") then
+    highlights = make_highlight_names("Normal")
+  elseif startswith(mode, "T") then
+    highlights = make_highlight_names("Terminal")
+  end
+  local mode_indicator = highlights.outer
+    .. ""
+    .. highlights.mode
+    .. " "
+    .. mode
+    .. " "
+    .. highlights.inner
+    .. " "
+  local left_side = mode_indicator .. table.concat(left_items, "  ")
+  local right_side = table.concat(right_items, "%#StatusLineSeparator# ∙ ")
+
+  local showcmd = "%#StatusLineShowcmd#%S"
+  local statusline_separator = "%#StatusLine# %=" .. showcmd .. "%#StatusLine#%= "
+
+  local padding = "%#StatusLine# "
+  local statusline = left_side
+    .. statusline_separator
+    .. right_side
+    .. padding
+    .. "%#StatusLinePowerlineOuter#"
+    .. ""
+
+  return statusline
+end
 function GetDiagnosticCountForSeverity(severity)
   return #vim.diagnostic.get(0, { severity = severity })
 end
 function StatusLine()
-  local item_separator = "%#StatusLineSeparator# ∙ "
-
   local position = "%#StatusLine#" .. " %l:%c"
 
   local fileformat = vim.o.fileformat
@@ -761,76 +846,6 @@ function StatusLine()
   end
 
   local left_side_items = {}
-  local mode_map = {
-    ["n"] = "NORMAL",
-    ["no"] = "O-PENDING",
-    ["nov"] = "O-PENDING",
-    ["noV"] = "O-PENDING",
-    ["no\22"] = "O-PENDING",
-    ["niI"] = "NORMAL",
-    ["niR"] = "NORMAL",
-    ["niV"] = "NORMAL",
-    ["nt"] = "NORMAL",
-    ["ntT"] = "NORMAL",
-    ["v"] = "VISUAL",
-    ["vs"] = "VISUAL",
-    ["V"] = "V-LINE",
-    ["Vs"] = "V-LINE",
-    ["\22"] = "V-BLOCK",
-    ["\22s"] = "V-BLOCK",
-    ["s"] = "SELECT",
-    ["S"] = "S-LINE",
-    ["\19"] = "S-BLOCK",
-    ["i"] = "INSERT",
-    ["ic"] = "INSERT",
-    ["ix"] = "INSERT",
-    ["R"] = "REPLACE",
-    ["Rc"] = "REPLACE",
-    ["Rx"] = "REPLACE",
-    ["Rv"] = "V-REPLACE",
-    ["Rvc"] = "V-REPLACE",
-    ["Rvx"] = "V-REPLACE",
-    ["c"] = "COMMAND",
-    ["cv"] = "EX",
-    ["ce"] = "EX",
-    ["r"] = "REPLACE",
-    ["rm"] = "MORE",
-    ["r?"] = "CONFIRM",
-    ["!"] = "SHELL",
-    ["t"] = "TERMINAL",
-  }
-  local mode = mode_map[vim.api.nvim_get_mode().mode]
-  if mode == nil then
-    mode = "?"
-  end
-  local function make_highlight_names(name)
-    return {
-      mode = "%#" .. string.format("StatusLineMode%s", name) .. "#",
-      inner = "%#" .. string.format("StatusLineMode%sPowerlineInner", name) .. "#",
-      outer = "%#" .. string.format("StatusLineMode%sPowerlineOuter", name) .. "#",
-    }
-  end
-  local highlights = make_highlight_names("Other")
-  local function startswith(text, prefix)
-    return text:find(prefix, 1, true) == 1
-  end
-  if startswith(mode, "V") then
-    highlights = make_highlight_names("Visual")
-  elseif startswith(mode, "I") then
-    highlights = make_highlight_names("Insert")
-  elseif startswith(mode, "N") then
-    highlights = make_highlight_names("Normal")
-  elseif startswith(mode, "T") then
-    highlights = make_highlight_names("Terminal")
-  end
-  local mode_indicator = highlights.outer
-    .. ""
-    .. highlights.mode
-    .. " "
-    .. mode
-    .. " "
-    .. highlights.inner
-    .. " "
   table.insert(left_side_items, fileencoding)
   table.insert(left_side_items, fileformat)
   if filetype then
@@ -848,7 +863,6 @@ function StatusLine()
   if search_info then
     table.insert(left_side_items, search_info)
   end
-  local left_side = mode_indicator .. table.concat(left_side_items, "  ")
 
   local right_side_items = {}
   if diagnostics then
@@ -861,24 +875,26 @@ function StatusLine()
     table.insert(right_side_items, mixed_line_endings)
   end
   table.insert(right_side_items, position)
-  local right_side = table.concat(right_side_items, item_separator)
 
-  local showcmd = "%#StatusLineShowcmd#%S"
-  local statusline_separator = "%#StatusLine# %=" .. showcmd .. "%#StatusLine#%= "
-
-  local padding = "%#StatusLine# "
-  local statusline = left_side
-    .. statusline_separator
-    .. right_side
-    .. padding
-    .. "%#StatusLinePowerlineOuter#"
-    .. ""
-
-  return statusline
+  return make_statusline(left_side_items, right_side_items)
+end
+function QuickfixStatusLine()
+  return make_statusline(
+    { [[%#StatusLine#%t%{exists('w:quickfix_title')? ' '.w:quickfix_title : ''}]] },
+    { "%#StatusLine#Press gf for find&replace" }
+  )
 end
 
 vim.o.laststatus = 3
 vim.o.statusline = "%!v:lua.StatusLine()"
+vim.api.nvim_create_autocmd({ "Filetype" }, {
+  pattern = "qf",
+  callback = function()
+    vim.keymap.set("n", "gf", ":cdo s///e<left><left><left>", {})
+    vim.opt_local.statusline = "%!v:lua.QuickfixStatusLine()"
+  end,
+  group = vim.api.nvim_create_augroup("Quickfix Statusline", {}),
+})
 -- }}}
 
 -- StatusColumn {{{
