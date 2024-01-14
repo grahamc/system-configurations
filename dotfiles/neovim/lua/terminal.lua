@@ -311,7 +311,7 @@ local toggle_cursor_line_group_id =
   vim.api.nvim_create_augroup("ToggleCursorlineWithWindowFocus", {})
 vim.api.nvim_create_autocmd({ "FocusGained" }, {
   callback = function()
-    require("reticle").enable_cursorline()
+    pcall(require("reticle").enable_cursorline)
   end,
   group = toggle_cursor_line_group_id,
 })
