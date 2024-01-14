@@ -23,14 +23,8 @@
     activation.vimLoaderFix =
       lib.hm.dag.entryAfter
       ["writeBoundary"]
-      # Read this to see why the `tr` command is needed:
-      # https://stackoverflow.com/questions/16739300/redirect-ex-command-to-stdout-in-vim
-      #
-      # The `grep` command is there to filter out any messages that get printed on startup.
-      # I'm redirecting stderr to stdout because neovim prints its output on stderr.
-      # The '*' is outside the string so bash will use it as a regex matcher and not a literal '*'.
       ''
-        rm -rf "''$(${pkgs.neovim-unwrapped}/bin/nvim --headless -c 'lua= vim.fn.stdpath("cache")' -c 'quit' 2>&1 | tr -d '\r' | grep -E '^/')/luac/"*
+        ${pkgs.neovim-unwrapped}/bin/nvim --clean --headless -c 'lua vim.loader.reset()' -c 'quit'
       '';
 
     file = {
