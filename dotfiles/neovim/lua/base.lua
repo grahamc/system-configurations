@@ -215,6 +215,74 @@ vim.cmd([[
   cnoreabbrev <expr> s v:lua.SmagicAbbreviation()
   cnoreabbrev <expr> %s getcmdtype() == ':' && getcmdline() == '%s' ? '%smagic' : '%s'
 ]])
+
+-- Comment formatting
+vim.api.nvim_create_autocmd({ "Filetype" }, {
+  pattern = "nix",
+  callback = function()
+    vim.bo.commentstring = "# %s"
+  end,
+  group = vim.api.nvim_create_augroup("Nix commentstring", {}),
+})
+vim.api.nvim_create_autocmd("OptionSet", {
+  pattern = "formatexpr",
+  callback = function()
+    vim.bo.formatexpr = ""
+  end,
+  group = vim.api.nvim_create_augroup("Remove formatexpr", {}),
+})
+vim.api.nvim_create_autocmd("BufNew", {
+  pattern = "*",
+  callback = function()
+    vim.bo.textwidth = _G.GetMaxLineLength()
+  end,
+  group = vim.api.nvim_create_augroup("Set textwidth", {}),
+})
+local function get_commentstring()
+  local index_of_s, _, _ = string.find(vim.bo.commentstring, "%%s")
+  if index_of_s then
+    return string.sub(vim.bo.commentstring, 1, index_of_s - 1):gsub("^%s*(.-)%s*$", "%1")
+  else
+    return vim.bo.commentstring
+  end
+end
+local function set_formatprg_with_prefix(current_line)
+  local commentstring = get_commentstring()
+  local index_of_comment, _, _ = string.find(current_line, commentstring:gsub("([^%w])", "%%%1"))
+  if index_of_comment ~= nil then
+    local prefix = index_of_comment + #commentstring
+    vim.bo.formatprg = "par -w" .. tostring(_G.GetMaxLineLength()) .. " -p" .. prefix
+  end
+end
+_G.FormatCommentOperatorFunc = function()
+  if vim.fn.line("'[") == vim.fn.line("']") then
+    set_formatprg_with_prefix(vim.fn.getline(vim.fn.line("']")))
+    vim.cmd("normal! '[gq']")
+  else
+    vim.bo.formatprg = "par -w" .. tostring(_G.GetMaxLineLength())
+    vim.cmd("normal! '[gq']")
+  end
+end
+local function format_comment_operator()
+  vim.o.operatorfunc = "v:lua.FormatCommentOperatorFunc"
+  return "g@"
+end
+vim.keymap.set("n", "gq", format_comment_operator, { expr = true })
+local function format_comment_visual()
+  vim.cmd('noau normal! "vy"')
+  local text = vim.fn.getreg("v")
+  vim.fn.setreg("v", {})
+  local _, count = string.gsub(text, "\n", "")
+  if count == 1 then
+    set_formatprg_with_prefix(text)
+    vim.fn.feedkeys("gvgq", "n")
+  else
+    vim.bo.formatprg = "par -w" .. tostring(_G.GetMaxLineLength())
+    vim.fn.feedkeys("gvgq", "n")
+  end
+end
+vim.keymap.set("x", "gq", format_comment_visual, {})
+vim.keymap.set("n", "gqq", "<S-v>gq", { remap = true })
 -- }}}
 
 -- Option overrides {{{
@@ -393,4 +461,18 @@ vim.keymap.set("v", "g+", "g<Plug>(dial-increment)")
 vim.keymap.set("v", "g-", "g<Plug>(dial-decrement)")
 
 Plug("arthurxavierx/vim-caser")
+
+Plug("echasnovski/mini.comment", {
+  config = function()
+    require("mini.comment").setup({
+      options = {
+        ignore_blank_line = true,
+      },
+
+      mappings = {
+        textobject = "ic",
+      },
+    })
+  end,
+})
 -- }}}

@@ -250,10 +250,6 @@
       url = "github:tpope/vim-repeat";
       flake = false;
     };
-    vim-plugin-nvim-comment = {
-      url = "github:terrortylor/nvim-comment";
-      flake = false;
-    };
     vim-plugin-vim-sleuth = {
       url = "github:tpope/vim-sleuth";
       flake = false;
@@ -264,10 +260,6 @@
     };
     vim-plugin-nvim-ts-autotag = {
       url = "github:windwp/nvim-ts-autotag";
-      flake = false;
-    };
-    vim-plugin-nvim-ts-context-commentstring = {
-      url = "github:JoosepAlviste/nvim-ts-context-commentstring";
       flake = false;
     };
     vim-plugin-nvim-lightbulb = {
@@ -436,6 +428,10 @@
     };
     vim-plugin-nvim-web-devicons = {
       url = "github:nvim-tree/nvim-web-devicons";
+      flake = false;
+    };
+    vim-plugin-mini-comment = {
+      url = "github:echasnovski/mini.comment";
       flake = false;
     };
   };

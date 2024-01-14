@@ -31,6 +31,14 @@ end
 
 -- Variables used across config files
 vim.g.mapleader = " "
+_G.GetMaxLineLength = function()
+  local editorconfig = vim.b["editorconfig"]
+  if editorconfig ~= nil and editorconfig.max_line_length ~= nil then
+    return tonumber(editorconfig.max_line_length)
+  end
+
+  return 100
+end
 
 -- Calling this before I load the profiles so I can register plugins inside them
 PlugBegin()

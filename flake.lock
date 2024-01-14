@@ -336,11 +336,11 @@
         "vim-plugin-mason-lspconfig-nvim": "vim-plugin-mason-lspconfig-nvim",
         "vim-plugin-mason-nvim": "vim-plugin-mason-nvim",
         "vim-plugin-middleclass": "vim-plugin-middleclass",
+        "vim-plugin-mini-comment": "vim-plugin-mini-comment",
         "vim-plugin-none-ls-nvim": "vim-plugin-none-ls-nvim",
         "vim-plugin-nui-nvim": "vim-plugin-nui-nvim",
         "vim-plugin-nvim-autopairs": "vim-plugin-nvim-autopairs",
         "vim-plugin-nvim-cmp": "vim-plugin-nvim-cmp",
-        "vim-plugin-nvim-comment": "vim-plugin-nvim-comment",
         "vim-plugin-nvim-lastplace": "vim-plugin-nvim-lastplace",
         "vim-plugin-nvim-lightbulb": "vim-plugin-nvim-lightbulb",
         "vim-plugin-nvim-lspconfig": "vim-plugin-nvim-lspconfig",
@@ -352,7 +352,6 @@
         "vim-plugin-nvim-treesitter": "vim-plugin-nvim-treesitter",
         "vim-plugin-nvim-treesitter-endwise": "vim-plugin-nvim-treesitter-endwise",
         "vim-plugin-nvim-ts-autotag": "vim-plugin-nvim-ts-autotag",
-        "vim-plugin-nvim-ts-context-commentstring": "vim-plugin-nvim-ts-context-commentstring",
         "vim-plugin-nvim-web-devicons": "vim-plugin-nvim-web-devicons",
         "vim-plugin-plenary-nvim": "vim-plugin-plenary-nvim",
         "vim-plugin-reticle-nvim": "vim-plugin-reticle-nvim",
@@ -1019,6 +1018,22 @@
         "type": "github"
       }
     },
+    "vim-plugin-mini-comment": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1702836858,
+        "narHash": "sha256-LIZeQqid4EcQpyNlipiIOeGvtRn7pcF8bjeX2hARUGs=",
+        "owner": "echasnovski",
+        "repo": "mini.comment",
+        "rev": "67f00d3ebbeae15e84584d971d0c32aad4f4f3a4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "echasnovski",
+        "repo": "mini.comment",
+        "type": "github"
+      }
+    },
     "vim-plugin-none-ls-nvim": {
       "flake": false,
       "locked": {
@@ -1080,22 +1095,6 @@
       "original": {
         "owner": "hrsh7th",
         "repo": "nvim-cmp",
-        "type": "github"
-      }
-    },
-    "vim-plugin-nvim-comment": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1660082200,
-        "narHash": "sha256-O2jhrjXxKaWHMfm3YJ9+92Onm0niEHfUp5kOh2gETuc=",
-        "owner": "terrortylor",
-        "repo": "nvim-comment",
-        "rev": "e9ac16ab056695cad6461173693069ec070d2b23",
-        "type": "github"
-      },
-      "original": {
-        "owner": "terrortylor",
-        "repo": "nvim-comment",
         "type": "github"
       }
     },
@@ -1272,22 +1271,6 @@
       "original": {
         "owner": "windwp",
         "repo": "nvim-ts-autotag",
-        "type": "github"
-      }
-    },
-    "vim-plugin-nvim-ts-context-commentstring": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1701364374,
-        "narHash": "sha256-60kCTkN8LqzL3xzkgIdfr5GpgMBnnX9EMKbmM9B6www=",
-        "owner": "JoosepAlviste",
-        "repo": "nvim-ts-context-commentstring",
-        "rev": "1277b4a1f451b0f18c0790e1a7f12e1e5fdebfee",
-        "type": "github"
-      },
-      "original": {
-        "owner": "JoosepAlviste",
-        "repo": "nvim-ts-context-commentstring",
         "type": "github"
       }
     },

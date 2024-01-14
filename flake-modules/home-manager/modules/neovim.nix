@@ -11,6 +11,7 @@
       # TODO: Text will be lost on reflow until this issue is resolved:
       # https://github.com/neovim/neovim/issues/2514
       page
+      par
     ];
 
     # TODO: vim.loader() uses modification time and file size as a cache key. This is a problem for the plugin

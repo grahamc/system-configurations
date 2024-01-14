@@ -106,12 +106,7 @@ vim.keymap.set({ "n", "i", "x" }, "<C-z>", "<Cmd>suspend<CR>")
 
 vim.api.nvim_create_autocmd("BufWinEnter", {
   callback = function()
-    local editorconfig = vim.b["editorconfig"]
-    if editorconfig ~= nil and editorconfig.max_line_length ~= nil then
-      vim.wo.colorcolumn = editorconfig.max_line_length
-    else
-      vim.wo.colorcolumn = "100"
-    end
+    vim.wo.colorcolumn = tostring(_G.GetMaxLineLength())
   end,
   group = general_group_id,
 })
@@ -1922,30 +1917,11 @@ Plug("nvim-treesitter/nvim-treesitter", {
   end,
 })
 
-Plug("terrortylor/nvim-comment", {
-  config = function()
-    require("nvim_comment").setup({
-      comment_empty = false,
-      hook = require("ts_context_commentstring.internal").update_commentstring,
-    })
-  end,
-})
-
 Plug("tpope/vim-sleuth")
 
 Plug("blankname/vim-fish")
 
 Plug("windwp/nvim-ts-autotag")
-
-Plug("JoosepAlviste/nvim-ts-context-commentstring", {
-  config = function()
-    ---@diagnostic disable-next-line: missing-fields
-    require("ts_context_commentstring").setup({
-      enable_autocmd = false,
-    })
-  end,
-})
-vim.g.skip_ts_context_commentstring_module = true
 
 Plug("kosayoda/nvim-lightbulb", {
   config = function()

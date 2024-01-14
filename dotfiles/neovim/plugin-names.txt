@@ -1,4 +1,3 @@
-nvim-ts-context-commentstring
 LuaSnip
 nui.nvim
 vim-just
@@ -20,6 +19,7 @@ vim-fish
 cmp-env
 vim-tmux-navigator
 cmp-cmdline-history
+mini.comment
 nvim-lastplace
 git-blame.nvim
 which-key.nvim
@@ -61,7 +61,6 @@ nvim-notify
 cmp_luasnip
 aerial.nvim
 dressing.nvim
-nvim-comment
 vim-exchange
 vim-abolish
 vim-repeat
