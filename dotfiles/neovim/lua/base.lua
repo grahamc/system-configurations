@@ -54,7 +54,6 @@ vim.keymap.set({ "n" }, "gV", "`[v`]")
 -- Prevents inserting two spaces after punctuation on a join (J)
 vim.o.joinspaces = false
 
-vim.o.formatoptions = ""
 vim.opt.matchpairs:append("<:>")
 
 -- Always move by screen line, unless a count was specified or we're in a line-wise mode.
@@ -238,30 +237,42 @@ vim.api.nvim_create_autocmd("BufNew", {
   end,
   group = vim.api.nvim_create_augroup("Set textwidth", {}),
 })
+-- removes '%s' and trims trailing whitespace
 local function get_commentstring()
-  local index_of_s, _, _ = string.find(vim.bo.commentstring, "%%s")
+  require("ts_context_commentstring").update_commentstring()
+  local index_of_s = (string.find(vim.bo.commentstring, "%%s"))
   if index_of_s then
     return string.sub(vim.bo.commentstring, 1, index_of_s - 1):gsub("^%s*(.-)%s*$", "%1")
   else
     return vim.bo.commentstring
   end
 end
-local function set_formatprg_with_prefix(current_line)
-  local commentstring = get_commentstring()
-  local index_of_comment, _, _ = string.find(current_line, commentstring:gsub("([^%w])", "%%%1"))
-  if index_of_comment ~= nil then
-    local prefix = index_of_comment + #commentstring
-    vim.bo.formatprg = "par -w" .. tostring(_G.GetMaxLineLength()) .. " -p" .. prefix
+local function set_formatprg(text)
+  local formatprg = string.format("par -w%d", vim.bo.textwidth)
+
+  local _, newline_count = string.gsub(text, "\n", "")
+  local is_one_line = newline_count == 0
+  -- For single lines `par` can't infer what the commentstring is so I'm explicitly setting it
+  -- here.
+  if is_one_line then
+    local commentstring = get_commentstring()
+    local index_of_commentstring = (string.find(text, (commentstring:gsub("([^%w])", "%%%1"))))
+    if index_of_commentstring ~= nil then
+      local prefix = index_of_commentstring + #commentstring
+      formatprg = formatprg .. string.format(" -p%d", prefix)
+    end
   end
+
+  vim.bo.formatprg = formatprg
+end
+-- TODO: This assumes entire lines are selected
+local function get_text_for_motion()
+  local lines = vim.api.nvim_buf_get_lines(0, vim.fn.line("'[") - 1, vim.fn.line("']"), true)
+  return table.concat(lines, "\n")
 end
 _G.FormatCommentOperatorFunc = function()
-  if vim.fn.line("'[") == vim.fn.line("']") then
-    set_formatprg_with_prefix(vim.fn.getline(vim.fn.line("']")))
-    vim.cmd("normal! '[gq']")
-  else
-    vim.bo.formatprg = "par -w" .. tostring(_G.GetMaxLineLength())
-    vim.cmd("normal! '[gq']")
-  end
+  set_formatprg(get_text_for_motion())
+  vim.cmd("normal! '[gq']")
 end
 local function format_comment_operator()
   vim.o.operatorfunc = "v:lua.FormatCommentOperatorFunc"
@@ -269,17 +280,10 @@ local function format_comment_operator()
 end
 vim.keymap.set("n", "gq", format_comment_operator, { expr = true })
 local function format_comment_visual()
-  vim.cmd('noau normal! "vy"')
-  local text = vim.fn.getreg("v")
-  vim.fn.setreg("v", {})
-  local _, count = string.gsub(text, "\n", "")
-  if count == 1 then
-    set_formatprg_with_prefix(text)
-    vim.fn.feedkeys("gvgq", "n")
-  else
-    vim.bo.formatprg = "par -w" .. tostring(_G.GetMaxLineLength())
-    vim.fn.feedkeys("gvgq", "n")
-  end
+  set_formatprg(GetVisualSelection())
+  -- NOTE: This function returns after enqueuing the keys, not processing them. That is why I'm
+  -- leaving the formatprg set.
+  vim.fn.feedkeys("gvgq", "n")
 end
 vim.keymap.set("x", "gq", format_comment_visual, {})
 vim.keymap.set("n", "gqq", "<S-v>gq", { remap = true })
@@ -297,8 +301,9 @@ local function override_default_filetype_plugins()
   vim.api.nvim_create_autocmd("FileType", {
     pattern = "*",
     callback = function()
-      vim.opt_local.textwidth = 0
-      vim.opt_local.wrapmargin = 0
+      vim.bo.wrapmargin = 0
+      -- auto insert comment character
+      vim.bo.formatoptions = "ro"
     end,
     group = vim_default_overrides_group_id,
   })
@@ -475,4 +480,14 @@ Plug("echasnovski/mini.comment", {
     })
   end,
 })
+
+Plug("JoosepAlviste/nvim-ts-context-commentstring", {
+  config = function()
+    ---@diagnostic disable-next-line: missing-fields
+    require("ts_context_commentstring").setup({
+      enable_autocmd = false,
+    })
+  end,
+})
+vim.g.skip_ts_context_commentstring_module = true
 -- }}}

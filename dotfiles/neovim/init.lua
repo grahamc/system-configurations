@@ -39,6 +39,23 @@ _G.GetMaxLineLength = function()
 
   return 100
 end
+function GetVisualSelection()
+  local mode_char = vim.fn.mode()
+  -- "\x16" is the code for ctrl+v i.e. visual-block mode
+  local in_visual_mode = mode_char == "v" or mode_char == "V" or mode_char == "\x16"
+  if not in_visual_mode then
+    return ""
+  end
+
+  vim.cmd('noau normal! "vy"')
+  local text = vim.fn.getreg("v")
+  vim.fn.setreg("v", {})
+
+  -- remove trailing newline
+  text = text:sub(1, -2)
+
+  return text
+end
 
 -- Calling this before I load the profiles so I can register plugins inside them
 PlugBegin()

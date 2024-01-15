@@ -1,3 +1,4 @@
+nvim-ts-context-commentstring
 LuaSnip
 nui.nvim
 vim-just

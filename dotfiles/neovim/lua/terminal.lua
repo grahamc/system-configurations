@@ -106,7 +106,7 @@ vim.keymap.set({ "n", "i", "x" }, "<C-z>", "<Cmd>suspend<CR>")
 
 vim.api.nvim_create_autocmd("BufWinEnter", {
   callback = function()
-    vim.wo.colorcolumn = tostring(_G.GetMaxLineLength())
+    vim.wo.colorcolumn = tostring(_G.GetMaxLineLength() + 1)
   end,
   group = general_group_id,
 })
@@ -159,22 +159,6 @@ vim.keymap.set({ "n" }, "<S-u>", "<C-r>")
 -- }}}
 
 -- Utilities {{{
-local function vim_get_visual_selection()
-  local mode_char = vim.fn.mode()
-  -- "\x16" is the code for ctrl+v i.e. visual-block mode
-  local in_visual_mode = mode_char == "v" or mode_char == "V" or mode_char == "\x16"
-  if not in_visual_mode then
-    return ""
-  end
-
-  vim.cmd('noau normal! "vy"')
-  local text = vim.fn.getreg("v")
-  vim.fn.setreg("v", {})
-  text = string.gsub(text, "\n", "")
-
-  return text
-end
-
 local function set_jump_before(fn)
   return function(...)
     vim.cmd([[
@@ -1747,7 +1731,7 @@ Plug("nvim-telescope/telescope.nvim", {
     local telescope_builtins = require("telescope.builtin")
     local function call_with_visual_selection(picker)
       local result = function()
-        local visual_selection = vim_get_visual_selection()
+        local visual_selection = GetVisualSelection()
         if #visual_selection > 0 then
           picker({ default_text = visual_selection })
         else
