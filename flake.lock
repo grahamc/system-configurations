@@ -341,7 +341,6 @@
         "vim-plugin-nui-nvim": "vim-plugin-nui-nvim",
         "vim-plugin-nvim-autopairs": "vim-plugin-nvim-autopairs",
         "vim-plugin-nvim-cmp": "vim-plugin-nvim-cmp",
-        "vim-plugin-nvim-lastplace": "vim-plugin-nvim-lastplace",
         "vim-plugin-nvim-lightbulb": "vim-plugin-nvim-lightbulb",
         "vim-plugin-nvim-lspconfig": "vim-plugin-nvim-lspconfig",
         "vim-plugin-nvim-navic": "vim-plugin-nvim-navic",
@@ -369,6 +368,7 @@
         "vim-plugin-vim-indent-object": "vim-plugin-vim-indent-object",
         "vim-plugin-vim-indentwise": "vim-plugin-vim-indentwise",
         "vim-plugin-vim-just": "vim-plugin-vim-just",
+        "vim-plugin-vim-lastplace": "vim-plugin-vim-lastplace",
         "vim-plugin-vim-matchup": "vim-plugin-vim-matchup",
         "vim-plugin-vim-plug": "vim-plugin-vim-plug",
         "vim-plugin-vim-repeat": "vim-plugin-vim-repeat",
@@ -1098,22 +1098,6 @@
         "type": "github"
       }
     },
-    "vim-plugin-nvim-lastplace": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1690473226,
-        "narHash": "sha256-jmF06Cl1ieYXKTnW9pWdQH4IJGicvSVJAR7ppju9qyg=",
-        "owner": "ethanholz",
-        "repo": "nvim-lastplace",
-        "rev": "0bb6103c506315044872e0f84b1f736c4172bb20",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ethanholz",
-        "repo": "nvim-lastplace",
-        "type": "github"
-      }
-    },
     "vim-plugin-nvim-lightbulb": {
       "flake": false,
       "locked": {
@@ -1543,6 +1527,22 @@
       "original": {
         "owner": "NoahTheDuke",
         "repo": "vim-just",
+        "type": "github"
+      }
+    },
+    "vim-plugin-vim-lastplace": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1704462202,
+        "narHash": "sha256-zM269eNRAiKr4ErIExAUOlsxNHJ4YVdgN/DU3bHaOCM=",
+        "owner": "farmergreg",
+        "repo": "vim-lastplace",
+        "rev": "a715d602745cdb1c35cfe73c50d3dd266eb5a349",
+        "type": "github"
+      },
+      "original": {
+        "owner": "farmergreg",
+        "repo": "vim-lastplace",
         "type": "github"
       }
     },

@@ -1281,11 +1281,7 @@ Plug("Tummetott/reticle.nvim", {
   end,
 })
 
-Plug("ethanholz/nvim-lastplace", {
-  config = function()
-    require("nvim-lastplace").setup({})
-  end,
-})
+Plug("farmergreg/vim-lastplace")
 
 -- To get the vim help pages for vim-plug itself, you need to add it as a plugin
 Plug("junegunn/vim-plug")

@@ -202,8 +202,8 @@
       url = "github:Tummetott/reticle.nvim";
       flake = false;
     };
-    vim-plugin-nvim-lastplace = {
-      url = "github:ethanholz/nvim-lastplace";
+    vim-plugin-vim-lastplace = {
+      url = "github:farmergreg/vim-lastplace";
       flake = false;
     };
     vim-plugin-vim-plug = {

@@ -20,8 +20,8 @@ cmp-env
 vim-tmux-navigator
 cmp-cmdline-history
 mini.comment
-nvim-lastplace
 git-blame.nvim
+vim-lastplace
 which-key.nvim
 firenvim
 cmp-buffer
