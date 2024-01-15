@@ -1,4 +1,4 @@
-_: {
+{inputs, ...}: {
   flake = let
     overlay = final: prev: let
       tmux = let
@@ -21,16 +21,18 @@ _: {
         };
 
       ncursesWithWezterm = let
-        weztermTerminfoOnly = final.buildEnv {
-          name = "wezterm-terminfo-only";
-          paths = [final.wezterm];
-          pathsToLink = ["/share/terminfo"];
-        };
+        weztermTerminfo =
+          final.runCommand "wezterm-terminfo"
+          {nativeBuildInputs = [final.ncurses];}
+          ''
+            mkdir -p $out/share/terminfo
+            tic -x -o $out/share/terminfo ${inputs.wezterm}/termwiz/data/wezterm.terminfo
+          '';
       in
         final.symlinkJoin {
           name = "ncursesWithWezterm";
           paths = [
-            weztermTerminfoOnly
+            weztermTerminfo
             final.ncurses
           ];
         };

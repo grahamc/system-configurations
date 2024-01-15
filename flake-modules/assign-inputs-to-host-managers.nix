@@ -25,6 +25,7 @@
           "gomod2nix"
           "tree-sitter-just"
           "neodev-nvim"
+          "wezterm"
         ]
         ++ plugins;
       darwin =

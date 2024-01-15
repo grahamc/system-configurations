@@ -378,7 +378,8 @@
         "vim-plugin-vim-tmux-navigator": "vim-plugin-vim-tmux-navigator",
         "vim-plugin-virt-column-nvim": "vim-plugin-virt-column-nvim",
         "vim-plugin-which-key-nvim": "vim-plugin-which-key-nvim",
-        "vim-plugin-windows-nvim": "vim-plugin-windows-nvim"
+        "vim-plugin-windows-nvim": "vim-plugin-windows-nvim",
+        "wezterm": "wezterm"
       }
     },
     "spoons": {
@@ -1704,6 +1705,22 @@
       "original": {
         "owner": "anuvyklack",
         "repo": "windows.nvim",
+        "type": "github"
+      }
+    },
+    "wezterm": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1704983795,
+        "narHash": "sha256-fhrQ3qF8DkLYmHAtuWz2q0LAlvgeFSArZ/OYcpIQAqw=",
+        "owner": "wez",
+        "repo": "wezterm",
+        "rev": "6c36a4dda2527836af0e0aa076d5dd0bd8d3dd79",
+        "type": "github"
+      },
+      "original": {
+        "owner": "wez",
+        "repo": "wezterm",
         "type": "github"
       }
     }

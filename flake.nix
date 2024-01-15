@@ -60,6 +60,10 @@
       url = "github:Hammerspoon/Spoons";
       flake = false;
     };
+    wezterm = {
+      url = "github:wez/wezterm";
+      flake = false;
+    };
 
     # nix
     ########################################
