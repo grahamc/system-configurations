@@ -52,7 +52,9 @@ function GetVisualSelection()
   vim.fn.setreg("v", {})
 
   -- remove trailing newline
-  text = text:sub(1, -2)
+  if mode_char == "V" then
+    text = text:sub(1, -2)
+  end
 
   return text
 end
