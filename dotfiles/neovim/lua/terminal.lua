@@ -269,6 +269,7 @@ vim.o.winminheight = 0
 vim.o.winminwidth = 0
 vim.keymap.set("n", "<Leader><Bar>", "<Cmd>vsplit<CR>")
 vim.keymap.set("n", "<Leader>-", "<Cmd>split<CR>")
+vim.keymap.set("n", "<C-w>", vim.cmd.close)
 
 local window_group_id = vim.api.nvim_create_augroup("Window", {})
 
@@ -1968,7 +1969,8 @@ Plug("akinsho/bufferline.nvim", {
         and require("nvim-tree.api").tree.is_visible()
         and buffer_count > 1
       then
-        -- `bdelete` closes the window if the buffer is open in one so we have to switch to a different buffer first.
+        -- `bdelete` closes the window if the buffer is open in one so we have to switch to a
+        -- different buffer first.
         vim.cmd.BufferLineCycleNext()
         vim.cmd("bdelete! " .. buffer)
         return
@@ -1990,13 +1992,12 @@ Plug("akinsho/bufferline.nvim", {
         return
       end
 
-      -- If the buffer is only open in the current window, close the buffer and window. Otherwise, just close
-      -- the window.
+      -- If the buffer is only open in the current window, close the buffer and window. Otherwise,
+      -- just close the window.
       local buffer_window_count = #vim.fn.win_findbuf(buffer)
       if buffer_window_count == 1 then
-        vim.cmd("bdelete! " .. buffer)
-      else
-        vim.cmd.close()
+        vim.cmd("b#")
+        vim.cmd("bd#")
       end
     end
 
