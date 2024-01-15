@@ -313,7 +313,7 @@ vim.api.nvim_create_autocmd({ "FocusGained" }, {
 })
 vim.api.nvim_create_autocmd({ "FocusLost" }, {
   callback = function()
-    require("reticle").disable_cursorline()
+    pcall(require("reticle").disable_cursorline)
   end,
   group = toggle_cursor_line_group_id,
 })
@@ -2777,7 +2777,10 @@ Plug("williamboman/mason.nvim", {
     -- Update the registry first so we get the latest package versions.
     registry.update(function(was_successful, registry_sources_or_error)
       if not was_successful then
-        vim.notify("Failed to check for mason updates: " .. registry_sources_or_error, "error")
+        vim.notify(
+          "Failed to check for mason updates: " .. registry_sources_or_error,
+          vim.log.levels.ERROR
+        )
         return
       end
       set_mason_update_count()
