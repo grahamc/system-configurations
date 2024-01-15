@@ -14,13 +14,14 @@
       par
     ];
 
-    # TODO: vim.loader() uses modification time and file size as a cache key. This is a problem for the plugin
-    # sqlite.lua because in one of its files (defs.lua) has the path to sqlite which changes when I upgrade sqlite.
-    # The problem is that nix sets the modification time to the epoch for all files and the size will be the same
-    # because (I think) the hashes that nix generates for package paths are all the same length, only the letters in
-    # the hash change. This means when I start vim after sqlite has been upgraded, sqlite.lua won't be able to find
-    # sqlite (assuming the old version has been garbage collected already) because neovim is still using the stale,
-    # cached bytecode for defs.lua which contains the old path to sqlite.
+    # TODO: vim.loader() uses modification time and file size as a cache key. This is a problem for
+    # the plugin sqlite.lua because in one of its files (defs.lua) has the path to sqlite which
+    # changes when I upgrade sqlite. The problem is that nix sets the modification time to the epoch
+    # for all files and the size will be the same because (I think) the hashes that nix generates
+    # for package paths are all the same length, only the letters in the hash change. This means
+    # when I start vim after sqlite has been upgraded, sqlite.lua won't be able to find sqlite
+    # (assuming the old version has been garbage collected already) because neovim is still using
+    # the stale, cached bytecode for defs.lua which contains the old path to sqlite.
     activation.vimLoaderFix =
       lib.hm.dag.entryAfter
       ["writeBoundary"]

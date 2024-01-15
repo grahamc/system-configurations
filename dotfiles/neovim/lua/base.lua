@@ -103,9 +103,9 @@ vim.keymap.set({ "n" }, "<Enter>", "o<ESC>")
 -- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
 vim.keymap.set({ "n" }, "<S-Enter>", "O<ESC>")
 
--- Disable language providers. Feels like a lot of trouble to install neovim bindings for all these languages so
--- I'll just avoid plugins that require them. By disabling the providers, I won't get a warning about
--- missing bindings when I run `:checkhealth`.
+-- Disable language providers. Feels like a lot of trouble to install neovim bindings for all these
+-- languages so I'll just avoid plugins that require them. By disabling the providers, I won't get a
+-- warning about missing bindings when I run `:checkhealth`.
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_node_provider = 0
@@ -113,7 +113,8 @@ vim.g.loaded_perl_provider = 0
 
 vim.keymap.set({ "n" }, "Q", "<Nop>")
 
--- Execute macros more quickly by enabling `lazyredraw` and disabling events while the macro is running
+-- Execute macros more quickly by enabling `lazyredraw` and disabling events while the macro is
+-- running
 local function get_char()
   local ret_val, char_num = pcall(vim.fn.getchar)
   -- Return nil if error (e.g. <C-c>) or for control characters
@@ -292,10 +293,11 @@ vim.keymap.set("n", "gqq", "<S-v>gq", { remap = true })
 -- Option overrides {{{
 local vim_default_overrides_group_id = vim.api.nvim_create_augroup("VimDefaultOverrides", {})
 
--- Vim's default filetype plugins get run when filetype detection is enabled (i.e. ':filetype plugin on').
--- So in order to override settings from vim's filetype plugins, these FileType autocommands need to be registered
--- after filetype detection is enabled. File type detection is turned on in plug_end() so this function gets called at
--- `PlugEndPost`, which is right after plug_end() is called.
+-- Vim's default filetype plugins get run when filetype detection is enabled (i.e. ':filetype plugin
+-- on'). So in order to override settings from vim's filetype plugins, these FileType autocommands
+-- need to be registered after filetype detection is enabled. File type detection is turned on in
+-- plug_end() so this function gets called at `PlugEndPost`, which is right after plug_end() is
+-- called.
 local function override_default_filetype_plugins()
   -- Don't automatically hard-wrap text
   vim.api.nvim_create_autocmd("FileType", {

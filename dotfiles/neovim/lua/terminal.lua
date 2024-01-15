@@ -257,7 +257,8 @@ vim.keymap.set("n", "<C-w>", vim.cmd.close)
 
 local window_group_id = vim.api.nvim_create_augroup("Window", {})
 
--- Automatically resize all splits to make them equal when the vim window is resized or a new window is created/closed.
+-- Automatically resize all splits to make them equal when the vim window is resized or a new window
+-- is created/closed.
 vim.api.nvim_create_autocmd({ "VimResized", "WinNew", "WinClosed", "TabEnter" }, {
   callback = function()
     -- Don't equalize splits if the new window is floating, it won't get resized anyway.
@@ -272,8 +273,8 @@ vim.api.nvim_create_autocmd({ "VimResized", "WinNew", "WinClosed", "TabEnter" },
   group = window_group_id,
 })
 
--- TODO: This won't work until I use a release of neovim that has this fix (right now it's only on nightly):
--- https://github.com/neovim/neovim/pull/25096
+-- TODO: This won't work until I use a release of neovim that has this fix, right now it's only on
+-- nightly: https://github.com/neovim/neovim/pull/25096
 vim.api.nvim_create_autocmd({ "WinNew" }, {
   callback = function()
     local is_float = vim.api.nvim_win_get_config(0).relative ~= ""
@@ -326,19 +327,20 @@ local function disable_winbar()
 end
 
 local function reset_cursor_position()
-  -- TODO: `page` doesn't offer a way to disable the centering of the cursor so I'm using an autocommand to reset
-  -- the cursor after it's centered. For more info on why `page` centers the cursor see:
-  -- https://github.com/I60R/page/issues/16
+  -- TODO: `page` doesn't offer a way to disable the centering of the cursor so I'm using an
+  -- autocommand to reset the cursor after it's centered. For more info on why `page` centers the
+  -- cursor see: https://github.com/I60R/page/issues/16
   local pager_group_id = vim.api.nvim_create_augroup("Pager", {})
   vim.api.nvim_create_autocmd("CursorMoved", {
     callback = function()
       local cursor_row = vim.api.nvim_win_get_cursor(0)[1]
-      -- I assume the cursor is centered if the row is more than one. I tried to calculate the middle row to have
-      -- a more accurate check, but occasionally I would be off by one. I can't imagine where else `page` would
-      -- move the cursor besides the center so this should be ok.
+      -- I assume the cursor is centered if the row is more than one. I tried to calculate the
+      -- middle row to have a more accurate check, but occasionally I would be off by one. I can't
+      -- imagine where else `page` would move the cursor besides the center so this should be ok.
       --
-      -- I also tried assuming that the first cursor movement made must be the centering of the cursor, but the
-      -- event would fire a few times before the cursor was centered, though the cursor position wouldn't change.
+      -- I also tried assuming that the first cursor movement made must be the centering of the
+      -- cursor, but the event would fire a few times before the cursor was centered, though the
+      -- cursor position wouldn't change.
       local is_cursor_centered_vertically = cursor_row > 1
       if is_cursor_centered_vertically then
         vim.api.nvim_win_set_cursor(0, { 1, 0 })
@@ -449,8 +451,8 @@ vim.o.pumheight = 6
 -- }}}
 
 -- Command line {{{
--- on first wildchar press (<Tab>), show all matches and complete the longest common substring among them.
--- on subsequent wildchar presses, cycle through matches
+-- on first wildchar press (<Tab>), show all matches and complete the longest common substring among
+-- on them. subsequent wildchar presses, cycle through matches
 vim.o.wildmode = "longest:full,full"
 vim.o.wildoptions = "pum"
 vim.o.cmdheight = 0
@@ -490,11 +492,11 @@ end
 
 local function restore_or_create_session()
   -- We only want to restore/create a session if:
-  --  1. neovim was called with no arguments. The first element in `vim.v.argv` will always be the path to the vim
-  -- executable and the second will be '--embed' so if no arguments were passed to neovim, the size of `vim.v.argv`
-  -- will be two.
-  --  2. neovim's stdin is a terminal. If neovim's stdin isn't the terminal, then that means content is being
-  -- piped in and we should load that instead.
+  --  1. neovim was called with no arguments. The first element in `vim.v.argv` will always be the
+  --  path to the vim -- executable and the second will be '--embed' so if no arguments were passed
+  --  to neovim, the size of `vim.v.argv` -- will be two.
+  --  2. neovim's stdin is a terminal. If neovim's stdin isn't the terminal, then that means
+  --  content is being -- piped in and we should load that instead.
   local is_neovim_called_with_no_arguments = #vim.v.argv == 2
   if is_neovim_called_with_no_arguments and has_ttyin then
     local session_name = string.gsub(vim.fn.getcwd(), "/", "%%") .. "%vim"
@@ -531,8 +533,8 @@ end
 vim.api.nvim_create_autocmd({ "VimEnter" }, {
   callback = restore_or_create_session,
   group = vim.api.nvim_create_augroup("RestoreOrCreateSession", {}),
-  -- The 'nested' option tells vim to fire events normally while this autocommand is executing. By default, no events
-  -- are fired during the execution of an autocommand to prevent infinite loops.
+  -- The 'nested' option tells vim to fire events normally while this autocommand is executing. By
+  -- default, no events are fired during the execution of an autocommand to prevent infinite loops.
   nested = true,
 })
 
@@ -890,8 +892,9 @@ end
 -- https://github.com/luukvbaal/statuscol.nvim/blob/98d02fc90ebd7c4674ec935074d1d09443d49318/lua/statuscol/ffidef.lua
 -- https://github.com/luukvbaal/statuscol.nvim/blob/98d02fc90ebd7c4674ec935074d1d09443d49318/lua/statuscol/builtin.lua
 local ffi = require("ffi")
--- I moved this call to `cdef` outside the fold function because I was getting the error "table overflow" a few
--- seconds into using neovim. Plus, not calling this during the fold function is faster.
+-- I moved this call to `cdef` outside the fold function because I was getting the error "table
+-- overflow" a few seconds into using neovim. Plus, not calling this during the fold function is
+-- faster.
 ffi.cdef([[
   int next_namespace_id;
   uint64_t display_tick;
@@ -1156,7 +1159,8 @@ vim.keymap.set("n", "gho", function()
 end, { desc = "Show outgoing calls" })
 vim.keymap.set("n", "gn", vim.lsp.buf.rename, { desc = "Rename" })
 
--- TODO: When there is only one result, it doesn't add to the jumplist so I'm adding that here. I should upstream this.
+-- TODO: When there is only one result, it doesn't add to the jumplist so I'm adding that here. I
+-- should upstream this.
 vim.keymap.set(
   "n",
   "gr",
@@ -1183,7 +1187,8 @@ vim.api.nvim_create_autocmd("TermOpen", {
 -- Plugins {{{
 
 -- Miscellaneous {{{
--- Add icons to the gutter to represent version control changes (e.g. new lines, modified lines, etc.)
+-- Add icons to the gutter to represent version control changes (e.g. new lines, modified lines,
+-- etc.)
 Plug("mhinz/vim-signify", {
   config = function()
     -- Make `[c` and `]c` wrap around. Taken from here:
@@ -1217,9 +1222,10 @@ Plug("mhinz/vim-signify", {
       ]])
   end,
 })
--- I'm setting all of these so that the signify signs will be added to the sign column, but NOT be visible. I don't
--- want them to be visible because I already change the color of my statuscolumn border to indicate git changes. I want
--- them to be added to the sign column so I know where to color my statuscolumn border.
+-- I'm setting all of these so that the signify signs will be added to the sign column, but NOT be
+-- visible. I don't want them to be visible because I already change the color of my statuscolumn
+-- border to indicate git changes. I want them to be added to the sign column so I know where to
+-- color my statuscolumn border.
 vim.g.signify_sign_add = ""
 vim.g.signify_sign_delete = ""
 vim.g.signify_sign_delete_first_line = ""
@@ -1309,8 +1315,8 @@ Plug("ojroques/nvim-osc52", {
     osc.setup({ silent = true })
 
     local function copy()
-      -- Use OSC 52 to set the clipboard whenever the `+` register is written to. Since the clipboard provider
-      -- is probably setting the clipboard as well this means we do it twice.
+      -- Use OSC 52 to set the clipboard whenever the `+` register is written to. Since the
+      -- clipboard provider is probably setting the clipboard as well this means we do it twice.
       if vim.v.event.operator == "y" and vim.v.event.regname == "+" then
         osc.copy_register("+")
       end
@@ -1746,8 +1752,8 @@ Plug("nvim-telescope/telescope.nvim", {
       "<Leader>h",
       call_with_visual_selection(telescope_builtins.command_history)
     )
-    -- TODO: I need to fix the previewer so it works with `page`. This way I get I get a live preview when I
-    -- search manpages.
+    -- TODO: I need to fix the previewer so it works with `page`. This way I get I get a live
+    -- preview when I search manpages.
     vim.keymap.set("n", "<Leader>b", telescope_builtins.current_buffer_fuzzy_find)
     -- This is actually ctrl+/, see :help :map-special-keys
     vim.keymap.set("n", "<C-_>", telescope_builtins.commands)
@@ -1920,8 +1926,8 @@ Plug("kosayoda/nvim-lightbulb", {
 
 Plug("oncomouse/czs.nvim", {
   config = function()
-    -- 'n' always searches forwards, 'N' always searches backwards
-    -- I have this set in base.lua, but since I need to use these czs mappings I had to redefine them.
+    -- 'n' always searches forwards, 'N' always searches backwards I have this set in base.lua, but
+    -- since I need to use these czs mappings I had to redefine them.
     vim.keymap.set(
       { "n", "x", "o" },
       "n",
@@ -1945,8 +1951,8 @@ Plug("akinsho/bufferline.nvim", {
       local window_count = vim.fn.winnr("$")
       local tab_count = vim.fn.tabpagenr("$")
 
-      -- If the only other window in the tab page is nvim-tree, and only one tab is open, keep the window and
-      -- switch to another buffer.
+      -- If the only other window in the tab page is nvim-tree, and only one tab is open, keep the
+      -- window and switch to another buffer.
       if
         tab_count == 1
         and window_count == 2
@@ -1960,7 +1966,8 @@ Plug("akinsho/bufferline.nvim", {
         return
       end
 
-      -- If this is the last window and tab, close the buffer and if that was the last buffer, close vim.
+      -- If this is the last window and tab, close the buffer and if that was the last buffer, close
+      -- vim.
       if
         tab_count == 1
         and (
@@ -2081,6 +2088,7 @@ Plug("akinsho/bufferline.nvim", {
       close(vim.fn.bufnr())
     end, { silent = true })
     function BufferlineWrapper()
+      ---@diagnostic disable-next-line: undefined-global
       local original = nvim_bufferline()
       local result = original
       local is_explorer_open = string.find(original, "")
@@ -2209,9 +2217,8 @@ Plug("f-person/git-blame.nvim", {
       message_when_not_committed = message_prefix .. "Not committed yet",
       date_format = "%r",
       use_blame_commit_file_urls = true,
-      -- TODO: Workaround for a bug in neovim where virtual text highlight is being combined with the cursorline
-      -- highlight.
-      -- issue: https://github.com/neovim/neovim/issues/15485
+      -- TODO: Workaround for a bug in neovim where virtual text highlight is being combined with
+      -- the cursorline highlight. issue: https://github.com/neovim/neovim/issues/15485
       set_extmark_options = {
         hl_mode = "combine",
       },
@@ -2304,8 +2311,8 @@ Plug("anuvyklack/windows.nvim", {
       },
     })
 
-    -- TODO: When tmux is able to differentiate between enter and ctrl+m this mapping should be updated.
-    -- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
+    -- TODO: When tmux is able to differentiate between enter and ctrl+m this mapping should be
+    -- updated. tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
     vim.keymap.set("n", "<Leader>m", function()
       vim.cmd.WindowsMaximize()
     end)
@@ -2630,8 +2637,9 @@ Plug("hrsh7th/nvim-cmp", {
           end
         end, { "i", "s" }),
       }),
-      -- The order of the sources controls which entry will be chosen if multiple sources return entries with the
-      -- same names. Sources at the bottom of this list will be chosen over the sources above them.
+      -- The order of the sources controls which entry will be chosen if multiple sources return
+      -- entries with the same names. Sources at the bottom of this list will be chosen over the
+      -- sources above them.
       sources = cmp.config.sources({
         lsp_signature,
         buffer,
@@ -2716,8 +2724,8 @@ Plug("williamboman/mason.nvim", {
     require("mason").setup({
       ui = {
         width = 1,
-        -- Ideally I'd use a function here so I could set it to '<screen_height> - 1', but this field doesn't support
-        -- functions.
+        -- Ideally I'd use a function here so I could set it to '<screen_height> - 1', but this
+        -- field doesn't support functions.
         height = 1,
         icons = {
           package_installed = "󰄳  ",
@@ -2770,8 +2778,9 @@ Plug("williamboman/mason.nvim", {
       set_mason_update_count()
     end)
     -- Set the count every time we update a package so it gets decremented accordingly.
-    -- TODO: This event also fires when a new package is installed, but we aren't interested in that event. This
-    -- means we'll set the count more often than we need to.
+    --
+    -- TODO: This event also fires when a new package is installed, but we aren't interested in that
+    -- event. This means we'll set the count more often than we need to.
     registry:on("package:install:success", vim.schedule_wrap(set_mason_update_count))
   end,
 })
@@ -2898,9 +2907,9 @@ Plug("williamboman/mason-lspconfig.nvim", {
           "quarto",
           "rmd",
 
-          -- neovim gives plain text files the file type `text`, but ltex-ls only supports the LSP language ID
-          -- for plain text, `plaintext`. However, since ltex-ls treats unsupported file types as plain text, it
-          -- works out.
+          -- neovim gives plain text files the file type `text`, but ltex-ls only supports the LSP
+          -- language ID for plain text, `plaintext`. However, since ltex-ls treats unsupported file
+          -- types as plain text, it works out.
           "text",
         },
         settings = {
@@ -2926,9 +2935,9 @@ Plug("williamboman/mason-lspconfig.nvim", {
               "plaintext",
               "restructuredtext",
 
-              -- neovim gives plain text files the file type `text`, but ltex-ls only supports the LSP language ID
-              -- for plain text, `plaintext`. However, since ltex-ls treats unsupported file types as plain text, it
-              -- works out.
+              -- neovim gives plain text files the file type `text`, but ltex-ls only supports
+              -- the LSP language ID for plain text, `plaintext`. However, since ltex-ls treats
+              -- unsupported file types as plain text, it works out.
               "text",
             },
           },
@@ -2951,9 +2960,9 @@ Plug("williamboman/mason-lspconfig.nvim", {
     end
     require("mason-lspconfig").setup_handlers(server_config_handlers)
 
-    -- Set the filetype of all the currently open buffers to trigger a 'FileType' event for each buffer so nvim_lsp
-    -- has a chance to attach to any buffers that were openeed before it was configured. This way I can load nvim_lsp
-    -- asynchronously.
+    -- Set the filetype of all the currently open buffers to trigger a 'FileType' event for each
+    -- buffer so nvim_lsp has a chance to attach to any buffers that were openeed before it was
+    -- configured. This way I can load nvim_lsp asynchronously.
     local buffer = vim.fn.bufnr()
     vim.cmd([[
         silent! bufdo silent! lua vim.o.filetype = vim.o.filetype
@@ -2974,9 +2983,9 @@ Plug("b0o/SchemaStore.nvim")
 -- }}}
 
 -- CLI to LSP {{{
--- A language server that acts as a bridge between neovim's language server client and commandline tools that don't
--- support the language server protocol. It does this by transforming the output of a commandline tool into the
--- format specified by the language server protocol.
+-- A language server that acts as a bridge between neovim's language server client and commandline
+-- tools that don't support the language server protocol. It does this by transforming the output of
+-- a commandline tool into the format specified by the language server protocol.
 Plug("nvimtools/none-ls.nvim", {
   config = function()
     local null_ls = require("null-ls")
@@ -2999,7 +3008,8 @@ Plug("nvimtools/none-ls.nvim", {
 
 -- Color scheme {{{
 Plug("nordtheme/vim", {
-  -- I need this config to be applied earlier so you don't see a flash of the default color scheme and then mine.
+  -- I need this config to be applied earlier so you don't see a flash of the default color scheme
+  -- and then mine.
   sync = true,
   config = function()
     vim.cmd.colorscheme("nord")
@@ -3024,7 +3034,8 @@ function SetNordOverrides()
   vim.api.nvim_set_hl(0, "StatusLineHintText", { ctermfg = 5, ctermbg = 51 })
   vim.api.nvim_set_hl(0, "StatusLineStandoutText", { ctermfg = 3, ctermbg = 51 })
   vim.cmd([[
-    " Clearing the highlight first since highlights don't get overriden with the vimscript API, they get combined.
+    " Clearing the highlight first since highlights don't get overriden with the vimscript API, they
+    " get combined.
     hi clear CursorLine
     hi CursorLine guisp='foreground' cterm=underline ctermbg='NONE'
   ]])
@@ -3040,16 +3051,16 @@ function SetNordOverrides()
   vim.api.nvim_set_hl(0, "IncSearch", { link = "Search" })
   vim.api.nvim_set_hl(0, "TabLineBorder", { ctermbg = "NONE", ctermfg = 51 })
   vim.api.nvim_set_hl(0, "TabLineBorder2", { ctermbg = 51, ctermfg = 0 })
-  -- The `TabLine*` highlights are the so the tabline looks blank before bufferline populates it so it needs the same
-  -- background color as bufferline. The foreground needs to match the background so you can't see the text from the
-  -- original tabline function.
+  -- The `TabLine*` highlights are the so the tabline looks blank before bufferline populates it so
+  -- it needs the same background color as bufferline. The foreground needs to match the background
+  -- so you can't see the text from the original tabline function.
   vim.api.nvim_set_hl(0, "TabLine", { ctermbg = 51, ctermfg = 51 })
   vim.api.nvim_set_hl(0, "TabLineFill", { link = "TabLine" })
   vim.api.nvim_set_hl(0, "TabLineSel", { link = "TabLine" })
   vim.api.nvim_set_hl(0, "Comment", { ctermfg = 15, ctermbg = "NONE" })
-  -- This variable contains a list of 16 colors that should be used as the color palette for terminals opened in vim.
-  -- By unsetting this, I ensure that terminals opened in vim will use the colors from the color palette of the
-  -- terminal in which vim is running
+  -- This variable contains a list of 16 colors that should be used as the color palette for
+  -- terminals opened in vim. By unsetting this, I ensure that terminals opened in vim will use the
+  -- colors from the color palette of the terminal in which vim is running
   vim.g.terminal_ansi_colors = nil
   -- Have vim only use the colors from the color palette of the terminal in which it runs
   vim.o.t_Co = 256
@@ -3221,7 +3232,8 @@ function SetNordOverrides()
       string.format("Notify%sTitle", level),
       { ctermbg = "NONE", ctermfg = color }
     )
-    -- I wanted to set ctermfg to NONE, but when I did, it wouldn't override nvim-notify's default highlight.
+    -- I wanted to set ctermfg to NONE, but when I did, it wouldn't override nvim-notify's default
+    -- highlight.
     vim.api.nvim_set_hl(0, string.format("Notify%sBody", level), { ctermbg = "NONE", ctermfg = 7 })
   end
 
