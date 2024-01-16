@@ -58,14 +58,45 @@ install-git-hooks:
 test:
     nix develop --ignore-environment .# --command bash -- ./tests.bash
 
+get-secrets:
+    #!/usr/bin/env bash
+    set -o errexit
+    set -o nounset
+    set -o pipefail
+
+    project_dir="$PWD"
+
+    temp="$(mktemp --directory)"
+    trap 'rm -rf $temp' SIGINT SIGTERM ERR EXIT
+    cd $temp
+
+    printf 'Enter the service account token (or just press enter to cancel):'
+    read -rs token
+    test -z "$token" && exit
+    export BWS_ACCESS_TOKEN="$token"
+
+    bws="$(NIXPKGS_ALLOW_UNFREE=1 nix shell --impure nixpkgs#bws --command which -- bws)"
+    function get_secret {
+        printf "$($bws secret get "$1" | jq --raw-output '.value')" > "$2"
+    }
+
+    github='github.txt'
+    get_secret 'b2fe18ea-c96b-48e6-ae20-b0f90159d299' "$github"
+    cloudflared='a52a24f6-92ee-4dc5-b537-24bad84b7b1f.json'
+    get_secret 'a45acbd3-45ac-43f1-96fd-b0f9015b6c2c' "$cloudflared"
+
+    # Writing secrets now to ensure we only write secrets if we succeed in getting all of them
+    mv "$github" "$project_dir/secrets/"
+    mv "$cloudflared" ~/.cloudflared/
+
 # Apply the first generation of a home-manager configuration.
 [private]
-init-home-manager host_name: install-git-hooks
+init-home-manager host_name: install-git-hooks get-secrets
     nix run .#homeManager -- switch --flake .#{{ host_name }}
 
 # Apply the first generation of a nix-darwin configuration.
 [private]
-init-nix-darwin host_name: install-git-hooks
+init-nix-darwin host_name: install-git-hooks get-secrets
     nix run .#nixDarwin -- switch --flake .#{{ host_name }}
 
 # Generate the Table of Contents in the README
