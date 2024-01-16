@@ -54,3 +54,8 @@ PATH="$HOME/.local/bin:$PATH"
 if uname | grep -q Linux; then
   export MOZ_USE_XINPUT2=1
 fi
+
+# par
+# Not sure what this means, the man page said to use it and it seems to work
+# shellcheck disable=1003
+export PARINIT='rTbgqR B=.\,?'"'"'_A_a_@ Q=_s>|'

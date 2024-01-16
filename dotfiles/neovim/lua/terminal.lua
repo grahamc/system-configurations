@@ -118,10 +118,6 @@ vim.keymap.set("n", "<BS>", "<C-^>")
 vim.o.ttimeout = true
 vim.o.ttimeoutlen = 50
 
--- Delete comment character when joining commented lines
-vim.opt.formatoptions:append("j")
-vim.opt.formatoptions:append("r")
-
 -- Open link on mouse click. Works on URLs that wrap on to the following line.
 function ClickLink()
   local cfile = vim.fn.expand("<cfile>")

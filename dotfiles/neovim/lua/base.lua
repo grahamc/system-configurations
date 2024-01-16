@@ -224,13 +224,6 @@ vim.api.nvim_create_autocmd({ "Filetype" }, {
   end,
   group = vim.api.nvim_create_augroup("Nix commentstring", {}),
 })
-vim.api.nvim_create_autocmd("OptionSet", {
-  pattern = "formatexpr",
-  callback = function()
-    vim.bo.formatexpr = ""
-  end,
-  group = vim.api.nvim_create_augroup("Remove formatexpr", {}),
-})
 vim.api.nvim_create_autocmd("BufNew", {
   pattern = "*",
   callback = function()
@@ -249,7 +242,8 @@ local function get_commentstring()
   end
 end
 local function set_formatprg(text)
-  local formatprg = string.format("par -w%d", vim.bo.textwidth)
+  local formatprg =
+    string.format("par -w%d", vim.bo.textwidth == 0 and GetMaxLineLength() or vim.bo.textwidth)
 
   local _, newline_count = string.gsub(text, "\n", "")
   local is_one_line = newline_count == 0
@@ -264,6 +258,7 @@ local function set_formatprg(text)
     end
   end
 
+  vim.bo.formatexpr = ""
   vim.bo.formatprg = formatprg
 end
 -- TODO: This assumes entire lines are selected
@@ -304,8 +299,9 @@ local function override_default_filetype_plugins()
     pattern = "*",
     callback = function()
       vim.bo.wrapmargin = 0
-      -- auto insert comment character
-      vim.bo.formatoptions = "ro"
+      -- ro: auto insert comment character
+      -- jr: delete comment character when joining commented lines
+      vim.bo.formatoptions = "rojr"
     end,
     group = vim_default_overrides_group_id,
   })

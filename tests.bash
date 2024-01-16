@@ -2,6 +2,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+export NIX_CONFIG='allow-import-from-derivation = true'
+
 just check
 
 # verify flake output format and build packages

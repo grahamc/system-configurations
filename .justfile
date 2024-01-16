@@ -10,6 +10,12 @@ help:
 
 # Reload direnv
 reload:
+    #!/usr/bin/env bash
+    set -o errexit
+    set -o nounset
+    set -o pipefail
+
+    direnv reload
     nix-direnv-reload
 
 # Switch to a new generation
