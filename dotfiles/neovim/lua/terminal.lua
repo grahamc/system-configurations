@@ -130,8 +130,8 @@ function ClickLink()
     vim.fn.jobstart({ "open", cfile }, { detach = true })
   end
 
-  -- If we are in a float that doesn't have a filetype, jump back to previous window. This way I can click a link in
-  -- a documentation/diagnostic float and stay in the editing window.
+  -- If we are in a float that doesn't have a filetype, jump back to previous window. This way I can
+  -- click a link in a documentation/diagnostic float and stay in the editing window.
   local is_float = vim.api.nvim_win_get_config(0).relative ~= ""
   if is_float and (not vim.o.filetype or #vim.o.filetype == 0) then
     vim.cmd.wincmd("p")
@@ -145,8 +145,8 @@ vim.keymap.set("n", "|", "<Cmd>set list!<CR>", { silent = true })
 
 vim.o.shortmess = "filnxtToOFs"
 
--- I have a mapping in my terminal for <C-i> that sends F9 to get around the fact that TMUX considers <C-i> the
--- same as <Tab> right now since TMUX lost support for extended keys.
+-- I have a mapping in my terminal for <C-i> that sends F9 to get around the fact that TMUX
+-- considers <C-i> the same as <Tab> right now since TMUX lost support for extended keys.
 -- TODO: tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
 vim.keymap.set({ "n" }, "<F9>", "<C-i>")
 
@@ -200,8 +200,8 @@ local function listen_for_system_theme_changes()
   })
 end
 
--- TODO: Forcing dark mode since devicons looks best in dark mode when using 256 colors. If I ever switch to
--- termguicolors I can remove this.
+-- TODO: Forcing dark mode since devicons looks best in dark mode when using 256 colors. If I ever
+-- switch to termguicolors I can remove this.
 vim.o.background = "dark"
 -- nord sets the background on startup so this will overwrite that. I wanted to use 'OptionSet', but this works too.
 -- vim.api.nvim_create_autocmd(

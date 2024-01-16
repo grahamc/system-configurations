@@ -36,10 +36,11 @@ function PlugEnd()
 
   apply_configs(configs_by_type.sync)
 
-  -- Apply the asynchronous configurations after everything else that is currently on the event loop. Now
-  -- configs are applied after any files specified on the commandline are opened and after sessions are restored.
-  -- This way, neovim shows me the first file "instantly" and by the time I've looked at the file and decided on my
-  -- first key press, the plugin configs have already been applied.
+  -- Apply the asynchronous configurations after everything else that is currently on the event
+  -- loop. Now configs are applied after any files specified on the commandline are opened and after
+  -- sessions are restored. This way, neovim shows me the first file "instantly" and by the time
+  -- I've looked at the file and decided on my first key press, the plugin configs have already been
+  -- applied.
   local function ApplyAsyncConfigs()
     apply_configs(configs_by_type.async)
   end
@@ -48,8 +49,8 @@ end
 
 local group_id = vim.api.nvim_create_augroup("PlugLua", {})
 local original_plug = vim.fn["plug#"]
--- Similar to the vim-plug `Plug` command, but with an additional option to specify a function to run after a
--- plugin is loaded.
+-- Similar to the vim-plug `Plug` command, but with an additional option to specify a function to
+-- run after a plugin is loaded.
 function Plug(repo, options)
   if not options then
     original_plug(repo)

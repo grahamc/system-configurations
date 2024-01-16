@@ -1,5 +1,5 @@
-# This module assigns each host manager (home-manager, nix-darwin, etc.) a list of inputs. These are the
-# inputs that the host manager should upgrade as part of `hostctl-upgrade`. This way I don't
+# This module assigns each host manager (home-manager, nix-darwin, etc.) a list of inputs. These are
+# the inputs that the host manager should upgrade as part of `hostctl-upgrade`. This way I don't
 # update nix-darwin related inputs while I'm on Linux and risk breaking something I can't test.
 {inputs, ...}: {
   flake = let
