@@ -2,7 +2,9 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-export NIX_CONFIG='allow-import-from-derivation = true'
+newline='
+'
+export NIX_CONFIG="${NIX_CONFIG}${newline}allow-import-from-derivation = true"
 
 just check
 
