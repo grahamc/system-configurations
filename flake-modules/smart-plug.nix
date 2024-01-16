@@ -54,8 +54,20 @@
         text = scriptText;
       };
 
+    profile = pkgs.symlinkJoin {
+      name = "tools";
+      paths = [
+        pythonWithPackages
+      ];
+    };
+
+    devShell = self.lib.devShell.mkNakedShell {
+      name = "devShell";
+      inherit profile pkgs;
+    };
+
     outputs = {
-      devShells.smartPlug = pkgs.mkShell {packages = [pythonWithPackages];};
+      devShells.smartPlug = devShell;
       packages.smartPlug = cli;
     };
 
