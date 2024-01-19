@@ -76,18 +76,25 @@ get-secrets:
     export BWS_ACCESS_TOKEN="$token"
 
     bws="$(NIXPKGS_ALLOW_UNFREE=1 nix shell --impure nixpkgs#bws --command which -- bws)"
-    function get_secret {
-        printf "$($bws secret get "$1" | jq --raw-output '.value')" > "$2"
-    }
+    PATH="$(dirname "$bws"):$PATH"
 
-    github='github.txt'
-    get_secret 'b2fe18ea-c96b-48e6-ae20-b0f90159d299' "$github"
-    cloudflared='a52a24f6-92ee-4dc5-b537-24bad84b7b1f.json'
-    get_secret 'a45acbd3-45ac-43f1-96fd-b0f9015b6c2c' "$cloudflared"
+    declare -A secrets_to_fetch=(
+        ['b2fe18ea-c96b-48e6-ae20-b0f90159d299']="$project_dir/secrets/github.txt"
+        ['a45acbd3-45ac-43f1-96fd-b0f9015b6c2c']="$HOME/.cloudflared/a52a24f6-92ee-4dc5-b537-24bad84b7b1f.json"
+    )
+    declare -A secrets_to_commit
+    for bws_id in "${!secrets_to_fetch[@]}"; do
+        destination="${secrets_to_fetch[$bws_id]}"
+        temp_filename="$(printf "$destination" | tr '/' '%')"
+        printf "$(bws secret get "$bws_id" | jq --raw-output '.value')" > "$temp_filename"
+        secrets_to_commit["$temp_filename"]="$destination"
+    done
 
     # Writing secrets now to ensure we only write secrets if we succeed in getting all of them
-    mv "$github" "$project_dir/secrets/"
-    mv "$cloudflared" ~/.cloudflared/
+    for temp_filename in "${!secrets_to_commit[@]}"; do
+        destination="${secrets_to_commit[$temp_filename]}"
+        mv "$temp_filename" "$destination"
+    done
 
 # Apply the first generation of a home-manager configuration.
 [private]
