@@ -6,16 +6,8 @@
   perSystem = {
     system,
     lib,
-    inputs',
     ...
   }: let
-    inherit (lib.attrsets) optionalAttrs;
-    supportedSystems = with inputs.flake-utils.lib.system; [x86_64-darwin];
-    isSupportedSystem = builtins.elem system supportedSystems;
-    initOutput = optionalAttrs isSupportedSystem {
-      packages.nixDarwin = inputs'.nix-darwin.packages.default;
-    };
-
     makeFlakeOutput = {
       hostName,
       modules,
@@ -77,7 +69,7 @@
     makeFlakeOutputForHost = host: makeFlakeOutput host.configuration;
     hostOutputs = map makeFlakeOutputForHost supportedHosts;
 
-    mergedFlakeOutputs = self.lib.recursiveMerge (hostOutputs ++ [initOutput]);
+    mergedFlakeOutputs = self.lib.recursiveMerge hostOutputs;
   in
     mergedFlakeOutputs;
 }

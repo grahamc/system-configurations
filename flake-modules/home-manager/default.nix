@@ -87,17 +87,9 @@ in {
 
   perSystem = {
     system,
-    inputs',
     lib,
     ...
   }: let
-    inherit (lib.attrsets) optionalAttrs;
-    supportedSystems = with inputs.flake-utils.lib.system; [x86_64-linux x86_64-darwin];
-    isSupportedSystem = builtins.elem system supportedSystems;
-    initOutput = optionalAttrs isSupportedSystem {
-      packages.homeManager = inputs'.home-manager.packages.default;
-    };
-
     hosts = [
       {
         configuration = {
@@ -118,7 +110,7 @@ in {
     makeFlakeOutputForHost = host: makeFlakeOutput system host.configuration;
     hostOutputs = map makeFlakeOutputForHost supportedHosts;
 
-    mergedFlakeOutputs = self.lib.recursiveMerge (hostOutputs ++ [initOutput]);
+    mergedFlakeOutputs = self.lib.recursiveMerge hostOutputs;
   in
     mergedFlakeOutputs;
 }
