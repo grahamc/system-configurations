@@ -98,6 +98,7 @@ in {
         jq
         git
         nix
+        which
       ];
       postBuild = ''
         cd $out/bin

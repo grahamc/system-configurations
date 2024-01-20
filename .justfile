@@ -56,7 +56,7 @@ install-git-hooks:
 
 # Run all tests
 test:
-    nix develop --ignore-environment .# --command bash -- ./tests.bash
+    nix develop --ignore-environment --keep BWS_ACCESS_TOKEN --keep HOME .# --command bash -- ./tests.bash
 
 get-secrets:
     #!/usr/bin/env bash
@@ -70,15 +70,18 @@ get-secrets:
     trap 'rm -rf $temp' SIGINT SIGTERM ERR EXIT
     cd $temp
 
-    printf 'Enter the service account token (or just press enter to cancel):'
-    read -rs token
-    test -z "$token" && exit
-    export BWS_ACCESS_TOKEN="$token"
+    if test -z "${BWS_ACCESS_TOKEN:-}"; then
+        printf 'Enter the service account token (or just press enter to cancel):'
+        read -rs token
+        test -z "$token" && exit
+        export BWS_ACCESS_TOKEN="$token"
+    fi
 
     bws="$(NIXPKGS_ALLOW_UNFREE=1 nix shell --impure nixpkgs#bws --command which -- bws)"
     PATH="$(dirname "$bws"):$PATH"
 
     declare -A secrets_to_fetch=(
+        ['917561bd-57d8-4009-8155-b0f9016c89a2']="$project_dir/secrets/bws.txt"
         ['b2fe18ea-c96b-48e6-ae20-b0f90159d299']="$project_dir/secrets/github.txt"
         ['a45acbd3-45ac-43f1-96fd-b0f9015b6c2c']="$HOME/.cloudflared/a52a24f6-92ee-4dc5-b537-24bad84b7b1f.json"
     )
