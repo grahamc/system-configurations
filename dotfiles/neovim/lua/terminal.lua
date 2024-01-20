@@ -2153,33 +2153,14 @@ Plug("j-hui/fidget.nvim", {
 Plug("rcarriga/nvim-notify", {
   config = function()
     local notify = require("notify")
-    _G.notification_count = 0
-    ---@diagnostic disable-next-line: undefined-field
     notify.setup({
       stages = "slide",
-      timeout = 60000,
+      timeout = 3000,
       render = "wrapped-compact",
       max_width = math.floor(vim.o.columns * 0.35),
-      on_open = function()
-        _G.notification_count = _G.notification_count + 1
-      end,
-      on_close = function()
-        _G.notification_count = _G.notification_count - 1
-      end,
     })
     vim.notify = notify
     vim.keymap.set("n", "<Leader>n", "<Cmd>Telescope notify<CR>")
-
-    -- dismiss notifications on mouse movement or key presses
-    local dismiss = function()
-      if _G.notification_count > 0 then
-        -- TODO: The dismiss animation doesn't run if I call dismiss manually.
-        ---@diagnostic disable-next-line: undefined-field
-        notify.dismiss()
-      end
-    end
-    vim.on_key(dismiss)
-    vim.keymap.set("", "<MouseMove>", dismiss)
   end,
 })
 
