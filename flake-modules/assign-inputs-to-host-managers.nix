@@ -66,8 +66,9 @@
       lib.mapAttrs
       (_ignored: convertInputListToUpdateFlags)
       inputListsByHostManager;
-    # I'm converting the inputs to a set of `--update-input <input>` commandline flags so they be passed directly
-    # to the host manager's switch command e.g. `home-manager --switch <update_input_flags>`.
+    # I'm converting the inputs to a set of `--update-input <input>` commandline flags so they
+    # be passed directly to the host manager's switch command e.g.
+    # `home-manager --switch <update_input_flags>`.
     updateFlags =
       if isAssignmentsSameAsFlakeInputs
       then updateFlagsByHostManager

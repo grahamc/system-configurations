@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 
-# If not running interactively, exit this script.
-# Reasoning is explained here: https://unix.stackexchange.com/questions/257571/why-does-bashrc-check-whether-the-current-shell-is-interactive
+# If not running interactively, exit this script. Reasoning is explained here:
+# https://unix.stackexchange.com/questions/257571/why-does-bashrc-check-whether-the-current-shell-is-interactive
 if [ -z "$PS1" ]; then
   return
 fi
