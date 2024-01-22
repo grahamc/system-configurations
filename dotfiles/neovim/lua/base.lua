@@ -537,6 +537,32 @@ Plug("echasnovski/mini.nvim", {
       exchange = { prefix = "gx" },
       sort = { prefix = "so" },
     })
+
+    require("mini.indentscope").setup({
+      mappings = {
+        object_scope = "",
+        object_scope_with_border = "",
+        goto_top = "",
+        goto_bottom = "",
+      },
+      symbol = "┊",
+    })
+    local mini_group_id = vim.api.nvim_create_augroup("MyMiniNvim", {})
+    -- TODO: I want to disable this per window, but mini only supports disabling per buffer
+    vim.api.nvim_create_autocmd("BufEnter", {
+      pattern = "*",
+      callback = function()
+        vim.b.miniindentscope_disable = false
+      end,
+      group = mini_group_id,
+    })
+    vim.api.nvim_create_autocmd("BufLeave", {
+      pattern = "*",
+      callback = function()
+        vim.b.miniindentscope_disable = true
+      end,
+      group = mini_group_id,
+    })
   end,
 })
 

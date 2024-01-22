@@ -3157,6 +3157,7 @@ function SetNordOverrides()
   vim.api.nvim_set_hl(0, "GitBlameVirtualText", { ctermfg = 15, italic = true })
   vim.api.nvim_set_hl(0, "Underlined", {})
   vim.api.nvim_set_hl(0, "NullLsInfoBorder", { link = "FloatBorder" })
+  vim.api.nvim_set_hl(0, "MiniIndentscopeSymbol", { ctermbg = "NONE", ctermfg = 51 })
 
   local level_highlights = {
     { level = "ERROR", color = 1 },
