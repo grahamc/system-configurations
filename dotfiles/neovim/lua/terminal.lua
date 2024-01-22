@@ -52,22 +52,6 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
   group = general_group_id,
 })
-vim.api.nvim_create_autocmd("OptionSet", {
-  pattern = "readonly",
-  callback = function()
-    if vim.v.option_new then
-      vim.opt_local.colorcolumn = ""
-    end
-  end,
-  group = general_group_id,
-})
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "qf", "help" },
-  callback = function()
-    vim.opt_local.colorcolumn = ""
-  end,
-  group = general_group_id,
-})
 vim.api.nvim_create_autocmd(
   -- I'm using BufEnter as opposed to FileType because if you run `:help something` and the help buffer is already
   -- open, vim will reset the buffer to not being listed so to get around that I set it back every time I enter the buffer.
@@ -104,11 +88,47 @@ vim.keymap.set("", "<C-x>", "<Cmd>xa<CR>")
 -- suspend vim
 vim.keymap.set({ "n", "i", "x" }, "<C-z>", "<Cmd>suspend<CR>")
 
+-- colorcolumn
+local colorcolumn_group_id = vim.api.nvim_create_augroup("ColorColumn", {})
+vim.api.nvim_create_autocmd("OptionSet", {
+  pattern = "readonly",
+  callback = function()
+    if vim.v.option_new then
+      vim.wo.colorcolumn = ""
+    end
+  end,
+  group = colorcolumn_group_id,
+})
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "qf", "help" },
+  callback = function()
+    vim.wo.colorcolumn = ""
+  end,
+  group = colorcolumn_group_id,
+})
+vim.api.nvim_create_autocmd("WinLeave", {
+  pattern = "*",
+  callback = function()
+    vim.w.old_colorcolumn = vim.wo.colorcolumn
+    vim.wo.colorcolumn = ""
+  end,
+  group = colorcolumn_group_id,
+})
+vim.api.nvim_create_autocmd("WinEnter", {
+  pattern = "*",
+  callback = function()
+    if vim.w.old_colorcolumn then
+      vim.wo.colorcolumn = vim.w.old_colorcolumn
+    end
+  end,
+  group = colorcolumn_group_id,
+})
 vim.api.nvim_create_autocmd("BufWinEnter", {
   callback = function()
     vim.wo.colorcolumn = tostring(_G.GetMaxLineLength() + 1)
+    vim.w.old_colorcolumn = vim.wo.colorcolumn
   end,
-  group = general_group_id,
+  group = colorcolumn_group_id,
 })
 
 vim.o.shell = "sh"
