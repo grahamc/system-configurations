@@ -20,7 +20,7 @@ vim-fish
 cmp-env
 vim-tmux-navigator
 cmp-cmdline-history
-mini.comment
+mini.nvim
 git-blame.nvim
 vim-lastplace
 which-key.nvim
@@ -53,6 +53,7 @@ telescope-smart-history.nvim
 telescope.nvim
 nvim-web-devicons
 nvim-treesitter
+nvim-treesitter-textobjects
 none-ls.nvim
 nvim-osc52
 czs.nvim
@@ -66,7 +67,6 @@ vim-exchange
 vim-abolish
 vim-repeat
 vim-sleuth
-targets.vim
 mason-lspconfig.nvim
 mason.nvim
 nvim-autopairs

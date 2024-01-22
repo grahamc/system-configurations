@@ -366,9 +366,6 @@ Plug("andymass/vim-matchup")
 -- Don't display off-screen matches in my statusline or a popup window
 vim.g.matchup_matchparen_offscreen = {}
 
--- Additional text objects and motions
-Plug("wellle/targets.vim")
-
 Plug("bkad/CamelCaseMotion")
 vim.g.camelcasemotion_key = ","
 
@@ -466,7 +463,55 @@ vim.keymap.set("v", "g-", "g<Plug>(dial-decrement)")
 
 Plug("arthurxavierx/vim-caser")
 
-Plug("echasnovski/mini.comment", {
+-- TODO: Some of this should only be configured when neovim is running in the terminal.
+Plug("nvim-treesitter/nvim-treesitter", {
+  config = function()
+    require("nvim-treesitter.configs").setup({
+      auto_install = false,
+      highlight = {
+        enable = true,
+        additional_vim_regex_highlighting = false,
+      },
+      incremental_selection = {
+        enable = false,
+      },
+      indent = {
+        enable = false,
+      },
+      matchup = {
+        enable = true,
+        disable_virtual_text = true,
+        include_match_words = true,
+      },
+      endwise = {
+        enable = true,
+      },
+      autotag = {
+        enable = true,
+      },
+    })
+
+    local function maybe_set_treesitter_foldmethod()
+      local foldmethod = vim.o.foldmethod
+      local is_foldmethod_overridable = foldmethod ~= "manual"
+        and foldmethod ~= "marker"
+        and foldmethod ~= "diff"
+        and foldmethod ~= "expr"
+      if require("nvim-treesitter.parsers").has_parser() and is_foldmethod_overridable then
+        vim.o.foldmethod = "expr"
+        vim.o.foldexpr = "nvim_treesitter#foldexpr()"
+      end
+    end
+    vim.api.nvim_create_autocmd({ "FileType" }, {
+      callback = maybe_set_treesitter_foldmethod,
+      group = vim.api.nvim_create_augroup("TreesitterFoldmethod", {}),
+    })
+  end,
+})
+
+Plug("nvim-treesitter/nvim-treesitter-textobjects")
+
+Plug("echasnovski/mini.nvim", {
   config = function()
     require("mini.comment").setup({
       options = {
@@ -476,6 +521,16 @@ Plug("echasnovski/mini.comment", {
       mappings = {
         textobject = "ic",
       },
+    })
+
+    local spec_treesitter = require("mini.ai").gen_spec.treesitter
+    require("mini.ai").setup({
+      custom_textobjects = {
+        f = spec_treesitter({ a = "@function.outer", i = "@function.inner" }),
+        ["?"] = spec_treesitter({ a = "@conditional.outer", i = "@conditional.inner" }),
+        s = spec_treesitter({ a = "@assignment.lhs", i = "@assignment.rhs" }),
+      },
+      silent = true,
     })
   end,
 })
