@@ -77,13 +77,14 @@ vim.keymap.set({ "n", "x" }, "k", function()
   return move_by_screen_line("k")
 end, { expr = true })
 
--- move ten lines at a time by holding ctrl and a directional key
-vim.keymap.set({ "n", "x" }, "<C-j>", "10j")
-vim.keymap.set({ "n", "x" }, "<C-k>", "10k")
+-- move six lines at a time by holding ctrl and a directional key. Reasoning for using 6 here:
+-- https://nanotipsforvim.prose.sh/vertical-navigation-%E2%80%93-without-relative-line-numbers
+vim.keymap.set({ "n", "x" }, "<C-j>", "6j")
+vim.keymap.set({ "n", "x" }, "<C-k>", "6k")
 
 -- move ten columns at a time by holding ctrl and a directional key
-vim.keymap.set({ "n", "x" }, "<C-h>", "10h")
-vim.keymap.set({ "n", "x" }, "<C-l>", "10l")
+vim.keymap.set({ "n", "x" }, "<C-h>", "6h")
+vim.keymap.set({ "n", "x" }, "<C-l>", "6l")
 
 -- Copy up to the end of line, not including the newline character
 vim.keymap.set({ "n" }, "Y", "yg_")
