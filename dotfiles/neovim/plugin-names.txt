@@ -63,7 +63,6 @@ nvim-notify
 cmp_luasnip
 aerial.nvim
 dressing.nvim
-vim-exchange
 vim-abolish
 vim-repeat
 vim-sleuth

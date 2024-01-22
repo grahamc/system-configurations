@@ -377,9 +377,6 @@ Plug("kylechui/nvim-surround", {
   end,
 })
 
--- For swapping two pieces of text
-Plug("tommcdo/vim-exchange")
-
 -- Commands/mappings for working with variants of words:
 -- - A command for performing substitutions. More features than vim's built-in :substitution
 -- - A command for creating abbreviations. More features than vim's built-in `:iabbrev`
@@ -531,6 +528,14 @@ Plug("echasnovski/mini.nvim", {
         s = spec_treesitter({ a = "@assignment.lhs", i = "@assignment.rhs" }),
       },
       silent = true,
+    })
+
+    require("mini.operators").setup({
+      evaluate = { prefix = "" },
+      multiply = { prefix = "" },
+      replace = { prefix = "" },
+      exchange = { prefix = "gx" },
+      sort = { prefix = "so" },
     })
   end,
 })
