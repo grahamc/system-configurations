@@ -174,6 +174,25 @@ vim.keymap.set({ "n" }, "<F9>", "<C-i>")
 vim.keymap.set({ "n" }, "<S-u>", "<C-r>")
 -- }}}
 
+-- Quickfix {{{
+local function toggle_quickfix()
+  local qf_exists = false
+  for _, win in pairs(vim.fn.getwininfo()) do
+    if win["quickfix"] == 1 then
+      qf_exists = true
+    end
+  end
+  if qf_exists == true then
+    vim.cmd("cclose")
+    return
+  end
+  if not vim.tbl_isempty(vim.fn.getqflist()) then
+    vim.cmd("copen")
+  end
+end
+vim.keymap.set("n", "<M-q>", toggle_quickfix)
+-- }}}
+
 -- Utilities {{{
 local function set_jump_before(fn)
   return function(...)
@@ -1688,6 +1707,10 @@ Plug("nvim-telescope/telescope.nvim", {
             ["<C-u>"] = false,
             ["<M-CR>"] = actions.toggle_selection,
             ["<M-a>"] = actions.toggle_all,
+            ["<C-q>"] = function(...)
+              actions.smart_send_to_qflist(...)
+              actions.open_qflist(...)
+            end,
           },
         },
         prompt_prefix = "   ",
