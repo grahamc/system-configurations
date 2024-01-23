@@ -525,7 +525,7 @@ Plug("echasnovski/mini.nvim", {
     require("mini.ai").setup({
       custom_textobjects = {
         d = spec_treesitter({ a = "@function.outer", i = "@function.inner" }),
-        I = spec_treesitter({ a = "@conditional.outer", i = "@conditional.inner" }),
+        C = spec_treesitter({ a = "@conditional.outer", i = "@conditional.inner" }),
         s = spec_treesitter({ a = "@assignment.lhs", i = "@assignment.rhs" }),
       },
       silent = true,
@@ -559,17 +559,17 @@ Plug("echasnovski/mini.nvim", {
 
     require("mini.indentscope").setup({
       mappings = {
-        object_scope = "",
-        object_scope_with_border = "",
-        goto_top = "",
-        goto_bottom = "",
+        object_scope = "iI",
+        object_scope_with_border = "aI",
+        goto_top = "[I",
+        goto_bottom = "]I",
       },
       symbol = "┊",
     })
     local new_opts = {
       options = { indent_at_cursor = false },
     }
-    local function run_with_opts(fn)
+    local function run_without_indent_at_cursor(fn)
       local old_opts = vim.b.miniindentscope_config
       if old_opts ~= nil then
         vim.b.miniindentscope_config = vim.tbl_deep_extend("force", old_opts, new_opts)
@@ -580,20 +580,20 @@ Plug("echasnovski/mini.nvim", {
       vim.b.miniindentscope_config = old_opts
     end
     vim.keymap.set({ "o", "x" }, "ii", function()
-      run_with_opts(MiniIndentscope.textobject)
+      run_without_indent_at_cursor(MiniIndentscope.textobject)
     end)
     vim.keymap.set({ "o", "x" }, "ai", function()
-      run_with_opts(function()
+      run_without_indent_at_cursor(function()
         MiniIndentscope.textobject(true)
       end)
     end)
     vim.keymap.set({ "n", "x" }, "[i", function()
-      run_with_opts(function()
+      run_without_indent_at_cursor(function()
         MiniIndentscope.move_cursor("top", false)
       end)
     end)
     vim.keymap.set({ "n", "x" }, "]i", function()
-      run_with_opts(function()
+      run_without_indent_at_cursor(function()
         MiniIndentscope.move_cursor("bottom", false)
       end)
     end)
