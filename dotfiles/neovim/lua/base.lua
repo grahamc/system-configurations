@@ -1,4 +1,7 @@
 -- vim:foldmethod=marker
+---@diagnostic disable: undefined-global
+-- This is so I can assign variables to `vim.b`
+---@diagnostic disable: inject-field
 
 -- Miscellaneous {{{
 vim.opt.nrformats:remove("octal")
