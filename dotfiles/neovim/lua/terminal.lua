@@ -1876,6 +1876,7 @@ Plug("tpope/vim-repeat")
 
 Plug("tpope/vim-sleuth")
 
+-- for autocomplete
 Plug("blankname/vim-fish")
 
 Plug("windwp/nvim-ts-autotag")
