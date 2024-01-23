@@ -435,8 +435,8 @@
       url = "github:nvim-tree/nvim-web-devicons";
       flake = false;
     };
-    vim-plugin-mini-comment = {
-      url = "github:echasnovski/mini.comment";
+    vim-plugin-mini-nvim = {
+      url = "github:echasnovski/mini.nvim";
       flake = false;
     };
   };

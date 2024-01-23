@@ -336,7 +336,7 @@
         "vim-plugin-mason-lspconfig-nvim": "vim-plugin-mason-lspconfig-nvim",
         "vim-plugin-mason-nvim": "vim-plugin-mason-nvim",
         "vim-plugin-middleclass": "vim-plugin-middleclass",
-        "vim-plugin-mini-comment": "vim-plugin-mini-comment",
+        "vim-plugin-mini-nvim": "vim-plugin-mini-nvim",
         "vim-plugin-none-ls-nvim": "vim-plugin-none-ls-nvim",
         "vim-plugin-nui-nvim": "vim-plugin-nui-nvim",
         "vim-plugin-nvim-autopairs": "vim-plugin-nvim-autopairs",
@@ -1019,19 +1019,19 @@
         "type": "github"
       }
     },
-    "vim-plugin-mini-comment": {
+    "vim-plugin-mini-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1702836858,
-        "narHash": "sha256-LIZeQqid4EcQpyNlipiIOeGvtRn7pcF8bjeX2hARUGs=",
+        "lastModified": 1705768968,
+        "narHash": "sha256-tJBI1YFICH1QaDIPE8ji/HuDRuh4znvhQedpvbVBDUM=",
         "owner": "echasnovski",
-        "repo": "mini.comment",
-        "rev": "67f00d3ebbeae15e84584d971d0c32aad4f4f3a4",
+        "repo": "mini.nvim",
+        "rev": "2e2931b3822bf357d2f69cbc0bcb2d99a3f0d4c8",
         "type": "github"
       },
       "original": {
         "owner": "echasnovski",
-        "repo": "mini.comment",
+        "repo": "mini.nvim",
         "type": "github"
       }
     },
