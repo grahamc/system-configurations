@@ -586,4 +586,9 @@ Plug("JoosepAlviste/nvim-ts-context-commentstring", {
   end,
 })
 vim.g.skip_ts_context_commentstring_module = true
+
+Plug("tpope/vim-repeat")
+
+-- For filetype detection
+Plug("NoahTheDuke/vim-just")
 -- }}}

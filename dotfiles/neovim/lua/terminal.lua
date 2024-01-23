@@ -1872,8 +1872,6 @@ Plug("folke/which-key.nvim", {
   end,
 })
 
-Plug("tpope/vim-repeat")
-
 Plug("tpope/vim-sleuth")
 
 -- for autocomplete
@@ -2177,9 +2175,6 @@ Plug("f-person/git-blame.nvim", {
     })
   end,
 })
-
--- For filetype detection
-Plug("NoahTheDuke/vim-just")
 
 Plug("stevearc/aerial.nvim", {
   config = function()
