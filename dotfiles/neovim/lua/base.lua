@@ -241,12 +241,15 @@ vim.api.nvim_create_autocmd("BufNew", {
 })
 -- removes '%s' and trims trailing whitespace
 local function get_commentstring()
-  require("ts_context_commentstring").update_commentstring()
-  local index_of_s = (string.find(vim.bo.commentstring, "%%s"))
+  local cursor_pos = vim.api.nvim_win_get_cursor(0)
+  cursor_pos[1] = cursor_pos[1] + 1
+  local commentstring = MiniComment.get_commentstring(cursor_pos)
+
+  local index_of_s = (string.find(commentstring, "%%s"))
   if index_of_s then
-    return string.sub(vim.bo.commentstring, 1, index_of_s - 1):gsub("^%s*(.-)%s*$", "%1")
+    return string.sub(commentstring, 1, index_of_s - 1):gsub("^%s*(.-)%s*$", "%1")
   else
-    return vim.bo.commentstring
+    return commentstring
   end
 end
 local function set_formatprg(text)
@@ -576,16 +579,6 @@ Plug("echasnovski/mini.nvim", {
     })
   end,
 })
-
-Plug("JoosepAlviste/nvim-ts-context-commentstring", {
-  config = function()
-    ---@diagnostic disable-next-line: missing-fields
-    require("ts_context_commentstring").setup({
-      enable_autocmd = false,
-    })
-  end,
-})
-vim.g.skip_ts_context_commentstring_module = true
 
 Plug("tpope/vim-repeat")
 

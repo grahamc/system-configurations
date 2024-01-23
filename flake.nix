@@ -439,9 +439,5 @@
       url = "github:echasnovski/mini.comment";
       flake = false;
     };
-    vim-plugin-nvim-ts-context-commentstring = {
-      url = "github:JoosepAlviste/nvim-ts-context-commentstring";
-      flake = false;
-    };
   };
 }
