@@ -566,11 +566,16 @@ Plug("echasnovski/mini.nvim", {
       },
       symbol = "┊",
     })
+    local new_opts = {
+      options = { indent_at_cursor = false },
+    }
     local function run_with_opts(fn)
       local old_opts = vim.b.miniindentscope_config
-      vim.b.miniindentscope_config = vim.tbl_deep_extend("force", vim.b.miniindentscope_config, {
-        options = { indent_at_cursor = false },
-      })
+      if old_opts ~= nil then
+        vim.b.miniindentscope_config = vim.tbl_deep_extend("force", old_opts, new_opts)
+      else
+        vim.b.miniindentscope_config = new_opts
+      end
       fn()
       vim.b.miniindentscope_config = old_opts
     end
