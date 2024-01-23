@@ -379,10 +379,6 @@
       url = "github:anuvyklack/middleclass";
       flake = false;
     };
-    vim-plugin-animation-nvim = {
-      url = "github:anuvyklack/animation.nvim";
-      flake = false;
-    };
     vim-plugin-windows-nvim = {
       url = "github:anuvyklack/windows.nvim";
       flake = false;

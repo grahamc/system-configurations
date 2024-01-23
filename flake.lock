@@ -311,7 +311,6 @@
         "vim-plugin-SchemaStore-nvim": "vim-plugin-SchemaStore-nvim",
         "vim-plugin-actions-preview-nvim": "vim-plugin-actions-preview-nvim",
         "vim-plugin-aerial-nvim": "vim-plugin-aerial-nvim",
-        "vim-plugin-animation-nvim": "vim-plugin-animation-nvim",
         "vim-plugin-bufferline-nvim": "vim-plugin-bufferline-nvim",
         "vim-plugin-cmp-buffer": "vim-plugin-cmp-buffer",
         "vim-plugin-cmp-cmdline": "vim-plugin-cmp-cmdline",
@@ -611,22 +610,6 @@
       "original": {
         "owner": "stevearc",
         "repo": "aerial.nvim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-animation-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1663498646,
-        "narHash": "sha256-KyFzPI2B0ioIABnhC6MwaHYLcuUzSqCsmcGpMei4XXk=",
-        "owner": "anuvyklack",
-        "repo": "animation.nvim",
-        "rev": "fb77091ab72ec9971aee0562e7081182527aaa6a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "anuvyklack",
-        "repo": "animation.nvim",
         "type": "github"
       }
     },

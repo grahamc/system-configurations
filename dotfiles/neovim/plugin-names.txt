@@ -7,7 +7,6 @@ reticle.nvim
 bufferline.nvim
 cmp-tmux
 vim-matchup
-animation.nvim
 middleclass
 windows.nvim
 vim-caser

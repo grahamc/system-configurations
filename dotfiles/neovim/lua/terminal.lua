@@ -2269,8 +2269,6 @@ Plug("stevearc/aerial.nvim", {
 
 Plug("anuvyklack/middleclass")
 
-Plug("anuvyklack/animation.nvim")
-
 Plug("anuvyklack/windows.nvim", {
   config = function()
     require("windows").setup({
