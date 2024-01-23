@@ -291,6 +291,9 @@ local function format_comment_visual()
 end
 vim.keymap.set("x", "gq", format_comment_visual, {})
 vim.keymap.set("n", "gqq", "<S-v>gq", { remap = true })
+
+vim.keymap.set({ "n", "x" }, "]p", "}", { remap = true })
+vim.keymap.set({ "n", "x" }, "[p", "{", { remap = true })
 -- }}}
 
 -- Option overrides {{{
