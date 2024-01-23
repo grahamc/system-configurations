@@ -54,6 +54,10 @@ vim.keymap.set({ "n" }, "p", "p=`]", { silent = true })
 -- select the text that was just pasted
 vim.keymap.set({ "n" }, "gV", "`[v`]")
 
+-- move to left and right side of last selection
+vim.keymap.set({ "n" }, "[v", "'<")
+vim.keymap.set({ "n" }, "]v", "'>")
+
 -- Prevents inserting two spaces after punctuation on a join (J)
 vim.o.joinspaces = false
 
