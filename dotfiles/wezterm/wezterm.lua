@@ -331,7 +331,13 @@ end)
 
 -- Title bar
 config.use_fancy_tab_bar = true
-config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
+local decorations = "INTEGRATED_BUTTONS|RESIZE"
+if is_mac then
+  -- disable this since it may affect performance:
+  -- https://github.com/wez/wezterm/issues/2669#issuecomment-1411507194
+  decorations = decorations .. "|MACOS_FORCE_DISABLE_SHADOW"
+end
+config.window_decorations = decorations
 config.show_new_tab_button_in_tab_bar = false
 config.show_tab_index_in_tab_bar = false
 -- TODO: I don't know why I need this
