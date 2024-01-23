@@ -346,7 +346,6 @@
         "vim-plugin-nvim-navic": "vim-plugin-nvim-navic",
         "vim-plugin-nvim-notify": "vim-plugin-nvim-notify",
         "vim-plugin-nvim-osc52": "vim-plugin-nvim-osc52",
-        "vim-plugin-nvim-surround": "vim-plugin-nvim-surround",
         "vim-plugin-nvim-tree-lua": "vim-plugin-nvim-tree-lua",
         "vim-plugin-nvim-treesitter": "vim-plugin-nvim-treesitter",
         "vim-plugin-nvim-treesitter-endwise": "vim-plugin-nvim-treesitter-endwise",
@@ -355,7 +354,6 @@
         "vim-plugin-plenary-nvim": "vim-plugin-plenary-nvim",
         "vim-plugin-reticle-nvim": "vim-plugin-reticle-nvim",
         "vim-plugin-sqlite-lua": "vim-plugin-sqlite-lua",
-        "vim-plugin-targets-vim": "vim-plugin-targets-vim",
         "vim-plugin-telescope-fzf-native": "vim-plugin-telescope-fzf-native",
         "vim-plugin-telescope-nvim": "vim-plugin-telescope-nvim",
         "vim-plugin-telescope-smart-history-nvim": "vim-plugin-telescope-smart-history-nvim",
@@ -363,12 +361,9 @@
         "vim-plugin-vim": "vim-plugin-vim",
         "vim-plugin-vim-abolish": "vim-plugin-vim-abolish",
         "vim-plugin-vim-caser": "vim-plugin-vim-caser",
-        "vim-plugin-vim-exchange": "vim-plugin-vim-exchange",
         "vim-plugin-vim-fish": "vim-plugin-vim-fish",
-        "vim-plugin-vim-indent-object": "vim-plugin-vim-indent-object",
         "vim-plugin-vim-indentwise": "vim-plugin-vim-indentwise",
         "vim-plugin-vim-just": "vim-plugin-vim-just",
-        "vim-plugin-vim-lastplace": "vim-plugin-vim-lastplace",
         "vim-plugin-vim-matchup": "vim-plugin-vim-matchup",
         "vim-plugin-vim-plug": "vim-plugin-vim-plug",
         "vim-plugin-vim-repeat": "vim-plugin-vim-repeat",
@@ -1179,22 +1174,6 @@
         "type": "github"
       }
     },
-    "vim-plugin-nvim-surround": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1705526094,
-        "narHash": "sha256-CGAQtBxhiP6AUQzwdra5AOpsNu+oeLO2hCJnmL61jgE=",
-        "owner": "kylechui",
-        "repo": "nvim-surround",
-        "rev": "0c02c52182a9c2a7fa7e122b4037f6408e98434a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kylechui",
-        "repo": "nvim-surround",
-        "type": "github"
-      }
-    },
     "vim-plugin-nvim-tree-lua": {
       "flake": false,
       "locked": {
@@ -1323,22 +1302,6 @@
         "type": "github"
       }
     },
-    "vim-plugin-targets-vim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1677060232,
-        "narHash": "sha256-ByciCHWe74W0Qf0hzKzYx7A9yttxlG6B4p0hWU4VkVc=",
-        "owner": "wellle",
-        "repo": "targets.vim",
-        "rev": "642d3a4ce306264b05ea3219920b13ea80931767",
-        "type": "github"
-      },
-      "original": {
-        "owner": "wellle",
-        "repo": "targets.vim",
-        "type": "github"
-      }
-    },
     "vim-plugin-telescope-fzf-native": {
       "flake": false,
       "locked": {
@@ -1451,22 +1414,6 @@
         "type": "github"
       }
     },
-    "vim-plugin-vim-exchange": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1634829811,
-        "narHash": "sha256-2LSl2jRMv1ePqGSZ4UlRPEQ2p4jdqjXeuPK4ePykfJU=",
-        "owner": "tommcdo",
-        "repo": "vim-exchange",
-        "rev": "784d63083ad7d613aa96f00021cd0dfb126a781a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "tommcdo",
-        "repo": "vim-exchange",
-        "type": "github"
-      }
-    },
     "vim-plugin-vim-fish": {
       "flake": false,
       "locked": {
@@ -1480,22 +1427,6 @@
       "original": {
         "owner": "blankname",
         "repo": "vim-fish",
-        "type": "github"
-      }
-    },
-    "vim-plugin-vim-indent-object": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1523165707,
-        "narHash": "sha256-KXDoXot/OwkzNk1UdNGVnrnO7jj5ZAP8d3vKLsG3vM4=",
-        "owner": "michaeljsmith",
-        "repo": "vim-indent-object",
-        "rev": "5c5b24c959478929b54a9e831a8e2e651a465965",
-        "type": "github"
-      },
-      "original": {
-        "owner": "michaeljsmith",
-        "repo": "vim-indent-object",
         "type": "github"
       }
     },
@@ -1528,22 +1459,6 @@
       "original": {
         "owner": "NoahTheDuke",
         "repo": "vim-just",
-        "type": "github"
-      }
-    },
-    "vim-plugin-vim-lastplace": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1704462202,
-        "narHash": "sha256-zM269eNRAiKr4ErIExAUOlsxNHJ4YVdgN/DU3bHaOCM=",
-        "owner": "farmergreg",
-        "repo": "vim-lastplace",
-        "rev": "a715d602745cdb1c35cfe73c50d3dd266eb5a349",
-        "type": "github"
-      },
-      "original": {
-        "owner": "farmergreg",
-        "repo": "vim-lastplace",
         "type": "github"
       }
     },

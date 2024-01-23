@@ -163,28 +163,12 @@
       url = "github:andymass/vim-matchup";
       flake = false;
     };
-    vim-plugin-targets-vim = {
-      url = "github:wellle/targets.vim";
-      flake = false;
-    };
     vim-plugin-CamelCaseMotion = {
       url = "github:bkad/CamelCaseMotion";
       flake = false;
     };
-    vim-plugin-nvim-surround = {
-      url = "github:kylechui/nvim-surround";
-      flake = false;
-    };
-    vim-plugin-vim-exchange = {
-      url = "github:tommcdo/vim-exchange";
-      flake = false;
-    };
     vim-plugin-vim-abolish = {
       url = "github:tpope/vim-abolish";
-      flake = false;
-    };
-    vim-plugin-vim-indent-object = {
-      url = "github:michaeljsmith/vim-indent-object";
       flake = false;
     };
     vim-plugin-dial-nvim = {
@@ -205,10 +189,6 @@
     };
     vim-plugin-reticle-nvim = {
       url = "github:Tummetott/reticle.nvim";
-      flake = false;
-    };
-    vim-plugin-vim-lastplace = {
-      url = "github:farmergreg/vim-lastplace";
       flake = false;
     };
     vim-plugin-vim-plug = {

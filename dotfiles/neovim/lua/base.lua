@@ -383,28 +383,11 @@ vim.g.matchup_matchparen_offscreen = {}
 Plug("bkad/CamelCaseMotion")
 vim.g.camelcasemotion_key = ","
 
--- Makes it easier to manipulate brace/bracket/quote pairs by providing commands to do common
--- operations like change pair, remove pair, etc.
-Plug("kylechui/nvim-surround", {
-  config = function()
-    require("nvim-surround").setup()
-  end,
-})
-
 -- Commands/mappings for working with variants of words:
 -- - A command for performing substitutions. More features than vim's built-in :substitution
 -- - A command for creating abbreviations. More features than vim's built-in `:iabbrev`
 -- - Mappings for case switching e.g. mixed-case, title-case, etc.
 Plug("tpope/vim-abolish")
-
--- Text object for text at the same level of indentation
-Plug("michaeljsmith/vim-indent-object", {
-  config = function()
-    -- Make `ai` and `ii` behave like `aI` and `iI` respectively
-    vim.keymap.set({ "x", "o" }, "ai", "aI", { remap = true })
-    vim.keymap.set({ "x", "o" }, "ii", "iI", { remap = true })
-  end,
-})
 
 -- Extend the types of text that can be incremented/decremented
 Plug("monaqa/dial.nvim", {
@@ -522,7 +505,11 @@ Plug("nvim-treesitter/nvim-treesitter", {
 
 Plug("nvim-treesitter/nvim-treesitter-textobjects")
 
+-- TODO: Some of this only applies when neovim is running in the terminal
 Plug("echasnovski/mini.nvim", {
+  -- Load synchronously for cursor restoration
+  sync = true,
+
   config = function()
     require("mini.comment").setup({
       options = {
@@ -537,12 +524,30 @@ Plug("echasnovski/mini.nvim", {
     local spec_treesitter = require("mini.ai").gen_spec.treesitter
     require("mini.ai").setup({
       custom_textobjects = {
-        f = spec_treesitter({ a = "@function.outer", i = "@function.inner" }),
-        ["?"] = spec_treesitter({ a = "@conditional.outer", i = "@conditional.inner" }),
+        d = spec_treesitter({ a = "@function.outer", i = "@function.inner" }),
+        I = spec_treesitter({ a = "@conditional.outer", i = "@conditional.inner" }),
         s = spec_treesitter({ a = "@assignment.lhs", i = "@assignment.rhs" }),
       },
       silent = true,
     })
+    local function move_like_curly_brace(id, direction)
+      local old_position = vim.api.nvim_win_get_cursor(0)
+      MiniAi.move_cursor(direction, "a", id, {
+        search_method = (direction == "left") and "cover_or_prev" or "cover_or_next",
+      })
+      local new_position = vim.api.nvim_win_get_cursor(0)
+      local has_cursor_moved = old_position[0] ~= new_position[0]
+        or old_position[1] ~= new_position[1]
+      if has_cursor_moved then
+        vim.cmd(string.format([[normal! %s]], direction == "left" and "k" or "j"))
+      end
+    end
+    vim.keymap.set({ "n", "x" }, "]d", function()
+      move_like_curly_brace("d", "right")
+    end)
+    vim.keymap.set({ "n", "x" }, "[d", function()
+      move_like_curly_brace("d", "left")
+    end)
 
     require("mini.operators").setup({
       evaluate = { prefix = "" },
@@ -561,12 +566,59 @@ Plug("echasnovski/mini.nvim", {
       },
       symbol = "┊",
     })
+    local function run_with_opts(fn)
+      local old_opts = vim.b.miniindentscope_config
+      vim.b.miniindentscope_config = vim.tbl_deep_extend("force", vim.b.miniindentscope_config, {
+        options = { indent_at_cursor = false },
+      })
+      fn()
+      vim.b.miniindentscope_config = old_opts
+    end
+    vim.keymap.set({ "o", "x" }, "ii", function()
+      run_with_opts(MiniIndentscope.textobject)
+    end)
+    vim.keymap.set({ "o", "x" }, "ai", function()
+      run_with_opts(function()
+        MiniIndentscope.textobject(true)
+      end)
+    end)
+    vim.keymap.set({ "n", "x" }, "[i", function()
+      run_with_opts(function()
+        MiniIndentscope.move_cursor("top", false)
+      end)
+    end)
+    vim.keymap.set({ "n", "x" }, "]i", function()
+      run_with_opts(function()
+        MiniIndentscope.move_cursor("bottom", false)
+      end)
+    end)
     local mini_group_id = vim.api.nvim_create_augroup("MyMiniNvim", {})
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = { "python", "yaml" },
+      callback = function()
+        vim.b.miniindentscope_config = {
+          options = {
+            border = "top",
+          },
+        }
+      end,
+      group = mini_group_id,
+    })
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = { "man", "aerial" },
+      callback = function()
+        vim.b.miniindentscope_disable = true
+        vim.b.miniindentscope_disable_permanent = true
+      end,
+      group = mini_group_id,
+    })
     -- TODO: I want to disable this per window, but mini only supports disabling per buffer
     vim.api.nvim_create_autocmd("BufEnter", {
       pattern = "*",
       callback = function()
-        vim.b.miniindentscope_disable = false
+        if not vim.b.miniindentscope_disable_permanent then
+          vim.b.miniindentscope_disable = false
+        end
       end,
       group = mini_group_id,
     })
@@ -576,6 +628,16 @@ Plug("echasnovski/mini.nvim", {
         vim.b.miniindentscope_disable = true
       end,
       group = mini_group_id,
+    })
+
+    require("mini.surround").setup({
+      n_lines = 50,
+      search_method = "cover_or_next",
+      silent = true,
+    })
+
+    require("mini.misc").setup_restore_cursor({
+      center = false,
     })
   end,
 })

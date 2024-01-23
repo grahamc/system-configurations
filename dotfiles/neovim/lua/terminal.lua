@@ -1288,8 +1288,6 @@ Plug("Tummetott/reticle.nvim", {
   end,
 })
 
-Plug("farmergreg/vim-lastplace")
-
 -- To get the vim help pages for vim-plug itself, you need to add it as a plugin
 Plug("junegunn/vim-plug")
 
@@ -3153,7 +3151,7 @@ function SetNordOverrides()
   vim.api.nvim_set_hl(0, "GitBlameVirtualText", { ctermfg = 15, italic = true })
   vim.api.nvim_set_hl(0, "Underlined", {})
   vim.api.nvim_set_hl(0, "NullLsInfoBorder", { link = "FloatBorder" })
-  vim.api.nvim_set_hl(0, "MiniIndentscopeSymbol", { ctermbg = "NONE", ctermfg = 51 })
+  vim.api.nvim_set_hl(0, "MiniIndentscopeSymbol", { ctermbg = "NONE", ctermfg = 15 })
 
   local level_highlights = {
     { level = "ERROR", color = 1 },

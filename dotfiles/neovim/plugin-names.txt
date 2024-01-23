@@ -21,7 +21,6 @@ vim-tmux-navigator
 cmp-cmdline-history
 mini.nvim
 git-blame.nvim
-vim-lastplace
 which-key.nvim
 firenvim
 cmp-buffer
@@ -38,11 +37,9 @@ vim-plug
 sqlite.lua
 nvim-lightbulb
 nvim-tree.lua
-nvim-surround
 virt-column.nvim
 traces.vim
 vim-signify
-vim-indent-object
 dial.nvim
 nvim-lspconfig
 vim
