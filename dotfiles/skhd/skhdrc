@@ -95,10 +95,10 @@ cmd + alt - j : yabai -m display --focus south
 cmd + alt - k : yabai -m display --focus north
 cmd + alt - l : yabai -m display --focus east
 # change focus
-cmd - h : yabai -m window --focus west
+cmd - h : yabai -m window --focus west || skhd -k "cmd + alt - h"
 cmd - j : yabai-move down
 cmd - k : yabai-move up
-cmd - l : yabai -m window --focus east
+cmd - l : yabai -m window --focus east || skhd -k "cmd + alt - l"
 cmd + ctrl - backspace : yabai -m space --focus recent
 cmd + alt - backspace : yabai -m display --focus recent
 # enter adjustment mode
