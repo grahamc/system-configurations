@@ -3173,6 +3173,10 @@ function SetNordOverrides()
   vim.api.nvim_set_hl(0, "Underlined", {})
   vim.api.nvim_set_hl(0, "NullLsInfoBorder", { link = "FloatBorder" })
   vim.api.nvim_set_hl(0, "MiniIndentscopeSymbol", { ctermbg = "NONE", ctermfg = 15 })
+  vim.api.nvim_set_hl(0, "MiniJump2dSpot", { ctermbg = "NONE", ctermfg = 3 })
+  vim.api.nvim_set_hl(0, "MiniJump2dSpotUnique", { link = "MiniJump2dSpot" })
+  vim.api.nvim_set_hl(0, "MiniJump2dSpotAhead", { link = "MiniJump2dSpot" })
+  vim.api.nvim_set_hl(0, "MiniJump2dDim", { ctermbg = "NONE", ctermfg = 15 })
 
   local level_highlights = {
     { level = "ERROR", color = 1 },

@@ -666,6 +666,33 @@ Plug("echasnovski/mini.nvim", {
         enable = false,
       },
     })
+
+    require("mini.jump").setup({
+      mappings = {
+        repeat_jump = "",
+      },
+      delay = {
+        highlight = 10000000,
+        idle_stop = 10000000,
+      },
+    })
+
+    require("mini.jump2d").setup({
+      mappings = {
+        start_jumping = ";",
+      },
+
+      view = {
+        dim = true,
+        n_steps_ahead = 0,
+      },
+
+      allowed_windows = {
+        not_current = false,
+      },
+
+      silent = true,
+    })
   end,
 })
 
