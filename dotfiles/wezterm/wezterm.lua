@@ -34,19 +34,6 @@ local function exists(file)
   end
   return ok, err
 end
--- Taken from here:
--- https://stackoverflow.com/questions/72424838/programmatically-lighten-or-darken-a-hex-color-in-lua-nvim-highlight-colors
-local function clamp(component)
-  return math.min(math.max(component, 0), 255)
-end
-local function lighten_or_darken_color(col, amt)
-  local num = tonumber(string.sub(col, 2), 16)
-  local r = math.floor(num / 0x10000) + amt
-  local g = (math.floor(num / 0x100) % 0x100) + amt
-  local b = (num % 0x100) + amt
-  return "#"
-    .. string.sub(string.format("%#x", clamp(r) * 0x10000 + clamp(g) * 0x100 + clamp(b)), 3)
-end
 
 -- general
 config.window_close_confirmation = "NeverPrompt"
@@ -208,8 +195,6 @@ local function create_theme_config(color_scheme_name)
     window_frame = {
       active_titlebar_bg = background,
       inactive_titlebar_bg = background,
-      font_size = 17,
-      font = wezterm.font({ family = "Iosevka Comfy Wide Duo", weight = "Light" }),
     },
     colors = {
       tab_bar = {
@@ -329,8 +314,7 @@ wezterm.on(CustomEvent.ThemeChanged, function(theme)
   set_theme_in_state_file(theme)
 end)
 
--- Title bar
-config.use_fancy_tab_bar = true
+-- Decorations
 local decorations = "INTEGRATED_BUTTONS|RESIZE"
 if is_mac then
   -- disable this since it may affect performance:
@@ -342,42 +326,6 @@ config.show_new_tab_button_in_tab_bar = false
 config.show_tab_index_in_tab_bar = false
 -- TODO: I don't know why I need this
 config.colors = {}
--- Update the status bar with the current window title
-wezterm.on("update-status", function(window, pane)
-  local effective_config = window:effective_config()
-  local color_schemes = effective_config.color_schemes or {}
-  local color_scheme = color_schemes[effective_config.color_scheme]
-  local foreground_color = nil
-  if color_scheme ~= nil then
-    foreground_color = color_scheme.foreground
-  else
-    foreground_color = effective_config.colors.foreground or "#000000"
-  end
-  if not window:is_focused() then
-    local amount = -100
-    if Theme.from_window(window) == Theme.Light then
-      amount = amount * -1
-    end
-    foreground_color = lighten_or_darken_color(foreground_color, amount)
-  end
-
-  local pane_title = pane:get_user_vars().title or ""
-  if string.find(pane_title, "tmux") then
-    pane_title = " tmux"
-  else
-    pane_title = " " .. pane_title
-  end
-
-  local title = wezterm.format({
-    { Foreground = { Color = foreground_color } },
-    { Text = pane_title .. " " },
-  })
-  if is_mac then
-    window:set_right_status(title)
-  else
-    window:set_left_status(title)
-  end
-end)
 
 local keybinds = {
   {
