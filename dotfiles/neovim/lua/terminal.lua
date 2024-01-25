@@ -1,4 +1,8 @@
 -- vim:foldmethod=marker
+
+-- This is so I can assign variables to `vim.b`
+---@diagnostic disable: inject-field
+
 -- Exit if vim is not running in a terminal (also referred to as a TTY). I detect this by
 -- checking if the input to vim is coming from a terminal or vim is outputting to a terminal.
 local has_ttyin = vim.fn.has("ttyin") == 1
@@ -22,25 +26,6 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "sh",
   callback = function()
     vim.opt_local.keywordprg = "man"
-  end,
-  group = general_group_id,
-})
--- Highlight the word under the cursor
-vim.api.nvim_create_autocmd("CursorHold", {
-  callback = function()
-    vim.cmd(
-      string.format(
-        [[silent! 2match WordUnderCursor /\V\<%s\>/]],
-        vim.fn.escape(vim.fn.expand([[<cword>]]), [[/\]])
-      )
-    )
-  end,
-  group = general_group_id,
-})
--- Don't highlight the word under the cursor for inactive windows
-vim.api.nvim_create_autocmd("WinLeave", {
-  callback = function()
-    vim.cmd("2match none")
   end,
   group = general_group_id,
 })
@@ -1940,7 +1925,8 @@ Plug("stevearc/aerial.nvim", {
           -- I want to disable it, but you can't if it has a global value:
           -- https://github.com/neovim/neovim/issues/18660
           vim.opt_local.winbar = " "
-          vim.cmd([[highlight clear WordUnderCursor]])
+          vim.b.minicursorword_disable = true
+          vim.b.minicursorword_disable_permanent = true
           vim.api.nvim_set_hl(0, "OutlineTitle", { link = "BufferLineBufferSelected" })
         end
       end,
@@ -2396,7 +2382,8 @@ Plug("williamboman/mason.nvim", {
     vim.api.nvim_create_autocmd("FileType", {
       pattern = "mason",
       callback = function()
-        vim.cmd([[highlight clear WordUnderCursor]])
+        vim.b.minicursorword_disable = true
+        vim.b.minicursorword_disable_permanent = true
       end,
       group = vim.api.nvim_create_augroup("MyMason", {}),
     })
@@ -2701,7 +2688,7 @@ function SetNordOverrides()
   vim.api.nvim_set_hl(0, "LineNr", { ctermfg = 15 })
   vim.api.nvim_set_hl(0, "LineNrAbove", { link = "LineNr" })
   vim.api.nvim_set_hl(0, "LineNrBelow", { link = "LineNrAbove" })
-  vim.api.nvim_set_hl(0, "WordUnderCursor", { ctermbg = 51 })
+  vim.api.nvim_set_hl(0, "MiniCursorword", { ctermbg = 51 })
   vim.api.nvim_set_hl(0, "IncSearch", { link = "Search" })
   vim.api.nvim_set_hl(0, "TabLineBorder", { ctermbg = "NONE", ctermfg = 51 })
   vim.api.nvim_set_hl(0, "TabLineBorder2", { ctermbg = 51, ctermfg = 0 })

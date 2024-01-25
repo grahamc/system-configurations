@@ -692,6 +692,27 @@ Plug("echasnovski/mini.nvim", {
 
       silent = true,
     })
+
+    require("mini.cursorword").setup()
+    -- Don't highlight keywords
+    vim.api.nvim_create_autocmd("CursorMoved", {
+      pattern = "*",
+      callback = function()
+        if vim.b.minicursorword_disable_permanent then
+          return
+        end
+
+        local captures = vim.treesitter.get_captures_at_cursor()
+        for _, capture in ipairs(captures) do
+          if string.find(capture, "keyword") then
+            vim.b.minicursorword_disable = true
+            return
+          end
+        end
+        vim.b.minicursorword_disable = false
+      end,
+      group = mini_group_id,
+    })
   end,
 })
 
