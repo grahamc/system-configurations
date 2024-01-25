@@ -5,6 +5,9 @@
 }: let
   # Taken from here:
   # https://github.com/numtide/devshell/blob/83cb93d6d063ad290beee669f4badf9914cc16ec/nix/mkNakedShell.nix#L4
+  #
+  # Changes:
+  # - I also unset IN_NIX_SHELL as it's redundant since I use direnv
   mkNakedShell = {
     name,
     # A path to a buildEnv that will be loaded by the shell.
@@ -54,6 +57,8 @@
         unset builder out shellHook stdenv system
         # Flakes stuff
         unset dontAddDisableDepTrack outputs
+        # Redundant since I use direnv
+        unset IN_NIX_SHELL
 
         # For `nix develop`. We get /noshell on Linux and /sbin/nologin on macOS.
         if [[ "$SHELL" == "/noshell" || "$SHELL" == "/sbin/nologin" ]]; then
