@@ -1176,21 +1176,21 @@ vim.keymap.set("n", "<S-l>", vim.diagnostic.open_float, { desc = "Show diagnosti
 vim.keymap.set("n", "[l", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
 vim.keymap.set("n", "]l", vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
 vim.keymap.set("n", "gi", function()
-  require("telescope.builtin").lsp_implementations()
+  require("telescope.builtin").lsp_implementations({ preview_title = "" })
 end, { desc = "Go to implementation" })
 vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, { desc = "Show signature help" })
 vim.keymap.set("n", "gt", function()
-  require("telescope.builtin").lsp_type_definitions()
+  require("telescope.builtin").lsp_type_definitions({ preview_title = "" })
 end, { desc = "Go to type definition" })
 vim.keymap.set("n", "gd", function()
-  require("telescope.builtin").lsp_definitions()
+  require("telescope.builtin").lsp_definitions({ preview_title = "" })
 end, { desc = "Go to definition" })
 vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" })
 vim.keymap.set("n", "ghi", function()
-  require("telescope.builtin").lsp_incoming_calls()
+  require("telescope.builtin").lsp_incoming_calls({ preview_title = "" })
 end, { desc = "Show incoming calls" })
 vim.keymap.set("n", "gho", function()
-  require("telescope.builtin").lsp_outgoing_calls()
+  require("telescope.builtin").lsp_outgoing_calls({ preview_title = "" })
 end, { desc = "Show outgoing calls" })
 vim.keymap.set("n", "gn", vim.lsp.buf.rename, { desc = "Rename" })
 
@@ -1367,314 +1367,11 @@ Plug("lukas-reineke/virt-column.nvim", {
 -- lua utility library specifically for use in neovim
 Plug("nvim-lua/plenary.nvim")
 
--- Using this to create my nvim-telescope windows
-Plug("MunifTanjim/nui.nvim")
-
 -- Dependencies: plenary.nvim, nui.nvim, telescope-fzf-native.nvim
 Plug("nvim-telescope/telescope.nvim", {
   config = function()
     local telescope = require("telescope")
-    local TSLayout = require("telescope.pickers.layout")
     local actions = require("telescope.actions")
-    local Layout = require("nui.layout")
-    local Popup = require("nui.popup")
-    local Text = require("nui.text")
-
-    local function make_two_pane_layout(target_layout)
-      return function(picker)
-        local border_chars = {
-          top_left = "🭽",
-          top = "▔",
-          top_right = "🭾",
-          right = "▕",
-          bottom_right = "🭿",
-          bottom = "▁",
-          bottom_left = "🭼",
-          left = "▏",
-        }
-        local border = {
-          results = {
-            top_left = border_chars.left,
-            top = "",
-            top_right = border_chars.right,
-            right = "▕",
-            bottom_right = "🭿",
-            bottom = "▁",
-            bottom_left = "🭼",
-            left = "▏",
-          },
-          results_patch = {
-            minimal = { top = " ", top_left = " ", top_right = " " },
-          },
-          prompt = border_chars,
-          prompt_patch = {
-            minimal = {
-              bottom_left = border_chars.left,
-              bottom_right = border_chars.right,
-              bottom = "―",
-            },
-          },
-        }
-
-        local results = Popup({
-          focusable = false,
-          border = { style = border.results },
-          win_options = { winhighlight = "Normal:TelescopeResultsNormal" },
-        })
-        results.border:set_highlight("TelescopeResultsBorder")
-
-        local prompt = Popup({
-          enter = true,
-          border = {
-            style = border.prompt,
-            text = {
-              top = Text(string.format(" %s ", picker.prompt_title or ""), "TelescopePromptTitle"),
-              top_align = "center",
-            },
-          },
-          win_options = { winhighlight = "Normal:TelescopePromptNormal" },
-        })
-        prompt.border:set_highlight("TelescopePromptBorder")
-
-        local box_by_kind = {
-          minimal = Layout.Box(
-            { Layout.Box(prompt, { size = 3 }), Layout.Box(results, { size = "100%" }) },
-            { dir = "col" }
-          ),
-        }
-
-        local function get_box()
-          local box_kind = "minimal"
-          return box_by_kind[box_kind], box_kind
-        end
-
-        local function prepare_layout_parts(layout, box_type)
-          ---@diagnostic disable-next-line: param-type-mismatch
-          layout.results = TSLayout.Window(results)
-          results.border:set_style(border.results_patch[box_type])
-
-          ---@diagnostic disable-next-line: param-type-mismatch
-          layout.prompt = TSLayout.Window(prompt)
-          prompt.border:set_style(border.prompt_patch[box_type])
-
-          layout.preview = nil
-        end
-
-        local box, box_kind = get_box()
-        local layout = Layout(target_layout, box)
-
-        ---@diagnostic disable-next-line: inject-field
-        layout.picker = picker
-        prepare_layout_parts(layout, box_kind)
-
-        local layout_update = layout.update
-        ---@diagnostic disable-next-line: duplicate-set-field
-        function layout:update()
-          local new_box, new_box_kind = get_box()
-          prepare_layout_parts(layout, new_box_kind)
-          -- I confirmed this is the correct way to call it.
-          ---@diagnostic disable-next-line: redundant-parameter
-          layout_update(self, new_box)
-        end
-
-        ---@diagnostic disable-next-line: param-type-mismatch
-        return TSLayout(layout)
-      end
-    end
-
-    _G.big_editor_relative_two_pane_layout = make_two_pane_layout({
-      relative = "editor",
-      position = "50%",
-      size = { height = "75%", width = "75%" },
-    })
-    _G.small_editor_relative_two_pane_layout = make_two_pane_layout({
-      relative = "editor",
-      position = "50%",
-      size = { height = "40%", width = "50%" },
-    })
-    _G.cursor_relative_two_pane_layout = make_two_pane_layout({
-      relative = "cursor",
-      position = 1,
-      size = { height = 5, width = 75 },
-    })
-
-    -- It's not a duplicate, not sure why other globals aren't triggering this...
-    ---@diagnostic disable-next-line: duplicate-set-field
-    _G.three_pane_layout = function(picker)
-      local border_chars = {
-        top_left = "🭽",
-        top = "▔",
-        top_right = "🭾",
-        right = "▕",
-        bottom_right = "🭿",
-        bottom = "▁",
-        bottom_left = "🭼",
-        left = "▏",
-      }
-      local default_border = {
-        top_left = border_chars.top_left,
-        top = border_chars.top,
-        top_right = border_chars.top_right,
-        right = border_chars.right,
-        bottom_right = border_chars.bottom_right,
-        bottom = border_chars.bottom,
-        bottom_left = border_chars.bottom_left,
-        left = border_chars.left,
-      }
-      local border = {
-        results = default_border,
-        results_patch = {
-          minimal = default_border,
-          horizontal = default_border,
-          vertical = {
-            top = "",
-            bottom = "―",
-            top_left = border_chars.left,
-            top_right = border_chars.right,
-            bottom_left = border_chars.left,
-            bottom_right = border_chars.right,
-          },
-        },
-        prompt = default_border,
-        prompt_patch = {
-          minimal = {
-            bottom_left = border_chars.left,
-            bottom_right = border_chars.right,
-            bottom = "",
-          },
-          horizontal = {
-            bottom_left = border_chars.left,
-            bottom_right = border_chars.right,
-            bottom = "",
-          },
-          vertical = {
-            bottom_left = border_chars.left,
-            bottom_right = border_chars.right,
-            bottom = "―",
-          },
-        },
-        preview = default_border,
-        preview_patch = {
-          minimal = {},
-          horizontal = {
-            bottom_left = border_chars.bottom,
-            left = "",
-            top_left = border_chars.top,
-          },
-          vertical = { top = "", top_left = border_chars.left, top_right = border_chars.right },
-        },
-      }
-
-      local results = Popup({
-        focusable = false,
-        border = {
-          style = border.results,
-          text = {
-            top = Text("", "TelescopeResultsTitle"),
-            top_align = "center",
-          },
-        },
-        win_options = { winhighlight = "Normal:TelescopeResultsNormal" },
-      })
-      results.border:set_highlight("TelescopeResultsBorder")
-
-      local prompt = Popup({
-        enter = true,
-        border = {
-          style = border.prompt,
-          text = {
-            top = Text(string.format(" %s ", picker.prompt_title or ""), "TelescopePromptTitle"),
-            top_align = "center",
-          },
-        },
-        win_options = { winhighlight = "Normal:TelescopePromptNormal" },
-      })
-      prompt.border:set_highlight("TelescopePromptBorder")
-
-      local preview = Popup({
-        focusable = true,
-        border = {
-          style = border.preview,
-          text = {
-            top = Text(string.format(" %s ", picker.preview_title or ""), "TelescopePreviewTitle"),
-            top_align = "center",
-          },
-          padding = { left = 1, right = 1 },
-        },
-        win_options = { winhighlight = "Normal:TelescopePreviewNormal" },
-      })
-      preview.border:set_highlight("TelescopePreviewBorder")
-
-      local box_by_kind = {
-        vertical = Layout.Box({
-          Layout.Box(prompt, { size = 3 }),
-          Layout.Box(results, { size = "25%" }),
-          Layout.Box(preview, { size = "75%" }),
-        }, { dir = "col" }),
-        horizontal = Layout.Box({
-          Layout.Box({
-            Layout.Box(prompt, { size = 3 }),
-            Layout.Box(results, { grow = 1 }),
-          }, { dir = "col", size = "50%" }),
-          Layout.Box(preview, { size = "50%" }),
-        }, { dir = "row" }),
-        minimal = Layout.Box({
-          Layout.Box(prompt, { size = 3 }),
-          Layout.Box(results, { size = "80%" }),
-        }, { dir = "col" }),
-      }
-
-      local function get_box()
-        local height = vim.o.lines
-        local box_kind = "minimal"
-        if height >= 10 then
-          box_kind = "vertical"
-        end
-        return box_by_kind[box_kind], box_kind
-      end
-
-      local function prepare_layout_parts(layout, box_type)
-        ---@diagnostic disable-next-line: param-type-mismatch
-        layout.results = TSLayout.Window(results)
-        results.border:set_style(border.results_patch[box_type])
-
-        ---@diagnostic disable-next-line: param-type-mismatch
-        layout.prompt = TSLayout.Window(prompt)
-        prompt.border:set_style(border.prompt_patch[box_type])
-
-        if box_type == "minimal" then
-          layout.preview = nil
-        else
-          ---@diagnostic disable-next-line: param-type-mismatch
-          layout.preview = TSLayout.Window(preview)
-          preview.border:set_style(border.preview_patch[box_type])
-        end
-      end
-
-      local box, box_kind = get_box()
-      local layout = Layout({
-        relative = "editor",
-        position = { col = "50%", row = "40%" },
-        size = { height = "75%", width = "75%" },
-      }, box)
-
-      ---@diagnostic disable-next-line: inject-field
-      layout.picker = picker
-      prepare_layout_parts(layout, box_kind)
-
-      local layout_update = layout.update
-      ---@diagnostic disable-next-line: duplicate-set-field
-      function layout:update()
-        local new_box, new_box_kind = get_box()
-        prepare_layout_parts(layout, new_box_kind)
-        -- I confirmed this is the correct way to call it.
-        ---@diagnostic disable-next-line: redundant-parameter
-        layout_update(self, new_box)
-      end
-
-      ---@diagnostic disable-next-line: param-type-mismatch
-      return TSLayout(layout)
-    end
 
     local select_one_or_multiple_files = function(prompt_buffer_number)
       local current_picker =
@@ -1719,12 +1416,18 @@ Plug("nvim-telescope/telescope.nvim", {
         entry_prefix = "   ",
         dynamic_preview_title = true,
         results_title = false,
-        create_layout = three_pane_layout,
         path_display = { "truncate" },
         history = {
           path = vim.fn.stdpath("data") .. "/telescope_history.sqlite3",
           limit = 100,
         },
+        layout_strategy = "vertical",
+        layout_config = {
+          mirror = true,
+          preview_cutoff = 20,
+          prompt_position = "top",
+        },
+        borderchars = { "━", "", " ", " ", "━", "━", " ", " " },
       },
       pickers = {
         find_files = {
@@ -1736,6 +1439,7 @@ Plug("nvim-telescope/telescope.nvim", {
             },
           },
           disable_devicons = true,
+          preview_title = "",
         },
         live_grep = {
           additional_args = {
@@ -1748,6 +1452,7 @@ Plug("nvim-telescope/telescope.nvim", {
           },
           prompt_title = "Live Grep (Press <c-f> to fuzzy filter)",
           disable_devicons = true,
+          preview_title = "",
         },
         help_tags = {
           mappings = {
@@ -1758,16 +1463,15 @@ Plug("nvim-telescope/telescope.nvim", {
               end,
             },
           },
+          preview_title = "",
         },
-        command_history = {
-          create_layout = big_editor_relative_two_pane_layout,
-        },
-        commands = {
-          create_layout = big_editor_relative_two_pane_layout,
-        },
-        keymaps = {
-          create_layout = big_editor_relative_two_pane_layout,
-        },
+        current_buffer_fuzzy_find = { preview_title = "" },
+        jumplist = { preview_title = "" },
+        highlights = { preview_title = "" },
+        diagnostics = { preview_title = "" },
+        lsp_dynamic_workspace_symbols = { preview_title = "" },
+        autocommands = { preview_title = "" },
+        filter_notifications = { preview_title = "" },
       },
     })
 
@@ -1834,20 +1538,6 @@ Plug("stevearc/dressing.nvim", {
   config = function()
     require("dressing").setup({
       input = { enabled = false },
-      select = {
-        telescope = {
-          create_layout = cursor_relative_two_pane_layout,
-        },
-        get_config = function(options)
-          if options.kind == "mason.ui.language-filter" then
-            return {
-              telescope = {
-                create_layout = small_editor_relative_two_pane_layout,
-              },
-            }
-          end
-        end,
-      },
     })
   end,
 })
@@ -2291,9 +1981,7 @@ Plug("aznhe21/actions-preview.nvim", {
   config = function()
     local actions_preview = require("actions-preview")
     actions_preview.setup({
-      telescope = {
-        create_layout = _G.three_pane_layout,
-      },
+      telescope = {},
     })
     vim.keymap.set(
       { "n", "v" },
@@ -3084,20 +2772,42 @@ function SetNordOverrides()
   vim.api.nvim_set_hl(0, "PmenuSbar", { link = "CmpNormal" })
   -- List of telescope highlight groups:
   -- https://github.com/nvim-telescope/telescope.nvim/blob/master/plugin/telescope.lua
-  vim.api.nvim_set_hl(0, "TelescopePromptNormal", { ctermbg = 16 })
-  vim.api.nvim_set_hl(0, "TelescopePromptBorder", { link = "TelescopeResultsBorder" })
-  vim.api.nvim_set_hl(0, "TelescopePromptTitle", { ctermbg = 52, ctermfg = 7, bold = true })
+  local telescope_bg_prompt = 53
+  local telescope_bg = 16
+  vim.api.nvim_set_hl(0, "TelescopePromptNormal", { ctermbg = telescope_bg_prompt })
+  vim.api.nvim_set_hl(
+    0,
+    "TelescopePromptBorder",
+    { ctermbg = telescope_bg_prompt, ctermfg = telescope_bg_prompt }
+  )
+  vim.api.nvim_set_hl(
+    0,
+    "TelescopePromptTitle",
+    { ctermbg = 6, ctermfg = telescope_bg, bold = true }
+  )
   vim.api.nvim_set_hl(0, "TelescopePromptCounter", { ctermfg = 15 })
-  vim.api.nvim_set_hl(0, "TelescopePromptPrefix", { ctermbg = 16, ctermfg = 6 })
-  vim.api.nvim_set_hl(0, "TelescopePreviewNormal", { ctermbg = 16 })
-  vim.api.nvim_set_hl(0, "TelescopePreviewBorder", { link = "TelescopeResultsBorder" })
-  vim.api.nvim_set_hl(0, "TelescopePreviewTitle", { link = "TelescopePromptTitle" })
-  vim.api.nvim_set_hl(0, "TelescopeResultsNormal", { ctermbg = 16 })
-  vim.api.nvim_set_hl(0, "TelescopeResultsBorder", { ctermbg = 16, ctermfg = 52 })
-  vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { link = "TelescopePromptTitle" })
+  vim.api.nvim_set_hl(0, "TelescopePromptPrefix", { ctermbg = telescope_bg_prompt, ctermfg = 6 })
+  vim.api.nvim_set_hl(0, "TelescopePreviewNormal", { link = "TelescopeResultsNormal" })
+  vim.api.nvim_set_hl(
+    0,
+    "TelescopePreviewBorder",
+    { ctermbg = telescope_bg, ctermfg = telescope_bg_prompt }
+  )
+  vim.api.nvim_set_hl(
+    0,
+    "TelescopePreviewTitle",
+    { ctermbg = 6, ctermfg = telescope_bg, bold = true }
+  )
+  vim.api.nvim_set_hl(0, "TelescopeResultsNormal", { ctermbg = telescope_bg })
+  vim.api.nvim_set_hl(
+    0,
+    "TelescopeResultsBorder",
+    { ctermbg = telescope_bg, ctermfg = telescope_bg }
+  )
+  vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { link = "TelescopeResultsBorder" })
   vim.api.nvim_set_hl(0, "TelescopeMatching", { ctermbg = "NONE", ctermfg = 6 })
-  vim.api.nvim_set_hl(0, "TelescopeSelection", { ctermfg = 6, bold = true })
-  vim.api.nvim_set_hl(0, "TelescopeSelectionCaret", { ctermfg = 6, bold = true })
+  vim.api.nvim_set_hl(0, "TelescopeSelection", { ctermbg = telescope_bg_prompt, bold = true })
+  vim.api.nvim_set_hl(0, "TelescopeSelectionCaret", { link = "TelescopeSelection" })
   vim.api.nvim_set_hl(
     0,
     "MasonHeader",

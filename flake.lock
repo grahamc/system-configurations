@@ -338,7 +338,6 @@
         "vim-plugin-middleclass": "vim-plugin-middleclass",
         "vim-plugin-mini-nvim": "vim-plugin-mini-nvim",
         "vim-plugin-none-ls-nvim": "vim-plugin-none-ls-nvim",
-        "vim-plugin-nui-nvim": "vim-plugin-nui-nvim",
         "vim-plugin-nvim-autopairs": "vim-plugin-nvim-autopairs",
         "vim-plugin-nvim-cmp": "vim-plugin-nvim-cmp",
         "vim-plugin-nvim-lightbulb": "vim-plugin-nvim-lightbulb",
@@ -1043,22 +1042,6 @@
       "original": {
         "owner": "nvimtools",
         "repo": "none-ls.nvim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-nui-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1704411133,
-        "narHash": "sha256-SWG0IQDNXrgWK1ApQSpc2oPKNYgTPend877DQ6FuqUc=",
-        "owner": "MunifTanjim",
-        "repo": "nui.nvim",
-        "rev": "35da9ca1de0fc4dda96c2e214d93d363c145f418",
-        "type": "github"
-      },
-      "original": {
-        "owner": "MunifTanjim",
-        "repo": "nui.nvim",
         "type": "github"
       }
     },

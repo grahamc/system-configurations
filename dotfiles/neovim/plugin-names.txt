@@ -1,5 +1,4 @@
 LuaSnip
-nui.nvim
 vim-just
 nvim-treesitter-endwise
 nvim-navic

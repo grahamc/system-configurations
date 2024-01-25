@@ -355,10 +355,6 @@
       url = "github:rcarriga/nvim-notify";
       flake = false;
     };
-    vim-plugin-nui-nvim = {
-      url = "github:MunifTanjim/nui.nvim";
-      flake = false;
-    };
     vim-plugin-nvim-navic = {
       url = "github:SmiteshP/nvim-navic";
       flake = false;
