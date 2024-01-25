@@ -135,7 +135,7 @@ local my_colors_per_color_scheme = {
     [14] = "#2AA298",
     [15] = "#808080",
     -- Floating windows in neovim
-    [16] = "#f0f0f0",
+    [16] = "#e5e5e5",
     [24] = "#e5e5e5",
     -- Background color for the non-emphasized and emphasized part of a removed line in a git diff
     [17] = "#FFD7D7",

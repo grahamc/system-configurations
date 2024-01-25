@@ -348,6 +348,10 @@ vim.keymap.set({ "n" }, "<C-Down>", [[<Cmd>resize -1<CR>]], { silent = true })
 -- Tabs {{{
 vim.keymap.set({ "n", "i" }, "<C-M-[>", vim.cmd.tabprevious, { silent = true })
 vim.keymap.set({ "n", "i" }, "<C-M-]>", vim.cmd.tabnext, { silent = true })
+vim.keymap.set({ "n" }, "<C-t>", function()
+  vim.cmd.tabnew("%")
+end, { silent = true })
+vim.keymap.set({ "n" }, "<C-M-w>", vim.cmd.tabclose, { silent = true })
 -- }}}
 
 -- Pager (https://github.com/I60R/page) {{{
@@ -901,16 +905,36 @@ function QuickfixStatusLine()
     { "%#StatusLine#Press gf for find&replace" }
   )
 end
+function FileExplorerStatusLine()
+  return make_statusline(
+    { "%#StatusLine#" .. vim.o.filetype },
+    { "%#StatusLine#Press g? for help" }
+  )
+end
+function OutlineStatusLine()
+  return make_statusline({ "%#StatusLine#" .. vim.o.filetype }, { "%#StatusLine#Press ? for help" })
+end
 
 vim.o.laststatus = 3
 vim.o.statusline = "%!v:lua.StatusLine()"
-vim.api.nvim_create_autocmd({ "Filetype" }, {
+vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = "qf",
   callback = function()
     vim.keymap.set("n", "gf", ":cdo s///e<left><left><left>", {})
     vim.opt_local.statusline = "%!v:lua.QuickfixStatusLine()"
   end,
   group = vim.api.nvim_create_augroup("Quickfix Statusline", {}),
+})
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
+  pattern = "*",
+  callback = function()
+    if vim.o.filetype == "NvimTree" then
+      vim.opt_local.statusline = "%!v:lua.FileExplorerStatusLine()"
+    elseif vim.o.filetype == "aerial" then
+      vim.opt_local.statusline = "%!v:lua.OutlineStatusLine()"
+    end
+  end,
+  group = vim.api.nvim_create_augroup("Widget Statusline", {}),
 })
 -- }}}
 
@@ -1832,6 +1856,7 @@ Plug("j-hui/fidget.nvim", {
     require("fidget").setup({
       progress = {
         ignore_done_already = true,
+        suppress_on_insert = true,
         ignore = { "null-ls" },
         display = {
           render_limit = 5,
@@ -1845,6 +1870,7 @@ Plug("j-hui/fidget.nvim", {
         },
       },
       notification = {
+        poll_rate = 5,
         view = {
           group_separator = "─────",
         },

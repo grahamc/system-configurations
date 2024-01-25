@@ -49,7 +49,7 @@ vim.keymap.set({ "i" }, "jk", "<Esc>")
 
 -- 1. re-indent the pasted text
 -- 2. move to the end of the pasted text
-vim.keymap.set({ "n" }, "p", "p=`]", { silent = true })
+vim.keymap.set({ "n", "x" }, "p", "p=`]", { silent = true })
 
 -- select the text that was just pasted
 vim.keymap.set({ "n" }, "gV", "`[v`]")
@@ -609,7 +609,7 @@ Plug("echasnovski/mini.nvim", {
       group = mini_group_id,
     })
     vim.api.nvim_create_autocmd("FileType", {
-      pattern = { "man", "aerial" },
+      pattern = { "man", "aerial", "help" },
       callback = function()
         vim.b.miniindentscope_disable = true
         vim.b.miniindentscope_disable_permanent = true
@@ -647,13 +647,13 @@ Plug("echasnovski/mini.nvim", {
     require("mini.animate").setup({
       cursor = {
         timing = require("mini.animate").gen_timing.exponential({
-          duration = 7,
+          duration = 300,
           easing = "out",
-          unit = "step",
+          unit = "total",
         }),
       },
       resize = {
-        timing = require("mini.animate").gen_timing.linear({ duration = 100, unit = "total" }),
+        enable = false,
       },
       scroll = {
         enable = false,
