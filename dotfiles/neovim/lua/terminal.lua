@@ -279,13 +279,28 @@ local window_group_id = vim.api.nvim_create_augroup("Window", {})
 
 -- Automatically resize all splits to make them equal when the vim window is resized or a new window
 -- is created/closed.
-vim.api.nvim_create_autocmd({ "VimResized", "WinNew", "WinClosed", "TabEnter" }, {
+vim.api.nvim_create_autocmd({ "VimResized", "TabEnter" }, {
   callback = function()
-    -- Don't equalize splits if the new window is floating, it won't get resized anyway.
     -- Don't equalize when vim is starting up so it doesn't reset the window sizes from my session.
     local is_vim_starting = vim.fn.has("vim_starting") == 1
-    local is_float = vim.api.nvim_win_get_config(0).relative ~= ""
-    if is_float or is_vim_starting then
+    if is_vim_starting then
+      return
+    end
+    vim.cmd.wincmd("=")
+  end,
+  group = window_group_id,
+})
+vim.api.nvim_create_autocmd({ "WinNew", "WinClosed" }, {
+  callback = function()
+    local amatch = vim.fn.expand("<amatch>")
+    local id = tonumber(amatch)
+    -- sometimes amatch is the file opened in the window
+    if id == nil then
+      return
+    end
+    -- Don't equalize splits if the new window is floating, it won't get resized anyway.
+    local is_float = vim.api.nvim_win_get_config(id).relative ~= ""
+    if is_float then
       return
     end
     vim.cmd.wincmd("=")
