@@ -4,9 +4,9 @@ _: {
       myFonts = final.symlinkJoin {
         name = "my-fonts";
         paths = with final; [
-          (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"];})
           iosevka-comfy.comfy-fixed
-          iosevka-comfy.comfy-wide-duo
+          monaspace
+          (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"];})
         ];
       };
     in {inherit myFonts;};

@@ -41,8 +41,8 @@ config.audible_bell = "Disabled"
 config.default_cursor_style = "BlinkingBar"
 config.bold_brightens_ansi_colors = false
 config.disable_default_key_bindings = true
--- I had an issue where WezTerm would sometimes freeze when I input a key and I would have to input another key
--- to fix it, but setting this to false seems to fix that. Solution came from here:
+-- I had an issue where WezTerm would sometimes freeze when I input a key and I would have to input
+-- another key to fix it, but setting this to false seems to fix that. Solution came from here:
 -- https://www.reddit.com/r/commandline/comments/1621suy/help_issue_with_wezterm_and_vim_key_repeat/
 config.use_ime = false
 config.enable_kitty_keyboard = true
@@ -51,16 +51,32 @@ config.automatically_reload_config = false
 config.term = "wezterm"
 
 -- font
--- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system, but Flatpak apps
--- can't access my font configuration file from their sandbox so for now I'll hardcode a font.
--- issue: https://github.com/flatpak/flatpak/issues/1563
-config.font = wezterm.font_with_fallback({ "Iosevka Comfy Fixed", "SymbolsNerdFontMono" })
+local nerd_font_symbols = "SymbolsNerdFontMono"
+-- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system,
+-- but Flatpak apps can't access my font configuration file from their sandbox so for now I'll
+-- hardcode a font. issue: https://github.com/flatpak/flatpak/issues/1563
+config.font = wezterm.font_with_fallback({ "Iosevka Comfy Fixed", nerd_font_symbols })
+config.font_rules = {
+  {
+    intensity = "Normal",
+    italic = true,
+    font = wezterm.font_with_fallback({ "Monaspace Radon Light", nerd_font_symbols }),
+  },
+  {
+    intensity = "Bold",
+    italic = true,
+    font = wezterm.font_with_fallback({
+      { family = "Monaspace Krypton", weight = "Light" },
+      nerd_font_symbols,
+    }),
+  },
+}
 config.underline_position = -9
 config.font_size = 11.3
 if is_mac then
   config.font_size = 14
 end
-config.line_height = 1.4
+config.line_height = 1.5
 config.underline_thickness = "150%"
 
 local my_colors_per_color_scheme = {
@@ -261,9 +277,9 @@ end
 
 -- Change theme automatically when the system theme changes
 --
--- There is no event for when the system appearance changes. Instead, when the appearance changes, the
--- 'window-config-reloaded' event is fired. To get around this, I keep track of the current system appearance fire my
--- own event when I detect a change.
+-- There is no event for when the system appearance changes. Instead, when the appearance changes,
+-- the 'window-config-reloaded' event is fired. To get around this, I keep track of the current
+-- system appearance fire my own event when I detect a change.
 local current_system_appearance = nil
 wezterm.on("window-config-reloaded", function(window)
   local new_system_appearance = wezterm.gui.get_appearance()
