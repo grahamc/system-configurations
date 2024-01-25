@@ -1658,7 +1658,6 @@ Plug("akinsho/bufferline.nvim", {
     end
 
     local close_icon = ""
-    local separator_icon = "   "
     require("bufferline").setup({
       ---@diagnostic disable-next-line: missing-fields
       options = {
@@ -1666,26 +1665,26 @@ Plug("akinsho/bufferline.nvim", {
         numbers = function(context)
           return context.raise(context.ordinal)
         end,
-        indicator = { style = "none" },
+        indicator = { style = "icon", icon = "" },
         close_icon = close_icon,
         close_command = close,
         buffer_close_icon = close_icon,
-        separator_style = { separator_icon, separator_icon },
+        separator_style = { "", "" },
         modified_icon = close_icon,
         offsets = {
           {
             filetype = "NvimTree",
-            text = " File Explorer (Press g? for help)",
+            text = " FILE EXPLORER",
             text_align = "center",
             separator = true,
-            highlight = "NvimTreeTitle",
+            highlight = "WidgetFill",
           },
           {
             filetype = "aerial",
-            text = "󰙅 Outline (Press ? for help)",
+            text = "󰙅 OUTLINE",
             text_align = "center",
             separator = true,
-            highlight = "OutlineTitle",
+            highlight = "WidgetFill",
           },
         },
         hover = {
@@ -1708,19 +1707,19 @@ Plug("akinsho/bufferline.nvim", {
       },
       highlights = {
         ---@diagnostic disable: missing-fields
-        fill = { ctermbg = 51, ctermfg = 15 },
-        background = { ctermbg = 51, ctermfg = 15 },
-        buffer_visible = { ctermbg = 51, ctermfg = 15 },
+        fill = { ctermbg = "NONE", ctermfg = 15 },
+        background = { ctermbg = "NONE", ctermfg = 15 },
+        buffer_visible = { ctermbg = "NONE", ctermfg = 15 },
         buffer_selected = { ctermbg = 51, ctermfg = "NONE", italic = false, bold = false },
         duplicate = { ctermbg = 51, ctermfg = 15, italic = false },
         duplicate_selected = { ctermbg = 51, ctermfg = "None", italic = false },
         duplicate_visible = { ctermbg = 51, ctermfg = 15, italic = false },
-        numbers = { ctermbg = 51, ctermfg = 15, italic = false },
-        numbers_visible = { ctermbg = 51, ctermfg = 15, italic = false },
+        numbers = { ctermbg = "NONE", ctermfg = 15, italic = false },
+        numbers_visible = { ctermbg = "NONE", ctermfg = 15, italic = false },
         numbers_selected = { ctermbg = 51, ctermfg = 6, italic = false },
-        close_button = { ctermbg = 51, ctermfg = 15 },
+        close_button = { ctermbg = "NONE", ctermfg = 15 },
         close_button_selected = { ctermbg = 51, ctermfg = "None" },
-        close_button_visible = { ctermbg = 51, ctermfg = 15 },
+        close_button_visible = { ctermbg = "NONE", ctermfg = 15 },
         modified = { ctermbg = 51, ctermfg = 15 },
         modified_selected = { ctermbg = 51, ctermfg = "None" },
         modified_visible = { ctermbg = 51, ctermfg = "None" },
@@ -1730,12 +1729,12 @@ Plug("akinsho/bufferline.nvim", {
         tab_separator_selected = { ctermbg = 51, ctermfg = 51 },
         tab_close = { ctermbg = 51, ctermfg = "NONE", bold = true },
         offset_separator = { ctermbg = "NONE", ctermfg = 15 },
-        separator = { ctermbg = 51, ctermfg = 0 },
-        separator_visible = { ctermbg = 51, ctermfg = 0 },
-        separator_selected = { ctermbg = 51, ctermfg = 0 },
-        indicator_selected = { ctermbg = 51, ctermfg = 51 },
-        indicator_visible = { ctermbg = 51, ctermfg = 51 },
-        trunc_marker = { ctermbg = 51, ctermfg = 15 },
+        separator = { ctermfg = 1, ctermbg = 0 },
+        separator_visible = { ctermfg = 2, ctermbg = 0 },
+        separator_selected = { ctermfg = 3, ctermbg = 0 },
+        indicator_selected = { ctermbg = "NONE", ctermfg = 51 },
+        indicator_visible = { ctermbg = "NONE", ctermfg = 51 },
+        trunc_marker = { ctermbg = "NONE", ctermfg = "NONE" },
       },
     })
 
@@ -1760,27 +1759,52 @@ Plug("akinsho/bufferline.nvim", {
       local is_outline_open = string.find(original, "󰙅")
       local is_tab_section_visible = string.find(original, "%%=%%#BufferLineTab")
 
-      if is_outline_open then
-        result = string.gsub(
-          result,
-          "│%%#OutlineTitle#",
-          "%%#TabLineBorder#%%#BufferLineOffsetSeparator#%0",
-          1
-        )
-      else
-        result = result .. "%#TabLineBorder#"
-      end
+      -- Right border for selected buffer
+      result = string.gsub(
+        result,
+        "BufferLineCloseButtonSelected.*" .. close_icon .. "%%X ",
+        "%0%%#TabLineBorder#  ",
+        1
+      )
 
+      -- left centerer for buffer list
       if is_explorer_open then
-        result = string.gsub(result, "│", "%0%%#TabLineBorder#", 1)
+        result = string.gsub(result, "│", "%0%%#TabLineBorder#%%=", 1)
       else
-        result = "%#TabLineBorder#" .. result
+        result = "%#TabLineBorder#%=" .. result
       end
 
       if is_tab_section_visible then
+        -- left border
         result =
-          string.gsub(result, "%%=%%#BufferLineTab", "%%=%%#TabLineBorder2#%%#BufferLineTab", 1)
+          string.gsub(result, "%%=%%#BufferLineTab", "%%=%%#TabLineBorder2#%%#BufferLineTab", 1)
+
+        -- right border
+        if is_outline_open then
+          result = string.gsub(
+            result,
+            "│%%#OutlineTitle#",
+            "%%#TabLineBorder#%%#BufferLineOffsetSeparator#%0",
+            1
+          )
+        else
+          result = result .. "%#TabLineBorder#"
+        end
       end
+
+      result = string.gsub(
+        result,
+        "  󰙅 OUTLINE  ",
+        "%%#OutlineBorder#█%%#OutlineTitle#󰙅 OUTLINE%%#OutlineBorder#█",
+        1
+      )
+
+      result = string.gsub(
+        result,
+        "   FILE EXPLORER  ",
+        "%%#NvimTreeBorder#█%%#NvimTreeTitle# FILE EXPLORER%%#NvimTreeBorder#█",
+        1
+      )
 
       return result
     end
@@ -1928,6 +1952,7 @@ Plug("stevearc/aerial.nvim", {
           vim.b.minicursorword_disable = true
           vim.b.minicursorword_disable_permanent = true
           vim.api.nvim_set_hl(0, "OutlineTitle", { link = "BufferLineBufferSelected" })
+          vim.api.nvim_set_hl(0, "OutlineBorder", { link = "BufferLineIndicatorSelected" })
         end
       end,
       group = aerial_group_id,
@@ -1936,6 +1961,7 @@ Plug("stevearc/aerial.nvim", {
       callback = function()
         if vim.o.filetype == "aerial" then
           vim.api.nvim_set_hl(0, "OutlineTitle", { link = "BufferLineBufferVisible" })
+          vim.api.nvim_set_hl(0, "OutlineBorder", { ctermfg = 0 })
         end
       end,
       group = aerial_group_id,
@@ -2058,6 +2084,7 @@ Plug("kyazdani42/nvim-tree.lua", {
       callback = function()
         if vim.o.filetype == "NvimTree" then
           vim.api.nvim_set_hl(0, "NvimTreeTitle", { link = "BufferLineBufferSelected" })
+          vim.api.nvim_set_hl(0, "NvimTreeBorder", { link = "BufferLineIndicatorSelected" })
           vim.opt_local.cursorline = true
         end
       end,
@@ -2067,6 +2094,7 @@ Plug("kyazdani42/nvim-tree.lua", {
       callback = function()
         if vim.o.filetype == "NvimTree" then
           vim.api.nvim_set_hl(0, "NvimTreeTitle", { link = "BufferLineBufferVisible" })
+          vim.api.nvim_set_hl(0, "NvimTreeBorder", { ctermfg = 0 })
           vim.opt_local.cursorline = false
         end
       end,
@@ -2874,6 +2902,7 @@ function SetNordOverrides()
   vim.api.nvim_set_hl(0, "MiniJump2dSpotUnique", { link = "MiniJump2dSpot" })
   vim.api.nvim_set_hl(0, "MiniJump2dSpotAhead", { link = "MiniJump2dSpot" })
   vim.api.nvim_set_hl(0, "MiniJump2dDim", { ctermbg = "NONE", ctermfg = 15 })
+  vim.api.nvim_set_hl(0, "WidgetFill", { ctermbg = "NONE", ctermfg = 15 })
 
   local level_highlights = {
     { level = "ERROR", color = 1 },
