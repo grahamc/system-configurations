@@ -21,7 +21,7 @@ tmux source-file "${XDG_CONFIG_HOME:-$HOME/.config}/tmux/tmux.conf"
 # The `\;` lets us execute multiple tmux commands in a single call to tmux. We do this since it's faster than separate
 # calls.
 tmux \
-  set @mode_indicator_custom_prompt "#[bold bg=#{@bgcolor} fg=#{@standoutcolor} align=centre]#{@left_symbol}#[reverse]   RELOADED#[noreverse]#{@right_symbol}" \
+  set @mode_indicator_custom_prompt "#[italics bg=#{@bgcolor} fg=default]   RELOADED    " \
   \; refresh-client -S
 
 # We wait for the amount of time specfied in the tmux option `display-time`. This way the indicator stays up for the
