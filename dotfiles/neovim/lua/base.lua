@@ -283,9 +283,9 @@ _G.FormatCommentOperatorFunc = function()
 end
 local function format_comment_operator()
   vim.o.operatorfunc = "v:lua.FormatCommentOperatorFunc"
-  return "g@"
+  return "g@ic"
 end
-vim.keymap.set("n", "gq", format_comment_operator, { expr = true })
+vim.keymap.set("n", "gq", format_comment_operator, { expr = true, remap = true })
 local function format_comment_visual()
   set_formatprg(GetVisualSelection())
   -- NOTE: This function returns after enqueuing the keys, not processing them. That is why I'm
@@ -293,7 +293,6 @@ local function format_comment_visual()
   vim.fn.feedkeys("gvgq", "n")
 end
 vim.keymap.set("x", "gq", format_comment_visual, {})
-vim.keymap.set("n", "gqq", "<S-v>gq", { remap = true })
 
 vim.keymap.set({ "n", "x" }, "]p", "}", { remap = true })
 vim.keymap.set({ "n", "x" }, "[p", "{", { remap = true })
