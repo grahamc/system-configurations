@@ -26,6 +26,7 @@
           "tree-sitter-just"
           "neodev-nvim"
           "wezterm"
+          "tmux"
         ]
         ++ plugins;
       darwin =

@@ -300,6 +300,7 @@
         "nixpkgs-for-wezterm": "nixpkgs-for-wezterm",
         "spoons": "spoons",
         "stackline": "stackline",
+        "tmux": "tmux",
         "tmux-plugin-better-mouse-mode": "tmux-plugin-better-mouse-mode",
         "tmux-plugin-continuum": "tmux-plugin-continuum",
         "tmux-plugin-mode-indicator": "tmux-plugin-mode-indicator",
@@ -434,6 +435,22 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "tmux": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1705946469,
+        "narHash": "sha256-toyK1X34IJ2E6tQd7sa/rEo7HcLppVHkwdttt4IWEnk=",
+        "owner": "tmux",
+        "repo": "tmux",
+        "rev": "ea7136fb838a2831d38e11ca94094cea61a01e3a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tmux",
+        "repo": "tmux",
         "type": "github"
       }
     },

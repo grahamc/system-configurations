@@ -101,6 +101,10 @@
 
     # tmux
     ########################################
+    tmux = {
+      url = "github:tmux/tmux";
+      flake = false;
+    };
     tmux-plugin-resurrect = {
       url = "github:tmux-plugins/tmux-resurrect";
       flake = false;
