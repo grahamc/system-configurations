@@ -1,5 +1,7 @@
 -- Wrapper for vim-plug with a few new features.
 
+local M = {}
+
 -- Functions to be called after a plugin is loaded to configure it.
 local configs_by_type = {
   sync = {},
@@ -23,12 +25,12 @@ local function apply_configs(configs)
 end
 
 local original_plug_begin = vim.fn["plug#begin"]
-function PlugBegin()
+local function plug_begin()
   original_plug_begin()
 end
 
 local original_plug_end = vim.fn["plug#end"]
-function PlugEnd()
+local function plug_end()
   original_plug_end()
 
   -- This way code can be run after plugins are loaded, but before 'VimEnter'
@@ -49,9 +51,7 @@ end
 
 local group_id = vim.api.nvim_create_augroup("PlugLua", {})
 local original_plug = vim.fn["plug#"]
--- Similar to the vim-plug `Plug` command, but with an additional option to specify a function to
--- run after a plugin is loaded.
-function Plug(repo, options)
+local function plug(repo, options)
   if not options then
     original_plug(repo)
     return
@@ -80,3 +80,11 @@ function Plug(repo, options)
     end
   end
 end
+
+function M.load_plugins(plugin_definer)
+  plug_begin()
+  plugin_definer(plug)
+  plug_end()
+end
+
+return M

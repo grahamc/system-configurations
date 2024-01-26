@@ -1,0 +1,8 @@
+require("terminal.aesthetic.colorscheme")
+require("terminal.aesthetic.cursor")
+require("terminal.aesthetic.misc")
+require("terminal.aesthetic.statuscolumn")
+require("terminal.aesthetic.statusline")
+require("terminal.aesthetic.system-theme-syncer")
+require("terminal.aesthetic.tabline")
+require("terminal.aesthetic.winbar")

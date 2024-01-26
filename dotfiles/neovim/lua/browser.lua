@@ -7,9 +7,9 @@ end
 vim.o.laststatus = 0
 
 vim.keymap.set("i", "<M-e>", "<Cmd>wq<CR>")
--- Before quitting in normal mode, I move the cursor one to the right so the cursor will be in front of the current character
--- after quitting neovim instead of behind it. I use `a` instead of `l` to account for when the cursor is on the last
--- character of the line.
+-- Before quitting in normal mode, I move the cursor one to the right so the cursor will be in front
+-- of the current character after quitting neovim instead of behind it. I use `a` instead of `l` to
+-- account for when the cursor is on the last character of the line.
 vim.keymap.set("n", "<M-e>", "a<Cmd>wq<CR>")
 vim.keymap.set("n", "<C-x>", "a<Cmd>wq<CR>")
 
