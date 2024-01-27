@@ -1,4 +1,4 @@
-vim.o.grepprg = vim.fn.executable("rg")
+vim.o.grepprg = "rg --vimgrep --smart-case --follow"
 
 -- searching is only case-sensitive when the query contains an uppercase letter
 vim.o.ignorecase = true
