@@ -1,10 +1,12 @@
 -- vim:foldmethod=marker
 
-vim.keymap.set({ "n" }, "Q", "<Nop>")
+vim.keymap.set({ "n" }, "Q", function()
+  local last_recorded_register = vim.fn.reg_recorded()
+  if last_recorded_register ~= "" then
+    return "@" .. last_recorded_register
+  end
+end, { remap = true, expr = true })
 
--- Faster macro execution {{{
--- Execute macros more quickly by enabling `lazyredraw` and disabling events while the macro is
--- running
 local function get_char()
   local ret_val, char_num = pcall(vim.fn.getchar)
   -- Return nil if error (e.g. <C-c>) or for control characters
@@ -15,6 +17,30 @@ local function get_char()
 
   return char
 end
+
+-- change macro
+vim.keymap.set({ "n" }, "cq", function()
+  local register = get_char()
+  if register == nil then
+    return
+  end
+
+  local macro_content = vim.fn.getreg(register)
+  local input_config = {
+    prompt = "Edit Macro [" .. register .. "]:",
+    default = macro_content,
+  }
+  vim.ui.input(input_config, function(edited_macro)
+    if not edited_macro then
+      return
+    end -- cancellation
+    vim.fn.setreg(register, edited_macro)
+  end)
+end)
+
+-- Faster macro execution {{{
+-- Execute macros more quickly by enabling `lazyredraw` and disabling events while the macro is
+-- running
 
 vim.keymap.set({ "x", "n" }, "@", function()
   local mode = vim.fn.mode()
