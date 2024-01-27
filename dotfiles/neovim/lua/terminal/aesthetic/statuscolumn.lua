@@ -79,21 +79,11 @@ function StatusColumn()
   end
   local border_section = border_highlight .. "│"
 
-  local line_number_section = nil
-  local last_line_digit_count = #tostring(vim.fn.line("$", vim.g.statusline_winid))
-  if is_virtual_line() or is_wrapped_line() then
-    line_number_section = string.rep(" ", last_line_digit_count)
-  else
-    local line_number = tostring(vim.v.relnum ~= 0 and vim.v.relnum or vim.v.lnum)
-    local line_number_padding = string.rep(" ", last_line_digit_count - #line_number)
-    line_number_section = line_number_padding .. line_number
-  end
-
   local fold_section = get_fold_section()
   local sign_section = "%s"
   local align_right = "%="
 
-  return align_right .. sign_section .. line_number_section .. border_section .. fold_section
+  return align_right .. sign_section .. border_section .. fold_section
 end
 
 vim.o.statuscolumn = "%!v:lua.StatusColumn()"
