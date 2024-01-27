@@ -56,10 +56,9 @@ Plug("akinsho/bufferline.nvim", {
     local outline_icon = "󰙅"
     local outline_title = outline_icon .. " OUTLINE"
     require("bufferline").setup({
-      ---@diagnostic disable-next-line: missing-fields
       options = {
-        ---@diagnostic disable-next-line: undefined-field
         numbers = function(context)
+          ---@diagnostic disable-next-line: undefined-field
           return context.raise(context.ordinal)
         end,
         indicator = { style = "icon", icon = "" },
@@ -67,6 +66,7 @@ Plug("akinsho/bufferline.nvim", {
         close_command = close,
         buffer_close_icon = close_icon,
         separator_style = { "", "" },
+        -- Since I can't disable the modified icon, I'll make it look like the close icon
         modified_icon = close_icon,
         offsets = {
           {
@@ -103,7 +103,6 @@ Plug("akinsho/bufferline.nvim", {
         show_buffer_icons = false,
       },
       highlights = {
-        ---@diagnostic disable: missing-fields
         fill = { bg = "NONE", fg = inactive_fg },
         background = { bg = "NONE", fg = inactive_fg },
         buffer_visible = { bg = "NONE", fg = inactive_fg },
@@ -165,18 +164,21 @@ Plug("akinsho/bufferline.nvim", {
       local selected_border_highlight = "%#BufferLineIndicatorSelected#"
       local right_border_with_selected_highlight = selected_border_highlight .. right_border
 
-      -- Right border for selected buffer
-      result = string.gsub(
-        result,
-        -- I'm using a '-' here instead of a '*' so the match won't be greedy. This is needed
-        -- because if I hover over a buffer to the right of the current buffer then this pattern
-        -- would match the hovered x instead of the x for the current buffer.
-        "BufferLineCloseButtonSelected.-"
-          .. close_icon
-          .. "%%X ",
-        "%0" .. escape_percent(right_border_with_selected_highlight) .. "  ",
-        1
+      local function inject_right_border_for_selected_buffer(pattern_to_insert_after)
+        result = string.gsub(
+          result,
+          pattern_to_insert_after,
+          "%0" .. escape_percent(right_border_with_selected_highlight) .. "  ",
+          1
+        )
+      end
+      -- I'm using a '-' here instead of a '*' so the match won't be greedy. This is needed
+      -- because if I hover over a buffer to the right of the current buffer then this pattern
+      -- would match the hovered x instead of the x for the current buffer.
+      inject_right_border_for_selected_buffer(
+        "BufferLineCloseButtonSelected.-" .. close_icon .. "%%X "
       )
+      inject_right_border_for_selected_buffer("BufferLineModifiedSelected.-" .. close_icon .. " ")
 
       -- left centerer for buffer list
       if is_explorer_open then
