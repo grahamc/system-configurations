@@ -29,4 +29,8 @@ function M.get_visual_selection()
   return text
 end
 
+function M.escape_percent(string_to_escape)
+  return string_to_escape:gsub("([^%w])", "%%%1")
+end
+
 return M

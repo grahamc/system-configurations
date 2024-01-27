@@ -332,6 +332,7 @@
         "vim-plugin-friendly-snippets": "vim-plugin-friendly-snippets",
         "vim-plugin-git-blame-nvim": "vim-plugin-git-blame-nvim",
         "vim-plugin-ltex-extra-nvim": "vim-plugin-ltex-extra-nvim",
+        "vim-plugin-lush-nvim": "vim-plugin-lush-nvim",
         "vim-plugin-markdown-preview-nvim": "vim-plugin-markdown-preview-nvim",
         "vim-plugin-mason-lspconfig-nvim": "vim-plugin-mason-lspconfig-nvim",
         "vim-plugin-mason-nvim": "vim-plugin-mason-nvim",
@@ -357,7 +358,6 @@
         "vim-plugin-telescope-nvim": "vim-plugin-telescope-nvim",
         "vim-plugin-telescope-smart-history-nvim": "vim-plugin-telescope-smart-history-nvim",
         "vim-plugin-traces-vim": "vim-plugin-traces-vim",
-        "vim-plugin-vim": "vim-plugin-vim",
         "vim-plugin-vim-abolish": "vim-plugin-vim-abolish",
         "vim-plugin-vim-caser": "vim-plugin-vim-caser",
         "vim-plugin-vim-fish": "vim-plugin-vim-fish",
@@ -949,6 +949,22 @@
         "type": "github"
       }
     },
+    "vim-plugin-lush-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1706001346,
+        "narHash": "sha256-23TQPvYOY6G6Pw9PY5MGMUsH82IQOhWMdGWJdr7aKG0=",
+        "owner": "rktjmp",
+        "repo": "lush.nvim",
+        "rev": "2e8d34e748642621d761a65e3c2a198154b914e8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rktjmp",
+        "repo": "lush.nvim",
+        "type": "github"
+      }
+    },
     "vim-plugin-markdown-preview-nvim": {
       "flake": false,
       "locked": {
@@ -1346,22 +1362,6 @@
       "original": {
         "owner": "markonm",
         "repo": "traces.vim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-vim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1683146605,
-        "narHash": "sha256-P4fbRNeJjXOoAQiWXXHZhm4ejgMD8W7OkdEF4TpEc7g=",
-        "owner": "nordtheme",
-        "repo": "vim",
-        "rev": "f13f5dfbb784deddbc1d8195f34dfd9ec73e2295",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nordtheme",
-        "repo": "vim",
         "type": "github"
       }
     },

@@ -1,3 +1,5 @@
+Plug("nvim-tree/nvim-web-devicons")
+
 vim.o.linebreak = true
 vim.o.breakat = " ^I"
 vim.o.cursorline = true
@@ -8,6 +10,3 @@ vim.o.wrap = true
 vim.o.listchars = "tab:¬-,space:·"
 vim.o.signcolumn = "yes:2"
 vim.opt.fillchars:append("eob: ")
-vim.o.termguicolors = false
-
-Plug("nvim-tree/nvim-web-devicons")

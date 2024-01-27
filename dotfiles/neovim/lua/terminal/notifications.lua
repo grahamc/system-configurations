@@ -35,7 +35,7 @@ Plug("rcarriga/nvim-notify", {
   config = function()
     local notify = require("notify")
     notify.setup({
-      stages = "slide",
+      stages = "fade",
       timeout = 3000,
       render = "wrapped-compact",
       max_width = math.floor(vim.o.columns * 0.35),

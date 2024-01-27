@@ -9,10 +9,12 @@ vim.keymap.set({ "n" }, "Y", "yg_")
 Plug("arthurxavierx/vim-caser")
 
 -- Comment formatting {{{
+local utilities = require("utilities")
+
 vim.api.nvim_create_autocmd("BufNew", {
   pattern = "*",
   callback = function()
-    vim.bo.textwidth = require("utilities").get_max_line_length()
+    vim.bo.textwidth = utilities.get_max_line_length()
   end,
   group = vim.api.nvim_create_augroup("Set textwidth", {}),
 })
@@ -34,7 +36,7 @@ end
 local function set_formatprg(text)
   local formatprg = string.format(
     "par -w%d",
-    vim.bo.textwidth == 0 and require("utilities").get_max_line_length() or vim.bo.textwidth
+    vim.bo.textwidth == 0 and utilities.get_max_line_length() or vim.bo.textwidth
   )
 
   local _, newline_count = string.gsub(text, "\n", "")
@@ -43,7 +45,7 @@ local function set_formatprg(text)
   -- here.
   if is_one_line then
     local commentstring = get_commentstring()
-    local index_of_commentstring = (string.find(text, (commentstring:gsub("([^%w])", "%%%1"))))
+    local index_of_commentstring = (string.find(text, (utilities.escape_percent(commentstring))))
     if index_of_commentstring ~= nil then
       local prefix = index_of_commentstring + #commentstring
       formatprg = formatprg .. string.format(" -p%d", prefix)
@@ -70,7 +72,7 @@ vim.keymap.set("n", "gq", function()
 end, { expr = true, remap = true })
 
 vim.keymap.set("x", "gq", function()
-  set_formatprg(require("utilities").get_visual_selection())
+  set_formatprg(utilities.get_visual_selection())
   -- NOTE: This function returns after enqueuing the keys, not processing them. That is why I'm
   -- leaving the formatprg set.
   vim.fn.feedkeys("gvgq", "n")

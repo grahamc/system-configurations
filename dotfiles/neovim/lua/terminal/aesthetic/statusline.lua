@@ -66,44 +66,47 @@ local function get_mode_indicator()
   if mode == nil then
     mode = "?"
   end
-  local function make_highlight_names(name)
-    return {
-      mode = "%#" .. string.format("StatusLineMode%s", name) .. "#",
-      inner = "%#" .. string.format("StatusLineMode%sPowerlineInner", name) .. "#",
-      outer = "%#" .. string.format("StatusLineMode%sPowerlineOuter", name) .. "#",
-    }
+  local function make_highlight_name(name)
+    return "%#" .. string.format("StatusLineMode%s", name) .. "#"
   end
-  local highlights = make_highlight_names("Other")
+  local mode_highlight = make_highlight_name("Other")
   local function startswith(text, prefix)
     return text:find(prefix, 1, true) == 1
   end
   if startswith(mode, "V") then
-    highlights = make_highlight_names("Visual")
+    mode_highlight = make_highlight_name("Visual")
   elseif startswith(mode, "I") then
-    highlights = make_highlight_names("Insert")
+    mode_highlight = make_highlight_name("Insert")
   elseif startswith(mode, "N") then
-    highlights = make_highlight_names("Normal")
+    mode_highlight = make_highlight_name("Normal")
   elseif startswith(mode, "T") then
-    highlights = make_highlight_names("Terminal")
+    mode_highlight = make_highlight_name("Terminal")
   end
-  local mode_indicator = highlights.outer
+  local mode_indicator = "%#StatusLinePowerlineOuter#"
     .. ""
-    .. highlights.mode
+    .. mode_highlight
     .. " "
     .. mode
     .. " "
-    .. highlights.inner
-    .. " "
+    .. "%#StatusLinePowerlineInner#"
+    .. " "
 
   return mode_indicator
 end
 
 local function filter_out_nils(list)
   local result = {}
-  for _, value in ipairs(list) do
+
+  local keys = {}
+  for key, value in pairs(list) do
     if value ~= nil then
-      table.insert(result, value)
+      table.insert(keys, key)
     end
+  end
+  table.sort(keys)
+
+  for _, key in ipairs(keys) do
+    table.insert(result, list[key])
   end
 
   return result
@@ -111,11 +114,12 @@ end
 
 local function make_statusline(left_items, right_items)
   local showcmd = "%#StatusLineShowcmd#%S"
-  local statusline_separator = "%#StatusLine# %=" .. showcmd .. "%#StatusLine#%= "
+  local statusline_separator = "%#StatusLineFill# %=" .. showcmd .. "%#StatusLineFill#%= "
 
-  local left_side = get_mode_indicator() .. table.concat(filter_out_nils(left_items), "  ")
+  local left_side = get_mode_indicator()
+    .. table.concat(filter_out_nils(left_items), "%#StatusLineSeparator# ∙ ")
 
-  local right_side = table.concat(filter_out_nils(right_items), "%#StatusLineSeparator# ∙ ")
+  local right_side = table.concat(filter_out_nils(right_items), "  ")
 
   local padding = "%#StatusLine# "
 
@@ -132,7 +136,7 @@ end
 
 -- main statusline {{{
 function StatusLine()
-  local position = "%#StatusLine#" .. " %l:%c"
+  local position = "%#StatusLine#" .. " %03l:%03c"
 
   local fileformat = vim.o.fileformat
   if fileformat == "unix" then
@@ -154,9 +158,14 @@ function StatusLine()
     local buffer_name = vim.api.nvim_buf_get_name(0)
     local basename = vim.fs.basename(buffer_name)
     local extension = vim.fn.fnamemodify(basename, ":e")
-    local icon, color = require("nvim-web-devicons").get_icon_cterm_color(basename, extension)
+    local icon, color = require("nvim-web-devicons").get_icon_color(basename, extension)
     if icon ~= nil then
-      vim.api.nvim_set_hl(0, "FileTypeIcon", { ctermfg = tonumber(color), ctermbg = 51 })
+      vim.api.nvim_set_hl(
+        0,
+        "FileTypeIcon",
+        { fg = color, bg = vim.api.nvim_get_hl(0, { name = "StatusLine" }).bg }
+      )
+
       icon = "%#FileTypeIcon#" .. icon .. " "
     else
       icon = ""
@@ -190,6 +199,12 @@ function StatusLine()
     #vim.lsp.get_active_clients({ bufnr = vim.api.nvim_get_current_buf() })
   if language_server_count_for_current_buffer > 0 then
     lsp_info = "%#StatusLine# " .. language_server_count_for_current_buffer
+  end
+
+  local maximized = nil
+  if IsMaximized then
+    local indicator = " "
+    maximized = "%#StatusLineStandoutText#" .. indicator
   end
 
   local diagnostic_count = {
@@ -260,17 +275,18 @@ function StatusLine()
   end
 
   return make_statusline({
-    fileencoding,
-    fileformat,
-    filetype,
-    readonly,
-    lsp_info,
-    reg_recording,
-    search_info,
-  }, {
     diagnostics,
     mixed_indentation_indicator,
     mixed_line_endings,
+    reg_recording,
+  }, {
+    maximized,
+    search_info,
+    lsp_info,
+    readonly,
+    filetype,
+    fileformat,
+    fileencoding,
     position,
   })
 end

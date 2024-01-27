@@ -73,8 +73,8 @@ Plug("kyazdani42/nvim-tree.lua", {
     vim.api.nvim_create_autocmd("BufEnter", {
       callback = function()
         if vim.o.filetype == "NvimTree" then
-          vim.api.nvim_set_hl(0, "NvimTreeTitle", { link = "BufferLineBufferSelected" })
-          vim.api.nvim_set_hl(0, "NvimTreeBorder", { link = "BufferLineIndicatorSelected" })
+          vim.api.nvim_set_hl(0, "ExplorerTitle", { link = "BufferLineBufferSelected" })
+          vim.api.nvim_set_hl(0, "ExplorerBorder", { link = "BufferLineIndicatorSelected" })
           vim.opt_local.cursorline = true
         end
       end,
@@ -83,8 +83,8 @@ Plug("kyazdani42/nvim-tree.lua", {
     vim.api.nvim_create_autocmd("BufLeave", {
       callback = function()
         if vim.o.filetype == "NvimTree" then
-          vim.api.nvim_set_hl(0, "NvimTreeTitle", { link = "BufferLineBufferVisible" })
-          vim.api.nvim_set_hl(0, "NvimTreeBorder", { ctermfg = 0 })
+          vim.api.nvim_set_hl(0, "ExplorerTitle", { link = "BufferLineBufferVisible" })
+          vim.api.nvim_set_hl(0, "ExplorerBorder", { link = "Ignore" })
           vim.opt_local.cursorline = false
         end
       end,

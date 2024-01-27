@@ -40,7 +40,6 @@ traces.vim
 vim-signify
 dial.nvim
 nvim-lspconfig
-vim
 plenary.nvim
 telescope-fzf-native.nvim
 telescope-smart-history.nvim
@@ -54,6 +53,7 @@ czs.nvim
 folding-nvim
 friendly-snippets
 nvim-notify
+lush.nvim
 cmp_luasnip
 aerial.nvim
 dressing.nvim

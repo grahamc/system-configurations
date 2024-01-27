@@ -327,10 +327,6 @@
       url = "github:nvimtools/none-ls.nvim";
       flake = false;
     };
-    vim-plugin-vim = {
-      url = "github:nordtheme/vim";
-      flake = false;
-    };
     vim-plugin-vim-caser = {
       url = "github:arthurxavierx/vim-caser";
       flake = false;
@@ -413,6 +409,10 @@
     };
     vim-plugin-mini-nvim = {
       url = "github:echasnovski/mini.nvim";
+      flake = false;
+    };
+    vim-plugin-lush-nvim = {
+      url = "github:rktjmp/lush.nvim";
       flake = false;
     };
   };

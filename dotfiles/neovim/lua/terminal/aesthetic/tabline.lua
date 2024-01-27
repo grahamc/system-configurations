@@ -47,6 +47,14 @@ Plug("akinsho/bufferline.nvim", {
     end
 
     local close_icon = ""
+    local active_bg = vim.api.nvim_get_hl(0, { name = "StatusLine" }).bg
+    local inactive_fg = vim.api.nvim_get_hl(0, { name = "Comment" }).fg
+    local accent_fg = vim.api.nvim_get_hl(0, { name = "FloatTitle" }).fg
+    local offset_separator_fg = vim.api.nvim_get_hl(0, { name = "WinSeparator" }).fg
+    local explorer_icon = ""
+    local explorer_title = explorer_icon .. " FILE EXPLORER"
+    local outline_icon = "󰙅"
+    local outline_title = outline_icon .. " OUTLINE"
     require("bufferline").setup({
       ---@diagnostic disable-next-line: missing-fields
       options = {
@@ -63,14 +71,14 @@ Plug("akinsho/bufferline.nvim", {
         offsets = {
           {
             filetype = "NvimTree",
-            text = " FILE EXPLORER",
+            text = explorer_title,
             text_align = "center",
             separator = true,
             highlight = "WidgetFill",
           },
           {
             filetype = "aerial",
-            text = "󰙅 OUTLINE",
+            text = outline_title,
             text_align = "center",
             separator = true,
             highlight = "WidgetFill",
@@ -96,34 +104,31 @@ Plug("akinsho/bufferline.nvim", {
       },
       highlights = {
         ---@diagnostic disable: missing-fields
-        fill = { ctermbg = "NONE", ctermfg = 15 },
-        background = { ctermbg = "NONE", ctermfg = 15 },
-        buffer_visible = { ctermbg = "NONE", ctermfg = 15 },
-        buffer_selected = { ctermbg = 51, ctermfg = "NONE", italic = false, bold = false },
-        duplicate = { ctermbg = "NONE", ctermfg = 15, italic = false },
-        duplicate_selected = { ctermbg = 51, ctermfg = "None", italic = false },
-        duplicate_visible = { ctermbg = "NONE", ctermfg = 15, italic = false },
-        numbers = { ctermbg = "NONE", ctermfg = 15, italic = false },
-        numbers_visible = { ctermbg = "NONE", ctermfg = 15, italic = false },
-        numbers_selected = { ctermbg = 51, ctermfg = 6, italic = false },
-        close_button = { ctermbg = "NONE", ctermfg = 15 },
-        close_button_selected = { ctermbg = 51, ctermfg = "None" },
-        close_button_visible = { ctermbg = "NONE", ctermfg = 15 },
-        modified = { ctermbg = 51, ctermfg = 15 },
-        modified_selected = { ctermbg = 51, ctermfg = "None" },
-        modified_visible = { ctermbg = 51, ctermfg = "None" },
-        tab = { ctermbg = 51, ctermfg = 15 },
-        tab_selected = { ctermbg = 51, ctermfg = 6, underline = true },
-        tab_separator = { ctermbg = 51, ctermfg = 51 },
-        tab_separator_selected = { ctermbg = 51, ctermfg = 51 },
-        tab_close = { ctermbg = 51, ctermfg = "NONE", bold = true },
-        offset_separator = { ctermbg = "NONE", ctermfg = 15 },
-        separator = { ctermfg = 1, ctermbg = 0 },
-        separator_visible = { ctermfg = 2, ctermbg = 0 },
-        separator_selected = { ctermfg = 3, ctermbg = 0 },
-        indicator_selected = { ctermbg = "NONE", ctermfg = 51 },
-        indicator_visible = { ctermbg = "NONE", ctermfg = 51 },
-        trunc_marker = { ctermbg = "NONE", ctermfg = "NONE" },
+        fill = { bg = "NONE", fg = inactive_fg },
+        background = { bg = "NONE", fg = inactive_fg },
+        buffer_visible = { bg = "NONE", fg = inactive_fg },
+        buffer_selected = { bg = active_bg, fg = "NONE", italic = false, bold = false },
+        duplicate = { bg = "NONE", fg = inactive_fg, italic = false },
+        duplicate_selected = { bg = active_bg, fg = "None", italic = false },
+        duplicate_visible = { bg = "NONE", fg = inactive_fg, italic = false },
+        numbers = { bg = "NONE", fg = inactive_fg, italic = false },
+        numbers_visible = { bg = "NONE", fg = inactive_fg, italic = false },
+        numbers_selected = { bg = active_bg, fg = accent_fg, italic = false },
+        close_button = { bg = "NONE", fg = inactive_fg },
+        close_button_selected = { bg = active_bg, fg = "None" },
+        close_button_visible = { bg = "NONE", fg = inactive_fg },
+        modified = { bg = active_bg, fg = inactive_fg },
+        modified_selected = { bg = active_bg, fg = "None" },
+        modified_visible = { bg = active_bg, fg = "None" },
+        tab = { bg = active_bg, fg = inactive_fg },
+        tab_selected = { bg = active_bg, fg = accent_fg, underline = true },
+        tab_separator = { bg = active_bg, fg = active_bg },
+        tab_separator_selected = { bg = active_bg, fg = active_bg },
+        tab_close = { bg = active_bg, fg = "NONE", bold = true },
+        offset_separator = { bg = "NONE", fg = offset_separator_fg },
+        indicator_selected = { bg = "NONE", fg = active_bg },
+        indicator_visible = { bg = "NONE", fg = active_bg },
+        trunc_marker = { bg = "NONE", fg = "NONE" },
       },
     })
 
@@ -141,12 +146,24 @@ Plug("akinsho/bufferline.nvim", {
       close(vim.fn.bufnr())
     end, { silent = true })
     function BufferlineWrapper()
-      ---@diagnostic disable-next-line: undefined-global
       local original = nvim_bufferline()
+      local escape_percent = require("utilities").escape_percent
       local result = original
-      local is_explorer_open = string.find(original, "")
-      local is_outline_open = string.find(original, "󰙅")
-      local is_tab_section_visible = string.find(original, "%%=%%#BufferLineTab")
+      local is_explorer_open = string.find(original, explorer_icon)
+      local is_outline_open = string.find(original, outline_icon)
+      local tab_highlight_escaped = "%%#BufferLineTab"
+      local tab_highlight_and_aligner_escaped = "%%=" .. tab_highlight_escaped
+      local is_tab_section_visible = string.find(original, tab_highlight_and_aligner_escaped)
+      local left_border = ""
+      local right_border = ""
+      local left_border_with_padding = left_border .. "█"
+      local right_border_with_padding = "█" .. right_border
+      -- hardcoding the lengths since I need Lua's utf8 library to get the visible length, but
+      -- neovim doesn't have it
+      local left_border_with_padding_length = 2
+      local right_border_with_padding_length = 2
+      local selected_border_highlight = "%#BufferLineIndicatorSelected#"
+      local right_border_with_selected_highlight = selected_border_highlight .. right_border
 
       -- Right border for selected buffer
       result = string.gsub(
@@ -157,46 +174,69 @@ Plug("akinsho/bufferline.nvim", {
         "BufferLineCloseButtonSelected.-"
           .. close_icon
           .. "%%X ",
-        "%0%%#TabLineBorder#  ",
+        "%0" .. escape_percent(right_border_with_selected_highlight) .. "  ",
         1
       )
 
       -- left centerer for buffer list
       if is_explorer_open then
-        result = string.gsub(result, "│", "%0%%#TabLineBorder#%%=", 1)
+        result = string.gsub(result, "│", "%0%%=", 1)
       else
-        result = "%#TabLineBorder#%=" .. result
+        result = "%=" .. result
       end
 
       if is_tab_section_visible then
         -- left border
-        result =
-          string.gsub(result, "%%=%%#BufferLineTab", "%%=%%#TabLineBorder2#%%#BufferLineTab", 1)
+        result = string.gsub(
+          result,
+          tab_highlight_and_aligner_escaped,
+          "%%=%%#BufferLineTabLeftBorder#" .. right_border .. tab_highlight_escaped,
+          1
+        )
 
         -- right border
         if is_outline_open then
           result = string.gsub(
             result,
-            "│%%#OutlineTitle#",
-            "%%#TabLineBorder#%%#BufferLineOffsetSeparator#%0",
+            -- I use '.*' so I can get the last bar character, in case the explorer is also open
+            "(.*)(│)",
+            "%1"
+              .. escape_percent(right_border_with_selected_highlight)
+              .. "%%#BufferLineOffsetSeparator#%2",
             1
           )
         else
-          result = result .. "%#TabLineBorder#"
+          result = result .. right_border_with_selected_highlight
         end
       end
 
+      local outline_border_highlight_escaped = "%%#OutlineBorder#"
       result = string.gsub(
         result,
-        "  󰙅 OUTLINE  ",
-        "%%#OutlineBorder#█%%#OutlineTitle#󰙅 OUTLINE%%#OutlineBorder#█",
+        string.rep(" ", left_border_with_padding_length)
+          .. outline_title
+          .. string.rep(" ", right_border_with_padding_length),
+        outline_border_highlight_escaped
+          .. left_border_with_padding
+          .. "%%#OutlineTitle#"
+          .. outline_title
+          .. outline_border_highlight_escaped
+          .. right_border_with_padding,
         1
       )
 
+      local explorer_border_highlight_escaped = "%%#ExplorerBorder#"
       result = string.gsub(
         result,
-        "   FILE EXPLORER  ",
-        "%%#NvimTreeBorder#█%%#NvimTreeTitle# FILE EXPLORER%%#NvimTreeBorder#█",
+        string.rep(" ", left_border_with_padding_length)
+          .. explorer_title
+          .. string.rep(" ", right_border_with_padding_length),
+        explorer_border_highlight_escaped
+          .. left_border_with_padding
+          .. "%%#ExplorerTitle#"
+          .. explorer_title
+          .. explorer_border_highlight_escaped
+          .. right_border_with_padding,
         1
       )
 

@@ -1,3 +1,5 @@
+---@diagnostic disable: inject-field
+
 Plug("stevearc/aerial.nvim", {
   config = function()
     AerialIsFolded = false
@@ -63,7 +65,7 @@ Plug("stevearc/aerial.nvim", {
       callback = function()
         if vim.o.filetype == "aerial" then
           vim.api.nvim_set_hl(0, "OutlineTitle", { link = "BufferLineBufferVisible" })
-          vim.api.nvim_set_hl(0, "OutlineBorder", { ctermfg = 0 })
+          vim.api.nvim_set_hl(0, "OutlineBorder", { link = "Ignore" })
         end
       end,
       group = aerial_group_id,
