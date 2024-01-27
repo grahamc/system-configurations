@@ -234,12 +234,21 @@ vim.o.wildoptions = "pum"
 vim.o.cmdheight = 0
 vim.o.showcmdloc = "statusline"
 vim.keymap.set("c", "<C-a>", "<C-b>", { remap = true })
-vim.cmd([[
-  cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'let g#opening_help_in_tab = v:true \| tab help' : 'h'
-]])
-vim.cmd([[
-  cnoreabbrev <expr> lua getcmdtype() == ":" && getcmdline() == 'lua' ? 'lua=' : 'lua'
-]])
+vim.keymap.set({ "ca" }, "lua", function()
+  if vim.fn.getcmdtype() == ":" and vim.fn.getcmdline() == "lua" then
+    return "lua="
+  else
+    return "lua"
+  end
+end, { expr = true })
+vim.keymap.set({ "ca" }, "h", function()
+  if vim.fn.getcmdtype() == ":" and vim.fn.getcmdline() == "h" then
+    vim.g.opening_help_in_tab = true
+    return "tab help"
+  else
+    return "h"
+  end
+end, { expr = true })
 -- }}}
 
 -- Search {{{

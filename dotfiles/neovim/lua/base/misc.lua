@@ -108,16 +108,20 @@ Plug("tpope/vim-abolish")
 
 -- Autocommands get executed without `smagic` so I make sure that I explicitly specify it on the
 -- commandline so if my autocommand has a substitute command it will use `smagic`.
-SmagicAbbreviation = function()
+vim.keymap.set({ "ca" }, "s", function()
   local cmdline = vim.fn.getcmdline()
-  if vim.fn.getcmdtype() == ":" and cmdline == "s" or cmdline == [['<,'>s]] then
+  if vim.fn.getcmdtype() == ":" and (cmdline == "s" or cmdline == [['<,'>s]]) then
     return "smagic"
+  else
+    return "s"
   end
-
-  return "s"
-end
-vim.cmd([[
-  cnoreabbrev <expr> s v:lua.SmagicAbbreviation()
-  cnoreabbrev <expr> %s getcmdtype() == ':' && getcmdline() == '%s' ? '%smagic' : '%s'
-]])
+end, { expr = true })
+-- TODO: I can't get this to work as part of the above mapping for some reason.
+vim.keymap.set({ "ca" }, "%s", function()
+  if vim.fn.getcmdtype() == ":" and vim.fn.getcmdline() == "%s" then
+    return "%smagic"
+  else
+    return "%s"
+  end
+end, { expr = true })
 -- }}}
