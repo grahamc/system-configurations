@@ -336,7 +336,6 @@
         "vim-plugin-markdown-preview-nvim": "vim-plugin-markdown-preview-nvim",
         "vim-plugin-mason-lspconfig-nvim": "vim-plugin-mason-lspconfig-nvim",
         "vim-plugin-mason-nvim": "vim-plugin-mason-nvim",
-        "vim-plugin-middleclass": "vim-plugin-middleclass",
         "vim-plugin-mini-nvim": "vim-plugin-mini-nvim",
         "vim-plugin-none-ls-nvim": "vim-plugin-none-ls-nvim",
         "vim-plugin-nvim-autopairs": "vim-plugin-nvim-autopairs",
@@ -371,7 +370,6 @@
         "vim-plugin-vim-tmux-navigator": "vim-plugin-vim-tmux-navigator",
         "vim-plugin-virt-column-nvim": "vim-plugin-virt-column-nvim",
         "vim-plugin-which-key-nvim": "vim-plugin-which-key-nvim",
-        "vim-plugin-windows-nvim": "vim-plugin-windows-nvim",
         "wezterm": "wezterm"
       }
     },
@@ -1013,22 +1011,6 @@
         "type": "github"
       }
     },
-    "vim-plugin-middleclass": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1663692601,
-        "narHash": "sha256-scJX7ovVZ6YBRp2lTP7JswyZ0smvVZneGRGBvwFsyOQ=",
-        "owner": "anuvyklack",
-        "repo": "middleclass",
-        "rev": "9fab4d5bca67262614960960ca35c4740eb2be2c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "anuvyklack",
-        "repo": "middleclass",
-        "type": "github"
-      }
-    },
     "vim-plugin-mini-nvim": {
       "flake": false,
       "locked": {
@@ -1570,22 +1552,6 @@
       "original": {
         "owner": "folke",
         "repo": "which-key.nvim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-windows-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1673907386,
-        "narHash": "sha256-Nfzd8kFqA83/0RfMUAYF4XXqhihyb22OnxDBrWW1nzU=",
-        "owner": "anuvyklack",
-        "repo": "windows.nvim",
-        "rev": "c7492552b23d0ab30325e90b56066ec51242adc8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "anuvyklack",
-        "repo": "windows.nvim",
         "type": "github"
       }
     },

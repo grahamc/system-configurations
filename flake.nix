@@ -371,14 +371,6 @@
       url = "github:nvim-telescope/telescope-smart-history.nvim";
       flake = false;
     };
-    vim-plugin-middleclass = {
-      url = "github:anuvyklack/middleclass";
-      flake = false;
-    };
-    vim-plugin-windows-nvim = {
-      url = "github:anuvyklack/windows.nvim";
-      flake = false;
-    };
     vim-plugin-ltex-extra-nvim = {
       url = "github:barreiroleo/ltex-extra.nvim";
       flake = false;

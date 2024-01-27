@@ -6,8 +6,6 @@ reticle.nvim
 bufferline.nvim
 cmp-tmux
 vim-matchup
-middleclass
-windows.nvim
 vim-caser
 actions-preview.nvim
 SchemaStore.nvim

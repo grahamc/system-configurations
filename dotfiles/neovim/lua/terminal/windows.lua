@@ -76,24 +76,6 @@ vim.keymap.set({ "n" }, "<C-Right>", [[<Cmd>vertical resize -1<CR>]], { silent =
 vim.keymap.set({ "n" }, "<C-Up>", [[<Cmd>resize +1<CR>]], { silent = true })
 vim.keymap.set({ "n" }, "<C-Down>", [[<Cmd>resize -1<CR>]], { silent = true })
 
-Plug("anuvyklack/middleclass")
-
-Plug("anuvyklack/windows.nvim", {
-  config = function()
-    require("windows").setup({
-      autowidth = {
-        enable = false,
-      },
-    })
-
-    -- TODO: When tmux is able to differentiate between enter and ctrl+m this mapping should be
-    -- updated. tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
-    vim.keymap.set("n", "<Leader>m", function()
-      vim.cmd.WindowsMaximize()
-    end)
-  end,
-})
-
 -- Seamless movement between vim windows and tmux panes.
 Plug("christoomey/vim-tmux-navigator", {
   config = function()

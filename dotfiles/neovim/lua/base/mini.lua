@@ -1,9 +1,9 @@
 -- vim:foldmethod=marker
 
 -- undefined-global is for globals defined by mini.nvim and inject-field is so I can vim.b.*
----@diagnostic disable: undefined-global, inject-field
+---@diagnostic disable: inject-field
 
--- TODO: Not all of this should be on base
+-- TODO: Not all of this should be in base
 --
 -- Dependencies: nvim-treesitter-textobjects
 Plug("echasnovski/mini.nvim", {
@@ -158,9 +158,35 @@ Plug("echasnovski/mini.nvim", {
     })
     -- }}}
 
-    require("mini.misc").setup_restore_cursor({
+    -- misc {{{
+    local misc = require("mini.misc")
+    misc.setup_restore_cursor({
       center = false,
     })
+    vim.keymap.set("n", "<Leader>m", function()
+      if not IsMaximized then
+        vim.api.nvim_create_autocmd("WinEnter", {
+          pattern = "*",
+          once = true,
+          group = vim.api.nvim_create_augroup("TransparentMaximizedWindow", {}),
+          callback = function()
+            vim.o.winhighlight = "NormalFloat:Normal"
+          end,
+        })
+        misc.zoom(0, {
+          anchor = "SW",
+          row = 1,
+          col = 1,
+          height = vim.o.lines - 1,
+        })
+        IsMaximized = true
+      else
+        misc.zoom()
+        IsMaximized = false
+      end
+    end)
+
+    -- }}}
 
     -- animate {{{
     require("mini.animate").setup({
