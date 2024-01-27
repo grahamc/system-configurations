@@ -115,7 +115,7 @@ local theme = lush(function(injected_functions)
     Structure      { Type, }, --   struct, union, enum, etc.
     Typedef        { Type, }, --   A typedef
 
-    Special {}, -- (*) Any special symbol
+    Special { t_11 }, -- (*) Any special symbol
     SpecialChar    { Special, }, --   Special character in a constant
     Tag            { Special, }, --   You can use CTRL-] on this
     Delimiter      { Special, }, --   Character that needs attention
@@ -418,51 +418,88 @@ local theme = lush(function(injected_functions)
     --
     -- For more information see https://github.com/rktjmp/lush.nvim/issues/109
 
-    sym"@text.literal" { Comment }, -- Comment
-    sym"@text.reference" { Identifier }, -- Identifier
-    sym"@text.title" { Title }, -- Title
-    sym"@text.uri" { Underlined }, -- Underlined
-    sym"@text.underline" { Underlined }, -- Underlined
-    sym"@text.todo" { Todo }, -- Todo
+    sym"@attribute" { Statement }, -- attribute annotations (e.g. Python decorators)
+    sym"@comment.documentation" { Comment },
+    sym"@comment.error" { Comment, fg = Error.fg, },
+    sym"@comment.note" { Comment, fg = DiagnosticInfo.fg, },
+    sym"@comment.todo" { Comment, fg = Todo.fg, },
+    sym"@comment.warning" { Comment, fg = Warning.fg, },
+    sym"@diff.delta" { DiffChange },
+    sym"@diff.minus" { DiffDelete },
+    sym"@diff.plus" { DiffAdd },
+    sym"@function.call" { Function },
+    sym"@function.method" { Function },
+    sym"@function.method.call" { Function },
+    sym"@keyword.conditional" { Keyword },
+    sym"@keyword.conditional.ternary" { Keyword },
+    sym"@keyword.coroutine" { Keyword },
+    sym"@keyword.debug" { Keyword },
+    sym"@keyword.directive" { Keyword },
+    sym"@keyword.directive.define" { Keyword },
+    sym"@keyword.exception" { Keyword },
+    sym"@keyword.function" { Keyword },
+    sym"@keyword.import" { Keyword },
+    sym"@keyword.operator" { Keyword },
+    sym"@keyword.repeat" { Keyword },
+    sym"@keyword.return" { Keyword },
+    sym"@keyword.storage" { Keyword },
+    sym"@markup.environment" { Structure },
+    sym"@markup.heading" { Title },
+    sym"@markup.italic" { italic = true, },
+    sym"@markup.link" { Underlined },
+    sym"@markup.link.label" { Underlined },
+    sym"@markup.link.url" { Underlined },
+    sym"@markup.list" { },
+    sym"@markup.list.checked" { },
+    sym"@markup.list.unchecked" { },
+    sym"@markup.math" { Number, },
+    sym"@markup.quote" { },
+    sym"@markup.raw" { },
+    sym"@markup.raw.block" { },
+    sym"@markup.strikethrough" { },
+    sym"@markup.strong" { bold = true, },
+    sym"@markup.underline" { Underlined },
+    sym"@module" { },
+    sym"@module.builtin" { },
+    sym"@punctuation.bracket" { },
+    sym"@punctuation.delimiter" { },
+    sym"@punctuation.special" { SpecialChar },
     sym"@comment" { Comment }, -- Comment
-    sym"@punctuation" { Delimiter }, -- Delimiter
     sym"@constant" { Constant }, -- Constant
-    sym"@constant.builtin" { Special }, -- Special
+    sym"@constant.builtin" { Statement }, -- Special
     sym"@constant.macro" { Define }, -- Define
-    sym"@define" { Define }, -- Define
-    sym"@macro" { Macro }, -- Macro
     sym"@string" { String }, -- String
+    sym"@string.documentation" { String },
+    sym"@string.regexp" { String },
     sym"@string.escape" { SpecialChar }, -- SpecialChar
     sym"@string.special" { SpecialChar }, -- SpecialChar
+    sym"@string.special.path" { SpecialChar },
+    sym"@string.special.symbol" { SpecialChar },
+    sym"@string.special.url" { String },
     sym"@character" { Character }, -- Character
     sym"@character.special" { SpecialChar }, -- SpecialChar
     sym"@number" { Number }, -- Number
+    sym"@number.float" { Number },
     sym"@boolean" { Boolean }, -- Boolean
-    sym"@float" { Float }, -- Float
     sym"@function" { Function }, -- Function
-    sym"@function.builtin" { Special }, -- Special
+    sym"@function.builtin" { Statement }, -- Special
     sym"@function.macro" { Macro }, -- Macro
-    sym"@parameter" { Identifier }, -- Identifier
-    sym"@method" { Function }, -- Function
-    sym"@field" { Identifier }, -- Identifier
     sym"@property" { Identifier }, -- Identifier
-    sym"@constructor" { Special }, -- Special
-    sym"@conditional" { Conditional }, -- Conditional
-    sym"@repeat" { Repeat }, -- Repeat
+    sym"@constructor" { Identifier }, -- Special
     sym"@label" { Label }, -- Label
     sym"@operator" { Operator }, -- Operator
     sym"@keyword" { Keyword }, -- Keyword
-    sym"@exception" { Exception }, -- Exception
     sym"@variable" { Identifier }, -- Identifier
+    sym"@variable.builtin" { sym"@variable" },
+    sym"@variable.member" { sym"@variable" },
+    sym"@variable.parameter" { sym"@variable" },
     sym"@type" { Type }, -- Type
     sym"@type.definition" { Typedef }, -- Typedef
-    sym"@storageclass" { StorageClass }, -- StorageClass
-    sym"@structure" { Structure }, -- Structure
-    sym"@namespace" { Identifier }, -- Identifier
-    sym"@include" { Include }, -- Include
-    sym"@preproc"({ PreProc }), -- PreProc
-    sym"@debug"({ Debug }), -- Debug
-    sym"@tag"({ Tag }), -- Tag
+    sym"@type.builtin" { Type },
+    sym"@type.qualifier" { Type },
+    sym"@tag" { Tag }, -- Tag
+    sym"@tag.attribute" { Tag },
+    sym"@tag.delimiter" { Delimiter },
     -- }}}
   }
 end)
