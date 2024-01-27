@@ -501,6 +501,7 @@
         "vim-plugin-none-ls-nvim": "vim-plugin-none-ls-nvim",
         "vim-plugin-nvim-autopairs": "vim-plugin-nvim-autopairs",
         "vim-plugin-nvim-cmp": "vim-plugin-nvim-cmp",
+        "vim-plugin-nvim-colorizer-lua": "vim-plugin-nvim-colorizer-lua",
         "vim-plugin-nvim-lightbulb": "vim-plugin-nvim-lightbulb",
         "vim-plugin-nvim-lspconfig": "vim-plugin-nvim-lspconfig",
         "vim-plugin-nvim-navic": "vim-plugin-nvim-navic",
@@ -1248,6 +1249,22 @@
       "original": {
         "owner": "hrsh7th",
         "repo": "nvim-cmp",
+        "type": "github"
+      }
+    },
+    "vim-plugin-nvim-colorizer-lua": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1684943792,
+        "narHash": "sha256-x4W7lIIfCA6+MAV5Ubb8nBc1PFlES4aXe22jVNvctnc=",
+        "owner": "mehalter",
+        "repo": "nvim-colorizer.lua",
+        "rev": "72aba5511b6af8405f26c3922c12a17bf8a680d1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mehalter",
+        "repo": "nvim-colorizer.lua",
         "type": "github"
       }
     },

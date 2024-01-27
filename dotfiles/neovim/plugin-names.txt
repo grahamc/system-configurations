@@ -35,6 +35,7 @@ nvim-lightbulb
 nvim-tree.lua
 virt-column.nvim
 traces.vim
+nvim-colorizer.lua
 vim-signify
 dial.nvim
 nvim-lspconfig

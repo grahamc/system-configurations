@@ -371,6 +371,26 @@ Plug("folke/which-key.nvim", {
 
 Plug("iamcco/markdown-preview.nvim")
 
+-- TODO: I'll keep using this fork until this PR is merged:
+-- https://github.com/NvChad/nvim-colorizer.lua/pull/63
+Plug("mehalter/nvim-colorizer.lua", {
+  config = function()
+    require("colorizer").setup({
+      filetypes = {
+        "*", -- Highlight all files, but customize some others.
+        cmp_docs = { always_update = true },
+      },
+      user_default_options = {
+        mode = "inline",
+        virtualtext = "  ",
+        css = true,
+        tailwind = "lsp",
+        sass = { enable = true, parsers = { "css" } },
+      },
+    })
+  end,
+})
+
 -- Install Missing Plugins {{{
 vim.api.nvim_create_autocmd("User", {
   pattern = "PlugEndPost",

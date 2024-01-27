@@ -410,5 +410,9 @@
       url = "github:rktjmp/lush.nvim";
       flake = false;
     };
+    vim-plugin-nvim-colorizer-lua = {
+      url = "github:mehalter/nvim-colorizer.lua";
+      flake = false;
+    };
   };
 }
