@@ -5,9 +5,10 @@
         wrapped =
           final.writeShellScriptBin
           "tmux"
-          # I want the $SHLVL to start from one for any shells launched in TMUX since they technically aren't
-          # children of the shell that I launched TMUX with. I would do this with TMUX's `default-command`, but
-          # that may break tmux-resurrect, as explained in my tmux.conf.
+          # I want the $SHLVL to start from one for any shells launched in TMUX since they
+          # technically aren't children of the shell that I launched TMUX with. I would do this
+          # with TMUX's `default-command`, but that may break tmux-resurrect, as explained in my
+          # tmux.conf.
           ''
             exec env -u SHLVL ${prev.tmux}/bin/tmux "$@"
           '';
