@@ -67,6 +67,13 @@ Plug("kyazdani42/nvim-tree.lua", {
     })
     vim.api.nvim_create_user_command("ExplorerToggle", function()
       vim.cmd.NvimTreeFindFileToggle()
+
+      -- TODO: There seems to be a bug in v0.10 messing with WinSeparator. This fixes it.
+      -- So far I've only noticed it with the nvim-tree window which is why I put the fix
+      -- here.
+      vim.cmd([[
+        setlocal winhighlight=Normal:Normal
+      ]])
     end, { desc = "Toggle the explorer window" })
     vim.keymap.set("n", "<M-e>", vim.cmd.ExplorerToggle, { silent = true })
     local nvim_tree_group_id = vim.api.nvim_create_augroup("MyNvimTree", {})

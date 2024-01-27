@@ -194,7 +194,10 @@ local function enqueue_save_task()
     500 -- time in milliseconds between saves
   )
 end
-vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+-- TODO: When I leave insert mode on a line with just spaces (e.g. enter 'ojk' from a line that's
+-- indented at least once) the automatic removal of extra spaces isn't triggering TextChanged{I} so
+-- I added ModeChanged to catch that.
+vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "ModeChanged" }, {
   callback = enqueue_save_task,
   group = vim.api.nvim_create_augroup("Autosave", {}),
 })

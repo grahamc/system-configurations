@@ -94,40 +94,40 @@ local theme = lush(function(injected_functions)
     Comment { fg = t_15.fg, italic = true }, -- Any comment
 
     Statement { t_4 }, -- (*) Any statement
-    -- Conditional    { }, --   if, then, else, endif, switch, etc.
-    -- Repeat         { }, --   for, do, while, etc.
-    -- Label          { }, --   case, default, etc.
-    -- Operator       { }, --   "sizeof", "+", "*", etc.
-    -- Keyword        { }, --   any other keyword
-    -- Exception      { }, --   try, catch, throw
+    Conditional    { Statement, }, --   if, then, else, endif, switch, etc.
+    Repeat         { Statement, }, --   for, do, while, etc.
+    Label          { Statement, }, --   case, default, etc.
+    Operator       { Statement, }, --   "sizeof", "+", "*", etc.
+    Keyword        { Statement, }, --   any other keyword
+    Exception      { Statement, }, --   try, catch, throw
 
     Identifier {}, -- (*) Any variable name
-    -- Function       { }, --   Function name (also: methods for classes)
+    Function       { Identifier, }, --   Function name (also: methods for classes)
 
     PreProc { Statement }, -- (*) Generic Preprocessor
-    -- Include        { }, --   Preprocessor #include
-    -- Define         { }, --   Preprocessor #define
-    -- Macro          { }, --   Same as Define
-    -- PreCondit      { }, --   Preprocessor #if, #else, #endif, etc.
+    Include        { PreProc, }, --   Preprocessor #include
+    Define         { PreProc, }, --   Preprocessor #define
+    Macro          { PreProc, }, --   Same as Define
+    PreCondit      { PreProc, }, --   Preprocessor #if, #else, #endif, etc.
 
     Type { Statement }, -- (*) int, long, char, etc.
-    -- StorageClass   { }, --   static, register, volatile, etc.
-    -- Structure      { }, --   struct, union, enum, etc.
-    -- Typedef        { }, --   A typedef
+    StorageClass   { Type, }, --   static, register, volatile, etc.
+    Structure      { Type, }, --   struct, union, enum, etc.
+    Typedef        { Type, }, --   A typedef
 
     Special {}, -- (*) Any special symbol
-    -- SpecialChar    { }, --   Special character in a constant
-    -- Tag            { }, --   You can use CTRL-] on this
-    -- Delimiter      { }, --   Character that needs attention
-    -- SpecialComment { }, --   Special things inside a comment (e.g. '\n')
-    -- Debug          { }, --   Debugging statements
+    SpecialChar    { Special, }, --   Special character in a constant
+    Tag            { Special, }, --   You can use CTRL-] on this
+    Delimiter      { Special, }, --   Character that needs attention
+    SpecialComment { Special, }, --   Special things inside a comment (e.g. '\n')
+    Debug          { Special, }, --   Debugging statements
 
     Constant { t_2 }, -- (*) Any constant
-    String { t_2 }, --   A string constant: "this is a string"
-    -- Character      { }, --   A character constant: 'c', '\n'
-    -- Number         { }, --   A number constant: 234, 0xff
-    -- Boolean        { }, --   A boolean constant: TRUE, false
-    -- Float          { }, --   A floating point constant: 2.3e10
+    String { Constant, }, --   A string constant: "this is a string"
+    Character      { Constant, }, --   A character constant: 'c', '\n'
+    Number         { Constant, }, --   A number constant: 234, 0xff
+    Boolean        { Constant, }, --   A boolean constant: TRUE, false
+    Float          { Constant, }, --   A floating point constant: 2.3e10
     -- }}}
 
     -- diffs {{{
@@ -197,14 +197,14 @@ local theme = lush(function(injected_functions)
     MsgArea { StatusLine }, -- Area for messages and cmdline
     MsgSeparator {}, -- Separator for scrolled messages, `msgsep` flag of 'display'
     MoreMsg {}, -- |more-prompt|
-    NonText { fg = background.bg.lighten(20) }, -- '@' at the end of the window, characters from 'showbreak' and other characters that do not really exist in the text (e.g., ">" displayed when a double-wide character doesn't fit at the end of the line). See also |hl-EndOfBuffer|.
+    NonText { fg = background.bg.lighten(10) }, -- '@' at the end of the window, characters from 'showbreak' and other characters that do not really exist in the text (e.g., ">" displayed when a double-wide character doesn't fit at the end of the line). See also |hl-EndOfBuffer|.
     Question {}, -- |hit-enter| prompt and yes/no questions
     QuickFixLine { bg = background.bg.lighten(10) }, -- Current |quickfix| item in the quickfix window. Combined with |hl-CursorLine| when the cursor is there.
     SpellBad { Error }, -- Word that is not recognized by the spellchecker. |spell| Combined with the highlighting used otherwise.
     SpellCap { Warning }, -- Word that should start with a capital. |spell| Combined with the highlighting used otherwise.
     Title { Normal }, -- Titles for output from ":set all", ":autocmd" etc.
     Whitespace { fg = background.bg.lighten(30) }, -- "nbsp", "space", "tab" and "trail" in 'listchars'
-    Winseparator { fg = background.bg.lighten(30) }, -- Separator between window splits. Inherts from |hl-VertSplit| by default, which it will replace eventually.
+    Winseparator { t_15, }, -- Separator between window splits. Inherts from |hl-VertSplit| by default, which it will replace eventually.
     ColorColumn { Winseparator },
     WinBar { bold = true, italic = true }, -- Window bar of current window
     WinBarNC { WinBar }, -- Window bar of not-current windows
@@ -221,6 +221,7 @@ local theme = lush(function(injected_functions)
     Underlined {}, -- Text that stands out, HTML links
     Ignore { fg = background.bg }, -- Left blank, hidden |hl-Ignore| (NOTE: May be invisible here in template)
     Todo { t_3 }, -- Anything that needs extra attention; mostly the keywords TODO FIXME and XXX
+    VirtColumn { NonText, },
 
     -- nvim-cmp {{{
     -- TODO: figure out interaction with pmenu
@@ -269,6 +270,15 @@ local theme = lush(function(injected_functions)
     SignifyAdd { fg = t_2.fg },
     SignifyDelete { fg = t_1.fg },
     SignifyChange { fg = t_3.fg },
+    -- I'm setting all of these so that the signify signs will be added to the sign column, but
+    -- NOT be visible. I don't want them to be visible because I already change the color of my
+    -- statuscolumn border to indicate git changes. I want them to be added to the sign column so I
+    -- know where to color my statuscolumn border.
+    SignifySignAdd { Ignore, },
+    SignifySignChange { Ignore, },
+    SignifySignChangeDelete { Ignore, },
+    SignifySignDelete { Ignore, },
+    SignifySignDeleteFirstLine { Ignore, },
     -- }}}
 
     -- mini.nvim {{{
@@ -410,54 +420,53 @@ local theme = lush(function(injected_functions)
 
     sym"@text.literal" { Comment }, -- Comment
     sym"@text.reference" { Identifier }, -- Identifier
-    sym"@text.title" { Identifier }, -- Title
-    sym"@text.uri" {}, -- Underlined
-    sym"@text.underline" {}, -- Underlined
+    sym"@text.title" { Title }, -- Title
+    sym"@text.uri" { Underlined }, -- Underlined
+    sym"@text.underline" { Underlined }, -- Underlined
     sym"@text.todo" { Todo }, -- Todo
     sym"@comment" { Comment }, -- Comment
-    sym"@punctuation" { Special }, -- Delimiter
+    sym"@punctuation" { Delimiter }, -- Delimiter
     sym"@constant" { Constant }, -- Constant
     sym"@constant.builtin" { Special }, -- Special
-    sym"@constant.macro" { Statement }, -- Define
-    sym"@define" { sym "@constant.macro" }, -- Define
-    sym"@macro" { sym "@constant.macro" }, -- Macro
+    sym"@constant.macro" { Define }, -- Define
+    sym"@define" { Define }, -- Define
+    sym"@macro" { Macro }, -- Macro
     sym"@string" { String }, -- String
-    sym"@string.escape" { Special }, -- SpecialChar
-    sym"@string.special" { Special }, -- SpecialChar
-    sym"@character" { String }, -- Character
-    sym"@character.special" { Special }, -- SpecialChar
-    sym"@number" { Constant }, -- Number
-    sym"@boolean" { Constant }, -- Boolean
-    sym"@float" { Constant }, -- Float
-    sym"@function" { Identifier }, -- Function
+    sym"@string.escape" { SpecialChar }, -- SpecialChar
+    sym"@string.special" { SpecialChar }, -- SpecialChar
+    sym"@character" { Character }, -- Character
+    sym"@character.special" { SpecialChar }, -- SpecialChar
+    sym"@number" { Number }, -- Number
+    sym"@boolean" { Boolean }, -- Boolean
+    sym"@float" { Float }, -- Float
+    sym"@function" { Function }, -- Function
     sym"@function.builtin" { Special }, -- Special
-    sym"@function.macro" { sym "@constant.macro" }, -- Macro
+    sym"@function.macro" { Macro }, -- Macro
     sym"@parameter" { Identifier }, -- Identifier
-    sym"@method" { Statement }, -- Function
+    sym"@method" { Function }, -- Function
     sym"@field" { Identifier }, -- Identifier
     sym"@property" { Identifier }, -- Identifier
     sym"@constructor" { Special }, -- Special
-    sym"@conditional" { Statement }, -- Conditional
-    sym"@repeat" { Statement }, -- Repeat
-    sym"@label" { Statement }, -- Label
-    sym"@operator" { Statement }, -- Operator
-    sym"@keyword" { Statement }, -- Keyword
-    sym"@exception" { Statement }, -- Exception
+    sym"@conditional" { Conditional }, -- Conditional
+    sym"@repeat" { Repeat }, -- Repeat
+    sym"@label" { Label }, -- Label
+    sym"@operator" { Operator }, -- Operator
+    sym"@keyword" { Keyword }, -- Keyword
+    sym"@exception" { Exception }, -- Exception
     sym"@variable" { Identifier }, -- Identifier
-    sym"@type" { Statement }, -- Type
-    sym"@type.definition" { Statement }, -- Typedef
-    sym"@storageclass" { Statement }, -- StorageClass
-    sym"@structure" { Statement }, -- Structure
+    sym"@type" { Type }, -- Type
+    sym"@type.definition" { Typedef }, -- Typedef
+    sym"@storageclass" { StorageClass }, -- StorageClass
+    sym"@structure" { Structure }, -- Structure
     sym"@namespace" { Identifier }, -- Identifier
-    sym"@include" { Statement }, -- Include
-    sym"@preproc"({ Statement }), -- PreProc
-    sym"@debug"({ Special }), -- Debug
-    sym"@tag"({ Special }), -- Tag
+    sym"@include" { Include }, -- Include
+    sym"@preproc"({ PreProc }), -- PreProc
+    sym"@debug"({ Debug }), -- Debug
+    sym"@tag"({ Tag }), -- Tag
     -- }}}
   }
 end)
 
--- Return our parsed theme for extension or use elsewhere.
 return theme
 
 -- vi:nowrap

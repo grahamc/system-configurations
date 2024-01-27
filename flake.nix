@@ -155,6 +155,9 @@
       url = "github:folke/neodev.nvim";
       flake = false;
     };
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay";
+    };
     vim-plugin-firenvim = {
       url = "github:glacambre/firenvim";
       flake = false;

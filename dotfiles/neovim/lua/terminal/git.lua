@@ -48,17 +48,8 @@ Plug("mhinz/vim-signify", {
 
         nmap ]c <plug>(sy-hunk-next)
         nmap [c <plug>(sy-hunk-prev)
-      ]])
+    ]])
   end,
 })
--- I'm setting all of these so that the signify signs will be added to the sign column, but NOT be
--- visible. I don't want them to be visible because I already change the color of my statuscolumn
--- border to indicate git changes. I want them to be added to the sign column so I know where to
--- color my statuscolumn border.
-vim.g.signify_sign_add = ""
-vim.g.signify_sign_delete = ""
-vim.g.signify_sign_delete_first_line = ""
-vim.g.signify_sign_change = ""
-vim.g.signify_sign_change_delete = ""
-vim.g.signify_priority = -100
+vim.g.signify_priority = 1
 vim.g.signify_sign_show_count = 0

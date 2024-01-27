@@ -27,6 +27,7 @@
           "neodev-nvim"
           "wezterm"
           "tmux"
+          "neovim-nightly-overlay"
         ]
         ++ plugins;
       darwin =

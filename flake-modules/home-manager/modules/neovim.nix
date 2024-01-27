@@ -4,14 +4,16 @@
   lib,
   specialArgs,
   ...
-}: {
+}: let
+  neovim = pkgs.neovim-nightly;
+in {
   home = {
-    packages = with pkgs; [
-      neovim-unwrapped
+    packages = [
+      neovim
       # TODO: Text will be lost on reflow until this issue is resolved:
       # https://github.com/neovim/neovim/issues/2514
-      page
-      par
+      pkgs.page
+      pkgs.par
     ];
 
     # TODO: vim.loader() uses modification time and file size as a cache key. This is a problem for
@@ -26,14 +28,14 @@
       lib.hm.dag.entryAfter
       ["writeBoundary"]
       ''
-        ${pkgs.neovim-unwrapped}/bin/nvim --clean --headless -c 'lua vim.loader.reset()' -c 'quit'
+        ${neovim}/bin/nvim --clean --headless -c 'lua vim.loader.reset()' -c 'quit'
       '';
 
     file = {
       "${config.repository.directory}/.luarc.json".source =
         pkgs.runCommand
         "runtime-directories.txt"
-        {nativeBuildInputs = with pkgs; [neovim-unwrapped jq];}
+        {nativeBuildInputs = with pkgs; [neovim jq];}
         ''
           # Read this to see why the `tr` command is needed:
           # https://stackoverflow.com/questions/16739300/redirect-ex-command-to-stdout-in-vim
@@ -46,7 +48,7 @@
             --null-input \
             '{"$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json", "workspace": {"library": $ARGS.positional, "checkThirdParty": "Disable"}, "runtime": {"version": "LuaJIT"}, "telemetry": {"enable": false}}' \
             --args \
-              '${specialArgs.flakeInputs.neodev-nvim}/types/stable' \
+              '${specialArgs.flakeInputs.neodev-nvim}/types/nightly' \
               '${config.xdg.dataHome}/nvim/plugged' \
               '${specialArgs.homeDirectory}/.hammerspoon/Spoons/EmmyLua.spoon/annotations' \
               "''${runtime_dirs[@]}" \
