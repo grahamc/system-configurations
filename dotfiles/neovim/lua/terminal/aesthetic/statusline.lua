@@ -196,7 +196,7 @@ function StatusLine()
 
   local lsp_info = nil
   local language_server_count_for_current_buffer =
-    #vim.lsp.get_active_clients({ bufnr = vim.api.nvim_get_current_buf() })
+    #vim.lsp.get_clients({ bufnr = vim.api.nvim_get_current_buf() })
   if language_server_count_for_current_buffer > 0 then
     lsp_info = "%#StatusLine# " .. language_server_count_for_current_buffer
   end
