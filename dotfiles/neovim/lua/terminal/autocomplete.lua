@@ -161,9 +161,6 @@ Plug("hrsh7th/nvim-cmp", {
           col_offset = 1,
         },
       },
-      experimental = {
-        ghost_text = { hl_group = "CmpGhostText" },
-      },
       mapping = cmp.mapping.preset.insert({
         ["<CR>"] = function(fallback)
           -- TODO: Don't block <CR> if signature help is active

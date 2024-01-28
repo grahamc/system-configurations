@@ -1,6 +1,6 @@
 -- vim:foldmethod=marker
 
-vim.keymap.set({ "n" }, "Q", function()
+vim.keymap.set({ "n", "x" }, "Q", function()
   local last_recorded_register = vim.fn.reg_recorded()
   if last_recorded_register ~= "" then
     return "@" .. last_recorded_register

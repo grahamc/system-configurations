@@ -1,5 +1,6 @@
 -- vim:foldmethod=marker
 
+-- settings {{{
 vim.o.laststatus = 3
 vim.o.statusline = "%!v:lua.StatusLine()"
 vim.api.nvim_create_autocmd({ "FileType" }, {
@@ -21,6 +22,7 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
   end,
   group = vim.api.nvim_create_augroup("Widget Statusline", {}),
 })
+-- }}}
 
 -- statusline helper {{{
 local function get_mode_indicator()
@@ -296,23 +298,29 @@ function StatusLine()
 end
 -- }}}
 
+-- quickfix statusline {{{
 function QuickfixStatusLine()
   return make_statusline(
     { [[%#StatusLine#%t%{exists('w:quickfix_title')? ' '.w:quickfix_title : ''}]] },
     { "%#StatusLine#Press gf for find&replace" }
   )
 end
+-- }}}
 
+-- file explorer statusline {{{
 function FileExplorerStatusLine()
   return make_statusline(
     { "%#StatusLine#" .. vim.o.filetype },
     { "%#StatusLine#Press g? for help" }
   )
 end
+-- }}}
 
+-- symbol outline statusline {{{
 function OutlineStatusLine()
   return make_statusline({ "%#StatusLine#" .. vim.o.filetype }, { "%#StatusLine#Press ? for help" })
 end
+-- }}}
 
 Plug("oncomouse/czs.nvim", {
   config = function()

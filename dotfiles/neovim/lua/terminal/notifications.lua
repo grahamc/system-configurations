@@ -6,7 +6,7 @@ Plug("j-hui/fidget.nvim", {
         suppress_on_insert = true,
         ignore = { "null-ls" },
         display = {
-          render_limit = 5,
+          render_limit = 3,
           done_ttl = 0.1,
           done_icon = "󰄬",
           done_style = "FidgetNormal",
@@ -17,7 +17,6 @@ Plug("j-hui/fidget.nvim", {
         },
       },
       notification = {
-        poll_rate = 5,
         view = {
           group_separator = "─────",
         },

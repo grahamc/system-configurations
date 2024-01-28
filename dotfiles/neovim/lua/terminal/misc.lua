@@ -209,7 +209,6 @@ vim.keymap.set({ "n", "i" }, "<C-M-]>", vim.cmd.tabnext, { silent = true })
 vim.keymap.set({ "n" }, "<C-t>", function()
   vim.cmd.tabnew("%")
 end, { silent = true })
-vim.keymap.set({ "n" }, "<C-M-w>", vim.cmd.tabclose, { silent = true })
 -- }}}
 
 -- Indentation {{{

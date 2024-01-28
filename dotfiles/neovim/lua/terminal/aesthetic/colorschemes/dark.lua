@@ -225,7 +225,6 @@ local theme = lush(function(injected_functions)
 
     -- nvim-cmp {{{
     -- TODO: figure out interaction with pmenu
-    CmpGhostText { GitBlameVirtualText },
     CmpNormal { bg = background.bg.lighten(5) },
     CmpItemKind { fg = CmpNormal.bg.li(55) },
     CmpItemMenu { CmpItemKind },
