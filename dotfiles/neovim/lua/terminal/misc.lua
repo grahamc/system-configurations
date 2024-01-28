@@ -270,22 +270,6 @@ vim.api.nvim_create_autocmd("TermOpen", {
 })
 -- }}}
 
-Plug("Tummetott/reticle.nvim", {
-  config = function()
-    require("reticle").setup({
-      on_startup = {
-        cursorline = true,
-        cursorcolumn = false,
-      },
-      disable_in_insert = false,
-      never = {
-        cursorline = { "TelescopeResults" },
-      },
-      always_highlight_number = true,
-    })
-  end,
-})
-
 -- To get the vim help pages for vim-plug itself, you need to add it as a plugin
 Plug("junegunn/vim-plug")
 

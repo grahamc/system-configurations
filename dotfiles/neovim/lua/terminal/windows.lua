@@ -40,34 +40,36 @@ vim.api.nvim_create_autocmd({ "WinNew", "WinClosed" }, {
   group = window_group_id,
 })
 
--- TODO: This won't work until I use a release of neovim that has this fix, right now it's only on
--- nightly: https://github.com/neovim/neovim/pull/25096
-vim.api.nvim_create_autocmd({ "WinNew" }, {
-  callback = function()
-    local is_float = vim.api.nvim_win_get_config(0).relative ~= ""
-    if is_float then
-      local ok, reticle = pcall(require, "reticle")
-      if ok then
-        reticle.disable_cursorline()
-      end
-    end
-  end,
-  group = window_group_id,
-})
+Plug("Tummetott/reticle.nvim", {
+  config = function()
+    local reticle = require("reticle")
+    reticle.setup({
+      on_startup = {
+        cursorline = true,
+        cursorcolumn = false,
+      },
+      disable_in_insert = false,
+      never = {
+        cursorline = { "TelescopeResults" },
+      },
+      always_highlight_number = true,
+    })
 
-local toggle_cursor_line_group_id =
-  vim.api.nvim_create_augroup("ToggleCursorlineWithWindowFocus", {})
-vim.api.nvim_create_autocmd({ "FocusGained" }, {
-  callback = function()
-    pcall(require("reticle").enable_cursorline)
+    local toggle_cursor_line_group_id =
+      vim.api.nvim_create_augroup("ToggleCursorlineWithWindowFocus", {})
+    vim.api.nvim_create_autocmd({ "FocusGained" }, {
+      callback = function()
+        reticle.set_cursorline(true)
+      end,
+      group = toggle_cursor_line_group_id,
+    })
+    vim.api.nvim_create_autocmd({ "FocusLost" }, {
+      callback = function()
+        reticle.set_cursorline(false)
+      end,
+      group = toggle_cursor_line_group_id,
+    })
   end,
-  group = toggle_cursor_line_group_id,
-})
-vim.api.nvim_create_autocmd({ "FocusLost" }, {
-  callback = function()
-    pcall(require("reticle").disable_cursorline)
-  end,
-  group = toggle_cursor_line_group_id,
 })
 
 -- Resize windows
