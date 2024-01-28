@@ -74,7 +74,7 @@ Plug("williamboman/mason-lspconfig.nvim", {
     local lspconfig = require("lspconfig")
 
     local on_attach = function(client, buffer_number)
-      local capabilities = client.server_capabilities
+      local methods = vim.lsp.protocol.Methods
       local buffer_keymap = vim.api.nvim_buf_set_keymap
       local keymap_opts = { noremap = true, silent = true }
 
@@ -82,7 +82,7 @@ Plug("williamboman/mason-lspconfig.nvim", {
       -- https://github.com/ii14/dotfiles/blob/e40d2b8316ec72b5b06b9e7a1d997276ff4ddb6a/.config/nvim/lua/m/opt.lua
       local foldmethod = vim.o.foldmethod
       local isFoldmethodOverridable = foldmethod ~= "marker" and foldmethod ~= "diff"
-      if capabilities.foldingRangeProvider and isFoldmethodOverridable then
+      if client.supports_method(methods.textDocument_foldingRange) and isFoldmethodOverridable then
         -- folding-nvim prints a message if any attached language server does not support folding so I'm suppressing
         -- that.
         vim.cmd([[silent lua require('folding').on_attach()]])
@@ -90,7 +90,7 @@ Plug("williamboman/mason-lspconfig.nvim", {
 
       local filetype = vim.o.filetype
       local isKeywordprgOverridable = filetype ~= "vim"
-      if capabilities.hoverProvider and isKeywordprgOverridable then
+      if client.supports_method(methods.textDocument_hover) and isKeywordprgOverridable then
         buffer_keymap(buffer_number, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", keymap_opts)
 
         -- Change border of documentation hover window, See https://github.com/neovim/neovim/pull/13998.
@@ -100,7 +100,7 @@ Plug("williamboman/mason-lspconfig.nvim", {
         })
       end
 
-      if capabilities.documentSymbolProvider then
+      if client.supports_method(methods.textDocument_documentSymbol) then
         require("nvim-navic").attach(client, buffer_number)
       end
     end

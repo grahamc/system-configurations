@@ -210,10 +210,6 @@
       url = "github:RRethy/nvim-treesitter-endwise";
       flake = false;
     };
-    vim-plugin-nvim-osc52 = {
-      url = "github:ojroques/nvim-osc52";
-      flake = false;
-    };
     vim-plugin-virt-column-nvim = {
       url = "github:lukas-reineke/virt-column.nvim";
       flake = false;

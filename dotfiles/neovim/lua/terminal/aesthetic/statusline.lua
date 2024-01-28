@@ -208,10 +208,14 @@ function StatusLine()
   end
 
   local diagnostic_count = {
-    warning = GetDiagnosticCountForSeverity("warn"),
-    error = GetDiagnosticCountForSeverity("error"),
-    info = GetDiagnosticCountForSeverity("info"),
-    hint = GetDiagnosticCountForSeverity("hint"),
+    warning = vim.diagnostic.count(0, { severity = vim.diagnostic.severity.WARN })[vim.diagnostic.severity.WARN]
+      or 0,
+    error = vim.diagnostic.count(0, { severity = vim.diagnostic.severity.ERROR })[vim.diagnostic.severity.ERROR]
+      or 0,
+    info = vim.diagnostic.count(0, { severity = vim.diagnostic.severity.INFO })[vim.diagnostic.severity.INFO]
+      or 0,
+    hint = vim.diagnostic.count(0, { severity = vim.diagnostic.severity.HINT })[vim.diagnostic.severity.HINT]
+      or 0,
   }
   local diagnostic_list = {}
   local error_count = diagnostic_count.error
@@ -289,10 +293,6 @@ function StatusLine()
     fileencoding,
     position,
   })
-end
-
-function GetDiagnosticCountForSeverity(severity)
-  return #vim.diagnostic.get(0, { severity = severity })
 end
 -- }}}
 

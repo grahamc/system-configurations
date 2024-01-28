@@ -47,7 +47,6 @@ nvim-web-devicons
 nvim-treesitter
 nvim-treesitter-textobjects
 none-ls.nvim
-nvim-osc52
 czs.nvim
 folding-nvim
 friendly-snippets

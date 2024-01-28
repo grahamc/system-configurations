@@ -77,7 +77,7 @@ function ClickLink()
     "ftps?://(([%w_.~!*:@&+$/?%%#-]-)(%w[-.%w]*%.)(%w%w%w?%w?)(:?)(%d*)(/?)([%w_.~!*:@&+$/?%%#=-]*))"
   )
   if is_url then
-    vim.fn.jobstart({ "open", cfile }, { detach = true })
+    vim.ui.open(cfile)
   end
 
   -- If we are in a float that doesn't have a filetype, jump back to previous window. This way I can
@@ -93,7 +93,7 @@ vim.o.scroll = 1
 
 vim.keymap.set("n", "|", "<Cmd>set list!<CR>", { silent = true })
 
-vim.o.shortmess = "filnxtToOFs"
+vim.o.shortmess = "ltToOFs"
 
 -- I have a mapping in my terminal for <C-i> that sends F9 to get around the fact that TMUX
 -- considers <C-i> the same as <Tab> right now since TMUX lost support for extended keys.
@@ -161,7 +161,7 @@ Plug("lukas-reineke/virt-column.nvim", {
 -- Quickfix {{{
 local function toggle_quickfix()
   local qf_exists = false
-  for _, win in pairs(vim.fn.getwininfo()) do
+  for _, win in pairs(vim.fn.getwininfo() or {}) do
     if win["quickfix"] == 1 then
       qf_exists = true
     end
@@ -294,40 +294,6 @@ Plug("junegunn/vim-plug")
 -- issue for `inccommand` support: https://github.com/tpope/vim-abolish/issues/107
 Plug("markonm/traces.vim")
 vim.g.traces_abolish_integration = 1
-
--- Use the ANSI OSC52 sequence to copy text to the system clipboard.
---
--- TODO:
--- Ultimately I'd like my clipboard provider to behave like the following:
---     1. check if OSC52 copy/paste is supported by the terminal (a lot of terminals offer copy, but not paste for
--- security reasons),
---     2. If so use it, if not fallback to one of CLIs e.g. wl-copy.
---
--- There are 2 ways I can get this:
---     1. I use my `pbcopy` as the clipboard provider and add a check to `pbcopy` to make sure
--- we're connected to a terminal before trying OSC52. There are some ideas here for how to do that check:
--- https://github.com/neovim/neovim/issues/3344#issuecomment-1808677428
--- I'd also have to set my `pbpaste` as the provider since you can't set just copy or paste it has to be both.
---     2. OSC52 is also being upstreamed so I may be able to just use that depending on how they do it:
--- https://github.com/neovim/neovim/pull/25872. I have a feeling the upstreamed support won't work for me
--- because they'll probably only use OSC52 if both copy _and_ paste are supported, but I'd like each one to
--- fallback separately, not as a pair.
-Plug("ojroques/nvim-osc52", {
-  config = function()
-    local osc = require("osc52")
-
-    osc.setup({ silent = true })
-
-    local function copy()
-      -- Use OSC 52 to set the clipboard whenever the `+` register is written to. Since the
-      -- clipboard provider is probably setting the clipboard as well this means we do it twice.
-      if vim.v.event.operator == "y" and vim.v.event.regname == "+" then
-        osc.copy_register("+")
-      end
-    end
-    vim.api.nvim_create_autocmd("TextYankPost", { callback = copy })
-  end,
-})
 
 Plug("nvim-lua/plenary.nvim")
 Plug("kkharji/sqlite.lua")
