@@ -8,6 +8,7 @@ end
 
 require("terminal.aesthetic")
 require("terminal.sidebars")
+require("terminal.statusbars")
 require("terminal.autocomplete")
 require("terminal.folds")
 require("terminal.git")
@@ -19,3 +20,4 @@ require("terminal.sessions")
 require("terminal.telescope")
 require("terminal.tools")
 require("terminal.windows")
+require("terminal.discovery")

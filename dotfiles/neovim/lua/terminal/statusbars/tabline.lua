@@ -2,8 +2,12 @@ Plug("akinsho/bufferline.nvim", {
   config = function()
     local function close(buffer)
       local buffer_count = #vim.fn.getbufinfo({ buflisted = 1 })
-      local window_count = vim.fn.winnr("$")
       local tab_count = vim.fn.tabpagenr("$")
+
+      local function is_not_float(window)
+        return vim.api.nvim_win_get_config(window).relative == ""
+      end
+      local window_count = #vim.tbl_filter(is_not_float, vim.api.nvim_list_wins())
 
       -- If the only other window in the tab page is nvim-tree, and only one tab is open, keep the
       -- window and switch to another buffer.
@@ -46,9 +50,10 @@ Plug("akinsho/bufferline.nvim", {
       end
     end
 
-    local close_icon = ""
+    local close_icon = " "
     local active_bg = vim.api.nvim_get_hl(0, { name = "StatusLine" }).bg
     local inactive_fg = vim.api.nvim_get_hl(0, { name = "Comment" }).fg
+    local inactive_bg = vim.api.nvim_get_hl(0, { name = "background" }).bg
     local accent_fg = vim.api.nvim_get_hl(0, { name = "FloatTitle" }).fg
     local offset_separator_fg = vim.api.nvim_get_hl(0, { name = "WinSeparator" }).fg
     local explorer_icon = ""
@@ -116,9 +121,9 @@ Plug("akinsho/bufferline.nvim", {
         close_button = { bg = "NONE", fg = inactive_fg },
         close_button_selected = { bg = active_bg, fg = "None" },
         close_button_visible = { bg = "NONE", fg = inactive_fg },
-        modified = { bg = active_bg, fg = inactive_fg },
+        modified = { bg = "NONE", fg = inactive_bg },
+        modified_visible = { bg = "NONE", fg = inactive_bg },
         modified_selected = { bg = active_bg, fg = "None" },
-        modified_visible = { bg = active_bg, fg = "None" },
         tab = { bg = active_bg, fg = inactive_fg },
         tab_selected = { bg = active_bg, fg = accent_fg, underline = true },
         tab_separator = { bg = active_bg, fg = active_bg },
@@ -164,21 +169,28 @@ Plug("akinsho/bufferline.nvim", {
       local selected_border_highlight = "%#BufferLineIndicatorSelected#"
       local right_border_with_selected_highlight = selected_border_highlight .. right_border
 
-      local function inject_right_border_for_selected_buffer(pattern_to_insert_after)
+      local function inject_right_border_for_selected_buffer(pattern_left, pattern_right)
         result = string.gsub(
           result,
-          pattern_to_insert_after,
-          "%0" .. escape_percent(right_border_with_selected_highlight) .. "  ",
+          -- add a space to the pattern, but not the replacement, so I can remove the space that
+          -- bufferline adds to the right side
+          pattern_left
+            .. "(.-)"
+            .. pattern_right
+            .. " ",
+          pattern_left
+            .. "%1"
+            .. pattern_right
+            .. escape_percent(right_border_with_selected_highlight)
+            .. "  ",
           1
         )
       end
       -- I'm using a '-' here instead of a '*' so the match won't be greedy. This is needed
       -- because if I hover over a buffer to the right of the current buffer then this pattern
       -- would match the hovered x instead of the x for the current buffer.
-      inject_right_border_for_selected_buffer(
-        "BufferLineCloseButtonSelected.-" .. close_icon .. "%%X "
-      )
-      inject_right_border_for_selected_buffer("BufferLineModifiedSelected.-" .. close_icon .. " ")
+      inject_right_border_for_selected_buffer("BufferLineCloseButtonSelected", close_icon .. "%%X")
+      inject_right_border_for_selected_buffer("BufferLineModifiedSelected", close_icon)
 
       -- left centerer for buffer list
       if is_explorer_open then

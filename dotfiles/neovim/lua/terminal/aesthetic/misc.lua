@@ -10,9 +10,3 @@ vim.o.signcolumn = "yes:2"
 vim.opt.fillchars:append("eob: ")
 
 Plug("nvim-tree/nvim-web-devicons")
-
-Plug("Bekaboo/dropbar.nvim", {
-  config = function()
-    require("dropbar").setup({})
-  end,
-})
