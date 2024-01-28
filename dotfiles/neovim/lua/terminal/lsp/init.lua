@@ -57,7 +57,7 @@ vim.keymap.set(
   "n",
   "gr",
   require("terminal.utilities").set_jump_before(function()
-    require("telescope.builtin").lsp_references()
+    require("telescope.builtin").lsp_references({ preview_title = "" })
   end),
   { desc = "Go to reference" }
 )
@@ -117,5 +117,94 @@ Plug("kosayoda/nvim-lightbulb", {
         hl = "CodeActionSign",
       },
     })
+  end,
+})
+
+Plug("williamboman/mason-lspconfig.nvim", {
+  config = function()
+    local function run()
+      require("mason-lspconfig").setup()
+      local lspconfig = require("lspconfig")
+
+      local on_attach = function(client, buffer_number)
+        local methods = vim.lsp.protocol.Methods
+        local buffer_keymap = vim.api.nvim_buf_set_keymap
+        local keymap_opts = { noremap = true, silent = true }
+
+        -- TODO: foldmethod is window-local, but I want to set it per buffer. Possible solution here:
+        -- https://github.com/ii14/dotfiles/blob/e40d2b8316ec72b5b06b9e7a1d997276ff4ddb6a/.config/nvim/lua/m/opt.lua
+        local foldmethod = vim.o.foldmethod
+        local isFoldmethodOverridable = foldmethod ~= "marker" and foldmethod ~= "diff"
+        if
+          client.supports_method(methods.textDocument_foldingRange) and isFoldmethodOverridable
+        then
+          -- folding-nvim prints a message if any attached language server does not support folding so I'm suppressing
+          -- that.
+          vim.cmd([[silent lua require('folding').on_attach()]])
+        end
+
+        local filetype = vim.o.filetype
+        local isKeywordprgOverridable = filetype ~= "vim"
+        if client.supports_method(methods.textDocument_hover) and isKeywordprgOverridable then
+          buffer_keymap(buffer_number, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", keymap_opts)
+
+          -- Change border of documentation hover window, See https://github.com/neovim/neovim/pull/13998.
+          vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+            focusable = true,
+            border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
+          })
+        end
+
+        if client.supports_method(methods.textDocument_inlayHint) then
+          vim.lsp.inlay_hint.enable(buffer_number, true)
+          vim.api.nvim_buf_create_user_command(buffer_number, "InlayHintsToggle", function()
+            vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())
+          end, {})
+        end
+      end
+
+      local cmp_lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
+      local folding_capabilities = {
+        textDocument = {
+          foldingRange = {
+            dynamicRegistration = false,
+            lineFoldingOnly = true,
+          },
+        },
+      }
+      local capabilities = vim.tbl_deep_extend("error", cmp_lsp_capabilities, folding_capabilities)
+
+      local server_config_handlers = {}
+      local default_server_config = {
+        capabilities = capabilities,
+        on_attach = on_attach,
+      }
+      -- Default handler to be called for each installed server that doesn't have a dedicated handler.
+      server_config_handlers[1] = function(server_name)
+        lspconfig[server_name].setup(default_server_config)
+      end
+      -- server-specific handlers
+      local server_specific_configs = require("terminal.lsp.server-settings").get(on_attach)
+      for server_name, server_specific_config in pairs(server_specific_configs) do
+        server_config_handlers[server_name] = function()
+          lspconfig[server_name].setup(
+            vim.tbl_deep_extend("force", default_server_config, server_specific_config)
+          )
+        end
+      end
+      require("mason-lspconfig").setup_handlers(server_config_handlers)
+
+      -- Set the filetype of all the currently open buffers to trigger a 'FileType' event for each
+      -- buffer so nvim_lsp has a chance to attach to any buffers that were openeed before it was
+      -- configured. This way I can load nvim_lsp asynchronously.
+      local buffer = vim.fn.bufnr()
+      vim.cmd([[
+          silent! bufdo silent! lua vim.o.filetype = vim.o.filetype
+        ]])
+      vim.cmd.b(buffer)
+    end
+
+    -- mason.nvim needs to run it's config first so this will ensure that happens.
+    vim.defer_fn(run, 0)
   end,
 })
