@@ -1,7 +1,7 @@
+dropbar.nvim
 LuaSnip
 vim-just
 nvim-treesitter-endwise
-nvim-navic
 reticle.nvim
 bufferline.nvim
 cmp-tmux

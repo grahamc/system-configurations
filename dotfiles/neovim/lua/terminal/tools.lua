@@ -99,10 +99,6 @@ Plug("williamboman/mason-lspconfig.nvim", {
           border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
         })
       end
-
-      if client.supports_method(methods.textDocument_documentSymbol) then
-        require("nvim-navic").attach(client, buffer_number)
-      end
     end
 
     local cmp_lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()

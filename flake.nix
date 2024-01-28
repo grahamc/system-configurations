@@ -350,10 +350,6 @@
       url = "github:rcarriga/nvim-notify";
       flake = false;
     };
-    vim-plugin-nvim-navic = {
-      url = "github:SmiteshP/nvim-navic";
-      flake = false;
-    };
     vim-plugin-git-blame-nvim = {
       url = "github:f-person/git-blame.nvim";
       flake = false;
@@ -408,6 +404,10 @@
     };
     vim-plugin-nvim-colorizer-lua = {
       url = "github:mehalter/nvim-colorizer.lua";
+      flake = false;
+    };
+    vim-plugin-dropbar-nvim = {
+      url = "github:Bekaboo/dropbar.nvim";
       flake = false;
     };
   };

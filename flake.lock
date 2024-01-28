@@ -487,6 +487,7 @@
         "vim-plugin-czs-nvim": "vim-plugin-czs-nvim",
         "vim-plugin-dial-nvim": "vim-plugin-dial-nvim",
         "vim-plugin-dressing-nvim": "vim-plugin-dressing-nvim",
+        "vim-plugin-dropbar-nvim": "vim-plugin-dropbar-nvim",
         "vim-plugin-fidget-nvim": "vim-plugin-fidget-nvim",
         "vim-plugin-firenvim": "vim-plugin-firenvim",
         "vim-plugin-folding-nvim": "vim-plugin-folding-nvim",
@@ -504,7 +505,6 @@
         "vim-plugin-nvim-colorizer-lua": "vim-plugin-nvim-colorizer-lua",
         "vim-plugin-nvim-lightbulb": "vim-plugin-nvim-lightbulb",
         "vim-plugin-nvim-lspconfig": "vim-plugin-nvim-lspconfig",
-        "vim-plugin-nvim-navic": "vim-plugin-nvim-navic",
         "vim-plugin-nvim-notify": "vim-plugin-nvim-notify",
         "vim-plugin-nvim-tree-lua": "vim-plugin-nvim-tree-lua",
         "vim-plugin-nvim-treesitter": "vim-plugin-nvim-treesitter",
@@ -1027,6 +1027,22 @@
         "type": "github"
       }
     },
+    "vim-plugin-dropbar-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1706164742,
+        "narHash": "sha256-5vv//5lZBrh303Enq1RdwdC1QqRKB/J/XqbNXm+kxV8=",
+        "owner": "Bekaboo",
+        "repo": "dropbar.nvim",
+        "rev": "9a8e498374276dd0281736c75b42098ef9fb5622",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Bekaboo",
+        "repo": "dropbar.nvim",
+        "type": "github"
+      }
+    },
     "vim-plugin-fidget-nvim": {
       "flake": false,
       "locked": {
@@ -1296,22 +1312,6 @@
       "original": {
         "owner": "neovim",
         "repo": "nvim-lspconfig",
-        "type": "github"
-      }
-    },
-    "vim-plugin-nvim-navic": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1701345631,
-        "narHash": "sha256-0p5n/V8Jlj9XyxV/fuMwsbQ7oV5m9H2GqZZEA/njxCQ=",
-        "owner": "SmiteshP",
-        "repo": "nvim-navic",
-        "rev": "8649f694d3e76ee10c19255dece6411c29206a54",
-        "type": "github"
-      },
-      "original": {
-        "owner": "SmiteshP",
-        "repo": "nvim-navic",
         "type": "github"
       }
     },
