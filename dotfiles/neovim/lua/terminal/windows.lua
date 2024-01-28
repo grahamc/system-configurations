@@ -54,21 +54,6 @@ Plug("Tummetott/reticle.nvim", {
       },
       always_highlight_number = true,
     })
-
-    local toggle_cursor_line_group_id =
-      vim.api.nvim_create_augroup("ToggleCursorlineWithWindowFocus", {})
-    vim.api.nvim_create_autocmd({ "FocusGained" }, {
-      callback = function()
-        reticle.set_cursorline(true)
-      end,
-      group = toggle_cursor_line_group_id,
-    })
-    vim.api.nvim_create_autocmd({ "FocusLost" }, {
-      callback = function()
-        reticle.set_cursorline(false)
-      end,
-      group = toggle_cursor_line_group_id,
-    })
   end,
 })
 
