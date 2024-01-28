@@ -126,10 +126,6 @@ Plug("nvim-telescope/telescope.nvim", {
     -- TODO: I need to fix the previewer so it works with `page`. This way I get I get a live
     -- preview when I search manpages.
     vim.keymap.set("n", "<Leader>b", telescope_builtins.current_buffer_fuzzy_find)
-    -- This is actually ctrl+/, see :help :map-special-keys
-    vim.keymap.set("n", "<C-_>", telescope_builtins.commands)
-    -- Outside TMUX the above won't work, I have to use <C-/>, so I just map both.
-    vim.keymap.set("n", "<C-/>", telescope_builtins.commands)
     vim.keymap.set(
       { "n", "v" },
       "<Leader>k",

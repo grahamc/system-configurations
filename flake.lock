@@ -493,6 +493,7 @@
         "vim-plugin-folding-nvim": "vim-plugin-folding-nvim",
         "vim-plugin-friendly-snippets": "vim-plugin-friendly-snippets",
         "vim-plugin-git-blame-nvim": "vim-plugin-git-blame-nvim",
+        "vim-plugin-legendary-nvim": "vim-plugin-legendary-nvim",
         "vim-plugin-ltex-extra-nvim": "vim-plugin-ltex-extra-nvim",
         "vim-plugin-lush-nvim": "vim-plugin-lush-nvim",
         "vim-plugin-markdown-preview-nvim": "vim-plugin-markdown-preview-nvim",
@@ -1120,6 +1121,22 @@
       "original": {
         "owner": "f-person",
         "repo": "git-blame.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-legendary-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1698084102,
+        "narHash": "sha256-UJ12CJ40TPzOWgFANJWA747YE7mVVGMlRcgBYA5ENRQ=",
+        "owner": "mrjones2014",
+        "repo": "legendary.nvim",
+        "rev": "234e2ef8dec65db153c63a8b310c74155bb93ee7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mrjones2014",
+        "repo": "legendary.nvim",
         "type": "github"
       }
     },

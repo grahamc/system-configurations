@@ -38,6 +38,7 @@ traces.vim
 nvim-colorizer.lua
 vim-signify
 dial.nvim
+legendary.nvim
 nvim-lspconfig
 plenary.nvim
 telescope-fzf-native.nvim

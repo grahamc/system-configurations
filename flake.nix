@@ -410,5 +410,9 @@
       url = "github:Bekaboo/dropbar.nvim";
       flake = false;
     };
+    vim-plugin-legendary-nvim = {
+      url = "github:mrjones2014/legendary.nvim";
+      flake = false;
+    };
   };
 }
