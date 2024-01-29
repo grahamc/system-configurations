@@ -124,7 +124,7 @@ Plug("echasnovski/mini.nvim", {
       group = mini_group_id,
     })
     vim.api.nvim_create_autocmd("FileType", {
-      pattern = { "man", "aerial", "help" },
+      pattern = { "man", "aerial", "help", "dropbar_menu" },
       callback = function()
         vim.b.miniindentscope_disable = true
         vim.b.miniindentscope_disable_permanent = true

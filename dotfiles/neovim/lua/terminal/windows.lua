@@ -50,7 +50,7 @@ Plug("Tummetott/reticle.nvim", {
       },
       disable_in_insert = false,
       never = {
-        cursorline = { "TelescopeResults" },
+        cursorline = { "TelescopeResults", "dropbar_menu" },
       },
       always_highlight_number = true,
     })
