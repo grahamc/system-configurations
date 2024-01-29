@@ -1,4 +1,5 @@
 vim.diagnostic.config({
+  signs = false,
   virtual_text = {
     prefix = "",
   },
@@ -21,13 +22,6 @@ vim.diagnostic.config({
     end,
   },
 })
-
-local bullet = "•"
-local signs = { Error = bullet, Warn = bullet, Hint = bullet, Info = bullet }
-for type, icon in pairs(signs) do
-  local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl })
-end
 
 vim.keymap.set("n", "<S-l>", vim.diagnostic.open_float, { desc = "Show diagnostics" })
 vim.keymap.set("n", "[l", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
