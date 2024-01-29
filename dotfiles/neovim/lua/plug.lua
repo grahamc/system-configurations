@@ -87,4 +87,39 @@ function M.load_plugins(plugin_definer)
   plug_end()
 end
 
+-- On startup, prompt the user to install any missing plugins.
+vim.api.nvim_create_autocmd("User", {
+  pattern = "PlugEndPost",
+  callback = function()
+    local plugs = vim.g.plugs or {}
+    local missing_plugins = {}
+    for name, info in pairs(plugs) do
+      local is_installed = vim.fn.isdirectory(info.dir) ~= 0
+      if not is_installed then
+        missing_plugins[name] = info
+      end
+    end
+
+    -- checking for empty table
+    if next(missing_plugins) == nil then
+      return
+    end
+
+    local missing_plugin_names = {}
+    for key, _ in pairs(missing_plugins) do
+      table.insert(missing_plugin_names, key)
+    end
+
+    local install_prompt = string.format(
+      "The following plugins are not installed:\n%s\nWould you like to install them?",
+      table.concat(missing_plugin_names, ", ")
+    )
+    local should_install = vim.fn.confirm(install_prompt, "yes\nno") == 1
+    if should_install then
+      vim.cmd(string.format("PlugInstall --sync %s", table.concat(missing_plugin_names, " ")))
+    end
+  end,
+  group = vim.api.nvim_create_augroup("InstallMissingPlugins", {}),
+})
+
 return M

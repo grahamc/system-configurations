@@ -154,8 +154,16 @@ Plug("mrjones2014/legendary.nvim", {
         }
       end
 
+      -- TODO: When I'm in the help page lsp.txt and I open the palette, nvim_buf_get_commands
+      -- returns {6 = true}. So this will filter out values like that. I should probably report
+      -- this.
+      local function filter_valid_commands(key, value)
+        return type(key) == "string" and type(value) == "table"
+      end
+
       vim
         .iter(vim.api.nvim_get_commands({}))
+        :filter(filter_valid_commands)
         -- Like `vim.api.nvim_get_keymap`, we'll use 0 as the buffer for global commands.
         :filter(
           function(name, info)
@@ -168,6 +176,7 @@ Plug("mrjones2014/legendary.nvim", {
       local buf = vim.api.nvim_win_get_buf(0)
       vim
         .iter(vim.api.nvim_buf_get_commands(buf, {}))
+        :filter(filter_valid_commands)
         :filter(function(name, info)
           return filter_unique_commands_across_invocations(name, info, buf)
         end)

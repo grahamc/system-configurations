@@ -1,3 +1,5 @@
+vim.o.showtabline = 2
+
 Plug("akinsho/bufferline.nvim", {
   config = function()
     local function close(buffer)
@@ -53,7 +55,10 @@ Plug("akinsho/bufferline.nvim", {
     local close_icon = " "
     local active_bg = vim.api.nvim_get_hl(0, { name = "StatusLine" }).bg
     local inactive_fg = vim.api.nvim_get_hl(0, { name = "Comment" }).fg
-    local inactive_bg = vim.api.nvim_get_hl(0, { name = "background" }).bg
+    -- I'm using the fg of Ignore because this color may get assigned to another fg so I need the
+    -- actual hex value of the background, not "NONE", since "NONE" as an fg would resolve to the
+    -- normal fg color.
+    local inactive_bg = vim.api.nvim_get_hl(0, { name = "Ignore" }).fg
     local accent_fg = vim.api.nvim_get_hl(0, { name = "FloatTitle" }).fg
     local offset_separator_fg = vim.api.nvim_get_hl(0, { name = "WinSeparator" }).fg
     local explorer_icon = ""

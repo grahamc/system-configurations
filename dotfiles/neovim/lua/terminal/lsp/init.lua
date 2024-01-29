@@ -56,6 +56,18 @@ vim.keymap.set(
   { desc = "Go to reference" }
 )
 
+-- Hide all semantic highlights
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern = "*",
+  group = vim.api.nvim_create_augroup("DisableLspHighlights", {}),
+  callback = function()
+    local highlights = vim.fn.getcompletion("@lsp", "highlight") or {}
+    for _, group in ipairs(highlights) do
+      vim.api.nvim_set_hl(0, group, {})
+    end
+  end,
+})
+
 -- A language server that acts as a bridge between neovim's language server client and commandline
 -- tools that don't support the language server protocol. It does this by transforming the output of
 -- a commandline tool into the format specified by the language server protocol.

@@ -1,5 +1,7 @@
 -- This is a fork of the following plugin:
 -- https://github.com/pierreglaser/folding-nvim/tree/5d2b3d98c47c8c16aade06ebfd411bc74ad6d205
+--
+-- TODO: I should upstream this
 
 local lsp = vim.lsp
 local api = vim.api
@@ -45,8 +47,7 @@ function M.setup_plugin()
 end
 
 function M.update_folds()
-  local is_foldmethod_overridable = not vim.tbl_contains({ "marker", "diff" }, vim.wo.foldmethod)
-  if not is_foldmethod_overridable then
+  if not M.is_foldmethod_overridable() then
     return
   end
 
@@ -113,8 +114,8 @@ function M.fold_handler(err, result, ctx, _)
   end)
   M.current_buf_folds = result
 
-  local is_foldmethod_overridable = not vim.tbl_contains({ "marker", "diff" }, vim.wo.foldmethod)
-  if not is_foldmethod_overridable then
+  -- We need to check the foldmethod again since it may have changed since we launched the request.
+  if not M.is_foldmethod_overridable() then
     return
   end
   vim.wo.foldmethod = "expr"
@@ -171,6 +172,10 @@ function M.get_fold_indic(lnum)
   else
     return fold_level
   end
+end
+
+function M.is_foldmethod_overridable()
+  return not vim.tbl_contains({ "marker", "diff" }, vim.wo.foldmethod)
 end
 
 return M

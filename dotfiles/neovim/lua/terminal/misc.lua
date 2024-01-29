@@ -90,6 +90,7 @@ end
 vim.keymap.set("n", "<C-LeftMouse>", "<LeftMouse><Cmd>lua ClickLink()<CR>")
 
 vim.o.scroll = 1
+vim.o.smoothscroll = true
 
 vim.keymap.set("n", "|", "<Cmd>set list!<CR>", { silent = true })
 
@@ -99,9 +100,6 @@ vim.o.shortmess = "ltToOFs"
 -- considers <C-i> the same as <Tab> right now since TMUX lost support for extended keys.
 -- TODO: tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
 vim.keymap.set({ "n" }, "<F9>", "<C-i>")
-
--- Use shift+u to redo the last undone change
-vim.keymap.set({ "n" }, "<S-u>", "<C-r>")
 
 -- colorcolumn {{{
 Plug("lukas-reineke/virt-column.nvim", {
@@ -150,8 +148,7 @@ vim.keymap.set("n", "<M-q>", toggle_quickfix)
 -- }}}
 
 -- Autosave
-local timer = vim.uv.new_timer()
-timer:start(
+vim.uv.new_timer():start(
   0,
   500,
   vim.schedule_wrap(function()
@@ -280,39 +277,3 @@ Plug("mehalter/nvim-colorizer.lua", {
     })
   end,
 })
-
--- Install Missing Plugins {{{
-vim.api.nvim_create_autocmd("User", {
-  pattern = "PlugEndPost",
-  callback = function()
-    local plugs = vim.g.plugs or {}
-    local missing_plugins = {}
-    for name, info in pairs(plugs) do
-      local is_installed = vim.fn.isdirectory(info.dir) ~= 0
-      if not is_installed then
-        missing_plugins[name] = info
-      end
-    end
-
-    -- checking for empty table
-    if next(missing_plugins) == nil then
-      return
-    end
-
-    local missing_plugin_names = {}
-    for key, _ in pairs(missing_plugins) do
-      table.insert(missing_plugin_names, key)
-    end
-
-    local install_prompt = string.format(
-      "The following plugins are not installed:\n%s\nWould you like to install them?",
-      table.concat(missing_plugin_names, ", ")
-    )
-    local should_install = vim.fn.confirm(install_prompt, "yes\nno") == 1
-    if should_install then
-      vim.cmd(string.format("PlugInstall --sync %s", table.concat(missing_plugin_names, " ")))
-    end
-  end,
-  group = vim.api.nvim_create_augroup("InstallMissingPlugins", {}),
-})
--- }}}

@@ -66,7 +66,7 @@ function StatusColumn()
     SignifyChange = "SignifyChange",
   }
   -- There will be one item at most in this list since I supplied a buffer number.
-  local signsPerBuffer = vim.fn.sign_getplaced(buffer, { lnum = vim.v.lnum, group = "" })
+  local signsPerBuffer = vim.fn.sign_getplaced(buffer, { lnum = vim.v.lnum, group = "" }) or {}
   if next(signsPerBuffer) ~= nil then
     for _, sign in ipairs(signsPerBuffer[1].signs) do
       local name = sign.name

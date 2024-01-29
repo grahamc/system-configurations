@@ -63,7 +63,7 @@ local theme = lush(function(injected_functions)
     VisualNOS {}, -- Visual mode selection when vim is "Not Owning the Selection".
     -- }}}
 
-    -- search {{{
+    -- searching {{{
     Search { Visual }, -- Last search pattern highlighting (see 'hlsearch'). Also used for similar items that need to stand out.
     CurSearch { Search }, -- Highlighting a search pattern under the cursor (see 'hlsearch')
     IncSearch { Search }, -- 'incsearch' highlighting; also used for the text replaced with ":s///c"
@@ -74,6 +74,29 @@ local theme = lush(function(injected_functions)
     WarningMsg { t_3 }, -- Warning messages
     Error { ErrorMsg, undercurl = true }, -- Any erroneous construct
     Warning { WarningMsg, undercurl = true }, -- (I added this)
+    NvimInternalError { ErrorMsg },
+    -- See :h diagnostic-highlights, some groups may not be listed, submit a PR fix to lush-template!
+    --
+    DiagnosticError { ErrorMsg }, -- Used as the base highlight group. Other Diagnostic highlights link to this by default (except Underline)
+    DiagnosticWarn { WarningMsg }, -- Used as the base highlight group. Other Diagnostic highlights link to this by default (except Underline)
+    DiagnosticInfo { t_4, }, -- Used as the base highlight group. Other Diagnostic highlights link to this by default (except Underline)
+    DiagnosticHint { t_5 }, -- Used as the base highlight group. Other Diagnostic highlights link to this by default (except Underline)
+    DiagnosticOk { t_2 }, -- Used as the base highlight group. Other Diagnostic highlights link to this by default (except Underline)
+    DiagnosticVirtualTextError { fg = Error.fg, italic = true, bold = true }, -- Used for "Error" diagnostic virtual text.
+    DiagnosticVirtualTextWarn { fg = Warning.fg, italic = true, bold = true }, -- Used for "Warn" diagnostic virtual text.
+    DiagnosticVirtualTextInfo { DiagnosticInfo, italic = true, bold = true }, -- Used for "Info" diagnostic virtual text.
+    DiagnosticVirtualTextHint { DiagnosticHint, italic = true, bold = true }, -- Used for "Hint" diagnostic virtual text.
+    DiagnosticVirtualTextOk { DiagnosticOk, italic = true, bold = true }, -- Used for "Ok" diagnostic virtual text.
+    DiagnosticUnderlineError { Error }, -- Used to underline "Error" diagnostics.
+    DiagnosticUnderlineWarn { Warning }, -- Used to underline "Warn" diagnostics.
+    DiagnosticUnderlineInfo { DiagnosticInfo, undercurl = true }, -- Used to underline "Info" diagnostics.
+    DiagnosticUnderlineHint { DiagnosticHint, undercurl = true }, -- Used to underline "Hint" diagnostics.
+    DiagnosticUnderlineOk { DiagnosticOk, undercurl = true }, -- Used to underline "Ok" diagnostics.
+    DiagnosticFloatingError { DiagnosticError }, -- Used to color "Error" diagnostic messages in diagnostics float. See |vim.diagnostic.open_float()|
+    DiagnosticFloatingWarn { DiagnosticWarn }, -- Used to color "Warn" diagnostic messages in diagnostics float.
+    DiagnosticFloatingInfo { DiagnosticInfo }, -- Used to color "Info" diagnostic messages in diagnostics float.
+    DiagnosticFloatingHint { DiagnosticHint }, -- Used to color "Hint" diagnostic messages in diagnostics float.
+    DiagnosticFloatingOk { DiagnosticOk }, -- Used to color "Ok" diagnostic messages in diagnostics float.
     -- }}}
 
     -- float {{{
@@ -117,12 +140,12 @@ local theme = lush(function(injected_functions)
 
     Special { t_11 }, -- (*) Any special symbol
     SpecialChar    { Special, }, --   Special character in a constant
-    Tag            { Special, }, --   You can use CTRL-] on this
-    Delimiter      { Special, }, --   Character that needs attention
+    Tag            { t_6, }, --   You can use CTRL-] on this
+    Delimiter      { Identifier, }, --   Character that needs attention
     SpecialComment { Special, }, --   Special things inside a comment (e.g. '\n')
     Debug          { Special, }, --   Debugging statements
 
-    Constant { t_2 }, -- (*) Any constant
+    Constant { t_4 }, -- (*) Any constant
     String { Constant, }, --   A string constant: "this is a string"
     Character      { Constant, }, --   A character constant: 'c', '\n'
     Number         { Constant, }, --   A number constant: 234, 0xff
@@ -154,7 +177,9 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- statusline {{{
+    ---@diagnostic disable-next-line: redundant-parameter
     StatusLine { bg = background.bg.lighten(6) }, -- Status line of current window
+    ---@diagnostic disable-next-line: undefined-field
     StatusLineFill { StatusLine, fg = StatusLine.bg },
     StatusLineSeparator { StatusLine, fg = background.bg, bold = true },
     StatusLineErrorText { StatusLine, fg = Error.fg },
@@ -166,6 +191,7 @@ local theme = lush(function(injected_functions)
     StatusLineRecordingIndicator { StatusLine, fg = ErrorMsg.fg },
     StatusLineShowcmd { StatusLine, fg = FloatTitle.fg },
     StatusLineMasonUpdateIndicator { StatusLine, fg = String.fg },
+    ---@diagnostic disable-next-line: undefined-field
     StatusLinePowerlineOuter { fg = StatusLine.bg },
     StatusLinePowerlineInner { StatusLine, fg = background.bg },
     StatusLineModeNormal { StatusLine, bold = true },
@@ -208,7 +234,7 @@ local theme = lush(function(injected_functions)
     ColorColumn { Winseparator },
     WinBar { bold = true, italic = true }, -- Window bar of current window
     WinBarNC { WinBar }, -- Window bar of not-current windows
-    NvimInternalError { ErrorMsg },
+    ---@diagnostic disable-next-line: undefined-field
     BufferLineTabLeftBorder { fg = StatusLine.bg, reverse = true },
     GitBlameVirtualText { Comment, bold = true },
     WhichKeyFloat { NormalFloat },
@@ -228,8 +254,8 @@ local theme = lush(function(injected_functions)
     CmpNormal { bg = background.bg.lighten(5) },
     CmpItemKind { fg = CmpNormal.bg.li(55) },
     CmpItemMenu { CmpItemKind },
-    CmpDocumentationNormal { CmpNormal },
-    CmpDocumentationBorder { CmpDocumentationNormal, fg = CmpDocumentationNormal.bg.li(20) },
+    CmpDocumentationNormal { NormalFloat },
+    CmpDocumentationBorder { FloatBorder },
     CmpItemAbbrMatch { fg = FloatTitle.fg },
     CmpItemAbbrMatchFuzzy { CmpItemAbbrMatch },
     CmpCursorLine { CmpItemAbbrMatch, reverse = true },
@@ -338,30 +364,8 @@ local theme = lush(function(injected_functions)
     -- LspCodeLens                 { } , -- Used to color the virtual text of the codelens. See |nvim_buf_set_extmark()|.
     -- LspCodeLensSeparator        { } , -- Used to color the seperator between two or more code lens.
     -- LspSignatureActiveParameter { } , -- Used to highlight the active parameter in the signature help. See |vim.lsp.handlers.signature_help()|.
-
-    -- See :h diagnostic-highlights, some groups may not be listed, submit a PR fix to lush-template!
-    --
-    DiagnosticError { ErrorMsg }, -- Used as the base highlight group. Other Diagnostic highlights link to this by default (except Underline)
-    DiagnosticWarn { WarningMsg }, -- Used as the base highlight group. Other Diagnostic highlights link to this by default (except Underline)
-    DiagnosticInfo { Statement }, -- Used as the base highlight group. Other Diagnostic highlights link to this by default (except Underline)
-    DiagnosticHint { t_5 }, -- Used as the base highlight group. Other Diagnostic highlights link to this by default (except Underline)
-    DiagnosticOk { t_2 }, -- Used as the base highlight group. Other Diagnostic highlights link to this by default (except Underline)
-    DiagnosticVirtualTextError { fg = Error.fg, italic = true, bold = true }, -- Used for "Error" diagnostic virtual text.
-    DiagnosticVirtualTextWarn { fg = Warning.fg, italic = true, bold = true }, -- Used for "Warn" diagnostic virtual text.
-    DiagnosticVirtualTextInfo { DiagnosticInfo, italic = true, bold = true }, -- Used for "Info" diagnostic virtual text.
-    DiagnosticVirtualTextHint { DiagnosticHint, italic = true, bold = true }, -- Used for "Hint" diagnostic virtual text.
-    DiagnosticVirtualTextOk { DiagnosticOk, italic = true, bold = true }, -- Used for "Ok" diagnostic virtual text.
-    DiagnosticUnderlineError { Error }, -- Used to underline "Error" diagnostics.
-    DiagnosticUnderlineWarn { Warning }, -- Used to underline "Warn" diagnostics.
-    DiagnosticUnderlineInfo { DiagnosticInfo, undercurl = true }, -- Used to underline "Info" diagnostics.
-    DiagnosticUnderlineHint { DiagnosticHint, undercurl = true }, -- Used to underline "Hint" diagnostics.
-    DiagnosticUnderlineOk { DiagnosticOk, undercurl = true }, -- Used to underline "Ok" diagnostics.
-    DiagnosticFloatingError { DiagnosticError }, -- Used to color "Error" diagnostic messages in diagnostics float. See |vim.diagnostic.open_float()|
-    DiagnosticFloatingWarn { DiagnosticWarn }, -- Used to color "Warn" diagnostic messages in diagnostics float.
-    DiagnosticFloatingInfo { DiagnosticInfo }, -- Used to color "Info" diagnostic messages in diagnostics float.
-    DiagnosticFloatingHint { DiagnosticHint }, -- Used to color "Hint" diagnostic messages in diagnostics float.
-    DiagnosticFloatingOk { DiagnosticOk }, -- Used to color "Ok" diagnostic messages in diagnostics float.
     LspInfoBorder { FloatBorder },
+    LspInlayHint { bg = background.bg.li(3), fg = background.bg.li(68), italic = true, bold = true, },
     -- }}}
 
     -- Tree-Sitter {{{

@@ -4,7 +4,6 @@
     onActivation.cleanup = "zap";
 
     casks = [
-      # A new version hasn't been released since July 2023 so I'll use nightly instead
       "wezterm-nightly"
       "xcodes"
       "hammerspoon"
