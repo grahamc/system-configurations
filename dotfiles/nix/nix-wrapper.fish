@@ -8,14 +8,6 @@
 # issue: https://github.com/NixOS/nix/issues/7107
 
 function maybe_warn
-    # This bash command checks if this process is connected to a terminal.
-    # source: https://stackoverflow.com/a/69088164
-    #
-    #We need aterminal so we can prompt the user.
-    if not bash -c ": 1>/dev/tty" 1>/dev/null 2>&1
-        return
-    end
-
     # Search the current directory and its ancestors for a flake.nix file
     set found_flake 0
     set current_directory (pwd)
@@ -43,14 +35,9 @@ function maybe_warn
     # If there are untracked or removed files, offer to add them to the index since they would
     # otherwise be ignored by any Nix flake.
     if test -n "$untracked_or_deleted_files"
-        echo -e -n "\n$(set_color --reverse --bold yellow) WARNING $(set_color normal) THE FOLLOWING UNTRACKED/REMOVED FILES IN THIS REPOSITORY WILL BE IGNORED BY ANY NIX FLAKE OPERATION:\n$untracked_or_deleted_files\n" </dev/tty >/dev/tty 2>&1
-        set choices 'Add them, using --intent-to-add, to the index' 'Continue without adding them'
-        set choice (printf %s\n $choices | fzf --no-preview --height ~100% --margin 1,2,0,2 --prompt 'What would you like to do?' </dev/tty 2>/dev/tty)
-        if test "$choice" = "$choices[1]"
-            chronic git add --intent-to-add $untracked_or_deleted_file_list
-        end
-        set printed_line_count (math (count $untracked_or_deleted_file_list) + 2)
-        printf (string repeat --count $printed_line_count "\33[2K\r\033[A") >/dev/tty
+        echo -e "\n$(set_color --reverse --bold yellow) WARNING $(set_color normal) THE UNTRACKED/REMOVED FILES IN THIS REPOSITORY WILL BE IGNORED BY ANY NIX FLAKE OPERATION!" </dev/tty >/dev/tty 2>&1
+        echo 'You can add them to the index with the following command:'
+        printf "chronic git add --intent-to-add $untracked_or_deleted_file_list\n\n"
     end
 end
 
