@@ -177,31 +177,17 @@ end
 vim.keymap.set("n", "<M-q>", toggle_quickfix)
 -- }}}
 
--- Autosave {{{
-_G.is_autosave_task_queued = false
-local function save()
-  _G.is_autosave_task_queued = false
-  vim.cmd("silent! update")
-end
-local function enqueue_save_task()
-  if _G.is_autosave_task_queued then
-    return
-  end
-
-  _G.is_autosave_task_queued = true
-  vim.defer_fn(
-    save,
-    500 -- time in milliseconds between saves
-  )
-end
--- TODO: When I leave insert mode on a line with just spaces (e.g. enter 'ojk' from a line that's
--- indented at least once) the automatic removal of extra spaces isn't triggering TextChanged{I} so
--- I added ModeChanged to catch that.
-vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "ModeChanged" }, {
-  callback = enqueue_save_task,
-  group = vim.api.nvim_create_augroup("Autosave", {}),
-})
--- }}}
+-- Autosave
+local timer = vim.uv.new_timer()
+timer:start(
+  0,
+  500,
+  vim.schedule_wrap(function()
+    vim.cmd([[
+    silent! wall
+  ]])
+  end)
+)
 
 -- Tabs {{{
 vim.keymap.set({ "n", "i" }, "<C-M-[>", vim.cmd.tabprevious, { silent = true })
