@@ -140,19 +140,19 @@ end
 function StatusLine()
   local position = "%#StatusLine#" .. " %03l:%03c"
 
-  local fileformat = vim.o.fileformat
-  if fileformat == "unix" then
-    fileformat = " LF"
-  elseif fileformat == "mac" then
+  local fileformat = nil
+  if vim.o.fileformat == "mac" then
     fileformat = " CR"
-  else
+  elseif vim.o.fileformat == "dos" then
     fileformat = " CRLF"
   end
-  fileformat = "%#StatusLine#" .. fileformat
+  if fileformat ~= nil then
+    fileformat = "%#StatusLineStandoutText#" .. fileformat
+  end
 
   local fileencoding = nil
-  if #vim.o.fileencoding > 0 then
-    fileencoding = "%#StatusLine#" .. string.upper(vim.o.fileencoding)
+  if #vim.o.fileencoding > 0 and vim.o.fileencoding ~= "utf-8" then
+    fileencoding = "%#StatusLineStandoutText#" .. string.upper(vim.o.fileencoding)
   end
 
   local filetype = nil
