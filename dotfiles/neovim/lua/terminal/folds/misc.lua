@@ -1,9 +1,6 @@
 vim.o.foldlevelstart = 99
 vim.opt.fillchars:append("fold: ")
 vim.o.foldtext = ""
-vim.keymap.set("n", "<Tab>", function()
-  vim.cmd([[silent! normal! za]])
-end)
 
 -- Setting this so that the fold column gets displayed
 vim.o.foldenable = true
@@ -26,24 +23,37 @@ local function fold_toggle()
   end
 end
 vim.keymap.set("n", "<S-Tab>", fold_toggle, { silent = true, expr = true })
+vim.keymap.set("n", "<Tab>", function()
+  vim.cmd([[silent! normal! za]])
+end)
 
 -- Jump to the top and bottom of the current fold
 vim.keymap.set({ "n", "x" }, "[<Tab>", "[z")
 vim.keymap.set({ "n", "x" }, "]<Tab>", "]z")
 
 local function SetDefaultFoldMethod()
-  local foldmethod = vim.o.foldmethod
-  local isFoldmethodOverridable = foldmethod ~= "marker"
-    and foldmethod ~= "diff"
-    and foldmethod ~= "expr"
-  if isFoldmethodOverridable then
-    vim.o.foldmethod = "indent"
+  local is_foldmethod_overridable =
+    not vim.tbl_contains({ "marker", "diff", "expr" }, vim.wo.foldmethod)
+  if is_foldmethod_overridable then
+    vim.wo.foldmethod = "indent"
   end
 end
-vim.api.nvim_create_autocmd("FileType", {
+vim.api.nvim_create_autocmd("BufWinEnter", {
   callback = SetDefaultFoldMethod,
   group = vim.api.nvim_create_augroup("SetDefaultFoldMethod", {}),
 })
 
--- Use folds provided by a language server
-Plug("pierreglaser/folding-nvim")
+local function maybe_set_treesitter_foldmethod()
+  local is_foldmethod_overridable =
+    not vim.tbl_contains({ "marker", "diff", "expr" }, vim.wo.foldmethod)
+
+  if require("nvim-treesitter.parsers").has_parser() and is_foldmethod_overridable then
+    vim.wo.foldmethod = "expr"
+    vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
+    -- vim.notify(vim.wo.foldmethod .. vim.wo.foldexpr .. vim.fn.bufnr() .. " treesitter")
+  end
+end
+vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+  callback = maybe_set_treesitter_foldmethod,
+  group = vim.api.nvim_create_augroup("TreesitterFoldmethod", {}),
+})

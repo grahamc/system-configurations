@@ -26,21 +26,5 @@ Plug("nvim-treesitter/nvim-treesitter", {
         enable = true,
       },
     })
-
-    local function maybe_set_treesitter_foldmethod()
-      local foldmethod = vim.o.foldmethod
-      local is_foldmethod_overridable = foldmethod ~= "manual"
-        and foldmethod ~= "marker"
-        and foldmethod ~= "diff"
-        and foldmethod ~= "expr"
-      if require("nvim-treesitter.parsers").has_parser() and is_foldmethod_overridable then
-        vim.o.foldmethod = "expr"
-        vim.o.foldexpr = "nvim_treesitter#foldexpr()"
-      end
-    end
-    vim.api.nvim_create_autocmd({ "FileType" }, {
-      callback = maybe_set_treesitter_foldmethod,
-      group = vim.api.nvim_create_augroup("TreesitterFoldmethod", {}),
-    })
   end,
 })

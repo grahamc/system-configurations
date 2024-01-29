@@ -490,7 +490,6 @@
         "vim-plugin-dropbar-nvim": "vim-plugin-dropbar-nvim",
         "vim-plugin-fidget-nvim": "vim-plugin-fidget-nvim",
         "vim-plugin-firenvim": "vim-plugin-firenvim",
-        "vim-plugin-folding-nvim": "vim-plugin-folding-nvim",
         "vim-plugin-friendly-snippets": "vim-plugin-friendly-snippets",
         "vim-plugin-git-blame-nvim": "vim-plugin-git-blame-nvim",
         "vim-plugin-legendary-nvim": "vim-plugin-legendary-nvim",
@@ -1073,22 +1072,6 @@
       "original": {
         "owner": "glacambre",
         "repo": "firenvim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-folding-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1645291707,
-        "narHash": "sha256-LitLBBdGGJltivCRE3Rc33KwM7fs1uqB6+gCXGogw3A=",
-        "owner": "pierreglaser",
-        "repo": "folding-nvim",
-        "rev": "5d2b3d98c47c8c16aade06ebfd411bc74ad6d205",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pierreglaser",
-        "repo": "folding-nvim",
         "type": "github"
       }
     },

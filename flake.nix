@@ -226,10 +226,6 @@
       url = "github:stevearc/dressing.nvim";
       flake = false;
     };
-    vim-plugin-folding-nvim = {
-      url = "github:pierreglaser/folding-nvim";
-      flake = false;
-    };
     vim-plugin-which-key-nvim = {
       url = "github:folke/which-key.nvim";
       flake = false;

@@ -125,26 +125,16 @@ Plug("williamboman/mason-lspconfig.nvim", {
     local function run()
       require("mason-lspconfig").setup()
       local lspconfig = require("lspconfig")
+      local folding_nvim = require("terminal.folds.folding-nvim")
 
       local on_attach = function(client, buffer_number)
         local methods = vim.lsp.protocol.Methods
         local buffer_keymap = vim.api.nvim_buf_set_keymap
         local keymap_opts = { noremap = true, silent = true }
 
-        -- TODO: foldmethod is window-local, but I want to set it per buffer. Possible solution here:
-        -- https://github.com/ii14/dotfiles/blob/e40d2b8316ec72b5b06b9e7a1d997276ff4ddb6a/.config/nvim/lua/m/opt.lua
-        local foldmethod = vim.o.foldmethod
-        local isFoldmethodOverridable = foldmethod ~= "marker" and foldmethod ~= "diff"
-        if
-          client.supports_method(methods.textDocument_foldingRange) and isFoldmethodOverridable
-        then
-          -- folding-nvim prints a message if any attached language server does not support folding so I'm suppressing
-          -- that.
-          vim.cmd([[silent lua require('folding').on_attach()]])
-        end
+        folding_nvim.on_attach()
 
-        local filetype = vim.o.filetype
-        local isKeywordprgOverridable = filetype ~= "vim"
+        local isKeywordprgOverridable = vim.bo[buffer_number].filetype ~= "vim"
         if client.supports_method(methods.textDocument_hover) and isKeywordprgOverridable then
           buffer_keymap(buffer_number, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", keymap_opts)
 
@@ -164,14 +154,7 @@ Plug("williamboman/mason-lspconfig.nvim", {
       end
 
       local cmp_lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
-      local folding_capabilities = {
-        textDocument = {
-          foldingRange = {
-            dynamicRegistration = false,
-            lineFoldingOnly = true,
-          },
-        },
-      }
+      local folding_capabilities = folding_nvim.capabilities
       local capabilities = vim.tbl_deep_extend("error", cmp_lsp_capabilities, folding_capabilities)
 
       local server_config_handlers = {}
@@ -197,10 +180,10 @@ Plug("williamboman/mason-lspconfig.nvim", {
       -- Set the filetype of all the currently open buffers to trigger a 'FileType' event for each
       -- buffer so nvim_lsp has a chance to attach to any buffers that were openeed before it was
       -- configured. This way I can load nvim_lsp asynchronously.
-      local buffer = vim.fn.bufnr()
+      local buffer = vim.api.nvim_get_current_buf()
       vim.cmd([[
-          silent! bufdo silent! lua vim.o.filetype = vim.o.filetype
-        ]])
+          silent! bufdo silent! lua vim.bo.filetype = vim.bo.filetype
+      ]])
       vim.cmd.b(buffer)
     end
 
