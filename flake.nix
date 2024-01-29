@@ -410,5 +410,9 @@
       url = "github:mrjones2014/legendary.nvim";
       flake = false;
     };
+    vim-plugin-smartcolumn-nvim = {
+      url = "github:m4xshen/smartcolumn.nvim";
+      flake = false;
+    };
   };
 }
