@@ -429,6 +429,46 @@ local theme = lush(function(injected_functions)
     DropBarIconKindWhileStatement { DropBarIconKindArray },
     -- }}}
 
+    -- nvim-dap {{{
+    DebugSign { t_1 },
+    DebugSignRejected { t_15 },
+    DebugSignCurrentLine { },
+    DebugSignLogPoint { },
+    -- }}}
+
+    -- nvim-dap-ui {{{
+    DapUIScope { italic = true, bold = true, },
+    DapUIType { Statement },
+    DapUIValue { t_2 },
+    DapUIModifiedValue { t_3 },
+    DapUIDecoration { DapUIScope },
+    DapUIThread { DapUIScope },
+    DapUIStoppedThread { DapUIThread },
+    DapUIFrameName { Normal },
+    DapUISource { Normal },
+    DapUILineNumber { Normal },
+    DapUIFloatBorder { FloatBorder },
+    DapUIWatchesEmpty { t_15, italic = true, bold = true },
+    DapUIWatchesValue { t_2 },
+    DapUIWatchesError { DiagnosticVirtualTextError },
+    DapUIBreakpointsPath { DapUIScope },
+    DapUIBreakpointsInfo { Normal },
+    DapUIBreakpointsCurrentLine { Normal },
+    DapUIBreakpointsLine { t_15 },
+    DapUIBreakpointsDisabledLine { t_15 },
+    DapUICurrentFrameName { Normal },
+    DapUIStepOver { Normal },
+    DapUIStepInto { Normal },
+    DapUIStepBack { Normal },
+    DapUIStepOut { Normal },
+    DapUIStop { t_1 },
+    DapUIPlayPause { t_2 },
+    DapUIRestart { t_2 },
+    DapUIUnavailable { t_15 },
+    DapUIWinSelect { },
+    DapUIEndofBuffer { },
+    -- }}}
+
     -- LSP {{{
     -- These groups are for the native LSP client and diagnostic system. Some
     -- other LSP clients may use these groups, or use their own. Consult your
@@ -445,6 +485,8 @@ local theme = lush(function(injected_functions)
     LspInfoBorder { FloatBorder },
     LspInlayHint { bg = background.bg.li(3), fg = background.bg.li(68), italic = true, bold = true, },
     -- }}}
+
+    NvimDapVirtualText { LspInlayHint },
 
     -- Tree-Sitter {{{
     --

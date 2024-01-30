@@ -477,6 +477,7 @@
         "vim-plugin-cmp-buffer": "vim-plugin-cmp-buffer",
         "vim-plugin-cmp-cmdline": "vim-plugin-cmp-cmdline",
         "vim-plugin-cmp-cmdline-history": "vim-plugin-cmp-cmdline-history",
+        "vim-plugin-cmp-dap": "vim-plugin-cmp-dap",
         "vim-plugin-cmp-env": "vim-plugin-cmp-env",
         "vim-plugin-cmp-nvim-lsp": "vim-plugin-cmp-nvim-lsp",
         "vim-plugin-cmp-nvim-lsp-signature-help": "vim-plugin-cmp-nvim-lsp-signature-help",
@@ -503,6 +504,11 @@
         "vim-plugin-nvim-autopairs": "vim-plugin-nvim-autopairs",
         "vim-plugin-nvim-cmp": "vim-plugin-nvim-cmp",
         "vim-plugin-nvim-colorizer-lua": "vim-plugin-nvim-colorizer-lua",
+        "vim-plugin-nvim-dap": "vim-plugin-nvim-dap",
+        "vim-plugin-nvim-dap-python": "vim-plugin-nvim-dap-python",
+        "vim-plugin-nvim-dap-repl-highlights": "vim-plugin-nvim-dap-repl-highlights",
+        "vim-plugin-nvim-dap-ui": "vim-plugin-nvim-dap-ui",
+        "vim-plugin-nvim-dap-virtual-text": "vim-plugin-nvim-dap-virtual-text",
         "vim-plugin-nvim-lightbulb": "vim-plugin-nvim-lightbulb",
         "vim-plugin-nvim-lspconfig": "vim-plugin-nvim-lspconfig",
         "vim-plugin-nvim-notify": "vim-plugin-nvim-notify",
@@ -515,6 +521,7 @@
         "vim-plugin-reticle-nvim": "vim-plugin-reticle-nvim",
         "vim-plugin-smartcolumn-nvim": "vim-plugin-smartcolumn-nvim",
         "vim-plugin-sqlite-lua": "vim-plugin-sqlite-lua",
+        "vim-plugin-telescope-dap-vim": "vim-plugin-telescope-dap-vim",
         "vim-plugin-telescope-fzf-native": "vim-plugin-telescope-fzf-native",
         "vim-plugin-telescope-nvim": "vim-plugin-telescope-nvim",
         "vim-plugin-telescope-smart-history-nvim": "vim-plugin-telescope-smart-history-nvim",
@@ -865,6 +872,22 @@
       "original": {
         "owner": "dmitmel",
         "repo": "cmp-cmdline-history",
+        "type": "github"
+      }
+    },
+    "vim-plugin-cmp-dap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1702237116,
+        "narHash": "sha256-wi9L4RcnJWUzTkC4u8vSTacrMxg4ftm/K7pkuwLEQ3U=",
+        "owner": "rcarriga",
+        "repo": "cmp-dap",
+        "rev": "ea92773e84c0ad3288c3bc5e452ac91559669087",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rcarriga",
+        "repo": "cmp-dap",
         "type": "github"
       }
     },
@@ -1284,6 +1307,86 @@
         "type": "github"
       }
     },
+    "vim-plugin-nvim-dap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1705151920,
+        "narHash": "sha256-9Rc4dxbgN1LxoXPXHTi+V92MA0fEn5PveqCSMHbgn98=",
+        "owner": "mfussenegger",
+        "repo": "nvim-dap",
+        "rev": "9adbfdca13afbe646d09a8d7a86d5d031fb9c5a5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mfussenegger",
+        "repo": "nvim-dap",
+        "type": "github"
+      }
+    },
+    "vim-plugin-nvim-dap-python": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1703011787,
+        "narHash": "sha256-V/88NHqW/rpHWC2m1dnVZWo3Va7wSPqw3FpEM1+lKgo=",
+        "owner": "mfussenegger",
+        "repo": "nvim-dap-python",
+        "rev": "091e4ae00a12085f9ed4200a3cd04af7179b8a23",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mfussenegger",
+        "repo": "nvim-dap-python",
+        "type": "github"
+      }
+    },
+    "vim-plugin-nvim-dap-repl-highlights": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1700389681,
+        "narHash": "sha256-uxrczuZcgwDa/MdSQNsbSsecE1O96/2YHEwWsuFtClc=",
+        "owner": "LiadOz",
+        "repo": "nvim-dap-repl-highlights",
+        "rev": "902d533b2682c26d6be4f8a4d1dfd895cbba4840",
+        "type": "github"
+      },
+      "original": {
+        "owner": "LiadOz",
+        "repo": "nvim-dap-repl-highlights",
+        "type": "github"
+      }
+    },
+    "vim-plugin-nvim-dap-ui": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1705942789,
+        "narHash": "sha256-4tYSdxPj+/hxd8KNzCU6Lvf+ACxpKgYyGOlF+Jwzxa8=",
+        "owner": "rcarriga",
+        "repo": "nvim-dap-ui",
+        "rev": "d845ebd798ad1cf30aa4abd4c4eff795cdcfdd4f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rcarriga",
+        "repo": "nvim-dap-ui",
+        "type": "github"
+      }
+    },
+    "vim-plugin-nvim-dap-virtual-text": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1703770915,
+        "narHash": "sha256-IJMdDcrfsNfxd4rvLVCD1L2FL7Tzm6dV8c0mtEo98vU=",
+        "owner": "theHamsta",
+        "repo": "nvim-dap-virtual-text",
+        "rev": "d4542ac257d3c7ee4131350db6179ae6340ce40b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "theHamsta",
+        "repo": "nvim-dap-virtual-text",
+        "type": "github"
+      }
+    },
     "vim-plugin-nvim-lightbulb": {
       "flake": false,
       "locked": {
@@ -1473,6 +1576,22 @@
       "original": {
         "owner": "kkharji",
         "repo": "sqlite.lua",
+        "type": "github"
+      }
+    },
+    "vim-plugin-telescope-dap-vim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1704749098,
+        "narHash": "sha256-P+ioBtupRvB3wcGKm77Tf/51k6tXKxJd176uupeW6v0=",
+        "owner": "nvim-telescope",
+        "repo": "telescope-dap.nvim",
+        "rev": "8c88d9716c91eaef1cdea13cb9390d8ef447dbfe",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-telescope",
+        "repo": "telescope-dap.nvim",
         "type": "github"
       }
     },

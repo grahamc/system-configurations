@@ -56,6 +56,8 @@ Plug("saadparwaiz1/cmp_luasnip")
 
 Plug("rafamadriz/friendly-snippets")
 
+Plug("rcarriga/cmp-dap")
+
 Plug("hrsh7th/nvim-cmp", {
   config = function()
     local cmp = require("cmp")
@@ -136,6 +138,12 @@ Plug("hrsh7th/nvim-cmp", {
     }
 
     cmp.setup({
+      enabled = function()
+        local filetype = vim.bo.filetype
+        local is_dap_buffer = vim.startswith(filetype, "dapui_") or filetype == "dap-repl"
+        local is_not_prompt = vim.bo.buftype ~= "prompt"
+        return is_not_prompt or is_dap_buffer
+      end,
       formatting = {
         fields = { "abbr", "kind" },
         format = function(_, vim_item)
@@ -285,6 +293,12 @@ Plug("hrsh7th/nvim-cmp", {
         path,
         buffer,
       }),
+    })
+
+    cmp.setup.filetype({ "dap-repl", "dapui_watches", "dapui_hover" }, {
+      sources = {
+        { name = "dap" },
+      },
     })
   end,
 })

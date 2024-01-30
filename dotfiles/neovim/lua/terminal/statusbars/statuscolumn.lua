@@ -87,4 +87,4 @@ function StatusColumn()
 end
 
 vim.o.statuscolumn = "%!v:lua.StatusColumn()"
-vim.o.signcolumn = "yes:1"
+vim.o.signcolumn = "yes:2"

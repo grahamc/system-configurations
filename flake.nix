@@ -414,5 +414,33 @@
       url = "github:m4xshen/smartcolumn.nvim";
       flake = false;
     };
+    vim-plugin-nvim-dap-repl-highlights = {
+      url = "github:LiadOz/nvim-dap-repl-highlights";
+      flake = false;
+    };
+    vim-plugin-nvim-dap-virtual-text = {
+      url = "github:theHamsta/nvim-dap-virtual-text";
+      flake = false;
+    };
+    vim-plugin-nvim-dap = {
+      url = "github:mfussenegger/nvim-dap";
+      flake = false;
+    };
+    vim-plugin-telescope-dap-vim = {
+      url = "github:nvim-telescope/telescope-dap.nvim";
+      flake = false;
+    };
+    vim-plugin-nvim-dap-ui = {
+      url = "github:rcarriga/nvim-dap-ui";
+      flake = false;
+    };
+    vim-plugin-nvim-dap-python = {
+      url = "github:mfussenegger/nvim-dap-python";
+      flake = false;
+    };
+    vim-plugin-cmp-dap = {
+      url = "github:rcarriga/cmp-dap";
+      flake = false;
+    };
   };
 }

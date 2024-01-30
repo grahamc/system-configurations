@@ -38,9 +38,13 @@ includes = ["justfile",]
 command = "stylua"
 options = ["--column-width", "100",]
 includes = ["*.lua",]
-# In order for lush.nvim to give a live preview of a color scheme, the file needs to have a certain
-# format so I won't format it here.
-excludes = ["*neovim/lua/terminal/aesthetic/colorschemes/*.lua"]
+excludes = [
+  # In order for lush.nvim to give a live preview of a color scheme, the file needs to have a certain
+  # format so I won't format it here.
+  "*neovim/lua/terminal/aesthetic/colorschemes/*.lua",
+  # This file is auto-generated so no point in formatting.
+  "*lua-json5.nix",
+]
 
 [formatter.go]
 command = "gofmt"

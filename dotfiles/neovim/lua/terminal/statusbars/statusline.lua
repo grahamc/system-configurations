@@ -22,6 +22,27 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
   end,
   group = vim.api.nvim_create_augroup("Widget Statusline", {}),
 })
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  group = vim.api.nvim_create_augroup("Dapui Statuslines", {}),
+  callback = function()
+    local buf = vim.api.nvim_get_current_buf()
+    local filetype = vim.bo[buf].filetype
+    local win = vim.fn.bufwinid(buf)
+    if filetype == "dapui_scopes" then
+      vim.api.nvim_set_option_value("statusline", "%!v:lua.DapuiScopesStatusLine()", { win = win })
+    elseif filetype == "dapui_stacks" then
+      vim.api.nvim_set_option_value("statusline", "%!v:lua.DapuiStacksStatusLine()", { win = win })
+    elseif filetype == "dapui_watches" then
+      vim.api.nvim_set_option_value("statusline", "%!v:lua.DapuiWatchesStatusLine()", { win = win })
+    elseif filetype == "dapui_breakpoints" then
+      vim.api.nvim_set_option_value(
+        "statusline",
+        "%!v:lua.DapuiBreakpointsStatusLine()",
+        { win = win }
+      )
+    end
+  end,
+})
 -- }}}
 
 -- statusline helper {{{
@@ -116,7 +137,17 @@ end
 
 local function make_statusline(left_items, right_items)
   local showcmd = "%#StatusLineShowcmd#%S"
-  local statusline_separator = "%#StatusLineFill# %=" .. showcmd .. "%#StatusLineFill#%= "
+
+  local has_one_side = false
+  if left_items == nil then
+    left_items = {}
+    has_one_side = true
+  elseif right_items == nil then
+    right_items = {}
+    has_one_side = true
+  end
+  local statusline_separator = has_one_side and ""
+    or "%#StatusLineFill# %=" .. showcmd .. "%#StatusLineFill#%= "
 
   local left_side = get_mode_indicator()
     .. table.concat(filter_out_nils(left_items), "%#StatusLineSeparator# ∙ ")
@@ -319,6 +350,54 @@ end
 -- symbol outline statusline {{{
 function OutlineStatusLine()
   return make_statusline({ "%#StatusLine#" .. vim.o.filetype }, { "%#StatusLine#Press ? for help" })
+end
+-- }}}
+
+-- dapui statuslines {{{
+--
+-- TODO: Consider upstreaming since there's a related feature request:
+-- https://github.com/rcarriga/nvim-dap-ui/issues/267
+local function make_mapping_statusline(mappings)
+  local function make_mapping_string(key, description)
+    return string.format("[%s] %s", key, description)
+  end
+
+  return "%#StatusLine#%=" .. vim.iter(mappings):map(make_mapping_string):join("%=") .. "%="
+end
+
+function DapuiScopesStatusLine()
+  local mapping_statusline = make_mapping_statusline({
+    e = "edit var",
+    ["<Tab>"] = "expand/collapse children",
+    r = "send var to REPL",
+  })
+  return make_statusline(nil, { mapping_statusline })
+end
+
+function DapuiStacksStatusLine()
+  local mapping_statusline = make_mapping_statusline({
+    o = "jump to place in stack frame",
+    t = "toggle subtle frames",
+  })
+  return make_statusline(nil, { mapping_statusline })
+end
+
+function DapuiWatchesStatusLine()
+  local mapping_statusline = make_mapping_statusline({
+    e = "edit expression or child var",
+    ["<Tab>"] = "toggle child vars",
+    r = "send expression to REPL",
+    d = "remove watch",
+  })
+  return make_statusline(nil, { mapping_statusline })
+end
+
+function DapuiBreakpointsStatusLine()
+  local mapping_statusline = make_mapping_statusline({
+    o = "jump to breakpoint",
+    t = "toggle breakpoint",
+  })
+  return make_statusline(nil, { mapping_statusline })
 end
 -- }}}
 

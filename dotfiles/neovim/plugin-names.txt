@@ -1,5 +1,7 @@
 dropbar.nvim
+lua-json5
 LuaSnip
+nvim-dap-repl-highlights
 vim-just
 nvim-treesitter-endwise
 reticle.nvim
@@ -37,11 +39,14 @@ virt-column.nvim
 smartcolumn.nvim
 traces.vim
 nvim-colorizer.lua
+nvim-dap
+nvim-dap-python
 vim-signify
 dial.nvim
 legendary.nvim
 nvim-lspconfig
 plenary.nvim
+telescope-dap.nvim
 telescope-fzf-native.nvim
 telescope-smart-history.nvim
 telescope.nvim
@@ -51,11 +56,14 @@ nvim-treesitter-textobjects
 none-ls.nvim
 czs.nvim
 friendly-snippets
+cmp-dap
+nvim-dap-ui
 nvim-notify
 lush.nvim
 cmp_luasnip
 aerial.nvim
 dressing.nvim
+nvim-dap-virtual-text
 vim-abolish
 vim-repeat
 vim-sleuth

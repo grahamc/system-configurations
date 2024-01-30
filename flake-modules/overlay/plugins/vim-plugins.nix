@@ -1,6 +1,7 @@
 {
   inputs,
   self,
+  lib,
   ...
 }: {
   flake = let
@@ -50,12 +51,57 @@
           version = inputs.tree-sitter-just.rev;
           src = inputs.tree-sitter-just;
         };
-        updatedGrammars = newVimPlugins.nvim-treesitter.allGrammars ++ [just-grammar];
+        dap-repl-grammar = final.tree-sitter.buildGrammar {
+          language = "dap_repl";
+          version = inputs.vim-plugin-nvim-dap-repl-highlights.rev;
+          src = inputs.vim-plugin-nvim-dap-repl-highlights;
+        };
+        updatedGrammars = newVimPlugins.nvim-treesitter.allGrammars ++ [just-grammar dap-repl-grammar];
         package = newVimPlugins.nvim-treesitter.withPlugins (_: updatedGrammars);
       in
         package // {withAllGrammars = package;};
 
-      vimPlugins = prev.vimPlugins // newVimPlugins // {inherit nvim-treesitter;};
+      lua-json5 = let
+        inherit (final.stdenv) isDarwin;
+        inherit (lib.attrsets) optionalAttrs;
+
+        rustPackage =
+          (import ./lua-json5.nix {inherit (final) lib rustPlatform pkg-config fetchFromGitHub;}).overrideAttrs
+          (optionalAttrs isDarwin {
+            # Adding this per the lua-json5 README:
+            # https://github.com/Joakker/lua-json5#json5-parser-for-luajit
+            CARGO_TARGET_X86_64_APPLE_DARWIN_RUSTFLAGS = "-C link-arg=-undefined -C link-arg=dynamic_lookup";
+            CARGO_TARGET_AARCH64_APPLE_DARWIN_RUSTFLAGS = "-C link-arg=-undefined -C link-arg=dynamic_lookup";
+          });
+
+        plugin = vimPluginBuilder rustPackage.pname rustPackage.src rustPackage.version;
+
+        pluginWithRustPackage = final.pkgs.symlinkJoin {
+          name = plugin.pname;
+
+          paths = [
+            rustPackage
+            plugin
+          ];
+
+          # For this to work on macOS, I have to rename the *.dylib to *.so. Read this thread to
+          # learn why:
+          # https://github.com/neovim/neovim/issues/21749#issuecomment-1378752957
+          #
+          # TODO: This should probably be upstreamed.
+          postBuild = ''
+            cd $out
+            mv ./lib/liblua_json5.${
+              if isDarwin
+              then "dylib"
+              else "so"
+            } ./lua/json5.so
+          '';
+        };
+      in
+        pluginWithRustPackage;
+
+      vimPlugins = prev.vimPlugins // newVimPlugins // {inherit nvim-treesitter lua-json5;};
     in {inherit vimPlugins;};
   in {overlays.vimPlugins = overlay;};
 }

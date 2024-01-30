@@ -113,7 +113,7 @@ Plug("m4xshen/smartcolumn.nvim", {
     require("smartcolumn").setup({
       scope = "window",
       custom_colorcolumn = function()
-        return tostring(require("utilities").get_max_line_length())
+        return tostring(require("utilities").get_max_line_length() + 1)
       end,
       disable_filetypes = {
         "qf",

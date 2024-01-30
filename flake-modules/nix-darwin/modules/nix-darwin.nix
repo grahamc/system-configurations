@@ -50,6 +50,8 @@
       # Get sudo authentication now so I don't have to wait for it to ask me later
       sudo --validate
 
+      ${pkgs.nix-init}/bin/nix-init --url https://github.com/Joakker/lua-json5 ${repositoryDirectory}/flake-modules/overlay/plugins/lua-json5.nix
+
       oldGenerationPath="$(readlink --canonicalize ${config.system.profile})"
 
       darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" ${self.lib.updateFlags.darwin} "$@" |& nom
