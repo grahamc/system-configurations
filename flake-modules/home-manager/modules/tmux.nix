@@ -22,6 +22,16 @@
   # relative to $XDG_CONFIG_HOME
   myTmuxConfigPath = "tmux/my-tmux.conf";
   tmuxReloadScriptName = "tmux-config-reload";
+  tmux =
+    pkgs.writeShellScriptBin
+    "tmux"
+    # I want the $SHLVL to start from one for any shells launched in TMUX since they
+    # technically aren't children of the shell that I launched TMUX with. I would do this
+    # with TMUX's `default-command`, but that may break tmux-resurrect, as explained in my
+    # tmux.conf.
+    ''
+      exec env -u SHLVL ${pkgs.tmux}/bin/tmux "$@"
+    '';
 in {
   home = {
     # Installing the plugins into my profile, instead of using programs.tmux.plugins, for two
@@ -31,7 +41,7 @@ in {
     #   - So I can keep the plugin settings in my config. Settings need to be defined before the
     # plugin is loaded and programs.tmux loads my configuration _after_ loading plugins so it
     # wouldn't work. Instead I load them my self.
-    packages = [pkgs.tmux] ++ tmuxPlugins;
+    packages = [tmux] ++ tmuxPlugins;
 
     # I reload tmux every time I switch generations because tmux-suspend uses the canonical
     # path to its script when making a key mapping and that path may change when I switch
