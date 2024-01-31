@@ -21,6 +21,9 @@ in {
     # work around this, I have to put the wezterm termingo in a place where the system ncurses
     # will find it.
     ".terminfo/77/wezterm".source = "${pkgs.ncursesWithWezterm}/share/terminfo/77/wezterm";
+    # Styled underlines don't work in neovim unless I add the terminfo here. TODO: I should
+    # report this.
+    ".terminfo/74/tmux-256color".source = "${pkgs.ncursesWithWezterm}/share/terminfo/74/tmux-256color";
   };
 
   repository.symlink.xdg.configFile = optionalAttrs isGui {
