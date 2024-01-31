@@ -5,7 +5,7 @@ vim.keymap.set({ "n", "x" }, "Q", function()
   if last_recorded_register ~= "" then
     return "@" .. last_recorded_register
   end
-end, { remap = true, expr = true })
+end, { remap = true, expr = true, desc = "Run last recorded macro" })
 
 local function get_char()
   local ret_val, char_num = pcall(vim.fn.getchar)
@@ -36,7 +36,9 @@ vim.keymap.set({ "n" }, "cq", function()
     end -- cancellation
     vim.fn.setreg(register, edited_macro)
   end)
-end)
+end, {
+  desc = "Change macro [edit,modify]",
+})
 
 -- Faster macro execution {{{
 -- Execute macros more quickly by enabling `lazyredraw` and disabling events while the macro is

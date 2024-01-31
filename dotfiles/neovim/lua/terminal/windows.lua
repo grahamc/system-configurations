@@ -3,9 +3,15 @@ vim.o.splitright = true
 vim.o.splitbelow = true
 vim.o.winminheight = 0
 vim.o.winminwidth = 0
-vim.keymap.set("n", "<Leader><Bar>", "<Cmd>vsplit<CR>")
-vim.keymap.set("n", "<Leader>-", "<Cmd>split<CR>")
-vim.keymap.set("n", "<C-w>", vim.cmd.close)
+vim.keymap.set("n", "<Leader><Bar>", "<Cmd>vsplit<CR>", {
+  desc = "Vertical split",
+})
+vim.keymap.set("n", "<Leader>-", "<Cmd>split<CR>", {
+  desc = "Horizontal split",
+})
+vim.keymap.set("n", "<C-w>", vim.cmd.close, {
+  desc = "Close window",
+})
 
 local window_group_id = vim.api.nvim_create_augroup("Window", {})
 
@@ -58,18 +64,58 @@ Plug("Tummetott/reticle.nvim", {
 })
 
 -- Resize windows
-vim.keymap.set({ "n" }, "<C-Left>", [[<Cmd>vertical resize +1<CR>]], { silent = true })
-vim.keymap.set({ "n" }, "<C-Right>", [[<Cmd>vertical resize -1<CR>]], { silent = true })
-vim.keymap.set({ "n" }, "<C-Up>", [[<Cmd>resize +1<CR>]], { silent = true })
-vim.keymap.set({ "n" }, "<C-Down>", [[<Cmd>resize -1<CR>]], { silent = true })
+vim.keymap.set(
+  { "n" },
+  "<C-Left>",
+  [[<Cmd>vertical resize +1<CR>]],
+  { silent = true, desc = "Resize window left" }
+)
+vim.keymap.set(
+  { "n" },
+  "<C-Right>",
+  [[<Cmd>vertical resize -1<CR>]],
+  { silent = true, desc = "Resize window right" }
+)
+vim.keymap.set(
+  { "n" },
+  "<C-Up>",
+  [[<Cmd>resize +1<CR>]],
+  { silent = true, desc = "Resize window up" }
+)
+vim.keymap.set(
+  { "n" },
+  "<C-Down>",
+  [[<Cmd>resize -1<CR>]],
+  { silent = true, desc = "Resize window down" }
+)
 
 -- Seamless movement between vim windows and tmux panes.
 Plug("christoomey/vim-tmux-navigator", {
   config = function()
-    vim.keymap.set({ "n", "i" }, "<M-h>", "<Cmd>TmuxNavigateLeft<CR>", { silent = true })
-    vim.keymap.set({ "n", "i" }, "<M-l>", "<Cmd>TmuxNavigateRight<CR>", { silent = true })
-    vim.keymap.set({ "n", "i" }, "<M-j>", "<Cmd>TmuxNavigateDown<CR>", { silent = true })
-    vim.keymap.set({ "n", "i" }, "<M-k>", "<Cmd>TmuxNavigateUp<CR>", { silent = true })
+    vim.keymap.set(
+      { "n", "i" },
+      "<M-h>",
+      "<Cmd>TmuxNavigateLeft<CR>",
+      { silent = true, desc = "Move to west window [left]" }
+    )
+    vim.keymap.set(
+      { "n", "i" },
+      "<M-l>",
+      "<Cmd>TmuxNavigateRight<CR>",
+      { silent = true, desc = "Move to east window [right]" }
+    )
+    vim.keymap.set(
+      { "n", "i" },
+      "<M-j>",
+      "<Cmd>TmuxNavigateDown<CR>",
+      { silent = true, desc = "Move to south window [down]" }
+    )
+    vim.keymap.set(
+      { "n", "i" },
+      "<M-k>",
+      "<Cmd>TmuxNavigateUp<CR>",
+      { silent = true, desc = "Move to north window [up]" }
+    )
   end,
 })
 vim.g.tmux_navigator_no_mappings = 1

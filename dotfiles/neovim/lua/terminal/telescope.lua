@@ -122,32 +122,46 @@ Plug("nvim-telescope/telescope.nvim", {
     vim.keymap.set(
       { "n", "v" },
       "<Leader>h",
-      call_with_visual_selection(telescope_builtins.command_history)
+      call_with_visual_selection(telescope_builtins.command_history),
+      { desc = "Command history" }
     )
     -- TODO: I need to fix the previewer so it works with `page`. This way I get I get a live
     -- preview when I search manpages.
-    vim.keymap.set("n", "<Leader>b", telescope_builtins.current_buffer_fuzzy_find)
+    vim.keymap.set("n", "<Leader>b", telescope_builtins.current_buffer_fuzzy_find, {
+      desc = "Search buffer",
+    })
     vim.keymap.set(
       { "n", "v" },
       "<Leader>k",
-      call_with_visual_selection(telescope_builtins.help_tags)
+      call_with_visual_selection(telescope_builtins.help_tags),
+      { desc = "Search help pages [manual,manpage]" }
     )
     vim.keymap.set(
       { "n", "v" },
       "<Leader>g",
       require("terminal.utilities").set_jump_before(
         call_with_visual_selection(telescope_builtins.live_grep)
-      )
+      ),
+      { desc = "Search files [grep]" }
     )
-    vim.keymap.set("n", "<Leader>f", telescope_builtins.find_files)
-    vim.keymap.set("n", "<Leader>j", telescope_builtins.jumplist)
-    vim.keymap.set("n", "<Leader><Leader>", telescope_builtins.resume)
+    vim.keymap.set("n", "<Leader>f", telescope_builtins.find_files, {
+      desc = "Search files [find]",
+    })
+    vim.keymap.set("n", "<Leader>j", telescope_builtins.jumplist, {
+      desc = "Jumplist",
+    })
+    vim.keymap.set("n", "<Leader><Leader>", telescope_builtins.resume, {
+      desc = "Resume last picker",
+    })
     vim.keymap.set(
       { "n", "v" },
       "<Leader>s",
-      call_with_visual_selection(telescope_builtins.lsp_dynamic_workspace_symbols)
+      call_with_visual_selection(telescope_builtins.lsp_dynamic_workspace_symbols),
+      { desc = "Symbols" }
     )
-    vim.keymap.set("n", "<Leader>l", telescope_builtins.diagnostics)
+    vim.keymap.set("n", "<Leader>l", telescope_builtins.diagnostics, {
+      desc = "Diagnostics",
+    })
     vim.api.nvim_create_user_command("Highlights", telescope_builtins.highlights, {})
     vim.api.nvim_create_user_command("Autocommands", telescope_builtins.autocommands, {})
     vim.api.nvim_create_user_command("Mappings", telescope_builtins.keymaps, {})

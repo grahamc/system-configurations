@@ -22,14 +22,23 @@ local function fold_toggle()
     return "zR"
   end
 end
-vim.keymap.set("n", "<S-Tab>", fold_toggle, { silent = true, expr = true })
+vim.keymap.set(
+  "n",
+  "<S-Tab>",
+  fold_toggle,
+  { silent = true, expr = true, desc = "Toggle all folds [expand,collapse]" }
+)
 vim.keymap.set("n", "<Tab>", function()
   vim.cmd([[silent! normal! za]])
-end)
+end, { desc = "Toggle fold [expand,collapse]" })
 
 -- Jump to the top and bottom of the current fold
-vim.keymap.set({ "n", "x" }, "[<Tab>", "[z")
-vim.keymap.set({ "n", "x" }, "]<Tab>", "]z")
+vim.keymap.set({ "n", "x" }, "[<Tab>", "[z", {
+  desc = "Start of fold",
+})
+vim.keymap.set({ "n", "x" }, "]<Tab>", "]z", {
+  desc = "End of fold",
+})
 
 local function SetDefaultFoldMethod()
   local is_foldmethod_overridable =

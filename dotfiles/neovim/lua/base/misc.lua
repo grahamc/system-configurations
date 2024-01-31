@@ -15,10 +15,14 @@ Plug("tpope/vim-repeat")
 vim.o.joinspaces = false
 
 -- Enter a newline above or below the current line.
-vim.keymap.set({ "n" }, "<Enter>", "o<ESC>")
+vim.keymap.set({ "n" }, "<Enter>", "o<ESC>", {
+  desc = "Insert newline above",
+})
 -- TODO: This won't work until tmux can differentiate between enter and shift+enter.
 -- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
-vim.keymap.set({ "n" }, "<S-Enter>", "O<ESC>")
+vim.keymap.set({ "n" }, "<S-Enter>", "O<ESC>", {
+  desc = "Insert newline below",
+})
 
 -- Disable features {{{
 -- Disable unused builtin plugins.

@@ -52,14 +52,20 @@ end, {
   nargs = 1,
 })
 
-vim.keymap.set("", "<C-x>", "<Cmd>xa<CR>")
+vim.keymap.set("", "<C-x>", "<Cmd>xa<CR>", {
+  desc = "Quit [exit,close]",
+})
 
 -- suspend vim
-vim.keymap.set({ "n", "i", "x" }, "<C-z>", "<Cmd>suspend<CR>")
+vim.keymap.set({ "n", "i", "x" }, "<C-z>", "<Cmd>suspend<CR>", {
+  desc = "Suspend [background]",
+})
 
 vim.o.shell = "sh"
 
-vim.keymap.set("n", "<BS>", "<C-^>")
+vim.keymap.set("n", "<BS>", "<C-^>", {
+  desc = "Last window",
+})
 
 vim.o.ttimeout = true
 vim.o.ttimeoutlen = 50
@@ -83,7 +89,9 @@ function ClickLink()
     vim.cmd.wincmd("p")
   end
 end
-vim.keymap.set("n", "<C-LeftMouse>", "<LeftMouse><Cmd>lua ClickLink()<CR>")
+vim.keymap.set("n", "<C-LeftMouse>", "<LeftMouse><Cmd>lua ClickLink()<CR>", {
+  desc = "Open link",
+})
 
 vim.o.scroll = 1
 vim.o.smoothscroll = true
@@ -138,7 +146,9 @@ local function toggle_quickfix()
     vim.cmd("copen")
   end
 end
-vim.keymap.set("n", "<M-q>", toggle_quickfix)
+vim.keymap.set("n", "<M-q>", toggle_quickfix, {
+  desc = "Toggle quickfix",
+})
 -- }}}
 
 -- Autosave
@@ -169,11 +179,16 @@ vim.api.nvim_create_autocmd(
 )
 
 -- Tabs {{{
-vim.keymap.set({ "n", "i" }, "<C-M-[>", vim.cmd.tabprevious, { silent = true })
-vim.keymap.set({ "n", "i" }, "<C-M-]>", vim.cmd.tabnext, { silent = true })
+vim.keymap.set(
+  { "n", "i" },
+  "<C-M-[>",
+  vim.cmd.tabprevious,
+  { silent = true, desc = "Previous tab" }
+)
+vim.keymap.set({ "n", "i" }, "<C-M-]>", vim.cmd.tabnext, { silent = true, desc = "Next tab" })
 vim.keymap.set({ "n" }, "<C-t>", function()
   vim.cmd.tabnew("%")
-end, { silent = true })
+end, { silent = true, desc = "New tab" })
 -- }}}
 
 -- Indentation {{{
@@ -217,12 +232,22 @@ end, { expr = true })
 vim.o.hlsearch = false
 
 -- toggle search highlighting, whitespace indicators, and indent guides
-vim.keymap.set("n", [[\/]], "<Cmd>set hlsearch!<CR>", { silent = true })
-vim.keymap.set("n", [[\ ]], "<Cmd>set list!<CR>", { silent = true })
+vim.keymap.set(
+  "n",
+  [[\/]],
+  "<Cmd>set hlsearch!<CR>",
+  { silent = true, desc = "Toggle search highlight" }
+)
+vim.keymap.set(
+  "n",
+  [[\ ]],
+  "<Cmd>set list!<CR>",
+  { silent = true, desc = "Toggle whitespace indicator" }
+)
 vim.keymap.set("n", [[\|]], function()
   vim.g.miniindentscope_disable = not vim.g.miniindentscope_disable
   return "lh"
-end, { silent = true, expr = true })
+end, { silent = true, expr = true, desc = "Toggle indent guide" })
 
 -- Terminal {{{
 vim.api.nvim_create_autocmd("TermOpen", {

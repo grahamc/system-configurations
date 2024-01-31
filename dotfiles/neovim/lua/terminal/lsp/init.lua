@@ -23,27 +23,42 @@ vim.diagnostic.config({
   },
 })
 
-vim.keymap.set("n", "<S-l>", vim.diagnostic.open_float, { desc = "Show diagnostics" })
-vim.keymap.set("n", "[l", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
-vim.keymap.set("n", "]l", vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
+vim.keymap.set(
+  "n",
+  "<S-l>",
+  vim.diagnostic.open_float,
+  { desc = "Diagnostic modal [lint,problem]" }
+)
+vim.keymap.set(
+  "n",
+  "[l",
+  vim.diagnostic.goto_prev,
+  { desc = "Previous diagnostic [last,lint,problem]" }
+)
+vim.keymap.set(
+  "n",
+  "]l",
+  vim.diagnostic.goto_next,
+  { desc = "Next diagnostic [last,lint,problem]" }
+)
 vim.keymap.set("n", "gi", function()
   require("telescope.builtin").lsp_implementations({ preview_title = "" })
-end, { desc = "Go to implementation" })
+end, { desc = "Implementation" })
 vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, { desc = "Show signature help" })
 vim.keymap.set("n", "gt", function()
   require("telescope.builtin").lsp_type_definitions({ preview_title = "" })
-end, { desc = "Go to type definition" })
+end, { desc = "Type definition" })
 vim.keymap.set("n", "gd", function()
   require("telescope.builtin").lsp_definitions({ preview_title = "" })
-end, { desc = "Go to definition" })
-vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" })
+end, { desc = "Definition" })
+vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Declaration" })
 vim.keymap.set("n", "ghi", function()
   require("telescope.builtin").lsp_incoming_calls({ preview_title = "" })
-end, { desc = "Show incoming calls" })
+end, { desc = "Incoming call hierarchy" })
 vim.keymap.set("n", "gho", function()
   require("telescope.builtin").lsp_outgoing_calls({ preview_title = "" })
-end, { desc = "Show outgoing calls" })
-vim.keymap.set("n", "gn", vim.lsp.buf.rename, { desc = "Rename" })
+end, { desc = "Outgoing call hierarchy" })
+vim.keymap.set("n", "gn", vim.lsp.buf.rename, { desc = "Rename variable" })
 
 -- TODO: When there is only one result, it doesn't add to the jumplist so I'm adding that here. I
 -- should upstream this.
@@ -53,7 +68,7 @@ vim.keymap.set(
   require("terminal.utilities").set_jump_before(function()
     require("telescope.builtin").lsp_references({ preview_title = "" })
   end),
-  { desc = "Go to reference" }
+  { desc = "References" }
 )
 
 -- Hide all semantic highlights
@@ -96,12 +111,7 @@ Plug("aznhe21/actions-preview.nvim", {
     actions_preview.setup({
       telescope = {},
     })
-    vim.keymap.set(
-      { "n", "v" },
-      "ga",
-      actions_preview.code_actions,
-      { desc = "Choose code action" }
-    )
+    vim.keymap.set({ "n", "v" }, "ga", actions_preview.code_actions, { desc = "Code actions" })
   end,
 })
 

@@ -203,8 +203,12 @@ Plug("mrjones2014/legendary.nvim", {
       })
     end
     -- This is actually ctrl+/, see :help :map-special-keys
-    vim.keymap.set("n", "<C-_>", open_command_palette)
+    vim.keymap.set("n", "<C-_>", open_command_palette, {
+      desc = "Command palette",
+    })
     -- Outside TMUX the above won't work, I have to use <C-/>, so I just map both.
-    vim.keymap.set("n", "<C-/>", open_command_palette)
+    vim.keymap.set("n", "<C-/>", open_command_palette, {
+      desc = "Command palette",
+    })
   end,
 })

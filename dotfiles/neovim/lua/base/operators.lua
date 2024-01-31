@@ -4,7 +4,9 @@
 ---@diagnostic disable: undefined-global
 
 -- Copy up to the end of line, not including the newline character
-vim.keymap.set({ "n" }, "Y", "yg_")
+vim.keymap.set({ "n" }, "Y", "yg_", {
+  desc = "Til end of line, excluding newline",
+})
 
 Plug("arthurxavierx/vim-caser")
 
@@ -69,14 +71,16 @@ end
 vim.keymap.set("n", "gq", function()
   vim.o.operatorfunc = "v:lua.FormatCommentOperatorFunc"
   return "g@ic"
-end, { expr = true, remap = true })
+end, { expr = true, remap = true, desc = "Format comment" })
 
 vim.keymap.set("x", "gq", function()
   set_formatprg(utilities.get_visual_selection())
   -- NOTE: This function returns after enqueuing the keys, not processing them. That is why I'm
   -- leaving the formatprg set.
   vim.fn.feedkeys("gvgq", "n")
-end)
+end, {
+  desc = "Format comment",
+})
 -- }}}
 
 -- Extend the types of text that can be incremented/decremented {{{
@@ -140,8 +144,16 @@ Plug("monaqa/dial.nvim", {
     })
   end,
 })
-vim.keymap.set({ "n", "v" }, "+", "<Plug>(dial-increment)")
-vim.keymap.set({ "n", "v" }, "-", "<Plug>(dial-decrement)")
-vim.keymap.set("v", "g+", "g<Plug>(dial-increment)")
-vim.keymap.set("v", "g-", "g<Plug>(dial-decrement)")
+vim.keymap.set({ "n", "v" }, "+", "<Plug>(dial-increment)", {
+  desc = "Increment",
+})
+vim.keymap.set({ "n", "v" }, "-", "<Plug>(dial-decrement)", {
+  desc = "Decrement",
+})
+vim.keymap.set("v", "g+", "g<Plug>(dial-increment)", {
+  desc = "Increment",
+})
+vim.keymap.set("v", "g-", "g<Plug>(dial-decrement)", {
+  desc = "Decrement",
+})
 -- }}}

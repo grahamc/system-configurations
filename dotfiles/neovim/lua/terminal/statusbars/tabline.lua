@@ -143,19 +143,31 @@ Plug("akinsho/bufferline.nvim", {
       },
     })
 
-    vim.keymap.set({ "n", "i" }, "<F7>", vim.cmd.BufferLineCyclePrev, { silent = true })
-    vim.keymap.set({ "n", "i" }, "<F8>", vim.cmd.BufferLineCycleNext, { silent = true })
+    vim.keymap.set(
+      { "n", "i" },
+      "<F7>",
+      vim.cmd.BufferLineCyclePrev,
+      { silent = true, desc = "Previous file [last,tab]" }
+    )
+    vim.keymap.set(
+      { "n", "i" },
+      "<F8>",
+      vim.cmd.BufferLineCycleNext,
+      { silent = true, desc = "Next file [tab]" }
+    )
 
     -- Switch buffers with <Leader><tab number>
     for buffer_index = 1, 9 do
       vim.keymap.set("n", "<Leader>" .. buffer_index, function()
         require("bufferline").go_to(buffer_index, true)
-      end)
+      end, {
+        desc = "File #" .. buffer_index .. " [tab]",
+      })
     end
 
     vim.keymap.set("n", "<C-q>", function()
       close(vim.fn.bufnr())
-    end, { silent = true })
+    end, { silent = true, desc = "Close file [tab]" })
     function BufferlineWrapper()
       local original = nvim_bufferline()
       local escape_percent = require("utilities").escape_percent

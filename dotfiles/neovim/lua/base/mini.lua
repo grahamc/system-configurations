@@ -50,10 +50,14 @@ Plug("echasnovski/mini.nvim", {
 
     vim.keymap.set({ "n", "x" }, "]d", function()
       move_like_curly_brace("d", "right")
-    end)
+    end, {
+      desc = "Next function declaration",
+    })
     vim.keymap.set({ "n", "x" }, "[d", function()
       move_like_curly_brace("d", "left")
-    end)
+    end, {
+      desc = "Last function declaration",
+    })
     --}}}
 
     -- operators {{{
@@ -94,22 +98,30 @@ Plug("echasnovski/mini.nvim", {
 
     vim.keymap.set({ "o", "x" }, "ii", function()
       run_without_indent_at_cursor(MiniIndentscope.textobject)
-    end)
+    end, {
+      desc = "Inside indent of line",
+    })
     vim.keymap.set({ "o", "x" }, "ai", function()
       run_without_indent_at_cursor(function()
         MiniIndentscope.textobject(true)
       end)
-    end)
+    end, {
+      desc = "Around indent of line",
+    })
     vim.keymap.set({ "n", "x" }, "[i", function()
       run_without_indent_at_cursor(function()
         MiniIndentscope.move_cursor("top", false)
       end)
-    end)
+    end, {
+      desc = "Start of indent of line",
+    })
     vim.keymap.set({ "n", "x" }, "]i", function()
       run_without_indent_at_cursor(function()
         MiniIndentscope.move_cursor("bottom", false)
       end)
-    end)
+    end, {
+      desc = "End of indent of line",
+    })
 
     local mini_group_id = vim.api.nvim_create_augroup("MyMiniNvim", {})
 
@@ -185,7 +197,9 @@ Plug("echasnovski/mini.nvim", {
         misc.zoom()
         IsMaximized = false
       end
-    end)
+    end, {
+      desc = "Toggle maximize window",
+    })
 
     -- }}}
 
