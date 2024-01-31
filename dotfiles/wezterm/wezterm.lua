@@ -97,9 +97,6 @@ local my_colors_per_color_scheme = {
     [13] = "#B48EAD",
     [14] = "#8FBCBB",
     [15] = "#78849b",
-    -- Floating windows in neovim
-    [16] = "#181c24",
-    [24] = "#2e3440",
     -- Background color for the non-emphasized and emphasized part of a removed line in a git diff
     [17] = "#301a1f",
     [25] = "#803030",
@@ -111,10 +108,6 @@ local my_colors_per_color_scheme = {
     [22] = "#306a7b",
     -- highlight color
     [51] = "#292e39",
-    -- nvim-telescope border
-    [52] = "#31353d",
-    -- For folded lines
-    [53] = "#232832",
   },
 
   ["Biggs Light Owl"] = {
@@ -134,9 +127,6 @@ local my_colors_per_color_scheme = {
     [13] = "#d6438a",
     [14] = "#2AA298",
     [15] = "#808080",
-    -- Floating windows in neovim
-    [16] = "#f5f5f5",
-    [24] = "#e5e5e5",
     -- Background color for the non-emphasized and emphasized part of a removed line in a git diff
     [17] = "#FFD7D7",
     [25] = "#FFAFAF",
@@ -148,10 +138,6 @@ local my_colors_per_color_scheme = {
     [22] = "#85dfd8",
     -- highlight color
     [51] = "#F0F0F0",
-    -- nvim-telescope border
-    [52] = "#d0d0d0",
-    -- For folded lines
-    [53] = "#eaeaea",
   },
 }
 

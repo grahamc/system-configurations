@@ -55,14 +55,6 @@ Plug("akinsho/bufferline.nvim", {
     end
 
     local close_icon = " "
-    local active_bg = vim.api.nvim_get_hl(0, { name = "StatusLine" }).bg
-    local inactive_fg = vim.api.nvim_get_hl(0, { name = "Comment" }).fg
-    -- I'm using the fg of Ignore because this color may get assigned to another fg so I need the
-    -- actual hex value of the background, not "NONE", since "NONE" as an fg would resolve to the
-    -- normal fg color.
-    local inactive_bg = vim.api.nvim_get_hl(0, { name = "Ignore" }).fg
-    local accent_fg = vim.api.nvim_get_hl(0, { name = "FloatTitle" }).fg
-    local offset_separator_fg = vim.api.nvim_get_hl(0, { name = "WinSeparator" }).fg
     local explorer_icon = ""
     local explorer_title = explorer_icon .. " FILE EXPLORER"
     local outline_icon = "󰙅"
@@ -113,33 +105,6 @@ Plug("akinsho/bufferline.nvim", {
           return false
         end,
         show_buffer_icons = false,
-      },
-      highlights = {
-        fill = { bg = "NONE", fg = inactive_fg },
-        background = { bg = "NONE", fg = inactive_fg },
-        buffer_visible = { bg = "NONE", fg = inactive_fg },
-        buffer_selected = { bg = active_bg, fg = "NONE", italic = false, bold = false },
-        duplicate = { bg = "NONE", fg = inactive_fg, italic = false },
-        duplicate_selected = { bg = active_bg, fg = "None", italic = false },
-        duplicate_visible = { bg = "NONE", fg = inactive_fg, italic = false },
-        numbers = { bg = "NONE", fg = inactive_fg, italic = false },
-        numbers_visible = { bg = "NONE", fg = inactive_fg, italic = false },
-        numbers_selected = { bg = active_bg, fg = accent_fg, italic = false },
-        close_button = { bg = "NONE", fg = inactive_fg },
-        close_button_selected = { bg = active_bg, fg = "None" },
-        close_button_visible = { bg = "NONE", fg = inactive_fg },
-        modified = { bg = "NONE", fg = inactive_bg },
-        modified_visible = { bg = "NONE", fg = inactive_bg },
-        modified_selected = { bg = active_bg, fg = "None" },
-        tab = { bg = active_bg, fg = inactive_fg },
-        tab_selected = { bg = active_bg, fg = accent_fg, underline = true },
-        tab_separator = { bg = active_bg, fg = active_bg },
-        tab_separator_selected = { bg = active_bg, fg = active_bg },
-        tab_close = { bg = active_bg, fg = "NONE", bold = true },
-        offset_separator = { bg = "NONE", fg = offset_separator_fg },
-        indicator_selected = { bg = "NONE", fg = active_bg },
-        indicator_visible = { bg = "NONE", fg = active_bg },
-        trunc_marker = { bg = "NONE", fg = "NONE" },
       },
     })
 
@@ -285,5 +250,76 @@ Plug("akinsho/bufferline.nvim", {
       return result
     end
     vim.o.tabline = "%!v:lua.BufferlineWrapper()"
+
+    -- bufferline.nvim doesn't provide a way to define highlights yourself, instead you specify
+    -- colors in the config. This a problem because I won't be able to update the colors when I
+    -- switch to light/dark mode. So here I'm overriding bufferline's highlights and linking them to
+    -- colors defined in my color schemes. This way when the color scheme changes, bufferline will
+    -- update too.
+    local function set_highlights()
+      vim.api.nvim_set_hl(0, "BufferLineBackground", { link = "MyBufferLineBackground" })
+      vim.api.nvim_set_hl(0, "BufferLineFill", { link = "MyBufferLineFill" })
+      vim.api.nvim_set_hl(0, "BufferLineBufferVisible", { link = "MyBufferLineBufferVisible" })
+      vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { link = "MyBufferLineBufferSelected" })
+      vim.api.nvim_set_hl(0, "BufferLineDuplicate", { link = "MyBufferLineDuplicate" })
+      vim.api.nvim_set_hl(
+        0,
+        "BufferLineDuplicateSelected",
+        { link = "MyBufferLineDuplicateSelected" }
+      )
+      vim.api.nvim_set_hl(
+        0,
+        "BufferLineDuplicateVisible",
+        { link = "MyBufferLineDuplicateVisible" }
+      )
+      vim.api.nvim_set_hl(0, "BufferLineNumbers", { link = "MyBufferLineNumbers" })
+      vim.api.nvim_set_hl(0, "BufferLineNumbersVisible", { link = "MyBufferLineNumbersVisible" })
+      vim.api.nvim_set_hl(0, "BufferLineNumbersSelected", { link = "MyBufferLineNumbersSelected" })
+      vim.api.nvim_set_hl(0, "BufferLineCloseButton", { link = "MyBufferLineCloseButton" })
+      vim.api.nvim_set_hl(
+        0,
+        "BufferLineCloseButtonSelected",
+        { link = "MyBufferLineCloseButtonSelected" }
+      )
+      vim.api.nvim_set_hl(
+        0,
+        "BufferLineCloseButtonVisible",
+        { link = "MyBufferLineCloseButtonVisible" }
+      )
+      vim.api.nvim_set_hl(0, "BufferLineModified", { link = "MyBufferLineModified" })
+      vim.api.nvim_set_hl(0, "BufferLineModifiedVisible", { link = "MyBufferLineModifiedVisible" })
+      vim.api.nvim_set_hl(
+        0,
+        "BufferLineModifiedSelected",
+        { link = "MyBufferLineModifiedSelected" }
+      )
+      vim.api.nvim_set_hl(0, "BufferLineTab", { link = "MyBufferLineTab" })
+      vim.api.nvim_set_hl(0, "BufferLineTabSelected", { link = "MyBufferLineTabSelected" })
+      vim.api.nvim_set_hl(0, "BufferLineTabSeparator", { link = "MyBufferLineTabSeparator" })
+      vim.api.nvim_set_hl(
+        0,
+        "BufferLineTabSeparatorSelected",
+        { link = "MyBufferLineTabSeparatorSelected" }
+      )
+      vim.api.nvim_set_hl(0, "BufferLineTabClose", { link = "MyBufferLineTabClose" })
+      vim.api.nvim_set_hl(0, "BufferLineOffsetSeparator", { link = "MyBufferLineOffsetSeparator" })
+      vim.api.nvim_set_hl(
+        0,
+        "BufferLineIndicatorSelected",
+        { link = "MyBufferLineIndicatorSelected" }
+      )
+      vim.api.nvim_set_hl(
+        0,
+        "BufferLineIndicatorVisible",
+        { link = "MyBufferLineIndicatorVisible" }
+      )
+      vim.api.nvim_set_hl(0, "BufferLineTruncMarker", { link = "MyBufferLineTruncMarker" })
+    end
+    set_highlights()
+    vim.api.nvim_create_autocmd("ColorScheme", {
+      pattern = { "my_light_theme", "my_dark_theme" },
+      callback = set_highlights,
+      group = vim.api.nvim_create_augroup("MyBufferLine", {}),
+    })
   end,
 })

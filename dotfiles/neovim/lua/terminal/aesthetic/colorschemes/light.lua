@@ -37,22 +37,22 @@ local theme = lush(function(injected_functions)
 
     -- terminal palette {{{
     -- If you're in the lush live preview (:Lushify) the color below will be invisible.
-    t_0 { fg = hsl("#1d2129") },
-    t_1 { fg = hsl("#BF616A") },
-    t_2 { fg = hsl("#A3BE8C") },
-    t_3 { fg = hsl("#EBCB8B") },
-    t_4 { fg = hsl("#81A1C1") },
-    t_5 { fg = hsl("#B48EAD") },
-    t_6 { fg = hsl("#88C0D0") },
-    t_7 { fg = hsl("#D8DEE9") },
-    t_8 { fg = hsl("#78849b") },
-    t_9 { fg = hsl("#BF616A") },
-    t_10 { fg = hsl("#A3BE8C") },
-    t_11 { fg = hsl("#d08770") },
-    t_12 { fg = hsl("#81A1C1") },
-    t_13 { fg = hsl("#B48EAD") },
-    t_14 { fg = hsl("#8FBCBB") },
-    t_15 { fg = hsl("#78849b") },
+    t_0 { fg = hsl("#ffffff") },
+    t_1 { fg = hsl("#ee3d3b") },
+    t_2 { fg = hsl("#2AA298") },
+    t_3 { fg = hsl("#e9873a") },
+    t_4 { fg = hsl("#288ed7") },
+    t_5 { fg = hsl("#994cc3") },
+    t_6 { fg = hsl("#037A98") },
+    t_7 { fg = hsl("#000000") },
+    t_8 { fg = hsl("#979893") },
+    t_9 { fg = hsl("#ee3d3b") },
+    t_10 { fg = hsl("#2AA298") },
+    t_11 { fg = hsl("#c96765") },
+    t_12 { fg = hsl("#288ed7") },
+    t_13 { fg = hsl("#d6438a") },
+    t_14 { fg = hsl("#2AA298") },
+    t_15 { fg = hsl("#808080") },
     -- }}}
 
     -- modes {{{
@@ -99,8 +99,8 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- float {{{
-    NormalFloat { bg = t_0.fg.darken(35) }, -- Normal text in floating windows.
-    FloatBorder { NormalFloat, fg = t_0.fg.li(2) }, -- Border of floating windows.
+    NormalFloat { bg = hsl("#EEEEEE") }, -- Normal text in floating windows.
+    FloatBorder { NormalFloat, fg = NormalFloat.bg.da(7) }, -- Border of floating windows.
     FloatTitle { NormalFloat, fg = t_6.fg }, -- Title of floating windows.
     -- }}}
 
@@ -153,10 +153,10 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- diffs {{{
-    DiffAdd { bg = t_2.fg.da(60) }, -- Diff mode: Added line |diff.txt|
-    DiffChange { bg = t_3.fg.da(60) }, -- Diff mode: Changed line |diff.txt|
-    DiffDelete { bg = t_1.fg.da(60) }, -- Diff mode: Deleted line |diff.txt|
-    DiffText { bg = t_3.fg.da(50) }, -- Diff mode: Changed text within a changed line |diff.txt|
+    DiffAdd { bg = t_2.fg.li(60) }, -- Diff mode: Added line |diff.txt|
+    DiffChange { bg = t_3.fg.li(60) }, -- Diff mode: Changed line |diff.txt|
+    DiffDelete { bg = t_1.fg.li(60) }, -- Diff mode: Deleted line |diff.txt|
+    DiffText { bg = t_3.fg.li(50) }, -- Diff mode: Changed text within a changed line |diff.txt|
     diffAdded { DiffAdd },
     diffRemoved { DiffDelete },
     diffChanged { DiffChange },
@@ -177,7 +177,7 @@ local theme = lush(function(injected_functions)
 
     -- statusline {{{
     ---@diagnostic disable-next-line: redundant-parameter
-    StatusLine { bg = t_0.fg.lighten(6) }, -- Status line of current window
+    StatusLine { bg = t_0.fg.darken(6) }, -- Status line of current window
     ---@diagnostic disable-next-line: undefined-field
     StatusLineFill { StatusLine, fg = StatusLine.bg },
     StatusLineSeparator { StatusLine, fg = t_0.fg, bold = true },
@@ -213,7 +213,7 @@ local theme = lush(function(injected_functions)
     Conceal { t_15 }, -- Placeholder characters substituted for concealed text (see 'conceallevel')
     Directory { t_4 }, -- Directory names (and other special names in listings)
     EndOfBuffer {}, -- Filler lines (~) after the end of the buffer. By default, this is highlighted like |hl-NonText|.
-    Folded { bg = t_0.fg.lighten(3) }, -- Line used for closed folds
+    Folded { bg = t_0.fg.darken(3) }, -- Line used for closed folds
     FoldColumn { fg = t_15.fg }, -- 'foldcolumn'
     SignColumn {}, -- Column where |signs| are displayed
     Substitute { Search }, -- |:substitute| replacement text highlighting
@@ -222,13 +222,13 @@ local theme = lush(function(injected_functions)
     MsgArea { StatusLine }, -- Area for messages and cmdline
     MsgSeparator {}, -- Separator for scrolled messages, `msgsep` flag of 'display'
     MoreMsg {}, -- |more-prompt|
-    NonText { fg = t_0.fg.lighten(10) }, -- '@' at the end of the window, characters from 'showbreak' and other characters that do not really exist in the text (e.g., ">" displayed when a double-wide character doesn't fit at the end of the line). See also |hl-EndOfBuffer|.
+    NonText { fg = t_0.fg.darken(10) }, -- '@' at the end of the window, characters from 'showbreak' and other characters that do not really exist in the text (e.g., ">" displayed when a double-wide character doesn't fit at the end of the line). See also |hl-EndOfBuffer|.
     Question {}, -- |hit-enter| prompt and yes/no questions
-    QuickFixLine { bg = t_0.fg.lighten(10) }, -- Current |quickfix| item in the quickfix window. Combined with |hl-CursorLine| when the cursor is there.
+    QuickFixLine { bg = t_0.fg.darken(10) }, -- Current |quickfix| item in the quickfix window. Combined with |hl-CursorLine| when the cursor is there.
     SpellBad { Error }, -- Word that is not recognized by the spellchecker. |spell| Combined with the highlighting used otherwise.
     SpellCap { Warning }, -- Word that should start with a capital. |spell| Combined with the highlighting used otherwise.
     Title { Normal }, -- Titles for output from ":set all", ":autocmd" etc.
-    Whitespace { fg = t_0.fg.lighten(30) }, -- "nbsp", "space", "tab" and "trail" in 'listchars'
+    Whitespace { fg = t_0.fg.darken(30) }, -- "nbsp", "space", "tab" and "trail" in 'listchars'
     WinSeparator { t_15, }, -- Separator between window splits. Inherts from |hl-VertSplit| by default, which it will replace eventually.
     ColorColumn { WinSeparator },
     WinBar { bold = true, italic = true }, -- Window bar of current window
@@ -288,8 +288,8 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- nvim-cmp {{{
-    CmpNormal { bg = t_0.fg.lighten(5) },
-    CmpItemKind { fg = CmpNormal.bg.li(55) },
+    CmpNormal { bg = NormalFloat.bg.darken(10) },
+    CmpItemKind { fg = CmpNormal.bg.da(55) },
     CmpItemMenu { CmpItemKind },
     CmpDocumentationNormal { NormalFloat },
     CmpDocumentationBorder { FloatBorder },
@@ -306,7 +306,7 @@ local theme = lush(function(injected_functions)
     PmenuExtra { PmenuKind }, -- Popup menu: Normal item "extra text"
     PmenuExtraSel { PmenuKindSel }, -- Popup menu: Selected item "extra text"
     PmenuSbar { Pmenu }, -- Popup menu: Scrollbar.
-    PmenuThumb { bg = PmenuSbar.bg.li(30) }, -- Popup menu: Thumb of the scrollbar.
+    PmenuThumb { bg = PmenuSbar.bg.da(30) }, -- Popup menu: Thumb of the scrollbar.
     -- }}}
 
     -- mason.nvim {{{
@@ -316,7 +316,7 @@ local theme = lush(function(injected_functions)
     MasonHighlightBlockBold { MasonHighlight, bold = true, reverse = true },
     MasonHighlightBlock { MasonHighlightBlockBold },
     MasonMuted {},
-    MasonMutedBlock { fg = t_0.fg.li(40), reverse = true },
+    MasonMutedBlock { fg = t_0.fg.da(40), reverse = true },
     MasonMutedBlockBold { MasonMutedBlock },
     MasonError { ErrorMsg },
     MasonNormal { bg = "NONE", nocombine = true },
@@ -349,23 +349,23 @@ local theme = lush(function(injected_functions)
     MiniJump2dSpotUnique { MiniJump2dSpot },
     MiniJump2dSpotAhead { MiniJump2dSpot },
     MiniJump2dDim { t_15 },
-    MiniCursorword { bg = t_0.fg.lighten(6) },
+    MiniCursorword { bg = t_0.fg.darken(6) },
     -- }}}
 
     -- nvim-telescope {{{
     -- List of telescope highlight groups:
     -- https://github.com/nvim-telescope/telescope.nvim/blob/master/plugin/telescope.lua
-    TelescopePromptNormal { bg = t_0.fg.lighten(5) },
+    TelescopePromptNormal { bg = hsl("#E9E9E9") },
     TelescopePromptBorder { TelescopePromptNormal, fg = TelescopePromptNormal.bg },
     TelescopePromptTitle { t_6, reverse = true, bold = true },
-    TelescopePromptCounter { TelescopePromptNormal, fg = TelescopePromptNormal.bg.li(40) },
+    TelescopePromptCounter { TelescopePromptNormal, fg = TelescopePromptNormal.bg.da(40) },
     TelescopePromptPrefix { TelescopePromptNormal, fg = FloatTitle.fg },
     TelescopeResultsNormal { NormalFloat },
     TelescopeResultsBorder { TelescopeResultsNormal, fg = TelescopeResultsNormal.bg },
     TelescopePreviewNormal { TelescopeResultsNormal },
     TelescopePreviewBorder { TelescopePreviewNormal, fg = TelescopePromptNormal.bg },
     TelescopeMatching { fg = FloatTitle.fg },
-    TelescopeSelection { bg = TelescopeResultsNormal.bg.li(10) },
+    TelescopeSelection { bg = TelescopeResultsNormal.bg.da(10) },
     TelescopeSelectionCaret { TelescopeSelection },
     -- }}}
 
@@ -520,7 +520,7 @@ local theme = lush(function(injected_functions)
     -- LspCodeLensSeparator        { } , -- Used to color the seperator between two or more code lens.
     -- LspSignatureActiveParameter { } , -- Used to highlight the active parameter in the signature help. See |vim.lsp.handlers.signature_help()|.
     LspInfoBorder { FloatBorder },
-    LspInlayHint { bg = t_0.fg.li(3), fg = t_0.fg.li(68), italic = true, bold = true, },
+    LspInlayHint { bg = t_0.fg.da(3), fg = t_0.fg.da(68), italic = true, bold = true, },
     -- }}}
 
     NvimDapVirtualText { LspInlayHint },

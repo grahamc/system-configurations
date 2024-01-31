@@ -2,7 +2,7 @@ local function set_colorscheme()
   if vim.o.background == "dark" then
     vim.cmd.colorscheme("my_dark_theme")
   else
-    vim.cmd.colorscheme("my_dark_theme")
+    vim.cmd.colorscheme("my_light_theme")
   end
 end
 

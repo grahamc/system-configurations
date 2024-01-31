@@ -13,8 +13,13 @@ local function listen_for_system_theme_changes()
     .. "/nvim-wezterm/pipes"
   vim.fn.mkdir(xdg_runtime_path, "p")
 
-  local pipe_file =
-    vim.trim(vim.fn.system(string.format([[TMPDIR='%s' mktemp -u]], xdg_runtime_path)))
+  local command_output = vim.fn.system(string.format([[TMPDIR='%s' mktemp -u]], xdg_runtime_path))
+  if command_output == nil then
+    vim.notify("Failed to start system theme syncer", vim.log.levels.ERROR)
+    return
+  end
+
+  local pipe_file = vim.trim(command_output)
   vim.fn.serverstart(pipe_file)
 
   vim.api.nvim_create_autocmd("User", {
