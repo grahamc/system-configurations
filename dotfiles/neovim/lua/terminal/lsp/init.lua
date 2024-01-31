@@ -152,10 +152,16 @@ Plug("williamboman/mason-lspconfig.nvim", {
         end
 
         if client.supports_method(methods.textDocument_inlayHint) then
-          vim.lsp.inlay_hint.enable(buffer_number, true)
-          vim.api.nvim_buf_create_user_command(buffer_number, "InlayHintsToggle", function()
+          -- vim.lsp.inlay_hint.enable(buffer_number, true)
+          local function toggle_inlay_hints()
             vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())
-          end, {})
+          end
+          vim.keymap.set(
+            "n",
+            [[\i]],
+            toggle_inlay_hints,
+            { silent = true, desc = "Toggle inlay hints" }
+          )
         end
       end
 

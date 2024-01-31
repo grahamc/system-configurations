@@ -39,8 +39,8 @@ Plug("kyazdani42/nvim-tree.lua", {
           },
           glyphs = {
             folder = {
-              arrow_closed = "›",
-              arrow_open = "⌄",
+              arrow_closed = " ",
+              arrow_open = " ",
             },
           },
         },
@@ -63,6 +63,8 @@ Plug("kyazdani42/nvim-tree.lua", {
         vim.keymap.set("n", "h", "<BS>", { buffer = buffer_number, remap = true })
         vim.keymap.set("n", "l", "<CR>", { buffer = buffer_number, remap = true })
         vim.keymap.set("n", "<Tab>", "<CR>", { buffer = buffer_number, remap = true })
+        -- Taken from base config
+        vim.keymap.set("n", "<C-k>", "6k", { buffer = buffer_number, remap = true })
       end,
     })
     vim.api.nvim_create_user_command("ExplorerToggle", function()

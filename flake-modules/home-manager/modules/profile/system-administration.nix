@@ -37,7 +37,6 @@ in {
       gzip
       wget
       which
-      atuin
       partialPackages.toybox
       partialPackages.xargs
       partialPackages.ps
@@ -67,11 +66,6 @@ in {
           pkgs.runCommand "zoxide-config.fish" {} "${pkgs.zoxide}/bin/zoxide init --no-cmd fish > $out"
         }'';
 
-      "fish/conf.d/atuin.fish".source = ''${
-          pkgs.runCommand "atuin-config.fish" {nativeBuildInputs = [pkgs.atuin];}
-          "atuin init fish --disable-up-arrow --disable-ctrl-r > $out"
-        }'';
-
       # Taken from home-manager: https://github.com/nix-community/home-manager/blob/47c2adc6b31e9cff335010f570814e44418e2b3e/modules/programs/broot.nix#L151
       # I'm doing this because home-manager was bringing in the broot source code as a dependency.
       # Dummy file to prevent broot from trying to reinstall itself
@@ -84,10 +78,6 @@ in {
           pkgs.runCommand "broot.fish" {nativeBuildInputs = [pkgs.broot];}
           "broot --print-shell-function fish > $out"
         }'';
-    };
-
-    dataFile = {
-      "fish/vendor_completions.d/atuin.fish".source = "${pkgs.atuin}/share/fish/vendor_completions.d/atuin.fish";
     };
   };
 
@@ -109,7 +99,6 @@ in {
           "ripgrep/ripgreprc".source = "ripgrep/ripgreprc";
           "ssh/start-my-shell.sh".source = "ssh/start-my-shell.sh";
           "broot/conf.hjson".source = "broot/conf.hjson";
-          "atuin/config.toml".source = "atuin/config.toml";
         }
         // optionalAttrs isLinux {
           "pipr/pipr.toml".source = "pipr/pipr.toml";

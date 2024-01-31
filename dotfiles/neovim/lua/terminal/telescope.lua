@@ -87,9 +87,10 @@ Plug("nvim-telescope/telescope.nvim", {
         help_tags = {
           mappings = {
             i = {
-              ["<CR>"] = function(...)
-                vim.g.opening_help_in_tab = true
-                actions.select_tab(...)
+              ["<CR>"] = function(prompt_bufnr)
+                local selection = require("telescope.actions.state").get_selected_entry().value
+                actions.close(prompt_bufnr)
+                vim.cmd("Help " .. selection)
               end,
             },
           },

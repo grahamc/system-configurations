@@ -62,6 +62,9 @@ Plug("williamboman/mason.nvim", {
     -- TODO: This event also fires when a new package is installed, but we aren't interested in that
     -- event. This means we'll set the count more often than we need to.
     registry:on("package:install:success", vim.schedule_wrap(set_mason_update_count))
+    -- Also set the count when a package is uninstalled in the event we uninstall the package that
+    -- had an update.
+    registry:on("package:uninstall:success", vim.schedule_wrap(set_mason_update_count))
   end,
 })
 

@@ -49,6 +49,8 @@ Plug("akinsho/bufferline.nvim", {
       if buffer_window_count == 1 then
         vim.cmd("b#")
         vim.cmd("bd#")
+      else
+        vim.notify("Can't close buffer, it's open in another window", vim.log.levels.INFO)
       end
     end
 
@@ -177,23 +179,22 @@ Plug("akinsho/bufferline.nvim", {
       local function inject_right_border_for_selected_buffer(pattern_left, pattern_right)
         result = string.gsub(
           result,
-          -- add a space to the pattern, but not the replacement, so I can remove the space that
-          -- bufferline adds to the right side
           pattern_left
+            -- I'm using a '-' here instead of a '*' so the match won't be greedy. This is needed
+            -- because if I hover over a buffer to the right of the current buffer then this pattern
+            -- would match the hovered x instead of the x for the current buffer.
             .. "(.-)"
             .. pattern_right
+            -- add a space to the pattern, but not the replacement, so I can remove the space that
+            -- bufferline adds to the right side
             .. " ",
           pattern_left
             .. "%1"
             .. pattern_right
-            .. escape_percent(right_border_with_selected_highlight)
-            .. "  ",
+            .. escape_percent(right_border_with_selected_highlight),
           1
         )
       end
-      -- I'm using a '-' here instead of a '*' so the match won't be greedy. This is needed
-      -- because if I hover over a buffer to the right of the current buffer then this pattern
-      -- would match the hovered x instead of the x for the current buffer.
       inject_right_border_for_selected_buffer("BufferLineCloseButtonSelected", close_icon .. "%%X")
       inject_right_border_for_selected_buffer("BufferLineModifiedSelected", close_icon)
 
@@ -208,8 +209,10 @@ Plug("akinsho/bufferline.nvim", {
         -- left border
         result = string.gsub(
           result,
-          tab_highlight_and_aligner_escaped,
-          "%%=%%#BufferLineTabLeftBorder#" .. right_border .. tab_highlight_escaped,
+          -- I'm using a '-' here instead of a '*' so the match won't be greedy. This way I get the
+          -- first separator.
+          "(.-)%%#BufferLineTabSeparator#▕",
+          "%1%%#BufferLineTabLeftBorder#" .. right_border,
           1
         )
 
@@ -225,7 +228,15 @@ Plug("akinsho/bufferline.nvim", {
             1
           )
         else
-          result = result .. right_border_with_selected_highlight
+          result = string.gsub(
+            result,
+            -- I use '.*' so I can get the last close icon, not the one for the current buffer.
+            "(.*)"
+              .. close_icon
+              .. " ",
+            "%1" .. close_icon .. escape_percent(right_border_with_selected_highlight),
+            1
+          )
         end
       end
 

@@ -76,6 +76,7 @@ Plug("echasnovski/mini.nvim", {
       },
       symbol = "┊",
     })
+    vim.g.miniindentscope_disable = true
 
     local new_opts = {
       options = { indent_at_cursor = false },

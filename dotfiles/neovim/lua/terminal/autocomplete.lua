@@ -300,5 +300,28 @@ Plug("hrsh7th/nvim-cmp", {
         { name = "dap" },
       },
     })
+
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "DressingInput",
+      callback = function()
+        -- TODO: Workaround for adding completion to vim.ui.input(). I have to defer the
+        -- setup because dessing.nvim also calls setup and I need mine to run after it so I can
+        -- override it. Ideally dressing would let you configure the setup:
+        --
+        -- https://github.com/stevearc/dressing.nvim/blob/6f212262061a2120e42da0d1e87326e8a41c0478/lua/dressing/input.lua#L469
+        vim.defer_fn(function()
+          cmp.setup.buffer({
+            enabled = true,
+            sources = cmp.config.sources({
+              -- dressing will set the omnifunc if `completion` was provided to vim.ui.input()
+              omni,
+              path,
+              buffer,
+            }),
+          })
+        end, 0)
+      end,
+      group = vim.api.nvim_create_augroup("MyNvimCmp", {}),
+    })
   end,
 })

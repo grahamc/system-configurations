@@ -24,6 +24,7 @@ Plug("folke/which-key.nvim", {
         height = {
           max = math.floor(vim.o.lines * 0.25),
         },
+        align = "center",
       },
       window = {
         border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
@@ -65,10 +66,12 @@ Plug("mrjones2014/legendary.nvim", {
         return item[key] ~= nil and item[key] ~= ""
       end
       local key = vim.iter(candidate_keys):find(is_non_empty_string)
+
+      -- coerce to a non-empty string because legendary won't show it otherwise
       return key and item[key] or " "
     end
 
-    local function make_buffer_filter(buffer)
+    local function make_legendary_buffer_filter(buffer)
       return function(_, context)
         return buffer == context.buf
       end
@@ -84,16 +87,16 @@ Plug("mrjones2014/legendary.nvim", {
       local function to_legendary_keymap(keymap)
         local filters = {}
         if keymap.buffer ~= 0 then
-          table.insert(filters, make_buffer_filter(keymap.buffer))
+          table.insert(filters, make_legendary_buffer_filter(keymap.buffer))
         end
 
-        -- coerce to a non-empty string because legendary won't show it otherwise
         local description = get_description(keymap, { "desc", "rhs" })
 
-        local truncated_lhs = string.sub(keymap.lhs, 1, max_lhs_length)
+        local formatted_lhs =
+          string.sub(keymap.lhs, 1, max_lhs_length):gsub(vim.g.mapleader, "<leader>")
 
         return {
-          truncated_lhs,
+          formatted_lhs,
           description = description,
           filters = filters,
         }
@@ -140,10 +143,9 @@ Plug("mrjones2014/legendary.nvim", {
       local function to_legendary_command(command_name, info, buf)
         local filters = {}
         if buf then
-          table.insert(filters, make_buffer_filter(buf))
+          table.insert(filters, make_legendary_buffer_filter(buf))
         end
 
-        -- coerce to a non-empty string because legendary won't show it otherwise
         local description = get_description(info, { "definition" })
 
         return {

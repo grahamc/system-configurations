@@ -101,7 +101,7 @@ local theme = lush(function(injected_functions)
 
     -- float {{{
     NormalFloat { bg = background.bg.darken(35) }, -- Normal text in floating windows.
-    FloatBorder { NormalFloat, fg = background.bg.li(8) }, -- Border of floating windows.
+    FloatBorder { NormalFloat, fg = background.bg.li(2) }, -- Border of floating windows.
     FloatTitle { NormalFloat, fg = t_6.fg }, -- Title of floating windows.
     -- }}}
 
@@ -241,13 +241,24 @@ local theme = lush(function(injected_functions)
     WhichKeyBorder { FloatBorder },
     LuaSnipNode { fg = hsl("#d08770") },
     CodeActionSign { t_3 },
-    NvimTreeIndentMarker { fg = Comment.fg },
     NullLsInfoBorder { FloatBorder },
     WidgetFill { fg = t_15.fg },
-    Underlined {}, -- Text that stands out, HTML links
+    Underlined { underline = true, }, -- Text that stands out, HTML links
     Ignore { fg = background.bg }, -- Left blank, hidden |hl-Ignore| (NOTE: May be invisible here in template)
     Todo { t_3 }, -- Anything that needs extra attention; mostly the keywords TODO FIXME and XXX
     VirtColumn { NonText, },
+
+    -- nvim-tree {{{
+    NvimTreeIndentMarker { fg = Comment.fg },
+    NvimTreeRootFolder { },
+    NvimTreeModified { },
+    NvimTreeOpenedHL { },
+    NvimTreeBookmarkIcon { },
+    NvimTreeExecFile { },
+    NvimTreeImageFile { },
+    NvimTreeSpecialFile { },
+    NvimTreeSymlink { },
+    -- }}}
 
     -- nvim-cmp {{{
     -- TODO: figure out interaction with pmenu
@@ -352,15 +363,15 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- dropbar.nvim {{{
-    DropBarCurrentContext { MiniCursorword },
+    DropBarCurrentContext { CmpItemAbbrMatch },
     DropBarMenuCurrentContext { CmpItemAbbrMatch, nocombine= true },
-    DropBarHover { MiniCursorword },
+    DropBarHover { DropBarCurrentContext },
     DropBarIconHover { DropBarMenuCurrentContext },
     DropBarMenuHoverEntry { CmpItemAbbrMatch },
     DropBarIconUIIndicator { fg = CmpItemKind.fg },
     DropBarMenuHoverIcon { DropBarMenuHoverEntry, },
     DropBarMenuNormalFloat { CmpNormal },
-    DropBarPreview { DropBarHover },
+    DropBarPreview { MiniCursorword },
     DropBarIconUISeparator { t_15 },
     DropBarIconUISeparatorMenu { CmpItemKind },
     DropBarIconKindArray { Identifier },

@@ -39,21 +39,17 @@ vim.api.nvim_create_autocmd(
     group = general_group_id,
   }
 )
--- Get help buffers to open in the current window by first opening it in a new tab (this is done elsewhere in my config),
--- closing the tab and jumping to the previous buffer, the help buffer.
-vim.api.nvim_create_autocmd("BufEnter", {
-  callback = function()
-    if vim.o.filetype == "help" and vim.g.opening_help_in_tab ~= nil then
-      vim.g.opening_help_in_tab = nil
-      -- Calling `tabclose` here doesn't work without `defer_fn`, not sure why though.
-      vim.defer_fn(function()
-        local help_buffer_number = vim.fn.bufnr()
-        vim.cmd.tabclose()
-        vim.cmd.buffer(help_buffer_number)
-      end, 0)
-    end
-  end,
-  group = general_group_id,
+-- Get help buffers to open in the current window. Source: https://stackoverflow.com/a/26431632
+vim.api.nvim_create_user_command("Help", function(context)
+  vim.cmd.enew()
+  vim.bo.buftype = "help"
+  vim.cmd.help(context.args)
+  vim.bo.buflisted = true
+  -- some help pages, like vim-signify, have the filetype "text" so I'll change that
+  vim.bo.filetype = "help"
+end, {
+  complete = "help",
+  nargs = 1,
 })
 
 vim.keymap.set("", "<C-x>", "<Cmd>xa<CR>")
@@ -91,8 +87,6 @@ vim.keymap.set("n", "<C-LeftMouse>", "<LeftMouse><Cmd>lua ClickLink()<CR>")
 
 vim.o.scroll = 1
 vim.o.smoothscroll = true
-
-vim.keymap.set("n", "|", "<Cmd>set list!<CR>", { silent = true })
 
 vim.o.shortmess = "ltToOFs"
 
@@ -152,10 +146,26 @@ vim.uv.new_timer():start(
   0,
   500,
   vim.schedule_wrap(function()
-    vim.cmd([[
-    silent! wall
-  ]])
+    vim.cmd.checktime()
+    -- check for changes made outside of vim
+    -- give buffers a chance to update via 'autoread'
+    vim.defer_fn(function()
+      vim.cmd([[
+        silent! wall
+      ]])
+    end, 300)
   end)
+)
+-- Check for changes made outside of vim. Source:
+-- https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
+vim.api.nvim_create_autocmd(
+  { "FocusGained", "BufEnter", "CursorHold", "CursorHoldI", "VimResume" },
+  {
+    group = vim.api.nvim_create_augroup("Autosave", {}),
+    callback = function()
+      vim.cmd.checktime()
+    end,
+  }
 )
 
 -- Tabs {{{
@@ -197,19 +207,22 @@ vim.keymap.set({ "ca" }, "lua", function()
 end, { expr = true })
 vim.keymap.set({ "ca" }, "h", function()
   if vim.fn.getcmdtype() == ":" and vim.fn.getcmdline() == "h" then
-    vim.g.opening_help_in_tab = true
-    return "tab help"
+    return "Help"
   else
     return "h"
   end
 end, { expr = true })
 -- }}}
 
--- Search {{{
 vim.o.hlsearch = false
--- toggle search highlighting
-vim.keymap.set("n", [[\]], "<Cmd>set hlsearch!<CR>", { silent = true })
--- }}}
+
+-- toggle search highlighting, whitespace indicators, and indent guides
+vim.keymap.set("n", [[\/]], "<Cmd>set hlsearch!<CR>", { silent = true })
+vim.keymap.set("n", [[\ ]], "<Cmd>set list!<CR>", { silent = true })
+vim.keymap.set("n", [[\|]], function()
+  vim.g.miniindentscope_disable = not vim.g.miniindentscope_disable
+  return "lh"
+end, { silent = true, expr = true })
 
 -- Terminal {{{
 vim.api.nvim_create_autocmd("TermOpen", {
@@ -239,7 +252,17 @@ Plug("kkharji/sqlite.lua")
 Plug("stevearc/dressing.nvim", {
   config = function()
     require("dressing").setup({
-      input = { enabled = false },
+      input = {
+        enabled = true,
+        default_prompt = "Input:",
+        trim_prompt = false,
+        title_pos = "center",
+        border = { " ", " ", " ", " ", " ", " ", " ", " " },
+        relative = "editor",
+        prefer_width = 0.5,
+        width = 0.5,
+        max_width = 500,
+      },
       select = {
         get_config = function(options)
           if options.kind == "legendary.nvim" then

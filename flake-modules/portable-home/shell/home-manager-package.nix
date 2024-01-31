@@ -21,9 +21,6 @@
         // {
           markdown-preview-nvim = makeEmptyPackage "markdown-preview-nvim";
         };
-
-      # `atuin uuid` kept calling itself so I'm removing it
-      atuin = makeEmptyPackage "stub-atuin";
     }
     // optionalAttrs isLinux {
       tmux = prev.tmux.override {
@@ -68,13 +65,7 @@
 
         # I do this to override the original link to the treesitter parsers.
         "nvim/site/parser".source = lib.mkForce (makeEmptyPackage "stub-parser");
-
-        # `atuin uuid` kept calling itself so I'm removing the script
-        "fish/vendor_completions.d/atuin.fish".source = lib.mkForce (pkgs.writeText "atuin-complete.fish" "");
       };
-
-      # `atuin uuid` kept calling itself so I'm removing the script
-      configFile."fish/conf.d/atuin.fish".source = lib.mkForce (pkgs.writeText "atuin-config.fish" "");
     };
   };
 

@@ -2,6 +2,12 @@
 
 local M = {}
 
+-- Disable syntax highlighting
+vim.cmd.syntax("off")
+-- vim-plugs enables syntax highlighting if it isn't already enabled, but I don't want it since I
+-- use treesitter.  This will make vim-plug think it's already on so it won't enable it.
+vim.g.syntax_on = true
+
 -- Functions to be called after a plugin is loaded to configure it.
 local configs_by_type = {
   sync = {},
