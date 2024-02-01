@@ -42,6 +42,11 @@ Plug("kyazdani42/nvim-tree.lua", {
               arrow_closed = " ",
               arrow_open = " ",
             },
+            -- TODO: Should see if upstream can provide an option to disable symlink icons just like
+            -- `renderer.icons.show.file`. Or maybe this icon shouldn't show if that option is true,
+            -- that seems to be how it works for `renderer.icons.show.folder`: symlink folder icons
+            -- don't show if folder is false.
+            symlink = "",
           },
         },
       },

@@ -51,24 +51,23 @@ config.automatically_reload_config = false
 config.term = "wezterm"
 
 -- font
-local nerd_font_symbols = "SymbolsNerdFontMono"
+local function font_with_icon_fallbacks(font)
+  return wezterm.font_with_fallback({ font, "nonicons", "SymbolsNerdFontMono" })
+end
 -- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system,
 -- but Flatpak apps can't access my font configuration file from their sandbox so for now I'll
 -- hardcode a font. issue: https://github.com/flatpak/flatpak/issues/1563
-config.font = wezterm.font_with_fallback({ "Iosevka Comfy Fixed", nerd_font_symbols })
+config.font = font_with_icon_fallbacks("Iosevka Comfy Fixed")
 config.font_rules = {
   {
     intensity = "Normal",
     italic = true,
-    font = wezterm.font_with_fallback({ "Monaspace Radon Light", nerd_font_symbols }),
+    font = font_with_icon_fallbacks("Monaspace Radon Light"),
   },
   {
     intensity = "Bold",
     italic = true,
-    font = wezterm.font_with_fallback({
-      { family = "Monaspace Krypton", weight = "Light" },
-      nerd_font_symbols,
-    }),
+    font = font_with_icon_fallbacks("Monaspace Krypton"),
   },
 }
 config.underline_position = -9

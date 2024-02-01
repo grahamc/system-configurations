@@ -1,10 +1,68 @@
 -- vim:foldmethod=marker
 
-vim.o.confirm = true
 vim.o.mouse = "a"
 vim.o.scrolloff = 999
 vim.o.jumpoptions = "stack"
 vim.o.mousemoveevent = true
+
+-- open links with browser {{{
+--
+-- Mostly taken from here:
+-- https://github.com/MariaSolOs/dotfiles/blob/da291d841447ed7daddcf3f9d3c66ed04e025b50/.config/nvim/lua/lsp.lua#L232C17-L248C20
+local function open(path)
+  local _, err = vim.ui.open(path)
+  if err ~= nil then
+    vim.notify(string.format("Failed to open path '%s'\n%s", path, err), vim.log.levels.ERROR)
+  end
+end
+local function get_url_under_cursor()
+  local cfile = vim.fn.expand("<cfile>")
+  local is_url = cfile:match(
+    "https?://(([%w_.~!*:@&+$/?%%#-]-)(%w[-.%w]*%.)(%w%w%w?%w?)(:?)(%d*)(/?)([%w_.~!*:@&+$/?%%#=-]*))"
+  ) or cfile:match(
+    "ftps?://(([%w_.~!*:@&+$/?%%#-]-)(%w[-.%w]*%.)(%w%w%w?%w?)(:?)(%d*)(/?)([%w_.~!*:@&+$/?%%#=-]*))"
+  )
+  if is_url then
+    return cfile
+  end
+
+  return nil
+end
+function OpenUrlUnderCursor(is_mouse_click)
+  -- wrap in function so I can return early
+  (function()
+    -- Vim help links.
+    local vim_help_tag = (vim.fn.expand("<cWORD>") --[[@as string]]):match("|(%S-)|")
+    if vim_help_tag then
+      vim.cmd.Help(vim_help_tag)
+      return
+    end
+
+    -- Markdown links.
+    local col = vim.api.nvim_win_get_cursor(0)[2] + 1
+    local from, to, url = vim.api.nvim_get_current_line():find("%[.-%]%((%S-)%)")
+    if from and col >= from and col <= to then
+      open(url)
+      return
+    end
+
+    url = get_url_under_cursor()
+    if url ~= nil then
+      open(url)
+    end
+  end)()
+
+  if is_mouse_click then
+    -- If we are in am LSP hover, jump back to previous window. This way I can click a link in a
+    -- documentation/diagnostic float and stay in the editing window.
+    if IsInsideLspHoverOrSignatureHelp then
+      vim.cmd.wincmd("p")
+    end
+  end
+end
+vim.keymap.set("n", "U", OpenUrlUnderCursor, { desc = "Open link" })
+vim.keymap.set("n", "<C-LeftMouse>", "<LeftMouse><Cmd>lua OpenUrlUnderCursor(true)<CR>")
+-- }}}
 
 -- persist undo history to disk
 vim.o.undofile = true
@@ -52,7 +110,10 @@ end, {
   nargs = 1,
 })
 
-vim.keymap.set("", "<C-x>", "<Cmd>xa<CR>", {
+vim.o.confirm = true
+vim.keymap.set("", "<C-x>", function()
+  vim.cmd.qall()
+end, {
   desc = "Quit [exit,close]",
 })
 
@@ -69,29 +130,6 @@ vim.keymap.set("n", "<BS>", "<C-^>", {
 
 vim.o.ttimeout = true
 vim.o.ttimeoutlen = 50
-
--- Open link on mouse click. Works on URLs that wrap on to the following line.
-function ClickLink()
-  local cfile = vim.fn.expand("<cfile>")
-  local is_url = cfile:match(
-    "https?://(([%w_.~!*:@&+$/?%%#-]-)(%w[-.%w]*%.)(%w%w%w?%w?)(:?)(%d*)(/?)([%w_.~!*:@&+$/?%%#=-]*))"
-  ) or cfile:match(
-    "ftps?://(([%w_.~!*:@&+$/?%%#-]-)(%w[-.%w]*%.)(%w%w%w?%w?)(:?)(%d*)(/?)([%w_.~!*:@&+$/?%%#=-]*))"
-  )
-  if is_url then
-    vim.ui.open(cfile)
-  end
-
-  -- If we are in a float that doesn't have a filetype, jump back to previous window. This way I can
-  -- click a link in a documentation/diagnostic float and stay in the editing window.
-  local is_float = vim.api.nvim_win_get_config(0).relative ~= ""
-  if is_float and (not vim.o.filetype or #vim.o.filetype == 0) then
-    vim.cmd.wincmd("p")
-  end
-end
-vim.keymap.set("n", "<C-LeftMouse>", "<LeftMouse><Cmd>lua ClickLink()<CR>", {
-  desc = "Open link",
-})
 
 vim.o.scroll = 1
 vim.o.smoothscroll = true
@@ -151,12 +189,35 @@ vim.keymap.set("n", "<M-q>", toggle_quickfix, {
 })
 -- }}}
 
--- Autosave
+-- Autosave {{{
+--
+-- TODO: These issues may affect how I want to do this:
+-- https://github.com/neovim/neovim/pull/20801
+-- https://github.com/neovim/neovim/issues/1380
+-- https://github.com/neovim/neovim/issues/12605
+--
+-- TODO: When I call checktime after pressing something like 'cin' in normal mode, I get
+-- E565 which doesn't make sense since I don't think complete mode was active, mini.ai was
+-- just prompting me for a char. In any case, I tried checking if completion mode was active
+-- first, but it wasn't so I still got this error. So now I'm just using pcall which isn't ideal
+-- since it will suppress other errors too.
+local function checktime()
+  return pcall(vim.cmd.checktime)
+end
 vim.uv.new_timer():start(
   0,
   500,
   vim.schedule_wrap(function()
-    vim.cmd.checktime()
+    -- you can't run checktime in the commandline
+    if vim.fn.getcmdwintype() ~= "" then
+      return
+    end
+
+    local success = checktime()
+    if not success then
+      return
+    end
+
     -- check for changes made outside of vim
     -- give buffers a chance to update via 'autoread'
     vim.defer_fn(function()
@@ -173,10 +234,15 @@ vim.api.nvim_create_autocmd(
   {
     group = vim.api.nvim_create_augroup("Autosave", {}),
     callback = function()
-      vim.cmd.checktime()
+      -- you can't run checktime in the commandline
+      if vim.fn.getcmdwintype() ~= "" then
+        return
+      end
+      checktime()
     end,
   }
 )
+-- }}}
 
 -- Tabs {{{
 vim.keymap.set(
@@ -256,8 +322,21 @@ vim.api.nvim_create_autocmd("TermOpen", {
     vim.opt_local.statuscolumn = ""
     vim.opt_local.number = false
     vim.opt_local.relativenumber = false
-    vim.opt_local.cursorline = false
     vim.cmd.startinsert()
+  end,
+})
+-- TODO: see if reticle.nvim can support disabling by buftype
+local terminal_group_id = vim.api.nvim_create_augroup("bigolu/terminal", {})
+vim.api.nvim_create_autocmd("TermEnter", {
+  group = terminal_group_id,
+  callback = function()
+    require("reticle").set_cursorline(false)
+  end,
+})
+vim.api.nvim_create_autocmd("TermLeave", {
+  group = terminal_group_id,
+  callback = function()
+    require("reticle").set_cursorline(true)
   end,
 })
 -- }}}
@@ -281,8 +360,7 @@ Plug("stevearc/dressing.nvim", {
         enabled = true,
         default_prompt = "Input:",
         trim_prompt = false,
-        title_pos = "center",
-        border = { " ", " ", " ", " ", " ", " ", " ", " " },
+        border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
         relative = "editor",
         prefer_width = 0.5,
         width = 0.5,
@@ -301,6 +379,23 @@ Plug("stevearc/dressing.nvim", {
         end,
       },
     })
+
+    local dressing_group = vim.api.nvim_create_augroup("MyDressing", {})
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "DressingInput",
+      group = dressing_group,
+      callback = function()
+        -- After I accept an autocomplete entry from nvim-cmp, buflisted gets set to true so
+        -- this sets it back to false.
+        vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+          group = dressing_group,
+          buffer = vim.api.nvim_get_current_buf(),
+          callback = function()
+            vim.bo.buflisted = false
+          end,
+        })
+      end,
+    })
   end,
 })
 
@@ -314,14 +409,20 @@ Plug("mehalter/nvim-colorizer.lua", {
       filetypes = {
         "*", -- Highlight all files, but customize some others.
         cmp_docs = { always_update = true },
+        css = { names = true },
       },
       user_default_options = {
         mode = "inline",
         virtualtext = "  ",
         css = true,
+        names = false,
         tailwind = "lsp",
         sass = { enable = true, parsers = { "css" } },
       },
     })
+
+    vim.keymap.set("n", [[\c]], function()
+      vim.cmd.ColorizerToggle()
+    end, { silent = true, desc = "Toggle inlay colors" })
   end,
 })

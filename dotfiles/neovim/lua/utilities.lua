@@ -18,7 +18,7 @@ function M.get_visual_selection()
   end
 
   vim.cmd('noau normal! "vy"')
-  local text = vim.fn.getreg("v")
+  local text = vim.fn.getreg("v") or ""
   vim.fn.setreg("v", {})
 
   -- remove trailing newline

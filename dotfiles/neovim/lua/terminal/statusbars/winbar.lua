@@ -3,6 +3,7 @@ Plug("Bekaboo/dropbar.nvim", {
     require("dropbar").setup({
       general = {
         update_interval = 100,
+        -- I copied the default function and added a check for dapui
         enable = function(buf, win, _)
           local filetype = vim.bo[buf].filetype
           local is_dapui_buffer = vim.startswith(filetype, "dapui_") or filetype == "dap-repl"
@@ -12,6 +13,20 @@ Plug("Bekaboo/dropbar.nvim", {
             and not vim.wo[win].diff
             and not is_dapui_buffer
         end,
+      },
+
+      icons = {
+        kinds = {
+          symbols = {
+            Folder = " ",
+          },
+        },
+        ui = {
+          bar = {
+            -- TODO: This isn't working for some reason
+            separator = " ",
+          },
+        },
       },
     })
   end,

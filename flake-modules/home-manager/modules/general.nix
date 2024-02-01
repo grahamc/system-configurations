@@ -34,6 +34,7 @@ in {
           "myeditor".source = "general/executables/myeditor";
           "pbcopy".source = "general/executables/pbcopy";
           "process-output".source = "general/executables/process-output";
+          "fish_tokenize".source = "general/executables/fish_tokenize.fish";
         }
         // optionalAttrs isDarwin {
           "trash".source = "general/executables/trash.py";

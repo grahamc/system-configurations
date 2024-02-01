@@ -2,7 +2,15 @@ vim.o.showtabline = 2
 
 Plug("akinsho/bufferline.nvim", {
   config = function()
+    local wipeout = require("mini.bufremove").wipeout
     local function close(buffer)
+      -- If the buffer is open in another window, don't close it.
+      local buffer_window_count = #vim.fn.win_findbuf(buffer)
+      if buffer_window_count > 1 then
+        vim.notify("Can't close buffer, it's open in another window", vim.log.levels.INFO)
+        return
+      end
+
       local buffer_count = #vim.fn.getbufinfo({ buflisted = 1 })
       local tab_count = vim.fn.tabpagenr("$")
 
@@ -11,53 +19,24 @@ Plug("akinsho/bufferline.nvim", {
       end
       local window_count = #vim.tbl_filter(is_not_float, vim.api.nvim_list_wins())
 
-      -- If the only other window in the tab page is nvim-tree, and only one tab is open, keep the
-      -- window and switch to another buffer.
-      if
-        tab_count == 1
-        and window_count == 2
-        and require("nvim-tree.api").tree.is_visible()
-        and buffer_count > 1
-      then
-        -- `bdelete` closes the window if the buffer is open in one so we have to switch to a
-        -- different buffer first.
-        vim.cmd.BufferLineCycleNext()
-        vim.cmd("bdelete! " .. buffer)
+      -- If this is the last tab, window, and buffer, exit vim
+      --
+      -- the nvim-tree window shouldn't count towards the window count
+      local is_last_window = window_count == 1
+        or (window_count == 2 and require("nvim-tree.api").tree.is_visible())
+      if tab_count == 1 and is_last_window and buffer_count == 1 then
+        -- Using `quitall` instead of quit so if nvim-tree is open it closes both windows
+        vim.cmd.quitall()
         return
       end
 
-      -- If this is the last window and tab, close the buffer and if that was the last buffer, close
-      -- vim.
-      if
-        tab_count == 1
-        and (
-          window_count == 1 or (window_count == 2 and require("nvim-tree.api").tree.is_visible())
-        )
-      then
-        local buffer_count_before_closing = buffer_count
-        vim.cmd("bdelete! " .. buffer)
-        if buffer_count_before_closing == 1 then
-          -- Using `quitall` instead of quit so it closes both windows
-          vim.cmd.quitall()
-        end
-        return
-      end
-
-      -- If the buffer is only open in the current window, close the buffer and window. Otherwise,
-      -- just close the window.
-      local buffer_window_count = #vim.fn.win_findbuf(buffer)
-      if buffer_window_count == 1 then
-        vim.cmd("b#")
-        vim.cmd("bd#")
-      else
-        vim.notify("Can't close buffer, it's open in another window", vim.log.levels.INFO)
-      end
+      wipeout(buffer)
     end
 
     local close_icon = " "
-    local explorer_icon = ""
+    local explorer_icon = " "
     local explorer_title = explorer_icon .. " FILE EXPLORER"
-    local outline_icon = "󰙅"
+    local outline_icon = " "
     local outline_title = outline_icon .. " OUTLINE"
     require("bufferline").setup({
       options = {
@@ -188,7 +167,10 @@ Plug("akinsho/bufferline.nvim", {
           result,
           -- I'm using a '-' here instead of a '*' so the match won't be greedy. This way I get the
           -- first separator.
-          "(.-)%%#BufferLineTabSeparator#▕",
+          --
+          -- The second '.-' is the for the word "Selected" which may be there. I have to use a '-'
+          -- so I get the first occurence of the highlight
+          "(.-)%%#BufferLineTabSeparator(.-)#▕",
           "%1%%#BufferLineTabLeftBorder#" .. right_border,
           1
         )

@@ -1,8 +1,25 @@
 vim.opt.matchpairs:append("<:>")
 
 -- select the text that was just pasted
-vim.keymap.set({ "n" }, "gV", "`[v`]", {
+vim.keymap.set({ "n" }, "gp", function()
+  vim.api.nvim_buf_set_mark(
+    vim.api.nvim_get_current_buf(),
+    "y",
+    LastPasteStartLine,
+    LastPasteStartCol,
+    {}
+  )
+  vim.api.nvim_buf_set_mark(
+    vim.api.nvim_get_current_buf(),
+    "z",
+    LastPasteEndLine,
+    LastPasteEndCol,
+    {}
+  )
+  return string.format("`y%s`z", (LastPasteStartLine == LastPasteEndLine) and "v" or "V")
+end, {
   desc = "Last pasted text",
+  expr = true,
 })
 
 -- move to left and right side of last selection
@@ -66,6 +83,46 @@ vim.keymap.set({ "i" }, "<C-a>", "<ESC>^i", {
 vim.keymap.set({ "i" }, "<C-e>", "<ESC>$a", {
   desc = "End of line",
 })
+
+-- Move to next/last long line, m for max
+local function jump_to_long_line(direction)
+  local function table_concat(t1, t2)
+    for i = 1, #t2 do
+      t1[#t1 + 1] = t2[i]
+    end
+    return t1
+  end
+  local last_line = vim.fn.line("$")
+  local current_line = vim.fn.line(".")
+  local max_line_length = require("utilities").get_max_line_length()
+  local lines_to_search = nil
+  if direction == "next" then
+    lines_to_search =
+      table_concat(vim.fn.range(current_line + 1, last_line), vim.fn.range(1, current_line - 1))
+  else
+    lines_to_search = table_concat(
+      vim.fn.range(current_line - 1, 1, -1),
+      vim.fn.range(last_line, current_line + 1, -1)
+    )
+  end
+  local long_line = vim
+    .iter(lines_to_search)
+    :filter(function(line)
+      return line >= 0 and line <= last_line
+    end)
+    :find(function(line)
+      return vim.fn.col({ line, "$" }) > max_line_length
+    end)
+  if long_line ~= nil then
+    vim.cmd(tostring(long_line))
+  end
+end
+vim.keymap.set({ "n", "x" }, "]m", function()
+  jump_to_long_line("next")
+end, { remap = true, desc = "Next long line [max]" })
+vim.keymap.set({ "n", "x" }, "[m", function()
+  jump_to_long_line("prev")
+end, { remap = true, desc = "Previous long line [last,max]" })
 
 -- Motions for levels of indentation
 Plug("jeetsukumaran/vim-indentwise", {

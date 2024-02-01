@@ -71,3 +71,4 @@ mason-lspconfig.nvim
 mason.nvim
 nvim-autopairs
 nvim-ts-autotag
+nvim-nonicons

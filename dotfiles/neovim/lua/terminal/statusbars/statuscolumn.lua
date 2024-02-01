@@ -77,13 +77,17 @@ function StatusColumn()
       end
     end
   end
-  local border_section = border_highlight .. "│"
+  local border_char = vim.v.virtnum > 0 and "┊" or "│"
+  if border_highlight == "%#NonText#" then
+    border_char = " "
+  end
+  local border_section = border_highlight .. border_char
 
   local fold_section = get_fold_section()
   local sign_section = "%s"
   local align_right = "%="
 
-  return align_right .. sign_section .. border_section .. fold_section
+  return align_right .. border_section .. sign_section .. fold_section
 end
 
 vim.o.statuscolumn = "%!v:lua.StatusColumn()"

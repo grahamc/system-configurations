@@ -7,6 +7,7 @@ _: {
           iosevka-comfy.comfy-fixed
           monaspace
           (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"];})
+          nonicons
         ];
       };
     in {inherit myFonts;};

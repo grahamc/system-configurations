@@ -4,13 +4,64 @@ local function is_dapui_filetype(filetype)
   return vim.startswith(filetype, "dapui_") or filetype == "dap-repl"
 end
 
+local keymaps_to_restore = {}
+local function add_hover_keymap()
+  local function hover()
+    if require("dap").session() ~= nil then
+      local selection = require("utilities").get_visual_selection()
+      if selection == "" then
+        -- dap will default to <cexpr>
+        selection = nil
+      end
+      require("dap.ui.widgets").hover(selection, {
+        border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
+      })
+    end
+  end
+  for _, buf in pairs(vim.api.nvim_list_bufs()) do
+    local keymaps = vim.api.nvim_buf_get_keymap(buf, "n")
+    for _, keymap in pairs(keymaps) do
+      if keymap.lhs == "K" then
+        table.insert(keymaps_to_restore, keymap)
+        vim.api.nvim_buf_del_keymap(buf, "n", "K")
+      end
+    end
+  end
+  vim.keymap.set({ "n", "x" }, "K", function()
+    hover()
+  end, { silent = true })
+end
+
+local function dapui_open()
+  require("dapui").open()
+  add_hover_keymap()
+end
+
+local function restore_keymaps()
+  for _, keymap in pairs(keymaps_to_restore) do
+    vim.api.nvim_buf_set_keymap(
+      keymap.buffer,
+      keymap.mode,
+      keymap.lhs,
+      keymap.rhs,
+      { silent = keymap.silent == 1 }
+    )
+  end
+  keymaps_to_restore = {}
+end
+
+local function dapui_close()
+  require("dapui").close()
+  restore_keymaps()
+end
+
 Plug("Joakker/lua-json5")
 
 Plug("mfussenegger/nvim-dap", {
   config = function()
     vim.fn.sign_define(
       "DapBreakpoint",
-      { text = "󰏄", texthl = "DebugSign", linehl = "", numhl = "" }
+      { text = "", texthl = "DebugSign", linehl = "", numhl = "" }
     )
     vim.fn.sign_define(
       "DapBreakpointCondition",
@@ -70,6 +121,20 @@ Plug("mfussenegger/nvim-dap", {
         end
       )
     end, {})
+
+    -- Let you exit a DAP float the same way you would an LSP float
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "dap-float",
+      callback = function()
+        vim.keymap.set("n", "q", function()
+          vim.cmd.quit()
+        end, { buffer = true })
+      end,
+      group = vim.api.nvim_create_augroup("MyDap", {}),
+    })
+
+    -- Hook for adding configurations
+    vim.api.nvim_exec_autocmds("User", { pattern = "DapConfigRegistration" })
   end,
 })
 
@@ -88,7 +153,7 @@ Plug("theHamsta/nvim-dap-virtual-text", {
 Plug("nvim-telescope/telescope-dap.nvim", {
   config = function()
     require("telescope").load_extension("dap")
-    local dap = require("telescope").extensions.dap
+    local dap_telescope = require("telescope").extensions.dap
 
     local loaded_dapui = false
     vim.api.nvim_create_user_command("ListBreakpoints", function()
@@ -103,7 +168,7 @@ Plug("nvim-telescope/telescope-dap.nvim", {
         end)
         :any(is_dapui_filetype)
       if is_dapui_open then
-        require("dapui").close()
+        dapui_close()
       else
         local is_dapui_suspended = vim
           .iter(vim.api.nvim_list_bufs())
@@ -112,13 +177,13 @@ Plug("nvim-telescope/telescope-dap.nvim", {
           end)
           :any(is_dapui_filetype)
         if is_dapui_suspended then
-          require("dapui").open()
+          dapui_open()
         else
           if not loaded_dapui then
             vim.fn["plug#load"]("nvim-dap-ui")
             loaded_dapui = true
           end
-          dap.configurations({})
+          dap_telescope.configurations({})
         end
       end
     end, {
@@ -134,7 +199,7 @@ Plug("rcarriga/nvim-dap-ui", {
     local dapui = require("dapui")
 
     ---@diagnostic disable-next-line: undefined-field
-    dap.listeners.after.event_initialized["dapui_config"] = dapui.open
+    dap.listeners.after.event_initialized["dapui_config"] = dapui_open
 
     ---@diagnostic disable-next-line: missing-fields
     dapui.setup({
@@ -156,6 +221,44 @@ Plug("rcarriga/nvim-dap-ui", {
         collapsed = " ",
         current_frame = " ",
         expanded = " ",
+      },
+      layouts = {
+        {
+          elements = {
+            {
+              id = "scopes",
+              size = 0.25,
+            },
+            {
+              id = "breakpoints",
+              size = 0.25,
+            },
+            {
+              id = "stacks",
+              size = 0.25,
+            },
+            {
+              id = "watches",
+              size = 0.25,
+            },
+          },
+          position = "left",
+          size = 0.33,
+        },
+        {
+          elements = {
+            {
+              id = "repl",
+              size = 0.5,
+            },
+            {
+              id = "console",
+              size = 0.5,
+            },
+          },
+          position = "bottom",
+          size = 10,
+        },
       },
       mappings = {
         expand = { "<Tab>", "<CR>", "<2-LeftMouse>" },
@@ -188,14 +291,74 @@ Plug("rcarriga/nvim-dap-ui", {
         vim.b.minicursorword_disable_permanent = true
 
         -- After I accept an autocomplete entry from nvim-cmp, buflisted gets set to true so
-        -- this sets it back to false.
-        if vim.bo.filetype == "dap-repl" then
+        -- this sets it back to false. TODO: I should see if nvim-cmp can do anything about this.
+        if vim.tbl_contains({ "dap-repl", "dapui_scopes", "dapui_watches" }, vim.bo.filetype) then
           vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
             group = dapui_group,
             buffer = vim.api.nvim_get_current_buf(),
             callback = function()
               vim.bo.buflisted = false
             end,
+          })
+        end
+
+        -- Mappings for debugger controls
+        -- TODO: These functions aren't documented, I should see if they can be included in the
+        -- public API.
+        if vim.bo.filetype == "dap-repl" then
+          local function run_in_non_dapui_window(fn, go_back)
+            local non_dapui_window = vim.iter(vim.api.nvim_tabpage_list_wins(0)):find(function(win)
+              return not is_dapui_filetype(vim.bo[vim.api.nvim_win_get_buf(win)].filetype)
+            end)
+
+            if non_dapui_window == nil then
+              vim.notify("Unable to find a non-dapUI window", vim.log.levels.ERROR)
+              return
+            end
+
+            local current_win = vim.api.nvim_get_current_win()
+            vim.api.nvim_set_current_win(non_dapui_window)
+            fn()
+            if go_back then
+              vim.api.nvim_set_current_win(current_win)
+            end
+          end
+
+          vim.keymap.set("n", "h", _G._dapui.step_back, {
+            desc = "Step back",
+            buffer = true,
+          })
+          vim.keymap.set("n", "j", _G._dapui.step_into, {
+            desc = "Step into",
+            buffer = true,
+          })
+          vim.keymap.set("n", "k", _G._dapui.step_out, {
+            desc = "Step out",
+            buffer = true,
+          })
+          vim.keymap.set("n", "l", _G._dapui.step_over, {
+            desc = "Step over",
+            buffer = true,
+          })
+          vim.keymap.set("n", "<CR>", function()
+            run_in_non_dapui_window(_G._dapui.play)
+          end, {
+            desc = "Play",
+            buffer = true,
+          })
+          vim.keymap.set("n", "<C-r>", function()
+            run_in_non_dapui_window(_G._dapui.run_last, true)
+          end, {
+            desc = "Run last",
+            buffer = true,
+          })
+          vim.keymap.set("n", "<C-c>", _G._dapui.terminate, {
+            desc = "Stop",
+            buffer = true,
+          })
+          vim.keymap.set("n", "<C-d>", _G._dapui.disconnect, {
+            desc = "Disconnect",
+            buffer = true,
           })
         end
       end,

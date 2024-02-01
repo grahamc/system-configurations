@@ -9,6 +9,7 @@ vim.o.paragraphs = ""
 vim.o.sections = ""
 vim.g.mapleader = " "
 vim.keymap.set({ "i" }, "jk", "<Esc>")
+vim.o.clipboard = "unnamedplus"
 Plug("tpope/vim-repeat")
 
 -- Prevents inserting two spaces after punctuation on a join (J)
@@ -24,18 +25,73 @@ vim.keymap.set({ "n" }, "<S-Enter>", "O<ESC>", {
   desc = "Insert newline below",
 })
 
+-- paste {{{
+-- re-indent the pasted text which will also move me to the end of the text
+function MyPaste(was_in_visual_mode, is_capital_p)
+  local clipboard_contents = vim.fn.getreg(vim.v.register) or ""
+  local is_multi_line_paste = clipboard_contents:find("\n")
+
+  -- set globals with the region of the pasted text so I can select it with 'gp' (above).
+  -- People usually use `[ and `] for this, but that gives you the region of the last changed
+  -- text and since I use autosave, it will always be the entire buffer.
+  --
+  -- TODO: I should post this somewhere since I know I've seen this question asked.
+  if is_multi_line_paste then
+    local _, newline_count = clipboard_contents:gsub("\n", "")
+
+    -- set start
+    LastPasteStartLine = nil
+    LastPasteStartCol = 0
+    if was_in_visual_mode then
+      LastPasteStartLine = vim.fn.line("'<") or 0
+    else
+      if is_capital_p then
+        LastPasteStartLine = vim.fn.line(".")
+      else
+        LastPasteStartLine = vim.fn.line(".") + 1
+      end
+    end
+
+    -- set end
+    LastPasteEndLine = (LastPasteStartLine + newline_count) - 1
+    LastPasteEndCol = vim.fn.col({ LastPasteEndLine, "$" }) or 0
+  else
+    -- set start
+    LastPasteStartLine = vim.fn.line(".") or 0
+    LastPasteStartCol = 0
+    if was_in_visual_mode then
+      LastPasteStartCol = vim.fn.col("'<") - 1
+    else
+      if is_capital_p then
+        LastPasteStartCol = vim.fn.col(".") - 1 or 0
+      else
+        LastPasteStartCol = vim.fn.col(".") or 0
+      end
+    end
+
+    -- set end
+    local clipboard_length = #clipboard_contents
+    LastPasteEndLine = LastPasteStartLine
+    LastPasteEndCol = (LastPasteStartCol + clipboard_length) - 1
+  end
+
+  local key = vim.api.nvim_replace_termcodes("<CR>", true, false, true)
+  local indent = string.format([[:%d,%dnormal! ==]] .. key, LastPasteStartLine, LastPasteEndLine)
+  local go_back_to_visual = was_in_visual_mode and "gv" or ""
+  local paste = is_capital_p and "P" or "p"
+  vim.api.nvim_feedkeys(go_back_to_visual .. paste .. indent, "n", false)
+end
+vim.keymap.set({ "n" }, "p", ":lua MyPaste(false, false)<CR>", { silent = true })
+-- Leave visual mode so '< and '> get set
+vim.keymap.set({ "x" }, "p", "<Esc>:lua MyPaste(true, false)<CR>", { silent = true })
+vim.keymap.set({ "n" }, "P", ":lua MyPaste(false, true)<CR>", { silent = true })
+-- In visual mode p and P should do the same thing
+vim.keymap.set({ "x" }, "P", "p", { silent = true, remap = true })
+-- }}}
+
 -- Disable features {{{
 -- Disable unused builtin plugins.
 local plugins_to_disable = {
-  "netrw",
-  "netrwPlugin",
-  "netrwSettings",
-  "netrwFileHandlers",
-  "gzip",
-  "zip",
-  "zipPlugin",
-  "tar",
-  "tarPlugin",
   "getscript",
   "getscriptPlugin",
   "vimball",
@@ -84,7 +140,7 @@ local function override_default_filetype_plugins()
   vim.api.nvim_create_autocmd("FileType", {
     pattern = "vim",
     callback = function()
-      vim.opt_local.keywordprg = ":tab help"
+      vim.opt_local.keywordprg = ":Help"
     end,
     group = vim_default_overrides_group_id,
   })
@@ -95,14 +151,6 @@ vim.api.nvim_create_autocmd("User", {
   callback = override_default_filetype_plugins,
   group = vim_default_overrides_group_id,
 })
--- }}}
-
--- Clipboard {{{
-vim.o.clipboard = "unnamedplus"
-
--- 1. re-indent the pasted text
--- 2. move to the end of the pasted text
-vim.keymap.set({ "n", "x" }, "p", "p=`]", { silent = true })
 -- }}}
 
 -- Substitutions {{{

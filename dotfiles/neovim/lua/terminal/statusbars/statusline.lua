@@ -3,15 +3,16 @@
 -- settings {{{
 vim.o.laststatus = 3
 vim.o.statusline = "%!v:lua.StatusLine()"
+local statusline_group = vim.api.nvim_create_augroup("Statuslines", {})
 vim.api.nvim_create_autocmd({ "FileType" }, {
+  group = statusline_group,
   pattern = "qf",
   callback = function()
-    vim.keymap.set("n", "gf", ":cdo s///e<left><left><left>", {})
-    vim.opt_local.statusline = "%!v:lua.QuickfixStatusLine()"
+    vim.keymap.set("n", "gf", ":cdo s///e<left><left><left>", { buffer = true })
   end,
-  group = vim.api.nvim_create_augroup("Quickfix Statusline", {}),
 })
 vim.api.nvim_create_autocmd({ "BufEnter" }, {
+  group = statusline_group,
   pattern = "*",
   callback = function()
     if vim.o.filetype == "NvimTree" then
@@ -20,10 +21,9 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
       vim.opt_local.statusline = "%!v:lua.OutlineStatusLine()"
     end
   end,
-  group = vim.api.nvim_create_augroup("Widget Statusline", {}),
 })
 vim.api.nvim_create_autocmd("BufWinEnter", {
-  group = vim.api.nvim_create_augroup("Dapui Statuslines", {}),
+  group = statusline_group,
   callback = function()
     local buf = vim.api.nvim_get_current_buf()
     local filetype = vim.bo[buf].filetype
@@ -40,50 +40,76 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
         "%!v:lua.DapuiBreakpointsStatusLine()",
         { win = win }
       )
+    elseif filetype == "dap-repl" then
+      vim.api.nvim_set_option_value("statusline", "%!v:lua.DapuiReplStatusLine()", { win = win })
     end
+  end,
+})
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  group = statusline_group,
+  pattern = "TelescopePrompt",
+  callback = function()
+    vim.opt_local.statusline = "%!v:lua.TelescopeStatusLine()"
   end,
 })
 -- }}}
 
--- statusline helper {{{
+-- statusline helpers {{{
 local function get_mode_indicator()
+  local normal = " "
+  local operator_pending = "O-PENDING"
+  local visual = " "
+  local visual_line = visual .. " LINE"
+  local visual_block = visual .. " BLOCK"
+  local visual_replace = visual .. " REPLACE"
+  local select = " "
+  local select_line = select .. " LINE"
+  local select_block = select .. " BLOCK"
+  local insert = " "
+  local replace = " "
+  local command = " "
+  local ex = "EX"
+  local more = "MORE"
+  local confirm = "CONFIRM"
+  local shell = "SHELL"
+  local terminal = " "
   local mode_map = {
-    ["n"] = "NORMAL",
-    ["no"] = "O-PENDING",
-    ["nov"] = "O-PENDING",
-    ["noV"] = "O-PENDING",
-    ["no\22"] = "O-PENDING",
-    ["niI"] = "NORMAL",
-    ["niR"] = "NORMAL",
-    ["niV"] = "NORMAL",
-    ["nt"] = "NORMAL",
-    ["ntT"] = "NORMAL",
-    ["v"] = "VISUAL",
-    ["vs"] = "VISUAL",
-    ["V"] = "V-LINE",
-    ["Vs"] = "V-LINE",
-    ["\22"] = "V-BLOCK",
-    ["\22s"] = "V-BLOCK",
-    ["s"] = "SELECT",
-    ["S"] = "S-LINE",
-    ["\19"] = "S-BLOCK",
-    ["i"] = "INSERT",
-    ["ic"] = "INSERT",
-    ["ix"] = "INSERT",
-    ["R"] = "REPLACE",
-    ["Rc"] = "REPLACE",
-    ["Rx"] = "REPLACE",
-    ["Rv"] = "V-REPLACE",
-    ["Rvc"] = "V-REPLACE",
-    ["Rvx"] = "V-REPLACE",
-    ["c"] = "COMMAND",
-    ["cv"] = "EX",
-    ["ce"] = "EX",
-    ["r"] = "REPLACE",
-    ["rm"] = "MORE",
-    ["r?"] = "CONFIRM",
-    ["!"] = "SHELL",
-    ["t"] = "TERMINAL",
+    ["n"] = normal,
+    ["no"] = operator_pending,
+    ["nov"] = operator_pending,
+    ["noV"] = operator_pending,
+    ["no\22"] = operator_pending,
+    ["niI"] = normal,
+    ["niR"] = normal,
+    ["niV"] = normal,
+    ["nt"] = normal,
+    ["ntT"] = normal,
+    ["v"] = visual,
+    ["vs"] = visual,
+    ["V"] = visual_line,
+    ["Vs"] = visual_line,
+    ["\22"] = visual_block,
+    ["\22s"] = visual_block,
+    ["s"] = select,
+    ["S"] = select_line,
+    ["\19"] = select_block,
+    ["i"] = insert,
+    ["ic"] = insert,
+    ["ix"] = insert,
+    ["R"] = replace,
+    ["Rc"] = replace,
+    ["Rx"] = replace,
+    ["Rv"] = visual_replace,
+    ["Rvc"] = visual_replace,
+    ["Rvx"] = visual_replace,
+    ["c"] = command,
+    ["cv"] = ex,
+    ["ce"] = ex,
+    ["r"] = replace,
+    ["rm"] = more,
+    ["r?"] = confirm,
+    ["!"] = shell,
+    ["t"] = terminal,
   }
   local mode = mode_map[vim.api.nvim_get_mode().mode]
   if mode == nil then
@@ -93,16 +119,13 @@ local function get_mode_indicator()
     return "%#" .. string.format("StatusLineMode%s", name) .. "#"
   end
   local mode_highlight = make_highlight_name("Other")
-  local function startswith(text, prefix)
-    return text:find(prefix, 1, true) == 1
-  end
-  if startswith(mode, "V") then
+  if vim.startswith(mode, visual) then
     mode_highlight = make_highlight_name("Visual")
-  elseif startswith(mode, "I") then
+  elseif vim.startswith(mode, insert) then
     mode_highlight = make_highlight_name("Insert")
-  elseif startswith(mode, "N") then
+  elseif vim.startswith(mode, normal) then
     mode_highlight = make_highlight_name("Normal")
-  elseif startswith(mode, "T") then
+  elseif vim.startswith(mode, terminal) then
     mode_highlight = make_highlight_name("Terminal")
   end
   local mode_indicator = "%#StatusLinePowerlineOuter#"
@@ -150,6 +173,7 @@ local function make_statusline(left_items, right_items)
     or "%#StatusLineFill# %=" .. showcmd .. "%#StatusLineFill#%= "
 
   local left_side = get_mode_indicator()
+    .. "%<"
     .. table.concat(filter_out_nils(left_items), "%#StatusLineSeparator# ∙ ")
 
   local right_side = table.concat(filter_out_nils(right_items), "  ")
@@ -164,6 +188,17 @@ local function make_statusline(left_items, right_items)
     .. ""
 
   return statusline
+end
+
+local function make_mapping_statusline(mappings)
+  local function make_mapping_string(key, description)
+    return string.format("%%#StatusLineHintText#%s%%#StatusLine# %s", key, description)
+  end
+  local mapping_string = "%#StatusLine#%="
+    .. vim.iter(mappings):map(make_mapping_string):join("%=")
+    .. "%="
+
+  return make_statusline(nil, { mapping_string })
 end
 -- }}}
 
@@ -241,42 +276,42 @@ function StatusLine()
   end
 
   local diagnostic_count = {
-    warning = vim.diagnostic.count(0, { severity = vim.diagnostic.severity.WARN })[vim.diagnostic.severity.WARN]
+    warning = vim.diagnostic.count(nil, { severity = vim.diagnostic.severity.WARN })[vim.diagnostic.severity.WARN]
       or 0,
-    error = vim.diagnostic.count(0, { severity = vim.diagnostic.severity.ERROR })[vim.diagnostic.severity.ERROR]
+    error = vim.diagnostic.count(nil, { severity = vim.diagnostic.severity.ERROR })[vim.diagnostic.severity.ERROR]
       or 0,
-    info = vim.diagnostic.count(0, { severity = vim.diagnostic.severity.INFO })[vim.diagnostic.severity.INFO]
+    info = vim.diagnostic.count(nil, { severity = vim.diagnostic.severity.INFO })[vim.diagnostic.severity.INFO]
       or 0,
-    hint = vim.diagnostic.count(0, { severity = vim.diagnostic.severity.HINT })[vim.diagnostic.severity.HINT]
+    hint = vim.diagnostic.count(nil, { severity = vim.diagnostic.severity.HINT })[vim.diagnostic.severity.HINT]
       or 0,
   }
   local diagnostic_list = {}
   local error_count = diagnostic_count.error
   if error_count > 0 then
-    local icon = " "
+    local icon = " "
     local error = "%#StatusLineErrorText#" .. icon .. error_count
     table.insert(diagnostic_list, error)
   end
   local warning_count = diagnostic_count.warning
   if warning_count > 0 then
-    local icon = " "
+    local icon = " "
     local warning = "%#StatusLineWarningText#" .. icon .. warning_count
     table.insert(diagnostic_list, warning)
   end
   local info_count = diagnostic_count.info
   if info_count > 0 then
-    local icon = " "
+    local icon = " "
     local info = "%#StatusLineInfoText#" .. icon .. info_count
     table.insert(diagnostic_list, info)
   end
   local hint_count = diagnostic_count.hint
   if hint_count > 0 then
-    local icon = " "
+    local icon = " "
     local hint = "%#StatusLineHintText#" .. icon .. hint_count
     table.insert(diagnostic_list, hint)
   end
   if _G.mason_update_available_count and _G.mason_update_available_count > 0 then
-    local mason_update_indicator = "%#StatusLineMasonUpdateIndicator# "
+    local mason_update_indicator = "%#StatusLineMasonUpdateIndicator# "
       .. _G.mason_update_available_count
     table.insert(diagnostic_list, mason_update_indicator)
   end
@@ -311,102 +346,58 @@ function StatusLine()
     mixed_line_endings = "%#StatusLineErrorText#[ mixed line-endings]"
   end
 
-  return make_statusline({
-    diagnostics,
-    mixed_indentation_indicator,
-    mixed_line_endings,
-    reg_recording,
-  }, {
-    maximized,
-    search_info,
-    lsp_info,
-    readonly,
-    filetype,
-    fileformat,
-    fileencoding,
-    position,
-  })
-end
--- }}}
-
--- quickfix statusline {{{
-function QuickfixStatusLine()
-  return make_statusline(
-    { [[%#StatusLine#%t%{exists('w:quickfix_title')? ' '.w:quickfix_title : ''}]] },
-    { "%#StatusLine#Press gf for find&replace" }
-  )
-end
--- }}}
-
--- file explorer statusline {{{
-function FileExplorerStatusLine()
-  return make_statusline(
-    { "%#StatusLine#" .. vim.o.filetype },
-    { "%#StatusLine#Press g? for help" }
-  )
-end
--- }}}
-
--- symbol outline statusline {{{
-function OutlineStatusLine()
-  return make_statusline({ "%#StatusLine#" .. vim.o.filetype }, { "%#StatusLine#Press ? for help" })
-end
--- }}}
-
--- dapui statuslines {{{
---
--- TODO: Consider upstreaming since there's a related feature request:
--- https://github.com/rcarriga/nvim-dap-ui/issues/267
-local function make_mapping_statusline(mappings)
-  local function make_mapping_string(key, description)
-    return string.format("[%s] %s", key, description)
+  local luasnip = require("luasnip")
+  if luasnip.get_active_snip() ~= nil then
+    return make_mapping_statusline({
+      ["<C-h>"] = "Last node",
+      ["<C-l>"] = "Next node or expand",
+      ["<C-c>"] = "Select choice",
+    })
+  elseif IsCmpDocsOpen then
+    return make_mapping_statusline({
+      ["<C-j/k>"] = "Scroll docs down/up",
+    })
+  elseif IsInsideLspHoverOrSignatureHelp then
+    return make_mapping_statusline({
+      q = "Close float",
+    })
+  elseif IsLspHoverOpen then
+    return make_mapping_statusline({
+      K = "Enter float",
+    })
+  elseif IsSignatureHelpOpen then
+    return make_mapping_statusline({
+      ["<C-k>"] = "Enter float",
+    })
+  elseif vim.bo.filetype == "qf" then
+    return make_mapping_statusline({
+      gf = "find&replace",
+    })
+  else
+    return make_statusline({
+      diagnostics,
+      mixed_indentation_indicator,
+      mixed_line_endings,
+      reg_recording,
+    }, {
+      maximized,
+      search_info,
+      lsp_info,
+      readonly,
+      filetype,
+      fileformat,
+      fileencoding,
+      position,
+    })
   end
-
-  return "%#StatusLine#%=" .. vim.iter(mappings):map(make_mapping_string):join("%=") .. "%="
 end
-
-function DapuiScopesStatusLine()
-  local mapping_statusline = make_mapping_statusline({
-    e = "edit var",
-    ["<Tab>"] = "expand/collapse children",
-    r = "send var to REPL",
-  })
-  return make_statusline(nil, { mapping_statusline })
-end
-
-function DapuiStacksStatusLine()
-  local mapping_statusline = make_mapping_statusline({
-    o = "jump to place in stack frame",
-    t = "toggle subtle frames",
-  })
-  return make_statusline(nil, { mapping_statusline })
-end
-
-function DapuiWatchesStatusLine()
-  local mapping_statusline = make_mapping_statusline({
-    e = "edit expression or child var",
-    ["<Tab>"] = "toggle child vars",
-    r = "send expression to REPL",
-    d = "remove watch",
-  })
-  return make_statusline(nil, { mapping_statusline })
-end
-
-function DapuiBreakpointsStatusLine()
-  local mapping_statusline = make_mapping_statusline({
-    o = "jump to breakpoint",
-    t = "toggle breakpoint",
-  })
-  return make_statusline(nil, { mapping_statusline })
-end
--- }}}
 
 Plug("oncomouse/czs.nvim", {
   config = function()
     -- 'n' always searches forwards, 'N' always searches backwards I have this set in base.lua, but
     -- since I need to use these czs mappings I had to redefine them.
     vim.keymap.set(
-      { "n", "x", "o" },
+      { "n" },
       "n",
       "['<Plug>(czs-move-N)', '<Plug>(czs-move-n)'][v:searchforward]",
       { expr = true, replace_keycodes = false }
@@ -420,3 +411,76 @@ Plug("oncomouse/czs.nvim", {
   end,
 })
 vim.g.czs_do_not_map = true
+-- }}}
+
+-- file explorer statusline {{{
+function FileExplorerStatusLine()
+  return make_mapping_statusline({
+    ["g?"] = "help",
+  })
+end
+-- }}}
+
+-- symbol outline statusline {{{
+function OutlineStatusLine()
+  return make_mapping_statusline({
+    ["?"] = "help",
+  })
+end
+-- }}}
+
+-- dapui statuslines {{{
+--
+-- TODO: Consider upstreaming since there's a related feature request:
+-- https://github.com/rcarriga/nvim-dap-ui/issues/267
+function DapuiScopesStatusLine()
+  return make_mapping_statusline({
+    e = "edit var",
+    ["<Tab>"] = "expand/collapse children",
+    r = "send var to REPL",
+  })
+end
+
+function DapuiStacksStatusLine()
+  return make_mapping_statusline({
+    o = "jump to place in stack frame",
+    t = "toggle subtle frames",
+  })
+end
+
+function DapuiWatchesStatusLine()
+  return make_mapping_statusline({
+    e = "edit expression or child var",
+    ["<Tab>"] = "toggle child vars",
+    r = "send expression to REPL",
+    d = "remove watch",
+  })
+end
+
+function DapuiBreakpointsStatusLine()
+  return make_mapping_statusline({
+    o = "jump to breakpoint",
+    t = "toggle breakpoint",
+  })
+end
+
+function DapuiReplStatusLine()
+  return make_mapping_statusline({
+    hjkl = "step (back|into|out|over)",
+    ["<CR>"] = "play",
+    ["<C-c>"] = "terminate",
+    ["<C-d>"] = "disconnect",
+    ["<C-r>"] = "run last",
+  })
+end
+-- }}}
+
+-- telescope statusline {{{
+function TelescopeStatusLine()
+  return make_mapping_statusline({
+    ["<C-q>"] = "Send to quickfix",
+    ["M-<CR>"] = "Multi-select",
+    ["<C-k/j>"] = "Scroll preview up/down",
+  })
+end
+-- }}}

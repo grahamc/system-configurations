@@ -19,5 +19,5 @@ vim.keymap.set(
 )
 
 -- 'n' always searches forwards, 'N' always searches backwards
-vim.keymap.set({ "n", "x", "o" }, "n", "'Nn'[v:searchforward]", { expr = true })
-vim.keymap.set({ "n", "x", "o" }, "N", "'nN'[v:searchforward]", { expr = true })
+vim.keymap.set({ "n" }, "n", "'Nn'[v:searchforward]", { expr = true })
+vim.keymap.set({ "n" }, "N", "'nN'[v:searchforward]", { expr = true })

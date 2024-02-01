@@ -9,7 +9,7 @@ end
 vim.g.mapleader = " "
 
 -- comment
-vim.keymap.set({ "x", "n", "o" }, "gc", "<Plug>VSCodeCommentary", { remap = true })
+vim.keymap.set({ "x", "n" }, "gc", "<Plug>VSCodeCommentary", { remap = true })
 vim.keymap.set({ "n" }, "gcc", "<Plug>VSCodeCommentaryLine", { remap = true })
 
 -- Windows

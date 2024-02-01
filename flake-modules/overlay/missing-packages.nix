@@ -1,10 +1,10 @@
-_: {
+{inputs, ...}: {
   flake = let
-    overlay = _final: prev: let
+    overlay = final: prev: let
       inherit (prev.stdenv) isLinux;
       inherit (prev.lib.attrsets) optionalAttrs;
 
-      catp = prev.stdenv.mkDerivation {
+      catp = final.stdenv.mkDerivation {
         pname = "catp";
         version = "0.2.0";
         src = prev.fetchzip {
@@ -16,7 +16,20 @@ _: {
           cp $src/catp $out/bin/
         '';
       };
+
+      nonicons =
+        final.runCommand "nonicons"
+        {}
+        ''
+          mkdir -p $out/share/fonts/truetype
+          ln --symbolic ${inputs.nonicons}/dist/nonicons.ttf $out/share/fonts/truetype/nonicons.ttf
+        '';
     in
-      optionalAttrs isLinux {inherit catp;};
+      {
+        inherit nonicons;
+      }
+      // optionalAttrs isLinux {
+        inherit catp;
+      };
   in {overlays.missingPackages = overlay;};
 }

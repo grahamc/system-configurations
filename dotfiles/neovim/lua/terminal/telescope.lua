@@ -103,6 +103,13 @@ Plug("nvim-telescope/telescope.nvim", {
         lsp_dynamic_workspace_symbols = { preview_title = "" },
         autocommands = { preview_title = "" },
         filter_notifications = { preview_title = "" },
+        command_history = {
+          mappings = {
+            -- If I execute the command directly from telescope I can't see the output so I'll
+            -- send it to the commandline first.
+            i = { ["<CR>"] = actions.edit_command_line },
+          },
+        },
       },
     })
 
@@ -159,7 +166,7 @@ Plug("nvim-telescope/telescope.nvim", {
       call_with_visual_selection(telescope_builtins.lsp_dynamic_workspace_symbols),
       { desc = "Symbols" }
     )
-    vim.keymap.set("n", "<Leader>l", telescope_builtins.diagnostics, {
+    vim.keymap.set("n", "<M-d>", telescope_builtins.diagnostics, {
       desc = "Diagnostics",
     })
     vim.api.nvim_create_user_command("Highlights", telescope_builtins.highlights, {})

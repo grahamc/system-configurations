@@ -99,7 +99,7 @@ function M.fold_handler(err, result, ctx, _)
 
   -- client wont return a valid result in early stages after initialization
   -- XXX: this is dirty
-  if err == nil and result == nil then
+  if result == nil then
     vim.defer_fn(M.update_folds, 100)
   end
 

@@ -44,11 +44,73 @@ Plug("bydlw98/cmp-env")
 
 Plug("L3MON4D3/LuaSnip", {
   config = function()
-    require("luasnip").config.set_config({
-      history = true,
+    local luasnip = require("luasnip")
+    local types = require("luasnip.util.types")
+    luasnip.setup({
+      keep_roots = true,
+      link_roots = false,
+      link_children = true,
       delete_check_events = "TextChanged",
+      -- show virt_text while a snippet is active for any nodes that take user input
+      ext_opts = {
+        [types.insertNode] = {
+          passive = {
+            virt_text = { { "   ", "LuaSnipInlayHint" } },
+            virt_text_pos = "inline",
+          },
+        },
+        [types.exitNode] = {
+          passive = {
+            virt_text = { { "   ", "LuaSnipInlayHint" } },
+            virt_text_pos = "inline",
+          },
+          -- The inlay was displaying sometimes after selecting an nvim-cmp autocomplete entry
+          -- so I'm disabling visible exitNodes to hide it.
+          visited = {
+            virt_text = { { "", "LuaSnipInlayHint" } },
+            virt_text_pos = "inline",
+          },
+        },
+        [types.choiceNode] = {
+          passive = {
+            virt_text = { { "   ", "LuaSnipInlayHint" } },
+            virt_text_pos = "inline",
+          },
+        },
+      },
     })
+
     require("luasnip.loaders.from_vscode").lazy_load()
+
+    vim.keymap.set({ "i", "s" }, "<C-c>", function()
+      if luasnip.choice_active() then
+        require("luasnip.extras.select_choice")()
+      end
+    end, { desc = "Select choice" })
+
+    -- Disable the current snippet when I leave select/insert mode.
+    --
+    -- TODO: I'd like the option to reactivate the snippet, but luasnip.activate_node() only
+    -- works for me if the snippet gets disabled through region_check_events and not this manual
+    -- unlink_current()
+    --
+    -- Taken from:
+    -- https://github.com/MariaSolOs/dotfiles/blob/da291d841447ed7daddcf3f9d3c66ed04e025b50/.config/nvim/lua/plugins/nvim-cmp.lua#L45
+    vim.api.nvim_create_autocmd("ModeChanged", {
+      group = vim.api.nvim_create_augroup("bigolu/unlink_snippet", {}),
+      desc = "Cancel the snippet session when leaving insert mode",
+      pattern = { "s:n", "i:*" },
+      callback = function(args)
+        if
+          luasnip.session
+          and luasnip.session.current_nodes[args.buf]
+          and not luasnip.session.jump_active
+          and not luasnip.choice_active()
+        then
+          luasnip.unlink_current()
+        end
+      end,
+    })
   end,
 })
 
@@ -63,12 +125,14 @@ Plug("hrsh7th/nvim-cmp", {
     local cmp = require("cmp")
     local luasnip = require("luasnip")
     local cmp_buffer = require("cmp_buffer")
+    local autocmd_group = vim.api.nvim_create_augroup("MyNvimCmp", {})
 
     cmp.event:on(
       "confirm_done",
       require("nvim-autopairs.completion.cmp").on_confirm_done({
         filetypes = {
           nix = false,
+          sh = false,
         },
       })
     )
@@ -161,6 +225,10 @@ Plug("hrsh7th/nvim-cmp", {
         documentation = {
           winhighlight = "NormalFloat:CmpDocumentationNormal,FloatBorder:CmpDocumentationBorder",
           border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
+          -- TODO: ask if this option could accept a function instead so it can respond to window
+          -- resizes
+          max_height = math.floor(vim.o.lines * 0.5),
+          max_width = math.floor(vim.o.columns * 0.6),
         },
         completion = {
           winhighlight = "NormalFloat:CmpNormal,Pmenu:CmpNormal,CursorLine:CmpCursorLine,PmenuSbar:CmpScrollbar",
@@ -212,8 +280,8 @@ Plug("hrsh7th/nvim-cmp", {
           end
         end, { "i", "s" }),
         ["<C-l>"] = cmp.mapping(function(_)
-          if luasnip.jumpable(1) then
-            luasnip.jump(1)
+          if luasnip.expand_or_locally_jumpable() then
+            luasnip.expand_or_jump()
           end
         end, { "i", "s" }),
       }),
@@ -303,6 +371,7 @@ Plug("hrsh7th/nvim-cmp", {
 
     vim.api.nvim_create_autocmd("FileType", {
       pattern = "DressingInput",
+      group = autocmd_group,
       callback = function()
         -- TODO: Workaround for adding completion to vim.ui.input(). I have to defer the
         -- setup because dessing.nvim also calls setup and I need mine to run after it so I can
@@ -321,7 +390,70 @@ Plug("hrsh7th/nvim-cmp", {
           })
         end, 0)
       end,
-      group = vim.api.nvim_create_augroup("MyNvimCmp", {}),
     })
+
+    -- TODO: Set a variable to indicate whether the documentation window is open. The variable is
+    -- checked in my statusline to show mappings for scrolling the docs window. I'd like to use
+    -- cmp.visible_docs(), but I get E565 when I try.
+    --
+    -- HACK: open() is a private API so this might cause issues later. I wanted to use WinNew, but
+    -- it wasn't firing for the docs window. I think it's because nvim-cmp is passing noautocmd to
+    -- nvim_open_win. Though even if WinNew fired I think I would run into another issue because
+    -- WinNew currently doesn't offer a way to get the id of the new window:
+    -- https://github.com/neovim/neovim/issues/25844
+    local function make_docs_wrapper()
+      local success, utils_window = pcall(require, "cmp.utils.window")
+      if not success then
+        vim.notify(
+          "Unable to create nvim-cmp documentation wrapper, the original function was not found",
+          vim.log.levels.ERROR
+        )
+        return
+      end
+
+      local original_open = utils_window.open
+      ---@diagnostic disable-next-line: duplicate-set-field
+      utils_window.open = function(...)
+        local style = select(2, ...)
+        local has_expected_argument_shape = type(style) == "table" and style.border ~= nil
+        if not has_expected_argument_shape then
+          vim.notify(
+            "nvim-cmp documentation wrapper is not receiving the expected argument shape",
+            vim.log.levels.ERROR
+          )
+
+          -- set open back to the original
+          utils_window.open = original_open
+
+          return
+        end
+        local border = style.border
+
+        -- I only set border to "none" for the autocmplete window, not the docs window so if
+        -- the border isn't "none" I'm assuming the docs window is being opened.
+        if border ~= "none" then
+          IsCmpDocsOpen = true
+        end
+
+        original_open(...)
+      end
+
+      vim.api.nvim_create_autocmd("WinClosed", {
+        group = autocmd_group,
+        callback = function()
+          if
+            vim.bo[vim.api.nvim_win_get_buf(tonumber(vim.fn.expand("<amatch>")) or 0)].filetype
+            == "cmp_docs"
+          then
+            IsCmpDocsOpen = false
+          end
+        end,
+      })
+      -- Only checking WinClosed wasn't enough so I use this event too for good measure
+      cmp.event:on("menu_closed", function()
+        IsCmpDocsOpen = false
+      end)
+    end
+    make_docs_wrapper()
   end,
 })

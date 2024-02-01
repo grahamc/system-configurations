@@ -58,7 +58,7 @@ local theme = lush(function(injected_functions)
     -- modes {{{
     Normal { bg = "NONE", fg = t_7.fg, }, -- Normal text
     NormalNC {}, -- normal text in non-current windows
-    Visual { t_3, reverse = true }, -- Visual mode selection
+    Visual { bg = t_3.fg, fg = t_0.fg }, -- Visual mode selection
     VisualNOS {}, -- Visual mode selection when vim is "Not Owning the Selection".
     -- }}}
 
@@ -144,12 +144,12 @@ local theme = lush(function(injected_functions)
     SpecialComment { Special, }, --   Special things inside a comment (e.g. '\n')
     Debug          { Special, }, --   Debugging statements
 
-    Constant { Statement }, -- (*) Any constant
-    String { Constant, }, --   A string constant: "this is a string"
-    Character      { Constant, }, --   A character constant: 'c', '\n'
-    Number         { Constant, }, --   A number constant: 234, 0xff
-    Boolean        { Constant, }, --   A boolean constant: TRUE, false
-    Float          { Constant, }, --   A floating point constant: 2.3e10
+    Constant { Identifier }, -- (*) Any constant
+    String { t_2, }, --   A string constant: "this is a string"
+    Character      { String, }, --   A character constant: 'c', '\n'
+    Number         { String, }, --   A number constant: 234, 0xff
+    Boolean        { String, }, --   A boolean constant: TRUE, false
+    Float          { String, }, --   A floating point constant: 2.3e10
     -- }}}
 
     -- diffs {{{
@@ -236,7 +236,6 @@ local theme = lush(function(injected_functions)
     GitBlameVirtualText { t_15, italic = true, bold = true },
     WhichKeyFloat { NormalFloat },
     WhichKeyBorder { FloatBorder },
-    LuaSnipNode { t_11 },
     CodeActionSign { t_3 },
     NullLsInfoBorder { FloatBorder },
     WidgetFill { t_0 },
@@ -370,6 +369,8 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- nvim-notify {{{
+    -- nvim-notify requires the bg be a hex value since it's transparency during the fade animation
+    -- will be computed with it
     NotifyBackground { bg = t_0.fg },
     NotifyERRORTitle { fg = ErrorMsg.fg },
     NotifyERRORBorder { NotifyERRORTitle },
@@ -402,24 +403,24 @@ local theme = lush(function(injected_functions)
     DropBarIconUISeparatorMenu { CmpItemKind },
     DropBarIconKindArray { Identifier },
     DropBarIconKindBoolean { DropBarIconKindArray },
-    DropBarIconKindBreakStatemen { DropBarIconKindArray },
-    DropBarIconKindCal { DropBarIconKindArray },
+    DropBarIconKindBreakStatement { DropBarIconKindArray },
+    DropBarIconKindCall { DropBarIconKindArray },
     DropBarIconKindCaseStatement { DropBarIconKindArray },
     DropBarIconKindClass { DropBarIconKindArray },
-    DropBarIconKindConstan { DropBarIconKindArray },
+    DropBarIconKindConstant { DropBarIconKindArray },
     DropBarIconKindConstructor { DropBarIconKindArray },
     DropBarIconKindContinueStatement { DropBarIconKindArray },
     DropBarIconKindDeclaration { DropBarIconKindArray },
-    DropBarIconKindDelet { DropBarIconKindArray },
+    DropBarIconKindDelete { DropBarIconKindArray },
     DropBarIconKindDoStatement { DropBarIconKindArray },
     DropBarIconKindElseStatement { DropBarIconKindArray },
-    DropBarIconKindEnu { DropBarIconKindArray },
-    DropBarIconKindEnumMembe { DropBarIconKindArray },
+    DropBarIconKindEnum { DropBarIconKindArray },
+    DropBarIconKindEnumMember { DropBarIconKindArray },
     DropBarIconKindEvent { DropBarIconKindArray },
     DropBarIconKindField { DropBarIconKindArray },
-    DropBarIconKindFil { DropBarIconKindArray },
-    DropBarIconKindFolde { DropBarIconKindArray },
-    DropBarIconKindForStatemen { DropBarIconKindArray },
+    DropBarIconKindFile { DropBarIconKindArray },
+    DropBarIconKindFolder { DropBarIconKindArray },
+    DropBarIconKindForStatement { DropBarIconKindArray },
     DropBarIconKindFunction { DropBarIconKindArray },
     DropBarIconKindH1Marker { DropBarIconKindArray },
     DropBarIconKindH2Marker { DropBarIconKindArray },
@@ -428,11 +429,11 @@ local theme = lush(function(injected_functions)
     DropBarIconKindH5Marker { DropBarIconKindArray },
     DropBarIconKindH6Marker { DropBarIconKindArray },
     DropBarIconKindIdentifier { DropBarIconKindArray },
-    DropBarIconKindIfStatemen { DropBarIconKindArray },
-    DropBarIconKindInterfac { DropBarIconKindArray },
-    DropBarIconKindKeywor { DropBarIconKindArray },
+    DropBarIconKindIfStatement { DropBarIconKindArray },
+    DropBarIconKindInterface { DropBarIconKindArray },
+    DropBarIconKindKeyword { DropBarIconKindArray },
     DropBarIconKindList { DropBarIconKindArray },
-    DropBarIconKindMacr { DropBarIconKindArray },
+    DropBarIconKindMacro { DropBarIconKindArray },
     DropBarIconKindMarkdownH1 { DropBarIconKindArray },
     DropBarIconKindMarkdownH2 { DropBarIconKindArray },
     DropBarIconKindMarkdownH3 { DropBarIconKindArray },
@@ -441,27 +442,27 @@ local theme = lush(function(injected_functions)
     DropBarIconKindMarkdownH6 { DropBarIconKindArray },
     DropBarIconKindMethod { DropBarIconKindArray },
     DropBarIconKindModule { DropBarIconKindArray },
-    DropBarIconKindNamespac { DropBarIconKindArray },
+    DropBarIconKindNamespace { DropBarIconKindArray },
     DropBarIconKindNull { DropBarIconKindArray },
     DropBarIconKindNumber { DropBarIconKindArray },
     DropBarIconKindObject { DropBarIconKindArray },
     DropBarIconKindOperator { DropBarIconKindArray },
-    DropBarIconKindPackag { DropBarIconKindArray },
+    DropBarIconKindPackage { DropBarIconKindArray },
     DropBarIconKindPair { DropBarIconKindArray },
     DropBarIconKindProperty { DropBarIconKindArray },
-    DropBarIconKindReferenc { DropBarIconKindArray },
+    DropBarIconKindReference { DropBarIconKindArray },
     DropBarIconKindRepeat { DropBarIconKindArray },
-    DropBarIconKindScop { DropBarIconKindArray },
-    DropBarIconKindSpecifie { DropBarIconKindArray },
-    DropBarIconKindStatemen { DropBarIconKindArray },
+    DropBarIconKindScope { DropBarIconKindArray },
+    DropBarIconKindSpecifier { DropBarIconKindArray },
+    DropBarIconKindStatement { DropBarIconKindArray },
     DropBarIconKindString { DropBarIconKindArray },
     DropBarIconKindStruct { DropBarIconKindArray },
-    DropBarIconKindSwitchStatemen { DropBarIconKindArray },
+    DropBarIconKindSwitchStatement { DropBarIconKindArray },
     DropBarIconKindTerminal { DropBarIconKindArray },
     DropBarIconKindType { DropBarIconKindArray },
-    DropBarIconKindTypeParamete { DropBarIconKindArray },
+    DropBarIconKindTypeParameter { DropBarIconKindArray },
     DropBarIconKindUnit { DropBarIconKindArray },
-    DropBarIconKindValu { DropBarIconKindArray },
+    DropBarIconKindValue { DropBarIconKindArray },
     DropBarIconKindVariable { DropBarIconKindArray },
     DropBarIconKindWhileStatement { DropBarIconKindArray },
     -- }}}
@@ -524,6 +525,7 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     NvimDapVirtualText { LspInlayHint },
+    LuaSnipInlayHint { LspInlayHint, fg = t_11.fg },
 
     -- Tree-Sitter {{{
     --

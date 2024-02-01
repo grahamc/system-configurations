@@ -11,6 +11,8 @@ Plug("echasnovski/mini.nvim", {
   sync = true,
 
   config = function()
+    local mini_group_id = vim.api.nvim_create_augroup("MyMiniNvim", {})
+
     -- comment {{{
     require("mini.comment").setup({
       options = {
@@ -24,15 +26,48 @@ Plug("echasnovski/mini.nvim", {
     -- }}}
 
     --- ai {{{
-    local spec_treesitter = require("mini.ai").gen_spec.treesitter
+    local ai = require("mini.ai")
+    local spec_treesitter = ai.gen_spec.treesitter
+    local spec_pair = ai.gen_spec.pair
 
-    require("mini.ai").setup({
+    ai.setup({
       custom_textobjects = {
         d = spec_treesitter({ a = "@function.outer", i = "@function.inner" }),
+        f = spec_treesitter({ a = "@call.outer", i = "@call.inner" }),
+        -- TODO: @parameter.outer should include the space after the parameter delimiter
+        a = spec_treesitter({ a = "@parameter.outer", i = "@parameter.inner" }),
         C = spec_treesitter({ a = "@conditional.outer", i = "@conditional.inner" }),
+        -- TODO: would be great if this worked on key/value pairs as well
         s = spec_treesitter({ a = "@assignment.lhs", i = "@assignment.rhs" }),
+
+        -- Whole buffer
+        g = function()
+          local from = { line = 1, col = 1 }
+          local to = {
+            line = vim.fn.line("$"),
+            col = math.max(vim.fn.getline("$"):len(), 1),
+          }
+          return { from = from, to = to }
+        end,
+
+        -- For markdown
+        ["*"] = spec_pair("*", "*", { type = "greedy" }),
+        ["_"] = spec_pair("_", "_", { type = "greedy" }),
+
+        -- For lua
+        ["]"] = spec_pair("[", "]", { type = "greedy" }),
+
+        -- For Nix
+        ["'"] = spec_pair("'", "'", { type = "greedy" }),
       },
+
       silent = true,
+
+      -- If I still want to select next/last I can use around_{next,last} textobjects
+      search_method = "cover",
+
+      -- Number of lines within which textobject is searched
+      n_lines = 100,
     })
 
     local function move_like_curly_brace(id, direction)
@@ -123,8 +158,6 @@ Plug("echasnovski/mini.nvim", {
       desc = "End of indent of line",
     })
 
-    local mini_group_id = vim.api.nvim_create_augroup("MyMiniNvim", {})
-
     vim.api.nvim_create_autocmd("FileType", {
       pattern = { "python", "yaml" },
       callback = function()
@@ -164,10 +197,63 @@ Plug("echasnovski/mini.nvim", {
     -- }}}
 
     -- surround {{{
+    local open_braces = {
+      ["["] = "]",
+      ["("] = ")",
+      ["<"] = ">",
+      ["{"] = "}",
+      ["'"] = "'",
+      ['"'] = '"',
+    }
+    local close_braces = {
+      ["]"] = "[",
+      [")"] = "(",
+      [">"] = "<",
+      ["}"] = "{",
+    }
+    local function get_braces(char)
+      if open_braces[char] then
+        return { char, open_braces[char] }
+      elseif close_braces[char] then
+        return { close_braces[char], char }
+      else
+        return nil
+      end
+    end
     require("mini.surround").setup({
       n_lines = 50,
-      search_method = "cover_or_next",
+      search_method = "cover",
       silent = true,
+      custom_surroundings = {
+        -- Search for two of the input char, d for double. Helpful for lua and Nix
+        ["d"] = {
+          input = function()
+            local char = MiniSurround.user_input("Char")
+            if char == nil or char == "" then
+              return nil
+            end
+            local braces = get_braces(char)
+            if braces == nil then
+              return nil
+            end
+            return { string.rep("%" .. braces[1], 2) .. "().-()" .. string.rep("%" .. braces[2], 2) }
+          end,
+          output = function()
+            local char = MiniSurround.user_input("Char")
+            if char == nil or char == "" then
+              return nil
+            end
+            local braces = get_braces(char)
+            if braces == nil then
+              return nil
+            end
+            return {
+              left = string.rep("%" .. braces[1], 2),
+              right = string.rep("%" .. braces[2], 2),
+            }
+          end,
+        },
+      },
     })
     -- }}}
 
@@ -179,9 +265,8 @@ Plug("echasnovski/mini.nvim", {
     vim.keymap.set("n", "<Leader>m", function()
       if not IsMaximized then
         vim.api.nvim_create_autocmd("WinEnter", {
-          pattern = "*",
           once = true,
-          group = vim.api.nvim_create_augroup("TransparentMaximizedWindow", {}),
+          group = mini_group_id,
           callback = function()
             vim.o.winhighlight = "NormalFloat:Normal"
           end,
@@ -194,6 +279,17 @@ Plug("echasnovski/mini.nvim", {
         })
         IsMaximized = true
       else
+        -- Set cursor in original window to that of the maximized window.
+        -- TODO: I should upstream this
+        local maximized_window_cursor_position = vim.api.nvim_win_get_cursor(0)
+        vim.api.nvim_create_autocmd("WinEnter", {
+          once = true,
+          group = mini_group_id,
+          callback = function()
+            vim.api.nvim_win_set_cursor(0, maximized_window_cursor_position)
+          end,
+        })
+
         misc.zoom()
         IsMaximized = false
       end
@@ -279,6 +375,19 @@ Plug("echasnovski/mini.nvim", {
         end
         vim.b.minicursorword_disable = false
       end,
+    })
+    -- }}}
+
+    -- trailspace {{{
+    vim.api.nvim_create_user_command("TrimTrailingWhitespace", function()
+      require("mini.trailspace").trim()
+    end, {})
+    -- }}}
+
+    -- bufremove {{{
+    require("mini.bufremove").setup({
+      set_vim_settings = false,
+      silent = true,
     })
     -- }}}
   end,

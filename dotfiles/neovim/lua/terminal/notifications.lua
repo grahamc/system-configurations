@@ -39,6 +39,7 @@ Plug("rcarriga/nvim-notify", {
       timeout = 2000,
       render = "wrapped-compact",
       max_width = math.floor(vim.o.columns * 0.35),
+      icons = require("nvim-nonicons.extentions.nvim-notify").icons,
     })
     vim.notify = notify
     vim.keymap.set("n", "<Leader>n", "<Cmd>Telescope notify<CR>", {

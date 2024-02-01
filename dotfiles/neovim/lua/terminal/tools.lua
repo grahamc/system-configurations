@@ -5,7 +5,7 @@ Plug("williamboman/mason.nvim", {
         width = 1,
         -- Ideally I'd use a function here so I could set it to '<screen_height> - 1', but this
         -- field doesn't support functions.
-        height = 1,
+        height = 0.96,
         icons = {
           package_installed = "󰄳  ",
           package_pending = "  ",
@@ -26,11 +26,9 @@ Plug("williamboman/mason.nvim", {
       end,
       group = vim.api.nvim_create_augroup("MyMason", {}),
     })
-    vim.api.nvim_create_user_command(
-      "Extensions",
-      vim.cmd.Mason,
-      { desc = "Manage external tooling such as language servers" }
-    )
+    vim.api.nvim_create_user_command("Tools", function()
+      vim.cmd.Mason()
+    end, { desc = "Manage external tooling such as language servers" })
 
     -- Store the number of packages that have an update available so I can put it in my statusline.
     local registry = require("mason-registry")

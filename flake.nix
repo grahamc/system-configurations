@@ -98,6 +98,10 @@
     };
     flake-utils.url = "github:numtide/flake-utils";
     flake-parts.url = "github:hercules-ci/flake-parts";
+    nonicons = {
+      url = "github:yamatsum/nonicons";
+      flake = false;
+    };
 
     # tmux
     ########################################
@@ -440,6 +444,10 @@
     };
     vim-plugin-cmp-dap = {
       url = "github:rcarriga/cmp-dap";
+      flake = false;
+    };
+    vim-plugin-nvim-nonicons = {
+      url = "github:yamatsum/nvim-nonicons";
       flake = false;
     };
   };

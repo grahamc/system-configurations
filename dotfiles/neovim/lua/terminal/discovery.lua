@@ -22,13 +22,13 @@ Plug("folke/which-key.nvim", {
       },
       layout = {
         height = {
-          max = math.floor(vim.o.lines * 0.25),
+          max = math.floor(vim.o.lines * 0.20),
         },
         align = "center",
       },
       window = {
         border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
-        margin = { 1, 4, 2, 2 },
+        margin = { 1, 0.05, 2, 0.05 },
       },
       icons = {
         separator = " ",
@@ -102,6 +102,10 @@ Plug("mrjones2014/legendary.nvim", {
         }
       end
 
+      local function filter_non_plug_mappings(keymap)
+        return not vim.startswith(keymap.lhs, "<Plug>")
+      end
+
       local buf = vim.api.nvim_win_get_buf(0)
       local buffer_keymaps = vim
         .iter(modes)
@@ -125,6 +129,7 @@ Plug("mrjones2014/legendary.nvim", {
 
       vim
         .iter(all_keymaps)
+        :filter(filter_non_plug_mappings)
         :filter(filter_unique_keymaps_across_invocations)
         -- remove keymaps with duplicate LHS's, favoring buffer-local maps
         :filter(
