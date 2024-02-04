@@ -51,19 +51,15 @@ function M.update_folds()
     return
   end
 
-  local clients = lsp.buf_get_clients(0)
+  local buffer = api.nvim_get_current_buf()
+  local clients = lsp.get_clients({ bufnr = buffer })
   for _, client in pairs(clients) do
-    -- TODO: This is the recommended way to do it, but bash_ls returns true when I try it
-    -- despite not supporting it. Not sure where the bug is.
-    -- if not client.supports_method(lsp.protocol.Methods.textDocument_foldingRange) then
-    local server_supports_folding = client["server_capabilities"]["foldingRangeProvider"] or false
-    if not server_supports_folding then
+    if
+      not client.supports_method(lsp.protocol.Methods.textDocument_foldingRange, { bufnr = buffer })
+    then
       goto continue
     end
 
-    -- TODO: better to pass callback in this method or add it directly in the config?
-    -- client.config.callbacks['textDocument/foldingRange'] = M.fold_handler
-    local buffer = api.nvim_get_current_buf()
     local params = { uri = vim.uri_from_bufnr(buffer) }
     client.request(
       lsp.protocol.Methods.textDocument_foldingRange,

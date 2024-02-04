@@ -261,11 +261,13 @@ Plug("williamboman/mason-lspconfig.nvim", {
             callback = function()
               if vim.api.nvim_get_current_win() == win_id then
                 IsInsideLspHoverOrSignatureHelp = true
+                vim.cmd.redrawstatus()
                 vim.api.nvim_create_autocmd("WinLeave", {
                   group = autocmd_group,
                   once = true,
                   callback = function()
                     IsInsideLspHoverOrSignatureHelp = false
+                    vim.cmd.redrawstatus()
                   end,
                 })
               end
@@ -277,18 +279,22 @@ Plug("williamboman/mason-lspconfig.nvim", {
         vim.lsp.handlers.hover,
         function()
           IsLspHoverOpen = true
+          vim.cmd.redrawstatus()
         end,
         function()
           IsLspHoverOpen = false
+          vim.cmd.redrawstatus()
         end
       )
       vim.lsp.handlers[methods.textDocument_signatureHelp] = enhanced_float_handler(
         vim.lsp.handlers.signature_help,
         function()
           IsSignatureHelpOpen = true
+          vim.cmd.redrawstatus()
         end,
         function()
           IsSignatureHelpOpen = false
+          vim.cmd.redrawstatus()
         end
       )
 

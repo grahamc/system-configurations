@@ -1,4 +1,8 @@
-{inputs, ...}: {
+{
+  inputs,
+  self,
+  ...
+}: {
   flake = let
     overlay = final: prev: let
       ncursesWithWezterm = let
@@ -26,6 +30,12 @@
       tmux = latestTmux;
       # I'm renaming ncurses to avoid rebuilds.
       inherit ncursesWithWezterm;
+      neovim = final.neovim-nightly;
     };
-  in {overlays.misc = overlay;};
+
+    metaOverlay = self.lib.overlay.makeMetaOverlay [
+      overlay
+      inputs.neovim-nightly-overlay.overlay
+    ];
+  in {overlays.misc = metaOverlay;};
 }

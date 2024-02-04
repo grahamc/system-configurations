@@ -25,8 +25,10 @@ Plug("akinsho/bufferline.nvim", {
       local is_last_window = window_count == 1
         or (window_count == 2 and require("nvim-tree.api").tree.is_visible())
       if tab_count == 1 and is_last_window and buffer_count == 1 then
-        -- Using `quitall` instead of quit so if nvim-tree is open it closes both windows
-        vim.cmd.quitall()
+        -- Using `quitall` instead of quit so if nvim-tree is open it closes both windows.
+        vim.cmd([[
+          confirm qall
+        ]])
         return
       end
 

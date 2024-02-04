@@ -5,8 +5,6 @@
   specialArgs,
   ...
 }: let
-  neovim = pkgs.neovim-nightly;
-
   firenvimScriptPath = ".local/share/firenvim/firenvim";
 
   firenvimManifestPath = let
@@ -23,7 +21,7 @@
       # By default Nix adds a bunch of programs to the $PATH and the script that firenvim generates
       # will includes the contents of the $PATH so to avoid pulling in unnecessary dependencies, I'm
       # explicitly setting the $PATH here.
-      PATH="${neovim}/bin:${pkgs.coreutils-full}/bin"
+      PATH="${pkgs.neovim}/bin:${pkgs.coreutils-full}/bin"
 
       home="$out"
 
@@ -72,13 +70,13 @@
     '';
 in {
   home = {
-    packages = [
+    packages = with pkgs; [
       neovim
       # TODO: Text will be lost on reflow until this issue is resolved:
       # https://github.com/neovim/neovim/issues/2514
-      pkgs.page
-      pkgs.par
-      pkgs.watchman
+      page
+      par
+      watchman
     ];
 
     # TODO: vim.loader() uses modification time and file size as a cache key. This is a problem for
@@ -88,14 +86,23 @@ in {
     # for package paths are all the same length, only the letters in the hash change. This means
     # when I start vim after sqlite has been upgraded, sqlite.lua won't be able to find sqlite
     # (assuming the old version has been garbage collected already) because neovim is still using
-    # the stale, cached bytecode for defs.lua which contains the old path to sqlite.
+    # the stale, cached bytecode for defs.lua which contains the old path to sqlite. I should see
+    # if neovim can check the file contents instead. Someone brought this up in impatient.nvim, a
+    # plugin that offered this functionality before it was upstreamed, and a maintainer
+    # said checksums would be too slow, but they'd be open to someone adding an alternate change
+    # detection algorithm and letting users choose. I timed it and it was ~2% slower so maybe it's
+    # feasible.
     #
-    # I should see if neovim can check the file contents instead.
+    # issue where checksum is suggested:
+    # https://github.com/lewis6991/impatient.nvim/issues/42
+    #
+    # command for timing:
+    # hyperfine --shell=none 'nvim --headless -c "lua= vim.loop.fs_stat(\"./flake.nix\").mtime.sec" -c quit' 'nvim --headless -c "lua= vim.fn.sha256(io.open(\"./flake.nix\", \"r\"):read(\"*all\"))" -c quit'
     activation.vimLoaderFix =
       lib.hm.dag.entryAfter
       ["writeBoundary"]
       ''
-        ${neovim}/bin/nvim --clean --headless -c 'lua vim.loader.reset()' -c 'quit'
+        ${pkgs.neovim}/bin/nvim --clean --headless -c 'lua vim.loader.reset()' -c 'quit'
       '';
 
     file = {

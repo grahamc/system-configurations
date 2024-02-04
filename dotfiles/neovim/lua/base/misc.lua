@@ -26,7 +26,11 @@ vim.keymap.set({ "n" }, "<S-Enter>", "O<ESC>", {
 })
 
 -- paste {{{
--- re-indent the pasted text which will also move me to the end of the text
+-- * re-indent the pasted text which will also move me to the end of the text.
+-- * set markers for the start and end of the pasted text so I can reselect it.
+-- * when pasting from visual mode, it won't overwrite the clipboard.
+-- * if the clipboard has multiple lines it, make sure it ends in a newline so we get vim's
+-- visual-line yank behavior even with text copied outside of vim.
 function MyPaste(was_in_visual_mode, is_capital_p)
   local clipboard_contents = vim.fn.getreg(vim.v.register) or ""
   local is_multi_line_paste = clipboard_contents:find("\n")
@@ -37,6 +41,13 @@ function MyPaste(was_in_visual_mode, is_capital_p)
   --
   -- TODO: I should post this somewhere since I know I've seen this question asked.
   if is_multi_line_paste then
+    -- When you yank multiple lines in vim it always appends a newline to the end so the lines don't
+    -- interleave with the text where you paste. I'm doing that here as well to account for text
+    -- that is copied outside of vim.
+    if clipboard_contents:sub(-1) ~= "\n" then
+      clipboard_contents = clipboard_contents .. "\n"
+      vim.fn.setreg(vim.v.register, "\n", "a")
+    end
     local _, newline_count = clipboard_contents:gsub("\n", "")
 
     -- set start
@@ -78,16 +89,20 @@ function MyPaste(was_in_visual_mode, is_capital_p)
   local key = vim.api.nvim_replace_termcodes("<CR>", true, false, true)
   local indent = string.format([[:%d,%dnormal! ==]] .. key, LastPasteStartLine, LastPasteEndLine)
   local go_back_to_visual = was_in_visual_mode and "gv" or ""
+  local delete_into_blackhole = was_in_visual_mode and '"_d' or ""
   local paste = is_capital_p and "P" or "p"
-  vim.api.nvim_feedkeys(go_back_to_visual .. paste .. indent, "n", false)
+  vim.api.nvim_feedkeys(go_back_to_visual .. delete_into_blackhole .. paste .. indent, "n", false)
 end
 vim.keymap.set({ "n" }, "p", ":lua MyPaste(false, false)<CR>", { silent = true })
--- Leave visual mode so '< and '> get set
-vim.keymap.set({ "x" }, "p", "<Esc>:lua MyPaste(true, false)<CR>", { silent = true })
+-- In visual mode p should behave like P
+vim.keymap.set({ "x" }, "p", "P", { silent = true, remap = true })
 vim.keymap.set({ "n" }, "P", ":lua MyPaste(false, true)<CR>", { silent = true })
--- In visual mode p and P should do the same thing
-vim.keymap.set({ "x" }, "P", "p", { silent = true, remap = true })
+-- Leave visual mode so '< and '> get set
+vim.keymap.set({ "x" }, "P", "<Esc>:lua MyPaste(true, true)<CR>", { silent = true })
 -- }}}
+
+-- leave cursor at the end of yanked text
+vim.keymap.set({ "x" }, "y", "ygv<Esc>", { silent = true })
 
 -- Disable features {{{
 -- Disable unused builtin plugins.

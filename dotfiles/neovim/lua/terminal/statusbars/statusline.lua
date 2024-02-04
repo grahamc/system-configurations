@@ -226,7 +226,11 @@ function StatusLine()
     local buffer_name = vim.api.nvim_buf_get_name(0)
     local basename = vim.fs.basename(buffer_name)
     local extension = vim.fn.fnamemodify(basename, ":e")
-    local icon, color = require("nvim-web-devicons").get_icon_color(basename, extension)
+    local devicons = require("nvim-web-devicons")
+    local icon, color = devicons.get_icon_color(basename, extension)
+    if icon == nil then
+      icon, color = devicons.get_icon_color_by_filetype(vim.bo.filetype)
+    end
     if icon ~= nil then
       vim.api.nvim_set_hl(
         0,
@@ -466,7 +470,7 @@ end
 
 function DapuiReplStatusLine()
   return make_mapping_statusline({
-    hjkl = "step (back|into|out|over)",
+    hjkl = "step back/into/out/over",
     ["<CR>"] = "play",
     ["<C-c>"] = "terminate",
     ["<C-d>"] = "disconnect",

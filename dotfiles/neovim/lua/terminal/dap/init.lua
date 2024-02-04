@@ -37,14 +37,15 @@ local function dapui_open()
   add_hover_keymap()
 end
 
+-- Taken from nvim-dap wiki.
+-- TODO: I should upstream this since there are some edge cases they missed.
 local function restore_keymaps()
   for _, keymap in pairs(keymaps_to_restore) do
-    vim.api.nvim_buf_set_keymap(
-      keymap.buffer,
+    vim.keymap.set(
       keymap.mode,
       keymap.lhs,
-      keymap.rhs,
-      { silent = keymap.silent == 1 }
+      keymap.rhs or keymap.callback,
+      { silent = keymap.silent == 1, expr = keymap.expr == 1, buffer = keymap.buffer }
     )
   end
   keymaps_to_restore = {}

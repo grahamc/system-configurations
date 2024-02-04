@@ -294,7 +294,7 @@ Plug("echasnovski/mini.nvim", {
         IsMaximized = false
       end
     end, {
-      desc = "Toggle maximize window",
+      desc = "Toggle maximize window [zoom]",
     })
 
     -- }}}

@@ -60,7 +60,7 @@ function OpenUrlUnderCursor(is_mouse_click)
     end
   end
 end
-vim.keymap.set("n", "U", OpenUrlUnderCursor, { desc = "Open link" })
+vim.keymap.set("n", "U", OpenUrlUnderCursor, { desc = "Open link [url]" })
 vim.keymap.set("n", "<C-LeftMouse>", "<LeftMouse><Cmd>lua OpenUrlUnderCursor(true)<CR>")
 -- }}}
 
@@ -84,8 +84,9 @@ vim.api.nvim_create_autocmd("FileType", {
   group = general_group_id,
 })
 vim.api.nvim_create_autocmd(
-  -- I'm using BufEnter as opposed to FileType because if you run `:help something` and the help buffer is already
-  -- open, vim will reset the buffer to not being listed so to get around that I set it back every time I enter the buffer.
+  -- I'm using BufEnter as opposed to FileType because if you run `:help something` and the help
+  -- buffer is already open, vim will reset the buffer to not being listed so to get around that I
+  -- set it back every time I enter the buffer.
   "BufEnter",
   {
     callback = function()
@@ -110,9 +111,10 @@ end, {
   nargs = 1,
 })
 
-vim.o.confirm = true
 vim.keymap.set("", "<C-x>", function()
-  vim.cmd.qall()
+  vim.cmd([[
+    confirm qall
+  ]])
 end, {
   desc = "Quit [exit,close]",
 })

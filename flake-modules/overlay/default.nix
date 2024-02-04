@@ -1,8 +1,4 @@
-{
-  self,
-  inputs,
-  ...
-}: {
+{self, ...}: {
   imports = [
     ./plugins
     ./xdg.nix
@@ -31,7 +27,6 @@
         self.overlays.metaPackages
         self.overlays.partialPackages
         self.overlays.misc
-        inputs.neovim-nightly-overlay.overlay
       ];
   in {
     lib.overlay = {inherit makeMetaOverlay;};

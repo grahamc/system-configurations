@@ -40,6 +40,7 @@ Plug("folke/which-key.nvim", {
 Plug("mrjones2014/legendary.nvim", {
   config = function()
     local legendary = require("legendary")
+    local modes = { "n", "i", "x" }
 
     local function make_unique_filter(key_extractor)
       local seen = {}
@@ -77,12 +78,41 @@ Plug("mrjones2014/legendary.nvim", {
       end
     end
 
+    local function make_legendary_mode_filter(mode)
+      return function(item)
+        -- include everything that isn't a keymap since they aren't tied to a mode
+        if not require("legendary.toolbox").is_keymap(item) then
+          return true
+        end
+
+        local target_mode = ({
+          ["n"] = "n",
+          ["niI"] = "n",
+          ["niR"] = "n",
+          ["niV"] = "n",
+          ["nt"] = "n",
+          ["ntT"] = "n",
+          ["v"] = "x",
+          ["vs"] = "x",
+          ["V"] = "x",
+          ["Vs"] = "x",
+          ["\22"] = "x",
+          ["\22s"] = "x",
+          ["i"] = "i",
+          ["ic"] = "i",
+          ["ix"] = "i",
+        })[mode]
+
+        return vim.iter(item:modes()):any(function(m)
+          return m == target_mode
+        end)
+      end
+    end
+
     local filter_unique_keymaps_across_invocations = make_unique_filter(function(keymap)
-      return { keymap.buffer, keymap.lhs }
+      return { keymap.buffer, keymap.lhs, keymap.mode }
     end)
     local function load_keymaps()
-      local modes = { "n", "i", "c", "x" }
-
       local max_lhs_length = math.floor(vim.o.columns / 4)
       local function to_legendary_keymap(keymap)
         local filters = {}
@@ -99,6 +129,7 @@ Plug("mrjones2014/legendary.nvim", {
           formatted_lhs,
           description = description,
           filters = filters,
+          mode = keymap.mode,
         }
       end
 
@@ -134,7 +165,7 @@ Plug("mrjones2014/legendary.nvim", {
         -- remove keymaps with duplicate LHS's, favoring buffer-local maps
         :filter(
           make_unique_filter(function(keymap)
-            return { keymap.lhs }
+            return { keymap.lhs, keymap.mode }
           end)
         )
         :map(to_legendary_keymap)
@@ -196,23 +227,29 @@ Plug("mrjones2014/legendary.nvim", {
     legendary.setup({
       select_prompt = "Command/Keymap Palette",
       include_legendary_cmds = false,
+      icons = {
+        keymap = " ",
+        command = "",
+        fn = "󰡱",
+        itemgroup = "",
+      },
     })
 
-    local function open_command_palette()
+    function OpenCommandPalette()
       -- TODO: I should upstream this:
       -- https://github.com/mrjones2014/legendary.nvim/issues/258
       load_keymaps()
       load_commands()
       legendary.find({
-        filters = { require("legendary.filters").current_mode() },
+        filters = { make_legendary_mode_filter(vim.api.nvim_get_mode().mode) },
       })
     end
     -- This is actually ctrl+/, see :help :map-special-keys
-    vim.keymap.set("n", "<C-_>", open_command_palette, {
+    vim.keymap.set(modes, "<C-_>", "<Cmd>lua OpenCommandPalette()<CR>", {
       desc = "Command palette",
     })
     -- Outside TMUX the above won't work, I have to use <C-/>, so I just map both.
-    vim.keymap.set("n", "<C-/>", open_command_palette, {
+    vim.keymap.set(modes, "<C-/>", "<Cmd>lua OpenCommandPalette()<CR>", {
       desc = "Command palette",
     })
   end,

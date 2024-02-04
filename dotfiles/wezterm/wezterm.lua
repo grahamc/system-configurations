@@ -78,6 +78,7 @@ end
 config.line_height = 1.5
 config.underline_thickness = "150%"
 
+-- SYNC: terminal-color-palettes
 local my_colors_per_color_scheme = {
   ["Biggs Nord"] = {
     [0] = "#1d2129",

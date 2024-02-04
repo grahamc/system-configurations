@@ -18,6 +18,17 @@
 -- https://github.com/rktjmp/lush.nvim
 -- }}}
 
+-- Tips for defining colors: {{{
+--
+-- An empty definition `{}` will clear all styling, leaving elements looking like the 'Normal'
+-- group.  To be able to link to a group, it must already be defined, so you may have to reorder
+-- items as you go.
+--
+-- Avoid properties that resolve at runtime like 'link' and 'reverse' because lush won't be able
+-- to access what the eventual value will be. For example, if you use link for highlight Foo
+-- then try to access Foo.fg it won't work since lush can't determine what Foo.fg will be.
+-- }}}
+
 -- This variable contains a list of 16 colors that should be used as the color palette for terminals
 -- opened in vim. By unsetting this, I ensure that terminals opened in vim will use the colors from
 -- the color palette of the terminal in which vim is running
@@ -33,11 +44,10 @@ local hsl = lush.hsl
 local theme = lush(function(injected_functions)
   local sym = injected_functions.sym
   return {
-    -- An empty definition `{}` will clear all styling, leaving elements looking like the 'Normal'
-    -- group.  To be able to link to a group, it must already be defined, so you may have to reorder
-    -- items as you go.
-
     -- terminal palette {{{
+    --
+    -- SYNC: terminal-color-palettes
+    --
     -- If you're in the lush live preview (:Lushify) the color below will be invisible.
     t_0 { fg = hsl(is_light and "#ffffff" or "#1d2129") },
     t_1 { fg = hsl(is_light and "#ee3d3b" or "#BF616A") },
