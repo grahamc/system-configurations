@@ -1,4 +1,52 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  # TODO: Python virtualenvs use the canonical path of the base python. This is an issue for Nix
+  # because when I update my system and the old python gets garbage collected, it breaks any
+  # virtualenvs made against it. So I made a wrapper that injects the --copies flag whenever a
+  # virtualenv is being made.
+  wrappedPython3 = let
+    python3CopyVenvsByDefault =
+      pkgs.writeShellApplication
+      {
+        name = "python";
+        text = ''
+          new_args=()
+          seen_m=""
+          seen_venv=""
+          for arg in "$@"; do
+            new_args=("''${new_args[@]}" "$arg")
+            if [ "$arg" = '-m' ]; then
+              seen_m=1
+            elif [ -n "$seen_m" ] && [ -z "$seen_venv" ] && [ "$arg" = 'venv' ] && [ -z "''${BIGOLU_NO_COPY:-}" ]; then
+              new_args=("''${new_args[@]}" "--copies")
+              seen_venv=1
+              printf '\nInjecting "--copies" into command, disable by setting "BIGOLU_NO_COPY=1"\n\n'
+            fi
+          done
+
+          ${pkgs.python3}/bin/python "''${new_args[@]}"
+        '';
+      };
+
+    python3CopyVenvsByDefaultPackage =
+      pkgs.runCommand
+      "python-copy-venvs"
+      {}
+      ''
+        mkdir -p $out/bin
+        name="$(find ${pkgs.python3}/bin -printf '%f\n' | grep -E '^python3\.[0-9]+(\.[0-9]+)?$')"
+        cp ${python3CopyVenvsByDefault}/bin/python "$out/bin/$name"
+        cp ${python3CopyVenvsByDefault}/bin/python "$out/bin/python"
+        cp ${python3CopyVenvsByDefault}/bin/python "$out/bin/python3"
+      '';
+  in
+    pkgs.symlinkJoin {
+      name = "python-copy-venvs";
+      paths = [
+        python3CopyVenvsByDefaultPackage
+        (pkgs.python3.withPackages (ps: with ps; [pip mypy ipython]))
+      ];
+    };
+in {
   imports = [
     ../direnv.nix
     ../firefox-developer-edition.nix
@@ -7,7 +55,7 @@
   ];
 
   home.packages = with pkgs; [
-    (python3.withPackages (ps: with ps; [pip mypy ipython]))
+    wrappedPython3
     nodejs
     rustc
     go

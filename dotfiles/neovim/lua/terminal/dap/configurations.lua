@@ -80,32 +80,12 @@ Plug("mfussenegger/nvim-dap-python", {
       replace_args_function()
     end
 
-    local function is_debugpy_symlink_broken()
-      ---@diagnostic disable-next-line: deprecated
-      return vim.fn.file_readable(get_debugpy_python_path()) == 0
-    end
-
     local function config_helper()
       if not is_package_installed(debugpy_package_name) then
         warn_package_not_installed(debugpy_package_name)
         on_package_installed(debugpy_package_name, add_configs)
         return
       end
-
-      -- TODO: Workaround for Nix. Python virtualenvs use the canonical path of the base
-      -- python. This is an issue for Nix because when I update my system and the old python gets
-      -- garbage collected, it breaks any virtualenvs made against it. So here I let the user know
-      -- so they can reinstall debugpy.
-      --
-      if is_debugpy_symlink_broken() then
-        vim.notify(
-          "Error: Unable to setup dap-python because the python symlink in debugpy's venv is broken. This is probably due to Nix garbage collection so reinstall it to fix the link.",
-          vim.log.levels.WARN
-        )
-        on_package_installed(debugpy_package_name, add_configs)
-        return
-      end
-
       add_configs()
     end
 
