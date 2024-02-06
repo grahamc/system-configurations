@@ -1,18 +1,21 @@
 Plug("f-person/git-blame.nvim", {
   config = function()
-    vim.g.gitblame_highlight_group = "GitBlameVirtualText"
     local message_prefix = "    "
     require("gitblame").setup({
       message_template = message_prefix .. "<author>, <date> ∙ <summary>",
       message_when_not_committed = message_prefix .. "Not committed yet",
       date_format = "%r",
       use_blame_commit_file_urls = true,
-      -- TODO: Workaround for a bug in neovim where virtual text highlight is being combined with
-      -- the cursorline highlight. issue: https://github.com/neovim/neovim/issues/15485
+      highlight_group = "GitBlameVirtualText",
       set_extmark_options = {
+        -- TODO: Workaround for a bug in neovim where virtual text highlight is being combined with
+        -- the cursorline highlight. issue: https://github.com/neovim/neovim/issues/15485
         hl_mode = "combine",
+        -- so it goes last
+        priority = 9000,
       },
     })
+    vim.keymap.set("n", [[\b]], vim.cmd.GitBlameToggle, { desc = "Toggle git blame" })
   end,
 })
 
@@ -25,17 +28,17 @@ Plug("mhinz/vim-signify", {
     vim.cmd([[
         function! s:signify_hunk_next(count) abort
           let oldpos = getcurpos()
-          call sy#jump#next_hunk(a:count)
+          silent! call sy#jump#next_hunk(a:count)
           if getcurpos() == oldpos
-            call sy#jump#prev_hunk(9999)
+            silent! call sy#jump#prev_hunk(9999)
           endif
         endfunction
 
         function! s:signify_hunk_prev(count) abort
           let oldpos = getcurpos()
-          call sy#jump#prev_hunk(a:count)
+          silent! call sy#jump#prev_hunk(a:count)
           if getcurpos() == oldpos
-            call sy#jump#next_hunk(9999)
+            silent! call sy#jump#next_hunk(9999)
           endif
         endfunction
 

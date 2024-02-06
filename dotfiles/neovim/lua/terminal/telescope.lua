@@ -105,16 +105,37 @@ Plug("nvim-telescope/telescope.nvim", {
         filter_notifications = { preview_title = "" },
         command_history = {
           mappings = {
-            -- If I execute the command directly from telescope I can't see the output so I'll
-            -- send it to the commandline first.
-            i = { ["<CR>"] = actions.edit_command_line },
+            i = {
+              ["<CR>"] = function(prompt_bufnr)
+                local selection = require("telescope.actions.state").get_selected_entry().value
+                actions.close(prompt_bufnr)
+                -- If you just use `vim.cmd` the output won't show so I'm using feedkeys instead
+                local enter_key = vim.api.nvim_replace_termcodes("<CR>", true, false, true)
+                vim.api.nvim_feedkeys(":" .. selection .. enter_key, "n", true)
+              end,
+            },
+          },
+        },
+      },
+      extensions = {
+        menufacture = {
+          mappings = {
+            main_menu = { [{ "i", "n" }] = "<C-f>" },
           },
         },
       },
     })
 
+    local telescope_menufacture = require("telescope").extensions.menufacture
+    local function with_menufacture_mappings_displayed(picker)
+      return function()
+        IsMenufactureOpen = true
+        picker()
+      end
+    end
+
     local telescope_builtins = require("telescope.builtin")
-    local function call_with_visual_selection(picker)
+    local function with_visual_selection(picker)
       local result = function()
         local visual_selection = require("utilities").get_visual_selection()
         if #visual_selection > 0 then
@@ -129,7 +150,7 @@ Plug("nvim-telescope/telescope.nvim", {
     vim.keymap.set(
       { "n", "v" },
       "<Leader>h",
-      call_with_visual_selection(telescope_builtins.command_history),
+      with_visual_selection(telescope_builtins.command_history),
       { desc = "Command history" }
     )
     -- TODO: I need to fix the previewer so it works with `page`. This way I get I get a live
@@ -140,20 +161,25 @@ Plug("nvim-telescope/telescope.nvim", {
     vim.keymap.set(
       { "n", "v" },
       "<Leader>k",
-      call_with_visual_selection(telescope_builtins.help_tags),
+      with_visual_selection(telescope_builtins.help_tags),
       { desc = "Search help pages [manual,manpage]" }
     )
     vim.keymap.set(
       { "n", "v" },
       "<Leader>g",
       require("terminal.utilities").set_jump_before(
-        call_with_visual_selection(telescope_builtins.live_grep)
+        with_visual_selection(with_menufacture_mappings_displayed(telescope_menufacture.live_grep))
       ),
       { desc = "Search files [grep]" }
     )
-    vim.keymap.set("n", "<Leader>f", telescope_builtins.find_files, {
-      desc = "Search files [find]",
-    })
+    vim.keymap.set(
+      "n",
+      "<Leader>f",
+      with_menufacture_mappings_displayed(telescope_menufacture.find_files),
+      {
+        desc = "Search files [find]",
+      }
+    )
     vim.keymap.set("n", "<Leader>j", telescope_builtins.jumplist, {
       desc = "Jumplist",
     })
@@ -163,11 +189,11 @@ Plug("nvim-telescope/telescope.nvim", {
     vim.keymap.set(
       { "n", "v" },
       "<Leader>s",
-      call_with_visual_selection(telescope_builtins.lsp_dynamic_workspace_symbols),
+      with_visual_selection(telescope_builtins.lsp_dynamic_workspace_symbols),
       { desc = "Symbols" }
     )
-    vim.keymap.set("n", "<M-d>", telescope_builtins.diagnostics, {
-      desc = "Diagnostics",
+    vim.keymap.set("n", "<Leader>o", telescope_builtins.vim_options, {
+      desc = "Vim options",
     })
     vim.api.nvim_create_user_command("Highlights", telescope_builtins.highlights, {})
     vim.api.nvim_create_user_command("Autocommands", telescope_builtins.autocommands, {})
@@ -175,6 +201,7 @@ Plug("nvim-telescope/telescope.nvim", {
 
     telescope.load_extension("fzf")
     telescope.load_extension("smart_history")
+    require("telescope").load_extension("menufacture")
   end,
 })
 
@@ -182,3 +209,5 @@ Plug("nvim-telescope/telescope-fzf-native.nvim")
 
 -- Dependencies: sqlite.lua
 Plug("nvim-telescope/telescope-smart-history.nvim")
+
+Plug("molecule-man/telescope-menufacture")

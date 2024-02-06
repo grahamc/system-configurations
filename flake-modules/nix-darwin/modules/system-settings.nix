@@ -29,7 +29,7 @@
     # Copied from the nix-darwin option 'security.pam.enableSudoTouchIdAuth' with the addition of pam-reattach so it works with tmux.
     #
     # TODO: I should upstream this
-    activationScripts.myPam.text = let
+    activationScripts.postActivation.text = let
       mkSudoTouchIdAuthScript = isEnabled: let
         file = "/etc/pam.d/sudo";
         option = "security.pam.enableSudoTouchIdAuth";
@@ -56,7 +56,7 @@
       '';
     in ''
       # PAM settings
-      echo >&2 "setting up pam..."
+      echo >&2 "[bigolu] setting up pam..."
       ${mkSudoTouchIdAuthScript true}
     '';
   };

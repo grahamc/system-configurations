@@ -9,6 +9,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = "qf",
   callback = function()
     vim.keymap.set("n", "gf", ":cdo s///e<left><left><left>", { buffer = true })
+    vim.wo.statusline = "%!v:lua.StatusLine()"
   end,
 })
 vim.api.nvim_create_autocmd({ "BufEnter" }, {
@@ -49,7 +50,12 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   group = statusline_group,
   pattern = "TelescopePrompt",
   callback = function()
-    vim.opt_local.statusline = "%!v:lua.TelescopeStatusLine()"
+    if IsMenufactureOpen then
+      IsMenufactureOpen = false
+      vim.opt_local.statusline = "%!v:lua.TelescopeStatusLine(v:true)"
+    else
+      vim.opt_local.statusline = "%!v:lua.TelescopeStatusLine()"
+    end
   end,
 })
 -- }}}
@@ -204,7 +210,7 @@ end
 
 -- main statusline {{{
 function StatusLine()
-  local position = "%#StatusLine#" .. " %03l:%03c"
+  local position = "%#StatusLine#" .. " %03l:%03c"
 
   local fileformat = nil
   if vim.o.fileformat == "mac" then
@@ -262,7 +268,7 @@ function StatusLine()
   if ok then
     if czs.display_results() then
       local _, current, count = czs.output()
-      search_info = "%#StatusLine# " .. string.format("%s/%s", current, count)
+      search_info = "%#StatusLine# " .. string.format("%s/%s", current, count)
     end
   end
 
@@ -361,9 +367,13 @@ function StatusLine()
     return make_mapping_statusline({
       ["<C-j/k>"] = "Scroll docs down/up",
     })
-  elseif IsInsideLspHoverOrSignatureHelp then
+  elseif IsInsideDiagnosticFloat or IsInsideLspHoverOrSignatureHelp then
     return make_mapping_statusline({
       q = "Close float",
+    })
+  elseif IsDiagnosticFloatOpen then
+    return make_mapping_statusline({
+      L = "Enter float",
     })
   elseif IsLspHoverOpen then
     return make_mapping_statusline({
@@ -480,11 +490,17 @@ end
 -- }}}
 
 -- telescope statusline {{{
-function TelescopeStatusLine()
-  return make_mapping_statusline({
-    ["<C-q>"] = "Send to quickfix",
+function TelescopeStatusLine(is_menufacture_open)
+  local mappings = {
+    ["<C-q>"] = "Quickfix",
     ["M-<CR>"] = "Multi-select",
     ["<C-k/j>"] = "Scroll preview up/down",
-  })
+  }
+  if is_menufacture_open then
+    mappings = vim.tbl_deep_extend("error", mappings, {
+      ["<C-f>"] = "Filter",
+    })
+  end
+  return make_mapping_statusline(mappings)
 end
 -- }}}

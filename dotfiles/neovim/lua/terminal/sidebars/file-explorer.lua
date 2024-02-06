@@ -89,11 +89,14 @@ Plug("kyazdani42/nvim-tree.lua", {
       { silent = true, desc = "Toggle file explorer [tree]" }
     )
     local nvim_tree_group_id = vim.api.nvim_create_augroup("MyNvimTree", {})
+    local utils = require("terminal.utilities")
     vim.api.nvim_create_autocmd("BufEnter", {
       callback = function()
         if vim.o.filetype == "NvimTree" then
-          vim.api.nvim_set_hl(0, "ExplorerTitle", { link = "BufferLineBufferSelected" })
-          vim.api.nvim_set_hl(0, "ExplorerBorder", { link = "BufferLineIndicatorSelected" })
+          utils.set_persistent_highlights("explorer", {
+            ExplorerTitle = "BufferLineBufferSelected",
+            ExplorerBorder = "BufferLineIndicatorSelected",
+          })
           vim.opt_local.cursorline = true
         end
       end,
@@ -102,8 +105,10 @@ Plug("kyazdani42/nvim-tree.lua", {
     vim.api.nvim_create_autocmd("BufLeave", {
       callback = function()
         if vim.o.filetype == "NvimTree" then
-          vim.api.nvim_set_hl(0, "ExplorerTitle", { link = "BufferLineBufferVisible" })
-          vim.api.nvim_set_hl(0, "ExplorerBorder", { link = "Ignore" })
+          utils.set_persistent_highlights("explorer", {
+            ExplorerTitle = "BufferLineBufferVisible",
+            ExplorerBorder = "Ignore",
+          })
           vim.opt_local.cursorline = false
         end
       end,

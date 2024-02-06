@@ -68,8 +68,7 @@ Plug("mrjones2014/legendary.nvim", {
       end
       local key = vim.iter(candidate_keys):find(is_non_empty_string)
 
-      -- coerce to a non-empty string because legendary won't show it otherwise
-      return key and item[key] or " "
+      return key and item[key] or nil
     end
 
     local function make_legendary_buffer_filter(buffer)
@@ -137,11 +136,10 @@ Plug("mrjones2014/legendary.nvim", {
         return not vim.startswith(keymap.lhs, "<Plug>")
       end
 
-      local buf = vim.api.nvim_win_get_buf(0)
       local buffer_keymaps = vim
         .iter(modes)
         :map(function(mode)
-          vim.api.nvim_buf_get_keymap(buf, mode)
+          return vim.api.nvim_buf_get_keymap(0, mode)
         end)
         :flatten()
         :totable()
@@ -182,7 +180,9 @@ Plug("mrjones2014/legendary.nvim", {
           table.insert(filters, make_legendary_buffer_filter(buf))
         end
 
-        local description = get_description(info, { "definition" })
+        -- Default to a non-empty string because legendary won't show it otherwise. Commands without
+        -- descriptions are ok because they have names, unlike keymaps.
+        local description = get_description(info, { "definition" }) or " "
 
         return {
           command_name,
@@ -229,9 +229,9 @@ Plug("mrjones2014/legendary.nvim", {
       include_legendary_cmds = false,
       icons = {
         keymap = " ",
-        command = "",
-        fn = "󰡱",
-        itemgroup = "",
+        command = " ",
+        fn = "󰡱 ",
+        itemgroup = " ",
       },
     })
 

@@ -6,9 +6,14 @@ abbr --add --global g git
 set --global --export PAGER less
 abbr --add --global x 'chmod +x'
 abbr --add --global du 'du -shL'
-# If for some reason the $TERM isn't one of the values I'm expecting, default to wezterm
+# Fix terminfo. This is needed for neovim which sets TERM to xterm-256color regardless of the
+# terminal I'm using and that causes issues some times
 if test "$TERM" != tmux-256color -a "$TERM" != wezterm
-    set --global --export TERM wezterm
+    if test -n "$TMUX"
+        set --global --export TERM tmux-256color
+    else
+        set --global --export TERM wezterm
+    end
 end
 if test (uname) = Linux
     abbr --add --global initramfs-reload 'sudo update-initramfs -u -k all'

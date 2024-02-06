@@ -205,11 +205,11 @@ local theme = lush(function(injected_functions)
     ---@diagnostic disable-next-line: undefined-field
     StatusLinePowerlineOuter { fg = StatusLine.bg },
     StatusLinePowerlineInner { StatusLine, fg = t_0.fg },
-    StatusLineModeNormal { StatusLine, bold = true },
-    StatusLineModeVisual { StatusLine, fg = Visual.bg, bold = true },
-    StatusLineModeInsert { StatusLine, fg = t_6.fg, bold = true },
-    StatusLineModeTerminal { StatusLine, fg = t_2.fg, bold = true },
-    StatusLineModeOther { StatusLine, fg = t_4.fg, bold = true },
+    StatusLineModeNormal { StatusLine, },
+    StatusLineModeVisual { StatusLine, fg = Visual.bg, },
+    StatusLineModeInsert { StatusLine, fg = t_6.fg, },
+    StatusLineModeTerminal { StatusLine, fg = t_2.fg, },
+    StatusLineModeOther { StatusLine, fg = t_4.fg, },
     -- }}}
 
     -- tabline {{{
@@ -220,6 +220,23 @@ local theme = lush(function(injected_functions)
     TabLineFill { TabLine }, -- Tab pages line, where there are no labels
     TabLineSel { TabLine }, -- Tab pages line, active tab page label
     -- }}}
+
+    -- LSP {{{
+      -- These groups are for the native LSP client and diagnostic system. Some
+      -- other LSP clients may use these groups, or use their own. Consult your
+      -- LSP client's documentation.
+
+      -- See :h lsp-highlight, some groups may not be listed, submit a PR fix to lush-template!
+      --
+      -- LspReferenceText            { } , -- Used for highlighting "text" references
+      -- LspReferenceRead            { } , -- Used for highlighting "read" references
+      -- LspReferenceWrite           { } , -- Used for highlighting "write" references
+      -- LspSignatureActiveParameter { } , -- Used to highlight the active parameter in the signature help. See |vim.lsp.handlers.signature_help()|.
+      LspInfoBorder { FloatBorder },
+      LspInlayHint { bg = is_light and t_0.fg.da(3) or t_0.fg.li(3), fg = is_light and t_0.fg.da(68) or t_0.fg.li(68), italic = true, bold = true, },
+      LspCodeLens { LspInlayHint, } , -- Used to color the virtual text of the codelens. See |nvim_buf_set_extmark()|.
+      LspCodeLensSeparator { LspCodeLens, fg = t_15.fg, } , -- Used to color the seperator between two or more code lens.
+      -- }}}
 
     SpecialKey { t_5 }, -- Unprintable characters: text displayed differently from what it really is. But not 'listchars' whitespace. |hl-Whitespace|
     Conceal { t_15 }, -- Placeholder characters substituted for concealed text (see 'conceallevel')
@@ -255,17 +272,20 @@ local theme = lush(function(injected_functions)
     Ignore { t_0 }, -- Left blank, hidden |hl-Ignore| (NOTE: May be invisible here in template)
     Todo { t_3 }, -- Anything that needs extra attention; mostly the keywords TODO FIXME and XXX
     VirtColumn { NonText, },
+    NvimDapVirtualText { LspInlayHint },
+    LuaSnipInlayHint { LspInlayHint, fg = t_11.fg },
+    TroubleCount { Identifier },
 
     -- bufferline.nvim {{{
-    MyBufferLineBackground { bg = t_0.fg, fg = t_15.fg },
+    MyBufferLineBackground { bg = t_0.fg, },
     MyBufferLineFill { fg = MyBufferLineBackground.bg },
-    MyBufferLineBufferVisible { t_15 },
+    MyBufferLineBufferVisible { },
     MyBufferLineBufferSelected { StatusLine },
     MyBufferLineDuplicate { MyBufferLineBufferVisible },
     MyBufferLineDuplicateSelected { MyBufferLineBufferSelected },
     MyBufferLineDuplicateVisible { MyBufferLineBufferVisible },
-    MyBufferLineNumbers { MyBufferLineBufferVisible },
-    MyBufferLineNumbersVisible { MyBufferLineBufferVisible },
+    MyBufferLineNumbers { t_15 },
+    MyBufferLineNumbersVisible { MyBufferLineNumbers },
     MyBufferLineNumbersSelected { MyBufferLineBufferSelected, fg = t_6.fg },
     MyBufferLineCloseButton { MyBufferLineFill },
     MyBufferLineCloseButtonVisible { MyBufferLineCloseButton },
@@ -360,6 +380,7 @@ local theme = lush(function(injected_functions)
     MiniJump2dSpotUnique { MiniJump2dSpot },
     MiniJump2dSpotAhead { MiniJump2dSpot },
     MiniJump2dDim { t_15 },
+    Clear { },
     MiniCursorword { bg = is_light and t_0.fg.darken(6) or t_0.fg.lighten(6) },
     -- }}}
 
@@ -410,6 +431,7 @@ local theme = lush(function(injected_functions)
     DropBarIconUIIndicator { fg = CmpItemKind.fg },
     DropBarMenuHoverIcon { DropBarMenuHoverEntry, },
     DropBarMenuNormalFloat { CmpNormal },
+    DropBarMenuCursor { DropBarMenuNormalFloat, fg = DropBarMenuNormalFloat.bg, blend = 100, },
     DropBarPreview { MiniCursorword },
     DropBarIconUISeparator { t_15 },
     DropBarIconUISeparatorMenu { CmpItemKind },
@@ -519,25 +541,52 @@ local theme = lush(function(injected_functions)
     DapUIEndofBuffer { Normal },
     -- }}}
 
-    -- LSP {{{
-    -- These groups are for the native LSP client and diagnostic system. Some
-    -- other LSP clients may use these groups, or use their own. Consult your
-    -- LSP client's documentation.
-
-    -- See :h lsp-highlight, some groups may not be listed, submit a PR fix to lush-template!
-    --
-    -- LspReferenceText            { } , -- Used for highlighting "text" references
-    -- LspReferenceRead            { } , -- Used for highlighting "read" references
-    -- LspReferenceWrite           { } , -- Used for highlighting "write" references
-    -- LspCodeLens                 { } , -- Used to color the virtual text of the codelens. See |nvim_buf_set_extmark()|.
-    -- LspCodeLensSeparator        { } , -- Used to color the seperator between two or more code lens.
-    -- LspSignatureActiveParameter { } , -- Used to highlight the active parameter in the signature help. See |vim.lsp.handlers.signature_help()|.
-    LspInfoBorder { FloatBorder },
-    LspInlayHint { bg = is_light and t_0.fg.da(3) or t_0.fg.li(3), fg = is_light and t_0.fg.da(68) or t_0.fg.li(68), italic = true, bold = true, },
+    -- overseer.nvim {{{
+    OverseerPENDING { },
+    OverseerRUNNING { t_3 },
+    OverseerSUCCESS { DiagnosticOk },
+    OverseerCANCELED { t_15 },
+    OverseerFAILURE { DiagnosticError },
+    OverseerTask { },
+    OverseerTaskBorder { t_15 },
+    OverseerOutput { },
+    OverseerComponent { },
+    OverseerField { },
     -- }}}
 
-    NvimDapVirtualText { LspInlayHint },
-    LuaSnipInlayHint { LspInlayHint, fg = t_11.fg },
+    -- litee.nvim {{{
+    LTSymbolJump { Search },
+    LTSymbolJumpRefs { LTSymbolJump },
+    LTSymbol { Normal },
+    LTSymbolDetail { t_15, italic = true, bold = true, },
+    LTCursor { blend = 100, fg = "black", bg = "black", },
+    LTIndentGuide { LTCursor },
+    LTExpandedGuide { LTCursor },
+    LTCollapsedGuide { LTCursor },
+    -- }}}
+
+    -- neotest.nvim {{{
+    NeotestAdapterName { Directory },
+    NeotestDir { Directory },
+    NeotestExpandMarker { t_15 },
+    NeotestFile { Directory },
+    NeotestFocused { Normal },
+    NeotestIndent { NeotestExpandMarker },
+    NeotestMarked { Special },
+    NeotestNamespace { Directory },
+    NeotestPassed { DiagnosticOk },
+    NeotestFailed { DiagnosticError },
+    NeotestRunning { t_3 },
+    NeotestWinSelect { Normal },
+    NeotestSkipped { t_15 },
+    NeotestTarget { Normal },
+    NeotestTest { Normal },
+    NeotestUnknown { t_15 },
+    NeotestWatching { Normal },
+    NeotestBorder { Normal },
+    NeotestCursor { blend = 100, fg = "black", bg = "black", },
+    NeotestCurrentLine { bg = MiniCursorword.bg },
+    -- }}}
 
     -- Tree-Sitter {{{
     --
@@ -614,6 +663,7 @@ local theme = lush(function(injected_functions)
     sym"@string.special.path" { SpecialChar },
     sym"@string.special.symbol" { SpecialChar },
     sym"@string.special.url" { String },
+    sym"@string.special.url.comment" { Comment, underline = true, },
     sym"@character" { Character }, -- Character
     sym"@character.special" { SpecialChar }, -- SpecialChar
     sym"@number" { Number }, -- Number

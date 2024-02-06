@@ -23,7 +23,6 @@
           "nix-index-database"
           "nix-xdg"
           "gomod2nix"
-          "tree-sitter-just"
           "neodev-nvim"
           "wezterm"
           "tmux"

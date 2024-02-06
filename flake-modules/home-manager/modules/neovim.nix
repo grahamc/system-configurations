@@ -46,13 +46,13 @@
       # Read this to see why the `tr` command is needed:
       # https://stackoverflow.com/questions/16739300/redirect-ex-command-to-stdout-in-vim
       #
-      # The command is there to filter out any messages that get printed on startup.
+      # The grep command is there to filter out any messages that get printed on startup.
       # I'm redirecting stderr to stdout because neovim prints its output on stderr.
       readarray -t runtime_dirs < <(nvim --headless  -c 'lua for _,directory in ipairs(vim.api.nvim_get_runtime_file("", true)) do print(directory) end' -c 'quit' 2>&1 | tr -d '\r' | grep -E '^/')
 
       jq \
         --null-input \
-        '{"$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json", "workspace": {"library": $ARGS.positional, "checkThirdParty": "Disable"}, "runtime": {"version": "LuaJIT"}, "telemetry": {"enable": false}, "hint": {"enable": true}}' \
+        '{"$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json", "workspace": {"library": $ARGS.positional, "checkThirdParty": "Disable"}, "runtime": {"version": "LuaJIT", "path": [ "dotfiles/neovim/lua/?.lua", "dotfiles/neovim/lua/?/init.lua" ]}, "telemetry": {"enable": false}, "hint": {"enable": true}}' \
         --args \
           '${specialArgs.flakeInputs.neodev-nvim}/types/nightly' \
           '${config.xdg.dataHome}/nvim/plugged' \

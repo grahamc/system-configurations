@@ -376,6 +376,23 @@ Plug("echasnovski/mini.nvim", {
         vim.b.minicursorword_disable = false
       end,
     })
+
+    -- Don't highlight in inactive windows
+    local cursorword_highlight_name = "MiniCursorword"
+    vim.api.nvim_create_autocmd("WinLeave", {
+      group = mini_group_id,
+      callback = function()
+        vim.opt_local.winhighlight:append(cursorword_highlight_name .. ":Clear")
+      end,
+    })
+    vim.api.nvim_create_autocmd("WinEnter", {
+      group = mini_group_id,
+      callback = function()
+        -- TODO: When removing the highlight I can only provide the from highlight, but in vimscript
+        -- I can provide both e.g. `set winhighlight-=From:To`
+        vim.opt_local.winhighlight:remove(cursorword_highlight_name)
+      end,
+    })
     -- }}}
 
     -- trailspace {{{

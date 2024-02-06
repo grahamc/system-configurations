@@ -151,10 +151,6 @@
 
     # vim
     ########################################
-    tree-sitter-just = {
-      url = "github:IndianBoy42/tree-sitter-just";
-      flake = false;
-    };
     neodev-nvim = {
       url = "github:folke/neodev.nvim";
       flake = false;
@@ -448,6 +444,66 @@
     };
     vim-plugin-nvim-nonicons = {
       url = "github:yamatsum/nvim-nonicons";
+      flake = false;
+    };
+    vim-plugin-trouble-nvim = {
+      url = "github:folke/trouble.nvim";
+      flake = false;
+    };
+    vim-plugin-splitjoin-vim = {
+      url = "github:AndrewRadev/splitjoin.vim";
+      flake = false;
+    };
+    vim-plugin-treesj = {
+      url = "github:Wansmer/treesj";
+      flake = false;
+    };
+    vim-plugin-nvim-lsp-file-operations = {
+      url = "github:antosha417/nvim-lsp-file-operations";
+      flake = false;
+    };
+    vim-plugin-nvim-pqf = {
+      url = "github:yorickpeterse/nvim-pqf";
+      flake = false;
+    };
+    vim-plugin-typescript-tools-nvim = {
+      url = "github:pmizio/typescript-tools.nvim";
+      flake = false;
+    };
+    vim-plugin-litee-nvim = {
+      url = "github:ldelossa/litee.nvim";
+      flake = false;
+    };
+    vim-plugin-litee-calltree-nvim = {
+      url = "github:ldelossa/litee-calltree.nvim";
+      flake = false;
+    };
+    vim-plugin-toggleterm-nvim = {
+      url = "github:akinsho/toggleterm.nvim";
+      flake = false;
+    };
+    vim-plugin-overseer-nvim = {
+      url = "github:stevearc/overseer.nvim";
+      flake = false;
+    };
+    vim-plugin-telescope-menufacture = {
+      url = "github:molecule-man/telescope-menufacture";
+      flake = false;
+    };
+    vim-plugin-neotest = {
+      url = "github:nvim-neotest/neotest";
+      flake = false;
+    };
+    vim-plugin-neotest-python = {
+      url = "github:nvim-neotest/neotest-python";
+      flake = false;
+    };
+    vim-plugin-tree-sitter-just = {
+      url = "github:IndianBoy42/tree-sitter-just";
+      flake = false;
+    };
+    vim-plugin-vim-qf = {
+      url = "github:romainl/vim-qf";
       flake = false;
     };
   };

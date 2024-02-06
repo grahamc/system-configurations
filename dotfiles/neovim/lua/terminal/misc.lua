@@ -5,6 +5,8 @@ vim.o.scrolloff = 999
 vim.o.jumpoptions = "stack"
 vim.o.mousemoveevent = true
 
+vim.g.netrw_silent = 1
+
 -- open links with browser {{{
 --
 -- Mostly taken from here:
@@ -99,10 +101,21 @@ vim.api.nvim_create_autocmd(
   }
 )
 -- Get help buffers to open in the current window. Source: https://stackoverflow.com/a/26431632
+--
+-- TODO: comment on the source to add the edge cases I found.
 vim.api.nvim_create_user_command("Help", function(context)
   vim.cmd.enew()
+  local new_buffer = vim.fn.bufnr()
   vim.bo.buftype = "help"
   vim.cmd.help(context.args)
+
+  -- If the help buffer was already open, vim will just jump to it so in that case we should close the new buffer we made.
+  local not_in_new_buffer = new_buffer ~= vim.fn.bufnr()
+  if not_in_new_buffer then
+    vim.cmd.bwipeout(new_buffer)
+    return
+  end
+
   vim.bo.buflisted = true
   -- some help pages, like vim-signify, have the filetype "text" so I'll change that
   vim.bo.filetype = "help"
@@ -171,7 +184,7 @@ Plug("m4xshen/smartcolumn.nvim", {
 -- }}}
 
 -- Quickfix {{{
-local function toggle_quickfix()
+vim.keymap.set("n", "<M-q>", function()
   local qf_exists = false
   for _, win in pairs(vim.fn.getwininfo() or {}) do
     if win["quickfix"] == 1 then
@@ -183,11 +196,32 @@ local function toggle_quickfix()
     return
   end
   if not vim.tbl_isempty(vim.fn.getqflist()) then
-    vim.cmd("copen")
+    vim.cmd("botright copen")
   end
-end
-vim.keymap.set("n", "<M-q>", toggle_quickfix, {
+end, {
   desc = "Toggle quickfix",
+})
+
+Plug("romainl/vim-qf", {
+  config = function()
+    vim.api.nvim_create_autocmd({ "FileType" }, {
+      pattern = "qf",
+      callback = function()
+        vim.keymap.set("n", "dd", function()
+          return ":.Reject<CR>:" .. vim.fn.line(".") .. "<CR>"
+        end, { expr = true })
+        function QfDeleteRange()
+          local key = vim.api.nvim_replace_termcodes("<CR>", true, false, true)
+          vim.api.nvim_feedkeys(
+            "gv:'<,'>Reject" .. key .. ":" .. vim.fn.line("'<") .. key,
+            "n",
+            false
+          )
+        end
+        vim.keymap.set("x", "d", "<Esc>:lua QfDeleteRange()<CR>", {})
+      end,
+    })
+  end,
 })
 -- }}}
 
@@ -206,7 +240,8 @@ vim.keymap.set("n", "<M-q>", toggle_quickfix, {
 local function checktime()
   return pcall(vim.cmd.checktime)
 end
-vim.uv.new_timer():start(
+local timer = vim.uv.new_timer()
+timer:start(
   0,
   500,
   vim.schedule_wrap(function()
@@ -215,17 +250,43 @@ vim.uv.new_timer():start(
       return
     end
 
+    -- check for changes made outside of vim
     local success = checktime()
     if not success then
       return
     end
 
-    -- check for changes made outside of vim
-    -- give buffers a chance to update via 'autoread'
+    -- Give buffers a chance to update via 'autoread' in response to the checktime done above by
+    -- deferring.
     vim.defer_fn(function()
-      vim.cmd([[
-        silent! wall
-      ]])
+      -- I'm saving this way instead of :wall because I want to filter out buffers with buftype
+      -- 'acwrite' because overseer.nvim uses that for floats that require user input and my
+      -- autosave was causing them to automatically close.
+      vim
+        .iter(vim.api.nvim_list_bufs())
+        :filter(vim.api.nvim_buf_is_loaded)
+        :filter(function(buf)
+          return vim.bo[buf].buftype == ""
+        end)
+        :filter(function(buf)
+          return not vim.bo[buf].readonly
+        end)
+        :filter(function(buf)
+          return vim.bo[buf].modified
+        end)
+        :each(function(buf)
+          vim.api.nvim_buf_call(buf, function()
+            ---@diagnostic disable-next-line: param-type-mismatch
+            local was_successful = pcall(vim.cmd, "silent write")
+            if not was_successful then
+              vim.notify(
+                string.format("Failed to write buffer #%s, disabling autosave...", buf),
+                vim.log.levels.ERROR
+              )
+              timer:stop()
+            end
+          end)
+        end)
     end, 300)
   end)
 )
@@ -255,7 +316,9 @@ vim.keymap.set(
 )
 vim.keymap.set({ "n", "i" }, "<C-M-]>", vim.cmd.tabnext, { silent = true, desc = "Next tab" })
 vim.keymap.set({ "n" }, "<C-t>", function()
+  local cursor_position = vim.api.nvim_win_get_cursor(0)
   vim.cmd.tabnew("%")
+  vim.api.nvim_win_set_cursor(0, cursor_position)
 end, { silent = true, desc = "New tab" })
 -- }}}
 
@@ -318,27 +381,61 @@ vim.keymap.set("n", [[\|]], function()
 end, { silent = true, expr = true, desc = "Toggle indent guide" })
 
 -- Terminal {{{
+vim.keymap.set("t", "jk", [[<C-\><C-n>]])
+
 vim.api.nvim_create_autocmd("TermOpen", {
   callback = function()
     vim.opt_local.signcolumn = "no"
     vim.opt_local.statuscolumn = ""
-    vim.opt_local.number = false
-    vim.opt_local.relativenumber = false
-    vim.cmd.startinsert()
   end,
 })
--- TODO: see if reticle.nvim can support disabling by buftype
-local terminal_group_id = vim.api.nvim_create_augroup("bigolu/terminal", {})
-vim.api.nvim_create_autocmd("TermEnter", {
-  group = terminal_group_id,
+vim.api.nvim_create_autocmd("WinEnter", {
+  nested = true,
   callback = function()
-    require("reticle").set_cursorline(false)
+    if vim.bo.buftype == "terminal" and vim.bo.filetype ~= "neotest-output-panel" then
+      vim.cmd.startinsert()
+    end
+  end,
+})
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  callback = function()
+    if vim.bo.buftype == "terminal" then
+      vim.opt_local.signcolumn = "no"
+      vim.opt_local.statuscolumn = ""
+    end
+  end,
+})
+vim.api.nvim_create_autocmd("BufWinLeave", {
+  callback = function()
+    if vim.bo[tonumber(vim.fn.expand("<abuf>"))].buftype == "terminal" then
+      vim.cmd([[
+        set signcolumn<
+        set statuscolumn<
+      ]])
+    end
+  end,
+})
+
+-- TODO: see if reticle.nvim can support disabling by buftype
+vim.api.nvim_create_autocmd("TermEnter", {
+  callback = function()
+    if vim.bo.buftype == "terminal" then
+      require("reticle").set_cursorline(false)
+    end
   end,
 })
 vim.api.nvim_create_autocmd("TermLeave", {
-  group = terminal_group_id,
   callback = function()
-    require("reticle").set_cursorline(true)
+    if vim.bo.buftype == "terminal" then
+      require("reticle").set_cursorline(true)
+    end
+  end,
+})
+vim.api.nvim_create_autocmd("WinLeave", {
+  callback = function()
+    if vim.bo.buftype == "terminal" then
+      require("reticle").set_cursorline(true)
+    end
   end,
 })
 -- }}}

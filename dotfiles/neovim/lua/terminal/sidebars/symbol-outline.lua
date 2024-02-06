@@ -13,6 +13,9 @@ Plug("stevearc/aerial.nvim", {
       end
     end
     require("aerial").setup({
+      highlight_on_jump = false,
+      highlight_on_hover = true,
+      autojump = true,
       backends = { "lsp", "treesitter", "markdown", "man" },
       layout = {
         max_width = 0.3,
@@ -47,6 +50,7 @@ Plug("stevearc/aerial.nvim", {
       { silent = true, desc = "Symbol outline [minimap]" }
     )
     local aerial_group_id = vim.api.nvim_create_augroup("MyAerial", {})
+    local utils = require("terminal.utilities")
     vim.api.nvim_create_autocmd("BufEnter", {
       callback = function()
         if vim.o.filetype == "aerial" then
@@ -57,8 +61,10 @@ Plug("stevearc/aerial.nvim", {
           vim.opt_local.winbar = " "
           vim.b.minicursorword_disable = true
           vim.b.minicursorword_disable_permanent = true
-          vim.api.nvim_set_hl(0, "OutlineTitle", { link = "BufferLineBufferSelected" })
-          vim.api.nvim_set_hl(0, "OutlineBorder", { link = "BufferLineIndicatorSelected" })
+          utils.set_persistent_highlights("outline", {
+            OutlineTitle = "BufferLineBufferSelected",
+            OutlineBorder = "BufferLineIndicatorSelected",
+          })
         end
       end,
       group = aerial_group_id,
@@ -66,8 +72,10 @@ Plug("stevearc/aerial.nvim", {
     vim.api.nvim_create_autocmd("BufLeave", {
       callback = function()
         if vim.o.filetype == "aerial" then
-          vim.api.nvim_set_hl(0, "OutlineTitle", { link = "BufferLineBufferVisible" })
-          vim.api.nvim_set_hl(0, "OutlineBorder", { link = "Ignore" })
+          utils.set_persistent_highlights("outline", {
+            OutlineTitle = "BufferLineBufferVisible",
+            OutlineBorder = "Ignore",
+          })
         end
       end,
       group = aerial_group_id,

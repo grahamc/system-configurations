@@ -8,7 +8,7 @@ Plug("williamboman/mason.nvim", {
         height = 0.96,
         icons = {
           package_installed = "󰄳  ",
-          package_pending = " ",
+          package_pending = "  ",
           package_uninstalled = "󰝦  ",
         },
         keymaps = {
@@ -26,11 +26,13 @@ Plug("williamboman/mason.nvim", {
       end,
       group = vim.api.nvim_create_augroup("MyMason", {}),
     })
-    vim.api.nvim_create_user_command("Tools", function()
+    vim.api.nvim_create_user_command("Packages", function()
       vim.cmd.Mason()
-    end, { desc = "Manage external tooling such as language servers" })
+    end, { desc = "Manage external tooling like language servers" })
 
     -- Store the number of packages that have an update available so I can put it in my statusline.
+    --
+    -- TODO: add this to the tips section in the mason wiki
     local registry = require("mason-registry")
     local function maybe_set_update_flag(success, _)
       if success then

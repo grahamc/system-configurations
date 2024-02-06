@@ -1,7 +1,8 @@
 vim.opt.sessionoptions:remove("blank")
 vim.opt.sessionoptions:remove("options")
-vim.opt.sessionoptions:append("tabpages")
 vim.opt.sessionoptions:remove("folds")
+vim.opt.sessionoptions:append("tabpages")
+vim.opt.sessionoptions:append("skiprtp")
 
 local session_dir = vim.fn.stdpath("data") .. "/sessions"
 
@@ -26,7 +27,29 @@ local function restore_or_create_session()
   local is_neovim_called_with_no_arguments = #vim.v.argv == 2
   local has_ttyin = vim.fn.has("ttyin") == 1
   if is_neovim_called_with_no_arguments and has_ttyin then
-    local session_name = string.gsub(vim.fn.getcwd(), "/", "%%") .. "%vim"
+    local session_name = string.gsub(vim.fn.getcwd() or "", "/", "%%")
+    -- Calling system() was showing a black screen on startup, but calling redraw before it got rid
+    -- of the black screen
+    vim.cmd.redraw()
+    local branch_result = vim.system({ "git", "branch", "--show-current" }, { text = true }):wait()
+    if branch_result.code == 0 then
+      local branch = vim.trim(branch_result.stdout)
+      if branch ~= "" then
+        session_name = session_name .. "%" .. branch
+      else
+        local commit_result = vim
+          .system({ "git", "log", "--pretty=format:%h", "-n", "1" }, { text = true })
+          :wait()
+        if commit_result.code == 0 then
+          local commit = vim.trim(commit_result.stdout)
+          if commit ~= "" then
+            session_name = session_name .. "%" .. commit
+          end
+        end
+      end
+    end
+    session_name = session_name .. "%vim"
+
     vim.fn.mkdir(session_dir, "p")
     local session_full_path = session_dir .. "/" .. session_name
     local session_full_path_escaped = vim.fn.fnameescape(session_full_path)
@@ -70,7 +93,7 @@ local function delete_current_session()
 
   local has_active_session = string.len(session) > 0
   if not has_active_session then
-    vim.cmd.echoerr([['ERROR: No session is currently active.']])
+    vim.notify([[Unable to delete session, no session is currently active.]], vim.log.levels.ERROR)
     return
   end
 
@@ -79,7 +102,10 @@ local function delete_current_session()
 
   local exit_code = vim.fn.delete(session)
   if exit_code == -1 then
-    vim.cmd.echoerr(string.format([["Failed to delete current session '%s'."]], session))
+    vim.notify(
+      string.format([[Failed to delete current session '%s'.]], session),
+      vim.log.levels.ERROR
+    )
   end
 end
 local function delete_all_sessions()
@@ -87,8 +113,9 @@ local function delete_all_sessions()
   pcall(vim.api.nvim_del_augroup_by_name, "SaveSession")
 
   if not vim.fn.isdirectory(session_dir) then
-    vim.cmd.echoerr(
-      string.format([["Unable to delete all sessions, '%s' is not a directory."]], session_dir)
+    vim.notify(
+      string.format([[Unable to delete all sessions, '%s' is not a directory.]], session_dir),
+      vim.log.levels.ERROR
     )
     return
   end
@@ -97,11 +124,12 @@ local function delete_all_sessions()
   for _, session in ipairs(sessions) do
     local exit_code = vim.fn.delete(session)
     if exit_code == -1 then
-      vim.cmd.echoerr(
+      vim.notify(
         string.format(
-          [["Failed to delete session '%s'. Aborting the rest of the operation..."]],
+          [[Failed to delete session '%s'. Aborting the rest of the operation...]],
           session
-        )
+        ),
+        vim.log.levels.ERROR
       )
       return
     end

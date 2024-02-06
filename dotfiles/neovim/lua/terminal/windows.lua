@@ -56,7 +56,10 @@ Plug("Tummetott/reticle.nvim", {
       },
       disable_in_insert = false,
       never = {
-        cursorline = { "TelescopeResults", "dropbar_menu" },
+        cursorline = { "TelescopeResults", "dropbar_menu", "neotest-output-panel" },
+      },
+      always = {
+        cursorline = { "neotest-summary" },
       },
       always_highlight_number = true,
     })
@@ -66,25 +69,25 @@ Plug("Tummetott/reticle.nvim", {
 -- Resize windows
 vim.keymap.set(
   { "n" },
-  "<C-Left>",
+  "<Left>",
   [[<Cmd>vertical resize +1<CR>]],
   { silent = true, desc = "Resize window left" }
 )
 vim.keymap.set(
   { "n" },
-  "<C-Right>",
+  "<Right>",
   [[<Cmd>vertical resize -1<CR>]],
   { silent = true, desc = "Resize window right" }
 )
 vim.keymap.set(
   { "n" },
-  "<C-Up>",
+  "<Up>",
   [[<Cmd>resize +1<CR>]],
   { silent = true, desc = "Resize window up" }
 )
 vim.keymap.set(
   { "n" },
-  "<C-Down>",
+  "<Down>",
   [[<Cmd>resize -1<CR>]],
   { silent = true, desc = "Resize window down" }
 )
@@ -93,25 +96,25 @@ vim.keymap.set(
 Plug("christoomey/vim-tmux-navigator", {
   config = function()
     vim.keymap.set(
-      { "n", "i" },
+      { "n", "i", "t" },
       "<M-h>",
       "<Cmd>TmuxNavigateLeft<CR>",
       { silent = true, desc = "Move to west window [left]" }
     )
     vim.keymap.set(
-      { "n", "i" },
+      { "n", "i", "t" },
       "<M-l>",
       "<Cmd>TmuxNavigateRight<CR>",
       { silent = true, desc = "Move to east window [right]" }
     )
     vim.keymap.set(
-      { "n", "i" },
+      { "n", "i", "t" },
       "<M-j>",
       "<Cmd>TmuxNavigateDown<CR>",
       { silent = true, desc = "Move to south window [down]" }
     )
     vim.keymap.set(
-      { "n", "i" },
+      { "n", "i", "t" },
       "<M-k>",
       "<Cmd>TmuxNavigateUp<CR>",
       { silent = true, desc = "Move to north window [up]" }

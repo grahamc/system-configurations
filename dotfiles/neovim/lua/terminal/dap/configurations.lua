@@ -71,13 +71,19 @@ Plug("mfussenegger/nvim-dap-python", {
       run_with_args_config.args = get_args
     end
 
-    local function get_debugpy_python_path()
-      return get_package_install_path(debugpy_package_name) .. "/venv/bin/python"
+    local function disable_just_my_code()
+      local dap = require("dap")
+      vim.iter(dap.configurations.python):each(function(config)
+        config.justMyCode = false
+      end)
     end
 
     local function add_configs()
-      require("dap-python").setup(get_debugpy_python_path())
+      local debugpy_python_path = get_package_install_path(debugpy_package_name)
+        .. "/venv/bin/python"
+      require("dap-python").setup(debugpy_python_path)
       replace_args_function()
+      disable_just_my_code()
     end
 
     local function config_helper()
@@ -124,11 +130,8 @@ vim.api.nvim_create_autocmd("FileType", {
             args = get_args,
           },
         }
-        local function get_bashdb_lib_path()
-          return get_package_install_path(bash_debug_adapter_package_name)
-            .. "/extension/bashdb_dir"
-        end
-        local bashdb_lib_path = get_bashdb_lib_path()
+        local bashdb_lib_path = get_package_install_path(bash_debug_adapter_package_name)
+          .. "/extension/bashdb_dir"
         local shared_config = {
           program = "${file}",
           type = "sh",

@@ -56,8 +56,6 @@ local function dapui_close()
   restore_keymaps()
 end
 
-Plug("Joakker/lua-json5")
-
 Plug("mfussenegger/nvim-dap", {
   config = function()
     vim.fn.sign_define(
@@ -83,7 +81,7 @@ Plug("mfussenegger/nvim-dap", {
 
     -- load vscode debug config
     local dap_ext_vscode = require("dap.ext.vscode")
-    dap_ext_vscode.json_decode = require("json5").parse
+    dap_ext_vscode.json_decode = require("overseer.json").decode
     dap_ext_vscode.load_launchjs()
 
     -- mappings/commands

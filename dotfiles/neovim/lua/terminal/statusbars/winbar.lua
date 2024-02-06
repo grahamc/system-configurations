@@ -1,4 +1,7 @@
 Plug("Bekaboo/dropbar.nvim", {
+  -- otherwise the first window opened won't respect the bar separator I set
+  sync = true,
+
   config = function()
     require("dropbar").setup({
       general = {
@@ -19,15 +22,26 @@ Plug("Bekaboo/dropbar.nvim", {
         kinds = {
           symbols = {
             Folder = " ",
+            Terminal = " ",
           },
         },
         ui = {
           bar = {
-            -- TODO: This isn't working for some reason
             separator = " ",
+          },
+          menu = {
+            indicator = " ",
           },
         },
       },
+    })
+
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "dropbar_menu",
+      callback = function()
+        vim.b.minicursorword_disable = true
+        vim.b.minicursorword_disable_permanent = true
+      end,
     })
   end,
 })

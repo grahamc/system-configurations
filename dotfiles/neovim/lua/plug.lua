@@ -2,12 +2,6 @@
 
 local M = {}
 
--- Disable syntax highlighting
-vim.cmd.syntax("off")
--- vim-plugs enables syntax highlighting if it isn't already enabled, but I don't want it since I
--- use treesitter.  This will make vim-plug think it's already on so it won't enable it.
-vim.g.syntax_on = true
-
 -- Functions to be called after a plugin is loaded to configure it.
 local configs_by_type = {
   sync = {},
@@ -87,10 +81,20 @@ local function plug(repo, options)
   end
 end
 
+-- vim-plugs enables syntax highlighting if it isn't already enabled, but I don't want it since I
+-- use treesitter.  This will make vim-plug think it's already on so it won't enable it.
+local function run_with_faked_syntax_on(fn)
+  vim.g.syntax_on = true
+  fn()
+  vim.g.syntax_on = false
+end
+
 function M.load_plugins(plugin_definer)
-  plug_begin()
-  plugin_definer(plug)
-  plug_end()
+  run_with_faked_syntax_on(function()
+    plug_begin()
+    plugin_definer(plug)
+    plug_end()
+  end)
 end
 
 -- On startup, prompt the user to install any missing plugins.

@@ -97,6 +97,7 @@ function M.fold_handler(err, result, ctx, _)
   -- XXX: this is dirty
   if result == nil then
     vim.defer_fn(M.update_folds, 100)
+    return
   end
 
   for _, fold in ipairs(result) do

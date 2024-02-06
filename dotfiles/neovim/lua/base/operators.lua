@@ -59,8 +59,13 @@ local function set_formatprg(text)
 end
 
 local function get_text_for_motion()
+  local start_line = vim.fn.line("'[")
+  local end_line = vim.fn.line("']")
+  if start_line == nil or end_line == nil then
+    return ""
+  end
   -- TODO: This assumes entire lines are selected
-  local lines = vim.api.nvim_buf_get_lines(0, vim.fn.line("'[") - 1, vim.fn.line("']"), true)
+  local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, true)
   return table.concat(lines, "\n")
 end
 
@@ -155,5 +160,47 @@ vim.keymap.set("v", "g+", "g<Plug>(dial-increment)", {
 })
 vim.keymap.set("v", "g-", "g<Plug>(dial-decrement)", {
   desc = "Decrement",
+})
+-- }}}
+
+-- Split/Join {{{
+--
+-- fallback for treesj
+Plug("AndrewRadev/splitjoin.vim")
+vim.g.splitjoin_split_mapping = ""
+vim.g.splitjoin_join_mapping = ""
+
+Plug("Wansmer/treesj", {
+  config = function()
+    require("treesj").setup({
+      use_default_keymaps = false,
+      max_join_length = 200,
+    })
+
+    -- fallback to splitjoin.vim for unsupported languages
+    local langs = require("treesj.langs")["presets"]
+    vim.api.nvim_create_autocmd({ "FileType" }, {
+      group = vim.api.nvim_create_augroup("bigolu/treesj", {}),
+      callback = function()
+        if langs[vim.bo.filetype] then
+          vim.keymap.set(
+            "n",
+            "ss",
+            vim.cmd.TSJToggle,
+            { desc = "Toggle split/join", buffer = true }
+          )
+          vim.keymap.set("n", "sS", function()
+            require("treesj").toggle({
+              both = { recursive = true },
+            })
+          end, { desc = "Toggle split/join", buffer = true })
+        else
+          vim.keymap.set("n", "ss", vim.cmd.SplitjoinSplit, { desc = "Split", buffer = true })
+          -- Must be used on the first line of the split
+          vim.keymap.set("n", "sj", vim.cmd.SplitjoinJoin, { desc = "Join", buffer = true })
+        end
+      end,
+    })
+  end,
 })
 -- }}}

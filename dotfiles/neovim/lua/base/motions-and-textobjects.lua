@@ -30,6 +30,14 @@ vim.keymap.set({ "n" }, "]v", "'>", {
   desc = "End of last selection",
 })
 
+-- move to left and right side of last yank
+vim.keymap.set({ "n" }, "[y", "'[", {
+  desc = "Start of last yank",
+})
+vim.keymap.set({ "n" }, "]y", "']", {
+  desc = "End of last yank",
+})
+
 -- Always move by screen line, unless a count was specified or we're in a line-wise mode.
 local function move_by_screen_line(direction)
   local mode = vim.fn.mode()

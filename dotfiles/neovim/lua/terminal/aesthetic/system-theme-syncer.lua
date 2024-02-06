@@ -39,4 +39,4 @@ local function listen_for_system_theme_changes()
 end
 
 vim.o.background = get_system_theme()
-listen_for_system_theme_changes()
+vim.defer_fn(listen_for_system_theme_changes, 0)

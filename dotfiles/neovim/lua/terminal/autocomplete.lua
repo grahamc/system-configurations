@@ -227,8 +227,8 @@ Plug("hrsh7th/nvim-cmp", {
           border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
           -- TODO: ask if this option could accept a function instead so it can respond to window
           -- resizes
-          max_height = math.floor(vim.o.lines * 0.5),
-          max_width = math.floor(vim.o.columns * 0.6),
+          max_height = math.floor(vim.o.lines * 0.35),
+          max_width = math.floor(vim.o.columns * 0.65),
         },
         completion = {
           winhighlight = "NormalFloat:CmpNormal,Pmenu:CmpNormal,CursorLine:CmpCursorLine,PmenuSbar:CmpScrollbar",
@@ -345,7 +345,7 @@ Plug("hrsh7th/nvim-cmp", {
         fields = { "abbr", "menu" },
         format = function(entry, vim_item)
           vim_item.menu = ({
-            cmdline = "Commandline",
+            cmdline = "Cmdline",
             cmdline_history = "History",
             buffer = "Buffer",
             path = "Path",
@@ -373,7 +373,6 @@ Plug("hrsh7th/nvim-cmp", {
       pattern = "DressingInput",
       group = autocmd_group,
       callback = function()
-        -- TODO: Workaround for adding completion to vim.ui.input(). I have to defer the
         -- setup because dessing.nvim also calls setup and I need mine to run after it so I can
         -- override it. Ideally dressing would let you configure the setup:
         --
@@ -382,10 +381,10 @@ Plug("hrsh7th/nvim-cmp", {
           cmp.setup.buffer({
             enabled = true,
             sources = cmp.config.sources({
-              -- dressing will set the omnifunc if `completion` was provided to vim.ui.input()
-              omni,
               path,
               buffer,
+              -- dressing will set the omnifunc if `completion` was provided to vim.ui.input()
+              omni,
             }),
           })
         end, 0)

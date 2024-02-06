@@ -484,7 +484,6 @@
         "tmux-plugin-mode-indicator": "tmux-plugin-mode-indicator",
         "tmux-plugin-resurrect": "tmux-plugin-resurrect",
         "tmux-plugin-tmux-suspend": "tmux-plugin-tmux-suspend",
-        "tree-sitter-just": "tree-sitter-just",
         "vim-plugin-CamelCaseMotion": "vim-plugin-CamelCaseMotion",
         "vim-plugin-LuaSnip": "vim-plugin-LuaSnip",
         "vim-plugin-SchemaStore-nvim": "vim-plugin-SchemaStore-nvim",
@@ -511,12 +510,16 @@
         "vim-plugin-friendly-snippets": "vim-plugin-friendly-snippets",
         "vim-plugin-git-blame-nvim": "vim-plugin-git-blame-nvim",
         "vim-plugin-legendary-nvim": "vim-plugin-legendary-nvim",
+        "vim-plugin-litee-calltree-nvim": "vim-plugin-litee-calltree-nvim",
+        "vim-plugin-litee-nvim": "vim-plugin-litee-nvim",
         "vim-plugin-ltex-extra-nvim": "vim-plugin-ltex-extra-nvim",
         "vim-plugin-lush-nvim": "vim-plugin-lush-nvim",
         "vim-plugin-markdown-preview-nvim": "vim-plugin-markdown-preview-nvim",
         "vim-plugin-mason-lspconfig-nvim": "vim-plugin-mason-lspconfig-nvim",
         "vim-plugin-mason-nvim": "vim-plugin-mason-nvim",
         "vim-plugin-mini-nvim": "vim-plugin-mini-nvim",
+        "vim-plugin-neotest": "vim-plugin-neotest",
+        "vim-plugin-neotest-python": "vim-plugin-neotest-python",
         "vim-plugin-none-ls-nvim": "vim-plugin-none-ls-nvim",
         "vim-plugin-nvim-autopairs": "vim-plugin-nvim-autopairs",
         "vim-plugin-nvim-cmp": "vim-plugin-nvim-cmp",
@@ -527,23 +530,33 @@
         "vim-plugin-nvim-dap-ui": "vim-plugin-nvim-dap-ui",
         "vim-plugin-nvim-dap-virtual-text": "vim-plugin-nvim-dap-virtual-text",
         "vim-plugin-nvim-lightbulb": "vim-plugin-nvim-lightbulb",
+        "vim-plugin-nvim-lsp-file-operations": "vim-plugin-nvim-lsp-file-operations",
         "vim-plugin-nvim-lspconfig": "vim-plugin-nvim-lspconfig",
         "vim-plugin-nvim-nonicons": "vim-plugin-nvim-nonicons",
         "vim-plugin-nvim-notify": "vim-plugin-nvim-notify",
+        "vim-plugin-nvim-pqf": "vim-plugin-nvim-pqf",
         "vim-plugin-nvim-tree-lua": "vim-plugin-nvim-tree-lua",
         "vim-plugin-nvim-treesitter": "vim-plugin-nvim-treesitter",
         "vim-plugin-nvim-treesitter-endwise": "vim-plugin-nvim-treesitter-endwise",
         "vim-plugin-nvim-ts-autotag": "vim-plugin-nvim-ts-autotag",
         "vim-plugin-nvim-web-devicons": "vim-plugin-nvim-web-devicons",
+        "vim-plugin-overseer-nvim": "vim-plugin-overseer-nvim",
         "vim-plugin-plenary-nvim": "vim-plugin-plenary-nvim",
         "vim-plugin-reticle-nvim": "vim-plugin-reticle-nvim",
         "vim-plugin-smartcolumn-nvim": "vim-plugin-smartcolumn-nvim",
+        "vim-plugin-splitjoin-vim": "vim-plugin-splitjoin-vim",
         "vim-plugin-sqlite-lua": "vim-plugin-sqlite-lua",
         "vim-plugin-telescope-dap-vim": "vim-plugin-telescope-dap-vim",
         "vim-plugin-telescope-fzf-native": "vim-plugin-telescope-fzf-native",
+        "vim-plugin-telescope-menufacture": "vim-plugin-telescope-menufacture",
         "vim-plugin-telescope-nvim": "vim-plugin-telescope-nvim",
         "vim-plugin-telescope-smart-history-nvim": "vim-plugin-telescope-smart-history-nvim",
+        "vim-plugin-toggleterm-nvim": "vim-plugin-toggleterm-nvim",
         "vim-plugin-traces-vim": "vim-plugin-traces-vim",
+        "vim-plugin-tree-sitter-just": "vim-plugin-tree-sitter-just",
+        "vim-plugin-treesj": "vim-plugin-treesj",
+        "vim-plugin-trouble-nvim": "vim-plugin-trouble-nvim",
+        "vim-plugin-typescript-tools-nvim": "vim-plugin-typescript-tools-nvim",
         "vim-plugin-vim-abolish": "vim-plugin-vim-abolish",
         "vim-plugin-vim-caser": "vim-plugin-vim-caser",
         "vim-plugin-vim-fish": "vim-plugin-vim-fish",
@@ -551,6 +564,7 @@
         "vim-plugin-vim-just": "vim-plugin-vim-just",
         "vim-plugin-vim-matchup": "vim-plugin-vim-matchup",
         "vim-plugin-vim-plug": "vim-plugin-vim-plug",
+        "vim-plugin-vim-qf": "vim-plugin-vim-qf",
         "vim-plugin-vim-repeat": "vim-plugin-vim-repeat",
         "vim-plugin-vim-signify": "vim-plugin-vim-signify",
         "vim-plugin-vim-sleuth": "vim-plugin-vim-sleuth",
@@ -730,22 +744,6 @@
       "original": {
         "owner": "MunifTanjim",
         "repo": "tmux-suspend",
-        "type": "github"
-      }
-    },
-    "tree-sitter-just": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1705991102,
-        "narHash": "sha256-bxriZhRV/Gg+V+soplzCeREzLGWITTsQDbnqNXVbP3I=",
-        "owner": "IndianBoy42",
-        "repo": "tree-sitter-just",
-        "rev": "4f5d53b52a65771f9695df3f1a294d5c80b916fb",
-        "type": "github"
-      },
-      "original": {
-        "owner": "IndianBoy42",
-        "repo": "tree-sitter-just",
         "type": "github"
       }
     },
@@ -1165,6 +1163,38 @@
         "type": "github"
       }
     },
+    "vim-plugin-litee-calltree-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1699714603,
+        "narHash": "sha256-xUndoYceb9op/Td/gs27inkZrBgvUpOOlf57O7Ow1no=",
+        "owner": "ldelossa",
+        "repo": "litee-calltree.nvim",
+        "rev": "14b66cc6ff76deb67259db99196c0da5a6c75ca2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ldelossa",
+        "repo": "litee-calltree.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-litee-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1699714588,
+        "narHash": "sha256-VAH+CN/NrQPVetjvVENWP/rVqRM6N2GeO2qR+in+yPg=",
+        "owner": "ldelossa",
+        "repo": "litee.nvim",
+        "rev": "3c51764a615566e4c0223362f4be00acc23c430e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ldelossa",
+        "repo": "litee.nvim",
+        "type": "github"
+      }
+    },
     "vim-plugin-ltex-extra-nvim": {
       "flake": false,
       "locked": {
@@ -1258,6 +1288,38 @@
       "original": {
         "owner": "echasnovski",
         "repo": "mini.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-neotest": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1706881546,
+        "narHash": "sha256-HOMvt+XYNaZQsEYvVMP4x9K14LqyAHaFl9GauZLjmbE=",
+        "owner": "nvim-neotest",
+        "repo": "neotest",
+        "rev": "89a5b1fc22ee5d459262955fe564c3d14e35fd67",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-neotest",
+        "repo": "neotest",
+        "type": "github"
+      }
+    },
+    "vim-plugin-neotest-python": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1705305826,
+        "narHash": "sha256-IofqV2B/zqv60f6ofUQ36qIUbbcJ3sgOfVQenisC7fY=",
+        "owner": "nvim-neotest",
+        "repo": "neotest-python",
+        "rev": "2e83d2bc00acbcc1fd529dbf0a0e677cabfe6b50",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-neotest",
+        "repo": "neotest-python",
         "type": "github"
       }
     },
@@ -1421,6 +1483,22 @@
         "type": "github"
       }
     },
+    "vim-plugin-nvim-lsp-file-operations": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1706139094,
+        "narHash": "sha256-eXOqhfzDK+Jv5bV1wdWT4IA/wBAdkhWV+75HoNcYaR8=",
+        "owner": "antosha417",
+        "repo": "nvim-lsp-file-operations",
+        "rev": "223aca86b737dc66e9c51ebcda8788a8d9cc6cf2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "antosha417",
+        "repo": "nvim-lsp-file-operations",
+        "type": "github"
+      }
+    },
     "vim-plugin-nvim-lspconfig": {
       "flake": false,
       "locked": {
@@ -1466,6 +1544,22 @@
       "original": {
         "owner": "rcarriga",
         "repo": "nvim-notify",
+        "type": "github"
+      }
+    },
+    "vim-plugin-nvim-pqf": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1700353869,
+        "narHash": "sha256-QTnsbuJ19hYWXkRNValghpRS92skFcOG9Q7lJowNPB0=",
+        "owner": "yorickpeterse",
+        "repo": "nvim-pqf",
+        "rev": "ba0e291cb5c0249838132e197dac082777bdc7d6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "yorickpeterse",
+        "repo": "nvim-pqf",
         "type": "github"
       }
     },
@@ -1549,6 +1643,22 @@
         "type": "github"
       }
     },
+    "vim-plugin-overseer-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1704655675,
+        "narHash": "sha256-jcNHsK2kYiMYFOUelZ/1tpk9p3oxSeXPPdmHwNidKlY=",
+        "owner": "stevearc",
+        "repo": "overseer.nvim",
+        "rev": "68a2d344cea4a2e11acfb5690dc8ecd1a1ec0ce0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "stevearc",
+        "repo": "overseer.nvim",
+        "type": "github"
+      }
+    },
     "vim-plugin-plenary-nvim": {
       "flake": false,
       "locked": {
@@ -1594,6 +1704,22 @@
       "original": {
         "owner": "m4xshen",
         "repo": "smartcolumn.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-splitjoin-vim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1707076803,
+        "narHash": "sha256-T/B2+qDsd9HUM9f40RvNQ/vAzpdPbM7W90ugyDzwp2E=",
+        "owner": "AndrewRadev",
+        "repo": "splitjoin.vim",
+        "rev": "b2043d713154d2c61495d061197327823a769f84",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AndrewRadev",
+        "repo": "splitjoin.vim",
         "type": "github"
       }
     },
@@ -1645,6 +1771,22 @@
         "type": "github"
       }
     },
+    "vim-plugin-telescope-menufacture": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1704821272,
+        "narHash": "sha256-F84K7LK7ph93pi69folaBG7q4ePWDqmvCZxePHok1rg=",
+        "owner": "molecule-man",
+        "repo": "telescope-menufacture",
+        "rev": "2f342d275feab92cd6e7eb80c418d3c4370d4174",
+        "type": "github"
+      },
+      "original": {
+        "owner": "molecule-man",
+        "repo": "telescope-menufacture",
+        "type": "github"
+      }
+    },
     "vim-plugin-telescope-nvim": {
       "flake": false,
       "locked": {
@@ -1677,6 +1819,22 @@
         "type": "github"
       }
     },
+    "vim-plugin-toggleterm-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1705944058,
+        "narHash": "sha256-y+83w0D2jD68QJpBCYXLqUUxVu9MTBZ+nJutYD7jAoQ=",
+        "owner": "akinsho",
+        "repo": "toggleterm.nvim",
+        "rev": "b49df5cdce67a8964d1b027dae94bde212092b51",
+        "type": "github"
+      },
+      "original": {
+        "owner": "akinsho",
+        "repo": "toggleterm.nvim",
+        "type": "github"
+      }
+    },
     "vim-plugin-traces-vim": {
       "flake": false,
       "locked": {
@@ -1690,6 +1848,70 @@
       "original": {
         "owner": "markonm",
         "repo": "traces.vim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-tree-sitter-just": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1705991102,
+        "narHash": "sha256-bxriZhRV/Gg+V+soplzCeREzLGWITTsQDbnqNXVbP3I=",
+        "owner": "IndianBoy42",
+        "repo": "tree-sitter-just",
+        "rev": "4f5d53b52a65771f9695df3f1a294d5c80b916fb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "IndianBoy42",
+        "repo": "tree-sitter-just",
+        "type": "github"
+      }
+    },
+    "vim-plugin-treesj": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1705479337,
+        "narHash": "sha256-9HBD8XA3QklawadGxg2d3TJqwwMPJJYhU6YkiPq402I=",
+        "owner": "Wansmer",
+        "repo": "treesj",
+        "rev": "14808da3cddd62fc86ede53a5ea1fd1635897e75",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Wansmer",
+        "repo": "treesj",
+        "type": "github"
+      }
+    },
+    "vim-plugin-trouble-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1697626811,
+        "narHash": "sha256-8nLghiueYOtWY7OGVxow9A2G/5lgt+Kt5D8q1xeJvVg=",
+        "owner": "folke",
+        "repo": "trouble.nvim",
+        "rev": "f1168feada93c0154ede4d1fe9183bf69bac54ea",
+        "type": "github"
+      },
+      "original": {
+        "owner": "folke",
+        "repo": "trouble.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-typescript-tools-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1705389494,
+        "narHash": "sha256-kpdDYVd6uSuJImS9LU5p/vJgtj9tToNBvRTJHpsHyak=",
+        "owner": "pmizio",
+        "repo": "typescript-tools.nvim",
+        "rev": "c43d9580c3ff5999a1eabca849f807ab33787ea7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pmizio",
+        "repo": "typescript-tools.nvim",
         "type": "github"
       }
     },
@@ -1802,6 +2024,22 @@
       "original": {
         "owner": "junegunn",
         "repo": "vim-plug",
+        "type": "github"
+      }
+    },
+    "vim-plugin-vim-qf": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1683623072,
+        "narHash": "sha256-1Xv9C1Z8Yit9nAKahw1wJJ4bjDLt5n3Bk89Sd5/FMHA=",
+        "owner": "romainl",
+        "repo": "vim-qf",
+        "rev": "7e65325651ff5a0b06af8df3980d2ee54cf10e14",
+        "type": "github"
+      },
+      "original": {
+        "owner": "romainl",
+        "repo": "vim-qf",
         "type": "github"
       }
     },

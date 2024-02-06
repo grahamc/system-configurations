@@ -26,6 +26,43 @@ vim.diagnostic.config({
   },
 })
 
+local original_diagnostic_open_float = vim.diagnostic.open_float
+vim.diagnostic.open_float = function()
+  local _, winid = original_diagnostic_open_float()
+  if winid == nil then
+    return
+  end
+
+  IsDiagnosticFloatOpen = true
+  vim.cmd.redrawstatus()
+
+  vim.api.nvim_create_autocmd("WinClosed", {
+    pattern = tostring(winid),
+    once = true,
+    callback = function()
+      IsDiagnosticFloatOpen = false
+      vim.cmd.redrawstatus()
+    end,
+  })
+
+  vim.api.nvim_create_autocmd("WinEnter", {
+    callback = function()
+      if vim.api.nvim_get_current_win() == winid then
+        IsInsideDiagnosticFloat = true
+        vim.cmd.redrawstatus()
+        vim.api.nvim_create_autocmd("WinLeave", {
+          group = autocmd_group,
+          once = true,
+          callback = function()
+            IsInsideDiagnosticFloat = false
+            vim.cmd.redrawstatus()
+          end,
+        })
+      end
+    end,
+  })
+end
+
 vim.keymap.set(
   "n",
   "<S-l>",
@@ -39,34 +76,8 @@ vim.keymap.set(
   { desc = "Previous diagnostic [last,lint,problem]" }
 )
 vim.keymap.set("n", "]l", vim.diagnostic.goto_next, { desc = "Next diagnostic [lint,problem]" })
-vim.keymap.set("n", "gi", function()
-  require("telescope.builtin").lsp_implementations({ preview_title = "" })
-end, { desc = "Implementation" })
-vim.keymap.set("n", "gt", function()
-  require("telescope.builtin").lsp_type_definitions({ preview_title = "" })
-end, { desc = "Type definition" })
-vim.keymap.set("n", "gd", function()
-  require("telescope.builtin").lsp_definitions({ preview_title = "" })
-end, { desc = "Definition" })
 vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Declaration" })
-vim.keymap.set("n", "ghi", function()
-  require("telescope.builtin").lsp_incoming_calls({ preview_title = "" })
-end, { desc = "Incoming call hierarchy" })
-vim.keymap.set("n", "gho", function()
-  require("telescope.builtin").lsp_outgoing_calls({ preview_title = "" })
-end, { desc = "Outgoing call hierarchy" })
 vim.keymap.set("n", "gn", vim.lsp.buf.rename, { desc = "Rename variable" })
-
--- TODO: When there is only one result, it doesn't add to the jumplist so I'm adding that here. I
--- should upstream this.
-vim.keymap.set(
-  "n",
-  "gr",
-  require("terminal.utilities").set_jump_before(function()
-    require("telescope.builtin").lsp_references({ preview_title = "" })
-  end),
-  { desc = "References" }
-)
 
 -- Hide all semantic highlights
 vim.api.nvim_create_autocmd("ColorScheme", {
@@ -139,6 +150,9 @@ Plug("neovim/nvim-lspconfig", {
   config = function()
     require("lspconfig.ui.windows").default_options.border =
       { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" }
+    vim.api.nvim_create_user_command("LspServerConfigurations", function()
+      vim.cmd.Help("lspconfig-all")
+    end, {})
   end,
 })
 
@@ -162,7 +176,10 @@ Plug("williamboman/mason-lspconfig.nvim", {
       require("mason-lspconfig").setup()
       local lspconfig = require("lspconfig")
       local folding_nvim = require("terminal.folds.folding-nvim")
+      local code_lens_refresh_autocmd_ids_by_buffer = {}
 
+      -- Should be idempotent since it may be called mutiple times for the same buffer. For example,
+      -- it could get called again if a server registers another capability dynamically.
       local on_attach = function(client, buffer_number)
         folding_nvim.on_attach()
 
@@ -191,7 +208,62 @@ Plug("williamboman/mason-lspconfig.nvim", {
             vim.lsp.buf.signature_help()
           end, { desc = "Signature help" })
         end
+
+        if client.supports_method(methods.textDocument_codeLens) then
+          local function create_refresh_autocmd()
+            local refresh_autocmd_id = code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
+            if refresh_autocmd_id ~= -1 then
+              vim.notify(
+                "Not creating another code lens refresh autocmd since it doesn't look like the old one was removed. The id of the old one is: "
+                  .. refresh_autocmd_id,
+                vim.log.levels.ERROR
+              )
+              return
+            end
+            code_lens_refresh_autocmd_ids_by_buffer[buffer_number] = vim.api.nvim_create_autocmd(
+              { "CursorHold", "InsertLeave" },
+              {
+                desc = "code lens refresh",
+                callback = function()
+                  vim.lsp.codelens.refresh()
+                end,
+                buffer = buffer_number,
+              }
+            )
+          end
+
+          local function delete_refresh_autocmd()
+            local refresh_autocmd_id = code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
+            if refresh_autocmd_id == -1 then
+              vim.notify(
+                "Unable to to remove the code lens refresh autocmd because it's id was not found",
+                vim.log.levels.ERROR
+              )
+              return
+            end
+            vim.api.nvim_del_autocmd(refresh_autocmd_id)
+            code_lens_refresh_autocmd_ids_by_buffer[buffer_number] = -1
+          end
+
+          if code_lens_refresh_autocmd_ids_by_buffer[buffer_number] == nil then
+            code_lens_refresh_autocmd_ids_by_buffer[buffer_number] = -1
+            create_refresh_autocmd()
+          end
+
+          buffer_keymap("n", "gl", vim.lsp.codelens.run, { desc = "Run code lens" })
+          buffer_keymap("n", [[\l]], function()
+            local refresh_autocmd_id = code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
+            local is_refresh_autocmd_active = refresh_autocmd_id ~= -1
+            if is_refresh_autocmd_active then
+              delete_refresh_autocmd()
+              vim.lsp.codelens.clear(client.id, buffer_number)
+            else
+              create_refresh_autocmd()
+            end
+          end, { desc = "Toggle code lenses" })
+        end
       end
+
       -- Call on_attach() again after registering dynamic capabilities.
       local register_capability = vim.lsp.handlers[methods.client_registerCapability]
       vim.lsp.handlers[methods.client_registerCapability] = function(err, res, ctx)
@@ -204,6 +276,25 @@ Plug("williamboman/mason-lspconfig.nvim", {
 
         return register_capability(err, res, ctx)
       end
+
+      -- For clients that aren't managed by mason-lspconfig I need to call on_attach myself
+      --
+      -- TODO: maybe comment here in case others are having the same issue:
+      -- https://github.com/pmizio/typescript-tools.nvim/issues/63
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(args)
+          local client_id = args.data.client_id
+          local client = vim.lsp.get_client_by_id(client_id)
+          if client == nil then
+            vim.notify(
+              "[In LspAttach autocmd] Unable to find client with id: " .. client_id,
+              vim.log.levels.ERROR
+            )
+            return
+          end
+          on_attach(client, args.buf)
+        end,
+      })
 
       local cmp_lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
       local folding_capabilities = folding_nvim.capabilities
@@ -236,8 +327,10 @@ Plug("williamboman/mason-lspconfig.nvim", {
             result,
             ctx,
             vim.tbl_deep_extend("force", config or {}, {
-              max_height = math.floor(vim.o.lines * 0.5),
-              max_width = math.floor(vim.o.columns * 0.6),
+              -- TODO: ask if this option could accept a function instead so it can respond to
+              -- window resizes
+              max_height = math.floor(vim.o.lines * 0.35),
+              max_width = math.floor(vim.o.columns * 0.65),
               focusable = true,
               border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
             })
@@ -298,6 +391,28 @@ Plug("williamboman/mason-lspconfig.nvim", {
         end
       )
 
+      -- Workaround for truncating long TypeScript inlay hints.
+      -- TODO: Remove this if https://github.com/neovim/neovim/issues/27240 gets addressed.
+      --
+      -- Taken from:
+      -- https://github.com/MariaSolOs/dotfiles/blob/9685e1eb9a00b689d98bc0dfb0ec986a1b64e3f9/.config/nvim/lua/lsp.lua#L277
+      local original_inlay_hint_handler = vim.lsp.handlers[methods.textDocument_inlayHint]
+      vim.lsp.handlers[methods.textDocument_inlayHint] = function(err, result, ctx, config)
+        local client = vim.lsp.get_client_by_id(ctx.client_id)
+        if client and client.name == "typescript-tools" then
+          result = vim.iter.map(function(hint)
+            local label = hint.label ---@type string
+            if label:len() >= 30 then
+              label = label:sub(1, 29) .. "…"
+            end
+            hint.label = label
+            return hint
+          end, result)
+        end
+
+        original_inlay_hint_handler(err, result, ctx, config)
+      end
+
       -- Set the filetype of all the currently open buffers to trigger a 'FileType' event for each
       -- buffer so nvim_lsp has a chance to attach to any buffers that were openeed before it was
       -- configured. This way I can load nvim_lsp asynchronously.
@@ -310,5 +425,31 @@ Plug("williamboman/mason-lspconfig.nvim", {
 
     -- mason.nvim needs to run it's config first so this will ensure that happens.
     vim.defer_fn(run, 0)
+  end,
+})
+
+Plug("pmizio/typescript-tools.nvim", {
+  config = function()
+    require("typescript-tools").setup({
+      settings = {
+        publish_diagnostic_on = "change",
+        expose_as_code_action = "all",
+        tsserver_file_preferences = {
+          includeInlayEnumMemberValueHints = true,
+          includeInlayFunctionLikeReturnTypeHints = true,
+          includeInlayFunctionParameterTypeHints = true,
+          includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all';
+          includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+          includeInlayPropertyDeclarationTypeHints = true,
+          includeInlayVariableTypeHints = false,
+        },
+      },
+    })
+  end,
+})
+
+Plug("antosha417/nvim-lsp-file-operations", {
+  config = function()
+    require("lsp-file-operations").setup({})
   end,
 })

@@ -40,12 +40,15 @@ function MyPaste(was_in_visual_mode, is_capital_p)
   -- text and since I use autosave, it will always be the entire buffer.
   --
   -- TODO: I should post this somewhere since I know I've seen this question asked.
+  --
+  -- TODO: Need to add support for counts, right now it ignores it
   if is_multi_line_paste then
     -- When you yank multiple lines in vim it always appends a newline to the end so the lines don't
     -- interleave with the text where you paste. I'm doing that here as well to account for text
     -- that is copied outside of vim.
     if clipboard_contents:sub(-1) ~= "\n" then
       clipboard_contents = clipboard_contents .. "\n"
+      ---@diagnostic disable-next-line: param-type-mismatch
       vim.fn.setreg(vim.v.register, "\n", "a")
     end
     local _, newline_count = clipboard_contents:gsub("\n", "")
@@ -90,7 +93,7 @@ function MyPaste(was_in_visual_mode, is_capital_p)
   local indent = string.format([[:%d,%dnormal! ==]] .. key, LastPasteStartLine, LastPasteEndLine)
   local go_back_to_visual = was_in_visual_mode and "gv" or ""
   local delete_into_blackhole = was_in_visual_mode and '"_d' or ""
-  local paste = is_capital_p and "P" or "p"
+  local paste = [["]] .. vim.v.register .. (is_capital_p and "P" or "p")
   vim.api.nvim_feedkeys(go_back_to_visual .. delete_into_blackhole .. paste .. indent, "n", false)
 end
 vim.keymap.set({ "n" }, "p", ":lua MyPaste(false, false)<CR>", { silent = true })

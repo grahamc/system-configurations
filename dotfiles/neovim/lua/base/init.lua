@@ -1,4 +1,4 @@
-require("base.filetype-specific-settings")
+require("base.filetype-settings")
 require("base.macros")
 require("base.mini")
 require("base.misc")

@@ -40,7 +40,6 @@
       name = "hostctl-upgrade";
       text = ''
         cd "${config.repository.directory}"
-        ${pkgs.nix-init}/bin/nix-init --url https://github.com/Joakker/lua-json5 ${config.repository.directory}/flake-modules/overlay/plugins/lua-json5.nix
         home-manager switch --flake "${config.repository.directory}#${hostName}" ${self.lib.updateFlags.home} "''$@" |& nom
         chronic nix-upgrade-profiles
       '';

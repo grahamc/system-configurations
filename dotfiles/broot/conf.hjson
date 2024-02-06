@@ -72,7 +72,7 @@ skin: {
     tree: ansi(15) None
     parent: None None / ansi(15) None
     file: None None / ansi(15) None
-    directory: None None Bold / ansi(15) None
+    directory: ansi(4) None / ansi(15) None
     exe: ansi(2) None / ansi(15) None
     link: None None / ansi(15) None
     pruning: ansi(15) None Italic

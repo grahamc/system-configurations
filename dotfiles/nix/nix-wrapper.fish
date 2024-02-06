@@ -38,7 +38,7 @@ function maybe_warn
         begin
             echo -e "\n$(set_color --reverse --bold yellow) WARNING $(set_color normal) THE UNTRACKED/REMOVED FILES IN THIS REPOSITORY WILL BE IGNORED BY ANY NIX FLAKE OPERATION!"
             echo 'You can add them to the index with the following command:'
-            printf "chronic git add --intent-to-add $untracked_or_deleted_file_list\n\n"
+            printf "git add --intent-to-add $untracked_or_deleted_file_list\n\n"
         end >/dev/tty 2>&1
     end
 end

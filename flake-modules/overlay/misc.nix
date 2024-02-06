@@ -21,6 +21,7 @@
             final.ncurses
           ];
         };
+
       latestTmux = prev.tmux.overrideAttrs (old: {
         src = inputs.tmux;
         patches = [];
