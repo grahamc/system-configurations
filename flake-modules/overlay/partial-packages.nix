@@ -30,10 +30,12 @@
       toybox =
         filterPrograms final.toybox
         ["toybox" "tar" "hostname"];
+
+      look = filterPrograms final.util-linux ["look"];
     in {
       partialPackages =
         {
-          inherit toybox xargs ps;
+          inherit toybox xargs ps look;
         }
         // optionalAttrs isLinux {
           inherit pstree;

@@ -202,6 +202,7 @@ local theme = lush(function(injected_functions)
     StatusLineRecordingIndicator { StatusLine, fg = ErrorMsg.fg },
     StatusLineShowcmd { StatusLine, fg = t_6.fg },
     StatusLineMasonUpdateIndicator { StatusLine, fg = t_2.fg },
+    StatusLineDebugIndicator { StatusLine, fg = t_2.fg },
     ---@diagnostic disable-next-line: undefined-field
     StatusLinePowerlineOuter { fg = StatusLine.bg },
     StatusLinePowerlineInner { StatusLine, fg = t_0.fg },
@@ -253,7 +254,7 @@ local theme = lush(function(injected_functions)
     MoreMsg {}, -- |more-prompt|
     NonText { fg = is_light and t_0.fg.darken(10) or t_0.fg.lighten(10) }, -- '@' at the end of the window, characters from 'showbreak' and other characters that do not really exist in the text (e.g., ">" displayed when a double-wide character doesn't fit at the end of the line). See also |hl-EndOfBuffer|.
     Question {}, -- |hit-enter| prompt and yes/no questions
-    QuickFixLine { bg = is_light and t_0.fg.darken(10) or t_0.fg.lighten(10) }, -- Current |quickfix| item in the quickfix window. Combined with |hl-CursorLine| when the cursor is there.
+    QuickFixLine { }, -- Current |quickfix| item in the quickfix window. Combined with |hl-CursorLine| when the cursor is there.
     SpellBad { Error }, -- Word that is not recognized by the spellchecker. |spell| Combined with the highlighting used otherwise.
     SpellCap { Warning }, -- Word that should start with a capital. |spell| Combined with the highlighting used otherwise.
     Title { Normal }, -- Titles for output from ":set all", ":autocmd" etc.
@@ -689,6 +690,8 @@ local theme = lush(function(injected_functions)
     sym"@tag.attribute" { Tag },
     sym"@tag.delimiter" { Delimiter },
     -- }}}
+
+    QuickfixPreview { Search, nocombine = true },
   }
 end)
 

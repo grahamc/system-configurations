@@ -137,7 +137,11 @@ Plug("akinsho/toggleterm.nvim", {
         vim.cmd.startinsert()
 
         local count = nil
-        vim.wo.winbar, count = vim.wo.winbar:gsub("%%{%%", '%%{%%"  Task output: ".', 1)
+        vim.wo.winbar, count = vim.wo.winbar:gsub(
+          "%%{%%",
+          '%%{%%"%%#TaskOutputBorder#█%%#TaskOutputTitle#  Task output%%#TaskOutputBorder#█ ".',
+          1
+        )
         if count == 0 then
           vim.notify(string.format([[Unable to modify task output winbar]]), vim.log.levels.WARN)
         end
@@ -160,6 +164,28 @@ Plug("akinsho/toggleterm.nvim", {
           return term.name:gsub([[;#toggleterm.+]], "")
         end,
       },
+    })
+
+    local utils = require("terminal.utilities")
+    vim.api.nvim_create_autocmd({ "WinEnter", "FileType" }, {
+      callback = function()
+        if vim.bo.filetype == "toggleterm" then
+          utils.set_persistent_highlights("task-output", {
+            TaskOutputTitle = "BufferLineBufferSelected",
+            TaskOutputBorder = "BufferLineIndicatorSelected",
+          })
+        end
+      end,
+    })
+    vim.api.nvim_create_autocmd({ "WinLeave" }, {
+      callback = function()
+        if vim.bo.filetype == "toggleterm" then
+          utils.set_persistent_highlights("task-output", {
+            TaskOutputTitle = "BufferLineBufferVisible",
+            TaskOutputBorder = "Ignore",
+          })
+        end
+      end,
     })
   end,
 })

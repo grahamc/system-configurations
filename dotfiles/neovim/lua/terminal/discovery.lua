@@ -124,6 +124,12 @@ Plug("mrjones2014/legendary.nvim", {
         local formatted_lhs =
           string.sub(keymap.lhs, 1, max_lhs_length):gsub(vim.g.mapleader, "<leader>")
 
+        -- Remaps done by wezterm
+        formatted_lhs = string.sub(formatted_lhs, 1, max_lhs_length):gsub("<F9>", "<C-i>")
+        formatted_lhs = string.sub(formatted_lhs, 1, max_lhs_length):gsub("<F7>", "<C-[>")
+        formatted_lhs = string.sub(formatted_lhs, 1, max_lhs_length):gsub("<F8>", "<C-]>")
+        formatted_lhs = string.sub(formatted_lhs, 1, max_lhs_length):gsub("<leader>(%d)", "<C-%1>")
+
         return {
           formatted_lhs,
           description = description,

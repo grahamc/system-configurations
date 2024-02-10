@@ -11,6 +11,7 @@ local function add_hover_keymap()
       local selection = require("utilities").get_visual_selection()
       if selection == "" then
         -- dap will default to <cexpr>
+        ---@diagnostic disable-next-line: cast-local-type
         selection = nil
       end
       require("dap.ui.widgets").hover(selection, {
@@ -81,6 +82,8 @@ Plug("mfussenegger/nvim-dap", {
 
     -- load vscode debug config
     local dap_ext_vscode = require("dap.ext.vscode")
+    -- TODO: nvim-dap should update its docs to suggest using overseers json5 parser:
+    -- https://github.com/stevearc/overseer.nvim/blob/master/doc/third_party.md#dap
     dap_ext_vscode.json_decode = require("overseer.json").decode
     dap_ext_vscode.load_launchjs()
 
@@ -154,7 +157,6 @@ Plug("nvim-telescope/telescope-dap.nvim", {
     require("telescope").load_extension("dap")
     local dap_telescope = require("telescope").extensions.dap
 
-    local loaded_dapui = false
     vim.api.nvim_create_user_command("ListBreakpoints", function()
       require("telescope").extensions.dap.list_breakpoints({ preview_title = "" })
     end, {})
@@ -178,10 +180,6 @@ Plug("nvim-telescope/telescope-dap.nvim", {
         if is_dapui_suspended then
           dapui_open()
         else
-          if not loaded_dapui then
-            vim.fn["plug#load"]("nvim-dap-ui")
-            loaded_dapui = true
-          end
           dap_telescope.configurations({})
         end
       end
@@ -192,7 +190,6 @@ Plug("nvim-telescope/telescope-dap.nvim", {
 })
 
 Plug("rcarriga/nvim-dap-ui", {
-  on = {},
   config = function()
     local dap = require("dap")
     local dapui = require("dapui")
@@ -256,7 +253,7 @@ Plug("rcarriga/nvim-dap-ui", {
             },
           },
           position = "bottom",
-          size = 10,
+          size = 0.25,
         },
       },
       mappings = {

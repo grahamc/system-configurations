@@ -128,18 +128,18 @@ Plug("nvim-telescope/telescope.nvim", {
 
     local telescope_menufacture = require("telescope").extensions.menufacture
     local function with_menufacture_mappings_displayed(picker)
-      return function()
+      return function(opts)
         IsMenufactureOpen = true
-        picker()
+        picker(opts)
       end
     end
 
     local telescope_builtins = require("telescope.builtin")
     local function with_visual_selection(picker)
-      local result = function()
+      local result = function(opts)
         local visual_selection = require("utilities").get_visual_selection()
         if #visual_selection > 0 then
-          picker({ default_text = visual_selection })
+          picker(vim.tbl_deep_extend("error", opts or {}, { default_text = visual_selection }))
         else
           picker()
         end

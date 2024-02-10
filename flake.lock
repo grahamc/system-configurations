@@ -428,11 +428,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1706367331,
-        "narHash": "sha256-AqgkGHRrI6h/8FWuVbnkfFmXr4Bqsr4fV23aISqj/xg=",
+        "lastModified": 1707451808,
+        "narHash": "sha256-UwDBUNHNRsYKFJzyTMVMTF5qS4xeJlWoeyJf+6vvamU=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "160b762eda6d139ac10ae081f8f78d640dd523eb",
+        "rev": "442d407992384ed9c0e6d352de75b69079904e4e",
         "type": "github"
       },
       "original": {
@@ -494,6 +494,7 @@
         "vim-plugin-cmp-cmdline": "vim-plugin-cmp-cmdline",
         "vim-plugin-cmp-cmdline-history": "vim-plugin-cmp-cmdline-history",
         "vim-plugin-cmp-dap": "vim-plugin-cmp-dap",
+        "vim-plugin-cmp-dictionary": "vim-plugin-cmp-dictionary",
         "vim-plugin-cmp-env": "vim-plugin-cmp-env",
         "vim-plugin-cmp-nvim-lsp": "vim-plugin-cmp-nvim-lsp",
         "vim-plugin-cmp-nvim-lsp-signature-help": "vim-plugin-cmp-nvim-lsp-signature-help",
@@ -904,6 +905,22 @@
       "original": {
         "owner": "rcarriga",
         "repo": "cmp-dap",
+        "type": "github"
+      }
+    },
+    "vim-plugin-cmp-dictionary": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1706836189,
+        "narHash": "sha256-shuz+C8s7kkEfFgKSz3LFekkHOIGzd92ZnpvPBX34Ns=",
+        "owner": "uga-rosa",
+        "repo": "cmp-dictionary",
+        "rev": "afa18f35a818af7bcb65b05c183a6777ede6c0ad",
+        "type": "github"
+      },
+      "original": {
+        "owner": "uga-rosa",
+        "repo": "cmp-dictionary",
         "type": "github"
       }
     },

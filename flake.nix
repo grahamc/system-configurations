@@ -506,5 +506,9 @@
       url = "github:romainl/vim-qf";
       flake = false;
     };
+    vim-plugin-cmp-dictionary = {
+      url = "github:uga-rosa/cmp-dictionary";
+      flake = false;
+    };
   };
 }

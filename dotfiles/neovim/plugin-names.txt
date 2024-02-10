@@ -80,6 +80,7 @@ nvim-dap-virtual-text
 vim-abolish
 vim-repeat
 vim-sleuth
+cmp-dictionary
 mason-lspconfig.nvim
 mason.nvim
 nvim-autopairs

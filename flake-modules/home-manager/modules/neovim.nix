@@ -77,6 +77,8 @@ in {
       page
       par
       watchman
+      partialPackages.look
+      wordnet
     ];
 
     # TODO: vim.loader() uses modification time and file size as a cache key. This is a problem for

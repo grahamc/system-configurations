@@ -120,6 +120,27 @@ Plug("rafamadriz/friendly-snippets")
 
 Plug("rcarriga/cmp-dap")
 
+-- TODO: With this I'll be able to enable this source only in comments:
+-- https://github.com/hrsh7th/nvim-cmp/pull/1314
+-- I also want to enable it selectively for filetypes like markdown.
+Plug("uga-rosa/cmp-dictionary", {
+  config = function()
+    require("cmp_dictionary").setup({
+      paths = { "/usr/share/dict/words" },
+      max_number_items = 1000,
+      first_case_insensitive = true,
+      external = {
+        enable = true,
+        command = { "look", "${prefix}", "${path}" },
+      },
+      document = {
+        enable = true,
+        command = { "wn", "${label}", "-over" },
+      },
+    })
+  end,
+})
+
 Plug("hrsh7th/nvim-cmp", {
   config = function()
     local cmp = require("cmp")
@@ -185,6 +206,7 @@ Plug("hrsh7th/nvim-cmp", {
       option = { use_show_condition = false },
     }
     local env = { name = "env" }
+    local dictionary = { name = "dictionary", keyword_length = 2 }
 
     -- helpers
     local is_cursor_preceded_by_nonblank_character = function()
@@ -290,6 +312,7 @@ Plug("hrsh7th/nvim-cmp", {
       -- sources above them.
       sources = cmp.config.sources({
         lsp_signature,
+        dictionary,
         buffer,
         tmux,
         env,
@@ -309,15 +332,18 @@ Plug("hrsh7th/nvim-cmp", {
             -- Adjust the rankings so the new rankings will be:
             -- 1. Everything else
             -- 2. Text
-            local function get_adjusted_ranking(kind)
-              if kind == text_kind then
+            -- 3. Text from dictionary
+            local function get_adjusted_ranking(entry)
+              if entry.source.name == "dictionary" then
+                return 3
+              elseif entry:get_kind() == text_kind then
                 return 2
               else
                 return 1
               end
             end
-            local kind1 = get_adjusted_ranking(entry1:get_kind())
-            local kind2 = get_adjusted_ranking(entry2:get_kind())
+            local kind1 = get_adjusted_ranking(entry1)
+            local kind2 = get_adjusted_ranking(entry2)
 
             if kind1 ~= kind2 then
               local diff = kind1 - kind2

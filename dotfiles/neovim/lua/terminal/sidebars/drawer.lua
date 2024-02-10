@@ -91,6 +91,29 @@ Plug("folke/trouble.nvim", {
             end)
           return has_open_fold and "zM" or "zR"
         end, { desc = "Toggle all folds", buffer = true, remap = true, expr = true })
+
+        vim.wo.winbar = "%=%#DrawerBorder#█%#DrawerTitle#󰙅  Drawer%#DrawerBorder#█%="
+        local utils = require("terminal.utilities")
+        vim.api.nvim_create_autocmd({ "WinEnter", "FileType" }, {
+          callback = function()
+            if vim.bo.filetype == "Trouble" then
+              utils.set_persistent_highlights("quickfix", {
+                DrawerTitle = "BufferLineBufferSelected",
+                DrawerBorder = "BufferLineIndicatorSelected",
+              })
+            end
+          end,
+        })
+        vim.api.nvim_create_autocmd({ "WinLeave" }, {
+          callback = function()
+            if vim.bo.filetype == "Trouble" then
+              utils.set_persistent_highlights("quickfix", {
+                DrawerTitle = "BufferLineBufferVisible",
+                DrawerBorder = "Ignore",
+              })
+            end
+          end,
+        })
       end,
     })
   end,

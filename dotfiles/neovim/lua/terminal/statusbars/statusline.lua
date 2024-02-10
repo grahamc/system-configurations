@@ -143,7 +143,7 @@ local function get_mode_indicator()
     .. "%#StatusLinePowerlineInner#"
     .. " "
 
-  return mode_indicator
+  return mode_indicator, 5 + #mode
 end
 
 local function filter_out_nils(list)
@@ -164,8 +164,11 @@ local function filter_out_nils(list)
   return result
 end
 
-local function make_statusline(left_items, right_items)
+local function make_statusline(left_items, right_items, left_sep, right_sep)
   local showcmd = "%#StatusLineShowcmd#%S"
+
+  left_sep = left_sep or " ∙ "
+  right_sep = right_sep or "  "
 
   local has_one_side = false
   if left_items == nil then
@@ -178,11 +181,39 @@ local function make_statusline(left_items, right_items)
   local statusline_separator = has_one_side and ""
     or "%#StatusLineFill# %=" .. showcmd .. "%#StatusLineFill#%= "
 
-  local left_side = get_mode_indicator()
-    .. "%<"
-    .. table.concat(filter_out_nils(left_items), "%#StatusLineSeparator# ∙ ")
+  left_items = filter_out_nils(left_items)
+  right_items = filter_out_nils(right_items)
+  local mode_indicator, mode_length = get_mode_indicator()
 
-  local right_side = table.concat(filter_out_nils(right_items), "  ")
+  local space_remaining = vim.o.columns - (mode_length + 2)
+  local function has_space(index, item, sep_length)
+    local length = #item:gsub("%%#.-#", ""):gsub("%%=", "")
+    space_remaining = space_remaining - length
+    if index > 1 then
+      space_remaining = space_remaining - sep_length
+    end
+    return (space_remaining >= 0) or length == 0
+  end
+  local function make_table(acc, _, item)
+    table.insert(acc, item)
+    return acc
+  end
+  left_items = vim
+    .iter(ipairs(left_items))
+    :filter(function(index, item)
+      return has_space(index, item, #left_sep)
+    end)
+    :fold({}, make_table)
+  right_items = vim
+    .iter(ipairs(right_items))
+    :filter(function(index, item)
+      return has_space(index, item, #right_sep)
+    end)
+    :fold({}, make_table)
+
+  local left_side = mode_indicator .. table.concat(left_items, "%#StatusLineSeparator#" .. left_sep)
+
+  local right_side = table.concat(right_items, right_sep)
 
   local padding = "%#StatusLine# "
 
@@ -200,11 +231,11 @@ local function make_mapping_statusline(mappings)
   local function make_mapping_string(key, description)
     return string.format("%%#StatusLineHintText#%s%%#StatusLine# %s", key, description)
   end
-  local mapping_string = "%#StatusLine#%="
-    .. vim.iter(mappings):map(make_mapping_string):join("%=")
-    .. "%="
+  local maps = vim.iter(mappings):map(make_mapping_string):totable()
+  table.insert(maps, 1, "%#StatusLine#%=")
+  table.insert(maps, "%=")
 
-  return make_statusline(nil, { mapping_string })
+  return make_statusline(nil, maps, nil, "  %=  ")
 end
 -- }}}
 
@@ -356,6 +387,11 @@ function StatusLine()
     mixed_line_endings = "%#StatusLineErrorText#[ mixed line-endings]"
   end
 
+  local debug_indicator = nil
+  if #require("dap").status() > 0 then
+    debug_indicator = "%#StatusLineDebugIndicator# "
+  end
+
   local luasnip = require("luasnip")
   if luasnip.get_active_snip() ~= nil then
     return make_mapping_statusline({
@@ -396,6 +432,7 @@ function StatusLine()
     }, {
       maximized,
       search_info,
+      debug_indicator,
       lsp_info,
       readonly,
       filetype,

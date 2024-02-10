@@ -33,7 +33,9 @@ Plug("stevearc/aerial.nvim", {
         ["<S-tab>"] = { callback = aerial_fold_toggle },
         ["<CR>"] = {
           callback = function()
-            require("aerial.navigation").select({ jump = false })
+            AerialIsExplicitJump = true
+            require("aerial.navigation").select({})
+            AerialIsExplicitJump = false
           end,
         },
         ["<LeftMouse>"] = [[<LeftMouse><Cmd>lua require('aerial.navigation').select({jump = false,})<CR>]],
@@ -80,5 +82,23 @@ Plug("stevearc/aerial.nvim", {
       end,
       group = aerial_group_id,
     })
+  end,
+})
+
+vim.api.nvim_create_autocmd("WinLeave", {
+  callback = function()
+    if vim.bo.filetype ~= "aerial" then
+      LastCursorPos = vim.api.nvim_win_get_cursor(0)
+    else
+      IsLeavingAerial = true
+    end
+  end,
+})
+vim.api.nvim_create_autocmd("WinEnter", {
+  callback = function()
+    if not AerialIsExplicitJump and vim.bo.filetype ~= "aerial" and IsLeavingAerial then
+      IsLeavingAerial = false
+      vim.api.nvim_win_set_cursor(0, LastCursorPos)
+    end
   end,
 })
