@@ -1,4 +1,5 @@
 require("terminal.dap.configurations")
+require("terminal.dap.persistent_breakpoints")
 
 local function is_dapui_filetype(filetype)
   return vim.startswith(filetype, "dapui_") or filetype == "dap-repl"
