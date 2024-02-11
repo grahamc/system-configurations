@@ -53,11 +53,6 @@ local function restore_keymaps()
   keymaps_to_restore = {}
 end
 
-local function dapui_close()
-  require("dapui").close()
-  restore_keymaps()
-end
-
 Plug("mfussenegger/nvim-dap", {
   config = function()
     vim.fn.sign_define(
@@ -124,6 +119,10 @@ Plug("mfussenegger/nvim-dap", {
         end
       )
     end, {})
+    -- TODO: They should use ui.select instead of fn.input
+    vim.api.nvim_create_user_command("SetExceptionBreakpoints", function()
+      dap.set_exception_breakpoints()
+    end, {})
 
     -- Let you exit a DAP float the same way you would an LSP float
     vim.api.nvim_create_autocmd("FileType", {
@@ -170,7 +169,8 @@ Plug("nvim-telescope/telescope-dap.nvim", {
         end)
         :any(is_dapui_filetype)
       if is_dapui_open then
-        dapui_close()
+        require("dapui").close()
+        restore_keymaps()
       else
         local is_dapui_suspended = vim
           .iter(vim.api.nvim_list_bufs())

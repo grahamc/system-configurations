@@ -78,9 +78,9 @@ Plug("nvim-telescope/telescope.nvim", {
             "--follow",
           },
           mappings = {
-            i = { ["<c-f>"] = actions.to_fuzzy_refine },
+            i = { ["<c-g>"] = actions.to_fuzzy_refine },
           },
-          prompt_title = "Live Grep (Press <c-f> to fuzzy filter)",
+          prompt_title = "Live Grep (Press <c-g> to fuzzy filter)",
           disable_devicons = true,
           preview_title = "",
         },

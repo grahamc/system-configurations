@@ -54,17 +54,17 @@ Plug("folke/trouble.nvim", {
       desc = "Diagnostics [lints,problems]",
     })
     vim.keymap.set("n", "gd", function()
-      vim.cmd.TroubleToggle("lsp_definitions")
+      vim.cmd.Trouble("lsp_definitions")
     end, {
       desc = "Definitions",
     })
     vim.keymap.set("n", "gt", function()
-      vim.cmd.TroubleToggle("lsp_type_definitions")
+      vim.cmd.Trouble("lsp_type_definitions")
     end, {
       desc = "Type definitions",
     })
     vim.keymap.set("n", "gi", function()
-      vim.cmd.TroubleToggle("lsp_implementations")
+      vim.cmd.Trouble("lsp_implementations")
     end, {
       desc = "Implementations",
     })
@@ -74,7 +74,7 @@ Plug("folke/trouble.nvim", {
       "n",
       "gr",
       require("terminal.utilities").set_jump_before(function()
-        vim.cmd.TroubleToggle("lsp_references")
+        vim.cmd.Trouble("lsp_references")
       end),
       { desc = "References" }
     )

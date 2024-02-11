@@ -1,4 +1,6 @@
 {pkgs, ...}: let
+  pythonWithPackages = pkgs.python3.withPackages (ps: with ps; [pip mypy ipython]);
+
   # TODO: Python virtualenvs use the canonical path of the base python. This is an issue for Nix
   # because when I update my system and the old python gets garbage collected, it breaks any
   # virtualenvs made against it. So I made a wrapper that injects the --copies flag whenever a
@@ -19,11 +21,11 @@
             elif [ -n "$seen_m" ] && [ -z "$seen_venv" ] && [ "$arg" = 'venv' ] && [ -z "''${BIGOLU_NO_COPY:-}" ]; then
               new_args=("''${new_args[@]}" "--copies")
               seen_venv=1
-              printf '\nInjecting "--copies" into command, disable by setting "BIGOLU_NO_COPY=1"\n\n'
+              printf '\nInjecting the "--copies" flag into the venv command. This is to avoid breaking virtual environments when Nix does garbage collection. You can disable this injection by setting the environment variable "BIGOLU_NO_COPY=1"\n\n'
             fi
           done
 
-          ${pkgs.python3}/bin/python "''${new_args[@]}"
+          ${pythonWithPackages}/bin/python "''${new_args[@]}"
         '';
       };
 
@@ -33,7 +35,7 @@
       {}
       ''
         mkdir -p $out/bin
-        name="$(find ${pkgs.python3}/bin -printf '%f\n' | grep -E '^python3\.[0-9]+(\.[0-9]+)?$')"
+        name="$(find ${pythonWithPackages}/bin -printf '%f\n' | grep -E '^python3\.[0-9]+(\.[0-9]+)?$')"
         cp ${python3CopyVenvsByDefault}/bin/python "$out/bin/$name"
         cp ${python3CopyVenvsByDefault}/bin/python "$out/bin/python"
         cp ${python3CopyVenvsByDefault}/bin/python "$out/bin/python3"
@@ -43,7 +45,7 @@
       name = "python-copy-venvs";
       paths = [
         python3CopyVenvsByDefaultPackage
-        (pkgs.python3.withPackages (ps: with ps; [pip mypy ipython]))
+        pythonWithPackages
       ];
     };
 in {

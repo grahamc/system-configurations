@@ -4,7 +4,7 @@ vim.opt.sessionoptions:remove("folds")
 vim.opt.sessionoptions:append("tabpages")
 vim.opt.sessionoptions:append("skiprtp")
 
-local session_dir = vim.fn.stdpath("data") .. "/sessions"
+local session_dir = vim.fs.joinpath(vim.fn.stdpath("data"), "sessions")
 
 local function save_session()
   local has_active_session = string.len(vim.v.this_session) > 0
@@ -51,7 +51,7 @@ local function restore_or_create_session()
     session_name = session_name .. "%vim"
 
     vim.fn.mkdir(session_dir, "p")
-    local session_full_path = session_dir .. "/" .. session_name
+    local session_full_path = vim.fs.joinpath(session_dir, session_name)
     local session_full_path_escaped = vim.fn.fnameescape(session_full_path)
     if vim.fn.filereadable(session_full_path) ~= 0 then
       vim.cmd("silent source " .. session_full_path_escaped)

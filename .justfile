@@ -95,6 +95,11 @@ get-secrets:
         mv "$temp_filename" "$destination"
     done
 
+# TODO: Automate this with rsyslog
+cleanup:
+    rm ~/.local/state/nvim/*.log
+    rm -f ~/.local/state/nvim/undo/*
+
 # Apply the first generation of a home-manager configuration.
 [private]
 init-home-manager host_name: install-git-hooks get-secrets

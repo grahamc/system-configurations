@@ -2,9 +2,11 @@
   pkgs,
   self,
   minimalFish,
+  isGui,
 }: let
   inherit (pkgs) lib system;
   inherit (lib.attrsets) optionalAttrs;
+  inherit (lib.lists) optionals;
   inherit (pkgs.stdenv) isLinux;
   hostName = "guest-host";
   makeEmptyPackage = packageName: pkgs.runCommand packageName {} ''mkdir -p $out/bin'';
@@ -55,6 +57,8 @@
         source = makeEmptyPackage "stub-spoon";
         recursive = false;
       };
+
+      packages = optionals isGui [pkgs.wezterm];
     };
 
     xdg = {
@@ -62,16 +66,12 @@
 
       dataFile = {
         "fzf/fzf-history.txt".source = pkgs.writeText "fzf-history.txt" "";
-
-        # I do this to override the original link to the treesitter parsers.
-        "nvim/site/parser".source = lib.mkForce (makeEmptyPackage "stub-parser");
       };
     };
   };
 
   homeManagerOutput = self.lib.home.makeFlakeOutput system {
-    inherit hostName;
-    isGui = false;
+    inherit hostName isGui;
     overlays = [minimalOverlay];
 
     # I want to remove the systemd dependency, but there is no option for that. Instead, I set the user

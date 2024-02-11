@@ -279,6 +279,8 @@ Plug("echasnovski/mini.nvim", {
         })
         IsMaximized = true
       else
+        IsMaximized = false
+
         -- Set cursor in original window to that of the maximized window.
         -- TODO: I should upstream this
         local maximized_window_cursor_position = vim.api.nvim_win_get_cursor(0)
@@ -291,7 +293,6 @@ Plug("echasnovski/mini.nvim", {
         })
 
         misc.zoom()
-        IsMaximized = false
       end
     end, {
       desc = "Toggle maximize window [zoom]",

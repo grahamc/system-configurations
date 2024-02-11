@@ -67,7 +67,7 @@ Plug("nvim-neotest/neotest", {
 
     vim.keymap.set(
       "n",
-      "<M-t>",
+      "<C-M-t>",
       require("neotest").summary.toggle,
       { desc = "Toggle test summary window" }
     )
