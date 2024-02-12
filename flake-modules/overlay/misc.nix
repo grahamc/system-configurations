@@ -27,11 +27,22 @@
         patches = [];
         configureFlags = old.configureFlags ++ ["--enable-sixel"];
       });
+
+      nightlyNeovim = final.symlinkJoin {
+        inherit (final.neovim-nightly) name;
+        paths = [final.neovim-nightly];
+        buildInputs = [final.makeWrapper];
+        # Neovim uses unibilium to discover term info entries which is a problem for me because
+        # unibilium sets its terminfo search path at build time so I'm setting the search path here.
+        postBuild = ''
+          wrapProgram $out/bin/nvim --set TERMINFO_DIRS '${ncursesWithWezterm}/share/terminfo'
+        '';
+      };
     in {
       tmux = latestTmux;
       # I'm renaming ncurses to avoid rebuilds.
       inherit ncursesWithWezterm;
-      neovim = final.neovim-nightly;
+      neovim = nightlyNeovim;
     };
 
     metaOverlay = self.lib.overlay.makeMetaOverlay [

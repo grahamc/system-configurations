@@ -19,12 +19,9 @@ in
     home.file = optionalAttrs isDarwin {
       # Since environment variables from the login shell don't get inherited by apps in macOS,
       # my terminal will use the system ncurses, which doesn't have an entry for wezterm. To
-      # work around this, I have to put the wezterm termingo in a place where the system ncurses
+      # work around this, I have to put the wezterm terminfo in a place where the system ncurses
       # will find it.
       ".terminfo/77/wezterm".source = "${pkgs.ncursesWithWezterm}/share/terminfo/77/wezterm";
-      # Styled underlines don't work in neovim unless I add the terminfo here. TODO: I should
-      # report this.
-      ".terminfo/74/tmux-256color".source = "${pkgs.ncursesWithWezterm}/share/terminfo/74/tmux-256color";
     };
 
     repository.symlink.xdg.configFile = {
