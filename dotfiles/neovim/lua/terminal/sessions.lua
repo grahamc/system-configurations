@@ -79,13 +79,9 @@ local function restore_or_create_session()
   end
 end
 
--- Restore/create session after vim starts.
 vim.api.nvim_create_autocmd({ "VimEnter" }, {
-  callback = restore_or_create_session,
-  group = vim.api.nvim_create_augroup("RestoreOrCreateSession", {}),
-  -- The 'nested' option tells vim to fire events normally while this autocommand is executing. By
-  -- default, no events are fired during the execution of an autocommand to prevent infinite loops.
   nested = true,
+  callback = restore_or_create_session,
 })
 
 local function delete_current_session()

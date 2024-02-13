@@ -22,10 +22,12 @@ def main():
     mouse_url = sys.argv[5]
     terminal_width = int(sys.argv[6])
 
-    # If the program in the current pane grabbed the mouse, don't open any links. The program in the pane should do it.
+    # If the program in the current pane grabbed the mouse, don't open any links. The
+    # program in the pane should do it.
     #
-    # TODO: I should check if the program running in the current pane has 'grabbed' the mouse like kitty does.
-    # For now I'll check for specific programs that I know grab the mouse
+    # TODO: I should check if the program running in the current pane has 'grabbed' the
+    # mouse like kitty does.  For now I'll check for specific programs that I know grab
+    # the mouse
     if pane_command in MOUSE_PROGRAMS:
         return
 
@@ -87,13 +89,13 @@ def expand(lines, start_x, start_y, left, terminal_width):
         y = y + step
         if is_in_bounds(len(lines), y):
             if left:
-                # Don't continue expanding unless the line we're currently on extends to the end of the screen,
-                # which suggests it wrapped.
+                # Don't continue expanding unless the line we're currently on extends to
+                # the end of the screen, which suggests it wrapped.
                 if len(lines[y]) != terminal_width:
                     break
             else:
-                # Don't continue expanding unless the last line we were on hit the end of the screen,
-                # which suggests it wrapped.
+                # Don't continue expanding unless the last line we were on hit the end
+                # of the screen, which suggests it wrapped.
                 if len(lines[y - step]) != terminal_width:
                     break
             x = len(lines[y]) - 1 if left else 0

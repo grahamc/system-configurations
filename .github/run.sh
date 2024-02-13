@@ -2,7 +2,6 @@
 
 set -o errexit
 set -o nounset
-set -o pipefail
 
 name="$1-$(uname -m)-$(uname -s | tr '[:upper:]' '[:lower:]')"
 # shellcheck disable=2034

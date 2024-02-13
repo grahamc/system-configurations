@@ -81,7 +81,7 @@ local fast_macro_group_id = vim.api.nvim_create_augroup("FastMacro", {})
 vim.api.nvim_create_autocmd("RecordingEnter", {
   callback = function()
     if _G.fast_macro_events == nil then
-      local events = vim.fn.getcompletion("", "event")
+      local events = vim.fn.getcompletion("", "event") or {}
 
       for index, event in ipairs(events) do
         if event == "RecordingLeave" then

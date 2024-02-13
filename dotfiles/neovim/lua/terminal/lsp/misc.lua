@@ -81,7 +81,6 @@ vim.keymap.set("n", "gn", vim.lsp.buf.rename, { desc = "Rename variable" })
 
 -- Hide all semantic highlights
 vim.api.nvim_create_autocmd("ColorScheme", {
-  pattern = "*",
   group = autocmd_group,
   callback = function()
     local highlights = vim.fn.getcompletion("@lsp", "highlight") or {}
@@ -262,6 +261,52 @@ Plug("williamboman/mason-lspconfig.nvim", {
             end
           end, { desc = "Toggle code lenses" })
         end
+
+        -- TODO: I try just calling diagnostic.reset in here, but it didn't work. It has to be
+        -- called after the handler for textDocument_{publish}diagnostic runs so in here we just
+        -- queue up the bufs to disable.
+        local is_buffer_outside_workspace = not vim.startswith(
+          vim.api.nvim_buf_get_name(buffer_number),
+          client.config.root_dir or vim.loop.cwd() or ""
+        )
+        if is_buffer_outside_workspace then
+          vim.diagnostic.reset(nil, buffer_number)
+          table.insert(BufsToDisableDiagnosticOnDiagnostic, buffer_number)
+          table.insert(BufsToDisableDiagnosticOnPublishDiagnostic, buffer_number)
+        end
+
+        -- Quick way to disable diagnostic for a buffer
+        buffer_keymap("n", [[\d]], function()
+          vim.diagnostic.reset(nil, buffer_number)
+        end, { desc = "Toggle inlay hints" })
+      end
+
+      -- TODO: Would be better if I could get the buffer the these diagnostics were for from the
+      -- context, but it's not in there.
+      BufsToDisableDiagnosticOnPublishDiagnostic = {}
+      local original_publish_diagnostics_handler =
+        vim.lsp.handlers[methods.textDocument_publishDiagnostics]
+      vim.lsp.handlers[methods.textDocument_publishDiagnostics] = function(...)
+        local toreturn = { original_publish_diagnostics_handler(...) }
+
+        vim.iter(BufsToDisableDiagnosticOnPublishDiagnostic):each(function(b)
+          vim.diagnostic.reset(nil, b)
+        end)
+        BufsToDisableDiagnosticOnPublishDiagnostic = {}
+
+        return unpack(toreturn)
+      end
+      BufsToDisableDiagnosticOnDiagnostic = {}
+      local original_diagnostic_handler = vim.lsp.handlers[methods.textDocument_diagnostic]
+      vim.lsp.handlers[methods.textDocument_diagnostic] = function(...)
+        local toreturn = { original_diagnostic_handler(...) }
+
+        vim.iter(BufsToDisableDiagnosticOnDiagnostic):each(function(b)
+          vim.diagnostic.reset(nil, b)
+        end)
+        BufsToDisableDiagnosticOnDiagnostic = {}
+
+        return unpack(toreturn)
       end
 
       -- Call on_attach() again after registering dynamic capabilities.
@@ -416,11 +461,9 @@ Plug("williamboman/mason-lspconfig.nvim", {
       -- Set the filetype of all the currently open buffers to trigger a 'FileType' event for each
       -- buffer so nvim_lsp has a chance to attach to any buffers that were openeed before it was
       -- configured. This way I can load nvim_lsp asynchronously.
-      local buffer = vim.api.nvim_get_current_buf()
-      vim.cmd([[
-          silent! bufdo silent! lua vim.bo.filetype = vim.bo.filetype
-      ]])
-      vim.cmd.b(buffer)
+      vim.iter(vim.api.nvim_list_bufs()):each(function(buf)
+        vim.bo[buf].filetype = vim.bo[buf].filetype
+      end)
     end
 
     -- mason.nvim needs to run it's config first so this will ensure that happens.

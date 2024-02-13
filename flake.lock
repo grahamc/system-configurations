@@ -565,7 +565,6 @@
         "vim-plugin-vim-just": "vim-plugin-vim-just",
         "vim-plugin-vim-matchup": "vim-plugin-vim-matchup",
         "vim-plugin-vim-plug": "vim-plugin-vim-plug",
-        "vim-plugin-vim-qf": "vim-plugin-vim-qf",
         "vim-plugin-vim-repeat": "vim-plugin-vim-repeat",
         "vim-plugin-vim-signify": "vim-plugin-vim-signify",
         "vim-plugin-vim-sleuth": "vim-plugin-vim-sleuth",
@@ -2041,22 +2040,6 @@
       "original": {
         "owner": "junegunn",
         "repo": "vim-plug",
-        "type": "github"
-      }
-    },
-    "vim-plugin-vim-qf": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1683623072,
-        "narHash": "sha256-1Xv9C1Z8Yit9nAKahw1wJJ4bjDLt5n3Bk89Sd5/FMHA=",
-        "owner": "romainl",
-        "repo": "vim-qf",
-        "rev": "7e65325651ff5a0b06af8df3980d2ee54cf10e14",
-        "type": "github"
-      },
-      "original": {
-        "owner": "romainl",
-        "repo": "vim-qf",
         "type": "github"
       }
     },

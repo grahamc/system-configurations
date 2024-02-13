@@ -14,7 +14,6 @@ Plug("arthurxavierx/vim-caser")
 local utilities = require("utilities")
 
 vim.api.nvim_create_autocmd("BufNew", {
-  pattern = "*",
   callback = function()
     vim.bo.textwidth = utilities.get_max_line_length()
   end,

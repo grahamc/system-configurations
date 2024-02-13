@@ -5,20 +5,12 @@ local M = {}
 function M.get(on_attach)
   -- Inlay hint configuration came from here:
   -- https://github.com/simrat39/inlay-hints.nvim
-  return {
+  local settings = {
     jsonls = {
       settings = {
         json = {
           schemas = require("schemastore").json.schemas(),
           validate = { enable = true },
-        },
-      },
-    },
-
-    lemminx = {
-      settings = {
-        xml = {
-          catalogs = { "/etc/xml/catalog" },
         },
       },
     },
@@ -50,6 +42,16 @@ function M.get(on_attach)
       },
     },
   }
+
+  local catalog = "/etc/xml/catalog"
+  -- It won't be on macOS
+  if vim.fn.filereadable(catalog) ~= 0 then
+    vim.tbl_deep_extend("error", settings, {
+      lemminx = { settings = { xml = { catalogs = { catalog } } } },
+    })
+  end
+
+  return settings
 end
 
 return M

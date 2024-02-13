@@ -263,6 +263,15 @@ Plug("rcarriga/nvim-dap-ui", {
     })
 
     local dapui_group = vim.api.nvim_create_augroup("MyDapUi", {})
+    vim.api.nvim_create_autocmd("WinEnter", {
+      callback = function()
+        local buf = vim.api.nvim_get_current_buf()
+        if vim.bo[buf].filetype == "dap-repl" then
+          vim.wo.wrap = true
+        end
+      end,
+      group = dapui_group,
+    })
     vim.api.nvim_create_autocmd("BufWinEnter", {
       callback = function()
         local buf = vim.api.nvim_get_current_buf()
@@ -299,10 +308,10 @@ Plug("rcarriga/nvim-dap-ui", {
           })
         end
 
-        -- Mappings for debugger controls
-        -- TODO: These functions aren't documented, I should see if they can be included in the
-        -- public API.
         if vim.bo.filetype == "dap-repl" then
+          -- Mappings for debugger controls
+          -- TODO: These functions aren't documented, I should see if they can be included in the
+          -- public API.
           local function run_in_non_dapui_window(fn, go_back)
             local non_dapui_window = vim.iter(vim.api.nvim_tabpage_list_wins(0)):find(function(win)
               return not is_dapui_filetype(vim.bo[vim.api.nvim_win_get_buf(win)].filetype)
@@ -321,19 +330,19 @@ Plug("rcarriga/nvim-dap-ui", {
             end
           end
 
-          vim.keymap.set("n", "h", _G._dapui.step_back, {
+          vim.keymap.set({ "n", "t" }, "<C-u>", _G._dapui.step_back, {
             desc = "Step back",
             buffer = true,
           })
-          vim.keymap.set("n", "j", _G._dapui.step_into, {
+          vim.keymap.set({ "n", "t" }, "<C-i>", _G._dapui.step_into, {
             desc = "Step into",
             buffer = true,
           })
-          vim.keymap.set("n", "k", _G._dapui.step_out, {
+          vim.keymap.set({ "n", "t" }, "<C-o>", _G._dapui.step_out, {
             desc = "Step out",
             buffer = true,
           })
-          vim.keymap.set("n", "l", _G._dapui.step_over, {
+          vim.keymap.set({ "n", "t" }, "<C-p>", _G._dapui.step_over, {
             desc = "Step over",
             buffer = true,
           })
@@ -343,17 +352,17 @@ Plug("rcarriga/nvim-dap-ui", {
             desc = "Play",
             buffer = true,
           })
-          vim.keymap.set("n", "<C-r>", function()
+          vim.keymap.set({ "n", "t" }, "<C-r>", function()
             run_in_non_dapui_window(_G._dapui.run_last, true)
           end, {
             desc = "Run last",
             buffer = true,
           })
-          vim.keymap.set("n", "<C-c>", _G._dapui.terminate, {
+          vim.keymap.set({ "n", "t" }, "<C-c>", _G._dapui.terminate, {
             desc = "Stop",
             buffer = true,
           })
-          vim.keymap.set("n", "<C-d>", _G._dapui.disconnect, {
+          vim.keymap.set({ "n", "t" }, "<C-d>", _G._dapui.disconnect, {
             desc = "Disconnect",
             buffer = true,
           })

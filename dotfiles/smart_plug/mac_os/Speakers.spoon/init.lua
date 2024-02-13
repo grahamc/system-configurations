@@ -32,7 +32,7 @@ local speakerctl_path = nil
 execute(
   "/bin/sh",
   { "-c", [[. ~/.profile; printf "$(command -v speakerctl)"]] },
-  function(exit_code, stdout, stderr)
+  function(_, stdout, _)
     speakerctl_path = stdout
   end
 ):waitUntilExit()

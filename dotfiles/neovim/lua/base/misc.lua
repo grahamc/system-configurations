@@ -144,7 +144,6 @@ local vim_default_overrides_group_id = vim.api.nvim_create_augroup("VimDefaultOv
 local function override_default_filetype_plugins()
   -- Don't automatically hard-wrap text
   vim.api.nvim_create_autocmd("FileType", {
-    pattern = "*",
     callback = function()
       vim.bo.wrapmargin = 0
       -- ro: auto insert comment character

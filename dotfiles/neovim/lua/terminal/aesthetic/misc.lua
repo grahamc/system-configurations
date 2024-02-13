@@ -25,9 +25,3 @@ Plug("yamatsum/nvim-nonicons", {
     })
   end,
 })
-
-Plug("yorickpeterse/nvim-pqf", {
-  config = function()
-    require("pqf").setup()
-  end,
-})

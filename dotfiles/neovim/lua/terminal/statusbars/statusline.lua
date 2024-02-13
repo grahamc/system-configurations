@@ -14,7 +14,6 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 })
 vim.api.nvim_create_autocmd({ "BufEnter" }, {
   group = statusline_group,
-  pattern = "*",
   callback = function()
     if vim.o.filetype == "NvimTree" then
       vim.opt_local.statusline = "%!v:lua.FileExplorerStatusLine()"
@@ -228,8 +227,26 @@ local function make_statusline(left_items, right_items, left_sep, right_sep)
 end
 
 local function make_mapping_statusline(mappings)
-  local function make_mapping_string(key, description)
-    return string.format("%%#StatusLineHintText#%s%%#StatusLine# %s", key, description)
+  local function make_mapping_string(mapping)
+    local key_combination = mapping.key:gsub("<CR>", "󰌑 ")
+    if mapping.mods ~= nil then
+      local mods = vim
+        .iter(mapping.mods)
+        :map(function(mod)
+          mod = ({
+            C = "󰘴",
+            M = "󰘵",
+          })[mod]
+          return mod .. " "
+        end)
+        :join("")
+      key_combination = mods .. key_combination
+    end
+    return string.format(
+      "%%#StatusLineHintText#%s%%#StatusLine# %s",
+      key_combination,
+      mapping.description
+    )
   end
   local maps = vim.iter(mappings):map(make_mapping_string):totable()
   table.insert(maps, 1, "%#StatusLine#%=")
@@ -395,33 +412,33 @@ function StatusLine()
   local luasnip = require("luasnip")
   if luasnip.get_active_snip() ~= nil then
     return make_mapping_statusline({
-      ["<C-h>"] = "Last node",
-      ["<C-l>"] = "Next node or expand",
-      ["<C-c>"] = "Select choice",
+      { mods = { "C" }, key = "h", description = "Last node" },
+      { mods = { "C" }, key = "l", description = "Next node or expand" },
+      { mods = { "C" }, key = "c", description = "Select choice" },
     })
   elseif IsCmpDocsOpen then
     return make_mapping_statusline({
-      ["<C-j/k>"] = "Scroll docs down/up",
+      { mods = { "C" }, key = "j/k", description = "Scroll docs down/up" },
     })
   elseif IsInsideDiagnosticFloat or IsInsideLspHoverOrSignatureHelp then
     return make_mapping_statusline({
-      q = "Close float",
+      { key = "q", description = "Close float" },
     })
   elseif IsDiagnosticFloatOpen then
     return make_mapping_statusline({
-      L = "Enter float",
+      { key = "L", description = "Enter float" },
     })
   elseif IsLspHoverOpen then
     return make_mapping_statusline({
-      K = "Enter float",
+      { key = "K", description = "Enter float" },
     })
   elseif IsSignatureHelpOpen then
     return make_mapping_statusline({
-      ["<C-k>"] = "Enter float",
+      { mods = { "C" }, key = "k", description = "Enter float" },
     })
   elseif vim.bo.filetype == "qf" then
     return make_mapping_statusline({
-      gf = "find&replace",
+      { key = "gf", description = "find&replace" },
     })
   else
     return make_statusline({
@@ -467,7 +484,7 @@ vim.g.czs_do_not_map = true
 -- file explorer statusline {{{
 function FileExplorerStatusLine()
   return make_mapping_statusline({
-    ["g?"] = "help",
+    { key = "g?", description = "help" },
   })
 end
 -- }}}
@@ -475,7 +492,7 @@ end
 -- symbol outline statusline {{{
 function OutlineStatusLine()
   return make_mapping_statusline({
-    ["?"] = "help",
+    { key = "?", description = "help" },
   })
 end
 -- }}}
@@ -486,42 +503,42 @@ end
 -- https://github.com/rcarriga/nvim-dap-ui/issues/267
 function DapuiScopesStatusLine()
   return make_mapping_statusline({
-    e = "edit var",
-    ["<Tab>"] = "expand/collapse children",
-    r = "send var to REPL",
+    { key = "e", description = "edit var" },
+    { key = "<Tab>", description = "expand/collapse children" },
+    { key = "r", description = "send var to REPL" },
   })
 end
 
 function DapuiStacksStatusLine()
   return make_mapping_statusline({
-    o = "jump to place in stack frame",
-    t = "toggle subtle frames",
+    { key = "o", description = "jump to place in stack frame" },
+    { key = "t", description = "toggle subtle frames" },
   })
 end
 
 function DapuiWatchesStatusLine()
   return make_mapping_statusline({
-    e = "edit expression or child var",
-    ["<Tab>"] = "toggle child vars",
-    r = "send expression to REPL",
-    d = "remove watch",
+    { key = "e", description = "edit expression or child var" },
+    { key = "<Tab>", description = "toggle child vars" },
+    { key = "r", description = "send expression to REPL" },
+    { key = "d", description = "remove watch" },
   })
 end
 
 function DapuiBreakpointsStatusLine()
   return make_mapping_statusline({
-    o = "jump to breakpoint",
-    t = "toggle breakpoint",
+    { key = "o", description = "jump to breakpoint" },
+    { key = "t", description = "toggle breakpoint" },
   })
 end
 
 function DapuiReplStatusLine()
   return make_mapping_statusline({
-    hjkl = "step back/into/out/over",
-    ["<CR>"] = "play",
-    ["<C-c>"] = "terminate",
-    ["<C-d>"] = "disconnect",
-    ["<C-r>"] = "run last",
+    { mods = { "C" }, key = "uiop", description = "step back/into/out/over" },
+    { key = "<CR>", description = "play" },
+    { mods = { "C" }, key = "c", description = "terminate" },
+    { mods = { "C" }, key = "d", description = "disconnect" },
+    { mods = { "C" }, key = "r", description = "run last" },
   })
 end
 -- }}}
@@ -529,14 +546,12 @@ end
 -- telescope statusline {{{
 function TelescopeStatusLine(is_menufacture_open)
   local mappings = {
-    ["<C-q>"] = "Quickfix",
-    ["M-<CR>"] = "Multi-select",
-    ["<C-k/j>"] = "Scroll preview up/down",
+    { mods = { "C" }, key = "q", description = "Quickfix" },
+    { mods = { "M" }, key = "<CR>", description = "Multi-select" },
+    { mods = { "C" }, key = "j/k", description = "Scroll preview" },
   }
   if is_menufacture_open then
-    mappings = vim.tbl_deep_extend("error", mappings, {
-      ["<C-f>"] = "Filter",
-    })
+    table.insert(mappings, { mods = { "C" }, key = "f", description = "Filter" })
   end
   return make_mapping_statusline(mappings)
 end

@@ -254,7 +254,6 @@ local theme = lush(function(injected_functions)
     MoreMsg {}, -- |more-prompt|
     NonText { fg = is_light and t_0.fg.darken(10) or t_0.fg.lighten(10) }, -- '@' at the end of the window, characters from 'showbreak' and other characters that do not really exist in the text (e.g., ">" displayed when a double-wide character doesn't fit at the end of the line). See also |hl-EndOfBuffer|.
     Question {}, -- |hit-enter| prompt and yes/no questions
-    QuickFixLine { }, -- Current |quickfix| item in the quickfix window. Combined with |hl-CursorLine| when the cursor is there.
     SpellBad { Error }, -- Word that is not recognized by the spellchecker. |spell| Combined with the highlighting used otherwise.
     SpellCap { Warning }, -- Word that should start with a capital. |spell| Combined with the highlighting used otherwise.
     Title { Normal }, -- Titles for output from ":set all", ":autocmd" etc.
@@ -276,6 +275,8 @@ local theme = lush(function(injected_functions)
     NvimDapVirtualText { LspInlayHint },
     LuaSnipInlayHint { LspInlayHint, fg = t_11.fg },
     TroubleCount { Identifier },
+    QuickfixPreview { Search, nocombine = true },
+    AerialLine { bg = is_light and t_0.fg.darken(6) or t_0.fg.lighten(6), },
 
     -- bufferline.nvim {{{
     MyBufferLineBackground { bg = t_0.fg, },
@@ -347,7 +348,7 @@ local theme = lush(function(injected_functions)
     MasonHighlight { t_6 },
     MasonHighlightBlockBold { MasonHighlight, bold = true, reverse = true },
     MasonHighlightBlock { MasonHighlightBlockBold },
-    MasonMuted {},
+    MasonMuted { t_15, },
     MasonMutedBlock { fg = is_light and t_0.fg.da(40) or t_0.fg.li(40), reverse = true },
     MasonMutedBlockBold { MasonMutedBlock },
     MasonError { ErrorMsg },
@@ -384,6 +385,12 @@ local theme = lush(function(injected_functions)
     Clear { },
     MiniCursorword { bg = is_light and t_0.fg.darken(6) or t_0.fg.lighten(6) },
     -- }}}
+
+    QuickFixLine { }, -- Current |quickfix| item in the quickfix window. Combined with |hl-CursorLine| when the cursor is there.
+    QuickFixColumnBorder { fg = MiniCursorword.bg, },
+    QuickFixEntryUnderline { underline = true, sp = QuickFixColumnBorder.fg, nocombine = true, },
+    QuickfixFold { QuickFixEntryUnderline, bold = true, },
+    qfFileName { Normal, },
 
     -- nvim-telescope {{{
     -- List of telescope highlight groups:
@@ -528,7 +535,7 @@ local theme = lush(function(injected_functions)
     DapUIBreakpointsInfo { Normal },
     DapUIBreakpointsCurrentLine { Normal },
     DapUIBreakpointsLine { t_15 },
-    DapUIBreakpointsDisabledLine { t_15 },
+    DapUIBreakpointsDisabledLine { t_15, strikethrough = true, },
     DapUICurrentFrameName { Normal },
     DapUIStepOver { Normal },
     DapUIStepInto { Normal },
@@ -690,8 +697,6 @@ local theme = lush(function(injected_functions)
     sym"@tag.attribute" { Tag },
     sym"@tag.delimiter" { Delimiter },
     -- }}}
-
-    QuickfixPreview { Search, nocombine = true },
   }
 end)
 

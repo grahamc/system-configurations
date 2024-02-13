@@ -71,7 +71,6 @@ cmp-dap
 nvim-dap-ui
 nvim-notify
 lush.nvim
-vim-qf
 cmp_luasnip
 aerial.nvim
 dressing.nvim
@@ -86,4 +85,3 @@ mason.nvim
 nvim-autopairs
 nvim-ts-autotag
 nvim-nonicons
-nvim-pqf

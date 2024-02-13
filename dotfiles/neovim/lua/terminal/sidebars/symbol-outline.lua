@@ -36,6 +36,7 @@ Plug("stevearc/aerial.nvim", {
             AerialIsExplicitJump = true
             require("aerial.navigation").select({})
             AerialIsExplicitJump = false
+            IsLeavingAerial = false
           end,
         },
         ["<LeftMouse>"] = [[<LeftMouse><Cmd>lua require('aerial.navigation').select({jump = false,})<CR>]],
@@ -44,6 +45,12 @@ Plug("stevearc/aerial.nvim", {
       nerd_font = true,
       show_guides = true,
       link_tree_to_folds = false,
+      post_jump_cmd = false,
+      guides = {
+        mid_item = "├─ ",
+        last_item = "╰─ ",
+        nested_top = "│ ",
+      },
     })
     vim.keymap.set(
       { "n" },
@@ -63,6 +70,7 @@ Plug("stevearc/aerial.nvim", {
           vim.opt_local.winbar = " "
           vim.b.minicursorword_disable = true
           vim.b.minicursorword_disable_permanent = true
+          vim.b.minianimate_disable = true
           utils.set_persistent_highlights("outline", {
             OutlineTitle = "BufferLineBufferSelected",
             OutlineBorder = "BufferLineIndicatorSelected",

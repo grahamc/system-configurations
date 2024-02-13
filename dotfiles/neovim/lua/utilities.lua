@@ -4,6 +4,9 @@ function M.get_max_line_length()
   local editorconfig = vim.b["editorconfig"]
   if editorconfig ~= nil and editorconfig.max_line_length ~= nil then
     return tonumber(editorconfig.max_line_length)
+  elseif vim.bo.filetype == "python" then
+    -- default for black
+    return 88
   end
 
   return 100

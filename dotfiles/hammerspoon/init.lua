@@ -305,13 +305,15 @@ local function open_help_page()
   local screen_rect = hs.screen.mainScreen():fullFrame()
   -- `windowStyle` exists so I'm disabling this lint
   ---@diagnostic disable-next-line: undefined-field
-  local help_page = hs.webview
+  local help_page = hs
+    .webview
     .new({
       x = screen_rect.x + screen_rect.w * 0.15 / 2,
       y = screen_rect.x + screen_rect.w * 0.25 / 2,
       w = screen_rect.w * 0.85,
       h = screen_rect.h * 0.40,
     })
+    ---@diagnostic disable-next-line: undefined-field
     :windowStyle({
       "closable",
       "titled",

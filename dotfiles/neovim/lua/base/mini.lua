@@ -179,7 +179,6 @@ Plug("echasnovski/mini.nvim", {
     })
     -- TODO: I want to disable this per window, but mini only supports disabling per buffer
     vim.api.nvim_create_autocmd("BufEnter", {
-      pattern = "*",
       callback = function()
         if not vim.b.miniindentscope_disable_permanent then
           vim.b.miniindentscope_disable = false
@@ -188,7 +187,6 @@ Plug("echasnovski/mini.nvim", {
       group = mini_group_id,
     })
     vim.api.nvim_create_autocmd("BufLeave", {
-      pattern = "*",
       callback = function()
         vim.b.miniindentscope_disable = true
       end,
@@ -336,62 +334,52 @@ Plug("echasnovski/mini.nvim", {
     })
     -- }}}
 
-    -- jump2d {{{
-    require("mini.jump2d").setup({
-      mappings = {
-        start_jumping = ";",
-      },
-
-      view = {
-        dim = true,
-        n_steps_ahead = 0,
-      },
-
-      allowed_windows = {
-        not_current = false,
-      },
-
-      silent = true,
-    })
-    -- }}}
-
     -- cursorword {{{
     require("mini.cursorword").setup()
 
+    local cursorword_highlight_name = "MiniCursorword"
+    local function disable_cursorword()
+      vim.opt_local.winhighlight:append(cursorword_highlight_name .. ":Clear")
+    end
+    local function enable_cursorword()
+      -- TODO: When removing the highlight I can only provide the from highlight, but in vimscript
+      -- I can provide both e.g. `set winhighlight-=From:To`
+      vim.opt_local.winhighlight:remove(cursorword_highlight_name)
+    end
+
     -- Don't highlight keywords
     vim.api.nvim_create_autocmd("CursorMoved", {
-      pattern = "*",
       group = mini_group_id,
       callback = function()
         if vim.b.minicursorword_disable_permanent then
           return
         end
 
-        local captures = vim.treesitter.get_captures_at_cursor()
-        for _, capture in ipairs(captures) do
-          if string.find(capture, "keyword") then
-            vim.b.minicursorword_disable = true
-            return
-          end
+        local is_cursorword_keyword = vim
+          .iter(vim.treesitter.get_captures_at_cursor())
+          :any(function(capture)
+            return capture:find("keyword")
+          end)
+
+        if is_cursorword_keyword then
+          disable_cursorword()
+        else
+          enable_cursorword()
         end
-        vim.b.minicursorword_disable = false
       end,
     })
 
     -- Don't highlight in inactive windows
-    local cursorword_highlight_name = "MiniCursorword"
     vim.api.nvim_create_autocmd("WinLeave", {
       group = mini_group_id,
       callback = function()
-        vim.opt_local.winhighlight:append(cursorword_highlight_name .. ":Clear")
+        disable_cursorword()
       end,
     })
     vim.api.nvim_create_autocmd("WinEnter", {
       group = mini_group_id,
       callback = function()
-        -- TODO: When removing the highlight I can only provide the from highlight, but in vimscript
-        -- I can provide both e.g. `set winhighlight-=From:To`
-        vim.opt_local.winhighlight:remove(cursorword_highlight_name)
+        enable_cursorword()
       end,
     })
     -- }}}

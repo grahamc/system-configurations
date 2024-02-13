@@ -206,3 +206,5 @@ vim.keymap.set({ "x" }, "az", ":<C-U>silent!normal![zV]z<CR>", {
 vim.keymap.set({ "o" }, "az", ":normal vaz<CR>", {
   desc = "Outer fold",
 })
+
+vim.keymap.set({ "n", "x" }, ";", "%", { remap = true })

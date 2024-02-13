@@ -59,6 +59,7 @@ in {
   home.packages = with pkgs; [
     wrappedPython3
     nodejs
+    typescript
     rustc
     go
     cargo

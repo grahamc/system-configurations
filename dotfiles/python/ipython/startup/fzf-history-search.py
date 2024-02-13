@@ -28,7 +28,7 @@ try:
 except (ImportError, ValueError):
     pass
 
-_ENCODED_NEWLINE = "↵"
+_ENCODED_NEWLINE = "␤"
 _ENCODED_NEWLINE_HIGHLIGHT = "\x1b[93m"
 _ENCODED_NEWLINE_HIGHLIGHT_RESET = "\x1b[0m"
 _HIGHLIGHTED_ENCODED_NEWLINE = "{}{}{}".format(

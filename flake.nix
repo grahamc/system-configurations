@@ -502,10 +502,6 @@
       url = "github:IndianBoy42/tree-sitter-just";
       flake = false;
     };
-    vim-plugin-vim-qf = {
-      url = "github:romainl/vim-qf";
-      flake = false;
-    };
     vim-plugin-cmp-dictionary = {
       url = "github:uga-rosa/cmp-dictionary";
       flake = false;
