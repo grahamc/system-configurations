@@ -6,6 +6,8 @@ if not has_ttyin and not has_ttyout then
   return
 end
 
+IsRunningInTerminal = true
+
 require("terminal.aesthetic")
 require("terminal.statusbars")
 require("terminal.autocomplete")

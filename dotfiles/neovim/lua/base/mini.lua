@@ -3,12 +3,10 @@
 -- undefined-global is for globals defined by mini.nvim and inject-field is so I can vim.b.*
 ---@diagnostic disable: inject-field
 
--- TODO: Not all of this should be in base
---
 -- Dependencies: nvim-treesitter-textobjects
 Plug("echasnovski/mini.nvim", {
   -- Load synchronously for cursor restoration
-  sync = true,
+  sync = IsRunningInTerminal,
 
   config = function()
     local mini_group_id = vim.api.nvim_create_augroup("MyMiniNvim", {})
@@ -115,7 +113,14 @@ Plug("echasnovski/mini.nvim", {
       },
       symbol = "┊",
     })
+
     vim.g.miniindentscope_disable = true
+    if IsRunningInTerminal then
+      vim.keymap.set("n", [[\|]], function()
+        vim.g.miniindentscope_disable = not vim.g.miniindentscope_disable
+        return "lh"
+      end, { silent = true, expr = true, desc = "Toggle indent guide" })
+    end
 
     local new_opts = {
       options = { indent_at_cursor = false },
@@ -130,7 +135,6 @@ Plug("echasnovski/mini.nvim", {
       fn()
       vim.b.miniindentscope_config = old_opts
     end
-
     vim.keymap.set({ "o", "x" }, "ii", function()
       run_without_indent_at_cursor(MiniIndentscope.textobject)
     end, {
@@ -158,40 +162,42 @@ Plug("echasnovski/mini.nvim", {
       desc = "End of indent of line",
     })
 
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = { "python", "yaml" },
-      callback = function()
-        vim.b.miniindentscope_config = {
-          options = {
-            border = "top",
-          },
-        }
-      end,
-      group = mini_group_id,
-    })
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = { "man", "aerial", "help", "dropbar_menu" },
-      callback = function()
-        vim.b.miniindentscope_disable = true
-        vim.b.miniindentscope_disable_permanent = true
-      end,
-      group = mini_group_id,
-    })
-    -- TODO: I want to disable this per window, but mini only supports disabling per buffer
-    vim.api.nvim_create_autocmd("BufEnter", {
-      callback = function()
-        if not vim.b.miniindentscope_disable_permanent then
-          vim.b.miniindentscope_disable = false
-        end
-      end,
-      group = mini_group_id,
-    })
-    vim.api.nvim_create_autocmd("BufLeave", {
-      callback = function()
-        vim.b.miniindentscope_disable = true
-      end,
-      group = mini_group_id,
-    })
+    if IsRunningInTerminal then
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "python", "yaml" },
+        callback = function()
+          vim.b.miniindentscope_config = {
+            options = {
+              border = "top",
+            },
+          }
+        end,
+        group = mini_group_id,
+      })
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "man", "aerial", "help", "dropbar_menu" },
+        callback = function()
+          vim.b.miniindentscope_disable = true
+          vim.b.miniindentscope_disable_permanent = true
+        end,
+        group = mini_group_id,
+      })
+      -- TODO: I want to disable this per window, but mini only supports disabling per buffer
+      vim.api.nvim_create_autocmd("BufEnter", {
+        callback = function()
+          if not vim.b.miniindentscope_disable_permanent then
+            vim.b.miniindentscope_disable = false
+          end
+        end,
+        group = mini_group_id,
+      })
+      vim.api.nvim_create_autocmd("BufLeave", {
+        callback = function()
+          vim.b.miniindentscope_disable = true
+        end,
+        group = mini_group_id,
+      })
+    end
     -- }}}
 
     -- surround {{{
@@ -256,70 +262,73 @@ Plug("echasnovski/mini.nvim", {
     -- }}}
 
     -- misc {{{
-    local misc = require("mini.misc")
-    misc.setup_restore_cursor({
-      center = false,
-    })
-    vim.keymap.set("n", "<Leader>m", function()
-      if not IsMaximized then
-        vim.api.nvim_create_autocmd("WinEnter", {
-          once = true,
-          group = mini_group_id,
-          callback = function()
-            vim.o.winhighlight = "NormalFloat:Normal"
-          end,
-        })
-        misc.zoom(0, {
-          anchor = "SW",
-          row = 1,
-          col = 1,
-          height = vim.o.lines - 1,
-        })
-        IsMaximized = true
-      else
-        IsMaximized = false
+    if IsRunningInTerminal then
+      local misc = require("mini.misc")
+      misc.setup_restore_cursor({
+        center = false,
+      })
+      vim.keymap.set("n", "<Leader>m", function()
+        if not IsMaximized then
+          vim.api.nvim_create_autocmd("WinEnter", {
+            once = true,
+            group = mini_group_id,
+            callback = function()
+              vim.o.winhighlight = "NormalFloat:Normal"
+            end,
+          })
+          misc.zoom(0, {
+            anchor = "SW",
+            row = 1,
+            col = 1,
+            height = vim.o.lines - 1,
+          })
+          IsMaximized = true
+        else
+          IsMaximized = false
 
-        -- Set cursor in original window to that of the maximized window.
-        -- TODO: I should upstream this
-        local maximized_window_cursor_position = vim.api.nvim_win_get_cursor(0)
-        vim.api.nvim_create_autocmd("WinEnter", {
-          once = true,
-          group = mini_group_id,
-          callback = function()
-            vim.api.nvim_win_set_cursor(0, maximized_window_cursor_position)
-          end,
-        })
+          -- Set cursor in original window to that of the maximized window.
+          -- TODO: I should upstream this
+          local maximized_window_cursor_position = vim.api.nvim_win_get_cursor(0)
+          vim.api.nvim_create_autocmd("WinEnter", {
+            once = true,
+            group = mini_group_id,
+            callback = function()
+              vim.api.nvim_win_set_cursor(0, maximized_window_cursor_position)
+            end,
+          })
 
-        misc.zoom()
-      end
-    end, {
-      desc = "Toggle maximize window [zoom]",
-    })
-
+          misc.zoom()
+        end
+      end, {
+        desc = "Toggle maximize window [zoom]",
+      })
+    end
     -- }}}
 
     -- animate {{{
-    require("mini.animate").setup({
-      cursor = {
-        timing = require("mini.animate").gen_timing.exponential({
-          duration = 300,
-          easing = "out",
-          unit = "total",
-        }),
-      },
-      resize = {
-        enable = false,
-      },
-      scroll = {
-        enable = false,
-      },
-      open = {
-        enable = false,
-      },
-      close = {
-        enable = false,
-      },
-    })
+    if IsRunningInTerminal then
+      require("mini.animate").setup({
+        cursor = {
+          timing = require("mini.animate").gen_timing.exponential({
+            duration = 300,
+            easing = "out",
+            unit = "total",
+          }),
+        },
+        resize = {
+          enable = false,
+        },
+        scroll = {
+          enable = false,
+        },
+        open = {
+          enable = false,
+        },
+        close = {
+          enable = false,
+        },
+      })
+    end
     -- }}}
 
     -- jump {{{
@@ -335,66 +344,72 @@ Plug("echasnovski/mini.nvim", {
     -- }}}
 
     -- cursorword {{{
-    require("mini.cursorword").setup()
+    if IsRunningInTerminal then
+      require("mini.cursorword").setup()
 
-    local cursorword_highlight_name = "MiniCursorword"
-    local function disable_cursorword()
-      vim.opt_local.winhighlight:append(cursorword_highlight_name .. ":Clear")
-    end
-    local function enable_cursorword()
-      -- TODO: When removing the highlight I can only provide the from highlight, but in vimscript
-      -- I can provide both e.g. `set winhighlight-=From:To`
-      vim.opt_local.winhighlight:remove(cursorword_highlight_name)
-    end
+      local cursorword_highlight_name = "MiniCursorword"
+      local function disable_cursorword()
+        vim.opt_local.winhighlight:append(cursorword_highlight_name .. ":Clear")
+      end
+      local function enable_cursorword()
+        -- TODO: When removing the highlight I can only provide the from highlight, but in vimscript
+        -- I can provide both e.g. `set winhighlight-=From:To`
+        vim.opt_local.winhighlight:remove(cursorword_highlight_name)
+      end
 
-    -- Don't highlight keywords
-    vim.api.nvim_create_autocmd("CursorMoved", {
-      group = mini_group_id,
-      callback = function()
-        if vim.b.minicursorword_disable_permanent then
-          return
-        end
+      -- Don't highlight keywords
+      vim.api.nvim_create_autocmd("CursorMoved", {
+        group = mini_group_id,
+        callback = function()
+          if vim.b.minicursorword_disable_permanent then
+            return
+          end
 
-        local is_cursorword_keyword = vim
-          .iter(vim.treesitter.get_captures_at_cursor())
-          :any(function(capture)
-            return capture:find("keyword")
-          end)
+          local is_cursorword_keyword = vim
+            .iter(vim.treesitter.get_captures_at_cursor())
+            :any(function(capture)
+              return capture:find("keyword")
+            end)
 
-        if is_cursorword_keyword then
+          if is_cursorword_keyword then
+            disable_cursorword()
+          else
+            enable_cursorword()
+          end
+        end,
+      })
+
+      -- Don't highlight in inactive windows
+      vim.api.nvim_create_autocmd("WinLeave", {
+        group = mini_group_id,
+        callback = function()
           disable_cursorword()
-        else
+        end,
+      })
+      vim.api.nvim_create_autocmd("WinEnter", {
+        group = mini_group_id,
+        callback = function()
           enable_cursorword()
-        end
-      end,
-    })
-
-    -- Don't highlight in inactive windows
-    vim.api.nvim_create_autocmd("WinLeave", {
-      group = mini_group_id,
-      callback = function()
-        disable_cursorword()
-      end,
-    })
-    vim.api.nvim_create_autocmd("WinEnter", {
-      group = mini_group_id,
-      callback = function()
-        enable_cursorword()
-      end,
-    })
+        end,
+      })
+    end
     -- }}}
 
     -- trailspace {{{
-    vim.api.nvim_create_user_command("TrimTrailingWhitespace", function()
-      require("mini.trailspace").trim()
-    end, {})
+    if IsRunningInTerminal then
+      vim.api.nvim_create_user_command("TrimTrailingWhitespace", function()
+        require("mini.trailspace").trim()
+      end, {})
+    end
     -- }}}
 
     -- bufremove {{{
-    require("mini.bufremove").setup({
-      set_vim_settings = false,
-      silent = true,
-    })
+    if IsRunningInTerminal then
+      require("mini.bufremove").setup({
+        set_vim_settings = false,
+        silent = true,
+      })
+    end
     -- }}}
   end,
 })

@@ -5,7 +5,6 @@ local function is_current_buffer_too_big_to_highlight()
   return vim.fn.wordcount().bytes > max_filesize
 end
 
--- TODO: Some of this should only be configured when neovim is running in the terminal.
 Plug("nvim-treesitter/nvim-treesitter", {
   -- To avoid a flash of the document without syntax highlighting
   sync = true,
@@ -14,7 +13,7 @@ Plug("nvim-treesitter/nvim-treesitter", {
     require("nvim-treesitter.configs").setup({
       auto_install = false,
       highlight = {
-        enable = true,
+        enable = IsRunningInTerminal,
         additional_vim_regex_highlighting = false,
         disable = function(_, _)
           return is_current_buffer_too_big_to_highlight()
@@ -35,7 +34,7 @@ Plug("nvim-treesitter/nvim-treesitter", {
         enable = true,
       },
       autotag = {
-        enable = true,
+        enable = IsRunningInTerminal,
       },
     })
   end,
@@ -50,17 +49,19 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- Enable syntax highlighting for filetypes without treesitter parsers
-vim.cmd.syntax("manual")
-vim.api.nvim_create_autocmd("FileType", {
-  callback = function()
-    if
-      not require("nvim-treesitter.parsers").has_parser()
-      and not is_current_buffer_too_big_to_highlight()
-    then
-      vim.bo.syntax = "ON"
-    end
-  end,
-})
+if IsRunningInTerminal then
+  -- Enable syntax highlighting for filetypes without treesitter parsers
+  vim.cmd.syntax("manual")
+  vim.api.nvim_create_autocmd("FileType", {
+    callback = function()
+      if
+        not require("nvim-treesitter.parsers").has_parser()
+        and not is_current_buffer_too_big_to_highlight()
+      then
+        vim.bo.syntax = "ON"
+      end
+    end,
+  })
+end
 
 Plug("IndianBoy42/tree-sitter-just")

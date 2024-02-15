@@ -326,10 +326,6 @@ vim.keymap.set(
   "<Cmd>set list!<CR>",
   { silent = true, desc = "Toggle whitespace indicator" }
 )
-vim.keymap.set("n", [[\|]], function()
-  vim.g.miniindentscope_disable = not vim.g.miniindentscope_disable
-  return "lh"
-end, { silent = true, expr = true, desc = "Toggle indent guide" })
 
 -- Terminal {{{
 vim.keymap.set("t", "jk", [[<C-\><C-n>]])
