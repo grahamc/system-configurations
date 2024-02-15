@@ -354,16 +354,8 @@
       url = "github:NoahTheDuke/vim-just";
       flake = false;
     };
-    vim-plugin-aerial-nvim = {
-      url = "github:stevearc/aerial.nvim";
-      flake = false;
-    };
     vim-plugin-telescope-smart-history-nvim = {
       url = "github:nvim-telescope/telescope-smart-history.nvim";
-      flake = false;
-    };
-    vim-plugin-ltex-extra-nvim = {
-      url = "github:barreiroleo/ltex-extra.nvim";
       flake = false;
     };
     vim-plugin-nvim-treesitter = {
@@ -414,40 +406,8 @@
       url = "github:m4xshen/smartcolumn.nvim";
       flake = false;
     };
-    vim-plugin-nvim-dap-repl-highlights = {
-      url = "github:LiadOz/nvim-dap-repl-highlights";
-      flake = false;
-    };
-    vim-plugin-nvim-dap-virtual-text = {
-      url = "github:theHamsta/nvim-dap-virtual-text";
-      flake = false;
-    };
-    vim-plugin-nvim-dap = {
-      url = "github:mfussenegger/nvim-dap";
-      flake = false;
-    };
-    vim-plugin-telescope-dap-vim = {
-      url = "github:nvim-telescope/telescope-dap.nvim";
-      flake = false;
-    };
-    vim-plugin-nvim-dap-ui = {
-      url = "github:rcarriga/nvim-dap-ui";
-      flake = false;
-    };
-    vim-plugin-nvim-dap-python = {
-      url = "github:mfussenegger/nvim-dap-python";
-      flake = false;
-    };
-    vim-plugin-cmp-dap = {
-      url = "github:rcarriga/cmp-dap";
-      flake = false;
-    };
     vim-plugin-nvim-nonicons = {
       url = "github:yamatsum/nvim-nonicons";
-      flake = false;
-    };
-    vim-plugin-trouble-nvim = {
-      url = "github:folke/trouble.nvim";
       flake = false;
     };
     vim-plugin-splitjoin-vim = {
@@ -466,36 +426,8 @@
       url = "github:yorickpeterse/nvim-pqf";
       flake = false;
     };
-    vim-plugin-typescript-tools-nvim = {
-      url = "github:pmizio/typescript-tools.nvim";
-      flake = false;
-    };
-    vim-plugin-litee-nvim = {
-      url = "github:ldelossa/litee.nvim";
-      flake = false;
-    };
-    vim-plugin-litee-calltree-nvim = {
-      url = "github:ldelossa/litee-calltree.nvim";
-      flake = false;
-    };
-    vim-plugin-toggleterm-nvim = {
-      url = "github:akinsho/toggleterm.nvim";
-      flake = false;
-    };
-    vim-plugin-overseer-nvim = {
-      url = "github:stevearc/overseer.nvim";
-      flake = false;
-    };
     vim-plugin-telescope-menufacture = {
       url = "github:molecule-man/telescope-menufacture";
-      flake = false;
-    };
-    vim-plugin-neotest = {
-      url = "github:nvim-neotest/neotest";
-      flake = false;
-    };
-    vim-plugin-neotest-python = {
-      url = "github:nvim-neotest/neotest-python";
       flake = false;
     };
     vim-plugin-tree-sitter-just = {

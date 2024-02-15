@@ -7,7 +7,6 @@ if not has_ttyin and not has_ttyout then
 end
 
 require("terminal.aesthetic")
-require("terminal.sidebars")
 require("terminal.statusbars")
 require("terminal.autocomplete")
 require("terminal.folds")
@@ -21,7 +20,5 @@ require("terminal.telescope")
 require("terminal.tools")
 require("terminal.windows")
 require("terminal.discovery")
-require("terminal.dap")
-require("terminal.tasks")
-require("terminal.testing")
 require("terminal.quickfix")
+require("terminal.file-explorer")

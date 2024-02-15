@@ -118,8 +118,6 @@ Plug("saadparwaiz1/cmp_luasnip")
 
 Plug("rafamadriz/friendly-snippets")
 
-Plug("rcarriga/cmp-dap")
-
 -- TODO: With this I'll be able to enable this source only in comments:
 -- https://github.com/hrsh7th/nvim-cmp/pull/1314
 -- I also want to enable it selectively for filetypes like markdown.
@@ -225,10 +223,8 @@ Plug("hrsh7th/nvim-cmp", {
 
     cmp.setup({
       enabled = function()
-        local filetype = vim.bo.filetype
-        local is_dap_buffer = vim.startswith(filetype, "dapui_") or filetype == "dap-repl"
         local is_not_prompt = vim.bo.buftype ~= "prompt"
-        return is_not_prompt or is_dap_buffer
+        return is_not_prompt
       end,
       formatting = {
         fields = { "abbr", "kind" },
@@ -387,12 +383,6 @@ Plug("hrsh7th/nvim-cmp", {
         path,
         buffer,
       }),
-    })
-
-    cmp.setup.filetype({ "dap-repl", "dapui_watches", "dapui_hover" }, {
-      sources = {
-        { name = "dap" },
-      },
     })
 
     vim.api.nvim_create_autocmd("FileType", {

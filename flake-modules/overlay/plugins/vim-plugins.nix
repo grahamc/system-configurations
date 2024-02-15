@@ -50,12 +50,7 @@
           version = inputs.vim-plugin-tree-sitter-just.rev;
           src = inputs.vim-plugin-tree-sitter-just;
         };
-        dap-repl-grammar = final.tree-sitter.buildGrammar {
-          language = "dap_repl";
-          version = inputs.vim-plugin-nvim-dap-repl-highlights.rev;
-          src = inputs.vim-plugin-nvim-dap-repl-highlights;
-        };
-        updatedGrammars = newVimPlugins.nvim-treesitter.allGrammars ++ [just-grammar dap-repl-grammar];
+        updatedGrammars = newVimPlugins.nvim-treesitter.allGrammars ++ [just-grammar];
         package = newVimPlugins.nvim-treesitter.withPlugins (_: updatedGrammars);
       in
         package // {withAllGrammars = package;};

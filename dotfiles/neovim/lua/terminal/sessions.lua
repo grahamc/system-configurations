@@ -27,28 +27,7 @@ local function restore_or_create_session()
   local is_neovim_called_with_no_arguments = #vim.v.argv == 2
   local has_ttyin = vim.fn.has("ttyin") == 1
   if is_neovim_called_with_no_arguments and has_ttyin then
-    local session_name = string.gsub(vim.fn.getcwd() or "", "/", "%%")
-    -- Calling system() was showing a black screen on startup, but calling redraw before it got rid
-    -- of the black screen
-    vim.cmd.redraw()
-    local branch_result = vim.system({ "git", "branch", "--show-current" }, { text = true }):wait()
-    if branch_result.code == 0 then
-      local branch = vim.trim(branch_result.stdout)
-      if branch ~= "" then
-        session_name = session_name .. "%" .. branch
-      else
-        local commit_result = vim
-          .system({ "git", "log", "--pretty=format:%h", "-n", "1" }, { text = true })
-          :wait()
-        if commit_result.code == 0 then
-          local commit = vim.trim(commit_result.stdout)
-          if commit ~= "" then
-            session_name = session_name .. "%" .. commit
-          end
-        end
-      end
-    end
-    session_name = session_name .. "%vim"
+    local session_name = string.gsub(vim.fn.getcwd() or "", "/", "%%") .. "%vim"
 
     vim.fn.mkdir(session_dir, "p")
     local session_full_path = vim.fs.joinpath(session_dir, session_name)

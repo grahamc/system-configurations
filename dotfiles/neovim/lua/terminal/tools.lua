@@ -68,7 +68,4 @@ Plug("williamboman/mason.nvim", {
   end,
 })
 
--- To read/write config files the way the vscode extension does.
-Plug("barreiroleo/ltex-extra.nvim")
-
 Plug("b0o/SchemaStore.nvim")

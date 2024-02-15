@@ -17,31 +17,6 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
   callback = function()
     if vim.o.filetype == "NvimTree" then
       vim.opt_local.statusline = "%!v:lua.FileExplorerStatusLine()"
-    elseif vim.o.filetype == "aerial" then
-      vim.opt_local.statusline = "%!v:lua.OutlineStatusLine()"
-    end
-  end,
-})
-vim.api.nvim_create_autocmd("BufWinEnter", {
-  group = statusline_group,
-  callback = function()
-    local buf = vim.api.nvim_get_current_buf()
-    local filetype = vim.bo[buf].filetype
-    local win = vim.fn.bufwinid(buf)
-    if filetype == "dapui_scopes" then
-      vim.api.nvim_set_option_value("statusline", "%!v:lua.DapuiScopesStatusLine()", { win = win })
-    elseif filetype == "dapui_stacks" then
-      vim.api.nvim_set_option_value("statusline", "%!v:lua.DapuiStacksStatusLine()", { win = win })
-    elseif filetype == "dapui_watches" then
-      vim.api.nvim_set_option_value("statusline", "%!v:lua.DapuiWatchesStatusLine()", { win = win })
-    elseif filetype == "dapui_breakpoints" then
-      vim.api.nvim_set_option_value(
-        "statusline",
-        "%!v:lua.DapuiBreakpointsStatusLine()",
-        { win = win }
-      )
-    elseif filetype == "dap-repl" then
-      vim.api.nvim_set_option_value("statusline", "%!v:lua.DapuiReplStatusLine()", { win = win })
     end
   end,
 })
@@ -404,11 +379,6 @@ function StatusLine()
     mixed_line_endings = "%#StatusLineErrorText#[ mixed line-endings]"
   end
 
-  local debug_indicator = nil
-  if #require("dap").status() > 0 then
-    debug_indicator = "%#StatusLineDebugIndicator# "
-  end
-
   local luasnip = require("luasnip")
   if luasnip.get_active_snip() ~= nil then
     return make_mapping_statusline({
@@ -449,7 +419,6 @@ function StatusLine()
     }, {
       maximized,
       search_info,
-      debug_indicator,
       lsp_info,
       readonly,
       filetype,
@@ -485,60 +454,6 @@ vim.g.czs_do_not_map = true
 function FileExplorerStatusLine()
   return make_mapping_statusline({
     { key = "g?", description = "help" },
-  })
-end
--- }}}
-
--- symbol outline statusline {{{
-function OutlineStatusLine()
-  return make_mapping_statusline({
-    { key = "?", description = "help" },
-  })
-end
--- }}}
-
--- dapui statuslines {{{
---
--- TODO: Consider upstreaming since there's a related feature request:
--- https://github.com/rcarriga/nvim-dap-ui/issues/267
-function DapuiScopesStatusLine()
-  return make_mapping_statusline({
-    { key = "e", description = "edit var" },
-    { key = "<Tab>", description = "expand/collapse children" },
-    { key = "r", description = "send var to REPL" },
-  })
-end
-
-function DapuiStacksStatusLine()
-  return make_mapping_statusline({
-    { key = "o", description = "jump to place in stack frame" },
-    { key = "t", description = "toggle subtle frames" },
-  })
-end
-
-function DapuiWatchesStatusLine()
-  return make_mapping_statusline({
-    { key = "e", description = "edit expression or child var" },
-    { key = "<Tab>", description = "toggle child vars" },
-    { key = "r", description = "send expression to REPL" },
-    { key = "d", description = "remove watch" },
-  })
-end
-
-function DapuiBreakpointsStatusLine()
-  return make_mapping_statusline({
-    { key = "o", description = "jump to breakpoint" },
-    { key = "t", description = "toggle breakpoint" },
-  })
-end
-
-function DapuiReplStatusLine()
-  return make_mapping_statusline({
-    { mods = { "C" }, key = "uiop", description = "step back/into/out/over" },
-    { key = "<CR>", description = "play" },
-    { mods = { "C" }, key = "c", description = "terminate" },
-    { mods = { "C" }, key = "d", description = "disconnect" },
-    { mods = { "C" }, key = "r", description = "run last" },
   })
 end
 -- }}}

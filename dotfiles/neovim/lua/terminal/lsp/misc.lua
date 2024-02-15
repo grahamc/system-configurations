@@ -436,28 +436,6 @@ Plug("williamboman/mason-lspconfig.nvim", {
         end
       )
 
-      -- Workaround for truncating long TypeScript inlay hints.
-      -- TODO: Remove this if https://github.com/neovim/neovim/issues/27240 gets addressed.
-      --
-      -- Taken from:
-      -- https://github.com/MariaSolOs/dotfiles/blob/9685e1eb9a00b689d98bc0dfb0ec986a1b64e3f9/.config/nvim/lua/lsp.lua#L277
-      local original_inlay_hint_handler = vim.lsp.handlers[methods.textDocument_inlayHint]
-      vim.lsp.handlers[methods.textDocument_inlayHint] = function(err, result, ctx, config)
-        local client = vim.lsp.get_client_by_id(ctx.client_id)
-        if client and client.name == "typescript-tools" then
-          result = vim.iter.map(function(hint)
-            local label = hint.label ---@type string
-            if label:len() >= 30 then
-              label = label:sub(1, 29) .. "…"
-            end
-            hint.label = label
-            return hint
-          end, result)
-        end
-
-        original_inlay_hint_handler(err, result, ctx, config)
-      end
-
       -- Set the filetype of all the currently open buffers to trigger a 'FileType' event for each
       -- buffer so nvim_lsp has a chance to attach to any buffers that were openeed before it was
       -- configured. This way I can load nvim_lsp asynchronously.
@@ -468,26 +446,6 @@ Plug("williamboman/mason-lspconfig.nvim", {
 
     -- mason.nvim needs to run it's config first so this will ensure that happens.
     vim.defer_fn(run, 0)
-  end,
-})
-
-Plug("pmizio/typescript-tools.nvim", {
-  config = function()
-    require("typescript-tools").setup({
-      settings = {
-        publish_diagnostic_on = "change",
-        expose_as_code_action = "all",
-        tsserver_file_preferences = {
-          includeInlayEnumMemberValueHints = true,
-          includeInlayFunctionLikeReturnTypeHints = true,
-          includeInlayFunctionParameterTypeHints = true,
-          includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all';
-          includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-          includeInlayPropertyDeclarationTypeHints = true,
-          includeInlayVariableTypeHints = false,
-        },
-      },
-    })
   end,
 })
 
