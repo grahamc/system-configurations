@@ -139,32 +139,36 @@ abbr --add --global vw variable-widget
 # Use tab to select an autocomplete entry with fzf
 function _fzf_complete
     set current_token (commandline --current-token)
-    set entries \
-        ( \
-            complete --escape --do-complete -- "$(commandline --cut-at-cursor)" \
-            # Use a different color for the completion item description
-            | string replace --ignore-case --regex -- \
-                '(?<prefix>^'(string escape --style regex -- "$current_token")')(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' \
-                (set_color cyan)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
-            | fzf \
-                --height '~35%' \
-                --min-height 8 \
-                --preview-window '2,border-left,right,60%' \
-                --no-header \
-                --bind 'backward-eof:abort,start:toggle-preview,ctrl-o:change-preview-window(bottom,75%,border-top|right,60%,border-left)+refresh-preview' \
-                --select-1 \
-                --exit-0 \
-                --no-hscroll \
-                --tiebreak=begin,chunk \
-                # I set the current token as the delimiter so I can exclude from what gets searched.
-                # Since the current token is in the beginning of the string, it will be the first field index so
-                # I'll start searching from 2.
-                --delimiter '^'(string escape --style regex -- $current_token) \
-                --nth '2..' \
-                --border rounded \
-                --margin 0,2,0,2 \
-                --prompt $current_token \
-        )
+    set candidates (complete --escape --do-complete -- "$(commandline --cut-at-cursor)")
+    if test (count $candidates) -le 1
+        set entries $candidates
+    else
+        set need_to_repaint 1
+        set entries \
+            ( \
+                printf %s\n $candidates \
+                # Use a different color for the completion item description
+                | string replace --ignore-case --regex -- \
+                    '(?<prefix>^'(string escape --style regex -- "$current_token")')(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' \
+                    (set_color cyan)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
+                | fzf \
+                    --height '~35%' \
+                    --min-height 8 \
+                    --preview-window '2,border-left,right,60%' \
+                    --no-header \
+                    --bind 'backward-eof:abort,start:toggle-preview,ctrl-o:change-preview-window(bottom,75%,border-top|right,60%,border-left)+refresh-preview' \
+                    --no-hscroll \
+                    --tiebreak=begin,chunk \
+                    # I set the current token as the delimiter so I can exclude from what gets searched.
+                    # Since the current token is in the beginning of the string, it will be the first field index so
+                    # I'll start searching from 2.
+                    --delimiter '^'(string escape --style regex -- $current_token) \
+                    --nth '2..' \
+                    --border rounded \
+                    --margin 0,2,0,2 \
+                    --prompt $current_token \
+            )
+    end
     and begin
         # Remove the tab and description, leaving only the completion items.
         set entries "$(string split -f1 -- \t $entries)"
@@ -202,7 +206,9 @@ function _fzf_complete
         commandline --replace --current-token -- "$entry$space"
     end
 
-    commandline -f repaint
+    if test -n "$need_to_repaint"
+        commandline -f repaint
+    end
 end
 # Set the binding on fish_prompt since something else was overriding it during shell startup.
 function __set_fzf_tab_complete --on-event fish_prompt
