@@ -2,6 +2,7 @@ splitjoin.vim
 dropbar.nvim
 tree-sitter-just
 LuaSnip
+telescope-sg
 vim-just
 nvim-treesitter-endwise
 reticle.nvim
@@ -20,6 +21,7 @@ vim-tmux-navigator
 cmp-cmdline-history
 mini.nvim
 git-blame.nvim
+trouble.nvim
 which-key.nvim
 firenvim
 cmp-buffer
@@ -36,6 +38,8 @@ vim-plug
 sqlite.lua
 nvim-lightbulb
 nvim-tree.lua
+litee-calltree.nvim
+litee.nvim
 virt-column.nvim
 smartcolumn.nvim
 traces.vim

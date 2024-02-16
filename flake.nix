@@ -438,5 +438,21 @@
       url = "github:uga-rosa/cmp-dictionary";
       flake = false;
     };
+    vim-plugin-trouble-nvim = {
+      url = "github:folke/trouble.nvim";
+      flake = false;
+    };
+    vim-plugin-litee-nvim = {
+      url = "github:ldelossa/litee.nvim";
+      flake = false;
+    };
+    vim-plugin-litee-calltree-nvim = {
+      url = "github:ldelossa/litee-calltree.nvim";
+      flake = false;
+    };
+    vim-plugin-telescope-sg = {
+      url = "github:Marskey/telescope-sg";
+      flake = false;
+    };
   };
 }

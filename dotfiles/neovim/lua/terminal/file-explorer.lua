@@ -1,4 +1,6 @@
 Plug("kyazdani42/nvim-tree.lua", {
+  -- to hijack netrw
+  sync = true,
   config = function()
     require("nvim-tree").setup({
       hijack_cursor = true,

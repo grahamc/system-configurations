@@ -123,8 +123,17 @@ Plug("nvim-telescope/telescope.nvim", {
             main_menu = { [{ "i", "n" }] = "<C-f>" },
           },
         },
+        ast_grep = {
+          grep_open_files = true,
+          preview_title = "",
+          disable_devicons = true,
+        },
       },
     })
+    telescope.load_extension("fzf")
+    telescope.load_extension("smart_history")
+    telescope.load_extension("menufacture")
+    telescope.load_extension("ast_grep")
 
     local telescope_menufacture = require("telescope").extensions.menufacture
     local function with_menufacture_mappings_displayed(picker)
@@ -137,12 +146,15 @@ Plug("nvim-telescope/telescope.nvim", {
     local telescope_builtins = require("telescope.builtin")
     local function with_visual_selection(picker)
       local result = function(opts)
+        -- some pickers, like ast_grep require you pass a table, even if it's empty
+        opts = opts or {}
+
         local visual_selection = require("utilities").get_visual_selection()
         if #visual_selection > 0 then
-          picker(vim.tbl_deep_extend("error", opts or {}, { default_text = visual_selection }))
-        else
-          picker()
+          picker(vim.tbl_deep_extend("error", opts, { default_text = visual_selection }))
         end
+
+        picker(opts)
       end
 
       return result
@@ -170,14 +182,22 @@ Plug("nvim-telescope/telescope.nvim", {
       require("terminal.utilities").set_jump_before(
         with_visual_selection(with_menufacture_mappings_displayed(telescope_menufacture.live_grep))
       ),
-      { desc = "Search files [grep]" }
+      { desc = "Search in files [grep]" }
+    )
+    vim.keymap.set(
+      { "n", "v" },
+      "<Leader>a",
+      require("terminal.utilities").set_jump_before(
+        with_visual_selection(telescope.extensions.ast_grep.ast_grep)
+      ),
+      { desc = "Search file ASTs [grep]" }
     )
     vim.keymap.set(
       "n",
       "<Leader>f",
       with_menufacture_mappings_displayed(telescope_menufacture.find_files),
       {
-        desc = "Search files [find]",
+        desc = "Search file names [find]",
       }
     )
     vim.keymap.set("n", "<Leader>j", telescope_builtins.jumplist, {
@@ -198,10 +218,6 @@ Plug("nvim-telescope/telescope.nvim", {
     vim.api.nvim_create_user_command("Highlights", telescope_builtins.highlights, {})
     vim.api.nvim_create_user_command("Autocommands", telescope_builtins.autocommands, {})
     vim.api.nvim_create_user_command("Mappings", telescope_builtins.keymaps, {})
-
-    telescope.load_extension("fzf")
-    telescope.load_extension("smart_history")
-    require("telescope").load_extension("menufacture")
   end,
 })
 
@@ -211,3 +227,5 @@ Plug("nvim-telescope/telescope-fzf-native.nvim")
 Plug("nvim-telescope/telescope-smart-history.nvim")
 
 Plug("molecule-man/telescope-menufacture")
+
+Plug("Marskey/telescope-sg")

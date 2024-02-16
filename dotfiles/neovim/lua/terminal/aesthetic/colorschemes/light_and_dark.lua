@@ -268,7 +268,7 @@ local theme = lush(function(injected_functions)
     CodeActionSign { t_3 },
     NullLsInfoBorder { FloatBorder },
     WidgetFill { t_0 },
-    Underlined { underline = true }, -- Text that stands out, HTML links
+    Underlined { t_4, underline = true, }, -- Text that stands out, HTML links
     Ignore { t_0 }, -- Left blank, hidden |hl-Ignore| (NOTE: May be invisible here in template)
     Todo { t_3 }, -- Anything that needs extra attention; mostly the keywords TODO FIXME and XXX
     VirtColumn { NonText, },
@@ -321,7 +321,7 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- nvim-cmp {{{
-    CmpNormal { bg = is_light and NormalFloat.bg.darken(10) or t_0.fg.lighten(5) },
+    CmpNormal { bg = is_light and NormalFloat.bg.darken(10) or t_0.fg.lighten(6) },
     CmpItemKind { fg = is_light and CmpNormal.bg.da(55) or CmpNormal.bg.li(55) },
     CmpItemMenu { CmpItemKind },
     CmpDocumentationNormal { NormalFloat },
@@ -387,10 +387,10 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     QuickFixLine { }, -- Current |quickfix| item in the quickfix window. Combined with |hl-CursorLine| when the cursor is there.
-    QuickFixColumnBorder { fg = MiniCursorword.bg, },
-    QuickFixEntryUnderline { underline = true, sp = QuickFixColumnBorder.fg, nocombine = true, },
+    QuickFixEntryUnderline { underline = true, sp = MiniCursorword.bg, nocombine = true, },
     QuickfixFold { QuickFixEntryUnderline, bold = true, },
     qfFileName { Normal, },
+    qfLineNr { qfFileName, },
 
     -- nvim-telescope {{{
     -- List of telescope highlight groups:
@@ -641,9 +641,9 @@ local theme = lush(function(injected_functions)
     sym"@markup.environment" { Structure },
     sym"@markup.heading" { Title },
     sym"@markup.italic" { italic = true, },
-    sym"@markup.link" { Underlined },
-    sym"@markup.link.label" { Underlined },
-    sym"@markup.link.url" { Underlined },
+    sym"@markup.link" { Underlined, },
+    sym"@markup.link.label" { sym"@markup.link", },
+    sym"@markup.link.url" { sym"@markup.link", },
     sym"@markup.list" { },
     sym"@markup.list.checked" { },
     sym"@markup.list.unchecked" { },
@@ -670,8 +670,8 @@ local theme = lush(function(injected_functions)
     sym"@string.special" { SpecialChar }, -- SpecialChar
     sym"@string.special.path" { SpecialChar },
     sym"@string.special.symbol" { SpecialChar },
-    sym"@string.special.url" { String },
-    sym"@string.special.url.comment" { Comment, underline = true, },
+    sym"@string.special.url" { Underlined, },
+    sym"@string.special.url.comment" { Comment, fg = Underlined.fg, underline = true, },
     sym"@character" { Character }, -- Character
     sym"@character.special" { SpecialChar }, -- SpecialChar
     sym"@number" { Number }, -- Number

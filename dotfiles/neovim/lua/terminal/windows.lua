@@ -98,25 +98,25 @@ Plug("christoomey/vim-tmux-navigator", {
     vim.keymap.set(
       { "n", "i", "t" },
       "<M-h>",
-      "<Cmd>TmuxNavigateLeft<CR>",
+      vim.cmd.TmuxNavigateLeft,
       { silent = true, desc = "Move to west window [left]" }
     )
     vim.keymap.set(
       { "n", "i", "t" },
       "<M-l>",
-      "<Cmd>TmuxNavigateRight<CR>",
+      vim.cmd.TmuxNavigateRight,
       { silent = true, desc = "Move to east window [right]" }
     )
     vim.keymap.set(
       { "n", "i", "t" },
       "<M-j>",
-      "<Cmd>TmuxNavigateDown<CR>",
+      vim.cmd.TmuxNavigateDown,
       { silent = true, desc = "Move to south window [down]" }
     )
     vim.keymap.set(
       { "n", "i", "t" },
       "<M-k>",
-      "<Cmd>TmuxNavigateUp<CR>",
+      vim.cmd.TmuxNavigateUp,
       { silent = true, desc = "Move to north window [up]" }
     )
   end,

@@ -278,7 +278,7 @@ Plug("williamboman/mason-lspconfig.nvim", {
         -- Quick way to disable diagnostic for a buffer
         buffer_keymap("n", [[\d]], function()
           vim.diagnostic.reset(nil, buffer_number)
-        end, { desc = "Toggle inlay hints" })
+        end, { desc = "Toggle diagnostics for buffer" })
       end
 
       -- TODO: Would be better if I could get the buffer the these diagnostics were for from the
@@ -383,6 +383,8 @@ Plug("williamboman/mason-lspconfig.nvim", {
           if not bufnr or not win_id then
             return
           end
+
+          vim.api.nvim_set_option_value("concealcursor", "nvic", { win = win_id })
 
           on_open()
           vim.api.nvim_create_autocmd("WinClosed", {

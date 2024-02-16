@@ -137,29 +137,32 @@ function QFTextFunc(info)
       local line = vim.iter(columns):join(divider)
       return line
     end
-    local line = build_line()
-    if true then
-      local length_without_text = (#line - #item.text)
-      local max_text_length = (get_width() - length_without_text) - 1
-      local function splitByChunk(text, chunkSize)
-        local s = {}
+
+    local function splitByChunk(text, chunkSize)
+      local s = {}
+      if #text == 0 then
+        s = { text }
+      else
         for i = 1, #text, chunkSize do
           s[#s + 1] = text:sub(i, i + chunkSize - 1)
         end
-        s[#s] = s[#s] .. string.rep(" ", chunkSize - vim.fn.strwidth(s[#s]))
-        return s
       end
-      local position_length = longest_col_length + longest_line_length + 1
-      local chunks = splitByChunk(item.text, max_text_length)
-      item.text = vim.iter(chunks):join(
-        string.rep(" ", length_without_text - position_length - 5)
-          .. divider
-          .. string.rep(" ", position_length)
-          .. divider
-      )
-      line = build_line()
-    else
+      -- pad last line so it fills the max width
+      s[#s] = s[#s] .. string.rep(" ", chunkSize - vim.fn.strwidth(s[#s]))
+      return s
     end
+    local line = build_line()
+    local length_without_text = (#line - #item.text)
+    local max_text_length = (get_width() - length_without_text) - 1
+    local position_length = longest_col_length + longest_line_length + 1
+    local chunks = splitByChunk(item.text, max_text_length)
+    item.text = vim.iter(chunks):join(
+      string.rep(" ", length_without_text - position_length - 5)
+        .. divider
+        .. string.rep(" ", position_length)
+        .. divider
+    )
+    line = build_line()
 
     -- If a line is completely empty, Vim uses the default format, which
     -- involves inserting `|| `. To prevent this from happening we'll just
@@ -177,23 +180,6 @@ function QFTextFunc(info)
       col = col,
       end_col = #line,
     })
-
-    local start_byte = 1
-    while true do
-      local start, last = string.find(line, divider, start_byte, true)
-      if start == nil then
-        break
-      end
-
-      table.insert(highlights, {
-        group = "QuickFixColumnBorder",
-        line = line_idx,
-        col = start,
-        end_col = last,
-      })
-
-      start_byte = last + 1
-    end
 
     table.insert(lines, line)
   end
@@ -342,13 +328,19 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     end
     vim.keymap.set("x", "d", "<Esc>:lua QFRemoveVisual()<CR>", { buffer = true })
 
-    local highlighted_buffers = {}
     local ns = vim.api.nvim_create_namespace("bigolu/qf")
+    local last_highlighted_buffer = nil
+    local function clear_last_highlighted_buffer()
+      if last_highlighted_buffer ~= nil then
+        vim.api.nvim_buf_clear_namespace(last_highlighted_buffer, ns, 1, -1)
+        last_highlighted_buffer = nil
+      end
+    end
     vim.keymap.set("n", "<CR>", function()
       QfIsExplicitJump = true
       return "<CR>"
     end, { buffer = true, expr = true })
-    vim.api.nvim_create_autocmd("CursorMoved", {
+    vim.api.nvim_create_autocmd("CursorHold", {
       buffer = vim.api.nvim_get_current_buf(),
       nested = true,
       callback = function()
@@ -362,6 +354,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
         vim.api.nvim_set_option_value("winhighlight", "MiniCursorword:Clear", { win = last_winid })
         local end_line = item_under_cursor.end_lnum == 0 and item_under_cursor.lnum
           or item_under_cursor.end_lnum
+        clear_last_highlighted_buffer()
         for cur = item_under_cursor.lnum, end_line do
           vim.api.nvim_buf_add_highlight(
             item_under_cursor.bufnr,
@@ -372,7 +365,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
             item_under_cursor.end_col == 0 and -1 or item_under_cursor.end_col
           )
         end
-        highlighted_buffers[item_under_cursor.bufnr] = true
+        last_highlighted_buffer = item_under_cursor.bufnr
         ---@diagnostic disable-next-line: param-type-mismatch
         vim.api.nvim_win_set_cursor(last_winid, { item_under_cursor.lnum, item_under_cursor.col })
       end,
@@ -380,10 +373,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.api.nvim_create_autocmd("BufLeave", {
       buffer = vim.api.nvim_get_current_buf(),
       callback = function()
-        vim.iter(highlighted_buffers):each(function(buf, _)
-          vim.api.nvim_buf_clear_namespace(buf, ns, 1, -1)
-        end)
-        highlighted_buffers = {}
+        clear_last_highlighted_buffer()
       end,
     })
   end,
