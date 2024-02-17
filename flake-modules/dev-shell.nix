@@ -97,6 +97,7 @@ in {
         stylua
         go
         black
+        usort
         fish
         statix
         ast-grep

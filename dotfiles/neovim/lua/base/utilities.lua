@@ -4,12 +4,12 @@ function M.get_max_line_length()
   local editorconfig = vim.b["editorconfig"]
   if editorconfig ~= nil and editorconfig.max_line_length ~= nil then
     return tonumber(editorconfig.max_line_length)
-  elseif vim.bo.filetype == "python" then
-    -- default for black
-    return 88
   end
 
-  return 100
+  return ({
+    -- default for black
+    python = 88,
+  })[vim.bo.filetype] or 100
 end
 
 function M.get_visual_selection()
@@ -34,6 +34,17 @@ end
 
 function M.escape_percent(string_to_escape)
   return string_to_escape:gsub("([^%w])", "%%%1")
+end
+
+function M.get_char()
+  local ret_val, char_num = pcall(vim.fn.getchar)
+  -- Return nil if error (e.g. <C-c>) or for control characters
+  if not ret_val or char_num < 32 then
+    return nil
+  end
+  local char = vim.fn.nr2char(char_num)
+
+  return char
 end
 
 return M

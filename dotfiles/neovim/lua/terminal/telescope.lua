@@ -124,7 +124,7 @@ Plug("nvim-telescope/telescope.nvim", {
           },
         },
         ast_grep = {
-          grep_open_files = true,
+          grep_open_files = false,
           preview_title = "",
           disable_devicons = true,
         },
@@ -149,9 +149,9 @@ Plug("nvim-telescope/telescope.nvim", {
         -- some pickers, like ast_grep require you pass a table, even if it's empty
         opts = opts or {}
 
-        local visual_selection = require("utilities").get_visual_selection()
+        local visual_selection = require("base.utilities").get_visual_selection()
         if #visual_selection > 0 then
-          picker(vim.tbl_deep_extend("error", opts, { default_text = visual_selection }))
+          opts = vim.tbl_deep_extend("error", opts, { default_text = visual_selection })
         end
 
         picker(opts)

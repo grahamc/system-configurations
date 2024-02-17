@@ -1,5 +1,7 @@
 -- vim:foldmethod=marker
 
+local utilities = require("base.utilities")
+
 vim.keymap.set({ "n", "x" }, "Q", function()
   local last_recorded_register = vim.fn.reg_recorded()
   if last_recorded_register ~= "" then
@@ -7,20 +9,9 @@ vim.keymap.set({ "n", "x" }, "Q", function()
   end
 end, { remap = true, expr = true, desc = "Run last recorded macro" })
 
-local function get_char()
-  local ret_val, char_num = pcall(vim.fn.getchar)
-  -- Return nil if error (e.g. <C-c>) or for control characters
-  if not ret_val or char_num < 32 then
-    return nil
-  end
-  local char = vim.fn.nr2char(char_num)
-
-  return char
-end
-
 -- change macro
 vim.keymap.set({ "n" }, "cq", function()
-  local register = get_char()
+  local register = utilities.get_char()
   if register == nil then
     return
   end
@@ -57,7 +48,7 @@ vim.keymap.set({ "x", "n" }, "@", function()
     end
   end
 
-  local register = get_char()
+  local register = utilities.get_char()
   if register == nil then
     return
   end

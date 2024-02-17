@@ -10,8 +10,42 @@ vim.keymap.set({ "n" }, "Y", "yg_", {
 
 Plug("arthurxavierx/vim-caser")
 
--- Comment formatting {{{
-local utilities = require("utilities")
+-- Formatting {{{
+local utilities = require("base.utilities")
+
+Plug("stevearc/conform.nvim", {
+  config = function()
+    local conform = require("conform")
+
+    vim.keymap.set("x", "gf", function()
+      conform.format()
+
+      local escape_key = vim.api.nvim_replace_termcodes("<ESC>", true, false, true)
+      vim.api.nvim_feedkeys(escape_key, "n", true)
+    end, { desc = "Format code" })
+
+    -- run only the first available formatter
+    local prettier = { { "prettierd", "prettier" } }
+    conform.setup({
+      formatters_by_ft = {
+        ["*"] = { "injected" },
+        ["_"] = { "trim_whitespace", "squeeze_blanks" },
+        lua = { "stylua" },
+        -- run multiple formatters sequentially
+        python = { "usort", "black" },
+        javascript = prettier,
+        json = prettier,
+        markdown = prettier,
+        yaml = prettier,
+        sh = { "shfmt" },
+        fish = { "fish_indent" },
+        nix = { "alejandra" },
+        just = { "just" },
+        go = { "gofmt" },
+      },
+    })
+  end,
+})
 
 vim.api.nvim_create_autocmd("BufNew", {
   callback = function()
@@ -68,6 +102,7 @@ local function get_text_for_motion()
   return table.concat(lines, "\n")
 end
 
+-- format comment under cursor
 _G.FormatCommentOperatorFunc = function()
   set_formatprg(get_text_for_motion())
   vim.cmd("normal! '[gq']")
@@ -77,6 +112,7 @@ vim.keymap.set("n", "gq", function()
   return "g@ic"
 end, { expr = true, remap = true, desc = "Format comment" })
 
+-- format visual selection
 vim.keymap.set("x", "gq", function()
   set_formatprg(utilities.get_visual_selection())
   -- NOTE: This function returns after enqueuing the keys, not processing them. That is why I'm
@@ -141,6 +177,7 @@ Plug("monaqa/dial.nvim", {
         words("yes", "no"),
         symbols("&&", "||"),
         symbols("!=", "=="),
+        symbols("!==", "==="),
         symbols("<", ">"),
         symbols("<=", ">="),
         symbols("+=", "-="),
@@ -189,10 +226,8 @@ Plug("Wansmer/treesj", {
             { desc = "Toggle split/join", buffer = true }
           )
           vim.keymap.set("n", "sS", function()
-            require("treesj").toggle({
-              both = { recursive = true },
-            })
-          end, { desc = "Toggle split/join", buffer = true })
+            require("treesj").toggle({ join = { recursive = true }, split = { recursive = true } })
+          end, { desc = "Toggle recursive split/join", buffer = true })
         else
           vim.keymap.set("n", "ss", vim.cmd.SplitjoinSplit, { desc = "Split", buffer = true })
           -- Must be used on the first line of the split

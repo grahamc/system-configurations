@@ -224,6 +224,7 @@ Plug("echasnovski/mini.nvim", {
         return nil
       end
     end
+    local utilities = require("base.utilities")
     require("mini.surround").setup({
       n_lines = 50,
       search_method = "cover",
@@ -232,7 +233,7 @@ Plug("echasnovski/mini.nvim", {
         -- Search for two of the input char, d for double. Helpful for lua and Nix
         ["d"] = {
           input = function()
-            local char = MiniSurround.user_input("Char")
+            local char = utilities.get_char()
             if char == nil or char == "" then
               return nil
             end
@@ -240,10 +241,10 @@ Plug("echasnovski/mini.nvim", {
             if braces == nil then
               return nil
             end
-            return { string.rep("%" .. braces[1], 2) .. "().-()" .. string.rep("%" .. braces[2], 2) }
+            return { string.rep(braces[1], 2) .. "().-()" .. string.rep(braces[2], 2) }
           end,
           output = function()
-            local char = MiniSurround.user_input("Char")
+            local char = utilities.get_char()
             if char == nil or char == "" then
               return nil
             end
@@ -252,8 +253,8 @@ Plug("echasnovski/mini.nvim", {
               return nil
             end
             return {
-              left = string.rep("%" .. braces[1], 2),
-              right = string.rep("%" .. braces[2], 2),
+              left = string.rep(braces[1], 2),
+              right = string.rep(braces[2], 2),
             }
           end,
         },

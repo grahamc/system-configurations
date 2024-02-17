@@ -62,6 +62,7 @@ friendly-snippets
 nvim-notify
 lush.nvim
 cmp_luasnip
+conform.nvim
 dressing.nvim
 vim-abolish
 vim-repeat

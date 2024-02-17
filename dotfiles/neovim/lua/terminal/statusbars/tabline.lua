@@ -134,7 +134,7 @@ Plug("akinsho/bufferline.nvim", {
     end, { silent = true, desc = "Close file [tab]" })
     function BufferlineWrapper()
       local original = nvim_bufferline()
-      local escape_percent = require("utilities").escape_percent
+      local escape_percent = require("base.utilities").escape_percent
       local result = original
       local is_explorer_open = string.find(original, explorer_icon)
       local is_outline_open = string.find(original, outline_icon)

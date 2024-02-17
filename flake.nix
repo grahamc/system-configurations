@@ -454,5 +454,9 @@
       url = "github:Marskey/telescope-sg";
       flake = false;
     };
+    vim-plugin-conform-nvim = {
+      url = "github:stevearc/conform.nvim";
+      flake = false;
+    };
   };
 }

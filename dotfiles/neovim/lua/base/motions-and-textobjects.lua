@@ -102,7 +102,7 @@ local function jump_to_long_line(direction)
   end
   local last_line = vim.fn.line("$")
   local current_line = vim.fn.line(".")
-  local max_line_length = require("utilities").get_max_line_length()
+  local max_line_length = require("base.utilities").get_max_line_length()
   local lines_to_search = nil
   if direction == "next" then
     lines_to_search =

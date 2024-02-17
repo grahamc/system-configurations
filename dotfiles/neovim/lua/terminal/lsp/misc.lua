@@ -127,7 +127,6 @@ Plug("nvimtools/none-ls.nvim", {
         builtins.diagnostics.fish,
         builtins.diagnostics.markdownlint_cli2,
         builtins.diagnostics.markdownlint,
-        builtins.diagnostics.actionlint,
       },
     })
   end,
@@ -263,7 +262,7 @@ Plug("williamboman/mason-lspconfig.nvim", {
         end
 
         -- TODO: I try just calling diagnostic.reset in here, but it didn't work. It has to be
-        -- called after the handler for textDocument_{publish}diagnostic runs so in here we just
+        -- called after the handler for textDocument_(publishD|d)iagnostic runs so in here we just
         -- queue up the bufs to disable.
         local is_buffer_outside_workspace = not vim.startswith(
           vim.api.nvim_buf_get_name(buffer_number),
