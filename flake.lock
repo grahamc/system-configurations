@@ -500,6 +500,7 @@
         "vim-plugin-cmp-path": "vim-plugin-cmp-path",
         "vim-plugin-cmp-tmux": "vim-plugin-cmp-tmux",
         "vim-plugin-cmp_luasnip": "vim-plugin-cmp_luasnip",
+        "vim-plugin-conform-nvim": "vim-plugin-conform-nvim",
         "vim-plugin-czs-nvim": "vim-plugin-czs-nvim",
         "vim-plugin-dial-nvim": "vim-plugin-dial-nvim",
         "vim-plugin-dressing-nvim": "vim-plugin-dressing-nvim",
@@ -528,6 +529,7 @@
         "vim-plugin-nvim-pqf": "vim-plugin-nvim-pqf",
         "vim-plugin-nvim-tree-lua": "vim-plugin-nvim-tree-lua",
         "vim-plugin-nvim-treesitter": "vim-plugin-nvim-treesitter",
+        "vim-plugin-nvim-treesitter-context": "vim-plugin-nvim-treesitter-context",
         "vim-plugin-nvim-treesitter-endwise": "vim-plugin-nvim-treesitter-endwise",
         "vim-plugin-nvim-ts-autotag": "vim-plugin-nvim-ts-autotag",
         "vim-plugin-nvim-web-devicons": "vim-plugin-nvim-web-devicons",
@@ -990,6 +992,22 @@
         "type": "github"
       }
     },
+    "vim-plugin-conform-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1707795699,
+        "narHash": "sha256-CeSlexSIwb2sIdqGKa1FTAn5VK48zrjsKXqFRsLz2iw=",
+        "owner": "stevearc",
+        "repo": "conform.nvim",
+        "rev": "61cff430c9f15770d0c5e68c1b08067223bd94ab",
+        "type": "github"
+      },
+      "original": {
+        "owner": "stevearc",
+        "repo": "conform.nvim",
+        "type": "github"
+      }
+    },
     "vim-plugin-czs-nvim": {
       "flake": false,
       "locked": {
@@ -1435,6 +1453,22 @@
       "original": {
         "owner": "nvim-treesitter",
         "repo": "nvim-treesitter",
+        "type": "github"
+      }
+    },
+    "vim-plugin-nvim-treesitter-context": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1708132231,
+        "narHash": "sha256-hG9KmeIdJllf8JBHMe7PrDspv2FM5OorNyXJqmgELFc=",
+        "owner": "nvim-treesitter",
+        "repo": "nvim-treesitter-context",
+        "rev": "23b699ac40091d8c729f024b3f1400bc7e26e0c5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-treesitter",
+        "repo": "nvim-treesitter-context",
         "type": "github"
       }
     },

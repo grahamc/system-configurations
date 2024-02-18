@@ -44,10 +44,11 @@ class SmartPlugController(object):
             assert isinstance(ip_address, str)
             plug = SmartPlug(ip_address)
             try:
-                # Creating a SmartPlug instance successfully does not necessarily mean that there is
-                # a smart plug at that ip address since requests won't be made to the plug until you
-                # call a method on the SmartPlug. To make sure there's still a smart plug at this ip
-                # address I'm calling SmartPlug.update().
+                # Creating a SmartPlug instance successfully does not necessarily mean
+                # that there is a smart plug at that ip address since requests won't
+                # be made to the plug until you call a method on the SmartPlug. To
+                # make sure there's still a smart plug at this ip address I'm calling
+                # SmartPlug.update().
                 self._block_until_complete(plug.update())
                 return plug
             except SmartDeviceException as _:
@@ -63,14 +64,14 @@ class SmartPlugController(object):
 
         return None
 
-    # TODO: Kasa's discovery fails when I'm connected to a VPN. I don't completely understand
-    # why, but I know that it has something to do with the broadcast address that they use,
-    # 255.255.255.255. I'm guessing this is because that IP is supposed to be an alias for
-    # 'this network' which will mean that of the VPN network when I'm connected to it and not that
-    # of my actual wifi/ethernet network. To get around this, I look for the correct broadcast
-    # address myself using psutil which gives me all addresses assigned to each NIC on my machine. I
-    # then try discovery using all the addresses that are marked as broadcast addresses until I find
-    # a Kasa device.
+    # TODO: Kasa's discovery fails when I'm connected to a VPN. I don't completely
+    # understand why, but I know that it has something to do with the broadcast address
+    # that they use, 255.255.255.255. I'm guessing this is because that IP is supposed
+    # to be an alias for 'this network' which will mean that of the VPN network when I'm
+    # connected to it and not that of my actual wifi/ethernet network. To get around
+    # this, I look for the correct broadcast address myself using psutil which gives me
+    # all addresses assigned to each NIC on my machine. I then try discovery using all
+    # the addresses that are marked as broadcast addresses until I find a Kasa device.
     def _discover_devices(self):
         # return the first non-empty map of devices
         return next(

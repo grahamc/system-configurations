@@ -458,5 +458,9 @@
       url = "github:stevearc/conform.nvim";
       flake = false;
     };
+    vim-plugin-nvim-treesitter-context = {
+      url = "github:nvim-treesitter/nvim-treesitter-context";
+      flake = false;
+    };
   };
 }

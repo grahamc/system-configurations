@@ -140,8 +140,12 @@ abbr --add --global vw variable-widget
 function _fzf_complete
     set current_token (commandline --current-token)
     set candidates (complete --escape --do-complete -- "$(commandline --cut-at-cursor)")
-    if test (count $candidates) -le 1
+    if test (count $candidates) -eq 1
         set entries $candidates
+    else if test (count $candidates) -eq 0
+        # so we don't trigger the `and` block below. this is how fzf would behave if nothing was
+        # chosen
+        false
     else
         set need_to_repaint 1
         set entries \

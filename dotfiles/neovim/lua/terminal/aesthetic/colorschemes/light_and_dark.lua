@@ -38,6 +38,10 @@ local is_light = vim.g.colors_name == "my_light_theme"
 
 local lush = require("lush")
 local hsl = lush.hsl
+-- In order for lush.nvim to give a live preview of a color scheme, the highlights needs to have a
+-- certain format so I won't format them.
+-- stylua: ignore
+--
 -- LSP/Linters mistakenly show `undefined global` errors in the spec, they may support an annotation
 -- like the following. Consult your server documentation.
 ---@diagnostic disable: undefined-global
@@ -245,6 +249,7 @@ local theme = lush(function(injected_functions)
     EndOfBuffer {}, -- Filler lines (~) after the end of the buffer. By default, this is highlighted like |hl-NonText|.
     Folded { bg = is_light and t_0.fg.darken(3) or t_0.fg.lighten(3) }, -- Line used for closed folds
     FoldColumn { fg = t_15.fg }, -- 'foldcolumn'
+    TreesitterContext { bg = is_light and t_0.fg.darken(2) or t_0.fg.lighten(2) }, -- Line used for closed folds
     SignColumn {}, -- Column where |signs| are displayed
     Substitute { Search }, -- |:substitute| replacement text highlighting
     MatchParen { t_5, bold = true, underline = true }, -- Character under the cursor or just before it, if it is a paired bracket, and its match. |pi_paren.txt|

@@ -65,3 +65,20 @@ if IsRunningInTerminal then
 end
 
 Plug("IndianBoy42/tree-sitter-just")
+
+Plug("nvim-treesitter/nvim-treesitter-context", {
+  config = function()
+    require("treesitter-context").setup({
+      line_numbers = false,
+    })
+    vim.keymap.set("n", "[s", function()
+      require("treesitter-context").go_to_context(vim.v.count1)
+    end, { silent = true })
+    vim.keymap.set(
+      "n",
+      [[\s]],
+      vim.cmd.TSContextToggle,
+      { desc = "Toggle sticky scroll [context]" }
+    )
+  end,
+})

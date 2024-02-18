@@ -223,7 +223,7 @@ Plug("williamboman/mason-lspconfig.nvim", {
               {
                 desc = "code lens refresh",
                 callback = function()
-                  vim.lsp.codelens.refresh()
+                  vim.lsp.codelens.refresh({ bufnr = buffer_number })
                 end,
                 buffer = buffer_number,
               }

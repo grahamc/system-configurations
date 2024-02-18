@@ -220,6 +220,11 @@ timer:start(
           return vim.bo[buf].buftype == ""
         end)
         :filter(function(buf)
+          -- TODO: Considering also checking filereadable, but not sure if that would cause
+          -- excessive disk reads
+          return #vim.api.nvim_buf_get_name(buf) > 0
+        end)
+        :filter(function(buf)
           return not vim.bo[buf].readonly
         end)
         :filter(function(buf)

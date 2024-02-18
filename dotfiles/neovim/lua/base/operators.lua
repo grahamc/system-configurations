@@ -13,35 +13,83 @@ Plug("arthurxavierx/vim-caser")
 -- Formatting {{{
 local utilities = require("base.utilities")
 
+-- TODO: If you use direnv to add your formatters to the $PATH, you have to launch vscode
+-- from the terminal for it to find the formatters. More on this in my notes.
 Plug("stevearc/conform.nvim", {
+  -- So when I use my conform executable, my config will be called before I call format()
+  sync = true,
+
   config = function()
     local conform = require("conform")
 
-    vim.keymap.set("x", "gf", function()
-      conform.format()
-
+    local function format_region(start_mark, end_mark)
+      local enter_key = vim.api.nvim_replace_termcodes("<CR>", true, false, true)
       local escape_key = vim.api.nvim_replace_termcodes("<ESC>", true, false, true)
-      vim.api.nvim_feedkeys(escape_key, "n", true)
-    end, { desc = "Format code" })
+      local command = string.format(
+        [[%s:silent %s,%s!conform %s %s%s]],
+        escape_key,
+        start_mark,
+        end_mark,
+        vim.bo.filetype,
+        vim.api.nvim_buf_get_name(0),
+        enter_key
+      )
+      vim.api.nvim_feedkeys(command, "n", true)
+    end
+
+    vim.keymap.set("x", "gf", function()
+      format_region("'<", "'>")
+    end, { desc = "Format code", silent = true })
+
+    _G.FormatCodeOperatorFunc = function()
+      format_region("'[", "']")
+    end
+    vim.keymap.set("n", "gf", function()
+      vim.o.operatorfunc = "v:lua.FormatCodeOperatorFunc"
+      return "g@"
+    end, { expr = true, desc = "Format code", silent = true })
 
     -- run only the first available formatter
     local prettier = { { "prettierd", "prettier" } }
+    local util = require("conform.util")
     conform.setup({
+      formatters = {
+        -- TODO: Made 2 changes to the default shfmt config that should probably be upstreamed:
+        -- 1. add another '-' to '-filename'. A single dash works, but I don't see it documented
+        -- anywhere
+        -- 2. set a CWD so shfmt can pick up editor config settings
+        shfmt = {
+          inherit = false,
+          meta = {
+            url = "https://github.com/mvdan/sh",
+            description = "A shell parser, formatter, and interpreter with `bash` support.",
+          },
+          command = "shfmt",
+          args = { "--filename", "$FILENAME" },
+          cwd = util.root_file({ ".editorconfig" }),
+        },
+      },
       formatters_by_ft = {
         ["*"] = { "injected" },
         ["_"] = { "trim_whitespace", "squeeze_blanks" },
         lua = { "stylua" },
         -- run multiple formatters sequentially
         python = { "usort", "black" },
-        javascript = prettier,
-        json = prettier,
-        markdown = prettier,
-        yaml = prettier,
         sh = { "shfmt" },
         fish = { "fish_indent" },
         nix = { "alejandra" },
         just = { "just" },
         go = { "gofmt" },
+        javascript = prettier,
+        javascriptreact = prettier,
+        json = prettier,
+        markdown = prettier,
+        yaml = prettier,
+        css = prettier,
+        html = prettier,
+        typescriptreact = prettier,
+        typescript = prettier,
+        scss = prettier,
       },
     })
   end,
@@ -76,8 +124,7 @@ local function set_formatprg(text)
 
   local _, newline_count = string.gsub(text, "\n", "")
   local is_one_line = newline_count == 0
-  -- For single lines `par` can't infer what the commentstring is so I'm explicitly setting it
-  -- here.
+  -- For single lines `par` can't infer what the commentstring is so I'm explicitly setting it here.
   if is_one_line then
     local commentstring = get_commentstring()
     local index_of_commentstring = (string.find(text, (utilities.escape_percent(commentstring))))

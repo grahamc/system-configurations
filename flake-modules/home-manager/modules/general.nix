@@ -35,6 +35,7 @@ in {
           "pbcopy".source = "general/executables/pbcopy";
           "process-output".source = "general/executables/process-output";
           "fish_tokenize".source = "general/executables/fish_tokenize.fish";
+          "conform".source = "general/executables/conform.bash";
         }
         // optionalAttrs isDarwin {
           "trash".source = "general/executables/trash.py";

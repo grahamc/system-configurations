@@ -5,7 +5,7 @@ includes = ["*.js", "*.json", "*.md", "*.yml",]
 
 [formatter.bash]
 command = "shfmt"
-options = ["--language-dialect", "bash", "--write", "--indent", "2",]
+options = ["--write",]
 includes = [".envrc", "*.bash",]
 
 [formatter.fish]
@@ -36,13 +36,7 @@ includes = ["justfile",]
 
 [formatter.lua]
 command = "stylua"
-options = ["--column-width", "100",]
 includes = ["*.lua",]
-excludes = [
-  # In order for lush.nvim to give a live preview of a color scheme, the file needs to have a certain
-  # format so I won't format it here.
-  "*neovim/lua/terminal/aesthetic/colorschemes/*.lua",
-]
 
 [formatter.go]
 command = "gofmt"

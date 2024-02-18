@@ -398,8 +398,10 @@ Plug("echasnovski/mini.nvim", {
 
     -- trailspace {{{
     if IsRunningInTerminal then
+      local trailspace = require("mini.trailspace")
+      trailspace.setup()
       vim.api.nvim_create_user_command("TrimTrailingWhitespace", function()
-        require("mini.trailspace").trim()
+        trailspace.trim()
       end, {})
     end
     -- }}}

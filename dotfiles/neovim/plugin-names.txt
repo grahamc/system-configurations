@@ -55,6 +55,7 @@ telescope-smart-history.nvim
 telescope.nvim
 nvim-web-devicons
 nvim-treesitter
+nvim-treesitter-context
 nvim-treesitter-textobjects
 none-ls.nvim
 czs.nvim
