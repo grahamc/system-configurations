@@ -222,7 +222,9 @@ vim.api.nvim_create_autocmd("User", {
 -- Substitutions {{{
 -- Commands/mappings for working with variants of words. In particular I use its 'S' command for
 -- performing substitutions. It has more features than vim's built-in :substitution
-Plug("tpope/vim-abolish")
+Plug("tpope/vim-abolish", {
+  on = "S",
+})
 
 -- Autocommands get executed without `smagic` so I make sure that I explicitly specify it on the
 -- commandline so if my autocommand has a substitute command it will use `smagic`.

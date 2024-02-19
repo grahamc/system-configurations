@@ -1,4 +1,8 @@
+vim.defer_fn(function()
+  vim.fn["plug#load"]("git-blame.nvim")
+end, 0)
 Plug("f-person/git-blame.nvim", {
+  on = {},
   config = function()
     local message_prefix = "    "
     require("gitblame").setup({

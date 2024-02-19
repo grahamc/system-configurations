@@ -1,4 +1,5 @@
 Plug("folke/trouble.nvim", {
+  on = { "Trouble", "TroubleToggle" },
   config = function()
     require("trouble").setup({
       height = math.floor(vim.o.lines * 0.25),
@@ -47,36 +48,6 @@ Plug("folke/trouble.nvim", {
       },
     })
 
-    -- TODO: Would like to to see support for other lsp types like call hierarchies
-    vim.keymap.set("n", "<M-d>", vim.cmd.TroubleToggle, {
-      desc = "Diagnostics [lints,problems]",
-    })
-    vim.keymap.set("n", "gd", function()
-      vim.cmd.Trouble("lsp_definitions")
-    end, {
-      desc = "Definitions",
-    })
-    vim.keymap.set("n", "gt", function()
-      vim.cmd.Trouble("lsp_type_definitions")
-    end, {
-      desc = "Type definitions",
-    })
-    vim.keymap.set("n", "gi", function()
-      vim.cmd.Trouble("lsp_implementations")
-    end, {
-      desc = "Implementations",
-    })
-    -- TODO: When there is only one result, it doesn't add to the jumplist so I'm adding that
-    -- here. I should upstream this.
-    vim.keymap.set(
-      "n",
-      "gr",
-      require("terminal.utilities").set_jump_before(function()
-        vim.cmd.Trouble("lsp_references")
-      end),
-      { desc = "References" }
-    )
-
     vim.api.nvim_create_autocmd("FileType", {
       group = vim.api.nvim_create_augroup("bigolu/trouble.nvim", {}),
       pattern = "Trouble",
@@ -118,3 +89,33 @@ Plug("folke/trouble.nvim", {
     })
   end,
 })
+
+-- TODO: Would like to to see support for other lsp types like call hierarchies
+vim.keymap.set("n", "<M-d>", vim.cmd.TroubleToggle, {
+  desc = "Diagnostics [lints,problems]",
+})
+vim.keymap.set("n", "gd", function()
+  vim.cmd.Trouble("lsp_definitions")
+end, {
+  desc = "Definitions",
+})
+vim.keymap.set("n", "gt", function()
+  vim.cmd.Trouble("lsp_type_definitions")
+end, {
+  desc = "Type definitions",
+})
+vim.keymap.set("n", "gi", function()
+  vim.cmd.Trouble("lsp_implementations")
+end, {
+  desc = "Implementations",
+})
+-- TODO: When there is only one result, it doesn't add to the jumplist so I'm adding that
+-- here. I should upstream this.
+vim.keymap.set(
+  "n",
+  "gr",
+  require("terminal.utilities").set_jump_before(function()
+    vim.cmd.Trouble("lsp_references")
+  end),
+  { desc = "References" }
+)

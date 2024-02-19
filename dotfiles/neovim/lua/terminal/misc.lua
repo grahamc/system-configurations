@@ -409,7 +409,11 @@ vim.g.traces_abolish_integration = 1
 Plug("nvim-lua/plenary.nvim")
 Plug("kkharji/sqlite.lua")
 
+vim.defer_fn(function()
+  vim.fn["plug#load"]("dressing.nvim")
+end, 0)
 Plug("stevearc/dressing.nvim", {
+  on = {},
   config = function()
     require("dressing").setup({
       input = {

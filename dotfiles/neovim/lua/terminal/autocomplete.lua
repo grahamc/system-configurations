@@ -2,7 +2,9 @@ vim.o.complete = ".,w,b,u"
 vim.o.pumheight = 6
 
 -- for the  autocomplete omnifunc
-Plug("blankname/vim-fish")
+Plug("blankname/vim-fish", {
+  ["for"] = { "fish" },
+})
 
 Plug("hrsh7th/cmp-omni")
 
@@ -23,7 +25,13 @@ Plug("hrsh7th/cmp-nvim-lsp-signature-help")
 
 Plug("bydlw98/cmp-env")
 
+vim.api.nvim_create_autocmd("InsertEnter", {
+  callback = function()
+    vim.fn["plug#load"]("LuaSnip")
+  end,
+})
 Plug("L3MON4D3/LuaSnip", {
+  on = {},
   config = function()
     local luasnip = require("luasnip")
     local types = require("luasnip.util.types")
@@ -105,7 +113,6 @@ Plug("rafamadriz/friendly-snippets")
 Plug("uga-rosa/cmp-dictionary", {
   config = function()
     require("cmp_dictionary").setup({
-      paths = { "/usr/share/dict/words" },
       max_number_items = 1000,
       first_case_insensitive = true,
       external = {
@@ -123,8 +130,6 @@ Plug("uga-rosa/cmp-dictionary", {
 Plug("hrsh7th/nvim-cmp", {
   config = function()
     local cmp = require("cmp")
-    local luasnip = require("luasnip")
-    local cmp_buffer = require("cmp_buffer")
     local autocmd_group = vim.api.nvim_create_augroup("MyNvimCmp", {})
 
     cmp.event:on(
@@ -217,7 +222,7 @@ Plug("hrsh7th/nvim-cmp", {
       },
       snippet = {
         expand = function(args)
-          luasnip.lsp_expand(args.body)
+          require("luasnip").lsp_expand(args.body)
         end,
       },
       window = {
@@ -274,13 +279,13 @@ Plug("hrsh7th/nvim-cmp", {
         ["<C-k>"] = cmp.mapping.scroll_docs(-4),
         ["<C-j>"] = cmp.mapping.scroll_docs(4),
         ["<C-h>"] = cmp.mapping(function(_)
-          if luasnip.jumpable(-1) then
-            luasnip.jump(-1)
+          if require("luasnip").jumpable(-1) then
+            require("luasnip").jump(-1)
           end
         end, { "i", "s" }),
         ["<C-l>"] = cmp.mapping(function(_)
-          if luasnip.expand_or_locally_jumpable() then
-            luasnip.expand_or_jump()
+          if require("luasnip").expand_or_locally_jumpable() then
+            require("luasnip").expand_or_jump()
           end
         end, { "i", "s" }),
       }),
@@ -335,7 +340,7 @@ Plug("hrsh7th/nvim-cmp", {
           end,
 
           function(...)
-            return cmp_buffer:compare_locality(...)
+            return require("cmp_buffer"):compare_locality(...)
           end,
         },
       },

@@ -8,7 +8,12 @@ vim.keymap.set({ "n" }, "Y", "yg_", {
   desc = "Til end of line, excluding newline",
 })
 
-Plug("arthurxavierx/vim-caser")
+vim.defer_fn(function()
+  vim.fn["plug#load"]("vim-caser")
+end, 0)
+Plug("arthurxavierx/vim-caser", {
+  on = {},
+})
 
 -- Formatting {{{
 local utilities = require("base.utilities")

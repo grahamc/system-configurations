@@ -8,6 +8,10 @@ require("plug").load_plugins(function(plug)
     plug(...)
   end
 
+  local has_ttyin = vim.fn.has("ttyin") == 1
+  local has_ttyout = vim.fn.has("ttyout") == 1
+  IsRunningInTerminal = has_ttyout or has_ttyin
+
   require("base")
   require("terminal")
   require("vscode")

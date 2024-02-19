@@ -7,7 +7,7 @@ end
 
 Plug("nvim-treesitter/nvim-treesitter", {
   -- To avoid a flash of the document without syntax highlighting
-  sync = true,
+  sync = IsRunningInTerminal,
   config = function()
     ---@diagnostic disable-next-line: missing-fields
     require("nvim-treesitter.configs").setup({
@@ -66,12 +66,16 @@ end
 
 Plug("IndianBoy42/tree-sitter-just")
 
+vim.defer_fn(function()
+  vim.fn["plug#load"]("nvim-treesitter-context")
+end, 0)
 Plug("nvim-treesitter/nvim-treesitter-context", {
+  on = {},
   config = function()
     require("treesitter-context").setup({
       line_numbers = false,
     })
-    vim.keymap.set("n", "[s", function()
+    vim.keymap.set({ "n", "x" }, "[s", function()
       require("treesitter-context").go_to_context(vim.v.count1)
     end, { silent = true })
     vim.keymap.set(

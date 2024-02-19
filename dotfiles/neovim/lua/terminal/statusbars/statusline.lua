@@ -379,8 +379,8 @@ function StatusLine()
     mixed_line_endings = "%#StatusLineErrorText#[ mixed line-endings]"
   end
 
-  local luasnip = require("luasnip")
-  if luasnip.get_active_snip() ~= nil then
+  local is_luasnip_loaded, luasnip = pcall(require, "luasnip")
+  if is_luasnip_loaded and luasnip.get_active_snip() ~= nil then
     return make_mapping_statusline({
       { mods = { "C" }, key = "h", description = "Last node" },
       { mods = { "C" }, key = "l", description = "Next node or expand" },

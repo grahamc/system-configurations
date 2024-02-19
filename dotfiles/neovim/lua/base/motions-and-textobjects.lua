@@ -180,10 +180,20 @@ Plug("andymass/vim-matchup")
 -- Don't display off-screen matches in my statusline or a popup window
 vim.g.matchup_matchparen_offscreen = {}
 
-Plug("bkad/CamelCaseMotion")
+vim.defer_fn(function()
+  vim.fn["plug#load"]("CamelCaseMotion")
+end, 0)
+Plug("bkad/CamelCaseMotion", {
+  on = {},
+})
 vim.g.camelcasemotion_key = ","
 
-Plug("nvim-treesitter/nvim-treesitter-textobjects")
+vim.defer_fn(function()
+  vim.fn["plug#load"]("nvim-treesitter-textobjects")
+end, 0)
+Plug("nvim-treesitter/nvim-treesitter-textobjects", {
+  on = {},
+})
 
 local function marker_fold_object()
   -- excluded first and last lines for marker folds

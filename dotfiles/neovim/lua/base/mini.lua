@@ -5,9 +5,6 @@
 
 -- Dependencies: nvim-treesitter-textobjects
 Plug("echasnovski/mini.nvim", {
-  -- Load synchronously for cursor restoration
-  sync = IsRunningInTerminal,
-
   config = function()
     local mini_group_id = vim.api.nvim_create_augroup("MyMiniNvim", {})
 
@@ -265,9 +262,6 @@ Plug("echasnovski/mini.nvim", {
     -- misc {{{
     if IsRunningInTerminal then
       local misc = require("mini.misc")
-      misc.setup_restore_cursor({
-        center = false,
-      })
       vim.keymap.set("n", "<Leader>m", function()
         if not IsMaximized then
           vim.api.nvim_create_autocmd("WinEnter", {
@@ -414,5 +408,14 @@ Plug("echasnovski/mini.nvim", {
       })
     end
     -- }}}
+  end,
+})
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "PlugEndPost",
+  callback = function()
+    require("mini.misc").setup_restore_cursor({
+      center = false,
+    })
   end,
 })

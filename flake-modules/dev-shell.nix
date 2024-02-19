@@ -107,6 +107,7 @@ in {
         which
       ];
       postBuild = ''
+        rm $out/share/nvim/site/plugin/fzf.vim
         cd $out/bin
         ln -s ${pkgs.nodePackages.prettier}/bin/prettier ./prettier
       '';

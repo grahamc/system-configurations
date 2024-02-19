@@ -37,10 +37,22 @@ Plug("folke/which-key.nvim", {
   end,
 })
 
+local modes = { "n", "i", "x" }
 Plug("mrjones2014/legendary.nvim", {
+  on = { "CommandPalette" },
   config = function()
     local legendary = require("legendary")
-    local modes = { "n", "i", "x" }
+
+    legendary.setup({
+      select_prompt = "Command/Keymap Palette",
+      include_legendary_cmds = false,
+      icons = {
+        keymap = " ",
+        command = " ",
+        fn = "󰡱 ",
+        itemgroup = " ",
+      },
+    })
 
     local function make_unique_filter(key_extractor)
       local seen = {}
@@ -229,19 +241,7 @@ Plug("mrjones2014/legendary.nvim", {
         end)
         :each(legendary.command)
     end
-
-    legendary.setup({
-      select_prompt = "Command/Keymap Palette",
-      include_legendary_cmds = false,
-      icons = {
-        keymap = " ",
-        command = " ",
-        fn = "󰡱 ",
-        itemgroup = " ",
-      },
-    })
-
-    function OpenCommandPalette()
+    vim.api.nvim_create_user_command("CommandPalette", function()
       -- TODO: I should upstream this:
       -- https://github.com/mrjones2014/legendary.nvim/issues/258
       load_keymaps()
@@ -249,14 +249,15 @@ Plug("mrjones2014/legendary.nvim", {
       legendary.find({
         filters = { make_legendary_mode_filter(vim.api.nvim_get_mode().mode) },
       })
-    end
-    -- This is actually ctrl+/, see :help :map-special-keys
-    vim.keymap.set(modes, "<C-_>", "<Cmd>lua OpenCommandPalette()<CR>", {
-      desc = "Command palette",
-    })
-    -- Outside TMUX the above won't work, I have to use <C-/>, so I just map both.
-    vim.keymap.set(modes, "<C-/>", "<Cmd>lua OpenCommandPalette()<CR>", {
-      desc = "Command palette",
-    })
+    end, {})
   end,
+})
+
+-- This is actually ctrl+/, see :help :map-special-keys
+vim.keymap.set(modes, "<C-_>", vim.cmd.CommandPalette, {
+  desc = "Command palette",
+})
+-- Outside TMUX the above won't work, I have to use <C-/>, so I just map both.
+vim.keymap.set(modes, "<C-/>", vim.cmd.CommandPalette, {
+  desc = "Command palette",
 })
