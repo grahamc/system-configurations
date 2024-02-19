@@ -48,9 +48,7 @@ Plug("folke/trouble.nvim", {
     })
 
     -- TODO: Would like to to see support for other lsp types like call hierarchies
-    vim.keymap.set("n", "<M-d>", function()
-      vim.cmd.TroubleToggle("workspace_diagnostics")
-    end, {
+    vim.keymap.set("n", "<M-d>", vim.cmd.TroubleToggle, {
       desc = "Diagnostics [lints,problems]",
     })
     vim.keymap.set("n", "gd", function()
@@ -83,6 +81,8 @@ Plug("folke/trouble.nvim", {
       group = vim.api.nvim_create_augroup("bigolu/trouble.nvim", {}),
       pattern = "Trouble",
       callback = function()
+        vim.wo.winhighlight = "CursorLine:NeotestCurrentLine"
+
         vim.keymap.set("n", "<S-tab>", function()
           local has_open_fold = vim
             .iter(vim.api.nvim_buf_get_extmarks(0, -1, 0, -1, { details = true }))

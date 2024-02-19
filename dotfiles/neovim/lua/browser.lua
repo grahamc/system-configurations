@@ -27,12 +27,3 @@ vim.g.firenvim_config = {
     },
   },
 }
-
-Plug("windwp/nvim-autopairs", {
-  config = function()
-    require("nvim-autopairs").setup({
-      -- Don't add bracket pairs after quote.
-      enable_afterquote = false,
-    })
-  end,
-})

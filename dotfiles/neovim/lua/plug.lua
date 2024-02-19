@@ -84,6 +84,7 @@ end
 -- vim-plugs enables syntax highlighting if it isn't already enabled, but I don't want it since I
 -- use treesitter.  This will make vim-plug think it's already on so it won't enable it.
 local function run_with_faked_syntax_on(fn)
+  vim.cmd.syntax("off")
   vim.g.syntax_on = true
   fn()
   vim.g.syntax_on = false

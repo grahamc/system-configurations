@@ -18,6 +18,27 @@ Plug("Bekaboo/dropbar.nvim", {
         end,
       },
 
+      bar = {
+        -- default value, but with LSP and tree sitter removed
+        sources = function(buf, _)
+          local sources = require("dropbar.sources")
+          if vim.bo[buf].ft == "markdown" then
+            return {
+              sources.path,
+              sources.markdown,
+            }
+          end
+          if vim.bo[buf].buftype == "terminal" then
+            return {
+              sources.terminal,
+            }
+          end
+          return {
+            sources.path,
+          }
+        end,
+      },
+
       icons = {
         kinds = {
           symbols = {

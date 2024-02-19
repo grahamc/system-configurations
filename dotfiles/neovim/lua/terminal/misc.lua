@@ -5,6 +5,7 @@ vim.o.scrolloff = 999
 vim.o.jumpoptions = "stack"
 vim.o.mousemoveevent = true
 
+-- Gets rid of the press enter prompt when accesing a file over a network
 vim.g.netrw_silent = 1
 
 -- open links with browser {{{
