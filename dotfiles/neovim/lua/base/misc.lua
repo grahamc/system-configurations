@@ -1,7 +1,6 @@
 -- vim:foldmethod=marker
 
-vim.o.timeout = true
-vim.o.timeoutlen = 500
+vim.o.timeout = false
 vim.o.updatetime = 500
 vim.o.swapfile = false
 vim.o.fileformats = "unix,dos,mac"
@@ -142,11 +141,15 @@ function MyPaste(was_in_visual_mode, is_capital_p)
     false
   )
 end
-vim.keymap.set({ "n" }, "p", ":lua MyPaste(false, false)<CR>", { silent = true })
+vim.keymap.set({ "n" }, "p", function()
+  MyPaste(false, false)
+end, { silent = true })
 -- In visual mode p should behave like P, unless the paste is at the end of the document/line, but
 -- that gets handled in the paste function.
 vim.keymap.set({ "x" }, "p", "P", { silent = true, remap = true })
-vim.keymap.set({ "n" }, "P", ":lua MyPaste(false, true)<CR>", { silent = true })
+vim.keymap.set({ "n" }, "P", function()
+  MyPaste(false, true)
+end, { silent = true })
 -- Leave visual mode so '< and '> get set, but save the current register beforehand
 vim.keymap.set(
   { "x" },
@@ -183,39 +186,41 @@ vim.g.loaded_perl_provider = 0
 -- }}}
 
 -- Option overrides {{{
-local vim_default_overrides_group_id = vim.api.nvim_create_augroup("VimDefaultOverrides", {})
-
 -- Vim's default filetype plugins get run when filetype detection is enabled (i.e. ':filetype plugin
 -- on'). So in order to override settings from vim's filetype plugins, these FileType autocommands
 -- need to be registered after filetype detection is enabled. File type detection is turned on in
 -- plug_end() so this function gets called at `PlugEndPost`, which is right after plug_end() is
 -- called.
-local function override_default_filetype_plugins()
-  -- Don't automatically hard-wrap text
-  vim.api.nvim_create_autocmd("FileType", {
-    callback = function()
-      vim.bo.wrapmargin = 0
-      -- ro: auto insert comment character
-      -- jr: delete comment character when joining commented lines
-      vim.bo.formatoptions = "rojr"
-    end,
-    group = vim_default_overrides_group_id,
-  })
-
-  -- Use vim help pages for `keywordprg` in vim files
-  vim.api.nvim_create_autocmd("FileType", {
-    pattern = "vim",
-    callback = function()
-      vim.opt_local.keywordprg = ":Help"
-    end,
-    group = vim_default_overrides_group_id,
-  })
-end
-
+local vim_default_overrides_group_id = vim.api.nvim_create_augroup("VimDefaultOverrides", {})
 vim.api.nvim_create_autocmd("User", {
   pattern = "PlugEndPost",
-  callback = override_default_filetype_plugins,
   group = vim_default_overrides_group_id,
+  callback = function()
+    vim.api.nvim_create_autocmd("FileType", {
+      callback = function()
+        -- Don't automatically hard-wrap text
+        vim.bo.wrapmargin = 0
+        -- r: Automatically insert the current comment leader after hitting <Enter> in Insert
+        -- mode.
+        -- o: Automatically insert the current comment leader after hitting o/O in normal mode.
+        -- /: Don't auto insert a comment leader if the comment is next to a statemnt.
+        -- j: Remove comment leader when joining lines
+        vim.bo.formatoptions = "ro/j"
+      end,
+      group = vim_default_overrides_group_id,
+    })
+
+    if IsRunningInTerminal then
+      -- Use vim help pages for `keywordprg` in vim files
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "vim",
+        callback = function()
+          vim.opt_local.keywordprg = ":Help"
+        end,
+        group = vim_default_overrides_group_id,
+      })
+    end
+  end,
 })
 -- }}}
 

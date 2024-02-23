@@ -170,7 +170,6 @@ Plug("m4xshen/smartcolumn.nvim", {
         "NvimTree",
         "lspinfo",
         "mason",
-        "Trouble",
       },
     })
   end,
@@ -319,7 +318,7 @@ end, { expr = true })
 
 vim.o.hlsearch = false
 
--- toggle search highlighting, whitespace indicators, and indent guides
+-- toggle search highlighting and whitespace indicators
 vim.keymap.set(
   "n",
   [[\/]],

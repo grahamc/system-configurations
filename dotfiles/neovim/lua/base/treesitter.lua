@@ -52,11 +52,13 @@ vim.api.nvim_create_autocmd("FileType", {
 if IsRunningInTerminal then
   -- Enable syntax highlighting for filetypes without treesitter parsers
   vim.cmd.syntax("manual")
+  local filetypes_with_syntax_support = vim.fn.getcompletion("", "syntax") or {}
   vim.api.nvim_create_autocmd("FileType", {
     callback = function()
       if
         not require("nvim-treesitter.parsers").has_parser()
         and not is_current_buffer_too_big_to_highlight()
+        and vim.tbl_contains(filetypes_with_syntax_support, vim.bo.filetype)
       then
         vim.bo.syntax = "ON"
       end

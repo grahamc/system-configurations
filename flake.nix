@@ -166,8 +166,10 @@
       url = "github:jeetsukumaran/vim-indentwise";
       flake = false;
     };
+    # This commit broke typescript so I'll use the commit before it for now:
+    # https://github.com/andymass/vim-matchup/commit/7f81ae12542b2a35819f0324895df9bd8626c8ba
     vim-plugin-vim-matchup = {
-      url = "github:andymass/vim-matchup";
+      url = "github:andymass/vim-matchup?rev=e2cca1747ab175b8d839a5d28679427564643a57";
       flake = false;
     };
     vim-plugin-CamelCaseMotion = {
@@ -438,18 +440,6 @@
       url = "github:uga-rosa/cmp-dictionary";
       flake = false;
     };
-    vim-plugin-trouble-nvim = {
-      url = "github:folke/trouble.nvim";
-      flake = false;
-    };
-    vim-plugin-litee-nvim = {
-      url = "github:ldelossa/litee.nvim";
-      flake = false;
-    };
-    vim-plugin-litee-calltree-nvim = {
-      url = "github:ldelossa/litee-calltree.nvim";
-      flake = false;
-    };
     vim-plugin-telescope-sg = {
       url = "github:Marskey/telescope-sg";
       flake = false;
@@ -460,6 +450,14 @@
     };
     vim-plugin-nvim-treesitter-context = {
       url = "github:nvim-treesitter/nvim-treesitter-context";
+      flake = false;
+    };
+    vim-plugin-vim-exchange = {
+      url = "github:tommcdo/vim-exchange";
+      flake = false;
+    };
+    vim-plugin-bullets-vim = {
+      url = "github:bullets-vim/bullets.vim";
       flake = false;
     };
   };

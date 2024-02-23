@@ -27,8 +27,8 @@ vim.diagnostic.config({
 })
 
 local original_diagnostic_open_float = vim.diagnostic.open_float
-vim.diagnostic.open_float = function()
-  local _, winid = original_diagnostic_open_float()
+vim.diagnostic.open_float = function(...)
+  local _, winid = original_diagnostic_open_float(...)
   if winid == nil then
     return
   end

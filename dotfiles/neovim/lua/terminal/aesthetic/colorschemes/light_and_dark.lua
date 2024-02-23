@@ -249,7 +249,7 @@ local theme = lush(function(injected_functions)
     EndOfBuffer {}, -- Filler lines (~) after the end of the buffer. By default, this is highlighted like |hl-NonText|.
     Folded { bg = is_light and t_0.fg.darken(3) or t_0.fg.lighten(3) }, -- Line used for closed folds
     FoldColumn { fg = t_15.fg }, -- 'foldcolumn'
-    TreesitterContext { bg = is_light and t_0.fg.darken(2) or t_0.fg.lighten(2) }, -- Line used for closed folds
+    TreesitterContext { bg = is_light and t_0.fg.darken(3) or t_0.fg.lighten(2) }, -- Line used for closed folds
     SignColumn {}, -- Column where |signs| are displayed
     Substitute { Search }, -- |:substitute| replacement text highlighting
     MatchParen { t_5, bold = true, underline = true }, -- Character under the cursor or just before it, if it is a paired bracket, and its match. |pi_paren.txt|
@@ -279,7 +279,6 @@ local theme = lush(function(injected_functions)
     VirtColumn { NonText, },
     NvimDapVirtualText { LspInlayHint },
     LuaSnipInlayHint { LspInlayHint, fg = t_11.fg },
-    TroubleCount { Identifier },
     QuickfixPreview { Search, nocombine = true },
     AerialLine { bg = is_light and t_0.fg.darken(6) or t_0.fg.lighten(6), },
 
@@ -396,6 +395,8 @@ local theme = lush(function(injected_functions)
     QuickfixFold { QuickFixEntryUnderline, bold = true, },
     qfFileName { Normal, },
     qfLineNr { qfFileName, },
+    QuickfixBorderNotCurrent { Ignore },
+    QuickfixTitleNotCurrent { Normal },
 
     -- nvim-telescope {{{
     -- List of telescope highlight groups:

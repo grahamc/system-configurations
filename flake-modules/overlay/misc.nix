@@ -28,26 +28,62 @@
         configureFlags = old.configureFlags ++ ["--enable-sixel"];
       });
 
-      nightlyNeovim = final.symlinkJoin {
-        inherit (final.neovim-nightly) name;
-        paths = [final.neovim-nightly];
-        buildInputs = [final.makeWrapper];
-        # Neovim uses unibilium to discover term info entries which is a problem for me because
-        # unibilium sets its terminfo search path at build time so I'm setting the search path here.
-        postBuild = ''
-          wrapProgram $out/bin/nvim --set TERMINFO_DIRS '${ncursesWithWezterm}/share/terminfo'
-        '';
-      };
+      nightlyNeovimWithDependencies = let
+        dependencies = final.symlinkJoin {
+          name = "neovim-dependencies";
+          postBuild = ''
+            ln -s ${inputs.self}/dotfiles/general/executables/conform.bash $out/bin/conform
+          '';
+          paths = with final; [
+            # to watch files for LSP
+            watchman
+
+            # to format comments
+            par
+
+            # for cmp-dictionary
+            partialPackages.look
+            wordnet
+
+            # For the conform.nvim formatters 'trim_whitespace' and 'squeeze_blanks' which require awk and
+            # cat respectively
+            gawk
+            coreutils-full
+          ];
+        };
+      in
+        final.symlinkJoin {
+          inherit (final.neovim-nightly) name;
+          paths = [final.neovim-nightly];
+          buildInputs = [final.makeWrapper];
+          postBuild = ''
+            # NOTE: Using wrapProgram more than once will change the name of the process (you can
+            # see this in `ps`). This was breaking vim-tmux-navigator which uses the process name
+            # to determine if the current tmux pane is running vim. To avoid this I'm doing all my
+            # wrapping in one call to wrapProgram.
+            #
+            # TERMINFO: Neovim uses unibilium to discover term info entries which is a problem for
+            # me because unibilium sets its terminfo search path at build time so I'm setting the
+            # search path here.
+            #
+            # PARINIT: Not sure what it means, but the par man page said to use it and it seems to
+            # work
+            wrapProgram $out/bin/nvim \
+              --prefix PATH : '${dependencies}/bin' \
+              --set TERMINFO_DIRS '${ncursesWithWezterm}/share/terminfo' \
+              --set PARINIT 'rTbgqR B=.\,?'"'"'_A_a_@ Q=_s>|'
+          '';
+        };
     in {
       tmux = latestTmux;
       # I'm renaming ncurses to avoid rebuilds.
       inherit ncursesWithWezterm;
-      neovim = nightlyNeovim;
+      neovim = nightlyNeovimWithDependencies;
     };
 
     metaOverlay = self.lib.overlay.makeMetaOverlay [
-      overlay
       inputs.neovim-nightly-overlay.overlay
+      overlay
     ];
   in {overlays.misc = metaOverlay;};
 }

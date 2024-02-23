@@ -15,6 +15,16 @@ Plug("arthurxavierx/vim-caser", {
   on = {},
 })
 
+-- Exchange {{{
+-- TODO: Using this instead of the one from mini.operators because the mini doesn't have dot-repeat.
+Plug("tommcdo/vim-exchange")
+vim.g.exchange_no_mappings = true
+vim.g.exchange_indent = "=="
+vim.keymap.set({ "n", "x" }, "gx", "<Plug>(Exchange)")
+vim.keymap.set({ "n" }, "gxx", "<Plug>(ExchangeLine)")
+vim.keymap.set({ "n" }, "<Esc>", "<Plug>(ExchangeClear)<ESC>")
+-- }}}
+
 -- Formatting {{{
 local utilities = require("base.utilities")
 
@@ -87,13 +97,13 @@ Plug("stevearc/conform.nvim", {
         go = { "gofmt" },
         javascript = prettier,
         javascriptreact = prettier,
+        typescript = prettier,
+        typescriptreact = prettier,
         json = prettier,
         markdown = prettier,
         yaml = prettier,
         css = prettier,
         html = prettier,
-        typescriptreact = prettier,
-        typescript = prettier,
         scss = prettier,
       },
     })
@@ -108,17 +118,17 @@ vim.api.nvim_create_autocmd("BufNew", {
 })
 
 -- removes '%s' and trims trailing whitespace
-local function get_commentstring()
-  local cursor_pos = vim.api.nvim_win_get_cursor(0)
-  cursor_pos[1] = cursor_pos[1] + 1
-  local commentstring = MiniComment.get_commentstring(cursor_pos)
-
-  local index_of_s = (string.find(commentstring, "%%s"))
-  if index_of_s then
-    return string.sub(commentstring, 1, index_of_s - 1):gsub("^%s*(.-)%s*$", "%1")
-  else
-    return commentstring
-  end
+local function get_commentstrings()
+  return vim
+    .iter(vim.opt.comments:get())
+    :map(function(commentstring)
+      local start_index, _ = commentstring:find(":")
+      if start_index ~= nil then
+        return commentstring:sub(start_index + 1)
+      end
+      return commentstring
+    end)
+    :totable()
 end
 
 local function set_formatprg(text)
@@ -131,11 +141,25 @@ local function set_formatprg(text)
   local is_one_line = newline_count == 0
   -- For single lines `par` can't infer what the commentstring is so I'm explicitly setting it here.
   if is_one_line then
-    local commentstring = get_commentstring()
-    local index_of_commentstring = (string.find(text, (utilities.escape_percent(commentstring))))
-    if index_of_commentstring ~= nil then
-      local prefix = index_of_commentstring + #commentstring
+    local commentstrings = get_commentstrings()
+    table.sort(commentstrings, function(a, b)
+      return #a < #b
+    end)
+    local longest_matching_commentstring = vim.iter(commentstrings):find(function(commentstring)
+      -- TODO: can only be preceded by spaces
+      local start, _ = text:find(commentstring, 1, true)
+      return start ~= nil
+    end)
+
+    if longest_matching_commentstring ~= nil then
+      local start_index_of_commentstring = text:find(longest_matching_commentstring, 1, true)
+      local prefix = start_index_of_commentstring + #longest_matching_commentstring
       formatprg = formatprg .. string.format(" -p%d", prefix)
+    else
+      vim.notify(
+        "Unable to detect the comment leader so the comment may not be formatted properly",
+        vim.log.levels.ERROR
+      )
     end
   end
 
@@ -177,7 +201,6 @@ end, {
 
 -- Extend the types of text that can be incremented/decremented {{{
 Plug("monaqa/dial.nvim", {
-  on = { "<Plug>(dial-increment)", "<Plug>(dial-decrement)" },
   config = function()
     local augend = require("dial.augend")
 
@@ -197,58 +220,122 @@ Plug("monaqa/dial.nvim", {
       })
     end
 
-    require("dial.config").augends:register_group({
-      default = {
-        -- color: #ffffff
-        -- NOTE: If the cursor is over one of the two digits in the red, green, or blue value, it
-        -- only increments that color of the hex. To increment the red, green, and blue portions,
-        -- the cursor must be over the '#'.
-        augend.hexcolor.new({}),
-        -- time: 14:30:00
-        augend.date.alias["%H:%M:%S"],
-        -- time: 14:30
-        augend.date.alias["%H:%M"],
-        -- decimal integer: 0, 4, -123
-        augend.integer.alias.decimal_int,
-        -- hex: 0x00
-        augend.integer.alias.hex,
-        -- binary: 0b0101
-        augend.integer.alias.binary,
-        -- octal: 0o00
-        augend.integer.alias.octal,
-        -- Semantic Versioning: 1.22.1
-        augend.semver.alias.semver,
-        -- uppercase letter: A
-        augend.constant.alias.Alpha,
-        -- lowercase letter: a
-        augend.constant.alias.alpha,
-        words("and", "or"),
-        words("public", "private"),
-        words("true", "false"),
-        words("True", "False"),
-        words("yes", "no"),
-        symbols("&&", "||"),
-        symbols("!=", "=="),
-        symbols("!==", "==="),
-        symbols("<", ">"),
-        symbols("<=", ">="),
-        symbols("+=", "-="),
+    local defaults = {
+      -- color: #ffffff
+      -- NOTE: If the cursor is over one of the two digits in the red, green, or blue value, it
+      -- only increments that color of the hex. To increment the red, green, and blue portions,
+      -- the cursor must be over the '#'.
+      hex_rgb = augend.hexcolor.new({}),
+      -- time: 14:30:00
+      date_hms = augend.date.alias["%H:%M:%S"],
+      -- time: 14:30
+      date_hm = augend.date.alias["%H:%M"],
+      -- decimal integer: 0, 4, -123
+      int = augend.integer.alias.decimal_int,
+      -- hex: 0x00
+      hex = augend.integer.alias.hex,
+      -- binary: 0b0101
+      binary = augend.integer.alias.binary,
+      -- octal: 0o00
+      octal = augend.integer.alias.octal,
+      -- Semantic Versioning: 1.22.1
+      semver = augend.semver.alias.semver,
+      -- uppercase letter: A
+      Alpha = augend.constant.alias.Alpha,
+      -- lowercase letter: a
+      alpha = augend.constant.alias.alpha,
+      logical_word = words("and", "or"),
+      visibility = words("public", "private"),
+      boolean = words("true", "false"),
+      Boolean = words("True", "False"),
+      confirm = words("yes", "no"),
+      logical_symbol = symbols("&&", "||"),
+      equality = symbols("!=", "=="),
+      strict_equality = symbols("!==", "==="),
+      lt_gt = symbols("<", ">"),
+      lte_gte = symbols("<=", ">="),
+      inc_dec = symbols("+=", "-="),
+    }
+
+    local function make_table(acc, _, item)
+      table.insert(acc, item)
+      return acc
+    end
+    local function extend_defaults(tweaks)
+      return require("base.utilities").table_concat(
+        vim
+          .iter(defaults)
+          :filter(function(index, _)
+            return not vim.tbl_contains(tweaks.remove or {}, index)
+          end)
+          :fold({}, make_table),
+        tweaks.add or {}
+      )
+    end
+
+    require("dial.config").augends:register_group({ default = vim.tbl_values(defaults) })
+
+    local augends_for_js_based_languages = extend_defaults({
+      add = {
+        augend.constant.new({ elements = { "let", "const" } }),
       },
+    })
+
+    require("dial.config").augends:on_filetype({
+      javascript = augends_for_js_based_languages,
+      javascriptreact = augends_for_js_based_languages,
+      typescript = augends_for_js_based_languages,
+      typescriptreact = augends_for_js_based_languages,
+      lua = extend_defaults({
+        add = {
+          symbols("~=", "=="),
+        },
+        remove = {
+          "equality",
+        },
+      }),
+      markdown = extend_defaults({
+        add = {
+          augend.misc.alias.markdown_header,
+        },
+      }),
     })
   end,
 })
-vim.keymap.set({ "n", "v" }, "+", "<Plug>(dial-increment)", {
-  desc = "Increment",
-})
-vim.keymap.set({ "n", "v" }, "-", "<Plug>(dial-decrement)", {
-  desc = "Decrement",
-})
-vim.keymap.set("v", "g+", "g<Plug>(dial-increment)", {
-  desc = "Increment",
-})
-vim.keymap.set("v", "g-", "g<Plug>(dial-decrement)", {
-  desc = "Decrement",
-})
+
+local is_dial_loaded = false
+local function manipulate(...)
+  if not is_dial_loaded then
+    vim.fn["plug#load"]("dial.nvim")
+    is_dial_loaded = true
+  end
+
+  return require("dial.map").manipulate(...)
+end
+vim.keymap.set("n", "+", function()
+  manipulate("increment", "normal")
+end)
+vim.keymap.set("n", "-", function()
+  manipulate("decrement", "normal")
+end)
+vim.keymap.set("n", "g+", function()
+  manipulate("increment", "gnormal")
+end)
+vim.keymap.set("n", "g-", function()
+  manipulate("decrement", "gnormal")
+end)
+vim.keymap.set("v", "+", function()
+  manipulate("increment", "visual")
+end)
+vim.keymap.set("v", "-", function()
+  manipulate("decrement", "visual")
+end)
+vim.keymap.set("v", "g+", function()
+  manipulate("increment", "gvisual")
+end)
+vim.keymap.set("v", "g-", function()
+  manipulate("decrement", "gvisual")
+end)
 -- }}}
 
 -- Split/Join {{{

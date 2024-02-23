@@ -16,12 +16,11 @@ actions-preview.nvim
 SchemaStore.nvim
 CamelCaseMotion
 vim-fish
+bullets.vim
 cmp-env
 vim-tmux-navigator
 cmp-cmdline-history
 mini.nvim
-git-blame.nvim
-trouble.nvim
 which-key.nvim
 firenvim
 cmp-buffer
@@ -38,8 +37,6 @@ vim-plug
 sqlite.lua
 nvim-lightbulb
 nvim-tree.lua
-litee-calltree.nvim
-litee.nvim
 virt-column.nvim
 smartcolumn.nvim
 traces.vim
@@ -65,6 +62,7 @@ lush.nvim
 cmp_luasnip
 conform.nvim
 dressing.nvim
+vim-exchange
 vim-abolish
 vim-repeat
 vim-sleuth

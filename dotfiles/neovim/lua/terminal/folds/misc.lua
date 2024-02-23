@@ -59,7 +59,6 @@ local function maybe_set_treesitter_foldmethod()
   if require("nvim-treesitter.parsers").has_parser() and is_foldmethod_overridable then
     vim.wo.foldmethod = "expr"
     vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
-    -- vim.notify(vim.wo.foldmethod .. vim.wo.foldexpr .. vim.fn.bufnr() .. " treesitter")
   end
 end
 vim.api.nvim_create_autocmd({ "BufWinEnter" }, {

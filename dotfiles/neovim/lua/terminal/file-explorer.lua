@@ -1,5 +1,4 @@
 Plug("kyazdani42/nvim-tree.lua", {
-  on = "NvimTreeFindFileToggle",
   config = function()
     require("nvim-tree").setup({
       hijack_cursor = true,
@@ -68,7 +67,6 @@ Plug("kyazdani42/nvim-tree.lua", {
 
         vim.keymap.set("n", "h", "<BS>", { buffer = buffer_number, remap = true })
         vim.keymap.set("n", "l", "<CR>", { buffer = buffer_number, remap = true })
-        vim.keymap.set("n", "<Tab>", "<CR>", { buffer = buffer_number, remap = true })
         -- Taken from base config
         vim.keymap.set("n", "<C-k>", "6k", { buffer = buffer_number, remap = true })
       end,
@@ -110,22 +108,12 @@ Plug("kyazdani42/nvim-tree.lua", {
       end,
       group = nvim_tree_group_id,
     })
+
+    vim.keymap.set(
+      "n",
+      "<M-e>",
+      vim.cmd.NvimTreeFindFileToggle,
+      { silent = true, desc = "Toggle file explorer [tree]" }
+    )
   end,
 })
-
-local function toggle_explorer()
-  vim.cmd.NvimTreeFindFileToggle()
-
-  -- TODO: There seems to be a bug in v0.10 messing with WinSeparator. This fixes it.
-  -- So far I've only noticed it with the nvim-tree window which is why I put the fix
-  -- here.
-  vim.cmd([[
-    setlocal winhighlight=Normal:Normal
-  ]])
-end
-vim.keymap.set(
-  "n",
-  "<M-e>",
-  toggle_explorer,
-  { silent = true, desc = "Toggle file explorer [tree]" }
-)

@@ -32,7 +32,7 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = "qf",
+  pattern = { "qf", "NvimTree" },
   callback = function()
     vim.o.guicursor = "n-v-c:block-LTCursor"
   end,
@@ -45,6 +45,8 @@ vim.api.nvim_create_autocmd("WinEnter", {
       vim.o.guicursor = "n-v-c:block-NeotestCursor"
     elseif vim.bo.filetype == "qf" then
       vim.o.guicursor = "n-v-c:block-LTCursor"
+    elseif vim.bo.filetype == "NvimTree" then
+      vim.o.guicursor = "n-v-c:block-NeotestCursor"
     end
   end,
 })
@@ -56,6 +58,7 @@ vim.api.nvim_create_autocmd("WinLeave", {
       or vim.bo.filetype == "neotest-summary"
       or vim.bo.filetype == "neotest-output-panel"
       or vim.bo.filetype == "qf"
+      or vim.bo.filetype == "NvimTree"
     then
       set_cursor()
     end

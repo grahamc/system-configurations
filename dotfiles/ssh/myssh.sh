@@ -1,5 +1,4 @@
 #!/bin/sh
-# shellcheck shell=sh
 
 set -o errexit
 set -o nounset

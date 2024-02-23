@@ -1,7 +1,8 @@
+vim.defer_fn(function()
+  vim.fn["plug#load"]("dropbar.nvim")
+end, 0)
 Plug("Bekaboo/dropbar.nvim", {
-  -- otherwise the first window opened won't respect the bar separator I set
-  sync = true,
-
+  on = {},
   config = function()
     require("dropbar").setup({
       general = {

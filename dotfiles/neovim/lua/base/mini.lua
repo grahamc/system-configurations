@@ -94,8 +94,8 @@ Plug("echasnovski/mini.nvim", {
     require("mini.operators").setup({
       evaluate = { prefix = "" },
       multiply = { prefix = "" },
-      replace = { prefix = "" },
-      exchange = { prefix = "gx" },
+      replace = { prefix = "cr" },
+      exchange = { prefix = "" },
       sort = { prefix = "so" },
     })
     -- }}}

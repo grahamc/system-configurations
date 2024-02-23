@@ -2,7 +2,7 @@ vim.o.showtabline = 2
 
 Plug("akinsho/bufferline.nvim", {
   config = function()
-    local wipeout = require("mini.bufremove").wipeout
+    local wipeout = require("mini.bufremove").delete
     local function close(buffer)
       -- If the buffer is open in another window, don't close it.
       local buffer_window_count = #vim.fn.win_findbuf(buffer)

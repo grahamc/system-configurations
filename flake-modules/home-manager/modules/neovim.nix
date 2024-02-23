@@ -40,7 +40,7 @@
 
   luarc =
     pkgs.runCommand
-    "luarc"
+    "luarc.json"
     {nativeBuildInputs = with pkgs; [neovim jq];}
     ''
       # Read this to see why the `tr` command is needed:
@@ -71,25 +71,10 @@
 in {
   home = {
     packages = with pkgs; [
-      neovim
       # TODO: Text will be lost on reflow until this issue is resolved:
       # https://github.com/neovim/neovim/issues/2514
       page
-
-      # to watch files for LSP
-      watchman
-
-      # to format comments
-      par
-
-      # for cmp-dictionary
-      partialPackages.look
-      wordnet
-
-      # For the conform.nvim formatters 'trim_whitespace' and 'squeeze_blanks' which require awk and
-      # cat respectively
-      gawk
-      coreutils-full
+      neovim
     ];
 
     # TODO: vim.loader() uses modification time and file size as a cache key. This is a problem for

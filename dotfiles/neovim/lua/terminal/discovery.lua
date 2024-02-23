@@ -1,5 +1,9 @@
 Plug("folke/which-key.nvim", {
   config = function()
+    -- controls how long it takes which-key to pop up
+    vim.o.timeout = true
+    vim.o.timeoutlen = 500
+
     require("which-key").setup({
       popup_mappings = {
         scroll_down = "<c-j>",
@@ -164,15 +168,9 @@ Plug("mrjones2014/legendary.nvim", {
 
       local global_keymaps = vim.iter(modes):map(vim.api.nvim_get_keymap):flatten():totable()
 
-      local function table_concat(t1, t2)
-        for i = 1, #t2 do
-          t1[#t1 + 1] = t2[i]
-        end
-        return t1
-      end
       -- NOTE: I put buffer maps first so buffer maps will take priority over global maps when we
       -- filter.
-      local all_keymaps = table_concat(buffer_keymaps, global_keymaps)
+      local all_keymaps = require("base.utilities").table_concat(buffer_keymaps, global_keymaps)
 
       vim
         .iter(all_keymaps)

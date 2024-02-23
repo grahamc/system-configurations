@@ -24,18 +24,7 @@ function M.get(on_attach)
     yamlls = {
       settings = {
         yaml = {
-          schemas = require("schemastore").yaml.schemas({
-            -- -- Selecting schemas manually to avoid false-positives since some of the file matching
-            -- -- patterns are pretty broad. The whole list can be found here:
-            -- -- https://www.schemastore.org/api/json/catalog.json
-            -- select = {
-            --   "GitHub Workflow",
-            --   "kustomization.yaml",
-            --   "docker-compose.yml",
-            --   "Lefthook",
-            -- },
-          }),
-
+          schemas = require("schemastore").yaml.schemas(),
           -- For why this is needed see:
           -- https://github.com/b0o/SchemaStore.nvim?tab=readme-ov-file#usage
           schemaStore = {
@@ -66,22 +55,6 @@ function M.get(on_attach)
           path = ".vscode",
         })
       end,
-    },
-
-    gopls = {
-      settings = {
-        gopls = {
-          hints = {
-            assignVariableTypes = true,
-            compositeLiteralFields = true,
-            compositeLiteralTypes = true,
-            constantValues = true,
-            functionTypeParameters = true,
-            parameterNames = true,
-            rangeVariableTypes = true,
-          },
-        },
-      },
     },
   }
 end

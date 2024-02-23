@@ -489,6 +489,7 @@
         "vim-plugin-SchemaStore-nvim": "vim-plugin-SchemaStore-nvim",
         "vim-plugin-actions-preview-nvim": "vim-plugin-actions-preview-nvim",
         "vim-plugin-bufferline-nvim": "vim-plugin-bufferline-nvim",
+        "vim-plugin-bullets-vim": "vim-plugin-bullets-vim",
         "vim-plugin-cmp-buffer": "vim-plugin-cmp-buffer",
         "vim-plugin-cmp-cmdline": "vim-plugin-cmp-cmdline",
         "vim-plugin-cmp-cmdline-history": "vim-plugin-cmp-cmdline-history",
@@ -510,8 +511,6 @@
         "vim-plugin-friendly-snippets": "vim-plugin-friendly-snippets",
         "vim-plugin-git-blame-nvim": "vim-plugin-git-blame-nvim",
         "vim-plugin-legendary-nvim": "vim-plugin-legendary-nvim",
-        "vim-plugin-litee-calltree-nvim": "vim-plugin-litee-calltree-nvim",
-        "vim-plugin-litee-nvim": "vim-plugin-litee-nvim",
         "vim-plugin-lush-nvim": "vim-plugin-lush-nvim",
         "vim-plugin-markdown-preview-nvim": "vim-plugin-markdown-preview-nvim",
         "vim-plugin-mason-lspconfig-nvim": "vim-plugin-mason-lspconfig-nvim",
@@ -546,9 +545,9 @@
         "vim-plugin-traces-vim": "vim-plugin-traces-vim",
         "vim-plugin-tree-sitter-just": "vim-plugin-tree-sitter-just",
         "vim-plugin-treesj": "vim-plugin-treesj",
-        "vim-plugin-trouble-nvim": "vim-plugin-trouble-nvim",
         "vim-plugin-vim-abolish": "vim-plugin-vim-abolish",
         "vim-plugin-vim-caser": "vim-plugin-vim-caser",
+        "vim-plugin-vim-exchange": "vim-plugin-vim-exchange",
         "vim-plugin-vim-fish": "vim-plugin-vim-fish",
         "vim-plugin-vim-indentwise": "vim-plugin-vim-indentwise",
         "vim-plugin-vim-just": "vim-plugin-vim-just",
@@ -813,6 +812,22 @@
       "original": {
         "owner": "akinsho",
         "repo": "bufferline.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-bullets-vim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1706675303,
+        "narHash": "sha256-ul1bIsy3Al4lwAqUCQ8p1FG6jAUiW/XzmwUHut9D7no=",
+        "owner": "bullets-vim",
+        "repo": "bullets.vim",
+        "rev": "d9a47f114031d3030b1e4de3c0b6a664b1201524",
+        "type": "github"
+      },
+      "original": {
+        "owner": "bullets-vim",
+        "repo": "bullets.vim",
         "type": "github"
       }
     },
@@ -1149,38 +1164,6 @@
       "original": {
         "owner": "mrjones2014",
         "repo": "legendary.nvim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-litee-calltree-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1699714603,
-        "narHash": "sha256-xUndoYceb9op/Td/gs27inkZrBgvUpOOlf57O7Ow1no=",
-        "owner": "ldelossa",
-        "repo": "litee-calltree.nvim",
-        "rev": "14b66cc6ff76deb67259db99196c0da5a6c75ca2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ldelossa",
-        "repo": "litee-calltree.nvim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-litee-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1699714588,
-        "narHash": "sha256-VAH+CN/NrQPVetjvVENWP/rVqRM6N2GeO2qR+in+yPg=",
-        "owner": "ldelossa",
-        "repo": "litee.nvim",
-        "rev": "3c51764a615566e4c0223362f4be00acc23c430e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ldelossa",
-        "repo": "litee.nvim",
         "type": "github"
       }
     },
@@ -1728,22 +1711,6 @@
         "type": "github"
       }
     },
-    "vim-plugin-trouble-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1697626811,
-        "narHash": "sha256-8nLghiueYOtWY7OGVxow9A2G/5lgt+Kt5D8q1xeJvVg=",
-        "owner": "folke",
-        "repo": "trouble.nvim",
-        "rev": "f1168feada93c0154ede4d1fe9183bf69bac54ea",
-        "type": "github"
-      },
-      "original": {
-        "owner": "folke",
-        "repo": "trouble.nvim",
-        "type": "github"
-      }
-    },
     "vim-plugin-vim-abolish": {
       "flake": false,
       "locked": {
@@ -1773,6 +1740,22 @@
       "original": {
         "owner": "arthurxavierx",
         "repo": "vim-caser",
+        "type": "github"
+      }
+    },
+    "vim-plugin-vim-exchange": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1705796903,
+        "narHash": "sha256-rjqahEzXEmTtpOil9jm2xyscjJLiKRmPB0pgwFFBKGc=",
+        "owner": "tommcdo",
+        "repo": "vim-exchange",
+        "rev": "d6c1e9790bcb8df27c483a37167459bbebe0112e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tommcdo",
+        "repo": "vim-exchange",
         "type": "github"
       }
     },
@@ -1827,16 +1810,17 @@
     "vim-plugin-vim-matchup": {
       "flake": false,
       "locked": {
-        "lastModified": 1706835377,
-        "narHash": "sha256-HwnTuv2UZZSVGrtvKq2beoASsdvKvE1/jfB1qKG4a4E=",
+        "lastModified": 1704556835,
+        "narHash": "sha256-773bk123Ji/1gVvIez1lG/Qd4q4QNZmkVNPtkM3ajLI=",
         "owner": "andymass",
         "repo": "vim-matchup",
-        "rev": "7f81ae12542b2a35819f0324895df9bd8626c8ba",
+        "rev": "e2cca1747ab175b8d839a5d28679427564643a57",
         "type": "github"
       },
       "original": {
         "owner": "andymass",
         "repo": "vim-matchup",
+        "rev": "e2cca1747ab175b8d839a5d28679427564643a57",
         "type": "github"
       }
     },

@@ -1,8 +1,6 @@
 if not status is-interactive
-    exit
-end
-
-if test (uname) != Darwin
+    or test (uname) != Darwin
+    or not type --query brew
     exit
 end
 
@@ -10,15 +8,18 @@ abbr --add --global biw brew-install-widget
 abbr --add --global buw brew-uninstall-widget
 
 # nix-darwin manages brew so I'll turn off all the automatic management.
-export HOMEBREW_NO_INSTALL_UPGRADE=1
-export HOMEBREW_NO_INSTALL_CLEANUP=1
+set --global --export HOMEBREW_NO_INSTALL_UPGRADE 1
+set --global --export HOMEBREW_NO_INSTALL_CLEANUP 1
 
 # autocomplete
-if test -d $HOMEBREW_PREFIX/share/fish/completions
-    set --global --prepend fish_complete_path $HOMEBREW_PREFIX/share/fish/completions
+#
+# WARNING: This command is slow so avoid running it more than once.
+set homebrew_prefix (brew --prefix)
+if test -d $homebrew_prefix/share/fish/completions
+    set --global --prepend fish_complete_path $homebrew_prefix/share/fish/completions
 end
-if test -d $HOMEBREW_PREFIX/share/fish/vendor_completions.d
-    set --global --prepend fish_complete_path $HOMEBREW_PREFIX/share/fish/vendor_completions.d
+if test -d $homebrew_prefix/share/fish/vendor_completions.d
+    set --global --prepend fish_complete_path $homebrew_prefix/share/fish/vendor_completions.d
 end
 
 function brew-install-widget --description 'Install packages with brew'

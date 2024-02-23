@@ -5,16 +5,15 @@ if uname | grep -q Darwin; then
   brew="/usr/local/bin/brew"
   if [ -x "$brew" ]; then
     eval "$("$brew" shellenv sh)"
-    # I need the brew prefix during my interactive shell startup, but `brew --prefix` runs
-    # relatively slow so instead I'll run it here and export the result.
-    HOMEBREW_PREFIX="$("$brew" --prefix)"
-    export HOMEBREW_PREFIX
   fi
 fi
 
-# Setup nix
+# nix
+#
 # For non-NixOS linux distributions
 # see: https://nixos.wiki/wiki/Locales
+#
+# TODO: See if Nix should do this as part of the script below.
 if uname | grep -q Linux; then
   export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
 fi
@@ -28,7 +27,8 @@ if [ -e "$nix_daemon_script" ]; then
   # shellcheck source=/dev/null
   . "$nix_daemon_script"
 fi
-# nix-darwin. Not sure how to have it configure this for me so I hardcoded it.
+
+# Not sure how to have nix-darwin do this for me so I hardcoded it.
 nix_darwin_bin='/run/current-system/sw/bin'
 if [ -d "$nix_darwin_bin" ] && uname | grep -q Darwin; then
   export PATH="$nix_darwin_bin:$PATH"
@@ -38,10 +38,14 @@ fi
 export GOPATH="$HOME/.local/share/go"
 export PATH="$GOPATH/bin:$PATH"
 
-# python
 # Setting this so python doesn't create `__pycache__` folders in the current directory whenever I
 # run a script
 export PYTHONDONTWRITEBYTECODE=1
+
+# Enable smooth scrolling in Firefox for Linux
+if uname | grep -q Linux; then
+  export MOZ_USE_XINPUT2=1
+fi
 
 # Adding this to the PATH since this is where user-specific executables should go, per the XDG Base
 # Directory spec. More info:
@@ -50,13 +54,3 @@ export PYTHONDONTWRITEBYTECODE=1
 # NOTE: I keep this at the bottom so that my executables will be found before any others, allowing
 # me to wrap other executables.
 PATH="$HOME/.local/bin:$PATH"
-
-# Enable smooth scrolling in Firefox for Linux
-if uname | grep -q Linux; then
-  export MOZ_USE_XINPUT2=1
-fi
-
-# par
-# Not sure what this means, the man page said to use it and it seems to work
-# shellcheck disable=1003
-export PARINIT='rTbgqR B=.\,?'"'"'_A_a_@ Q=_s>|'

@@ -50,6 +50,11 @@ local function move_by_screen_line(direction)
     return direction
   end
 
+  -- TODO: When I use 'gk' at the top of the file it messes up the TUI so I'll avoid that.
+  if IsRunningInTerminal and vim.fn.line(".") == 1 and direction == "k" then
+    return direction
+  end
+
   return "g" .. direction
 end
 vim.keymap.set({ "n", "x" }, "j", function()
@@ -94,21 +99,18 @@ vim.keymap.set({ "i" }, "<C-e>", "<ESC>$a", {
 
 -- Move to next/last long line, m for max
 local function jump_to_long_line(direction)
-  local function table_concat(t1, t2)
-    for i = 1, #t2 do
-      t1[#t1 + 1] = t2[i]
-    end
-    return t1
-  end
+  local utilities = require("base.utilities")
   local last_line = vim.fn.line("$")
   local current_line = vim.fn.line(".")
-  local max_line_length = require("base.utilities").get_max_line_length()
+  local max_line_length = utilities.get_max_line_length()
   local lines_to_search = nil
   if direction == "next" then
-    lines_to_search =
-      table_concat(vim.fn.range(current_line + 1, last_line), vim.fn.range(1, current_line - 1))
+    lines_to_search = utilities.table_concat(
+      vim.fn.range(current_line + 1, last_line),
+      vim.fn.range(1, current_line - 1)
+    )
   else
-    lines_to_search = table_concat(
+    lines_to_search = utilities.table_concat(
       vim.fn.range(current_line - 1, 1, -1),
       vim.fn.range(last_line, current_line + 1, -1)
     )
@@ -179,6 +181,8 @@ vim.g.indentwise_suppress_keymaps = 1
 Plug("andymass/vim-matchup")
 -- Don't display off-screen matches in my statusline or a popup window
 vim.g.matchup_matchparen_offscreen = {}
+vim.keymap.set({ "n", "x" }, ";", "%", { remap = true })
+vim.keymap.set({ "n", "x" }, "g;", "g%", { remap = true })
 
 vim.defer_fn(function()
   vim.fn["plug#load"]("CamelCaseMotion")
@@ -216,5 +220,3 @@ vim.keymap.set({ "x" }, "az", ":<C-U>silent!normal![zV]z<CR>", {
 vim.keymap.set({ "o" }, "az", ":normal vaz<CR>", {
   desc = "Outer fold",
 })
-
-vim.keymap.set({ "n", "x" }, ";", "%", { remap = true })

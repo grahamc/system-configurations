@@ -1,3 +1,5 @@
+local utilities = require("base.utilities")
+
 vim.keymap.set("n", "<M-q>", function()
   local qf_exists = false
   for _, win in pairs(vim.fn.getwininfo() or {}) do
@@ -42,7 +44,6 @@ local function apply_highlights(bufnr, highlights)
     vim.highlight.range(bufnr, namespace, hl.group, { hl.line, hl.col }, { hl.line, hl.end_col })
   end
 end
-local divider = "   "
 function QFTextFunc(info)
   local highlights = {}
   local list = list_items(info)
@@ -60,6 +61,9 @@ function QFTextFunc(info)
   local any_has_text = vim.iter(raw_items):any(function(item)
     return item.text ~= ""
   end)
+  local any_has_heading = vim.iter(raw_items):any(function(item)
+    return (item.user_data and item.user_data.count) ~= nil
+  end)
 
   -- If we're adding a new list rather than appending to an existing one, we
   -- need to clear existing highlights.
@@ -71,44 +75,58 @@ function QFTextFunc(info)
     local raw = raw_items[i]
 
     if raw then
-      local item = {
-        type = raw.type,
-        text = raw.text,
-        location = "",
-        path_size = 0,
-        line_col_size = 0,
-        index = i,
-        line = "",
-        col = "",
-      }
+      local item = (raw.user_data and raw.user_data.count)
+          and {
+            type = raw.type,
+            text = "",
+            location = "",
+            path_size = 0,
+            line_col_size = 0,
+            index = i,
+            line = "",
+            col = "",
+            user_data = raw.user_data,
+          }
+        or {
+          type = raw.type,
+          text = raw.text,
+          location = "",
+          path_size = 0,
+          line_col_size = 0,
+          index = i,
+          line = "",
+          col = "",
+          user_data = raw.user_data,
+        }
 
       if raw.bufnr > 0 then
         item.location =
           trim_path(vim.fn.fnamemodify(vim.fn.bufname(raw.bufnr), ":~:."), any_has_text)
         item.path_size = #item.location
       end
+      if true then
+        if raw.lnum and raw.lnum > 0 then
+          item.line = tostring(raw.lnum)
+        end
 
-      if raw.lnum and raw.lnum > 0 then
-        item.line = tostring(raw.lnum)
-      end
+        if raw.col and raw.col > 0 then
+          item.col = tostring(raw.col)
+        end
 
-      if raw.col and raw.col > 0 then
-        item.col = tostring(raw.col)
-      end
+        local current_filename_length = vim.fn.strwidth(item.location) or 0
+        if current_filename_length > longest_filename_length then
+          longest_filename_length = current_filename_length
+        end
 
-      local current_filename_length = vim.fn.strwidth(item.location) or 0
-      if current_filename_length > longest_filename_length then
-        longest_filename_length = current_filename_length
-      end
+        local current_line_length = vim.fn.strwidth(item.line) or 0
+        if current_line_length > longest_line_length then
+          longest_line_length = current_line_length
+        end
 
-      local current_line_length = vim.fn.strwidth(item.line) or 0
-      if current_line_length > longest_line_length then
-        longest_line_length = current_line_length
-      end
-
-      local current_col_length = vim.fn.strwidth(item.col) or 0
-      if current_col_length > longest_col_length then
-        longest_col_length = current_col_length
+        local current_col_length = vim.fn.strwidth(item.col) or 0
+        if current_col_length > longest_col_length then
+          longest_col_length = current_col_length
+        end
       end
 
       table.insert(items, item)
@@ -116,53 +134,52 @@ function QFTextFunc(info)
   end
 
   for _, item in ipairs(items) do
-    local line_idx = item.index - 1
     item.text = vim.fn.substitute(item.text, "\n\\s*", "␤", "g")
     item.text = vim.fn.trim(item.text)
-    item.location = string.format("%-" .. longest_filename_length .. "s", item.location)
-    item.line = string.format("%0" .. longest_line_length .. "d", item.line)
-    item.col = string.format("%0" .. longest_col_length .. "d", item.col)
+    if item.user_data and item.user_data.count then
+      item.line = ""
+      item.col = ""
+    end
 
     local function build_line()
-      local columns = {}
-      if longest_filename_length > 0 then
-        table.insert(columns, item.location)
-      end
-      if longest_line_length > 0 or longest_col_length > 0 then
-        table.insert(columns, item.line .. ":" .. item.col)
-      end
-      if any_has_text then
-        table.insert(columns, item.text)
-      end
-      local line = vim.iter(columns):join(divider)
-      return line
-    end
-
-    local function splitByChunk(text, chunkSize)
-      local s = {}
-      if #text == 0 then
-        s = { text }
+      if item.user_data and item.user_data.count then
+        return item.location .. " " .. item.user_data.count
       else
-        for i = 1, #text, chunkSize do
-          s[#s + 1] = text:sub(i, i + chunkSize - 1)
+        local indentation = any_has_heading and "    " or ""
+
+        local sign = ""
+        if item.user_data and item.user_data.severity then
+          sign = ({
+            [vim.diagnostic.severity.ERROR] = "",
+            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.HINT] = "",
+            [vim.diagnostic.severity.INFO] = "",
+          })[item.user_data.severity] .. " "
         end
+
+        local source = ""
+        if item.user_data and item.user_data.source then
+          source = " " .. item.user_data.source
+        end
+
+        local position = string.format(" [%s, %s]", item.line, item.col)
+
+        -- 5 is for the gutter
+        local max_text = vim.api.nvim_win_get_width(0)
+          - 5
+          - #indentation
+          - #sign
+          - #source
+          - #position
+        local text = " " .. item.text
+        if #text > max_text then
+          text = text:sub(1, max_text - 2) .. " …"
+        end
+
+        return indentation .. sign .. text .. source .. position
       end
-      -- pad last line so it fills the max width
-      s[#s] = s[#s] .. string.rep(" ", chunkSize - vim.fn.strwidth(s[#s]))
-      return s
     end
     local line = build_line()
-    local length_without_text = (#line - #item.text)
-    local max_text_length = (get_width() - length_without_text) - 1
-    local position_length = longest_col_length + longest_line_length + 1
-    local chunks = splitByChunk(item.text, max_text_length)
-    item.text = vim.iter(chunks):join(
-      string.rep(" ", length_without_text - position_length - 5)
-        .. divider
-        .. string.rep(" ", position_length)
-        .. divider
-    )
-    line = build_line()
 
     -- If a line is completely empty, Vim uses the default format, which
     -- involves inserting `|| `. To prevent this from happening we'll just
@@ -174,12 +191,12 @@ function QFTextFunc(info)
     local entry_line_count = math.ceil(vim.fn.strwidth(line) / get_width())
     local col = entry_line_count == 1 and 0
       or vim.str_utf_pos(line)[(get_width() * (entry_line_count - 1))]
-    table.insert(highlights, {
-      group = "QuickFixEntryUnderline",
-      line = line_idx,
-      col = col,
-      end_col = #line,
-    })
+    -- table.insert(highlights, {
+    --   group = "QuickFixEntryUnderline",
+    --   line = line_idx,
+    --   col = col,
+    --   end_col = #line,
+    -- })
 
     table.insert(lines, line)
   end
@@ -194,6 +211,30 @@ function QFTextFunc(info)
 end
 vim.o.quickfixtextfunc = "v:lua.QFTextFunc"
 
+local function move(direction)
+  local current_list_nr = vim.fn.getqflist({ nr = 0 }).nr
+  local list_count = vim.fn.getqflist({ nr = "$" }).nr
+  local indices_to_search = direction == "next"
+      and utilities.table_concat(
+        vim.fn.range(current_list_nr + 1, list_count),
+        vim.fn.range(1, current_list_nr - 1)
+      )
+    or utilities.table_concat(
+      vim.fn.range(current_list_nr - 1, 1, -1),
+      vim.fn.range(list_count, current_list_nr + 1, -1)
+    )
+  local target = vim.iter(indices_to_search):find(function(index)
+    return #vim.fn.getqflist({ nr = index, items = true }).items > 0
+  end)
+  if target ~= nil then
+    if target > current_list_nr then
+      vim.cmd("cnewer " .. target - current_list_nr)
+    else
+      vim.cmd("colder " .. current_list_nr - target)
+    end
+  end
+end
+
 vim.api.nvim_create_autocmd("WinLeave", {
   callback = function()
     if vim.bo.filetype ~= "qf" then
@@ -205,62 +246,97 @@ vim.api.nvim_create_autocmd("WinLeave", {
     end
   end,
 })
-local function get_fname(num)
-  return vim.trim(vim.split(vim.fn.getline(num), divider)[1])
-end
 function QFFoldExpr()
-  local line_count = vim.fn.line("$")
-
-  local next_lnum = vim.v.lnum + 1
-  local next_file = nil
-  if next_lnum <= line_count then
-    next_file = get_fname(next_lnum)
-  end
-
-  local last_lnum = vim.v.lnum - 1
-  local last_file = nil
-  if last_lnum >= 1 then
-    last_file = get_fname(last_lnum)
-  end
-
-  local current_file = get_fname(vim.v.lnum)
-
-  if current_file ~= last_file and current_file ~= next_file then
-    return 0
-  elseif current_file ~= last_file and current_file == next_file then
-    return ">1"
-  elseif current_file == last_file and current_file ~= next_file then
-    return "<1"
-  else
-    return 1
-  end
+  local item = vim.fn.getqflist()[vim.v.lnum]
+  return (item.user_data and item.user_data.count) and ">1" or "="
 end
-function QFFoldText()
-  return string.format("%s (%d)", get_fname(vim.v.foldstart), (vim.v.foldend - vim.v.foldstart) + 1)
+function QFWinBar()
+  local current_list_id = vim.fn.getqflist({ id = 0 }).id
+  local list_count = vim.fn.getqflist({ nr = "$" }).nr
+  local list_indices = list_count == 0 and {} or vim.fn.range(1, list_count)
+  local lists_as_winbar_string = vim
+    .iter(list_indices)
+    -- qf weirdness: id = 0 gets id of quickfix list nr
+    :map(function(index)
+      return vim.fn.getqflist({ nr = index, id = 0, title = true, items = true })
+    end)
+    :filter(function(list)
+      return #list.items > 0
+    end)
+    :map(function(list)
+      local border_hl = "QuickfixBorderNotCurrent"
+      local title_hl = "QuickfixTitleNotCurrent"
+      if list.id == current_list_id then
+        border_hl = "QuickfixBorderCurrent"
+        title_hl = "QuickfixTitleCurrent"
+      end
+
+      return string.format(
+        "%%#%s#%%#%s#" .. list.title .. "%%#%s#",
+        border_hl,
+        title_hl,
+        border_hl
+      )
+    end)
+    -- TODO: truncate if it overflows
+    :join(" ")
+
+  local winbar_string = (#lists_as_winbar_string > 0) and lists_as_winbar_string
+    or "%#QFWinBarEmpty#No lists"
+
+  return "%=" .. winbar_string .. "%="
 end
 vim.api.nvim_create_autocmd("BufWinEnter", {
   callback = function()
     if vim.bo.filetype == "qf" then
-      vim.wo.winbar =
-        "%=%#QuickfixBorder#█%#QuickfixTitle#󰖷  Quickfix%#QuickfixBorder#█%="
+      vim.wo.winbar = "%{%v:lua.QFWinBar()%}"
       vim.wo.foldexpr = "v:lua.QFFoldExpr()"
-      vim.wo.foldtext = "v:lua.QFFoldText()"
       vim.defer_fn(function()
         vim.wo.foldmethod = "expr"
       end, 0)
       vim.wo.signcolumn = "no"
       vim.wo.linebreak = false
-      vim.wo.winhighlight = "CursorLine:NeotestCurrentLine,Folded:QuickfixFold"
+      vim.wo.winhighlight = "Folded:QuickfixFold"
     end
   end,
 })
 vim.api.nvim_create_autocmd("QuickfixCmdPost", {
   callback = function()
-    local qflist = vim.fn.getqflist()
-    table.sort(qflist, function(a, b)
-      return vim.api.nvim_buf_get_name(a.bufnr) < vim.api.nvim_buf_get_name(b.bufnr)
+    local qflist = vim.fn.getqflist({ title = true, items = true })
+
+    local any_has_multiple = false
+    local items_by_filename = vim.iter(qflist.items):fold({}, function(acc, item)
+      local filename = vim.api.nvim_buf_get_name(item.bufnr)
+      if acc[filename] == nil then
+        acc[filename] = {}
+      end
+      table.insert(acc[filename], item)
+      if #acc[filename] > 1 then
+        any_has_multiple = true
+      end
+      return acc
     end)
-    vim.fn.setqflist(qflist, "r")
+    local filenames = vim.tbl_keys(items_by_filename)
+    table.sort(filenames)
+    local new_items = vim
+      .iter(filenames)
+      :map(function(filename)
+        local items = items_by_filename[filename]
+
+        local heading = vim.deepcopy(items[1])
+        heading.user_data = {
+          count = #items,
+        }
+
+        return any_has_multiple and utilities.table_concat({ heading }, items) or items
+      end)
+      :fold({}, utilities.table_concat)
+
+    -- the first list will be ignored since the last dictionary is present
+    vim.fn.setqflist({}, "r", {
+      items = new_items,
+      title = qflist.title,
+    })
   end,
 })
 vim.api.nvim_create_autocmd("VimResized", {
@@ -279,7 +355,6 @@ vim.api.nvim_create_autocmd("WinEnter", {
   callback = function()
     if not QfIsExplicitJump and vim.bo.filetype ~= "qf" and IsLeavingQf then
       IsLeavingQf = false
-      vim.api.nvim_set_current_win(QfLastWin)
       vim.api.nvim_win_set_buf(QfLastWin, QfLastBuf)
       vim.api.nvim_win_set_cursor(QfLastWin, QfLastPos)
     elseif QfIsExplicitJump then
@@ -293,15 +368,46 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = "qf",
   once = true,
   callback = function()
-    -- don't move by screen line
-    vim.keymap.set({ "n", "x" }, "j", "j", { buffer = true })
-    vim.keymap.set({ "n", "x" }, "k", "k", { buffer = true })
-
     vim.b.minicursorword_disable = true
     vim.b.minicursorword_disable_permanent = true
     vim.b.minianimate_disable = true
 
     vim.keymap.set("n", "q", vim.cmd.cclose, { buffer = true, desc = "Close quickfix window" })
+    vim.keymap.set("n", "<F7>", function()
+      move("last")
+    end, { buffer = true, desc = "Last list [previous]" })
+    vim.keymap.set("n", "<F8>", function()
+      move("next")
+    end, { buffer = true, desc = "Next list" })
+    vim.keymap.set("n", "<C-q>", function()
+      vim.fn.setqflist({}, "r")
+      move("next")
+    end, { buffer = true, desc = "Remove list [close,delete]" })
+    vim.keymap.set("n", "U", function()
+      local item = vim.fn.getqflist()[vim.fn.line(".")]
+      local path = item
+        and item.user_data
+        and item.user_data.lsp
+        and item.user_data.lsp.codeDescription
+        and item.user_data.lsp.codeDescription.href
+      if path == nil then
+        return
+      end
+      local _, err = vim.ui.open(path)
+      if err ~= nil then
+        vim.notify(string.format("Failed to open path '%s'\n%s", path, err), vim.log.levels.ERROR)
+      end
+    end, { buffer = true, desc = "Remove list [close,delete]" })
+    vim.keymap.set("n", "L", function()
+      local item = vim.fn.getqflist()[vim.fn.line(".")]
+      vim.diagnostic.open_float({
+        bufnr = item.bufnr,
+        pos = item.lnum - 1,
+      })
+    end, { buffer = true, desc = "Remove list [close,delete]" })
+    -- don't move by screen line
+    vim.keymap.set({ "n", "x" }, "j", "j", { buffer = true })
+    vim.keymap.set({ "n", "x" }, "k", "k", { buffer = true })
 
     function QFRemove(start_line, end_line)
       start_line = start_line or vim.fn.line(".")
@@ -344,30 +450,29 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
       buffer = vim.api.nvim_get_current_buf(),
       nested = true,
       callback = function()
-        local item_under_cursor = vim.fn.getqflist()[vim.fn.line(".")]
-        if item_under_cursor == nil then
+        local item = vim.fn.getqflist()[vim.fn.line(".")]
+        if item == nil or (item.user_data and item.user_data.count) then
           return
         end
         local last_winid = vim.fn.win_getid(vim.fn.winnr("#"))
         ---@diagnostic disable-next-line: param-type-mismatch
-        vim.api.nvim_win_set_buf(last_winid, item_under_cursor.bufnr)
+        vim.api.nvim_win_set_buf(last_winid, item.bufnr)
         vim.api.nvim_set_option_value("winhighlight", "MiniCursorword:Clear", { win = last_winid })
-        local end_line = item_under_cursor.end_lnum == 0 and item_under_cursor.lnum
-          or item_under_cursor.end_lnum
+        local end_line = item.end_lnum == 0 and item.lnum or item.end_lnum
         clear_last_highlighted_buffer()
-        for cur = item_under_cursor.lnum, end_line do
+        for cur = item.lnum, end_line do
           vim.api.nvim_buf_add_highlight(
-            item_under_cursor.bufnr,
+            item.bufnr,
             ns,
             "QuickfixPreview",
             cur - 1,
-            item_under_cursor.col - 1,
-            item_under_cursor.end_col == 0 and -1 or item_under_cursor.end_col
+            item.col - 1,
+            item.end_col == 0 and -1 or item.end_col
           )
         end
-        last_highlighted_buffer = item_under_cursor.bufnr
+        last_highlighted_buffer = item.bufnr
         ---@diagnostic disable-next-line: param-type-mismatch
-        vim.api.nvim_win_set_cursor(last_winid, { item_under_cursor.lnum, item_under_cursor.col })
+        vim.api.nvim_win_set_cursor(last_winid, { item.lnum, item.col })
       end,
     })
     vim.api.nvim_create_autocmd("BufLeave", {
@@ -384,8 +489,8 @@ vim.api.nvim_create_autocmd({ "WinEnter", "FileType" }, {
   callback = function()
     if vim.bo.filetype == "qf" then
       utils.set_persistent_highlights("quickfix", {
-        QuickfixTitle = "BufferLineBufferSelected",
-        QuickfixBorder = "BufferLineIndicatorSelected",
+        QuickfixTitleCurrent = "BufferLineBufferSelected",
+        QuickfixBorderCurrent = "BufferLineIndicatorSelected",
       })
     end
   end,
@@ -394,9 +499,78 @@ vim.api.nvim_create_autocmd({ "WinLeave" }, {
   callback = function()
     if vim.bo.filetype == "qf" then
       utils.set_persistent_highlights("quickfix", {
-        QuickfixTitle = "BufferLineBufferVisible",
-        QuickfixBorder = "Ignore",
+        QuickfixTitleCurrent = "BufferLineBufferVisible",
+        QuickfixBorderCurrent = "Ignore",
       })
     end
   end,
 })
+
+local function on_list(options)
+  vim.fn.setqflist({}, " ", options)
+  vim.api.nvim_command("copen")
+end
+vim.keymap.set("n", "<M-d>", function()
+  local qf_entries = vim
+    .iter(vim.diagnostic.get())
+    :map(function(d)
+      return {
+        lnum = d.lnum + 1,
+        bufnr = d.bufnr,
+        end_lnum = d.end_lnum,
+        col = d.col + 1,
+        end_col = d.end_col,
+        text = d.message,
+        user_data = {
+          severity = d.severity,
+          source = d.source,
+          lsp = d.user_data and d.user_data.lsp,
+        },
+      }
+    end)
+    :totable()
+
+  local params = {
+    title = "Diagnostics",
+    items = qf_entries,
+  }
+
+  local extant_diagnostic_list = vim
+    .iter(vim.fn.range(1, vim.fn.getqflist({ nr = "$" }).nr))
+    :find(function(nr)
+      return vim.fn.getqflist({ nr = nr, title = true }).title == "Diagnostics"
+    end)
+  if extant_diagnostic_list then
+    params.nr = extant_diagnostic_list
+  end
+
+  vim.fn.setqflist({}, extant_diagnostic_list and "r" or " ", params)
+  vim.api.nvim_command("copen")
+end, {
+  desc = "Diagnostics [problems,errors]",
+})
+vim.keymap.set("n", "gd", function()
+  vim.lsp.buf.definition({ on_list = on_list })
+end, {
+  desc = "Definitions",
+})
+vim.keymap.set("n", "gt", function()
+  vim.lsp.buf.type_definition({ on_list = on_list })
+end, {
+  desc = "Type definitions",
+})
+vim.keymap.set("n", "gi", function()
+  vim.lsp.buf.implementation({ on_list = on_list })
+end, {
+  desc = "Implementations",
+})
+-- TODO: When there is only one result, it doesn't add to the jumplist so I'm adding that
+-- here. I should upstream this.
+vim.keymap.set(
+  "n",
+  "gr",
+  require("terminal.utilities").set_jump_before(function()
+    vim.lsp.buf.references(nil, { on_list = on_list })
+  end),
+  { desc = "References" }
+)

@@ -1,5 +1,6 @@
 .venv/
 .direnv/
+.mypy_cache
 .DS_Store
 .luarc.json
 secrets/**
