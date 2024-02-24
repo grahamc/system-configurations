@@ -114,9 +114,12 @@ end
 -- A language server that acts as a bridge between neovim's language server client and commandline
 -- tools that don't support the language server protocol. It does this by transforming the output of
 -- a commandline tool into the format specified by the language server protocol.
+Plug("gbprod/none-ls-shellcheck.nvim")
 Plug("nvimtools/none-ls.nvim", {
   config = function()
     local null_ls = require("null-ls")
+    -- When none-ls removes this source, this will add it back
+    null_ls.register(require("none-ls-shellcheck.code_actions"))
     local builtins = null_ls.builtins
     null_ls.setup({
       border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },

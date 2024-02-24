@@ -12,11 +12,9 @@ Plug("windwp/nvim-autopairs", {
   end,
 })
 
-vim.api.nvim_create_autocmd("InsertEnter", {
-  callback = function()
-    vim.fn["plug#load"]("nvim-ts-autotag")
-  end,
-})
+vim.defer_fn(function()
+  vim.fn["plug#load"]("nvim-ts-autotag")
+end, 0)
 Plug("windwp/nvim-ts-autotag", {
   on = {},
 })

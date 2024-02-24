@@ -24,6 +24,7 @@ cmp-cmdline-history
 mini.nvim
 git-blame.nvim
 which-key.nvim
+none-ls-shellcheck.nvim
 firenvim
 cmp-buffer
 cmp-cmdline

@@ -25,11 +25,9 @@ Plug("hrsh7th/cmp-nvim-lsp-signature-help")
 
 Plug("bydlw98/cmp-env")
 
-vim.api.nvim_create_autocmd("InsertEnter", {
-  callback = function()
-    vim.fn["plug#load"]("LuaSnip")
-  end,
-})
+vim.defer_fn(function()
+  vim.fn["plug#load"]("LuaSnip")
+end, 0)
 Plug("L3MON4D3/LuaSnip", {
   on = {},
   config = function()

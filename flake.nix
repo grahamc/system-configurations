@@ -320,8 +320,11 @@
       url = "github:b0o/SchemaStore.nvim";
       flake = false;
     };
+    # Can go back to latest when they completely remove the deprecated sources. This is the commit
+    # before they added the deprecation notice.
+    # https://github.com/nvimtools/none-ls.nvim/issues/58
     vim-plugin-none-ls-nvim = {
-      url = "github:nvimtools/none-ls.nvim";
+      url = "github:nvimtools/none-ls.nvim?rev=bb680d752cec37949faca7a1f509e2fe67ab418a";
       flake = false;
     };
     vim-plugin-vim-caser = {
@@ -462,6 +465,10 @@
     };
     vim-plugin-ltex-extra-nvim = {
       url = "github:barreiroleo/ltex_extra.nvim";
+      flake = false;
+    };
+    vim-plugin-none-ls-shellcheck-nvim = {
+      url = "github:gbprod/none-ls-shellcheck.nvim";
       flake = false;
     };
   };
