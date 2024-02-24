@@ -193,6 +193,12 @@ Plug("hrsh7th/nvim-cmp", {
     local dictionary = { name = "dictionary", keyword_length = 2 }
 
     -- helpers
+    local is_cursor_preceded_by_nonblank_character = function()
+      local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+      return col ~= 0
+        and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s")
+          == nil
+    end
     local cmdline_search_config = {
       mapping = cmp.mapping.preset.cmdline(),
       sources = {
@@ -247,18 +253,21 @@ Plug("hrsh7th/nvim-cmp", {
             fallback()
           else
             cmp.confirm({
-              -- Replace word if completing in the middle of a word
-              behavior = cmp.ConfirmBehavior.Replace,
+              -- Move adjacent text over, instead of replacing it
+              behavior = cmp.ConfirmBehavior.Insert,
               -- Don't select first item on CR if nothing was selected
               select = false,
             })
           end
         end,
-        ["<Tab>"] = cmp.mapping(function(_)
+        ["<Tab>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-          else
+          -- This way I can use tab to indent the cursor
+          elseif is_cursor_preceded_by_nonblank_character() then
             cmp.complete()
+          else
+            fallback()
           end
         end, { "i", "s" }),
         ["<S-Tab>"] = cmp.mapping(function(fallback)

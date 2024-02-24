@@ -1,3 +1,28 @@
+vim.defer_fn(function()
+  vim.fn["plug#load"]("git-blame.nvim")
+end, 0)
+Plug("f-person/git-blame.nvim", {
+  on = {},
+  config = function()
+    local message_prefix = "    "
+    require("gitblame").setup({
+      message_template = message_prefix .. "<author>, <date> ∙ <summary>",
+      message_when_not_committed = message_prefix .. "Not committed yet",
+      date_format = "%r",
+      use_blame_commit_file_urls = true,
+      highlight_group = "GitBlameVirtualText",
+      set_extmark_options = {
+        -- TODO: Workaround for a bug in neovim where virtual text highlight is being combined with
+        -- the cursorline highlight. issue: https://github.com/neovim/neovim/issues/15485
+        hl_mode = "combine",
+        -- so it goes last
+        priority = 9000,
+      },
+    })
+    vim.keymap.set("n", [[\b]], vim.cmd.GitBlameToggle, { desc = "Toggle git blame" })
+  end,
+})
+
 -- Add icons to the gutter to represent version control changes (e.g. new lines, modified lines,
 -- etc.)
 Plug("mhinz/vim-signify", {

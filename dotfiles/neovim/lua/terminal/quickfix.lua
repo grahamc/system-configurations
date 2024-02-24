@@ -1,4 +1,56 @@
-local utilities = require("base.utilities")
+local base_utilities = require("base.utilities")
+local terminal_utilities = require("terminal.utilities")
+
+local ns = vim.api.nvim_create_namespace("bigolu/qf")
+local last_highlighted_buffer = nil
+local function clear_last_highlighted_buffer()
+  if last_highlighted_buffer ~= nil then
+    vim.api.nvim_buf_clear_namespace(last_highlighted_buffer, ns, 1, -1)
+    last_highlighted_buffer = nil
+  end
+end
+
+local live_preview_enter_key_mapping = terminal_utilities.set_up_live_preview({
+  id = "QuickFix",
+  file_type = "qf",
+  on_select = function()
+    vim.cmd([[
+      normal! <CR>
+    ]])
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "n", false)
+  end,
+  on_exit = clear_last_highlighted_buffer,
+  get_bufnr = function()
+    local item = vim.fn.getqflist()[vim.fn.line(".")]
+    if item == nil or (item.user_data and item.user_data.count) then
+      return
+    end
+    return item.bufnr
+  end,
+  on_preview = function(last_winid)
+    local item = vim.fn.getqflist()[vim.fn.line(".")]
+    if item == nil or (item.user_data and item.user_data.count) then
+      return
+    end
+
+    vim.api.nvim_set_option_value("winhighlight", "MiniCursorword:Clear", { win = last_winid })
+    local end_line = item.end_lnum == 0 and item.lnum or item.end_lnum
+    clear_last_highlighted_buffer()
+    for cur = item.lnum, end_line do
+      vim.api.nvim_buf_add_highlight(
+        item.bufnr,
+        ns,
+        "QuickfixPreview",
+        cur - 1,
+        item.col - 1,
+        item.end_col == 0 and -1 or item.end_col
+      )
+    end
+    last_highlighted_buffer = item.bufnr
+    ---@diagnostic disable-next-line: param-type-mismatch
+    vim.api.nvim_win_set_cursor(last_winid, { item.lnum, item.col })
+  end,
+})
 
 vim.keymap.set("n", "<M-q>", function()
   local qf_exists = false
@@ -215,11 +267,11 @@ local function move(direction)
   local current_list_nr = vim.fn.getqflist({ nr = 0 }).nr
   local list_count = vim.fn.getqflist({ nr = "$" }).nr
   local indices_to_search = direction == "next"
-      and utilities.table_concat(
+      and base_utilities.table_concat(
         vim.fn.range(current_list_nr + 1, list_count),
         vim.fn.range(1, current_list_nr - 1)
       )
-    or utilities.table_concat(
+    or base_utilities.table_concat(
       vim.fn.range(current_list_nr - 1, 1, -1),
       vim.fn.range(list_count, current_list_nr + 1, -1)
     )
@@ -235,17 +287,6 @@ local function move(direction)
   end
 end
 
-vim.api.nvim_create_autocmd("WinLeave", {
-  callback = function()
-    if vim.bo.filetype ~= "qf" then
-      QfLastPos = vim.api.nvim_win_get_cursor(0)
-      QfLastBuf = vim.api.nvim_get_current_buf()
-      QfLastWin = vim.api.nvim_get_current_win()
-    else
-      IsLeavingQf = true
-    end
-  end,
-})
 function QFFoldExpr()
   local item = vim.fn.getqflist()[vim.v.lnum]
   return (item.user_data and item.user_data.count) and ">1" or "="
@@ -328,9 +369,9 @@ vim.api.nvim_create_autocmd("QuickfixCmdPost", {
           count = #items,
         }
 
-        return any_has_multiple and utilities.table_concat({ heading }, items) or items
+        return any_has_multiple and base_utilities.table_concat({ heading }, items) or items
       end)
-      :fold({}, utilities.table_concat)
+      :fold({}, base_utilities.table_concat)
 
     -- the first list will be ignored since the last dictionary is present
     vim.fn.setqflist({}, "r", {
@@ -351,19 +392,6 @@ vim.api.nvim_create_autocmd("VimResized", {
     end
   end,
 })
-vim.api.nvim_create_autocmd("WinEnter", {
-  callback = function()
-    if not QfIsExplicitJump and vim.bo.filetype ~= "qf" and IsLeavingQf then
-      IsLeavingQf = false
-      vim.api.nvim_win_set_buf(QfLastWin, QfLastBuf)
-      vim.api.nvim_win_set_cursor(QfLastWin, QfLastPos)
-    elseif QfIsExplicitJump then
-      QfIsExplicitJump = false
-      IsLeavingQf = false
-      vim.bo.buflisted = true
-    end
-  end,
-})
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = "qf",
   once = true,
@@ -372,6 +400,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.b.minicursorword_disable_permanent = true
     vim.b.minianimate_disable = true
 
+    live_preview_enter_key_mapping(vim.api.nvim_get_current_buf())
     vim.keymap.set("n", "q", vim.cmd.cclose, { buffer = true, desc = "Close quickfix window" })
     vim.keymap.set("n", "<F7>", function()
       move("last")
@@ -433,62 +462,14 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
       vim.cmd(tostring(vim.fn.line("'<")))
     end
     vim.keymap.set("x", "d", "<Esc>:lua QFRemoveVisual()<CR>", { buffer = true })
-
-    local ns = vim.api.nvim_create_namespace("bigolu/qf")
-    local last_highlighted_buffer = nil
-    local function clear_last_highlighted_buffer()
-      if last_highlighted_buffer ~= nil then
-        vim.api.nvim_buf_clear_namespace(last_highlighted_buffer, ns, 1, -1)
-        last_highlighted_buffer = nil
-      end
-    end
-    vim.keymap.set("n", "<CR>", function()
-      QfIsExplicitJump = true
-      return "<CR>"
-    end, { buffer = true, expr = true })
-    vim.api.nvim_create_autocmd("CursorHold", {
-      buffer = vim.api.nvim_get_current_buf(),
-      nested = true,
-      callback = function()
-        local item = vim.fn.getqflist()[vim.fn.line(".")]
-        if item == nil or (item.user_data and item.user_data.count) then
-          return
-        end
-        local last_winid = vim.fn.win_getid(vim.fn.winnr("#"))
-        ---@diagnostic disable-next-line: param-type-mismatch
-        vim.api.nvim_win_set_buf(last_winid, item.bufnr)
-        vim.api.nvim_set_option_value("winhighlight", "MiniCursorword:Clear", { win = last_winid })
-        local end_line = item.end_lnum == 0 and item.lnum or item.end_lnum
-        clear_last_highlighted_buffer()
-        for cur = item.lnum, end_line do
-          vim.api.nvim_buf_add_highlight(
-            item.bufnr,
-            ns,
-            "QuickfixPreview",
-            cur - 1,
-            item.col - 1,
-            item.end_col == 0 and -1 or item.end_col
-          )
-        end
-        last_highlighted_buffer = item.bufnr
-        ---@diagnostic disable-next-line: param-type-mismatch
-        vim.api.nvim_win_set_cursor(last_winid, { item.lnum, item.col })
-      end,
-    })
-    vim.api.nvim_create_autocmd("BufLeave", {
-      buffer = vim.api.nvim_get_current_buf(),
-      callback = function()
-        clear_last_highlighted_buffer()
-      end,
-    })
   end,
 })
 
-local utils = require("terminal.utilities")
+-- winbar highlighting
 vim.api.nvim_create_autocmd({ "WinEnter", "FileType" }, {
   callback = function()
     if vim.bo.filetype == "qf" then
-      utils.set_persistent_highlights("quickfix", {
+      terminal_utilities.set_persistent_highlights("quickfix", {
         QuickfixTitleCurrent = "BufferLineBufferSelected",
         QuickfixBorderCurrent = "BufferLineIndicatorSelected",
       })
@@ -498,7 +479,7 @@ vim.api.nvim_create_autocmd({ "WinEnter", "FileType" }, {
 vim.api.nvim_create_autocmd({ "WinLeave" }, {
   callback = function()
     if vim.bo.filetype == "qf" then
-      utils.set_persistent_highlights("quickfix", {
+      terminal_utilities.set_persistent_highlights("quickfix", {
         QuickfixTitleCurrent = "BufferLineBufferVisible",
         QuickfixBorderCurrent = "Ignore",
       })
@@ -569,7 +550,7 @@ end, {
 vim.keymap.set(
   "n",
   "gr",
-  require("terminal.utilities").set_jump_before(function()
+  terminal_utilities.set_jump_before(function()
     vim.lsp.buf.references(nil, { on_list = on_list })
   end),
   { desc = "References" }

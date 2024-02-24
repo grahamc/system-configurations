@@ -511,6 +511,7 @@
         "vim-plugin-friendly-snippets": "vim-plugin-friendly-snippets",
         "vim-plugin-git-blame-nvim": "vim-plugin-git-blame-nvim",
         "vim-plugin-legendary-nvim": "vim-plugin-legendary-nvim",
+        "vim-plugin-ltex-extra-nvim": "vim-plugin-ltex-extra-nvim",
         "vim-plugin-lush-nvim": "vim-plugin-lush-nvim",
         "vim-plugin-markdown-preview-nvim": "vim-plugin-markdown-preview-nvim",
         "vim-plugin-mason-lspconfig-nvim": "vim-plugin-mason-lspconfig-nvim",
@@ -1164,6 +1165,22 @@
       "original": {
         "owner": "mrjones2014",
         "repo": "legendary.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-ltex-extra-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1706969216,
+        "narHash": "sha256-ekdjF7Bq+DmI96sHlTcXQYR7WmezA7GwEBbTw4V/OcI=",
+        "owner": "barreiroleo",
+        "repo": "ltex_extra.nvim",
+        "rev": "42dd3572cb09b52a137e91e515f2dff5eb631b1e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "barreiroleo",
+        "repo": "ltex_extra.nvim",
         "type": "github"
       }
     },

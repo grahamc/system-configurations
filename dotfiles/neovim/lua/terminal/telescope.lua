@@ -111,7 +111,7 @@ Plug("nvim-telescope/telescope.nvim", {
                 actions.close(prompt_bufnr)
                 -- If you just use `vim.cmd` the output won't show so I'm using feedkeys instead
                 local enter_key = vim.api.nvim_replace_termcodes("<CR>", true, false, true)
-                vim.api.nvim_feedkeys(":" .. selection .. enter_key, "n", true)
+                vim.api.nvim_feedkeys(":" .. selection .. enter_key, "n", false)
               end,
             },
           },

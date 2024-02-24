@@ -460,5 +460,9 @@
       url = "github:bullets-vim/bullets.vim";
       flake = false;
     };
+    vim-plugin-ltex-extra-nvim = {
+      url = "github:barreiroleo/ltex_extra.nvim";
+      flake = false;
+    };
   };
 }

@@ -49,7 +49,7 @@ Plug("stevearc/conform.nvim", {
         vim.api.nvim_buf_get_name(0),
         enter_key
       )
-      vim.api.nvim_feedkeys(command, "n", true)
+      vim.api.nvim_feedkeys(command, "n", false)
     end
 
     vim.keymap.set("x", "gf", function()

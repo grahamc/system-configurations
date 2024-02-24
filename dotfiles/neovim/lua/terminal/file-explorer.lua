@@ -1,5 +1,30 @@
 Plug("kyazdani42/nvim-tree.lua", {
   config = function()
+    local live_preview_enter_key_mapping = require("terminal.utilities").set_up_live_preview({
+      id = "NvimTree",
+      file_type = "NvimTree",
+      set_up_once = false,
+      on_select = require("nvim-tree.api").node.open.edit,
+      get_bufnr = function()
+        local node = require("nvim-tree.api").tree.get_node_under_cursor()
+        if node == nil or node.absolute_path == nil then
+          return nil
+        end
+        local filename = node.absolute_path
+
+        -- where background means the file won't be focused and it won't show up in my bufferline
+        local function open_file_in_background(file)
+          vim.cmd.badd(file)
+          local buf = vim.fn.bufnr(file)
+          vim.bo[buf].buflisted = false
+
+          return buf
+        end
+        return (vim.fn.bufexists(filename) ~= 0) and vim.fn.bufnr(filename)
+          or open_file_in_background(filename)
+      end,
+    })
+
     require("nvim-tree").setup({
       hijack_cursor = true,
       sync_root_with_cwd = true,
@@ -65,6 +90,7 @@ Plug("kyazdani42/nvim-tree.lua", {
         local api = require("nvim-tree.api")
         api.config.mappings.default_on_attach(buffer_number)
 
+        live_preview_enter_key_mapping(buffer_number)
         vim.keymap.set("n", "h", "<BS>", { buffer = buffer_number, remap = true })
         vim.keymap.set("n", "l", "<CR>", { buffer = buffer_number, remap = true })
         -- Taken from base config
