@@ -55,7 +55,13 @@
       in
         package // {withAllGrammars = package;};
 
-      vimPlugins = prev.vimPlugins // newVimPlugins // {inherit nvim-treesitter;};
+      nvim-nonicons =
+        vimPluginBuilder
+        "nvim-nonicons"
+        (final.runCommand "nvim-nonicons" {} ''cp -R --dereference ${inputs.self}/dotfiles/nonicons/nvim $out'')
+        (final.lib.concatStringsSep "-" (builtins.match "(....)(..)(..).*" inputs.self.lastModifiedDate));
+
+      vimPlugins = prev.vimPlugins // newVimPlugins // {inherit nvim-treesitter nvim-nonicons;};
     in {inherit vimPlugins;};
   in {overlays.vimPlugins = overlay;};
 }

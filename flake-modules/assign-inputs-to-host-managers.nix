@@ -27,7 +27,6 @@
           "wezterm"
           "tmux"
           "neovim-nightly-overlay"
-          "nonicons"
         ]
         ++ plugins;
       darwin =

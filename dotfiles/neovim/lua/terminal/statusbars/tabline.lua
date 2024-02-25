@@ -36,9 +36,9 @@ Plug("akinsho/bufferline.nvim", {
     end
 
     local close_icon = " "
-    local explorer_icon = " "
+    local explorer_icon = " "
     local explorer_title = explorer_icon .. " FILE EXPLORER"
-    local outline_icon = " "
+    local outline_icon = " "
     local outline_title = outline_icon .. " OUTLINE"
     local test_icon = " "
     local test_title = test_icon .. " TESTS"

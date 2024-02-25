@@ -89,6 +89,7 @@ in {
         moreutils
         findutils
         nodejs
+        yarn
         deadnix
         treefmt
         nodePackages.prettier

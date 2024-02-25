@@ -52,9 +52,9 @@ Plug("mrjones2014/legendary.nvim", {
       include_legendary_cmds = false,
       icons = {
         keymap = " ",
-        command = " ",
+        command = " ",
         fn = "󰡱 ",
-        itemgroup = " ",
+        itemgroup = " ",
       },
     })
 

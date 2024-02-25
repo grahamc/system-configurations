@@ -22,7 +22,7 @@
         {}
         ''
           mkdir -p $out/share/fonts/truetype
-          ln --symbolic ${inputs.nonicons}/dist/nonicons.ttf $out/share/fonts/truetype/nonicons.ttf
+          ln --symbolic ${inputs.self}/dotfiles/nonicons/dist/nonicons.ttf $out/share/fonts/truetype/nonicons.ttf
         '';
     in
       {

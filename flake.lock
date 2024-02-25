@@ -442,22 +442,6 @@
         "type": "github"
       }
     },
-    "nonicons": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1685408537,
-        "narHash": "sha256-c2UUef5/l5ugKwWV8R3gijD6aorw9H4ca+mGjy+VyYE=",
-        "owner": "yamatsum",
-        "repo": "nonicons",
-        "rev": "8454b3b6c3ceeee18b386b7882c5a071dcf0f3af",
-        "type": "github"
-      },
-      "original": {
-        "owner": "yamatsum",
-        "repo": "nonicons",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "fish-plugin-async-prompt": "fish-plugin-async-prompt",
@@ -475,7 +459,6 @@
         "nix-xdg": "nix-xdg",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-for-wezterm": "nixpkgs-for-wezterm",
-        "nonicons": "nonicons",
         "spoons": "spoons",
         "stackline": "stackline",
         "tmux": "tmux",
@@ -525,7 +508,6 @@
         "vim-plugin-nvim-lightbulb": "vim-plugin-nvim-lightbulb",
         "vim-plugin-nvim-lsp-file-operations": "vim-plugin-nvim-lsp-file-operations",
         "vim-plugin-nvim-lspconfig": "vim-plugin-nvim-lspconfig",
-        "vim-plugin-nvim-nonicons": "vim-plugin-nvim-nonicons",
         "vim-plugin-nvim-notify": "vim-plugin-nvim-notify",
         "vim-plugin-nvim-pqf": "vim-plugin-nvim-pqf",
         "vim-plugin-nvim-tree-lua": "vim-plugin-nvim-tree-lua",
@@ -1391,22 +1373,6 @@
       "original": {
         "owner": "neovim",
         "repo": "nvim-lspconfig",
-        "type": "github"
-      }
-    },
-    "vim-plugin-nvim-nonicons": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1675495957,
-        "narHash": "sha256-vZ7lS/esMfU5iWUV+c/07Z6+yMzbca/Sk2DF/f58ik0=",
-        "owner": "yamatsum",
-        "repo": "nvim-nonicons",
-        "rev": "ceda07dc7339f35444b5f4c4016f76a9eb42ac16",
-        "type": "github"
-      },
-      "original": {
-        "owner": "yamatsum",
-        "repo": "nvim-nonicons",
         "type": "github"
       }
     },

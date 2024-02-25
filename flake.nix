@@ -98,10 +98,6 @@
     };
     flake-utils.url = "github:numtide/flake-utils";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    nonicons = {
-      url = "github:yamatsum/nonicons";
-      flake = false;
-    };
 
     # tmux
     ########################################
@@ -409,10 +405,6 @@
     };
     vim-plugin-smartcolumn-nvim = {
       url = "github:m4xshen/smartcolumn.nvim";
-      flake = false;
-    };
-    vim-plugin-nvim-nonicons = {
-      url = "github:yamatsum/nvim-nonicons";
       flake = false;
     };
     vim-plugin-splitjoin-vim = {

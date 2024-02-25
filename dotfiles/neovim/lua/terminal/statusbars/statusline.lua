@@ -36,23 +36,23 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 
 -- statusline helpers {{{
 local function get_mode_indicator()
-  local normal = " "
+  local normal = " "
   local operator_pending = "O-PENDING"
-  local visual = " "
+  local visual = " "
   local visual_line = visual .. " LINE"
   local visual_block = visual .. " BLOCK"
   local visual_replace = visual .. " REPLACE"
-  local select = " "
+  local select = " "
   local select_line = select .. " LINE"
   local select_block = select .. " BLOCK"
-  local insert = " "
-  local replace = " "
-  local command = " "
+  local insert = " "
+  local replace = " "
+  local command = " "
   local ex = "EX"
   local more = "MORE"
   local confirm = "CONFIRM"
   local shell = "SHELL"
-  local terminal = " "
+  local terminal = " "
   local mode_map = {
     ["n"] = normal,
     ["no"] = operator_pending,
@@ -233,7 +233,7 @@ end
 
 -- main statusline {{{
 function StatusLine()
-  local position = "%#StatusLine#" .. " %03l:%03c"
+  local position = "%#StatusLine#" .. " %03l:%03c"
 
   local fileformat = nil
   if vim.o.fileformat == "mac" then
@@ -291,7 +291,7 @@ function StatusLine()
   if ok then
     if czs.display_results() then
       local _, current, count = czs.output()
-      search_info = "%#StatusLine# " .. string.format("%s/%s", current, count)
+      search_info = "%#StatusLine# " .. string.format("%s/%s", current, count)
     end
   end
 
@@ -321,30 +321,30 @@ function StatusLine()
   local diagnostic_list = {}
   local error_count = diagnostic_count.error
   if error_count > 0 then
-    local icon = " "
+    local icon = " "
     local error = "%#StatusLineErrorText#" .. icon .. error_count
     table.insert(diagnostic_list, error)
   end
   local warning_count = diagnostic_count.warning
   if warning_count > 0 then
-    local icon = " "
+    local icon = " "
     local warning = "%#StatusLineWarningText#" .. icon .. warning_count
     table.insert(diagnostic_list, warning)
   end
   local info_count = diagnostic_count.info
   if info_count > 0 then
-    local icon = " "
+    local icon = " "
     local info = "%#StatusLineInfoText#" .. icon .. info_count
     table.insert(diagnostic_list, info)
   end
   local hint_count = diagnostic_count.hint
   if hint_count > 0 then
-    local icon = " "
+    local icon = " "
     local hint = "%#StatusLineHintText#" .. icon .. hint_count
     table.insert(diagnostic_list, hint)
   end
   if _G.mason_update_available_count and _G.mason_update_available_count > 0 then
-    local mason_update_indicator = "%#StatusLineMasonUpdateIndicator# "
+    local mason_update_indicator = "%#StatusLineMasonUpdateIndicator# "
       .. _G.mason_update_available_count
     table.insert(diagnostic_list, mason_update_indicator)
   end
