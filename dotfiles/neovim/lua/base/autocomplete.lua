@@ -53,7 +53,7 @@ vim.api.nvim_create_autocmd("FileType", {
     )
     vim.keymap.set(
       { "n" },
-      "gx",
+      "gX",
       "<Plug>(bullets-toggle-checkbox)",
       { buffer = true, remap = true }
     )

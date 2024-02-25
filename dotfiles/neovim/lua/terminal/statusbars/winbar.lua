@@ -1,3 +1,7 @@
+-- I'm setting a winbar before dropbar loads so the editor window doesn't shift down when dropbar
+-- loads.
+vim.o.winbar = " "
+
 vim.defer_fn(function()
   vim.fn["plug#load"]("dropbar.nvim")
 end, 0)

@@ -152,7 +152,7 @@ vim.keymap.set({ "n" }, "<F9>", "<C-i>")
 -- colorcolumn {{{
 Plug("lukas-reineke/virt-column.nvim", {
   config = function()
-    require("virt-column").setup({ char = "│" })
+    require("virt-column").setup({ char = "╎" })
   end,
 })
 
