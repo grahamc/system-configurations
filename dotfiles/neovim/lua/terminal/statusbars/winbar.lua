@@ -45,18 +45,13 @@ Plug("Bekaboo/dropbar.nvim", {
       },
 
       icons = {
-        kinds = {
-          symbols = {
-            Folder = " ",
-            Terminal = " ",
-          },
-        },
+        enable = false,
         ui = {
           bar = {
-            separator = " ",
+            separator = "",
           },
           menu = {
-            indicator = " ",
+            indicator = "",
           },
         },
       },

@@ -1,7 +1,7 @@
 local base_utilities = require("base.utilities")
 local terminal_utilities = require("terminal.utilities")
 
-local ns = vim.api.nvim_create_namespace("bigolu/qf")
+local ns = vim.api.nvim_create_namespace("bigolu/qf-live-preview")
 local last_highlighted_buffer = nil
 local function clear_last_highlighted_buffer()
   if last_highlighted_buffer ~= nil then
@@ -70,7 +70,7 @@ end, {
   desc = "Toggle quickfix",
 })
 
-local namespace = vim.api.nvim_create_namespace("bigolu/qf")
+local namespace = vim.api.nvim_create_namespace("bigolu/qf-entries")
 local function get_width()
   -- statuscolumn, but without signcolumn
   return vim.o.columns - 3
