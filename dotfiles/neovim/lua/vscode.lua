@@ -8,10 +8,6 @@ end
 -- TODO: I have this set in init.lua, but it won't work in vscode unless I set it here.
 vim.g.mapleader = " "
 
--- comment
-vim.keymap.set({ "x", "n" }, "gc", "<Plug>VSCodeCommentary", { remap = true })
-vim.keymap.set({ "n" }, "gcc", "<Plug>VSCodeCommentaryLine", { remap = true })
-
 -- Windows
 vim.keymap.set({ "n" }, "<Leader><Bar>", "<C-w>v", { remap = true })
 vim.keymap.set({ "n" }, "<Leader>-", "<C-w>s", { remap = true })
@@ -20,6 +16,25 @@ vim.keymap.set({ "n" }, "<Leader>-", "<C-w>s", { remap = true })
 vim.keymap.set({ "n", "x" }, "<Leader><Leader>", function()
   vim.fn.VSCodeNotify("editor.action.showContextMenu")
 end)
+
+vim.keymap.set("n", [[\b]], function()
+  vim.fn.VSCodeNotify("gitlens.toggleLineBlame")
+end, { desc = "Toggle git blame" })
+vim.keymap.set("n", [[\i]], function()
+  vim.fn.VSCodeNotify("settings.cycle.toggleInlayHints")
+end, { desc = "Toggle inlay hints" })
+vim.keymap.set("n", [[\|]], function()
+  vim.fn.VSCodeNotify("settings.cycle.toggleIndentGuide")
+end, { desc = "Toggle indent guide" })
+vim.keymap.set("n", [[\s]], function()
+  vim.fn.VSCodeNotify("settings.cycle.toggleStickyScroll")
+end, { desc = "Toggle sticky scroll [context]" })
+vim.keymap.set("n", [[\ ]], function()
+  vim.fn.VSCodeNotify("editor.action.toggleRenderWhitespace")
+end, { desc = "Toggle whitespace" })
+vim.keymap.set("n", [[\n]], function()
+  vim.fn.VSCodeNotify("editor.action.toggleLineNumbers")
+end, { desc = "Toggle line numbers" })
 
 -- version control {{{
 vim.keymap.set({ "n" }, "zv", function()
@@ -34,16 +49,23 @@ end)
 -- }}}
 
 -- search {{{
-vim.keymap.set({ "n" }, "<Leader>f", vim.cmd.Find, { silent = true })
-
-vim.keymap.set({ "n", "v" }, "<Leader>g", function()
-  vim.fn.VSCodeNotify("workbench.action.findInFiles")
-  vim.fn.VSCodeNotify("workbench.action.toggleZenMode")
-  vim.fn.VSCodeNotify("workbench.view.search.focus")
+vim.keymap.set({ "n" }, "<Leader>f", function()
+  vim.fn.VSCodeNotify("find-it-faster.findFiles")
 end, { silent = true })
-
+vim.keymap.set({ "n" }, "<Leader>F", function()
+  vim.fn.VSCodeNotify("find-it-faster.findFilesWithType")
+end, { silent = true })
+vim.keymap.set({ "n", "v" }, "<Leader>g", function()
+  vim.fn.VSCodeNotify("find-it-faster.findWithinFiles")
+end, { silent = true })
+vim.keymap.set({ "n", "v" }, "<Leader>G", function()
+  vim.fn.VSCodeNotify("find-it-faster.findWithinFilesWithType")
+end, { silent = true })
 vim.keymap.set({ "n", "v" }, "<Leader>s", function()
   vim.fn.VSCodeNotify("workbench.action.showAllSymbols")
+end, { silent = true })
+vim.keymap.set({ "n", "x" }, "<Leader>b", function()
+  vim.fn.VSCodeNotify("fuzzySearch.activeTextEditorWithCurrentSelection")
 end, { silent = true })
 -- }}}
 
@@ -53,12 +75,12 @@ vim.keymap.set({ "n" }, "<Tab>", function()
 end, { silent = true })
 
 local function fold_toggle()
-  if _G.is_folded == nil or _G.is_folded == false then
+  if vim.b.is_folded == nil or vim.b.is_folded == false then
     vim.fn.VSCodeNotify("editor.foldAll")
-    _G.is_folded = true
+    vim.b.is_folded = true
   else
     vim.fn.VSCodeNotify("editor.unfoldAll")
-    _G.is_folded = false
+    vim.b.is_folded = false
   end
 end
 
@@ -110,10 +132,10 @@ vim.api.nvim_create_autocmd("VimEnter", {
       moveCursor(-1)
     end)
     vim.keymap.set({ "n" }, "<C-j>", function()
-      moveCursor(10)
+      moveCursor(6)
     end)
     vim.keymap.set({ "n" }, "<C-k>", function()
-      moveCursor(-10)
+      moveCursor(-6)
     end)
   end,
   group = vim.api.nvim_create_augroup("CursorMovement", {}),

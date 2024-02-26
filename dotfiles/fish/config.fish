@@ -41,7 +41,12 @@ function tmux_attach
 end
 if test -z "$TMUX"
     if set --query VSCODE_INJECTION
-        tmux-attach-to-project
+        # FIF doesn't work when I attach to tmux
+        # issue: https://github.com/tomrijndorp/vscode-finditfaster/issues/65
+        # TODO: I think it's because `set -u` is being set, per the error in the issue
+        if not set --query FIND_IT_FASTER_ACTIVE
+            tmux-attach-to-project
+        end
     else
         tmux_attach
     end

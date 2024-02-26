@@ -31,10 +31,12 @@ Plug("nvim-treesitter/nvim-treesitter", {
         include_match_words = true,
       },
       endwise = {
-        enable = true,
+        -- Doesn't work in vscode
+        enable = not vim.g.vscode,
       },
       autotag = {
-        enable = IsRunningInTerminal,
+        -- I prefer vscode's autotag
+        enable = not vim.g.vscode,
       },
     })
   end,
@@ -48,6 +50,8 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.treesitter.stop()
   end,
 })
+
+Plug("IndianBoy42/tree-sitter-just")
 
 if IsRunningInTerminal then
   -- Enable syntax highlighting for filetypes without treesitter parsers
@@ -64,27 +68,25 @@ if IsRunningInTerminal then
       end
     end,
   })
+
+  vim.defer_fn(function()
+    vim.fn["plug#load"]("nvim-treesitter-context")
+  end, 0)
+  Plug("nvim-treesitter/nvim-treesitter-context", {
+    on = {},
+    config = function()
+      require("treesitter-context").setup({
+        line_numbers = false,
+      })
+      vim.keymap.set({ "n", "x" }, "[s", function()
+        require("treesitter-context").go_to_context(vim.v.count1)
+      end, { silent = true })
+      vim.keymap.set(
+        "n",
+        [[\s]],
+        vim.cmd.TSContextToggle,
+        { desc = "Toggle sticky scroll [context]" }
+      )
+    end,
+  })
 end
-
-Plug("IndianBoy42/tree-sitter-just")
-
-vim.defer_fn(function()
-  vim.fn["plug#load"]("nvim-treesitter-context")
-end, 0)
-Plug("nvim-treesitter/nvim-treesitter-context", {
-  on = {},
-  config = function()
-    require("treesitter-context").setup({
-      line_numbers = false,
-    })
-    vim.keymap.set({ "n", "x" }, "[s", function()
-      require("treesitter-context").go_to_context(vim.v.count1)
-    end, { silent = true })
-    vim.keymap.set(
-      "n",
-      [[\s]],
-      vim.cmd.TSContextToggle,
-      { desc = "Toggle sticky scroll [context]" }
-    )
-  end,
-})
