@@ -1,8 +1,5 @@
 -- TODO: consider contributing some these settings to nvim-lspconfig
 --
--- Inlay hint configuration came from here:
--- https://github.com/simrat39/inlay-hints.nvim
---
 -- The JSON/YAML configuration came from here:
 -- https://www.arthurkoziel.com/json-schemas-in-neovim/
 

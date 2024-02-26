@@ -35,9 +35,6 @@
             ln -s ${inputs.self}/dotfiles/general/executables/conform.bash $out/bin/conform
           '';
           paths = with final; [
-            # to watch files for LSP
-            watchman
-
             # to format comments
             par
 

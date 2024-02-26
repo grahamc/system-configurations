@@ -40,10 +40,6 @@ Plug("akinsho/bufferline.nvim", {
     local explorer_title = explorer_icon .. " FILE EXPLORER"
     local outline_icon = " "
     local outline_title = outline_icon .. " OUTLINE"
-    local test_icon = " "
-    local test_title = test_icon .. " TESTS"
-    local task_icon = "󰄵 "
-    local task_title = task_icon .. " TASKS"
     require("bufferline").setup({
       options = {
         numbers = function(context)
@@ -68,20 +64,6 @@ Plug("akinsho/bufferline.nvim", {
           {
             filetype = "aerial",
             text = outline_title,
-            text_align = "center",
-            separator = true,
-            highlight = "WidgetFill",
-          },
-          {
-            filetype = "neotest-summary",
-            text = test_title,
-            text_align = "center",
-            separator = true,
-            highlight = "WidgetFill",
-          },
-          {
-            filetype = "OverseerList",
-            text = task_title,
             text_align = "center",
             separator = true,
             highlight = "WidgetFill",
@@ -138,8 +120,6 @@ Plug("akinsho/bufferline.nvim", {
       local result = original
       local is_explorer_open = string.find(original, explorer_icon)
       local is_outline_open = string.find(original, outline_icon)
-      local is_tasks_open = string.find(original, task_icon)
-      local is_tests_open = string.find(original, test_icon)
       local tab_highlight_escaped = "%%#BufferLineTab"
       local tab_highlight_and_aligner_escaped = "%%=" .. tab_highlight_escaped
       local is_tab_section_visible = string.find(original, tab_highlight_and_aligner_escaped)
@@ -177,7 +157,7 @@ Plug("akinsho/bufferline.nvim", {
       inject_right_border_for_selected_buffer("BufferLineModifiedSelected", close_icon)
 
       -- left centerer for buffer list
-      if is_explorer_open or is_tasks_open or is_tests_open then
+      if is_explorer_open then
         result = string.gsub(result, "│", "%0%%=", 1)
       else
         result = "%=" .. result
@@ -248,38 +228,6 @@ Plug("akinsho/bufferline.nvim", {
           .. "%%#ExplorerTitle#"
           .. explorer_title
           .. explorer_border_highlight_escaped
-          .. right_border_with_padding
-          .. "%%#WidgetFill#",
-        1
-      )
-
-      local test_border_highlight_escaped = "%%#TestBorder#"
-      result = string.gsub(
-        result,
-        string.rep(" ", left_border_with_padding_length)
-          .. test_title
-          .. string.rep(" ", right_border_with_padding_length),
-        test_border_highlight_escaped
-          .. left_border_with_padding
-          .. "%%#TestTitle#"
-          .. test_title
-          .. test_border_highlight_escaped
-          .. right_border_with_padding
-          .. "%%#WidgetFill#",
-        1
-      )
-
-      local task_border_highlight_escaped = "%%#TaskBorder#"
-      result = string.gsub(
-        result,
-        string.rep(" ", left_border_with_padding_length)
-          .. task_title
-          .. string.rep(" ", right_border_with_padding_length),
-        task_border_highlight_escaped
-          .. left_border_with_padding
-          .. "%%#TaskTitle#"
-          .. task_title
-          .. task_border_highlight_escaped
           .. right_border_with_padding
           .. "%%#WidgetFill#",
         1

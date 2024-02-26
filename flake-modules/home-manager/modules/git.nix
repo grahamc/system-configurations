@@ -12,6 +12,6 @@
   };
 
   repository.symlink.xdg.configFile = {
-    "git/config".source = "git/gitconfig";
+    "git/config".source = "git/config";
   };
 }

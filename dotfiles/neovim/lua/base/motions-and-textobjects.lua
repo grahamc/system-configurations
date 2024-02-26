@@ -177,12 +177,14 @@ Plug("jeetsukumaran/vim-indentwise", {
 })
 vim.g.indentwise_suppress_keymaps = 1
 
--- replacement for matchit since matchit wasn't working for me
 Plug("andymass/vim-matchup")
+vim.g.matchup_transmute_enabled = 1
 -- Don't display off-screen matches in my statusline or a popup window
 vim.g.matchup_matchparen_offscreen = {}
 vim.keymap.set({ "n", "x" }, ";", "%", { remap = true })
 vim.keymap.set({ "n", "x" }, "g;", "g%", { remap = true })
+vim.keymap.set({ "n", "x" }, "];", ";", { remap = true })
+vim.keymap.set({ "n", "x" }, "[;", "g;", { remap = true })
 
 vim.defer_fn(function()
   vim.fn["plug#load"]("CamelCaseMotion")

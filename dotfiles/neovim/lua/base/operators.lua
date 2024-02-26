@@ -64,8 +64,45 @@ Plug("stevearc/conform.nvim", {
       return "g@"
     end, { expr = true, desc = "Format code", silent = true })
 
-    -- run only the first available formatter
     local prettier = { { "prettierd", "prettier" } }
+    local formatters_by_ft = {
+      ["*"] = { "injected" },
+      ["_"] = { "trim_whitespace", "squeeze_blanks" },
+      lua = { "stylua" },
+      python = { "usort", "black" },
+      sh = { "shfmt" },
+      fish = { "fish_indent" },
+      nix = { "alejandra" },
+      just = { "just" },
+      go = { "gofmt" },
+      javascript = prettier,
+      javascriptreact = prettier,
+      typescript = prettier,
+      typescriptreact = prettier,
+      json = prettier,
+      markdown = prettier,
+      yaml = prettier,
+      css = prettier,
+      html = prettier,
+      scss = prettier,
+    }
+    formatters_by_ft = vim.iter(formatters_by_ft):fold({}, function(acc, filetype, formatters)
+      formatters = vim.deepcopy(formatters)
+      if not vim.tbl_contains({ "*", "_" }, filetype) then
+        local first = formatters[1]
+        if type(first) == "table" then
+          table.insert(first, 0, "dprint")
+          table.insert(first, 0, "treefmt")
+          formatters[1] = first
+        else
+          formatters[1] = { "treefmt", "dprint", first }
+        end
+      end
+      acc[filetype] = formatters
+
+      return acc
+    end)
+
     local util = require("conform.util")
     conform.setup({
       formatters = {
@@ -83,29 +120,22 @@ Plug("stevearc/conform.nvim", {
           args = { "--filename", "$FILENAME" },
           cwd = util.root_file({ ".editorconfig" }),
         },
+
+        -- TODO: should upstream this too
+        treefmt = {
+          inherit = false,
+          stdin = true,
+          meta = {
+            url = "https://github.com/numtide/treefmt",
+            description = "treefmt applies all the needed formatters to your project with one command line.",
+          },
+          command = "treefmt",
+          args = { "--stdin", "$FILENAME" },
+          require_cwd = true,
+          cwd = util.root_file({ "treefmt.toml" }),
+        },
       },
-      formatters_by_ft = {
-        ["*"] = { "injected" },
-        ["_"] = { "trim_whitespace", "squeeze_blanks" },
-        lua = { "stylua" },
-        -- run multiple formatters sequentially
-        python = { "usort", "black" },
-        sh = { "shfmt" },
-        fish = { "fish_indent" },
-        nix = { "alejandra" },
-        just = { "just" },
-        go = { "gofmt" },
-        javascript = prettier,
-        javascriptreact = prettier,
-        typescript = prettier,
-        typescriptreact = prettier,
-        json = prettier,
-        markdown = prettier,
-        yaml = prettier,
-        css = prettier,
-        html = prettier,
-        scss = prettier,
-      },
+      formatters_by_ft = formatters_by_ft,
     })
   end,
 })
@@ -117,7 +147,6 @@ vim.api.nvim_create_autocmd("BufNew", {
   group = vim.api.nvim_create_augroup("Set textwidth", {}),
 })
 
--- removes '%s' and trims trailing whitespace
 local function get_commentstrings()
   return vim
     .iter(vim.opt.comments:get())

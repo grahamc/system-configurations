@@ -10,7 +10,15 @@ Plug("kyazdani42/nvim-tree.lua", {
         if node == nil or node.absolute_path == nil then
           return nil
         end
-        local filename = node.absolute_path
+        local path = node.absolute_path
+
+        local is_directory = vim.fn.isdirectory(path) ~= 0
+        local command =
+          string.format([[file --mime-encoding %s | grep -q binary]], vim.fn.shellescape(path))
+        local is_binary = vim.system({ "sh", "-c", command }):wait().code == 0
+        if is_directory or is_binary then
+          return nil
+        end
 
         -- where background means the file won't be focused and it won't show up in my bufferline
         local function open_file_in_background(file)
@@ -20,8 +28,7 @@ Plug("kyazdani42/nvim-tree.lua", {
 
           return buf
         end
-        return (vim.fn.bufexists(filename) ~= 0) and vim.fn.bufnr(filename)
-          or open_file_in_background(filename)
+        return (vim.fn.bufexists(path) ~= 0) and vim.fn.bufnr(path) or open_file_in_background(path)
       end,
     })
 

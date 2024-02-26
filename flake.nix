@@ -162,10 +162,8 @@
       url = "github:jeetsukumaran/vim-indentwise";
       flake = false;
     };
-    # This commit broke typescript so I'll use the commit before it for now:
-    # https://github.com/andymass/vim-matchup/commit/7f81ae12542b2a35819f0324895df9bd8626c8ba
     vim-plugin-vim-matchup = {
-      url = "github:andymass/vim-matchup?rev=e2cca1747ab175b8d839a5d28679427564643a57";
+      url = "github:andymass/vim-matchup";
       flake = false;
     };
     vim-plugin-CamelCaseMotion = {

@@ -8,6 +8,13 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
   group = vim.api.nvim_create_augroup("Filetype Associations", {}),
 })
 
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = "*/git/config",
+  callback = function()
+    vim.opt_local.filetype = "gitconfig"
+  end,
+})
+
 vim.api.nvim_create_autocmd({ "Filetype" }, {
   pattern = "nix",
   callback = function()
