@@ -3,7 +3,10 @@
 <plist version="1.0">
     <dict>
         <!--
-            This is a copy of the base16-256 theme that comes with bat, but with a few changes.
+        This is a copy of the base16-256 theme that comes with bat, but with a few changes.  It
+        needs to named ansi because bat only applies an underline for highlighted lines when the
+        theme is named ansi:
+        https://github.com/sharkdp/bat/pull/1985
         -->
         <!--
         Most base16 users should use the base16 theme. This theme, base16-256,
@@ -21,7 +24,7 @@
         <key>author</key>
         <string>Template: Chris Kempson, Scheme: Mitchell Kember</string>
         <key>name</key>
-        <string>Base256</string>
+        <string>ansi</string>
         <key>colorSpaceName</key>
         <string>sRGB</string>
         <key>settings</key>
@@ -38,7 +41,7 @@
                     <key>invisibles</key>
                     <string>#33000000</string>
                     <key>lineHighlight</key>
-                    <string>#33000000</string>
+                    <string>#00000000</string>
                     <key>selection</key>
                     <string>#0b000000</string>
                     <key>gutter</key>

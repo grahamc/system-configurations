@@ -1,4 +1,4 @@
---theme="base256-brighter"
+--theme="ansi"
 
 --map-syntax "vimrc:VimL"
 
