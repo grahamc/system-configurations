@@ -47,7 +47,7 @@ local function SetDefaultFoldMethod()
     vim.wo.foldmethod = "indent"
   end
 end
-vim.api.nvim_create_autocmd("BufWinEnter", {
+vim.api.nvim_create_autocmd("BufEnter", {
   callback = SetDefaultFoldMethod,
   group = vim.api.nvim_create_augroup("SetDefaultFoldMethod", {}),
 })
@@ -61,7 +61,7 @@ local function maybe_set_treesitter_foldmethod()
     vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
   end
 end
-vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
   callback = maybe_set_treesitter_foldmethod,
   group = vim.api.nvim_create_augroup("TreesitterFoldmethod", {}),
 })

@@ -15,8 +15,6 @@ local M = {}
 -- TODO: per-buffer fold table?
 M.current_buf_folds = {}
 
-M.fold_support_by_client_id = {}
-
 M.capabilities = {
   textDocument = {
     foldingRange = {
@@ -26,12 +24,22 @@ M.capabilities = {
   },
 }
 
+-- TODO: cache, but revaldate after dynamic registration. maybe also revalidate when servers exit.
+function M.get_supported_clients_for_buffer(buf)
+  return vim
+    .iter(lsp.get_clients({ bufnr = buf }))
+    :filter(function(client)
+      return client.supports_method(lsp.protocol.Methods.textDocument_foldingRange, { bufnr = buf })
+    end)
+    :totable()
+end
+
 function M.on_attach()
-  M.setup_plugin()
+  M.set_up_plugin()
   M.update_folds()
 end
 
-function M.setup_plugin()
+function M.set_up_plugin()
   local buffer = vim.api.nvim_get_current_buf()
   local events = { "BufEnter", "BufWritePost" }
   vim.api.nvim_clear_autocmds({
@@ -52,14 +60,7 @@ function M.update_folds()
   end
 
   local buffer = api.nvim_get_current_buf()
-  local clients = lsp.get_clients({ bufnr = buffer })
-  for _, client in pairs(clients) do
-    if
-      not client.supports_method(lsp.protocol.Methods.textDocument_foldingRange, { bufnr = buffer })
-    then
-      goto continue
-    end
-
+  vim.iter(M.get_supported_clients_for_buffer(buffer)):each(function(client)
     local params = { uri = vim.uri_from_bufnr(buffer) }
     client.request(
       lsp.protocol.Methods.textDocument_foldingRange,
@@ -67,9 +68,7 @@ function M.update_folds()
       M.fold_handler,
       buffer
     )
-
-    ::continue::
-  end
+  end)
 end
 
 function M.debug_folds()
