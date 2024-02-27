@@ -26,7 +26,7 @@ verbs: [
         invocation: edit
         key: ctrl-e
         apply_to: file
-        external: myeditor {file}
+        external: edit {file}
         leave_broot: false
     }
     {

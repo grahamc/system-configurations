@@ -8,15 +8,15 @@ set -o nounset
 
 #The if condition is for checking your remote HTTPS URL has `.git` at the end or not
 if git config --get remote.origin.url | grep -P '\.git$' >/dev/null; then
-    newURL=`git config --get remote.origin.url | sed -r 's#(http.*://)([^/]+)/(.+)$#git@\2:\3#g'`
+    newURL=$(git config --get remote.origin.url | sed -r 's#(http.*://)([^/]+)/(.+)$#git@\2:\3#g')
 else
-    newURL=`git config --get remote.origin.url | sed -r 's#(http.*://)([^/]+)/(.+)$#git@\2:\3.git#g'`
+    newURL=$(git config --get remote.origin.url | sed -r 's#(http.*://)([^/]+)/(.+)$#git@\2:\3.git#g')
 fi;
 
-echo "Does this new url look fine? (y/n) : " $newURL
-read response
+echo "Does this new url look fine? (y/n) : " "$newURL"
+read -r response
 if [ "$response" = "y" ]; then
-    git remote set-url origin $newURL
+    git remote set-url origin "$newURL"
     echo "Git remote updated."
 else
     echo "Git remote unchanged."

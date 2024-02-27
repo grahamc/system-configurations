@@ -311,17 +311,20 @@ Plug("williamboman/mason-lspconfig.nvim", {
         return unpack(toreturn)
       end
 
-      -- Call on_attach() again after registering dynamic capabilities.
-      local register_capability = vim.lsp.handlers[methods.client_registerCapability]
+      -- When a server registers a capability dynamically, call on_attach again for the buffers
+      -- attached to it.
+      local original_register_capability = vim.lsp.handlers[methods.client_registerCapability]
       vim.lsp.handlers[methods.client_registerCapability] = function(err, res, ctx)
+        local original_return_value = { original_register_capability(err, res, ctx) }
+
         local client = vim.lsp.get_client_by_id(ctx.client_id)
-        if not client then
-          return
+        if client then
+          vim.iter(vim.lsp.get_buffers_by_client_id(client.id)):each(function(buf)
+            on_attach(client, buf)
+          end)
         end
 
-        on_attach(client, vim.api.nvim_get_current_buf())
-
-        return register_capability(err, res, ctx)
+        return unpack(original_return_value)
       end
 
       -- For clients that aren't managed by mason-lspconfig I need to call on_attach myself

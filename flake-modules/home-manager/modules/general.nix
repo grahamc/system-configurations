@@ -31,7 +31,7 @@ in {
 
       xdg.executable =
         {
-          "myeditor".source = "general/executables/myeditor";
+          "edit".source = "general/executables/edit";
           "pbcopy".source = "general/executables/pbcopy";
           "process-output".source = "general/executables/process-output";
           "fish_tokenize".source = "general/executables/fish_tokenize.fish";

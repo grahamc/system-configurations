@@ -40,5 +40,7 @@ vim.api.nvim_create_autocmd("User", {
     disable_winbar()
     reset_cursor_position()
     vim.o.showtabline = 0
+    -- disable horizontal scrolling
+    vim.o.mousescroll = "ver:1,hor:0"
   end,
 })

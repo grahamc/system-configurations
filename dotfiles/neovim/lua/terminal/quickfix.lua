@@ -202,10 +202,10 @@ function QFTextFunc(info)
         local sign = ""
         if item.user_data and item.user_data.severity then
           sign = ({
-            [vim.diagnostic.severity.ERROR] = "",
-            [vim.diagnostic.severity.WARN] = "",
-            [vim.diagnostic.severity.HINT] = "",
-            [vim.diagnostic.severity.INFO] = "",
+            [vim.diagnostic.severity.ERROR] = "",
+            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.HINT] = "",
+            [vim.diagnostic.severity.INFO] = "",
           })[item.user_data.severity] .. " "
         end
 

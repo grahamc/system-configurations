@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 VALID_URL_CHARS = (
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&*+,;="
 )
-MOUSE_PROGRAMS = ["vim", "nvim", "myeditor"]
+MOUSE_PROGRAMS = ["vim", "nvim", "edit"]
 
 
 def main():

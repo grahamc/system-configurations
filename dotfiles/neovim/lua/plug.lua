@@ -24,31 +24,6 @@ local function apply_configs(configs)
   end
 end
 
-local original_plug_begin = vim.fn["plug#begin"]
-local function plug_begin()
-  original_plug_begin()
-end
-
-local original_plug_end = vim.fn["plug#end"]
-local function plug_end()
-  original_plug_end()
-
-  -- This way code can be run after plugins are loaded, but before 'VimEnter'
-  vim.api.nvim_exec_autocmds("User", { pattern = "PlugEndPost" })
-
-  apply_configs(configs_by_type.sync)
-
-  -- Apply the asynchronous configurations after everything else that is currently on the event
-  -- loop. Now configs are applied after any files specified on the commandline are opened and after
-  -- sessions are restored. This way, neovim shows me the first file "instantly" and by the time
-  -- I've looked at the file and decided on my first key press, the plugin configs have already been
-  -- applied.
-  local function ApplyAsyncConfigs()
-    apply_configs(configs_by_type.async)
-  end
-  vim.defer_fn(ApplyAsyncConfigs, 0)
-end
-
 local group_id = vim.api.nvim_create_augroup("PlugLua", {})
 local original_plug = vim.fn["plug#"]
 local function plug(repo, options)
@@ -79,6 +54,36 @@ local function plug(repo, options)
       table.insert(configs_by_type.async, config)
     end
   end
+end
+
+local original_plug_begin = vim.fn["plug#begin"]
+local function plug_begin()
+  -- expose the Plug function globally
+  _G["Plug"] = plug
+
+  original_plug_begin()
+end
+
+local original_plug_end = vim.fn["plug#end"]
+local function plug_end()
+  original_plug_end()
+
+  _G["Plug"] = nil
+
+  -- This way code can be run after plugins are loaded, but before 'VimEnter'
+  vim.api.nvim_exec_autocmds("User", { pattern = "PlugEndPost" })
+
+  apply_configs(configs_by_type.sync)
+
+  -- Apply the asynchronous configurations after everything else that is currently on the event
+  -- loop. Now configs are applied after any files specified on the commandline are opened and after
+  -- sessions are restored. This way, neovim shows me the first file "instantly" and by the time
+  -- I've looked at the file and decided on my first key press, the plugin configs have already been
+  -- applied.
+  local function ApplyAsyncConfigs()
+    apply_configs(configs_by_type.async)
+  end
+  vim.defer_fn(ApplyAsyncConfigs, 0)
 end
 
 -- vim-plugs enables syntax highlighting if it isn't already enabled, but I don't want it since I

@@ -55,9 +55,12 @@ function grep-widget --description 'Search by line, recursively, from current di
             --prompt $prompt_directory'lines: ' \
             --preview-window '+{2}/3,75%,~2' \
             # the minus 2 prevents a weird line wrap issue
-            # The head and tail commands are there to remove the first and last line of output of bat
-            # i.e. the top and bottom border of bat since I don't like how they look
-            --preview 'bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {1} --highlight-line {2} | tail -n +2 | head -n -1' \
+            #
+            # The head and tail commands are there to remove the top and bottom border of bat since
+            # I don't like how they look
+            #
+            # wrap=never is there so the preview window is moved to the corrent line
+            --preview 'bat --wrap=never --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {1} --highlight-line {2} | tail -n +2 | head -n -1' \
       )
     or return
 
@@ -99,9 +102,14 @@ function process-widget --description 'Manage processes'
         set reload_command 'ps -e -o user,pid,ppid,nice=NICE,start,etime,command'
         set preview_command 'ps -p {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree -w -g 3 -p {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp " 0*$(echo {2}) $(echo {1}) .*" --regexp "^"'
     end
-    # TODO: I have to add `|| echo` because if the command substitution doesn't print anything, even the quoted string
-    # next to it won't print
-    set environment_command 'eval (test (ps -o user= -p {2}) = root && echo "sudo " || echo)"ps -o command -Eww {2}" | less 1>/dev/tty 2>&1'
+    # TODO: I have to add `|| echo` because if the command substitution doesn't print anything, even
+    # the quoted string next to it won't print
+    #
+    # TODO: The `string match` isn't perfect: if a variable's value includes something that matches
+    # the environment variable name pattern ([a-zA-Z_]+[a-zA-Z0-9_]*=), `string match` will consider
+    # that the start of a new variable. For this reason we should change the order of the variables
+    # e.g. sorting
+    set environment_command 'eval (test (ps -o user= -p {2}) = root && echo "sudo " || echo)"ps -o command -Eww {2}" | string match --groups-only --all --regex -- " ([a-zA-Z_]+[a-zA-Z0-9_]*)=(.*?) [a-zA-Z_]+[a-zA-Z0-9_]*=" | paste -d "="  - - | sed -e "s/\$/│/" | string replace "=" "=│" | page 0</dev/tty 1>/dev/tty 2>&1'
 
     set choice \
         ( \

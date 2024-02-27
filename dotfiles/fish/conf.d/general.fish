@@ -66,8 +66,9 @@ abbr --add --global -- man 'man -P "page -t man"'
 # Since some programs just use the value in EDITOR without checking VISUAL, and vice-versa,
 # I set both to the same editor.
 # For more info: https://unix.stackexchange.com/questions/4859/visual-vs-editor-what-s-the-difference/302391#302391
-set --global --export VISUAL (command -v myeditor)
+set --global --export VISUAL (command -v edit)
 set --global --export EDITOR $VISUAL
+abbr --add --global -- e edit
 abbr --add --global -- vim nvim
 
 # Change the color grep uses for highlighting matches to magenta

@@ -459,6 +459,7 @@ Plug("stevearc/dressing.nvim", {
 })
 
 Plug("iamcco/markdown-preview.nvim")
+vim.g.mkdp_auto_close = 0
 
 -- TODO: I'll keep using this fork until this PR is merged:
 -- https://github.com/NvChad/nvim-colorizer.lua/pull/63

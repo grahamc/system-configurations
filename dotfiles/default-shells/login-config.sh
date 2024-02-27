@@ -8,12 +8,10 @@ if uname | grep -q Darwin; then
   fi
 fi
 
-# nix
-#
 # For non-NixOS linux distributions
 # see: https://nixos.wiki/wiki/Locales
 #
-# TODO: See if Nix should do this as part of the script below.
+# TODO: See if Nix should do this as part of its setup script
 if uname | grep -q Linux; then
   export LOCALE_ARCHIVE=/usr/lib/locale/locale-archive
 fi
