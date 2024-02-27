@@ -1,7 +1,7 @@
 # This module has the configuration that I always want applied.
 {...}: {
   imports = [
-    ../login-shell.nix
+    ../default-shells.nix
     ../fish.nix
     ../nix.nix
     ../neovim.nix

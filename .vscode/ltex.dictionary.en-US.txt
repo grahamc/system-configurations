@@ -69,3 +69,4 @@ ripgrep
 matchit
 Autocommands
 Enum
+$PATH-like

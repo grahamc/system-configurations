@@ -2,8 +2,8 @@ if not status is-login
     exit
 end
 
-if test -f ~/.profile
-    # My ~/.profile is written in POSIX sh so I'm sourcing it in a child POSIX shell and having that shell print out
+if test -f ~/.config/default-shells/login-config.sh
+    # My login config is written in POSIX sh so I'm sourcing it in a child POSIX shell and having that shell print out
     # its environment, one variable per line, in the form `export NAME='value'`. This way I can just `eval` those
     # export statements in this shell.
     #
@@ -21,6 +21,6 @@ if test -f ~/.profile
     # variable. The second sed command will replace those single quotes with `'"'"'`. An explanation of what that does
     # is here: https://stackoverflow.com/a/1250279. The groups of 3 backslashes are there to escape the double quotes
     # right after them.
-    set sh_environment "$(sh -c ". ~/.profile; env -0 -u SHLVL -u PWD -u _ | sed -z \"s/^/export /;s/'/'\\\"'\\\"'/g;s/=/='/;s/\$/'\;\n/\" | tr -d '\000'")"
+    set sh_environment "$(sh -c ". ~/.config/default-shells/login-config.sh; env -0 -u SHLVL -u PWD -u _ | sed -z \"s/^/export /;s/'/'\\\"'\\\"'/g;s/=/='/;s/\$/'\;\n/\" | tr -d '\000'")"
     eval "$sh_environment"
 end

@@ -31,7 +31,7 @@ local speakerctl_path = nil
 ---@diagnostic disable-next-line: unused-local
 execute(
   "/bin/sh",
-  { "-c", [[. ~/.profile; printf "$(command -v speakerctl)"]] },
+  { "-c", [[. ~/.config/default-shells/login-config.sh; printf "$(command -v speakerctl)"]] },
   function(_, stdout, _)
     speakerctl_path = stdout
   end

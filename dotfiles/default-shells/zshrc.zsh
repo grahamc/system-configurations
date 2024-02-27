@@ -1,3 +1,14 @@
+# I'm putting the login in the rc, as opposed to the profile, because I want it to run last and rc's
+# get sourced after profiles. Running last will allow me to override anything in a vendor config and
+# entries I add to the $PATH will precede any vendor config entries.
+
+if [[ -o login ]]; then
+  if [ -f ~/.config/default-shells/login-config.sh ]; then
+    emulate sh -c '. ~/.config/default-shells/login-config.sh'
+    emulate zsh
+  fi
+fi
+
 # If the current shell isn't fish, use fish in place of bash for an interactive shell.
 #
 # The `-t` checks are to make sure that we are at a terminal because as part of vscode's shell

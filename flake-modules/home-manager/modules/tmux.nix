@@ -29,8 +29,13 @@
     # technically aren't children of the shell that I launched TMUX with. I would do this
     # with TMUX's `default-command`, but that may break tmux-resurrect, as explained in my
     # tmux.conf.
+    #
+    # I am removing $SHELL so tmux will use the OS default shell instead of what it will probably be
+    # when I run tmux, fish. This is because the Determinate Systems Nix installer doesn't configure
+    # fish properly. When this issue is resolved, I can remove this:
+    # https://github.com/DeterminateSystems/nix-installer/issues/576
     ''
-      exec env -u SHLVL ${pkgs.tmux}/bin/tmux "$@"
+      exec env -u SHLVL -u SHELL ${pkgs.tmux}/bin/tmux "$@"
     '';
 in {
   home = {
