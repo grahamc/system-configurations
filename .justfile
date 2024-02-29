@@ -23,7 +23,7 @@ switch:
     hostctl-switch
 
 # Update flake inputs and switch to a new generation
-upgrade: pull && commit
+upgrade: cleanup pull && commit
     # We pull first because otherwise tools might try to perform upgrades
     # that have already been performed on another machine and just need to be pulled in.
     # And if upgrading a tool results in a dotfile being changed, (e.g. Nix flake.lock)
@@ -97,7 +97,7 @@ get-secrets:
 
 # TODO: Automate this with rsyslog
 cleanup:
-    rm ~/.local/state/nvim/*.log
+    rm -f ~/.local/state/nvim/*.log
     rm -f ~/.local/state/nvim/undo/*
 
 # Apply the first generation of a home-manager configuration.

@@ -1,6 +1,6 @@
 Plug("kyazdani42/nvim-tree.lua", {
   config = function()
-    local live_preview_enter_key_mapping = require("terminal.utilities").set_up_live_preview({
+    require("terminal.utilities").set_up_live_preview({
       id = "NvimTree",
       file_type = "NvimTree",
       set_up_once = false,
@@ -36,6 +36,9 @@ Plug("kyazdani42/nvim-tree.lua", {
       hijack_cursor = true,
       sync_root_with_cwd = true,
       open_on_tab = true,
+      trash = {
+        cmd = "trash",
+      },
       update_focused_file = {
         enable = true,
       },
@@ -93,15 +96,47 @@ Plug("kyazdani42/nvim-tree.lua", {
         },
       },
       on_attach = function(buffer_number)
-        -- Set the default mappings
         local api = require("nvim-tree.api")
-        api.config.mappings.default_on_attach(buffer_number)
+        local function opts(desc, remap)
+          return {
+            desc = "nvim-tree: " .. desc,
+            buffer = buffer_number,
+            noremap = remap ~= true,
+            silent = true,
+            nowait = true,
+          }
+        end
 
-        live_preview_enter_key_mapping(buffer_number)
-        vim.keymap.set("n", "h", "<BS>", { buffer = buffer_number, remap = true })
-        vim.keymap.set("n", "l", "<CR>", { buffer = buffer_number, remap = true })
-        -- Taken from base config
-        vim.keymap.set("n", "<C-k>", "6k", { buffer = buffer_number, remap = true })
+        vim.keymap.set("n", "<BS>", api.node.navigate.parent_close, opts("Close Directory"))
+        vim.keymap.set("n", "h", api.node.navigate.parent_close, opts("Close Directory"))
+        vim.keymap.set("n", "<S-Tab>", api.node.navigate.parent_close, opts("Close Directory"))
+
+        -- remap so they use the live preview mapping
+        vim.keymap.set("n", "l", "<CR>", opts("Open", true))
+        vim.keymap.set("n", "<Tab>", "<CR>", opts("Open", true))
+        vim.keymap.set("n", "o", "<CR>", opts("Open", true))
+        vim.keymap.set("n", "<2-LeftMouse>", "<CR>", opts("Open", true))
+
+        vim.keymap.set("n", "y", api.fs.copy.filename, opts("Copy Name"))
+        vim.keymap.set("n", "x", api.fs.cut, opts("Cut"))
+        vim.keymap.set("n", "p", api.fs.paste, opts("Paste"))
+
+        vim.keymap.set("n", "<C-t>", api.node.open.tab, opts("Open: New Tab"))
+        vim.keymap.set("n", "<C-v>", api.node.open.vertical, opts("Open: Vertical Split"))
+        vim.keymap.set("n", "<C-h>", api.node.open.horizontal, opts("Open: Horizontal Split"))
+
+        vim.keymap.set("n", "K", api.node.show_info_popup, opts("Info"))
+        vim.keymap.set("n", "d", api.fs.trash, opts("Trash"))
+        vim.keymap.set("n", ".", api.node.run.cmd, opts("Run Command"))
+        vim.keymap.set("n", "a", api.fs.create, opts("Create File Or Directory"))
+        vim.keymap.set("n", "c", api.fs.copy.node, opts("Copy"))
+        vim.keymap.set("n", "g?", api.tree.toggle_help, opts("Help"))
+        vim.keymap.set("n", "gy", api.fs.copy.absolute_path, opts("Copy Absolute Path"))
+        vim.keymap.set("n", "H", api.tree.toggle_hidden_filter, opts("Toggle Filter: Dotfiles"))
+        vim.keymap.set("n", "q", api.tree.close, opts("Close"))
+        vim.keymap.set("n", "R", api.tree.reload, opts("Refresh"))
+        vim.keymap.set("n", "r", api.fs.rename_full, opts("Rename"))
+        vim.keymap.set("n", "<2-RightMouse>", api.tree.change_root_to_node, opts("CD"))
       end,
     })
     local nvim_tree_group_id = vim.api.nvim_create_augroup("MyNvimTree", {})

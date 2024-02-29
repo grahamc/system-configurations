@@ -1,12 +1,18 @@
 -- vim:foldmethod=marker
 
 vim.o.mouse = "a"
-vim.o.scrolloff = 999
 vim.o.jumpoptions = "stack"
 vim.o.mousemoveevent = true
 
 -- Gets rid of the press enter prompt when accesing a file over a network
 vim.g.netrw_silent = 1
+
+-- TODO: Avoid weird flickering issue, should report this
+vim.api.nvim_create_autocmd("CursorHold", {
+  callback = function()
+    vim.o.scrolloff = vim.fn.line(".") == 1 and 0 or 999
+  end,
+})
 
 -- open links with browser {{{
 --

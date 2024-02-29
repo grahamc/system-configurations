@@ -414,8 +414,13 @@ Plug("echasnovski/mini.nvim", {
 vim.api.nvim_create_autocmd("User", {
   pattern = "PlugEndPost",
   callback = function()
-    require("mini.misc").setup_restore_cursor({
-      center = false,
-    })
+    -- TODO: mini.misc seems to be setting the cursor to 0,0 if there is nothing to restore, but
+    -- I don't want that when I'm editing the commandline. I should ask if this behavior can be
+    -- changed.
+    if #(os.getenv("BIGOLU_EDITING_FISH_BUFFER") or "") == 0 then
+      require("mini.misc").setup_restore_cursor({
+        center = false,
+      })
+    end
   end,
 })

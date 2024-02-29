@@ -13,30 +13,35 @@ local function listen_for_system_theme_changes()
     .. "/nvim-wezterm/pipes"
   vim.fn.mkdir(xdg_runtime_path, "p")
 
-  local command_output = vim.fn.system(string.format([[TMPDIR='%s' mktemp -u]], xdg_runtime_path))
-  if command_output == nil then
-    vim.notify("Failed to start system theme syncer", vim.log.levels.ERROR)
-    return
-  end
+  vim.system(
+    { "mktemp", "-u" },
+    { text = true, env = { TMPDIR = xdg_runtime_path } },
+    vim.schedule_wrap(function(result)
+      local pipe_file = vim.trim(result.stdout)
+      if result.code ~= 0 then
+        vim.notify("Failed to start system theme syncer", vim.log.levels.ERROR)
+        return
+      end
 
-  local pipe_file = vim.trim(command_output)
-  vim.fn.serverstart(pipe_file)
+      vim.fn.serverstart(pipe_file)
 
-  vim.api.nvim_create_autocmd("User", {
-    pattern = "ColorSchemeDark",
-    callback = function()
-      vim.o.background = "dark"
-    end,
-    nested = true,
-  })
-  vim.api.nvim_create_autocmd("User", {
-    pattern = "ColorSchemeLight",
-    callback = function()
-      vim.o.background = "light"
-    end,
-    nested = true,
-  })
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "ColorSchemeDark",
+        callback = function()
+          vim.o.background = "dark"
+        end,
+        nested = true,
+      })
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "ColorSchemeLight",
+        callback = function()
+          vim.o.background = "light"
+        end,
+        nested = true,
+      })
+    end)
+  )
 end
 
 vim.o.background = get_system_theme()
-vim.defer_fn(listen_for_system_theme_changes, 0)
+listen_for_system_theme_changes()

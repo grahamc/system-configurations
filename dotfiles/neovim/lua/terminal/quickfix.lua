@@ -10,7 +10,7 @@ local function clear_last_highlighted_buffer()
   end
 end
 
-local live_preview_enter_key_mapping = terminal_utilities.set_up_live_preview({
+terminal_utilities.set_up_live_preview({
   id = "QuickFix",
   file_type = "qf",
   on_select = function()
@@ -400,7 +400,6 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.b.minicursorword_disable_permanent = true
     vim.b.minianimate_disable = true
 
-    live_preview_enter_key_mapping(vim.api.nvim_get_current_buf())
     vim.keymap.set("n", "q", vim.cmd.cclose, { buffer = true, desc = "Close quickfix window" })
     vim.keymap.set("n", "<F7>", function()
       move("last")

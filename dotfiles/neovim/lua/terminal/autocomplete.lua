@@ -12,7 +12,6 @@ Plug("hrsh7th/cmp-cmdline")
 
 Plug("dmitmel/cmp-cmdline-history")
 
--- This won't work until this is fixed: https://github.com/andersevenrud/cmp-tmux/issues/29
 Plug("andersevenrud/cmp-tmux")
 
 Plug("hrsh7th/cmp-buffer")

@@ -24,6 +24,7 @@ Plug("RRethy/nvim-treesitter-endwise")
 
 -- TODO: Support bullets in comments
 Plug("bullets-vim/bullets.vim")
+vim.g.bullets_outline_levels = {}
 vim.g.bullets_pad_right = 0
 -- no partial checkboxes
 vim.g.bullets_checkbox_markers = " X"
@@ -57,11 +58,49 @@ vim.api.nvim_create_autocmd("FileType", {
       "<Plug>(bullets-toggle-checkbox)",
       { buffer = true, remap = true }
     )
+
+    -- TODO: Added dot-repeat support. I can remove this when one of these issues are resolved:
+    -- https://github.com/bullets-vim/bullets.vim/issues/137
+    -- https://github.com/bullets-vim/bullets.vim/issues/90
+    -- Maybe I should upstream this.
+    vim.keymap.set({ "n", "x" }, "<Plug>(repeatable-bullets-demote)", function()
+      vim.cmd([[
+      silent! call repeat#set("\<Plug>(repeatable-bullets-demote)", v:count)
+      ]])
+      return [[<Plug>(bullets-demote)<Esc>]]
+    end, { expr = true, buffer = true, remap = true })
+    vim.keymap.set({ "n", "x" }, "<Plug>(repeatable-bullets-promote)", function()
+      vim.cmd([[
+      silent! call repeat#set("\<Plug>(repeatable-bullets-promote)", v:count)
+      ]])
+      return [[<Plug>(bullets-promote)<Esc>]]
+    end, { expr = true, buffer = true, remap = true })
+
     vim.keymap.set({ "i" }, "<C-k>", "<Plug>(bullets-demote)", { buffer = true, remap = true })
     vim.keymap.set({ "i" }, "<C-j>", "<Plug>(bullets-promote)", { buffer = true, remap = true })
-    vim.keymap.set({ "n" }, "<<", "<Plug>(bullets-promote)", { buffer = true, remap = true })
-    vim.keymap.set({ "n" }, ">>", "<Plug>(bullets-demote)", { buffer = true, remap = true })
-    vim.keymap.set({ "x" }, "<", "<Plug>(bullets-promote)<Esc>", { buffer = true, remap = true })
-    vim.keymap.set({ "x" }, ">", "<Plug>(bullets-demote)<Esc>", { buffer = true, remap = true })
+    vim.keymap.set(
+      { "n" },
+      "<<",
+      "<Plug>(repeatable-bullets-promote)",
+      { buffer = true, remap = true }
+    )
+    vim.keymap.set(
+      { "n" },
+      ">>",
+      "<Plug>(repeatable-bullets-demote)",
+      { buffer = true, remap = true }
+    )
+    vim.keymap.set(
+      { "x" },
+      "<",
+      "<Plug>(repeatable-bullets-promote)",
+      { buffer = true, remap = true }
+    )
+    vim.keymap.set(
+      { "x" },
+      ">",
+      "<Plug>(repeatable-bullets-demote)",
+      { buffer = true, remap = true }
+    )
   end,
 })

@@ -38,7 +38,10 @@ in {
           "conform".source = "general/executables/conform.bash";
         }
         // optionalAttrs isDarwin {
-          "trash".source = "general/executables/trash.py";
+          "trash".source = "general/executables/trash-macos.py";
+        }
+        // optionalAttrs isLinux {
+          "trash".source = "general/executables/trash-linux.sh";
         };
     };
 

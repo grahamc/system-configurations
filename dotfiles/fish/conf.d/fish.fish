@@ -363,3 +363,37 @@ mybind --no-focus \ck _man_page
 # navigate history
 mybind --key f7 up-or-search
 mybind --key f8 down-or-search
+
+# It's like the builtin  edit_command_buffer, but it retains the cursor position
+function __edit_commandline
+    set buffer "$(commandline)"
+    set index (commandline --cursor)
+    set line 1
+    set col 1
+    set cursor 0
+
+    for char in (string split '' "$buffer")
+        if test $cursor -ge $index
+            break
+        end
+
+        if test "$char" = \n
+            set col 1
+            set line (math $line + 1)
+        else
+            set col (math $col + 1)
+        end
+
+        set cursor (math $cursor + 1)
+    end
+
+    set cursor_file (mktemp)
+    set write_index +'lua vim.api.nvim_create_autocmd([[VimLeavePre]], {callback = function() vim.cmd([[redi! > '$cursor_file']]); print(#table.concat(vim.fn.getline(1, [[.]]), " ") - (#vim.fn.getline([[.]]) - vim.fn.col([[.]])) - 1); vim.cmd([[redi END]]); end})'
+
+    set temp (mktemp)
+    printf "$buffer" >$temp
+    BIGOLU_EDITING_FISH_BUFFER=1 nvim "+call cursor($line,$col)" "$write_index" $temp
+    commandline "$(cat $temp)"
+    commandline --cursor "$(cat $cursor_file)"
+end
+mybind \ee __edit_commandline

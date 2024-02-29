@@ -1,5 +1,10 @@
--- Enabling this will cache any lua modules that are required after this point.
-vim.loader.enable()
+-- TODO: When running in a portable home, vim.loader hit the max path segment limit (255) so until
+-- this issue gets resolved, I won't use it:
+-- https://github.com/neovim/neovim/issues/25008
+if #(os.getenv("BIGOLU_IN_PORTABLE_HOME") or "") == 0 then
+  -- Enabling this will cache any lua modules that are required after this point.
+  vim.loader.enable()
+end
 
 -- Every time we enter a buffer, reset the fold options. This avoids the issue where you set a
 -- foldmethod maybe because the attached LSP server supports it, but then switch to another buffer
@@ -21,7 +26,7 @@ local has_ttyin = vim.fn.has("ttyin") == 1
 local has_ttyout = vim.fn.has("ttyout") == 1
 IsRunningInTerminal = has_ttyout or has_ttyin
 
--- My configuration is mixed in with my plugin definitions so I have to do everything here.
+-- My configuration is mixed in with my plugin definitions so I have to do everything in here.
 require("plug").load_plugins(function()
   require("base")
   require("terminal")

@@ -1,9 +1,10 @@
-#!/usr/bin/env fish
+#!/bin/sh
+# ^ Using /bin/sh instead of env for speed
+# shellcheck shell=sh
 
-# If we're in TMUX and we're attached from a vscode terminal, use the same vscode instance we are in as our editor.
-if test -n "$TMUX"
-and test "$(tmux show-environment VSCODE_INJECTION)" != '-VSCODE_INJECTION'
-    exec code --reuse-window --wait $argv
+# If we're in TMUX and we're attached from a vscode terminal, use the vscode instance we are in
+if [ -n "$TMUX" ] && [ "$(tmux show-environment VSCODE_INJECTION)" != '-VSCODE_INJECTION' ]; then
+    exec code --reuse-window --wait "$@"
 else
-    exec nvim $argv
-end
+    exec nvim "$@"
+fi

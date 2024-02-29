@@ -22,7 +22,6 @@ if test (uname) = Linux
     # reload the database used to search for applications
     abbr --add --global desktop-entry-reload 'sudo update-desktop-database; update-desktop-database ~/.local/share/applications'
     abbr --add --global ruhroh 'sudo truncate -s 0 /var/log/syslog'
-    abbr --add --position anywhere --global trash 'trash put'
     abbr --add --global font-reload 'fc-cache -vr'
     if type --query flatpak
         and flatpak list --app | grep -q 'org.wezfurlong.wezterm'
@@ -69,7 +68,6 @@ abbr --add --global -- man 'man -P "page -t man"'
 set --global --export VISUAL (command -v edit)
 set --global --export EDITOR $VISUAL
 abbr --add --global -- e edit
-abbr --add --global -- vim nvim
 
 # Change the color grep uses for highlighting matches to magenta
 set --global --export GREP_COLORS 'ms=00;35'

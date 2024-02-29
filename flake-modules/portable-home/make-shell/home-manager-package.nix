@@ -15,7 +15,6 @@
     {
       fish = minimalFish;
       comma = makeEmptyPackage "stub-comma";
-      coreutils-full = prev.coreutils;
       gitMinimal = makeEmptyPackage "stub-git";
 
       vimPlugins =

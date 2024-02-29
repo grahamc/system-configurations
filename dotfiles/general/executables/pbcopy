@@ -39,17 +39,15 @@ else
   exit
 fi
 
-# Get input either from stdin or a file.
+# Get input from stdin
 #
-# Command substitution removes trailing newlines, but I want to keep them so I add a character to the end of the input.
-# This way any trailing newlines will no longer be trailing.
-input=$(cat "$@"; printf x)
-# This returns the input, without the extra character at the end.
-get_input () {
-  printf %s "$input" | head -c -1
-}
+# Command substitution removes trailing newlines, but I want to keep them. To do so, I add a
+# character to the end of the input, this way any trailing newlines will no longer be trailing. Then
+# I remove the extra character by getting a substring that excludes the last character.
+input=$(cat; printf x)
+input=${input::-1}
 
-inputlen=$( get_input | wc -c )
+inputlen=$( printf '%s' "$input" | wc -c )
 
 # https://sunaku.github.io/tmux-yank-osc52.html
 # The maximum length of an OSC 52 escape sequence is 100_000 bytes, of which
@@ -63,6 +61,6 @@ if [ "$inputlen" -gt "$maxlen" ]; then
 fi
 
 # build up OSC 52 ANSI escape sequence
-esc="\033]52;c;$( get_input | head -c $maxlen | base64 | tr -d '\r\n' )\a"
+esc="\033]52;c;$( printf '%s' "$input" | head -c $maxlen | base64 | tr -d '\r\n' )\a"
 
 printf %b "$esc" > "$target_tty"

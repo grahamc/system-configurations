@@ -81,6 +81,13 @@ function M.set_up_live_preview(opts)
     pattern = file_type,
     once = set_up_once,
     callback = function()
+      vim.keymap.set("n", "<CR>", function()
+        context.is_explicit_jump = true
+        -- TODO: why won't is_explicit_jump work?
+        IsExplicitJump = "ok"
+        on_select()
+      end, { buffer = vim.api.nvim_get_current_buf() })
+
       vim.api.nvim_create_autocmd("CursorHold", {
         buffer = vim.api.nvim_get_current_buf(),
         nested = true,
@@ -104,16 +111,6 @@ function M.set_up_live_preview(opts)
       })
     end,
   })
-
-  -- Gotta return it because when I try to set it through file type here, nvim-tree overwrites it
-  return function(bufnr)
-    vim.keymap.set("n", "<CR>", function()
-      context.is_explicit_jump = true
-      -- TODO: why won't is_explicit_jump work?
-      IsExplicitJump = "ok"
-      on_select()
-    end, { buffer = bufnr })
-  end
 end
 
 return M

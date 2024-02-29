@@ -25,7 +25,7 @@
   # want the programs that the script depends on to be in the $PATH because I don't want them
   # on the $PATH of the shell that gets launched at the end of the script. Instead, I'll
   # supply the dependencies through the variables listed below.
-  coreutilsBinaryPath = "${pkgs.coreutils}/bin";
+  coreutilsBinaryPath = "${pkgs.coreutils-full}/bin";
   shellBootstrapScriptDependencies =
     {
       activationPackage = import ./home-manager-package.nix {inherit pkgs self minimalFish isGui;};

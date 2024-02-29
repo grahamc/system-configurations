@@ -35,7 +35,7 @@
           set -o nounset
           set -o pipefail
 
-          exec ${GUIShellBootstrap}/bin/shell -c 'wezterm --config '"'"'font_locator="ConfigDirsOnly"'"'"' --config '"'"'font_dirs={"${pkgs.myFonts}"}'"'"' --config '"'"'default_prog={"'$SHELL'"}'"'"
+          exec ${GUIShellBootstrap}/bin/shell -c 'exec wezterm --config "font_locator=[[ConfigDirsOnly]]" --config "font_dirs={[[${pkgs.myFonts}]]}" --config "default_prog={[[$SHELL]]}" --config "set_environment_variables={SHELL=[[$SHELL]]}"'
         '';
     in {
       apps = {
