@@ -36,6 +36,7 @@ in {
           "process-output".source = "general/executables/process-output";
           "fish_tokenize".source = "general/executables/fish_tokenize.fish";
           "conform".source = "general/executables/conform.bash";
+          "default-shell".source = "general/executables/default-shell.sh";
         }
         // optionalAttrs isDarwin {
           "trash".source = "general/executables/trash-macos.py";

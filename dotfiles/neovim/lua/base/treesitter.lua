@@ -57,8 +57,8 @@ if IsRunningInTerminal then
   local filetypes_with_syntax_support = vim.fn.getcompletion("", "syntax") or {}
   local function should_enable_syntax()
     return not require("nvim-treesitter.parsers").has_parser()
-    and not is_current_buffer_too_big_to_highlight()
-    and vim.tbl_contains(filetypes_with_syntax_support, vim.bo.filetype)
+      and not is_current_buffer_too_big_to_highlight()
+      and vim.tbl_contains(filetypes_with_syntax_support, vim.bo.filetype)
   end
 
   -- Enable syntax highlighting for filetypes without treesitter parsers
@@ -77,8 +77,8 @@ if IsRunningInTerminal then
     once = true,
     callback = function()
       if should_enable_syntax() then
-        vim.cmd.syntax('on')
-        vim.cmd.syntax('manual')
+        vim.cmd.syntax("on")
+        vim.cmd.syntax("manual")
       end
     end,
   })
