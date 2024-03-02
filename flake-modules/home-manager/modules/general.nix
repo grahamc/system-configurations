@@ -39,9 +39,6 @@ in {
         }
         // optionalAttrs isDarwin {
           "trash".source = "general/executables/trash-macos.py";
-        }
-        // optionalAttrs isLinux {
-          "trash".source = "general/executables/trash-linux.sh";
         };
     };
 

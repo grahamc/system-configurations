@@ -25,7 +25,7 @@ in {
   };
 
   config = let
-    pluginNames = lib.strings.splitString "\n" (builtins.readFile config.vimPlug.pluginFile);
+    pluginNames = builtins.filter (name: name != "") (lib.strings.splitString "\n" (builtins.readFile config.vimPlug.pluginFile));
     replaceDotsWithDashes = builtins.replaceStrings ["."] ["-"];
     plugins =
       map

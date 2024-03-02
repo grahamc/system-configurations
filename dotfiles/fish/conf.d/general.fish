@@ -29,6 +29,9 @@ if test (uname) = Linux
     end
     abbr --add --global open xdg-open
     alias pbpaste fish_clipboard_paste
+    # autocomplete doesn't work unless "put" is used, even though just 'trash' is an alias for
+    # 'trash put'
+    abbr --add --position anywhere --global trash 'trash put'
 end
 
 # sudo

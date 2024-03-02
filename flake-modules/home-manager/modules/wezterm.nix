@@ -4,7 +4,6 @@
   specialArgs,
   ...
 }: let
-  inherit (pkgs.stdenv) isDarwin;
   inherit (specialArgs) isGui;
   inherit (lib.attrsets) optionalAttrs;
 in
@@ -16,12 +15,17 @@ in
       ncursesWithWezterm
     ];
 
-    home.file = optionalAttrs isDarwin {
+    home.file = {
       # Since environment variables from the login shell don't get inherited by apps in macOS,
       # my terminal will use the system ncurses, which doesn't have an entry for wezterm. To
       # work around this, I have to put the wezterm terminfo in a place where the system ncurses
       # will find it.
-      ".terminfo/77/wezterm".source = "${pkgs.ncursesWithWezterm}/share/terminfo/77/wezterm";
+      #
+      # Wezterm also needs it when running in flatpak.
+      ".terminfo" = {
+        source = "${pkgs.ncursesWithWezterm}/share/terminfo/";
+        recursive = true;
+      };
     };
 
     repository.symlink.xdg.configFile = {

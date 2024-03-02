@@ -7,6 +7,24 @@ end
 # Sets the cursor shape to a blinking bar
 echo -ne '\033[5 q'
 
+# I don't want to use this variable. Only thing I know that sets this is the Determinate Systems Nix
+# installer
+set fish_user_paths
+
+# TODO: The Determinate Systems Nix installer adds nix to the $PATH even if fish wasn't launched in
+# login mode. I don't like that so I'm going to try to remove the prepended entries by deduplicating
+# the whole path, favoring later entries. I'm doing it this way to to avoid hardcoding the paths
+# they add. Maybe I should ask them if this behavior should be changed.
+if not status is-login
+    set new_path
+    for path in (printf '%s\n' $PATH | tac)
+        if not contains $path $new_path
+            set --prepend new_path $path
+        end
+    end
+    set PATH $new_path
+end
+
 # Print banner
 if not set --query BANNER_WAS_PRINTED
     set banner Fish Shell v(string split ' ' (fish --version) | tail -n 1)

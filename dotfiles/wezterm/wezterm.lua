@@ -24,16 +24,8 @@ local CustomEvent = {
   ThemeToggleRequested = "theme-toggled",
   SystemAppearanceChanged = "system-appearance-changed",
 }
-local function exists(file)
-  local ok, err, code = os.rename(file, file)
-  if not ok then
-    if code == 13 then
-      -- Permission denied, but it exists
-      return true
-    end
-  end
-  return ok, err
-end
+local state_directory = os.getenv("XDG_STATE_HOME") or (os.getenv("HOME") .. "/.local/state")
+local nvim_wezterm_runtime_directory = state_directory .. "/nvim-wezterm"
 
 -- general
 config.window_close_confirmation = "NeverPrompt"
@@ -48,6 +40,9 @@ config.use_ime = false
 config.enable_kitty_keyboard = true
 config.enable_kitty_graphics = true
 config.automatically_reload_config = false
+
+-- TODO: wezterm can't find the right terminfo when it's running through flatpak. this should work
+-- for now
 config.term = "wezterm"
 
 -- font
@@ -71,7 +66,7 @@ config.font_rules = {
   },
 }
 config.underline_position = -9
-config.font_size = 11.3
+config.font_size = 12
 if is_mac then
   config.font_size = 14
 end
@@ -285,28 +280,28 @@ end)
 
 -- Sync theme with neovim
 local function fire_theme_event_in_neovim(theme)
-  local pipe_directory = (os.getenv("XDG_RUNTIME_DIR") or os.getenv("TMPDIR") or "/tmp")
-    .. "/nvim-wezterm/pipes"
-  local event_name = "ColorSchemeLight"
-  if theme == Theme.Dark then
-    event_name = "ColorSchemeDark"
-  end
-  if exists(pipe_directory) then
+  local pipe_directory = nvim_wezterm_runtime_directory .. "/pipes"
+  local event_name = theme == Theme.Dark and "ColorSchemeDark" or "ColorSchemeLight"
+  if os.execute(string.format([[test -d %s]], pipe_directory)) then
     os.execute(
       string.format(
-        [[find '%s' -type s -o -type p | xargs -I PIPE ~/.nix-profile/bin/nvim --server PIPE --remote-expr 'v:lua.vim.api.nvim_exec_autocmds("User", {"pattern": "%s"})']],
+        [[find '%s' -type s -o -type p | xargs -I PIPE '%s' --server PIPE --remote-expr 'v:lua.vim.api.nvim_exec_autocmds("User", {"pattern": "%s"})']],
         pipe_directory,
+        nvim_wezterm_runtime_directory .. "/nvim",
         event_name
       )
     )
   end
 end
 local function set_theme_in_state_file(theme)
-  local state_dir = (os.getenv("XDG_STATE_HOME") or (os.getenv("HOME") .. "/.local/state"))
-    .. "/wezterm"
-  local theme_file = state_dir .. "/current-theme.txt"
+  local theme_file = nvim_wezterm_runtime_directory .. "/current-theme.txt"
   os.execute(
-    string.format([[mkdir -p '%s' && echo '%s' > '%s']], state_dir, theme.as_string, theme_file)
+    string.format(
+      [[mkdir -p '%s' && echo '%s' > '%s']],
+      nvim_wezterm_runtime_directory,
+      theme.as_string,
+      theme_file
+    )
   )
 end
 ---@diagnostic disable-next-line: unused-local

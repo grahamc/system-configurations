@@ -125,7 +125,7 @@ codegen-neovim:
     cat \
         <(sg --lang lua --pattern "Plug '"'$ARG'"'" --json=compact "${config_files[@]}" | jq --raw-output '.[].metaVariables.single.ARG.text') \
         <(sg --lang lua --pattern 'Plug "$ARG"' --json=compact "${config_files[@]}" | jq --raw-output '.[].metaVariables.single.ARG.text') \
-    | sort --unique | cut -d'/' -f2 | head -c -1 > ./dotfiles/neovim/plugin-names.txt
+    | cut -d'/' -f2 | head -c -1 | sort --unique > ./dotfiles/neovim/plugin-names.txt
 
 # Pull changes from git remote
 [private]
