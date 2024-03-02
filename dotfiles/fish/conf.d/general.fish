@@ -71,6 +71,7 @@ abbr --add --global -- man 'man -P "page -t man"'
 set --global --export VISUAL (command -v edit)
 set --global --export EDITOR $VISUAL
 abbr --add --global -- e edit
+abbr --add --global -- vim nvim
 
 # Change the color grep uses for highlighting matches to magenta
 set --global --export GREP_COLORS 'ms=00;35'

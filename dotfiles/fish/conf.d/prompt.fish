@@ -1,6 +1,6 @@
-# NOTE: Unlike most of my other fish configs, this one does not check if the shell is being run
-# interactively. This is because some of the functions defined here will be called in a non-interactive shell by
-# fish-async-prompt.
+# NOTE: Unlike most of my other fish configs, this one does not check if the shell is being
+# run interactively. This is because some of the functions defined here will be called in a
+# non-interactive shell by fish-async-prompt.
 
 set _color_warning_text (set_color yellow)
 set _color_error_text (set_color red)

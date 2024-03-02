@@ -54,17 +54,31 @@ vim.api.nvim_create_autocmd("FileType", {
 Plug("IndianBoy42/tree-sitter-just")
 
 if IsRunningInTerminal then
+  local filetypes_with_syntax_support = vim.fn.getcompletion("", "syntax") or {}
+  local function should_enable_syntax()
+    return not require("nvim-treesitter.parsers").has_parser()
+    and not is_current_buffer_too_big_to_highlight()
+    and vim.tbl_contains(filetypes_with_syntax_support, vim.bo.filetype)
+  end
+
   -- Enable syntax highlighting for filetypes without treesitter parsers
   vim.cmd.syntax("manual")
-  local filetypes_with_syntax_support = vim.fn.getcompletion("", "syntax") or {}
   vim.api.nvim_create_autocmd("FileType", {
     callback = function()
-      if
-        not require("nvim-treesitter.parsers").has_parser()
-        and not is_current_buffer_too_big_to_highlight()
-        and vim.tbl_contains(filetypes_with_syntax_support, vim.bo.filetype)
-      then
+      if should_enable_syntax() then
         vim.bo.syntax = "ON"
+      end
+    end,
+  })
+
+  -- TODO: The above doesn't work on the first opened file, but this does. May have to do with
+  -- the fact that nvim-treesitter sets syntax off when the first filetype is detected.
+  vim.api.nvim_create_autocmd("FileType", {
+    once = true,
+    callback = function()
+      if should_enable_syntax() then
+        vim.cmd.syntax('on')
+        vim.cmd.syntax('manual')
       end
     end,
   })

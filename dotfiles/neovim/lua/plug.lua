@@ -98,7 +98,7 @@ end
 function M.load_plugins(plugin_definer)
   run_with_faked_syntax_on(function()
     plug_begin()
-    plugin_definer(plug)
+    plugin_definer()
     plug_end()
   end)
 end

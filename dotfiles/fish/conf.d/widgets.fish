@@ -30,8 +30,11 @@ function __widgets_replace_current_commandline_token
     commandline --current-token --replace "$escaped_replacement_tokens"
 end
 
-function grep-widget --description 'Search by line, recursively, from current directory'
+set __directory_placeholder '{bigolu_dir}'
+function __grep_widget --argument-names title grep_command
     set dir (__widgets_get_directory_from_current_token)
+
+    set grep_command (string replace --all $__directory_placeholder (string escape --no-quoted --style script -- $dir) $grep_command)
 
     set prompt_directory ''
     if test $dir != '.'
@@ -42,7 +45,6 @@ function grep-widget --description 'Search by line, recursively, from current di
         set prompt_directory '('(string unescape --style=script $prompt_directory)') '
     end
 
-    set rg_command 'rg --hidden --column --line-number --no-heading --color=always --smart-case --follow --'
     set choices \
         ( \
         FZF_DEFAULT_COMMAND="echo -n ''" \
@@ -50,9 +52,9 @@ function grep-widget --description 'Search by line, recursively, from current di
         fzf-tmux-zoom \
             --disabled \
             # we refresh-preview after executing vim in the event that the file gets modified by vim
-            --bind "ctrl-e:execute(nvim '+call cursor({2},{3})' {1} < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $rg_command {q} $dir || true" \
+            --bind "ctrl-e:execute(nvim '+call cursor({2},{3})' {1} < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $grep_command || true" \
             --delimiter ':' \
-            --prompt $prompt_directory'lines: ' \
+            --prompt $prompt_directory$title \
             --preview-window '+{2}/3,75%,~2' \
             # the minus 2 prevents a weird line wrap issue
             #
@@ -70,7 +72,20 @@ function grep-widget --description 'Search by line, recursively, from current di
     # this should be done whenever a binding produces output (see: man bind)
     commandline -f repaint
 end
+
+function grep-widget --description 'Search by line, recursively, from current directory'
+    __grep_widget \
+        'pattern: ' \
+        "rg --hidden --column --line-number --no-heading --color=always --smart-case --follow -- {q} $__directory_placeholder"
+end
 mybind --no-focus \cg grep-widget
+
+function ast-grep-widget --description 'Search by AST node, recursively, from current directory'
+    __grep_widget \
+        'AST pattern: ' \
+        'ast-grep --pattern {q} --json=stream '$__directory_placeholder' | jq --raw-output \'"\(.file):\(.range.start.line + 1):\(.range.start.column + 1):\(.lines | gsub("\n"; "'(set_color bryellow)'␤'(set_color normal)'"))"\''
+end
+mybind --no-focus \ea ast-grep-widget
 
 function man-widget --description 'Search manpages'
     # This command turns 'manpage_name(section) - description' into 'section manpage_name'.

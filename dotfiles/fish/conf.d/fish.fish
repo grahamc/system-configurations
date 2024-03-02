@@ -388,11 +388,11 @@ function __edit_commandline
     end
 
     set cursor_file (mktemp)
-    set write_index +'lua vim.api.nvim_create_autocmd([[VimLeavePre]], {callback = function() vim.cmd([[redi! > '$cursor_file']]); print(#table.concat(vim.fn.getline(1, [[.]]), " ") - (#vim.fn.getline([[.]]) - vim.fn.col([[.]])) - 1); vim.cmd([[redi END]]); end})'
+    set write_index 'lua vim.api.nvim_create_autocmd([[VimLeavePre]], {callback = function() vim.cmd([[redi! > '$cursor_file']]); print(#table.concat(vim.fn.getline(1, [[.]]), " ") - (#vim.fn.getline([[.]]) - vim.fn.col([[.]])) - 1); vim.cmd([[redi END]]); end})'
 
-    set temp (mktemp)
+    set temp (mktemp --suffix '.fish')
     printf "$buffer" >$temp
-    BIGOLU_EDITING_FISH_BUFFER=1 nvim "+call cursor($line,$col)" "$write_index" $temp
+    BIGOLU_EDITING_FISH_BUFFER=1 nvim -c "call cursor($line,$col)" -c "$write_index" $temp
     commandline "$(cat $temp)"
     commandline --cursor "$(cat $cursor_file)"
 end
