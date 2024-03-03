@@ -28,14 +28,11 @@ if test (uname) = Linux
         alias wezterm 'flatpak run org.wezfurlong.wezterm'
     end
     abbr --add --global open xdg-open
-    alias pbpaste fish_clipboard_paste
+    abbr --add --position anywhere --global pbpaste fish_clipboard_paste
     # autocomplete doesn't work unless "put" is used, even though just 'trash' is an alias for
     # 'trash put'
     abbr --add --position anywhere --global trash 'trash put'
 end
-
-# sudo
-abbr --add --global sudo 'sudo --preserve-env=PATH,SHLVL,TMUX,BANNER_WAS_PRINTED'
 
 # timg
 function timg --wraps timg

@@ -66,7 +66,7 @@ config.font_rules = {
   },
 }
 config.underline_position = -9
-config.font_size = 12
+config.font_size = 11.3
 if is_mac then
   config.font_size = 14
 end

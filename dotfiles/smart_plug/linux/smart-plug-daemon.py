@@ -16,9 +16,9 @@ from smart_plug import SmartPlugController
 class SleepWakeShutdownListener(object):
     def __init__(
         self,
-        sleep_handler: Callable = None,
-        wake_handler: Callable = None,
-        shutdown_handler: Callable = None,
+        sleep_handler: Callable = any,
+        wake_handler: Callable = any,
+        shutdown_handler: Callable = any,
     ):
         # Doing this as early as possible since the main loop provider must be set
         # before any communication over the bus occurs e.g. registering signal handlers,

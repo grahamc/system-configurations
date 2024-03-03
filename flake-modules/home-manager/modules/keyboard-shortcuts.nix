@@ -14,7 +14,10 @@
         lib.hm.dag.entryAfter
         ["writeBoundary"]
         ''
+          # Use capslock as ctrl
           ${pkgs.glib}/bin/gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:nocaps']"
+          # This was bound to alt+`, but I use that for vscode so I'm clearing it.
+          ${pkgs.glib}/bin/gsettings set org.gnome.desktop.wm.keybindings switch-group '[]'
         '';
     };
 

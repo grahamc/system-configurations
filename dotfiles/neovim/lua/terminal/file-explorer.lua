@@ -111,9 +111,10 @@ Plug("kyazdani42/nvim-tree.lua", {
         vim.keymap.set("n", "h", api.node.navigate.parent_close, opts("Close Directory"))
         vim.keymap.set("n", "<S-Tab>", api.node.navigate.parent_close, opts("Close Directory"))
 
+        vim.keymap.set("n", "<Tab>", api.node.open.preview, opts("Open Directory", true))
+
         -- remap so they use the live preview mapping
         vim.keymap.set("n", "l", "<CR>", opts("Open", true))
-        vim.keymap.set("n", "<Tab>", "<CR>", opts("Open", true))
         vim.keymap.set("n", "o", "<CR>", opts("Open", true))
         vim.keymap.set("n", "<2-LeftMouse>", "<CR>", opts("Open", true))
 

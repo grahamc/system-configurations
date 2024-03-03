@@ -12,6 +12,7 @@ print(f'Python v{".".join(str(x) for x in sys.version_info[:3])}, IPython v{".".
 
 # enable verbose exception traces
 %xmode Verbose
+print(f"You can change this with {code} %xmode Plain/Context/Verbose/Minimal {normal}")
 
 # enable autoreload
 %autoreload 2

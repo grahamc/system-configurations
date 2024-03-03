@@ -1,3 +1,5 @@
+# type: ignore
+
 import asyncio
 import sys
 from collections.abc import Awaitable
@@ -51,7 +53,7 @@ class SmartPlugController(object):
                 # SmartPlug.update().
                 self._block_until_complete(plug.update())
                 return plug
-            except SmartDeviceException as _:
+            except (SmartDeviceException, TimeoutError) as _:
                 return None
 
         return None
@@ -72,7 +74,7 @@ class SmartPlugController(object):
     # this, I look for the correct broadcast address myself using psutil which gives me
     # all addresses assigned to each NIC on my machine. I then try discovery using all
     # the addresses that are marked as broadcast addresses until I find a Kasa device.
-    def _discover_devices(self):
+    def _discover_devices(self):  # -> Any | dict[Any, Any]:
         # return the first non-empty map of devices
         return next(
             filter(
@@ -85,13 +87,13 @@ class SmartPlugController(object):
             {},
         )
 
-    def _discover_devices_for_broadcast_address(self, broadcast_address):
+    def _discover_devices_for_broadcast_address(self, broadcast_address):  # -> Any:
         # discover() has its own timeout of 5 seconds so I don't need to set a timeout
         return self._block_until_complete(
             Discover.discover(target=broadcast_address), timeout=None
         )
 
-    def _get_broadcast_addresses(self):
+    def _get_broadcast_addresses(self) -> set[str]:
         return {
             address.broadcast
             for addresses in psutil.net_if_addrs().values()
@@ -99,10 +101,12 @@ class SmartPlugController(object):
             if address.broadcast is not None
         }
 
-    def _add_plug_address_to_cache(self, ip_address):
+    def _add_plug_address_to_cache(self, ip_address) -> None:
         SmartPlugController._cache[self._plug_alias] = ip_address
 
-    def _block_until_complete(self, awaitable: Awaitable, timeout: Optional[int] = 1):
+    def _block_until_complete(
+        self, awaitable: Awaitable, timeout: Optional[int] = 1
+    ):  # -> Any:
         return asyncio.get_event_loop().run_until_complete(
             asyncio.wait_for(awaitable, timeout=timeout)
         )

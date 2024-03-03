@@ -54,11 +54,6 @@
           paths = [final.neovim-nightly];
           buildInputs = [final.makeWrapper];
           postBuild = ''
-            # NOTE: Using wrapProgram more than once will change the name of the process (you can
-            # see this in `ps`). This was breaking vim-tmux-navigator which uses the process name
-            # to determine if the current tmux pane is running vim. To avoid this I'm doing all my
-            # wrapping in one call to wrapProgram.
-            #
             # TERMINFO: Neovim uses unibilium to discover term info entries which is a problem for
             # me because unibilium sets its terminfo search path at build time so I'm setting the
             # search path here.

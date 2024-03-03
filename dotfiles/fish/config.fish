@@ -7,32 +7,6 @@ end
 # Sets the cursor shape to a blinking bar
 printf '\033[5 q'
 
-# I don't want to use this variable. Only thing I know that sets this is the Determinate Systems Nix
-# installer
-set fish_user_paths
-
-# TODO: The Determinate Systems Nix installer adds nix to the $PATH even if the shell wasn't
-# launched in login mode. Specifically:
-#   - Its fish config is not guarded by a login-mode check
-#   - Its zsh config is in /etc/zshrc which gets run whenever zsh is interactive, regardless
-#   of whether or not it is in login mode
-#
-# This may result in duplicates so to get around that, I'm going to try to remove the extra
-# prepended entries by deduplicating the whole path, favoring later entries. I'm doing it this way
-# to to avoid hardcoding the paths they add.
-#
-# Maybe I should ask them if this behavior should be changed by adding a login-mode guard or only
-# adding the $PATH entries if they aren't already present.
-if not status is-login
-    set new_path
-    for path in (printf '%s\n' $PATH | tac)
-        if not contains $path $new_path
-            set --prepend new_path $path
-        end
-    end
-    set PATH $new_path
-end
-
 # Print banner
 if not set --query BANNER_WAS_PRINTED
     set banner Fish Shell v(string split ' ' (fish --version) | tail -n 1)
@@ -73,6 +47,15 @@ if test -z "$TMUX"
         if not set --query FIND_IT_FASTER_ACTIVE
             tmux-attach-to-project
         end
+        # HACK: vscode doesn't set VSCODE_INJECTION when launching a terminal when debugging so instead
+        # I'm looking for any variable that starts with VSCODE. This is actually ideal for me because
+        # currently some garbage gets printed to screen whenever I first connect to tmux from vscode
+        # which gets executed as part of the debugger command, causing it to fail. Since I can tell when
+        # a debug session is being started, I won't connect to TMUX in that case.
+        #
+        # TODO: I should report this error. Might be related to this:
+        # https://github.com/tmux/tmux/issues/3470
+    else if env | grep -q -E '^VSCODE'
     else
         tmux_attach
     end
