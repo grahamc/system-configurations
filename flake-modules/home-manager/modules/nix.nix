@@ -1,9 +1,12 @@
 {
   pkgs,
   specialArgs,
+  lib,
   ...
 }: let
   inherit (specialArgs) flakeInputs;
+  inherit (lib.attrsets) optionalAttrs;
+  inherit (pkgs.stdenv) isDarwin;
   nix-daemon-reload =
     pkgs.writeShellApplication
     {
@@ -63,11 +66,17 @@ in {
         "nix".source = "nix/nix-wrapper.fish";
       };
 
-      configFile = {
-        "nix/nix.conf".source = "nix/nix.conf";
-        "nix/repl-startup.nix".source = "nix/repl-startup.nix";
-        "fish/conf.d/zz-nix.fish".source = "nix/zz-nix.fish";
-      };
+      configFile =
+        {
+          "nix/nix.conf".source = "nix/nix.conf";
+          "nix/repl-startup.nix".source = "nix/repl-startup.nix";
+          "fish/conf.d/zz-nix.fish".source = "nix/zz-nix.fish";
+        }
+        // optionalAttrs isDarwin {
+          # TODO: On macOS, fish isn't reading the /usr/local/share/fish/vendor_conf.d confs for some
+          # reason so I have to put this in a user directory.
+          "fish/conf.d/zz-nix-fix.fish".source = "nix/nix-fix/zz-nix-fix.fish";
+        };
     };
 
     git.onChange = let
