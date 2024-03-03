@@ -52,17 +52,38 @@ Plug("stevearc/conform.nvim", {
       vim.api.nvim_feedkeys(command, "n", false)
     end
 
-    vim.keymap.set("x", "gf", function()
-      format_region("'<", "'>")
-    end, { desc = "Format code", silent = true })
+    if IsRunningInTerminal then
+      vim.keymap.set("x", "gf", function()
+        conform.format()
+        local escape_key = vim.api.nvim_replace_termcodes("<ESC>", true, false, true)
+        vim.api.nvim_feedkeys(escape_key, "n", true)
+      end, { desc = "Format code" })
 
-    _G.FormatCodeOperatorFunc = function()
-      format_region("'[", "']")
+      _G.FormatCodeOperatorFunc = function()
+        conform.format({
+          range = {
+            start = vim.api.nvim_buf_get_mark(0, "["),
+            ["end"] = vim.api.nvim_buf_get_mark(0, "]"),
+          },
+        })
+      end
+      vim.keymap.set("n", "gf", function()
+        vim.o.operatorfunc = "v:lua.FormatCodeOperatorFunc"
+        return "g@"
+      end, { expr = true, desc = "Format code", silent = true })
+    else
+      vim.keymap.set("x", "gf", function()
+        format_region("'<", "'>")
+      end, { desc = "Format code", silent = true })
+
+      _G.FormatCodeOperatorFunc = function()
+        format_region("'[", "']")
+      end
+      vim.keymap.set("n", "gf", function()
+        vim.o.operatorfunc = "v:lua.FormatCodeOperatorFunc"
+        return "g@"
+      end, { expr = true, desc = "Format code", silent = true })
     end
-    vim.keymap.set("n", "gf", function()
-      vim.o.operatorfunc = "v:lua.FormatCodeOperatorFunc"
-      return "g@"
-    end, { expr = true, desc = "Format code", silent = true })
 
     local prettier = { { "prettierd", "prettier" } }
     local formatters_by_ft = {

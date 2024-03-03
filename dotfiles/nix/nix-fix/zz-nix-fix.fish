@@ -27,7 +27,7 @@ function __fish_path_fix
     # adding the $PATH entries if they aren't already present.
     if not status is-login
         set new_path
-        for path in (printf '%s\n' $PATH | tac)
+        for path in (printf '%s\n' $PATH[-1..1])
             if not contains $path $new_path
                 set --prepend new_path $path
             end
@@ -44,7 +44,8 @@ function __fish_path_fix
     # the above TODO.
     #
     # HACK: Not sure if the output `set --show` is part of the public API.
-    set inherited_path (set --show PATH | tail -n 1 | string match --groups-only --regex -- '^.*\|(.*)\|$' | string split ':')
+    set show_output (set --show PATH)
+    set inherited_path (printf $show_output[-1] | string match --groups-only --regex -- '^.*\|(.*)\|$' | string split ':')
     if test (count $inherited_path) -eq 0
         echo 'Error: unable to fix path, couldn\'t get the inherited path' >&2
         return
@@ -57,7 +58,7 @@ function __fish_path_fix
             set --erase PATH[$index_in_current_path]
             if test $index -eq 1
                 set PATH $PATH[1] $entry $PATH[2..]
-                # after removing the iterm the index may be greater
+                # after removing the term the index may be greater
             else if test $index -ge (count $PATH)
                 set --append PATH $entry
             else

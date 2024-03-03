@@ -457,12 +457,9 @@ Plug("williamboman/mason-lspconfig.nvim", {
         end
       )
 
-      -- Set the filetype of all the currently open buffers to trigger a 'FileType' event for each
-      -- buffer so nvim_lsp has a chance to attach to any buffers that were openeed before it was
-      -- configured. This way I can load nvim_lsp asynchronously.
-      vim.iter(vim.api.nvim_list_bufs()):each(function(buf)
-        vim.bo[buf].filetype = vim.bo[buf].filetype
-      end)
+      -- re-trigger lsp attach so nvim_lsp has a chance to attach to any buffers that were openeed
+      -- before it was configured. This way I can load nvim_lsp asynchronously.
+      require("terminal.utilities").trigger_lsp_attach()
     end
 
     -- mason.nvim needs to run it's config first so this will ensure that happens.

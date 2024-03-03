@@ -65,6 +65,12 @@ Plug("williamboman/mason.nvim", {
     -- Also set the count when a package is uninstalled in the event we uninstall the package that
     -- had an update.
     registry:on("package:uninstall:success", vim.schedule_wrap(set_mason_update_count))
+
+    -- Give any newly installed lsp servers a chance to attach to the currently opened buffers.
+    registry:on(
+      "package:install:success",
+      vim.schedule_wrap(require("terminal.utilities").trigger_lsp_attach)
+    )
   end,
 })
 

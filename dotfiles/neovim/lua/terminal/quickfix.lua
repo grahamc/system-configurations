@@ -487,8 +487,32 @@ vim.api.nvim_create_autocmd({ "WinLeave" }, {
 })
 
 local function on_list(options)
-  vim.fn.setqflist({}, " ", options)
-  vim.api.nvim_command("copen")
+  if #options.items == 1 then
+    local item = options.items[1]
+    local range = item.user_data.range
+      or item.user_data.targetRange
+      or item.user_data.targetSelectionRange
+    local start_pos = range.start
+    local path = item.filename
+
+    local function open_file_in_background(file)
+      vim.cmd.badd(file)
+      local buf = vim.fn.bufnr(file)
+
+      return buf
+    end
+    local bufnr = (vim.fn.bufexists(path) ~= 0) and vim.fn.bufnr(path)
+      or open_file_in_background(path)
+
+    terminal_utilities.set_jump_before(function()
+      ---@diagnostic disable-next-line: param-type-mismatch
+      vim.api.nvim_win_set_buf(0, bufnr)
+      vim.api.nvim_win_set_cursor(0, { start_pos.line + 1, start_pos.character })
+    end)()
+  else
+    vim.fn.setqflist({}, " ", options)
+    vim.api.nvim_command("copen")
+  end
 end
 vim.keymap.set("n", "<M-d>", function()
   local qf_entries = vim

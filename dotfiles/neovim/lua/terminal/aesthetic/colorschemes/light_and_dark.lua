@@ -142,23 +142,24 @@ local theme = lush(function(injected_functions)
     Identifier {}, -- (*) Any variable name
     Function       { Identifier, }, --   Function name (also: methods for classes)
 
-    PreProc { Statement }, -- (*) Generic Preprocessor
-    Include        { PreProc, }, --   Preprocessor #include
-    Define         { PreProc, }, --   Preprocessor #define
-    Macro          { PreProc, }, --   Same as Define
-    PreCondit      { PreProc, }, --   Preprocessor #if, #else, #endif, etc.
-
-    Type { Statement }, -- (*) int, long, char, etc.
-    StorageClass   { Type, }, --   static, register, volatile, etc.
-    Structure      { Type, }, --   struct, union, enum, etc.
-    Typedef        { Type, }, --   A typedef
-
     Special { t_11 }, -- (*) Any special symbol
     SpecialChar    { Special, }, --   Special character in a constant
     Tag            { t_6, }, --   You can use CTRL-] on this
     Delimiter      { Identifier, }, --   Character that needs attention
     SpecialComment { Special, }, --   Special things inside a comment (e.g. '\n')
     Debug          { Special, }, --   Debugging statements
+    SpecialKey { Special }, -- Unprintable characters: text displayed differently from what it really is. But not 'listchars' whitespace. |hl-Whitespace|
+
+    PreProc { Special }, -- (*) Generic Preprocessor
+    Include        { PreProc, }, --   Preprocessor #include
+    Define         { PreProc, }, --   Preprocessor #define
+    Macro          { PreProc, }, --   Same as Define
+    PreCondit      { PreProc, }, --   Preprocessor #if, #else, #endif, etc.
+
+    Type { Identifier }, -- (*) int, long, char, etc.
+    StorageClass   { Type, }, --   static, register, volatile, etc.
+    Structure      { Type, }, --   struct, union, enum, etc.
+    Typedef        { Type, }, --   A typedef
 
     Constant { Identifier }, -- (*) Any constant
     String { t_2, }, --   A string constant: "this is a string"
@@ -243,7 +244,6 @@ local theme = lush(function(injected_functions)
       LspCodeLensSeparator { LspCodeLens, fg = t_15.fg, } , -- Used to color the seperator between two or more code lens.
       -- }}}
 
-    SpecialKey { t_5 }, -- Unprintable characters: text displayed differently from what it really is. But not 'listchars' whitespace. |hl-Whitespace|
     Conceal { t_15 }, -- Placeholder characters substituted for concealed text (see 'conceallevel')
     Directory { t_4 }, -- Directory names (and other special names in listings)
     EndOfBuffer {}, -- Filler lines (~) after the end of the buffer. By default, this is highlighted like |hl-NonText|.
@@ -252,7 +252,6 @@ local theme = lush(function(injected_functions)
     TreesitterContext { bg = is_light and t_0.fg.darken(3) or t_0.fg.lighten(2) }, -- Line used for closed folds
     SignColumn {}, -- Column where |signs| are displayed
     Substitute { Search }, -- |:substitute| replacement text highlighting
-    MatchParen { t_5, bold = true, underline = true }, -- Character under the cursor or just before it, if it is a paired bracket, and its match. |pi_paren.txt|
     ModeMsg {}, -- 'showmode' message (e.g., "-- INSERT -- ")
     MsgArea { StatusLine }, -- Area for messages and cmdline
     MsgSeparator {}, -- Separator for scrolled messages, `msgsep` flag of 'display'
@@ -278,7 +277,7 @@ local theme = lush(function(injected_functions)
     Todo { t_3 }, -- Anything that needs extra attention; mostly the keywords TODO FIXME and XXX
     VirtColumn { NonText, },
     NvimDapVirtualText { LspInlayHint },
-    LuaSnipInlayHint { LspInlayHint, fg = t_11.fg },
+    LuaSnipInlayHint { LspInlayHint, fg = Special.fg },
     QuickfixPreview { Search, nocombine = true },
     AerialLine { bg = is_light and t_0.fg.darken(6) or t_0.fg.lighten(6), },
 
@@ -397,6 +396,7 @@ local theme = lush(function(injected_functions)
     qfLineNr { qfFileName, },
     QuickfixBorderNotCurrent { Ignore },
     QuickfixTitleNotCurrent { Normal },
+    MatchParen { bg = MiniCursorword.bg, fg = t_5.fg, }, -- Character under the cursor or just before it, if it is a paired bracket, and its match. |pi_paren.txt|
 
     -- nvim-telescope {{{
     -- List of telescope highlight groups:
@@ -697,8 +697,8 @@ local theme = lush(function(injected_functions)
     sym"@variable.parameter" { sym"@variable" },
     sym"@type" { Type }, -- Type
     sym"@type.definition" { Typedef }, -- Typedef
-    sym"@type.builtin" { Type },
-    sym"@type.qualifier" { Type },
+    sym"@type.builtin" { Statement },
+    sym"@type.qualifier" { Statement },
     sym"@tag" { Tag }, -- Tag
     sym"@tag.attribute" { Tag },
     sym"@tag.delimiter" { Delimiter },

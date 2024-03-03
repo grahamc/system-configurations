@@ -25,6 +25,14 @@ function M.set_persistent_highlights(key, highlights)
   id_map[key] = vim.api.nvim_create_autocmd("ColorScheme", { callback = helper })
 end
 
+-- Set the filetype of all the currently open buffers to trigger a 'FileType' event for each
+-- buffer. This will trigger lsp attach
+function M.trigger_lsp_attach()
+  vim.iter(vim.api.nvim_list_bufs()):each(function(buf)
+    vim.bo[buf].filetype = vim.bo[buf].filetype
+  end)
+end
+
 local context_by_id = {}
 function M.set_up_live_preview(opts)
   local no_op = function(...) end
