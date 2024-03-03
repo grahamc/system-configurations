@@ -101,15 +101,17 @@ in {
         };
 
         action = ''
-          echo 'The Nix $PATH fix for fish shell has changed. To apply these changes re-run the install script `${specialArgs.flakeInputs.self}/dotfiles/nix/nix-fix/install-nix-fix.bash`. Press enter to continue'
+          if uname | grep -q Linux; then
+            echo 'The Nix $PATH fix for fish shell has changed. To apply these changes re-run the install script `${specialArgs.flakeInputs.self}/dotfiles/nix/nix-fix/install-nix-fix.bash`. Press enter to continue'
 
-          # To hide any keys the user may press before enter I disable echo. After prompting them, I re-enable it.
-          stty_original="$(stty -g)"
-          stty -echo
-          # I don't care if read mangles backslashes since I'm not using the input anyway.
-          # shellcheck disable=2162
-          read _unused
-          stty "$stty_original"
+            # To hide any keys the user may press before enter I disable echo. After prompting them, I re-enable it.
+            stty_original="$(stty -g)"
+            stty -echo
+            # I don't care if read mangles backslashes since I'm not using the input anyway.
+            # shellcheck disable=2162
+            read _unused
+            stty "$stty_original"
+          fi
         '';
       }
     ];
