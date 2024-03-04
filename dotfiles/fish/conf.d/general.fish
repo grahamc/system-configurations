@@ -76,9 +76,36 @@ set --global --export GREP_COLORS 'ms=00;35'
 # ls
 # use the long format
 abbr --add --position anywhere --global ll 'ls -l'
-# broken symlinks or missing files (files that a symlink references, but don't exist) are colored red, everything
-# else is the normal color
-set --global --export LS_COLORS 'di=0:ln=0:so=0:pi=0:ex=0:bd=0:cd=0:su=0:sg=0:tw=0:ow=0:or=31:mi=31:no=37:*=37'
+# Add colors for files types that aren't already given an icon by `ls --classify` e.g. broken
+# symlinks.
+#
+# TODO: I added color for some types that are already given icons by `ls --classify`. The colors let
+# me distinguish between the file name and the icon added by `--classify`. I'll remove these colors
+# when `lsd` allows for more configurable icons. see my `lsd` config for details.
+#
+# File types:
+# [bd]="block device"
+# [ca]="file with capability"
+# [cd]="character device"
+# [di]="directory"
+# [do]="door"
+# [ex]="executable file"
+# [fi]="regular file"
+# [ln]="symbolic link"
+# [mh]="multi-hardlink"
+# [mi]="missing file"
+# [no]="normal non-filename text"
+# [or]="orphan symlink"
+# [ow]="other-writable directory"
+# [pi]="named pipe, AKA FIFO"
+# [rs]="reset to no color"
+# [sg]="set-group-ID"
+# [so]="socket"
+# [st]="sticky directory"
+# [su]="set-user-ID"
+# [tw]="sticky and other-writable directory"
+# From: https://askubuntu.com/a/884513/1497983
+set --global --export LS_COLORS 'di=0:ln=93:so=93:pi=93:ex=93:bd=93:cd=93:su=93:sg=93:tw=93:ow=93:or=31:mi=31:no=37:*=37'
 
 # cd
 abbr --add --global -- - 'cd -'

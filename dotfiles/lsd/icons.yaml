@@ -2,16 +2,16 @@
 # identified by their file name and/or extension.
 
 filetype:
-  dir: "\uf755 " # 
+  dir: " "
   file: ""
-  pipe: "\uea99 " # 
-  socket: "\uebcb " # 
-  executable: "\uf423 " # 
-  symlink-dir: "\uf482 " # 
-  symlink-file: "\uf481 " # 
-  device-char: "\ue601 " # 
-  device-block: "\uf1b2 " # 
-  special: "\ufbc2 " # ﯂
+  pipe: " "
+  socket: " "
+  executable: " "
+  symlink-dir: " "
+  symlink-file: " "
+  device-char: " "
+  device-block: " "
+  special: " "
 
 # Remove default icons for files with certain names or extensions, for reasons stated at the top of the file.
 # Some of these names are directories though so they will be given an icon.
