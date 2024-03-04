@@ -34,6 +34,7 @@
       chmod = "${coreutilsBinaryPath}/chmod";
       basename = "${coreutilsBinaryPath}/basename";
       fish = "${minimalFish}/bin/fish";
+      sh = "${pkgs.yash}/bin/yash";
       which = "${pkgs.which}/bin/which";
     }
     // optionalAttrs isLinux {

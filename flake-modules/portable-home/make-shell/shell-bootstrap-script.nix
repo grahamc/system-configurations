@@ -3,6 +3,7 @@
   copy,
   chmod,
   fish,
+  sh,
   basename,
   which,
   activationPackage,
@@ -51,10 +52,10 @@ in ''
     # recognize them so it must come directly after the opening quote of the script.
     switch "$base"
       case env
-        # TODO: Wrapping this caused an infinite loop so I'll copy it instead
+        # TODO: Wrapping this caused an infinite loop so I'll copy it instead. I guess the interpreter I was using in the shebang was calling env somehow.
         ${copy} -L $program $mutable_bin/env
       case fish
-        echo -s >$mutable_bin/$base "#!${fish}
+        echo -s >$mutable_bin/$base "#!${sh}
           # I unexport the XDG Base directories so host programs pick up the host's XDG directories.
           XDG_CONFIG_HOME=$config_dir XDG_DATA_HOME=$data_dir XDG_STATE_HOME=$state_dir XDG_RUNTIME_DIR=$runtime_dir XDG_CACHE_HOME=$cache_dir \
           $program \
@@ -63,11 +64,11 @@ in ''
             --init-command 'set --unexport XDG_STATE_HOME' \
             --init-command 'set --unexport XDG_RUNTIME_DIR' \
             --init-command 'set --unexport XDG_CACHE_HOME' \
-            " ' $argv'
+            \"\$@\""
       case '*'
-        echo -s >$mutable_bin/$base "#!${fish}
+        echo -s >$mutable_bin/$base "#!${sh}
           XDG_CONFIG_HOME=$config_dir XDG_DATA_HOME=$data_dir XDG_STATE_HOME=$state_dir XDG_RUNTIME_DIR=$runtime_dir XDG_CACHE_HOME=$cache_dir BIGOLU_IN_PORTABLE_HOME=1 \
-          $program" ' $argv'
+          $program \"\$@\""
     end
 
     ${chmod} +x $mutable_bin/$base
