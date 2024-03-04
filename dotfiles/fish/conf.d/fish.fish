@@ -9,20 +9,22 @@ if not status is-interactive
 end
 
 set --global fish_color_normal
-set --global fish_color_command
+set --global fish_color_command $fish_color_normal
+set --global fish_color_keyword blue
 set --global fish_color_quote green
-set --global fish_color_redirection
-set --global fish_color_end
+set --global fish_color_redirection magenta
+set --global fish_color_end $fish_color_keyword
 set --global fish_color_error red
-set --global fish_color_param
+set --global fish_color_param $fish_color_normal
+set --global fish_color_option $fish_color_normal
 set --global fish_color_comment brwhite
 set --global fish_color_match
 set --global fish_color_search_match --background=brblack
 # TODO: I want to remove the default bolding, but currently only the background is configurable.
 # Issue: https://github.com/fish-shell/fish-shell/issues/2442
 set --global fish_pager_color_selected_background --background=brblack
-set --global fish_color_operator
-set --global fish_color_escape
+set --global fish_color_operator $fish_color_keyword
+set --global fish_color_escape $fish_color_redirection
 set --global fish_color_cwd
 set --global fish_color_autosuggestion brwhite --italics --bold
 set --global fish_color_user
@@ -32,7 +34,7 @@ set --global fish_pager_color_completion
 set --global fish_pager_color_description
 set --global fish_pager_color_progress --background=brblack normal
 set --global fish_pager_color_secondary
-set --global fish_color_cancel black
+set --global fish_color_cancel $fish_color_autosuggestion
 set --global fish_color_valid_path
 
 abbr --add --global r fish-reload
@@ -106,7 +108,7 @@ function __set_reload_keybind --on-event fish_prompt
 end
 
 # search variables
-function variable-widget --description 'Search environment variables'
+function variable-widget --description 'Search shell/environment variables'
     for name in (set --names)
         set value (set --show $name)
         set entry "$name"\t"$(string join \n $value)"
@@ -182,9 +184,9 @@ function _fzf_complete
 
         # Don't add a space if the entry is an abbreviation.
         #
-        # TODO: This assumes that an abbreviation can only be expanded if it's the first token in the commandline.
-        # However, with the flag '--position anywhere', abbreviations can be expanded anywhere in the commandline so
-        # I should check for that flag.
+        # TODO: This assumes that an abbreviation can only be expanded if it's the first token in
+        # the commandline.  However, with the flag '--position anywhere', abbreviations can be
+        # expanded anywhere in the commandline so I should check for that flag.
         #
         # We determine if the entry will be the first token by checking for an empty commandline.
         # We trim spaces because spaces don't count as tokens.
@@ -223,29 +225,6 @@ end
 # Keep normal tab complete on shift+tab to expand wildcards.
 mybind -k btab complete
 
-function fish_title --argument-names current_commandline
-    if test -z "$current_commandline"
-        set current_commandline fish
-    end
-
-    # Get all commandline tokens not starting with "-"
-    echo $current_commandline | read --tokenize --list tokens
-    set tokens (string match -rv '^-|^$' -- $tokens)
-    # Skip leading commands
-    while set -q tokens[2]
-        and string match -qr -- '^(,|comma|and|begin|builtin|caffeinate|command|doas|entr|env|exec|if|mosh|nice|not|or|pipenv|prime-run|setsid|sudo|systemd-nspawn|time|while|xargs|.*=.*)$' $tokens[1]
-        set -e tokens[1]
-    end
-    set current_command $tokens[1]
-
-    if test "$TERM_PROGRAM" = WezTerm
-        printf '\033]1337;SetUserVar=%s=%s\007' title (echo -n $current_command | base64) 1>/dev/tty
-        commandline -f repaint
-    end
-
-    echo "$current_command"
-end
-
 function _ls-after-directory-change --on-variable PWD
     # These directories have too many files to always call ls on
     set blacklist /nix/store /tmp
@@ -253,7 +232,7 @@ function _ls-after-directory-change --on-variable PWD
         return
     end
 
-    ls --hyperlink=auto
+    ls
 end
 
 # Reload all fish instances

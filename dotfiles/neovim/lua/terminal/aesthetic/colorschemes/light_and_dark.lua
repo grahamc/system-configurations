@@ -142,7 +142,7 @@ local theme = lush(function(injected_functions)
     Identifier {}, -- (*) Any variable name
     Function       { Identifier, }, --   Function name (also: methods for classes)
 
-    Special { t_11 }, -- (*) Any special symbol
+    Special { t_5 }, -- (*) Any special symbol
     SpecialChar    { Special, }, --   Special character in a constant
     Tag            { t_6, }, --   You can use CTRL-] on this
     Delimiter      { Identifier, }, --   Character that needs attention
@@ -215,7 +215,7 @@ local theme = lush(function(injected_functions)
     StatusLineModeVisual { StatusLine, fg = Visual.bg, },
     StatusLineModeInsert { StatusLine, fg = t_6.fg, },
     StatusLineModeTerminal { StatusLine, fg = t_2.fg, },
-    StatusLineModeOther { StatusLine, fg = t_4.fg, },
+    StatusLineModeOther { StatusLine, fg = t_15.fg, },
     -- }}}
 
     -- tabline {{{
@@ -346,7 +346,7 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- mason.nvim {{{
-    MasonHeader { t_4, bold = true, reverse = true },
+    MasonHeader { t_6, bold = true, reverse = true },
     MasonHeaderSecondary { MasonHeader },
     MasonHighlight { t_6 },
     MasonHighlightBlockBold { MasonHighlight, bold = true, reverse = true },

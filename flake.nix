@@ -49,7 +49,8 @@
   # These names need to match the flake ID regex. The regex can be found here:
   # https://github.com/NixOS/nix/blob/ccaadc957593522e9b46336eb5afa45ff876f13f/src/libutil/url-parts.hh#L42
   #
-  # There is also an issue open for relaxing the constraints in this regex: https://github.com/NixOS/nix/issues/7703
+  # There is also an issue open for relaxing the constraints in this regex:
+  # https://github.com/NixOS/nix/issues/7703
   inputs = {
     stackline = {
       url = "github:AdamWagner/stackline";

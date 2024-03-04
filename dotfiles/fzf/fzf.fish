@@ -8,8 +8,28 @@ set --local _magnifying_glass \uf002'  '
 set --local enter_help_hint ' press ctrl+/ for help '
 set --local leave_help_hint ' press ctrl+\\ to go back '
 
-# You can't have whitespace in the `--bind` or `--color` argument which is why they're formatted differently than
-# the other flags.
+# TODO: I use the eye icon to tell which state we are in, but if fzf adds a variable for the content
+# of the 'info' section, I could just use that since they put a '+T' in there when you're tracking.
+set __track_toggle '
+    set indicator "  "
+    if test (string sub -s 1 -l 3 $FZF_PROMPT) = $indicator
+        set new (string sub -s 4 $FZF_PROMPT)
+        set bind "rebind(change)"
+    else
+        set new $indicator$FZF_PROMPT
+        set bind "unbind(change)"
+    end
+    echo "toggle-track+change-prompt($new)+$bind"
+'
+
+# You can't have whitespace in the `--bind` or `--color` argument which is why they're formatted
+# differently than the other flags.
+#
+# The ctrl-t bind is separate from the others so I can use the ':' syntax and not have to escape
+# anything in my command.
+#
+# TODO: If fzf adds a variable for the preview window label, I could have a single bind for the help
+# preview that toggles it instead of the two binds I have now.
 set --global --export FZF_DEFAULT_OPTS " \
 --bind '\
 tab:down,\
@@ -24,8 +44,7 @@ enter:accept,\
 ctrl-r:refresh-preview+change-preview-label($enter_help_hint),\
 ctrl-w:toggle-preview-wrap,\
 alt-enter:toggle,\
-ctrl-t:track+unbind(change),\
-focus:rebind(change)+change-preview-label($enter_help_hint),\
+focus:change-preview-label($enter_help_hint),\
 f7:prev-history,\
 f8:next-history,\
 ctrl-p:toggle-preview,\
@@ -71,4 +90,5 @@ scrollbar:15:dim\
     --preview-label-pos '-3:bottom' \
     --ansi \
     --tabstop 2 \
+    --bind 'ctrl-t:transform:$__track_toggle' \
     "

@@ -52,7 +52,8 @@ function __grep_widget --argument-names title grep_command
         fzf-tmux-zoom \
             --disabled \
             # we refresh-preview after executing vim in the event that the file gets modified by vim
-            --bind "ctrl-e:execute(nvim '+call cursor({2},{3})' {1} < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $grep_command || true" \
+            # tracking doesn't work when the input list is reloaded so unbind it
+            --bind "start:unbind(ctrl-t),ctrl-e:execute(nvim '+call cursor({2},{3})' {1} < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $grep_command || true" \
             --delimiter ':' \
             --prompt $prompt_directory$title \
             --preview-window '+{2}/3,75%,~2' \
