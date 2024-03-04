@@ -52,8 +52,8 @@ function __grep_widget --argument-names title grep_command
         fzf-tmux-zoom \
             --disabled \
             # we refresh-preview after executing vim in the event that the file gets modified by vim
-            # tracking doesn't work when the input list is reloaded so unbind it
-            --bind "start:unbind(ctrl-t),ctrl-e:execute(nvim '+call cursor({2},{3})' {1} < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $grep_command || true" \
+            # tracking doesn't work when the input list is reloaded so I'm binding it to a no-op.
+            --bind "ctrl-t:execute-silent(:),ctrl-e:execute(nvim '+call cursor({2},{3})' {1} < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $grep_command || true" \
             --delimiter ':' \
             --prompt $prompt_directory$title \
             --preview-window '+{2}/3,75%,~2' \
@@ -258,8 +258,8 @@ function history-widget --description 'Search history' --argument-names ui_direc
     commandline --replace -- $choices
 end
 # The script in conf.d for the plugin 'jorgebucaran/autopair.fish' is deleting my ctrl+h keybind
-# that I define in here. As a workaround, I set this keybind when the first prompt is loaded which should be after
-# autopair is loaded.
+# that I define in here. As a workaround, I set this keybind when the first prompt is loaded which
+# should be after autopair is loaded.
 function __set_fzf_history_keybind --on-event fish_prompt
     # I only want this to run once so delete the function.
     functions -e (status current-function)

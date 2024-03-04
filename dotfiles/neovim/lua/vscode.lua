@@ -67,6 +67,9 @@ end, { silent = true })
 vim.keymap.set({ "n", "x" }, "<Leader>b", function()
   vim.fn.VSCodeNotify("fuzzySearch.activeTextEditorWithCurrentSelection")
 end, { silent = true })
+vim.keymap.set({ "n", "x" }, "<Leader>a", function()
+  vim.fn.VSCodeNotify("ast-grep.search.input.focus")
+end, { silent = true })
 -- }}}
 
 -- Folds {{{

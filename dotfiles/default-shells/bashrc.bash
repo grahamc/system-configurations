@@ -1,7 +1,7 @@
 if shopt -q login_shell; then
   if [ -f ~/.config/default-shells/login-config.sh ]; then
     set -o posix
-    # shellcheck source=/dev/null
+    # shellcheck source=login-config.sh
     . ~/.config/default-shells/login-config.sh
     set +o posix
   fi

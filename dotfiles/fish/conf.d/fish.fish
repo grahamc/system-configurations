@@ -1,5 +1,5 @@
-# I'm defining this before the interactivity check so I can call this from non-interactive shells. This way I can
-# reload my shells from a script.
+# I'm defining this before the interactivity check so I can call this from non-interactive
+# shells. This way I can reload my shells from a script.
 function fish-reload
     set --universal _fish_reload_indicator (random)
 end
@@ -376,3 +376,12 @@ function __edit_commandline
     commandline --cursor "$(cat $cursor_file)"
 end
 mybind \ee __edit_commandline
+
+# fish loads builtin configs after user configs so I have to wait for the builtin binds to be
+# defined. This may change though:
+# https://github.com/fish-shell/fish-shell/issues/8553
+function __remove_paginate_keybind --on-event fish_prompt
+    # I only want this to run once so delete the function.
+    functions -e (status current-function)
+    bind --erase --preset \ep
+end

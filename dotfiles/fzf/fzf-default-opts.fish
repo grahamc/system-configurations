@@ -1,17 +1,17 @@
-if not status is-interactive
-    exit
-end
+# Normally I check if the shell is interactive, but I need to run this even when the shell is
+# non-interactive so when fzf is launched from vscode, it picks up my FZF_DEFAULT_OPTS.
 
 set --local xdg_data (test -n "$XDG_DATA_HOME" && echo "$XDG_DATA_HOME" || echo "$HOME/.local/share")
 set --local _fzf_history_file "$xdg_data/fzf/fzf-history.txt"
 set --local _magnifying_glass \uf002'  '
 
-# TODO: I use the indicator to tell which state we are in, but if fzf adds a variable for the content
-# of the 'info' section, I could just use that since they put a '+T' in there when you're tracking.
+# TODO: I use the indicator to tell which state we are in, but if fzf adds a variable for the
+# content of the 'info' section, I could just use that since they put a '+T' in there when you're
+# tracking.
 set __track_toggle '
     set indicator "  "
-    if test (string sub -s 1 -l 3 $FZF_PROMPT) = $indicator
-        set new (string sub -s 4 $FZF_PROMPT)
+    set new $FZF_PROMPT
+    if set new (string replace -- $indicator "" $new)
         set bind "rebind(change)"
     else
         set new $indicator$FZF_PROMPT
@@ -20,29 +20,31 @@ set __track_toggle '
     echo "toggle-track+change-prompt($new)+$bind"
 '
 
-# TODO: I use the indicator to tell which state we are in, but if fzf adds a variable for the content
-# of the preview label, I could just use that.
+# TODO: I use the indicator to tell which state we are in, but if fzf adds a variable for the
+# content of the preview label, I could just use that.
 set __help_toggle '
     set indicator "  "
-    if test (string sub -s 1 -l 3 $FZF_PROMPT) = $indicator
-        set new (string sub -s 4 $FZF_PROMPT)
+    set new $FZF_PROMPT
+    if set new (string replace -- $indicator "" $new)
         set action "refresh-preview"
     else
-        set new $indicator$FZF_PROMPT
+        set new (string replace -- "+  " "" $new)
+        set new $indicator$new
         set action "preview(fzf-help-preview)+preview-top"
     end
     echo "$action+change-prompt($new)"
 '
 
-# TODO: I use the indicator to tell which state we are in, but if fzf adds a variable for the content
-# of the preview label, I could just use that.
+# TODO: I use the indicator to tell which state we are in, but if fzf adds a variable for the
+# content of the preview label, I could just use that.
 set __selected_toggle '
     set indicator "+  "
-    if test (string sub -s 1 -l 3 $FZF_PROMPT) = $indicator
-        set new (string sub -s 4 $FZF_PROMPT)
+    set new $FZF_PROMPT
+    if set new (string replace -- $indicator "" $new)
         set action "refresh-preview"
     else
-        set new $indicator$FZF_PROMPT
+        set new (string replace -- "  " "" $new)
+        set new $indicator$new
         set action "preview(printf %s\n {+})+preview-top"
     end
     echo "$action+change-prompt($new)"
@@ -51,12 +53,9 @@ set __selected_toggle '
 # Certain actions can cause fzf to leave the help/selected-entries preview besides pressing their
 # keybind. After executing one of those actions, we need to see the prompt back to the original.
 set __fix_prompt '
-    or test (string sub -s 1 -l 3 $FZF_PROMPT) = "  "
-    or test (string sub -s 1 -l 3 $FZF_PROMPT) = "+  "
-        set new (string sub -s 4 $FZF_PROMPT)
-    else
-        set new $indicator$FZF_PROMPT
-    end
+    set new $FZF_PROMPT
+    set new (string replace -- "  " "" $new)
+    set new (string replace -- "+  " "" $new)
     echo "change-prompt($new)"
 '
 
@@ -78,8 +77,7 @@ alt-enter:toggle,\
 f7:prev-history,\
 f8:next-history,\
 ctrl-p:toggle-preview,\
-alt-a:toggle-all,\
-resize:refresh-preview\
+alt-a:toggle-all\
 ' \
 --color '\
 16,\
@@ -116,7 +114,7 @@ scrollbar:15:dim\
     --multi \
     --no-separator \
     --scrollbar='🮉 ' \
-    --preview-label ' '$(set_color magenta)'ctrl+h'$(set_color normal)' help ' \
+    --preview-label ' $(set_color magenta)ctrl+h$(set_color normal) toggle help ' \
     --preview-label-pos '-3:bottom' \
     --ansi \
     --tabstop 2 \
@@ -124,6 +122,7 @@ scrollbar:15:dim\
     --bind 'ctrl-h:transform:$__help_toggle' \
     --bind 'ctrl-s:transform:$__selected_toggle' \
     --bind 'focus:transform:$__fix_prompt' \
-    --bind 'ctrl-r:refresh-preview+transform:$__fix_prompt',\
-    --bind 'ctrl-o:change-preview-window(right,60%|bottom,75%)+refresh-preview+transform:$__fix_prompt',\
+    --bind 'ctrl-r:refresh-preview+transform:$__fix_prompt' \
+    --bind 'resize:refresh-preview+transform:$__fix_prompt' \
+    --bind 'ctrl-o:change-preview-window(right,60%|bottom,75%)+refresh-preview+transform:$__fix_prompt' \
     "

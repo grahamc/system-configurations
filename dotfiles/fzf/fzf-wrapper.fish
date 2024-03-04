@@ -1,0 +1,34 @@
+#!/usr/bin/env fish
+
+# When I use fzf through vscode it won't be launched from my shell which is problem since I set
+# FZF_DEFAULT_OPTS in my shell config. To make sure FZF_DEFAULT_OPTS still gets set, I wrap fzf in
+# a script that uses my shell as the interpreter. This way when the interpreter starts, my shell
+# config files will load and FZF_DEFAULT_OPTS will get set. I would set FZF_DEFAULT_OPTS here, but
+# other programs, like zoxide, need FZF_DEFAULT_OPTS so I have to set it shell-wide.
+
+# Give users a way to override FZF_DEFAULT_OPTS. Setting FZF_DEFAULT_OPTS won't work since it will
+# get overwritten by my fish configuration.
+if set --export --query BIGOLU_FZF_DEFAULT_OPTS
+    set --export FZF_DEFAULT_OPTS "$BIGOLU_FZF_DEFAULT_OPTS"
+end
+
+set real_fzf
+set fzf_commands (which -a fzf)
+for command in $fzf_commands
+    # I assume the real fzf command is the one that isn't a shebang script. I do this to
+    # avoid an infinite loop that happens if I use fzf from my portable-home on my machine,
+    # since there will be 2 fzf wrappers on the $PATH in that case. I canonicalize the path
+    # to avoid symlinks.
+    if test '#!' != "$(head -c 2 (readlink --canonicalize $command))"
+        set real_fzf $command
+        break
+    end
+end
+if test -z "$real_fzf"
+    if isatty stderr
+        echo (set_color red)'Error: Unable to find the real fzf' >&2
+    end
+    exit 127
+end
+
+exec $real_fzf $argv

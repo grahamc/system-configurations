@@ -16,10 +16,11 @@ in {
   repository.symlink.xdg.executable = {
     "fzf-tmux-zoom".source = "fzf/fzf-tmux-zoom";
     "fzf-help-preview".source = "fzf/fzf-help-preview";
+    "fzf".source = "fzf/fzf-wrapper.fish";
   };
 
   repository.symlink.xdg.configFile = {
-    "fish/conf.d/fzf.fish".source = "fzf/fzf.fish";
+    "fish/conf.d/fzf-default-opts.fish".source = "fzf/fzf-default-opts.fish";
   };
 
   home.activation.fzfSetup =

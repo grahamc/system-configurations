@@ -7,7 +7,7 @@ set --global --export PAGER less
 abbr --add --global x 'chmod +x'
 abbr --add --global du 'du -shL'
 # Fix terminfo. This is needed for neovim which sets TERM to xterm-256color regardless of the
-# terminal I'm using and that causes issues some times
+# terminal I'm using and that causes issues sometimes
 if test "$TERM" != tmux-256color -a "$TERM" != wezterm
     if test -n "$TMUX"
         set --global --export TERM tmux-256color
