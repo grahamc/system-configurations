@@ -48,7 +48,7 @@ function timg --wraps timg
 end
 
 # man
-# NOTE: Per the man manpage, spaces in $MANOPT must be escaped with a backslash
+# Per the man manpage, spaces in $MANOPT must be escaped with a backslash
 set --global --export MANOPT --no-hyphenation
 # There's an environment variable you can set to change man's pager (MANPAGER), but I'm not using it because I only
 # want to change the pager in interactive mode.

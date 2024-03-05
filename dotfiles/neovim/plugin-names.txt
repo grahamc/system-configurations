@@ -48,6 +48,7 @@ nvim-treesitter-textobjects
 nvim-ts-autotag
 nvim-web-devicons
 plenary.nvim
+replacer.nvim
 reticle.nvim
 SchemaStore.nvim
 smartcolumn.nvim

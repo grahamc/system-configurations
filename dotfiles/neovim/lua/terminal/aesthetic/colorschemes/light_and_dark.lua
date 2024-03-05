@@ -273,7 +273,7 @@ local theme = lush(function(injected_functions)
     NullLsInfoBorder { FloatBorder },
     WidgetFill { t_0 },
     Underlined { t_4, underline = true, }, -- Text that stands out, HTML links
-    Ignore { t_0 }, -- Left blank, hidden |hl-Ignore| (NOTE: May be invisible here in template)
+    Ignore { t_0 }, -- Left blank, hidden |hl-Ignore| (May be invisible here in template)
     Todo { t_3 }, -- Anything that needs extra attention; mostly the keywords TODO FIXME and XXX
     VirtColumn { NonText, },
     NvimDapVirtualText { LspInlayHint },
@@ -513,93 +513,6 @@ local theme = lush(function(injected_functions)
     DropBarIconKindValue { DropBarIconKindArray },
     DropBarIconKindVariable { DropBarIconKindArray },
     DropBarIconKindWhileStatement { DropBarIconKindArray },
-    -- }}}
-
-    -- nvim-dap {{{
-    DebugSign { t_1 },
-    DebugSignRejected { t_15 },
-    DebugSignCurrentLine { },
-    DebugSignLogPoint { },
-    -- }}}
-
-    -- nvim-dap-ui {{{
-    DapUIScope { italic = true, bold = true, },
-    DapUIType { Statement },
-    DapUIValue { t_2 },
-    DapUIModifiedValue { t_3 },
-    DapUIDecoration { DapUIScope },
-    DapUIThread { DapUIScope },
-    DapUIStoppedThread { DapUIThread },
-    DapUIFrameName { Normal },
-    DapUISource { Normal },
-    DapUILineNumber { Normal },
-    DapUIFloatBorder { FloatBorder },
-    DapUIWatchesEmpty { t_15, italic = true, bold = true },
-    DapUIWatchesValue { DapUIValue },
-    DapUIWatchesError { DiagnosticVirtualTextError },
-    DapUIBreakpointsPath { DapUIScope },
-    DapUIBreakpointsInfo { Normal },
-    DapUIBreakpointsCurrentLine { Normal },
-    DapUIBreakpointsLine { t_15 },
-    DapUIBreakpointsDisabledLine { t_15, strikethrough = true, },
-    DapUICurrentFrameName { Normal },
-    DapUIStepOver { Normal },
-    DapUIStepInto { Normal },
-    DapUIStepBack { Normal },
-    DapUIStepOut { Normal },
-    DapUIStop { t_1 },
-    DapUIPlayPause { t_2 },
-    DapUIRestart { DapUIPlayPause },
-    DapUIUnavailable { t_15 },
-    DapUIWinSelect { Normal },
-    DapUIEndofBuffer { Normal },
-    -- }}}
-
-    -- overseer.nvim {{{
-    OverseerPENDING { },
-    OverseerRUNNING { t_3 },
-    OverseerSUCCESS { DiagnosticOk },
-    OverseerCANCELED { t_15 },
-    OverseerFAILURE { DiagnosticError },
-    OverseerTask { },
-    OverseerTaskBorder { t_15 },
-    OverseerOutput { },
-    OverseerComponent { },
-    OverseerField { },
-    -- }}}
-
-    -- litee.nvim {{{
-    LTSymbolJump { Search },
-    LTSymbolJumpRefs { LTSymbolJump },
-    LTSymbol { Normal },
-    LTSymbolDetail { t_15, italic = true, bold = true, },
-    LTCursor { blend = 100, fg = "black", bg = "black", },
-    LTIndentGuide { LTCursor },
-    LTExpandedGuide { LTCursor },
-    LTCollapsedGuide { LTCursor },
-    -- }}}
-
-    -- neotest.nvim {{{
-    NeotestAdapterName { Directory },
-    NeotestDir { Directory },
-    NeotestExpandMarker { t_15 },
-    NeotestFile { Directory },
-    NeotestFocused { Normal },
-    NeotestIndent { NeotestExpandMarker },
-    NeotestMarked { Special },
-    NeotestNamespace { Directory },
-    NeotestPassed { DiagnosticOk },
-    NeotestFailed { DiagnosticError },
-    NeotestRunning { t_3 },
-    NeotestWinSelect { Normal },
-    NeotestSkipped { t_15 },
-    NeotestTarget { Normal },
-    NeotestTest { Normal },
-    NeotestUnknown { t_15 },
-    NeotestWatching { Normal },
-    NeotestBorder { Normal },
-    NeotestCursor { blend = 100, fg = "black", bg = "black", },
-    NeotestCurrentLine { bg = MiniCursorword.bg },
     -- }}}
 
     -- Tree-Sitter {{{

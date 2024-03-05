@@ -578,3 +578,29 @@ vim.keymap.set(
   end),
   { desc = "References" }
 )
+
+Plug("gabrielpoca/replacer.nvim", {
+  config = function()
+    local replacer = require("replacer")
+    replacer.setup({
+      save_on_write = false,
+    })
+    vim.api.nvim_create_autocmd({ "FileType" }, {
+      pattern = "qf",
+      callback = function()
+        vim.keymap.set("n", "gr", function()
+          replacer.run()
+        end, { desc = "Activate replacer", buffer = true })
+      end,
+    })
+    vim.api.nvim_create_autocmd({ "FileType" }, {
+      pattern = "replacer",
+      callback = function()
+        vim.keymap.set("n", "gc", function()
+          replacer.save({ rename_files = true })
+        end, { desc = "Commit changes", buffer = true })
+        vim.bo.buflisted = false
+      end,
+    })
+  end,
+})

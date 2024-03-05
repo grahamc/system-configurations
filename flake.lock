@@ -517,6 +517,7 @@
         "vim-plugin-nvim-ts-autotag": "vim-plugin-nvim-ts-autotag",
         "vim-plugin-nvim-web-devicons": "vim-plugin-nvim-web-devicons",
         "vim-plugin-plenary-nvim": "vim-plugin-plenary-nvim",
+        "vim-plugin-replacer-nvim": "vim-plugin-replacer-nvim",
         "vim-plugin-reticle-nvim": "vim-plugin-reticle-nvim",
         "vim-plugin-smartcolumn-nvim": "vim-plugin-smartcolumn-nvim",
         "vim-plugin-splitjoin-vim": "vim-plugin-splitjoin-vim",
@@ -1517,6 +1518,22 @@
       "original": {
         "owner": "nvim-lua",
         "repo": "plenary.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-replacer-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1690668647,
+        "narHash": "sha256-pY0BiclthomTdgJeBFmeVStRFexgsA5V1MU+YGL0OmI=",
+        "owner": "gabrielpoca",
+        "repo": "replacer.nvim",
+        "rev": "32e1713230844fa52f7f0598c59295de3c90dc95",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gabrielpoca",
+        "repo": "replacer.nvim",
         "type": "github"
       }
     },

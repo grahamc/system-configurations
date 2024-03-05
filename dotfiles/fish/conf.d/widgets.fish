@@ -45,8 +45,7 @@ function __grep_widget --argument-names title grep_command
         set prompt_directory '('(string unescape --style=script $prompt_directory)') '
     end
 
-    set choices \
-        ( \
+    if not set choices ( \
         FZF_DEFAULT_COMMAND="echo -n ''" \
         FZF_HINTS='ctrl+e: edit in neovim' \
         fzf-tmux-zoom \
@@ -64,8 +63,9 @@ function __grep_widget --argument-names title grep_command
             #
             # wrap=never is there so the preview window is moved to the corrent line
             --preview 'bat --wrap=never --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {1} --highlight-line {2} | tail -n +2 | head -n -1' \
-      )
-    or return
+    )
+        return
+    end
 
     set choices (string split --fields 1 -- ':' $choices)
     __widgets_replace_current_commandline_token $choices
@@ -93,16 +93,16 @@ function man-widget --description 'Search manpages'
     # The `\s?` is there because macOS separates the name and section with a space.
     set parse_entry_command "string replace --regex -- '(?<name>^.*)\s?\((?<section>.*)\)\s+.*\$' '\$section \$name'"
 
-    set choice \
-        ( \
+    if not set choice ( \
         FZF_DEFAULT_COMMAND='man -k . --long' \
-         fzf-tmux-zoom  \
+          fzf-tmux-zoom  \
             --tiebreak=chunk,begin,end \
             --prompt 'manpages: ' \
             --preview "eval 'MANWIDTH=\$FZF_PREVIEW_COLUMNS man '($parse_entry_command {})" \
             --preview-window '75%' \
-      )
-    or return
+    )
+        return
+    end
 
     eval 'man '(eval "$parse_entry_command '$choice'")
 end
@@ -129,8 +129,7 @@ function process-widget --description 'Manage processes'
     # variables e.g. sorting
     set environment_command 'eval (test (ps -o user= -p {2}) = root && echo "sudo " || echo)"ps '$environment_flag' -o command -ww {2}" | string match --groups-only --all --regex -- " ([a-zA-Z_]+[a-zA-Z0-9_]*)=(.*?) [a-zA-Z_]+[a-zA-Z0-9_]*=" | paste -d "="  - - | sed -e "s/\$/│/" | string replace "=" "=│" | page 0</dev/tty 1>/dev/tty 2>&1'
 
-    set choice \
-        ( \
+    if not set choice ( \
         FZF_DEFAULT_COMMAND="$reload_command" \
         FZF_HINTS='ctrl+alt+r: refresh process list\nctrl+alt+o: view process output\nctrl+alt+e: view environment variables (at the time the process was launched)' \
         fzf \
@@ -143,8 +142,9 @@ function process-widget --description 'Manage processes'
             --tiebreak=chunk,begin,end \
             --no-hscroll \
             --preview-window 'nowrap,75%' \
-      )
-    or return
+    )
+        return
+    end
 
     set process_ids (printf %s\n $choice | awk '{print $2}')
     set process_command_names (printf %s\n $choice | awk '{print $7}')
@@ -152,15 +152,13 @@ function process-widget --description 'Manage processes'
         set --append process_ids_names "$process_ids[$index] ($process_command_names[$index])"
     end
 
-    set signal \
-        ( \
+    if not set signal ( \
         FZF_DEFAULT_COMMAND="string split ' ' (kill -l)" \
         fzf \
             --header 'Select a signal to send or exit to print the PIDs' \
             --prompt 'signals: ' \
             --preview '' \
-      )
-    or begin
+    )
         printf %s\n $process_ids
         return
     end
@@ -199,15 +197,15 @@ function file-widget --description 'Search files'
   end
   '
 
-    set choices \
-        ( \
+    if not set choices ( \
         FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' $dir; fd \$_args --follow --hidden --type file --type symlink" \
         fzf-tmux-zoom \
             --prompt "$prompt" \
             --preview "$preview_command" \
             --preview-window '75%,~2' \
-      )
-    or return
+    )
+        return
+    end
 
     __widgets_replace_current_commandline_token $choices
 
@@ -221,16 +219,16 @@ function directory-widget --description 'Seach directories'
     set dir (__widgets_get_directory_from_current_token)
     set prompt (__widgets_format_directory_for_prompt $dir)
 
-    set choices \
-        ( \
+    if not set choices ( \
         FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' $dir; fd \$_args --follow --hidden --type directory --type symlink" \
         fzf-tmux-zoom \
             --prompt "$prompt" \
             --preview 'echo -s {} \n (set_color brwhite)(string repeat --count $FZF_PREVIEW_COLUMNS ─); lsd --color always --hyperlink always {}' \
             --preview-window '75%,~2' \
             --keep-right \
-      )
-    or return
+    )
+        return
+    end
 
     __widgets_replace_current_commandline_token $choices
 
@@ -240,20 +238,21 @@ mybind --no-focus \ed directory-widget
 
 function history-widget --description 'Search history' --argument-names ui_direction
     # I'm using the NUL character to delimit history entries since they may span multiple lines.
-    set choices ( \
-    FZF_DEFAULT_COMMAND="history --null" \
-      fzf-tmux-zoom  \
-      --prompt 'history: ' \
-      --preview-window "4" \
-      --preview='printf %s\n {+} | bat --language fish --style plain --color always' \
-      --scheme history \
-      --no-hscroll \
-      --read0 \
-      --print0 \
-      --query (commandline) \
-    | string split0 \
-  )
-    or return
+    if not set choices ( \
+        FZF_DEFAULT_COMMAND="history --null" \
+        fzf-tmux-zoom  \
+        --prompt 'history: ' \
+        --preview-window "4" \
+        --preview='printf %s\n {+} | bat --language fish --style plain --color always' \
+        --scheme history \
+        --no-hscroll \
+        --read0 \
+        --print0 \
+        --query (commandline) \
+        | string split0 \
+    )
+        return
+    end
 
     commandline --replace -- $choices
 end

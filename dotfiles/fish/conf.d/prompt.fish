@@ -1,4 +1,4 @@
-# NOTE: Unlike most of my other fish configs, this one does not check if the shell is being
+# Unlike most of my other fish configs, this one does not check if the shell is being
 # run interactively. This is because some of the functions defined here will be called in a
 # non-interactive shell by fish-async-prompt.
 
@@ -248,8 +248,8 @@ function _git_context --argument-names max_length
     end
 
     set branch_name (git branch --show-current)
-    # NOTE: I should also check that this branch exists on the remote, but that check takes ~500ms whereas the
-    # rest of my prompt take ~100ms to load so I don't think it's worth the wait.
+    # I could also check that this branch exists on the remote, but that check takes ~500ms whereas
+    # the rest of my prompt take ~100ms to load so I don't think it's worth the wait.
     if test -n "$branch_name"
         set git_branch_hyperlink (_make_hyperlink_to_git_branch "$branch_name")
 

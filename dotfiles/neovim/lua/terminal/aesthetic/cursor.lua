@@ -31,35 +31,9 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.o.guicursor = "n-v-c:block-DropBarMenuCursor"
   end,
 })
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "qf", "NvimTree" },
-  callback = function()
-    vim.o.guicursor = "n-v-c:block-LTCursor"
-  end,
-})
-vim.api.nvim_create_autocmd("WinEnter", {
-  callback = function()
-    if vim.bo.filetype == "calltree" then
-      vim.o.guicursor = "n-v-c:block-LTCursor"
-    elseif vim.bo.filetype == "neotest-summary" then
-      vim.o.guicursor = "n-v-c:block-NeotestCursor"
-    elseif vim.bo.filetype == "qf" then
-      vim.o.guicursor = "n-v-c:block-LTCursor"
-    elseif vim.bo.filetype == "NvimTree" then
-      vim.o.guicursor = "n-v-c:block-NeotestCursor"
-    end
-  end,
-})
 vim.api.nvim_create_autocmd("WinLeave", {
   callback = function()
-    if
-      vim.bo.filetype == "dropbar_menu"
-      or vim.bo.filetype == "calltree"
-      or vim.bo.filetype == "neotest-summary"
-      or vim.bo.filetype == "neotest-output-panel"
-      or vim.bo.filetype == "qf"
-      or vim.bo.filetype == "NvimTree"
-    then
+    if vim.bo.filetype == "dropbar_menu" then
       set_cursor()
     end
   end,

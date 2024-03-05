@@ -10,7 +10,7 @@
     mode-indicator
     tmux-suspend
 
-    # NOTE: continuum must be the last plugin listed:
+    # continuum must be the last plugin listed:
     # https://github.com/tmux-plugins/tmux-continuum#known-issues
     continuum
   ];

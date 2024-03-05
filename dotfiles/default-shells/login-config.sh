@@ -41,6 +41,6 @@ fi
 # Directory spec. More info:
 # https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 #
-# NOTE: I keep this at the bottom so that my executables will be found before any others, allowing
+# I keep this at the bottom so that my executables will be found before any others, allowing
 # me to wrap other executables.
 PATH="$HOME/.local/bin:$PATH"

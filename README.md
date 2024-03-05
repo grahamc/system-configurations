@@ -85,7 +85,7 @@ the steps below:
 
 1. Start a shell with the home config. It comes with `direnv`, which we'll need in future steps.
    Check the ["Running the Home Configuration" section](#running-the-home-configuration) for
-   instructions. NOTE: This shell will also be helpful for debugging any problems you encounter
+   instructions. This shell will also be helpful for debugging any problems you encounter
    while applying the config since you'll have access to all the tools/shortcuts included in the home
    config.
 

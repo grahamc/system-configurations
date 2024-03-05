@@ -4,7 +4,7 @@ import sys
 import subprocess
 from urllib.parse import urlparse
 
-# NOTE: Characters I removed: '()
+# Characters I removed: '()
 VALID_URL_CHARS = (
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&*+,;="
 )

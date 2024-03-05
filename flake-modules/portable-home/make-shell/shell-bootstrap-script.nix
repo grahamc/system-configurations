@@ -48,7 +48,7 @@ in ''
   for program in ${activationPackage}/home-path/bin/*
     set base (${basename} $program)
 
-    # NOTE: The hashbangs in the scripts need to be the first two bytes in the file for the kernel to
+    # The hashbangs in the scripts need to be the first two bytes in the file for the kernel to
     # recognize them so it must come directly after the opening quote of the script.
     switch "$base"
       case env

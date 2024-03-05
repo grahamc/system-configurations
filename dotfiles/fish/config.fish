@@ -40,23 +40,15 @@ function tmux_attach
     end
 end
 if test -z "$TMUX"
-    if set --query VSCODE_INJECTION
+    # HACK: vscode doesn't set VSCODE_INJECTION when launching a terminal when debugging so instead
+    # I'm looking for any variable that starts with VSCODE. Should probably report this.
+    if env | grep -q -E '^VSCODE'
         # FIF doesn't work when I attach to tmux
         # issue: https://github.com/tomrijndorp/vscode-finditfaster/issues/65
         # TODO: I think it's because `set -u` is being set, per the error in the issue
         if not set --query FIND_IT_FASTER_ACTIVE
             tmux-attach-to-project
         end
-    else if env | grep -q -E '^VSCODE'
-        # HACK: vscode doesn't set VSCODE_INJECTION when launching a terminal when debugging so instead
-        # I'm looking for any variable that starts with VSCODE. This is actually ideal for me because
-        # currently some garbage gets printed to screen whenever I first connect to tmux from vscode
-        # which gets executed as part of the debugger command, causing it to fail. Since I can tell when
-        # a debug session is being started, I won't connect to TMUX in that case.
-        #
-        # TODO: I should report this error. Might be related to this:
-        # https://github.com/tmux/tmux/issues/3470
-        :
     else
         tmux_attach
     end

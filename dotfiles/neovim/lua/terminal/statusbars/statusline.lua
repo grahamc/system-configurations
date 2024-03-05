@@ -408,7 +408,12 @@ function StatusLine()
     })
   elseif vim.bo.filetype == "qf" then
     return make_mapping_statusline({
-      { key = "gf", description = "find&replace" },
+      { key = "gf", description = "find & replace" },
+      { key = "gr", description = "activate replacer" },
+    })
+  elseif vim.bo.filetype == "replacer" then
+    return make_mapping_statusline({
+      { key = "gc", description = "commit changes" },
     })
   else
     return make_statusline({

@@ -1,4 +1,7 @@
+-- I'm setting a tabline before bufferline loads so the editor window doesn't shift down when
+-- bufferline loads.
 vim.o.showtabline = 2
+vim.o.tabline = " "
 
 Plug("akinsho/bufferline.nvim", {
   config = function()

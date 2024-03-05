@@ -201,7 +201,10 @@ local function getShortcutsHtml()
   local menu = ""
   for index, shortcut_group in ipairs(shortcuts) do
     menu = menu .. "<ul class='col col" .. index .. "'>"
-    menu = menu .. "<li class='title'><strong>" .. shortcut_group.title .. "</strong></li>"
+    menu = menu
+      .. "<li class='title group-title'><strong>"
+      .. shortcut_group.title
+      .. "</strong></li>"
 
     for _, shortcut in ipairs(shortcut_group.items) do
       local mods = ""
@@ -210,7 +213,7 @@ local function getShortcutsHtml()
       end
       local shortcut_key = shortcut.key
       menu = menu
-        .. "<li><div class='cmdModifiers'>"
+        .. "<li class='keybinds'><div class='cmdModifiers'>"
         .. mods
         .. " "
         .. shortcut_key
@@ -241,8 +244,8 @@ local function generateHtml()
   -- Hammerspoon docs for hs.execute say that there may be an extra newline at the end
   stdout = rtrim(stdout)
   local is_dark_mode = stdout == "Dark"
-  local bg_color = is_dark_mode and "#111" or "#eee"
-  local fg_color = is_dark_mode and "#eee" or "#111"
+  local bg_color = is_dark_mode and "#292828" or "#eee"
+  local fg_color = is_dark_mode and "#cbcbcb" or "#292828"
 
   local html = [[
         <!DOCTYPE html>
@@ -265,13 +268,27 @@ local function generateHtml()
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 8px;
       }
             ul, li{list-style: inside none; padding: 0 0 5px;}
       ul {width: 20%;}
             header hr,
             .title{
-                padding: 15px;
+                padding: 8px;
+            }
+            .group-title {
+              border-bottom: 1px solid;
+            }
+            .keybinds {
+              padding: 8px;
+            }
+            .col {
+              border: 1px solid;
+              border-radius: 10px;
+            }
+            header {
+              text-align: center;
+              margin-bottom: 20px;
+              font-size: 1.5rem;
             }
             .maincontent{
         display:flex;
@@ -279,8 +296,6 @@ local function generateHtml()
             }
             .cmdModifiers{
               width: 50%;
-              padding-right: 15px;
-              text-align: right;
               font-weight: bold;
             }
             .cmdtext{
@@ -291,7 +306,6 @@ local function generateHtml()
           <body>
             <header>
               <div class="title"><strong>]] .. app_title .. [[</strong></div>
-              <hr />
             </header>
             <div class="content maincontent">]] .. shortcuts_html .. [[</div>
           </body>
@@ -308,10 +322,10 @@ local function open_help_page()
   local help_page = hs
     .webview
     .new({
-      x = screen_rect.x + screen_rect.w * 0.15 / 2,
-      y = screen_rect.x + screen_rect.w * 0.25 / 2,
+      x = 0 + screen_rect.w * 0.15 / 2,
+      y = 0 + screen_rect.h * 0.50 / 2,
       w = screen_rect.w * 0.85,
-      h = screen_rect.h * 0.40,
+      h = screen_rect.h * 0.50,
     })
     ---@diagnostic disable-next-line: undefined-field
     :windowStyle({

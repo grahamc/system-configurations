@@ -241,7 +241,7 @@ end, { expr = true, remap = true, desc = "Format comment" })
 -- format visual selection
 vim.keymap.set("x", "gq", function()
   set_formatprg(utilities.get_visual_selection())
-  -- NOTE: This function returns after enqueuing the keys, not processing them. That is why I'm
+  -- This function returns after enqueuing the keys, not processing them. That is why I'm
   -- leaving the formatprg set.
   vim.fn.feedkeys("gvgq", "n")
 end, {
@@ -272,7 +272,7 @@ Plug("monaqa/dial.nvim", {
 
     local defaults = {
       -- color: #ffffff
-      -- NOTE: If the cursor is over one of the two digits in the red, green, or blue value, it
+      -- If the cursor is over one of the two digits in the red, green, or blue value, it
       -- only increments that color of the hex. To increment the red, green, and blue portions,
       -- the cursor must be over the '#'.
       hex_rgb = augend.hexcolor.new({}),

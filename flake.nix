@@ -462,5 +462,9 @@
       url = "github:gbprod/none-ls-shellcheck.nvim";
       flake = false;
     };
+    vim-plugin-replacer-nvim = {
+      url = "github:gabrielpoca/replacer.nvim";
+      flake = false;
+    };
   };
 }

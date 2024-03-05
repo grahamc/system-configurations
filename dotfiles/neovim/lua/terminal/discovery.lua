@@ -168,7 +168,7 @@ Plug("mrjones2014/legendary.nvim", {
 
       local global_keymaps = vim.iter(modes):map(vim.api.nvim_get_keymap):flatten():totable()
 
-      -- NOTE: I put buffer maps first so buffer maps will take priority over global maps when we
+      -- I put buffer maps first so buffer maps will take priority over global maps when we
       -- filter.
       local all_keymaps = require("base.utilities").table_concat(buffer_keymaps, global_keymaps)
 
