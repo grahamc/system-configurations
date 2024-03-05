@@ -125,8 +125,8 @@ function process-widget --description 'Manage processes'
     #
     # TODO: The `string match` isn't perfect: if a variable's value includes something that matches
     # the environment variable name pattern ([a-zA-Z_]+[a-zA-Z0-9_]*=), `string match` will consider
-    # that the start of a new variable. For this reason we should change the order of the variables
-    # e.g. sorting
+    # that the start of a new variable. For this reason we shouldn't change the order of the
+    # variables e.g. sorting
     set environment_command 'eval (test (ps -o user= -p {2}) = root && echo "sudo " || echo)"ps '$environment_flag' -o command -ww {2}" | string match --groups-only --all --regex -- " ([a-zA-Z_]+[a-zA-Z0-9_]*)=(.*?) [a-zA-Z_]+[a-zA-Z0-9_]*=" | paste -d "="  - - | sed -e "s/\$/│/" | string replace "=" "=│" | page 0</dev/tty 1>/dev/tty 2>&1'
 
     set choice \

@@ -44,6 +44,10 @@ vim.api.nvim_create_autocmd("FileType", {
       return
     end
 
+    if not vim.tbl_contains({ "markdown" }, vim.bo.filetype) then
+      return
+    end
+
     vim.keymap.set({ "i" }, "<CR>", bullets_newline, { expr = true, buffer = true, remap = true })
     vim.keymap.set({ "n" }, "o", bullets_newline, { expr = true, buffer = true, remap = true })
     vim.keymap.set(
