@@ -116,7 +116,7 @@ function variable-widget --description 'Search shell/environment variables'
     end
 
     # I'm using the NUL character to delimit entries since they may span multiple lines.
-    set choices ( \
+    if not set choices ( \
         printf %s'\0' $entries \
             | fzf \
                 --read0 \
@@ -127,7 +127,8 @@ function variable-widget --description 'Search shell/environment variables'
                 --prompt '$' \
             | string split0 \
     )
-    or return
+        return
+    end
 
     for choice in $choices
         set name (string split --fields 1 -- \t $choice)
@@ -139,80 +140,78 @@ end
 abbr --add --global vw variable-widget
 
 # Use tab to select an autocomplete entry with fzf
-function _fzf_complete
-    set current_token (commandline --current-token)
-    set candidates (complete --escape --do-complete -- "$(commandline --cut-at-cursor)")
-    if test (count $candidates) -eq 1
-        set entries $candidates
-    else if test (count $candidates) -eq 0
-        # so we don't trigger the `and` block below. this is how fzf would behave if nothing was
-        # chosen
-        false
+function _insert_entries_into_commandline
+    # Remove the tab and description, leaving only the completion items.
+    set entries "$(string split -f1 -- \t $argv)"
+    set entry (string join -- ' ' $entries)
+
+    set space ' '
+
+    # Don't add a space if the entry is an abbreviation.
+    #
+    # TODO: This assumes that an abbreviation can only be expanded if it's the first token in
+    # the commandline.  However, with the flag '--position anywhere', abbreviations can be
+    # expanded anywhere in the commandline so I should check for that flag.
+    #
+    # We determine if the entry will be the first token by checking for an empty commandline.
+    # We trim spaces because spaces don't count as tokens.
+    set trimmed_commandline (string trim "$(commandline)")
+    if abbr --query -- "$entry"
+        and test -z "$trimmed_commandline"
+        set space ''
+    end
+
+    # Don't add a space if the item is a directory and ends in a slash.
+    # expand tilde
+    set first_char (string sub --length 1 -- "$entry")
+    if test "$first_char" = '~'
+        set expanded_entry "$HOME"(string sub --start 2 -- "$entry")
     else
-        set need_to_repaint 1
-        set entries \
-            ( \
-                printf %s\n $candidates \
-                # Use a different color for the completion item description
-                | string replace --ignore-case --regex -- \
-                    '(?<prefix>^'(string escape --style regex -- "$current_token")')(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' \
-                    (set_color cyan)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
-                | fzf \
-                    --height '~35%' \
-                    --min-height 8 \
-                    --preview-window '2,border-left,right,60%' \
-                    --no-header \
-                    --bind 'backward-eof:abort,start:toggle-preview,ctrl-o:change-preview-window(bottom,75%,border-top|right,60%,border-left)+refresh-preview' \
-                    --no-hscroll \
-                    --tiebreak=begin,chunk \
-                    # I set the current token as the delimiter so I can exclude from what gets searched.
-                    # Since the current token is in the beginning of the string, it will be the first field index so
-                    # I'll start searching from 2.
-                    --delimiter '^'(string escape --style regex -- $current_token) \
-                    --nth '2..' \
-                    --border rounded \
-                    --margin 0,2,0,2 \
-                    --prompt $current_token \
-            )
+        set expanded_entry "$entry"
     end
-    and begin
-        # Remove the tab and description, leaving only the completion items.
-        set entries "$(string split -f1 -- \t $entries)"
-        set entry (string join -- ' ' $entries)
-
-        set space ' '
-
-        # Don't add a space if the entry is an abbreviation.
-        #
-        # TODO: This assumes that an abbreviation can only be expanded if it's the first token in
-        # the commandline.  However, with the flag '--position anywhere', abbreviations can be
-        # expanded anywhere in the commandline so I should check for that flag.
-        #
-        # We determine if the entry will be the first token by checking for an empty commandline.
-        # We trim spaces because spaces don't count as tokens.
-        set trimmed_commandline (string trim "$(commandline)")
-        if abbr --query -- "$entry"
-            and test -z "$trimmed_commandline"
-            set space ''
-        end
-
-        # Don't add a space if the item is a directory and ends in a slash.
-        # expand tilde
-        set first_char (string sub --length 1 -- "$entry")
-        if test "$first_char" = '~'
-            set expanded_entry "$HOME"(string sub --start 2 -- "$entry")
-        else
-            set expanded_entry "$entry"
-        end
-        if test -d (string unescape -- "$expanded_entry")
-            and test (string sub --start -1 -- "$expanded_entry") = /
-            set space ''
-        end
-
-        commandline --replace --current-token -- "$entry$space"
+    if test -d (string unescape -- "$expanded_entry")
+        and test (string sub --start -1 -- "$expanded_entry") = /
+        set space ''
     end
 
-    if test -n "$need_to_repaint"
+    commandline --replace --current-token -- "$entry$space"
+end
+function _fzf_complete
+    set candidates (complete --escape --do-complete -- "$(commandline --cut-at-cursor)")
+    set candidate_count (count $candidates)
+    # I only want to repaint if fzf is shown, but if I use `fzf --select-1` fzf won't be shown
+    # when there's one candidate and there is no way to tell if that's how fzf exited so instead
+    # I'll check the amount of candidates beforehand an only use fzf is there's more than 1. Same
+    # situation with --exit-0.
+    if test $candidate_count -eq 1
+        _insert_entries_into_commandline $candidates
+    else if test $candidate_count -gt 1
+        set current_token (commandline --current-token)
+        if set entries ( \
+            printf %s\n $candidates \
+            # Use a different color for the completion item description
+            | string replace --ignore-case --regex -- \
+                '(?<prefix>^'(string escape --style regex -- "$current_token")')(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' \
+                (set_color cyan)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
+            | fzf \
+                --height '~35%' \
+                --min-height 8 \
+                --preview-window '2,border-left,right,60%' \
+                --no-header \
+                --bind 'backward-eof:abort,start:toggle-preview,ctrl-o:change-preview-window(bottom,75%,border-top|right,60%,border-left)+refresh-preview' \
+                --no-hscroll \
+                --tiebreak=begin,chunk \
+                # I set the current token as the delimiter so I can exclude from what gets searched.
+                # Since the current token is in the beginning of the string, it will be the first
+                # field index so I'll start searching from 2.
+                --delimiter '^'(string escape --style regex -- $current_token) \
+                --nth '2..' \
+                --border rounded \
+                --margin 0,2,0,2 \
+                --prompt $current_token \
+        )
+            _insert_entries_into_commandline $entries
+        end
         commandline -f repaint
     end
 end
@@ -248,8 +247,8 @@ function _reload_fish --on-variable _fish_reload_indicator
 
     echo "$(set_color --reverse --bold brwhite) INFO $(set_color normal) Reloading the shell...$(set_color normal)"
 
-    # TODO: Sleep for a random amount of time between 0 and 1 second so all the shells don't all reload at the exact
-    # same time. Doing so was causing crashes.
+    # TODO: Sleep for a random amount of time between 0 and 1 second so all the shells don't all
+    # reload at the exact same time. Doing so was causing crashes.
     sleep (math (random 1 100) / 100)
 
     exec fish
@@ -304,10 +303,9 @@ function _man_page
     # Try "man first-second" and fall back to "man first" if that doesn't work out.
     set -l maincmd (basename $args[1])
     # HACK: If stderr is not attached to a terminal `less` (the default pager)
-    # wouldn't use the alternate screen.
-    # But since we don't know what pager it is, and because `man` is totally underspecified,
-    # the best we can do is to *try* the man page, and assume that `man` will return false if it fails.
-    # See #7863.
+    # wouldn't use the alternate screen.  But since we don't know what pager it is, and because
+    # `man` is totally underspecified, the best we can do is to *try* the man page, and assume that
+    # `man` will return false if it fails.  See #7863.
     if set -q args[2]
         and not string match -q -- '*/*' $args[2]
         and man "$maincmd-$args[2]" &>/dev/null
@@ -324,7 +322,8 @@ function _man_page
         set manpage_name $wrapped
     end
 
-    # If the token underneath or right before the cursor starts with a '-' try to search for that flag
+    # If the token underneath or right before the cursor starts with a '-' try to search for that
+    # flag
     set current_token (commandline --current-token)
     if test -z "$current_token"
         set current_token (commandline --cut-at-cursor --tokenize --current-process)[-1]

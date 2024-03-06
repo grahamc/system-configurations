@@ -25,32 +25,32 @@ function apt-show --description "'apt show' with each section name highlighted, 
 end
 
 function apt-install-widget --description 'Install packages with apt'
-    set choices \
-        ( \
+    if not set choices ( \
         FZF_DEFAULT_COMMAND='apt-cache pkgnames' \
         fzf-tmux-zoom \
             --prompt 'apt install: ' \
             --preview "apt show {} 2>/dev/null | GREP_COLORS='$GREP_COLORS' grep --color=always -E '(^[a-z|A-Z|-]*:|^)' | less" \
             --preview-window '75%' \
             --tiebreak=chunk,begin,end \
-      )
-    or return
+    )
+        return
+    end
 
     echo "Running command 'sudo apt-get install $choices'..."
     sudo apt-get install --assume-yes $choices
 end
 
 function apt-remove-widget --description 'Remove packages with apt'
-    set choices \
-        ( \
+    if not set choices ( \
         FZF_DEFAULT_COMMAND='apt list --installed 2>/dev/null | string split --no-empty --fields 1 -- \'/\' | tail -n +2' \
         fzf-tmux-zoom \
             --prompt 'apt remove: ' \
             --preview "echo -e \"\$(apt show {} 2>/dev/null)\n\$(apt-cache rdepends --installed --no-recommends --no-suggests {} | tail -n +2)\" | GREP_COLORS='$GREP_COLORS' grep --color=always -E '(^[a-z|A-Z|-]*:|^.*:\$|^)' | less" \
             --preview-window '75%' \
             --tiebreak=chunk,begin,end \
-      )
-    or return
+    )
+        return
+    end
 
     echo "Running command 'sudo apt-get remove $choices'..."
     sudo apt-get remove --assume-yes $choices

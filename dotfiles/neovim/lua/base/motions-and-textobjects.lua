@@ -121,7 +121,7 @@ local function jump_to_long_line(direction)
       return line >= 0 and line <= last_line
     end)
     :find(function(line)
-      return vim.fn.col({ line, "$" }) > max_line_length
+      return (vim.fn.col({ line, "$" }) - 1) > max_line_length
     end)
   if long_line ~= nil then
     vim.cmd(tostring(long_line))

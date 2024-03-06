@@ -9,7 +9,7 @@ newline='
 script_string=
 while IFS= read -r line; do
     script_string="$script_string$line$newline"
-done < "$HOME/.config/ssh/start-my-shell.sh"
+done < "${XDG_CONFIG_HOME:-$HOME/.config}/ssh/start-my-shell.sh"
 if [ "$line" ]; then
     script_string="$script_string$line"
 fi

@@ -27,6 +27,13 @@ end
 function __widgets_replace_current_commandline_token
     set replacement_tokens $argv
     set escaped_replacement_tokens (string escape --style script --no-quoted -- $replacement_tokens)
+
+    # add a space if the item is a file or directory not ending in a slash.
+    set last_token $escaped_replacement_tokens[-1]
+    if test -f $last_token -o \( -d $last_token -a (string sub --start -1 -- $last_token) != / \)
+        set escaped_replacement_tokens[-1] $last_token' '
+    end
+
     commandline --current-token --replace "$escaped_replacement_tokens"
 end
 
