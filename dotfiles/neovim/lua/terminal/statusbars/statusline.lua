@@ -304,7 +304,7 @@ function StatusLine()
 
   local maximized = nil
   if IsMaximized then
-    local indicator = " "
+    local indicator = " "
     maximized = "%#StatusLineStandoutText#" .. indicator
   end
 
@@ -410,6 +410,7 @@ function StatusLine()
     return make_mapping_statusline({
       { key = "gf", description = "find & replace" },
       { key = "gr", description = "activate replacer" },
+      { key = "q", description = "close" },
     })
   elseif vim.bo.filetype == "replacer" then
     return make_mapping_statusline({

@@ -10,7 +10,7 @@
   inherit (lib.lists) optionals;
 in
   lib.mkMerge [
-    {
+    (lib.mkIf isGui {
       home.packages = with pkgs;
         [
           myFonts
@@ -18,7 +18,7 @@ in
         ++ optionals (isLinux && isGui) [
           inter
         ];
-    }
+    })
     (lib.mkIf (isLinux && isGui) {
       fonts.fontconfig.enable = true;
       repository.symlink.xdg.configFile = {

@@ -3,10 +3,12 @@
   self,
   minimalFish,
   isGui,
+  modules ? [],
+  overlays ? [],
 }: let
-  inherit (pkgs) lib system;
-  inherit (lib.attrsets) optionalAttrs;
-  inherit (lib.lists) optionals;
+  inherit (pkgs) system;
+  # inherit (lib.attrsets) optionalAttrs;
+  # inherit (lib.lists) optionals;
   inherit (pkgs.stdenv) isLinux;
   hostName = "guest-host";
   makeEmptyPackage = packageName: pkgs.runCommand packageName {} ''mkdir -p $out/bin'';
@@ -22,14 +24,26 @@
         // {
           markdown-preview-nvim = makeEmptyPackage "markdown-preview-nvim";
         };
+
+      # To remove the perl dependency
+      fzf = let
+        fzfNoPerl = pkgs.fzf.override {
+          perl = makeEmptyPackage "perl";
+        };
+      in
+        pkgs.buildEnv {
+          name = "fzf-without-shell-config";
+          paths = [fzfNoPerl];
+          pathsToLink = ["/bin" "/share/man"];
+        };
     }
-    // optionalAttrs isLinux {
+    // prev.lib.attrsets.optionalAttrs isLinux {
       tmux = prev.tmux.override {
         withSystemd = false;
       };
     };
 
-  shellModule = _: {
+  shellModule = {lib, ...}: {
     # I want a self contained executable so I can't have symlinks that point outside the Nix store.
     repository.symlink.makeCopiesInstead = true;
 
@@ -47,7 +61,7 @@
       # There is no option to prevent Home Manager from making these environment variables and overriding
       # glibcLocales in an overlay would cause too many rebuild so instead I overwrite the environment
       # variables. Now, glibcLocales won't be a dependency.
-      sessionVariables = optionalAttrs isLinux (lib.mkForce {
+      sessionVariables = lib.attrsets.optionalAttrs isLinux (lib.mkForce {
         LOCALE_ARCHIVE_2_27 = "";
         LOCALE_ARCHIVE_2_11 = "";
       });
@@ -57,7 +71,10 @@
         recursive = false;
       };
 
-      packages = optionals isGui [pkgs.wezterm];
+      packages = lib.lists.optionals isGui [pkgs.wezterm];
+
+      # remove moreutils dependency
+      activation.batSetup = lib.mkForce (lib.hm.dag.entryAfter ["linkGeneration"] "");
     };
 
     xdg = {
@@ -67,21 +84,26 @@
         "fzf/fzf-history.txt".source = pkgs.writeText "fzf-history.txt" "";
       };
     };
+
+    # to remove the flake registry
+    nix.enable = false;
   };
 
   homeManagerOutput = self.lib.home.makeFlakeOutput system {
     inherit hostName isGui;
-    overlays = [minimalOverlay];
+    overlays = [minimalOverlay] ++ overlays;
 
     # I want to remove the systemd dependency, but there is no option for that. Instead, I set the user
     # to root since Home Manager won't include systemd if the user is root.
     # see: https://github.com/nix-community/home-manager/blob/master/modules/systemd.nix
     username = "root";
 
-    modules = [
-      "${self.lib.home.moduleBaseDirectory}/profile/system-administration.nix"
-      shellModule
-    ];
+    modules =
+      [
+        "${self.lib.home.moduleBaseDirectory}/profile/system-administration.nix"
+        shellModule
+      ]
+      ++ modules;
   };
 in
   homeManagerOutput.legacyPackages.homeConfigurations.${hostName}.activationPackage

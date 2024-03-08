@@ -17,26 +17,37 @@ elif bash -c ": 1>/dev/tty" 1>/dev/null 2>&1; then
 else
   if uname | grep -q Linux; then
     if command -v wl-copy 1>/dev/null 2>&1; then
-      wl-copy
+      exec wl-copy
     elif command -v xclip 1>/dev/null 2>&1; then
-      xclip -selection clipboard
+      exec xclip -selection clipboard
     else
       echo "Error: Can't find the system clipboard copying utility" 1>&2
+      exit 127
     fi
-  else 
+  else
     # Full path for the current executable
     my_pbcopy="$0"
-    # Find the system pbcopy. This is done by finding all the executables on the path with the name 'pbcopy'
-    # and picking the first one that isn't mine.
-    system_pbcopy="$(which -a pbcopy | grep -v -E "^${my_pbcopy}\$" | head -1)"
-    if [ -x "$system_pbcopy" ]; then
-      "$system_pbcopy"
+
+    # To find the real pbcopy just take the next pbcopy binary on the $PATH after this one. This way
+    # if there are other wrappers they can do the same and eventually we'll reach the real pbcopy.
+    reached_wrapper=''
+    real_pbcopy=''
+    while read -r command; do
+      if [ "$my_pbcopy" = "$command" ]; then
+        reached_wrapper=1
+      elif [ -n "$reached_wrapper" ]; then
+        real_pbcopy="$command"
+        break
+      fi
+    done < <(which -a pbcopy)
+
+    if [ -n "$real_pbcopy" ]; then
+      exec "$real_pbcopy"
     else
       echo "Error: Can't find the system pbcopy" 1>&2
+      exit 127
     fi
   fi
-
-  exit
 fi
 
 # Get input from stdin

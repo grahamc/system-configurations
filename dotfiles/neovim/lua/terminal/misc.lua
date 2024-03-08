@@ -476,6 +476,8 @@ Plug("mehalter/nvim-colorizer.lua", {
         "*", -- Highlight all files, but customize some others.
         cmp_docs = { always_update = true },
         css = { names = true },
+        -- TODO: getting a stack overflow
+        "!go",
       },
       user_default_options = {
         mode = "inline",
@@ -492,3 +494,21 @@ Plug("mehalter/nvim-colorizer.lua", {
     end, { silent = true, desc = "Toggle inlay colors" })
   end,
 })
+
+-- Use the ANSI OSC52 sequence to copy text to the system clipboard.
+--
+-- While neovim did add native support for it, it doesn't let you use it for only copy and not
+-- paste. If they ever support that, I'll remove this.
+--
+-- Only use it if we're using SSH
+local is_ssh_active = #(os.getenv("SSH_TTY") or "") > 0
+if is_ssh_active then
+  vim.api.nvim_create_autocmd("TextYankPost", {
+    callback = function()
+      -- over SSH it seems the only register that has the clipboard contents is '"'
+      if vim.v.event.operator == "y" then
+        vim.system({ "pbcopy" }, { stdin = vim.fn.getreg('"') })
+      end
+    end,
+  })
+end

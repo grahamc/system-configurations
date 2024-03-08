@@ -19,29 +19,28 @@
 # quickly. For that to happen vscode needs to propogate the shell resolution as noted in the above
 # warning.
 
-# Give users a way to override FZF_DEFAULT_OPTS. Setting FZF_DEFAULT_OPTS won't work since it will
-# get overwritten by my fish configuration.
-if set --export --query BIGOLU_FZF_DEFAULT_OPTS
-    set --export FZF_DEFAULT_OPTS "$BIGOLU_FZF_DEFAULT_OPTS"
-end
-
-set real_fzf
-set fzf_commands (which -a fzf)
-for command in $fzf_commands
-    # I assume the real fzf command is the one that isn't a shebang script. I do this to
-    # avoid an infinite loop that happens if I use fzf from my portable-home on my machine,
-    # since there will be 2 fzf wrappers on the $PATH in that case. I canonicalize the path
-    # to avoid symlinks.
-    if test '#!' != "$(head -c 2 (readlink --canonicalize $command))"
-        set real_fzf $command
-        break
-    end
-end
-if test -z "$real_fzf"
+function abort
     if isatty stderr
         echo (set_color red)'Error: Unable to find the real fzf' >&2
     end
     exit 127
+end
+
+# To find the real fzf just take the next fzf binary on the $PATH after this one. This way if there
+# are other wrappers they can do the same and eventually we'll reach the real fzf.
+set fzf_commands (which -a fzf)
+if not set index (contains --index -- (status filename) $fzf_commands)
+    abort
+end
+set real_fzf $fzf_commands[(math $index + 1)]
+if test -z "$real_fzf"
+    abort
+end
+
+# Give users a way to override FZF_DEFAULT_OPTS. Setting FZF_DEFAULT_OPTS won't work since it will
+# get overwritten by my fish configuration.
+if set --export --query BIGOLU_FZF_DEFAULT_OPTS
+    set --export FZF_DEFAULT_OPTS "$BIGOLU_FZF_DEFAULT_OPTS"
 end
 
 exec $real_fzf $argv

@@ -1,7 +1,9 @@
 #!/usr/bin/env sh
 # shellcheck shell=sh
 
-if uname | grep -q Darwin; then
+if [ -n "$BIGOLU_PORTABLE_HOME_SHELL" ]; then
+  shell="$BIGOLU_PORTABLE_HOME_SHELL"
+elif uname | grep -q Darwin; then
   shell="$(dscl . -read ~/ UserShell | sed 's/UserShell: //')"
 else
   shell="$(getent passwd "$LOGNAME" | cut -d: -f7)"

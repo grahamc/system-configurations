@@ -249,8 +249,6 @@ function sh --wraps yash
     yash $argv
 end
 
-complete myssh --wraps ssh
-
 abbr --add --global chase 'chase --verbose'
 
 function dui --wraps broot --description 'Check disk usage interactively'

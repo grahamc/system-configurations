@@ -53,10 +53,6 @@ in {
       };
     pluginDirectoryRelativeToXdgDataHome = "nvim/plugged";
     pluginDirectory = "${config.xdg.dataHome}/${pluginDirectoryRelativeToXdgDataHome}";
-    treesitter-parsers = pkgs.symlinkJoin {
-      name = "treesitter-parsers";
-      paths = pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies;
-    };
   in {
     xdg.dataFile = {
       "nvim/site/autoload/plug.vim".source = "${pkgs.vimPlugins.vim-plug}/plug.vim";
@@ -64,7 +60,7 @@ in {
         source = "${pluginBundlePackage}/pack/${pluginBundleName}/start";
         recursive = true;
       };
-      "nvim/site/parser".source = "${treesitter-parsers}/parser";
+      "nvim/site/parser".source = "${pkgs.vimPlugins.treesitter-parsers}/parser";
     };
 
     # Before we symlink the plugins, remove everything in the plugin directory.

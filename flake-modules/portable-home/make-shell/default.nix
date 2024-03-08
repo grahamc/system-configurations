@@ -2,6 +2,9 @@
   isGui,
   pkgs,
   self,
+  modules ? [],
+  overlays ? [],
+  name ? "shell",
 }: let
   inherit (pkgs) lib;
   inherit (lib.attrsets) optionalAttrs;
@@ -17,8 +20,6 @@
     locales = ["en_US.UTF-8/UTF-8" "C.UTF-8/UTF-8"];
   };
 
-  shellBootstrapScriptName = "shell";
-
   # Normally, to make a shell script I would use the function `nixpkgs.writeShellApplication`
   # and specify its dependencies through the attribute `runtimeInputs`. Then those
   # dependencies would be added to the $PATH before the script executes. In this case, I don't
@@ -28,8 +29,9 @@
   coreutilsBinaryPath = "${pkgs.coreutils-full}/bin";
   shellBootstrapScriptDependencies =
     {
-      activationPackage = import ./home-manager-package.nix {inherit pkgs self minimalFish isGui;};
+      activationPackage = import ./home-manager-package.nix {inherit pkgs self minimalFish isGui modules overlays;};
       mktemp = "${coreutilsBinaryPath}/mktemp";
+      mkdir = "${coreutilsBinaryPath}/mkdir";
       copy = "${coreutilsBinaryPath}/cp";
       chmod = "${coreutilsBinaryPath}/chmod";
       basename = "${coreutilsBinaryPath}/basename";
@@ -42,6 +44,6 @@
     };
   shellBootstrapScript = import ./shell-bootstrap-script.nix shellBootstrapScriptDependencies;
 
-  shellBootstrap = pkgs.writeScriptBin shellBootstrapScriptName shellBootstrapScript;
+  shellBootstrap = pkgs.writeScriptBin name shellBootstrapScript;
 in
   shellBootstrap

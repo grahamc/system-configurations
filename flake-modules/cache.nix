@@ -27,6 +27,13 @@ _: {
       (hasAttrByPath shellOutputPath self')
       {shell = getAttrFromPath shellOutputPath self';};
 
+    shellMinimalPackageByName = let
+      shellOutputPath = ["packages" "shellMinimal"];
+    in
+      optionalAttrs
+      (hasAttrByPath shellOutputPath self')
+      {shell = getAttrFromPath shellOutputPath self';};
+
     terminalPackageByName = let
       terminalOutputPath = ["packages" "terminal"];
     in
@@ -59,6 +66,7 @@ _: {
       homeManagerPackagesByName
       // nixDarwinPackagesByName
       // shellPackageByName
+      // shellMinimalPackageByName
       // terminalPackageByName
       // devShellsByName
       // homeManagerPackageByName

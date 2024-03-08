@@ -59,6 +59,7 @@ in {
   home.packages = with pkgs; [
     wrappedPython3
     nodejs
+    deno
     typescript
     rustc
     go

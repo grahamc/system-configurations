@@ -87,17 +87,13 @@ in {
     };
 
     xdg = {
-      executable = {
-        "myssh".source = "ssh/myssh.sh";
-      };
-
       configFile =
         {
           "lsd".source = "lsd";
           "viddy.toml".source = "viddy/viddy.toml";
           "lesskey".source = "less/lesskey";
           "ripgrep/ripgreprc".source = "ripgrep/ripgreprc";
-          "ssh/start-my-shell.sh".source = "ssh/start-my-shell.sh";
+          "ssh/bootstrap.sh".source = "ssh/bootstrap.sh";
           "broot/conf.hjson".source = "broot/conf.hjson";
         }
         // optionalAttrs isLinux {

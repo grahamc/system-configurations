@@ -19,10 +19,14 @@ options = [
     "-euc",
     """
 deadnix --edit "$@"
+
+# statix doesn't support passing multiple files yet:
+# https://github.com/nerdypepper/statix/issues/69
 for file in "$@"; do
   statix fix "$file"
   statix check "$file"
 done
+
 alejandra "$@"
     """,
     "--",

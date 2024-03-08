@@ -262,7 +262,9 @@ Plug("echasnovski/mini.nvim", {
     -- misc {{{
     if IsRunningInTerminal then
       local misc = require("mini.misc")
-      vim.keymap.set("n", "<Leader>m", function()
+      -- I have a mapping in my terminal for <C-m> that sends F6 to get around the fact that TMUX
+      -- considers <C-m> the same as <CR> right now since TMUX lost support for extended keys.
+      vim.keymap.set("n", "<F6>", function()
         if not IsMaximized then
           vim.api.nvim_create_autocmd("WinEnter", {
             once = true,

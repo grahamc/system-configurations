@@ -56,12 +56,14 @@ local function plug(repo, options)
   end
 end
 
-local original_plug_begin = vim.fn["plug#begin"]
 local function plug_begin()
   -- expose the Plug function globally
   _G["Plug"] = plug
 
-  original_plug_begin()
+  -- To suppress the 'no git executable' warning
+  vim.cmd([[
+    silent! call plug#begin()
+  ]])
 end
 
 local original_plug_end = vim.fn["plug#end"]

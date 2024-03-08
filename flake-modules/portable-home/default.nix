@@ -19,6 +19,30 @@
         isGui = false;
         inherit pkgs self;
       };
+      makeEmptyPackage = packageName: pkgs.runCommand packageName {} ''mkdir -p $out/bin'';
+      shellMinimalName = "shell-minimal";
+      shellMinimalBootstrap = makeShell {
+        name = shellMinimalName;
+        isGui = false;
+        inherit pkgs self;
+        modules = [
+          {
+            xdg.dataFile = {
+              "nvim/site/parser" = lib.mkForce {
+                source = makeEmptyPackage "parsers";
+              };
+            };
+          }
+        ];
+        overlays = [
+          (_final: _prev: {
+            # to remove perl dependency
+            moreutils = makeEmptyPackage "moreutils";
+
+            ast-grep = makeEmptyPackage "ast-grep";
+          })
+        ];
+      };
       terminalBootstrapScriptName = "terminal";
       terminalBootstrap = let
         GUIShellBootstrap = makeShell {
@@ -43,6 +67,10 @@
           type = "app";
           program = "${shellBootstrap}/bin/shell";
         };
+        shellMinimal = {
+          type = "app";
+          program = "${shellMinimalBootstrap}/bin/${shellMinimalName}";
+        };
         terminal = {
           type = "app";
           program = "${terminalBootstrap}/bin/${terminalBootstrapScriptName}";
@@ -51,6 +79,7 @@
 
       packages = {
         shell = shellBootstrap;
+        shellMinimal = shellMinimalBootstrap;
         terminal = terminalBootstrap;
       };
     };

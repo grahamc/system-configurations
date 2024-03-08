@@ -337,10 +337,10 @@ local keybinds = {
   },
 
   {
-    key = "i",
+    key = "m",
     mods = "CTRL",
     action = wezterm.action.SendKey({
-      key = "F9",
+      key = "F6",
     }),
   },
   {
@@ -355,6 +355,13 @@ local keybinds = {
     mods = "CTRL",
     action = wezterm.action.SendKey({
       key = "F8",
+    }),
+  },
+  {
+    key = "i",
+    mods = "CTRL",
+    action = wezterm.action.SendKey({
+      key = "F9",
     }),
   },
   {

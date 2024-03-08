@@ -18,6 +18,12 @@ local function get_system_theme()
 end
 
 local function listen_for_system_theme_changes()
+  -- neovim needs to be running on the same machine as the terminal emulator for this to work so
+  -- don't do it if we're using SSH
+  if #(os.getenv("SSH_TTY") or "") > 0 then
+    return
+  end
+
   local pipe_directory = nvim_wezterm_runtime_directory .. "/pipes"
   local command = string.format(
     [[mkdir -p %s 1>/dev/null 2>&1 && ln -f -s %s %s 1>/dev/null 2>&1 && mktemp -u]],

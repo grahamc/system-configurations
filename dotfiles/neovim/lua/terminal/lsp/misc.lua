@@ -119,7 +119,7 @@ Plug("nvimtools/none-ls.nvim", {
   config = function()
     local null_ls = require("null-ls")
     -- When none-ls removes this source, this will add it back
-    null_ls.register(require("none-ls-shellcheck.code_actions"))
+    -- null_ls.register(require("none-ls-shellcheck.code_actions"))
     local builtins = null_ls.builtins
     null_ls.setup({
       border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },

@@ -509,6 +509,7 @@
         "vim-plugin-nvim-lsp-file-operations": "vim-plugin-nvim-lsp-file-operations",
         "vim-plugin-nvim-lspconfig": "vim-plugin-nvim-lspconfig",
         "vim-plugin-nvim-notify": "vim-plugin-nvim-notify",
+        "vim-plugin-nvim-osc52": "vim-plugin-nvim-osc52",
         "vim-plugin-nvim-pqf": "vim-plugin-nvim-pqf",
         "vim-plugin-nvim-tree-lua": "vim-plugin-nvim-tree-lua",
         "vim-plugin-nvim-treesitter": "vim-plugin-nvim-treesitter",
@@ -1390,6 +1391,22 @@
       "original": {
         "owner": "rcarriga",
         "repo": "nvim-notify",
+        "type": "github"
+      }
+    },
+    "vim-plugin-nvim-osc52": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1699797099,
+        "narHash": "sha256-gkJMgWfO+cIXTDCiofmGtdYg0s21eiaH+2gVZnKAmio=",
+        "owner": "ojroques",
+        "repo": "nvim-osc52",
+        "rev": "5e0210990b3c809ec58bbf830e0dabd4bda3a949",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ojroques",
+        "repo": "nvim-osc52",
         "type": "github"
       }
     },

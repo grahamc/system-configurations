@@ -226,7 +226,9 @@ mybind -k btab complete
 
 function _ls-after-directory-change --on-variable PWD
     # These directories have too many files to always call ls on
-    set blacklist /nix/store /tmp
+    #
+    # normalize to remove trailing slash
+    set blacklist /nix/store /tmp (path normalize "$TMPDIR")
     if contains "$PWD" $blacklist
         return
     end
@@ -369,7 +371,7 @@ function __edit_commandline
     set write_index 'lua vim.api.nvim_create_autocmd([[VimLeavePre]], {callback = function() vim.cmd([[redi! > '$cursor_file']]); print(#table.concat(vim.fn.getline(1, [[.]]), " ") - (#vim.fn.getline([[.]]) - vim.fn.col([[.]])) - 1); vim.cmd([[redi END]]); end})'
 
     set temp (mktemp --suffix '.fish')
-    printf "$buffer" >$temp
+    echo -n "$buffer" >$temp
     BIGOLU_EDITING_FISH_BUFFER=1 nvim -c "call cursor($line,$col)" -c "$write_index" $temp
     commandline "$(cat $temp)"
     commandline --cursor "$(cat $cursor_file)"

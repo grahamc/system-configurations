@@ -4,7 +4,7 @@
   ...
 }: let
   fzfWithoutShellConfig = pkgs.buildEnv {
-    name = "fzf-bin-only";
+    name = "fzf-without-shell-config";
     paths = [pkgs.fzf];
     pathsToLink = ["/bin" "/share/man"];
   };

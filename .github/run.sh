@@ -3,30 +3,49 @@
 set -o errexit
 set -o nounset
 
-name="$1-$(uname -m)-$(uname -s | tr '[:upper:]' '[:lower:]')"
-# shellcheck disable=2034
-# It gets used in an `eval`
-download_url="https://github.com/bigolu/dotfiles/releases/download/master/$name"
-
-if command -v curl 1>/dev/null 2>&1; then
-  # shellcheck disable=2016
-  file_not_exists_command='! curl --head --silent --fail "$download_url" 1>/dev/null 2>&1'
-  # shellcheck disable=2016
-  download_command='curl --fail --progress-bar --location "$download_url" --output "$name"'
-else
-  # shellcheck disable=2016
-  file_not_exists_command='! wget -q --method=HEAD "$download_url"'
-  # shellcheck disable=2016
-  download_command='wget --output-document "$name" "$download_url"'
-fi
-
-if eval "$file_not_exists_command"; then
-  echo "This system isn't supported: $(uname -sm)"
+abort() {
+  printf 'Error: %s\n' "$1" >&2
   exit 1
+}
+
+get_dependency() {
+  for command in "$@"; do
+    if command -v "$command" 1>/dev/null 2>&1; then
+      printf '%s' "$command"
+      return
+    fi
+  done
+  abort "Unable to find at least one of these commands: $*"
+}
+
+fetcher="$(get_dependency curl wget)"
+case "$fetcher" in
+  curl)
+    file_exists() {
+      curl --head --silent --fail "$1" 1>/dev/null 2>&1
+    }
+    download() {
+      curl --fail --progress-bar --location "$1" --output "$2"
+    }
+    ;;
+  wget)
+    file_exists() {
+      wget -q --method=HEAD "$1"
+    }
+    download() {
+      wget --output-document "$2" "$1"
+    }
+    ;;
+esac
+
+platform="$(uname -m)-$(uname -s | tr '[:upper:]' '[:lower:]')"
+release_artifact_name="$1-$platform"
+release_artifact_url="https://github.com/bigolu/dotfiles/releases/download/master/$release_artifact_name"
+
+if ! file_exists "$release_artifact_url"; then
+  abort "Your platform isn't supported: $platform"
 fi
 
-eval "$download_command"
-
-chmod +x "$name"
-
-exec "./$name"
+download "$release_artifact_url" "$release_artifact_name"
+chmod +x "$release_artifact_name"
+exec "./$release_artifact_name"

@@ -32,13 +32,21 @@ jobs:
           name: bigolu
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
       - run: nix bundle --show-trace --bundler .# .#shell
+      - run: nix bundle --show-trace --bundler .# .#shellMinimal
       - run: nix bundle --show-trace --bundler .# .#terminal
-      # Dereference the symlinks so I can upload the actual executables. The symlinks' names will look like
-      # '{shell,terminal}-x86_64-linux' so I'm using a glob pattern to match them.
+      # Dereference the symlinks so I can upload the actual executables. The symlinks' names will
+      # look like '{shell,terminal}(-minimal)?-x86_64-linux' so I'm using a glob pattern to match
+      # them.
       - run: |
           mkdir tmp
           cp -L shell-* ./tmp/
           cp -L terminal-* ./tmp/
+      - run: |
+          size="$(du -m ./tmp/shell-minimal-* | cut -f1)"
+          if (( "$size" > 250 )); then
+            echo "Minimal shell is too big: $size MB"
+            exit 1
+          fi
       - name: Upload executable
         uses: svenstaro/upload-release-action@v2
         with:

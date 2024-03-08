@@ -95,6 +95,9 @@ get-secrets:
         mv "$temp_filename" "$destination"
     done
 
+gomod2nix:
+    cd ./flake-modules/bundler/gozip && nix develop github:nix-community/gomod2nix --command gomod2nix generate
+
 # TODO: Automate this with rsyslog
 cleanup:
     rm -f ~/.local/state/nvim/*.log

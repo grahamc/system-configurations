@@ -43,16 +43,23 @@ function maybe_warn
     end
 end
 
-maybe_warn
-
-set nix_commands (which -a nix)
-for command in $nix_commands
-    # I assume the real nix command is the one that isn't a shebang script. I do this to
-    # avoid an infinite loop that happens if I use nix from my portable-home on my machine,
-    # since there will be 2 nix wrappers on the $PATH in that case. I canonicalize the path
-    # to avoid symlinks.
-    if test '#!' != "$(head -c 2 (readlink --canonicalize $command))"
-        $command $argv
-        exit
+function abort
+    if isatty stderr
+        echo (set_color red)'Error: Unable to find the real nix' >&2
     end
+    exit 127
 end
+
+# To find the real nix just take the next nix binary on the $PATH after this one. This way if there
+# are other wrappers they can do the same and eventually we'll reach the real nix.
+set nix_commands (which -a nix)
+if not set index (contains --index -- (status filename) $nix_commands)
+    abort
+end
+set real_nix $nix_commands[(math $index + 1)]
+if test -z "$real_nix"
+    abort
+end
+
+maybe_warn
+exec $real_nix $argv

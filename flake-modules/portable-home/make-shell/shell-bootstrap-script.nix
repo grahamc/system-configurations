@@ -1,5 +1,6 @@
 {
   mktemp,
+  mkdir,
   copy,
   chmod,
   fish,
@@ -17,27 +18,35 @@
 in ''
   #!${fish}
 
-  set mutable_bin (${mktemp} --directory)
-  set state_dir (${mktemp} --directory)
-  set runtime_dir (${mktemp} --directory)
-  set cache_dir (${mktemp} --directory)
-  set config_dir ${activationPackage}/home-files/.config
-  set data_dir ${activationPackage}/home-files/.local/share
+  if isatty 2
+    echo -n "Bootstrapping portable home..."
+  end
+
+  set prefix (${mktemp} --tmpdir --directory bigolu_portable_home_XXXXX)
+  set --export BIGOLU_PORTABLE_HOME_PREFIX $prefix
   # Clean up temporary directories when the shell exits
   function _cleanup --on-event fish_exit
-    rm -rf "$mutable_bin" "$state_dir" "$runtime_dir" "$cache_dir"
+    rm -rf "$prefix"
   end
+
+  function make_dir --argument-names name
+    set path "$prefix/$name"
+    ${mkdir} $path
+    echo -n $path
+  end
+
+  set mutable_bin (make_dir bin)
+  set state_dir (make_dir state)
+  set runtime_dir (make_dir runtime)
+  set cache_dir (make_dir cache)
+  set config_dir ${activationPackage}/home-files/.config
+  set data_dir ${activationPackage}/home-files/.local/share
 
   # Some packages need one of their XDG Base directories to be mutable so if the Nix store isn't writable we
   # copy the directories into temporary ones.
   if not test -w ${activationPackage}
-    set config_dir (${mktemp} --directory)
-    set data_dir (${mktemp} --directory)
-
-    # Clean up temporary directories when the shell exits
-    function _cleanup --on-event fish_exit
-      rm -rf "$config_dir" "$data_dir"
-    end
+    set config_dir (make_dir config)
+    set data_dir (make_dir data)
 
     # Make mutable copies of the contents of any XDG Base Directory in the Home Manager configuration.
     # This is because some programs need to be able to write to one of these directories e.g. `fish`.
@@ -45,7 +54,7 @@ in ''
     ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.local/share/* $data_dir
   end
 
-  for program in ${activationPackage}/home-path/bin/*
+  for program in ${activationPackage}/home-path/bin/* ${activationPackage}/home-files/.local/bin/*
     set base (${basename} $program)
 
     # The hashbangs in the scripts need to be the first two bytes in the file for the kernel to
@@ -57,8 +66,8 @@ in ''
       case fish
         echo -s >$mutable_bin/$base "#!${sh}
           # I unexport the XDG Base directories so host programs pick up the host's XDG directories.
-          XDG_CONFIG_HOME=$config_dir XDG_DATA_HOME=$data_dir XDG_STATE_HOME=$state_dir XDG_RUNTIME_DIR=$runtime_dir XDG_CACHE_HOME=$cache_dir \
-          $program \
+          XDG_CONFIG_HOME=$config_dir XDG_DATA_HOME=$data_dir XDG_STATE_HOME=$state_dir XDG_RUNTIME_DIR=$runtime_dir XDG_CACHE_HOME=$cache_dir BIGOLU_IN_PORTABLE_HOME=1 \
+          exec $program \
             --init-command 'set --unexport XDG_CONFIG_HOME' \
             --init-command 'set --unexport XDG_DATA_HOME' \
             --init-command 'set --unexport XDG_STATE_HOME' \
@@ -68,7 +77,7 @@ in ''
       case '*'
         echo -s >$mutable_bin/$base "#!${sh}
           XDG_CONFIG_HOME=$config_dir XDG_DATA_HOME=$data_dir XDG_STATE_HOME=$state_dir XDG_RUNTIME_DIR=$runtime_dir XDG_CACHE_HOME=$cache_dir BIGOLU_IN_PORTABLE_HOME=1 \
-          $program \"\$@\""
+          exec $program \"\$@\""
     end
 
     ${chmod} +x $mutable_bin/$base
@@ -76,14 +85,30 @@ in ''
 
   ${setLocaleArchive}
 
-  fish_add_path --global --prepend $mutable_bin
+  # Though all these programs are inside mutable_bin, I need to have this on the $PATH because my
+  # wrappers only work if they are on the $PATH. This is because of how they find the program they
+  # are wrapping.
+  fish_add_path --global --prepend ${activationPackage}/home-path/bin/
   fish_add_path --global --prepend ${activationPackage}/home-files/.local/bin
+
+  fish_add_path --global --prepend $mutable_bin
 
   # Set fish as the default shell
   set --global --export SHELL (${which} fish)
 
-  # Compile my custom themes for bat.
-  chronic bat cache --build
+  # So TMUX can set the right shell. When it executes my default-command it seems to reset $SHELL
+  # first.
+  set --export BIGOLU_PORTABLE_HOME_SHELL "$SHELL"
 
-  exec $SHELL $argv </dev/tty >/dev/tty 2>&1
+  # Compile my custom themes for bat.
+  # I can't use chronic because I don't include moreutils in minimal shell
+  bat cache --build >/dev/null
+
+  # Clear the message we printed
+  if isatty 2
+    echo -en "\33[2K\r"
+  end
+
+  # WARNING: don't exec so our cleanup function can run
+  $SHELL $argv
 ''

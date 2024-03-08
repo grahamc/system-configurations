@@ -44,7 +44,7 @@
         vimPluginRepositoryPrefix
         vimPluginBuilder;
 
-      nvim-treesitter = let
+      treesitter-parsers = let
         just-grammar = final.tree-sitter.buildGrammar {
           language = "just";
           version = inputs.vim-plugin-tree-sitter-just.rev;
@@ -53,7 +53,10 @@
         updatedGrammars = newVimPlugins.nvim-treesitter.allGrammars ++ [just-grammar];
         package = newVimPlugins.nvim-treesitter.withPlugins (_: updatedGrammars);
       in
-        package // {withAllGrammars = package;};
+        final.symlinkJoin {
+          name = "treesitter-parsers";
+          paths = package.dependencies;
+        };
 
       nvim-nonicons =
         vimPluginBuilder
@@ -61,7 +64,14 @@
         (final.runCommand "nvim-nonicons" {} ''cp -R --dereference ${inputs.self}/dotfiles/nonicons/nvim $out'')
         "next";
 
-      vimPlugins = prev.vimPlugins // newVimPlugins // {inherit nvim-treesitter nvim-nonicons;};
+      vimPlugins =
+        prev.vimPlugins
+        // newVimPlugins
+        // {
+          inherit treesitter-parsers nvim-nonicons;
+          # remove treesitter parser plugins because they were ending up in my 'plugged' directory
+          nvim-treesitter = newVimPlugins.nvim-treesitter.withPlugins (_: []);
+        };
     in {inherit vimPlugins;};
   in {overlays.vimPlugins = overlay;};
 }

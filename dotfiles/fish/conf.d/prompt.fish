@@ -126,7 +126,7 @@ function _login_context
     if test -n "$container_name"
         set host $container_name
         set special_host container
-    else if set --query SSH_TTY
+    else if set --export --query SSH_TTY
         set host (hostname)
         set special_host ssh
     else
@@ -198,9 +198,12 @@ function _path_context --argument-names max_length
         set dir_length (math $dir_length - 1)
     end
 
-    set hyperlink '\e]8;;file://'(pwd)'\e\\'$path'\e]8;;\e\\'
+    # If we're on a local machine, add a hyperlink
+    if not set --export --query SSH_TTY
+        set path '\e]8;;file://'(pwd)'\e\\'$path'\e]8;;\e\\'
+    end
 
-    printf $context_prefix$hyperlink
+    printf $context_prefix$path
 end
 
 function _direnv_context

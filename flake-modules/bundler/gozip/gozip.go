@@ -7,6 +7,7 @@ import (
 	"crypto/sha256"
 	"crypto/sha512"
 	"errors"
+	"fmt"
 	"io"
 	"io/fs"
 	"log"
@@ -21,9 +22,104 @@ import (
 
 	"github.com/deepakjois/gousbdrivedetector"
 	"github.com/klauspost/compress/zstd"
+	"github.com/schollz/progressbar/v3"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
+	"golang.org/x/term"
 )
+
+var currentBar *progressbar.ProgressBar = nil
+
+var writer = os.Stderr
+
+var stopTicker chan struct{} = nil
+
+// since both the rewrite and extract steps need the total file count I'll store it here so I don't
+// have to get it twice
+var archiveCount int = 0
+
+// the spinner only updates when the state of the bar changes so we'll keep setting the
+// description on an interval:
+// https://github.com/schollz/progressbar/issues/166
+//
+// TODO: If the script fails, I don't think the ticker will be stopped.
+func MakeTicker(bar *progressbar.ProgressBar) chan struct{} {
+	ticker := time.NewTicker(time.Second / 30)
+	quit := make(chan struct{})
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				bar.Describe(bar.State().Description)
+			case <-quit:
+				ticker.Stop()
+				return
+			}
+		}
+	}()
+
+	return quit
+}
+
+// TODO: only show a progress bar if we're connected to a terminal
+func NextStep(count int, name string, options ...progressbar.Option) *progressbar.ProgressBar {
+	EndProgress()
+	description := fmt.Sprintf("[cyan]%s[reset]...", name)
+	defaultOptions := []progressbar.Option{
+		progressbar.OptionEnableColorCodes(true),
+		progressbar.OptionSetWidth(20),
+		progressbar.OptionSetRenderBlankState(true),
+		progressbar.OptionSetWriter(writer),
+		// the progress bar was flickering a lot when this wasn't set:
+		// https://github.com/schollz/progressbar/issues/87
+		progressbar.OptionUseANSICodes(true),
+		progressbar.OptionSetDescription(description),
+	}
+	currentBar = progressbar.NewOptions(count, append(defaultOptions, options...)...)
+
+	if count == -1 {
+		stopTicker = MakeTicker(currentBar)
+	}
+
+	return currentBar
+}
+
+// For my progress bars I set the option 'UseANSICodes' so it doesn't flicker, but the ANSI way
+// opf clearing the line doesn't seem to be working so below is the code used to clear the line if
+// 'UseANSICodes' isn't enabled:
+// https://github.com/schollz/progressbar/blob/304f5f42a0a10315cae471d8530e13b6c1bdc4fe/progressbar.go#L1007
+func writeString(w io.Writer, str string) {
+	if _, err := io.WriteString(w, str); err != nil {
+		log.Fatal("writing string:", err)
+	}
+
+	if f, ok := w.(*os.File); ok {
+		// ignore any errors in Sync(), as stdout
+		// can't be synced on some operating systems
+		// like Debian 9 (Stretch)
+		f.Sync()
+	}
+}
+func ClearProgressBar() {
+	width, _, err := term.GetSize(2)
+	if err != nil {
+		log.Fatal("getting terminal width:", err)
+	}
+	str := fmt.Sprintf("\r%s\r", strings.Repeat(" ", width))
+	writeString(writer, str)
+}
+
+func EndProgress() {
+	if stopTicker != nil {
+		close(stopTicker)
+		stopTicker = nil
+	}
+	if currentBar != nil {
+		currentBar.Clear()
+		ClearProgressBar()
+		currentBar = nil
+	}
+}
 
 func generateBoundary() []byte {
 	h := sha512.Sum512([]byte("boundary"))
@@ -181,6 +277,23 @@ func SeekToTar(file os.File) os.File {
 
 // Unzip unzips the file zippath and puts it in destination
 func Unzip(zippath string, destination string) (err error) {
+	NextStep(
+		-1,
+		"Extracting archive",
+		progressbar.OptionSpinnerType(14),
+	)
+
+	files, err := UnzipList(zippath)
+	if err != nil {
+		return err
+	}
+	archiveCount = len(files)
+	progressBar := NextStep(
+		archiveCount,
+		"Extracting archive",
+		progressbar.OptionShowCount(),
+	)
+
 	zipFile, err := os.Open(zippath)
 	if err != nil {
 		return err
@@ -250,6 +363,8 @@ func Unzip(zippath string, destination string) (err error) {
 		default:
 			cleanupAndDie(destination, "unsupported file type in tar", hdr.Typeflag)
 		}
+
+		progressBar.Add(1)
 	}
 
 	return
@@ -316,7 +431,43 @@ func IsSymlinkExists(path string) (bool, error) {
 	}
 }
 
+func GetFileCount(path string) int {
+	count := 0
+
+	err := filepath.Walk(path, filepath.WalkFunc(func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() {
+			return nil
+		}
+
+		count = count + 1
+
+		return nil
+	}))
+
+	if err != nil {
+		log.Fatal("getting file count:", err)
+	}
+
+	return count
+}
+
 func RewritePaths(archiveContentsPath string, oldStorePath string, newStorePath string) error {
+	NextStep(
+		-1,
+		"Rewriting store paths",
+		progressbar.OptionSpinnerType(14),
+	)
+	if archiveCount == 0 {
+		archiveCount = GetFileCount(archiveContentsPath)
+	}
+	progressBar := NextStep(
+		archiveCount,
+		"Rewriting store paths",
+		progressbar.OptionShowCount(),
+	)
 	archiveContents, err := os.Open(archiveContentsPath)
 	if err != nil {
 		return err
@@ -363,6 +514,7 @@ func RewritePaths(archiveContentsPath string, oldStorePath string, newStorePath 
 		}
 		g.Go(func() error {
 			defer sem.Release(1)
+			progressBar.Add(1)
 			if info.Mode()&os.ModeSymlink != 0 {
 				str, err := os.Readlink(path)
 				if err != nil {
@@ -537,27 +689,39 @@ func HasFilepathPrefix(path, prefix string) bool {
 	return true
 }
 
-// If we are running on a usb device, store the cache there, for stronger isolation. Otherwise use a temporary
-// directory.
-func GetCacheDirectory() (cacheDirectory string) {
-	usbDevicePaths, err := usbdrivedetector.Detect()
-	if err != nil {
-		return GetTempDir()
+func IsRunningOnUsb() bool {
+	// The go module 'gousbdrivedetector' needs the `udevadm` CLI
+	path, err := exec.LookPath("udevadm")
+	if err != nil || path == "" {
+		return false
 	}
 
-	isRunningOnUsb := false
+	usbDevicePaths, err := usbdrivedetector.Detect()
+	if err != nil {
+		return false
+	}
+
 	executablePath, err := os.Executable()
 	if err != nil {
-		return GetTempDir()
+		return false
 	}
 	for _, usbPath := range usbDevicePaths {
 		if HasFilepathPrefix(executablePath, usbPath) {
-			isRunningOnUsb = true
-			break
+			return true
 		}
 	}
 
-	if isRunningOnUsb {
+	return false
+}
+
+// If we are running on a usb device, store the cache there, for stronger isolation. Otherwise use a temporary
+// directory.
+func GetCacheDirectory() (cacheDirectory string) {
+	if IsRunningOnUsb() {
+		executablePath, err := os.Executable()
+		if err != nil {
+			return GetTempDir()
+		}
 		return filepath.Dir(executablePath)
 	} else {
 		return GetTempDir()
@@ -565,6 +729,14 @@ func GetCacheDirectory() (cacheDirectory string) {
 }
 
 func ExtractArchiveAndRewritePaths() (extractedArchivePath string, executableCachePath string, err error) {
+	NextStep(
+		-1,
+		"Checking cache",
+		progressbar.OptionSpinnerType(14),
+	)
+
+	// TODO: if the cache directory is not on a USB, I should use mktemp to ensure the name is
+	// available
 	cachePath := filepath.Join(GetCacheDirectory(), "nix-rootless-bundler")
 	err = CreateDirectoryIfNotExists(cachePath)
 	if err != nil {
@@ -697,6 +869,12 @@ func ExtractArchiveAndRewritePaths() (extractedArchivePath string, executableCac
 }
 
 func SelfExtractAndRunNixEntrypoint() (exitCode int, err error) {
+	NextStep(
+		-1,
+		"Initializing",
+		progressbar.OptionSpinnerType(14),
+	)
+
 	extractedArchivePath, cachePath, err := ExtractArchiveAndRewritePaths()
 	if err != nil {
 		return -1, err
@@ -708,6 +886,7 @@ func SelfExtractAndRunNixEntrypoint() (exitCode int, err error) {
 		}
 	}()
 
+	EndProgress()
 	entrypointPath := filepath.Join(extractedArchivePath, "entrypoint")
 	// First argument is the program name so we omit that.
 	args := os.Args[1:]
