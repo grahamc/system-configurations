@@ -16,9 +16,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        # TODO: yabai only builds on macos-11, before this I was using macos-latest, an alias to
+        # macos-12
+        os: [ubuntu-latest, macos-11]
+      fail-fast: false
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: '.dotfiles'
       - uses: DeterminateSystems/nix-installer-action@main
@@ -26,5 +29,8 @@ jobs:
         with:
           name: bigolu
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+          # This isn't working right now:
+          # https://github.com/cachix/cachix-action/issues/169
+          useDaemon: false
       - run: nix build --show-trace
         working-directory: './.dotfiles'

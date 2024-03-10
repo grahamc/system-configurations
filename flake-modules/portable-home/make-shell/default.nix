@@ -32,6 +32,7 @@
       activationPackage = import ./home-manager-package.nix {inherit pkgs self minimalFish isGui modules overlays;};
       mktemp = "${coreutilsBinaryPath}/mktemp";
       mkdir = "${coreutilsBinaryPath}/mkdir";
+      ln = "${coreutilsBinaryPath}/ln";
       copy = "${coreutilsBinaryPath}/cp";
       chmod = "${coreutilsBinaryPath}/chmod";
       basename = "${coreutilsBinaryPath}/basename";

@@ -43,7 +43,7 @@ function tmux-server-reload --description 'Reload tmux server'
         end
     end
 
-    tmux attach-session
+    command tmux attach-session
 end
 
 function __fish_prompt_post --on-event fish_prompt
@@ -64,3 +64,18 @@ function __fish_prompt_post --on-event fish_prompt
     end
 end
 mybind --no-focus \co 'tmux-last-command-output; commandline -f repaint'
+
+function tmux --wraps tmux
+    if contains attach $argv || contains attach-session $argv || contains at $argv || contains a $argv
+        if set --export --query BIGOLU_IN_PORTABLE_HOME
+            echo (set_color red)'WARNING:'(set_color normal)' Reattaching to TMUX through a portable shell may not work properly.' >&2
+            read --prompt-str "Would you like to reload the server instead? (Your sessions will be restored) [y/n]: " --nchars 1 response
+            if test $response = y
+                tmux-server-reload
+                return
+            end
+        end
+    end
+
+    command tmux $argv
+end

@@ -1,6 +1,7 @@
 {
   mktemp,
   mkdir,
+  ln,
   copy,
   chmod,
   fish,
@@ -52,6 +53,10 @@ in ''
     # This is because some programs need to be able to write to one of these directories e.g. `fish`.
     ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.config/* $config_dir
     ${copy} --no-preserve=mode --recursive --dereference ${activationPackage}/home-files/.local/share/* $data_dir
+  else
+    # This way we have a reference to all the XDG base directories from the prefix
+    ${ln} --symbolic $config_dir $prefix/config
+    ${ln} --symbolic $data_dir $prefix/data
   end
 
   for program in ${activationPackage}/home-path/bin/* ${activationPackage}/home-files/.local/bin/*
