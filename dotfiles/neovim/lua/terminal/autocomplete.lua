@@ -170,6 +170,7 @@ Plug("hrsh7th/nvim-cmp", {
       name = "path",
       option = {
         label_trailing_slash = false,
+        get_cwd = (#(os.getenv("BIGOLU_EDITING_FISH_BUFFER") or "") > 0) and vim.loop.cwd or nil,
       },
     }
     local tmux = {

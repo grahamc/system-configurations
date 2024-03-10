@@ -13,6 +13,7 @@
     supportedSystems = with inputs.flake-utils.lib.system; [x86_64-linux x86_64-darwin];
     isSupportedSystem = builtins.elem system supportedSystems;
     makeShell = import ./make-shell;
+    inherit (pkgs.stdenv) isLinux;
 
     portableHomeOutputs = let
       shellBootstrap = makeShell {
@@ -49,6 +50,10 @@
           isGui = true;
           inherit pkgs self;
         };
+        nixgl =
+          if isLinux
+          then " ${pkgs.nixgl.auto.nixGLDefault}/bin/nixGL"
+          else "";
       in
         pkgs.writeScriptBin
         terminalBootstrapScriptName
@@ -59,7 +64,7 @@
           set -o nounset
           set -o pipefail
 
-          exec ${GUIShellBootstrap}/bin/shell -c 'exec wezterm --config "font_locator=[[ConfigDirsOnly]]" --config "font_dirs={[[${pkgs.myFonts}]]}" --config "default_prog={[[$SHELL]]}" --config "set_environment_variables={SHELL=[[$SHELL]]}"'
+          exec ${GUIShellBootstrap}/bin/shell -c 'exec${nixgl} wezterm --config "font_locator=[[ConfigDirsOnly]]" --config "font_dirs={[[${pkgs.myFonts}]]}" --config "default_prog={[[$SHELL]]}" --config "set_environment_variables={SHELL=[[$SHELL]]}"'
         '';
     in {
       apps = {

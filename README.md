@@ -137,7 +137,7 @@ need to use the configuration temporarily and not apply it, like when using SSH.
 ### Using Nix
 
 - Run the shell with `nix run github:bigolu/dotfiles#shell`
-- Run the terminal with `nix run github:bigolu/dotfiles#terminal`
+- Run the terminal with `nix run --impure github:bigolu/dotfiles#terminal` (`--impure` is needed for [nixGL][nixgl], but only on Linux)
 
 ### Using a Standalone Executable
 
@@ -200,3 +200,4 @@ shell/terminal that will have access to these programs and configs.
 [built-with-nix-site]: https://builtwithnix.org
 [built-with-nix-badge]: https://builtwithnix.org/badge.svg
 [nix]: https://nixos.org/learn
+[nixgl]: https://github.com/nix-community/nixGL

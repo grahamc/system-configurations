@@ -62,15 +62,29 @@
       url = "github:Hammerspoon/Spoons";
       flake = false;
     };
-    wezterm = {
+    wezterm-terminfo = {
       url = "github:wez/wezterm";
       flake = false;
+    };
+    wezterm = {
+      url = "github:wez/wezterm?dir=nix";
+    };
+    nixpkgs-for-wezterm-darwin.url = "github:nixos/nixpkgs?rev=ff0a5a776b56e0ca32d47a4a47695452ec7f7d80";
+    # UNFREE
+    # IMPURE
+    # TODO: I think I can make its auto-detection pure by having the nixGL executable be a script
+    # that reads /proc/driver at runtime, instead of at buildtime:
+    # https://github.com/nix-community/nixGL/blob/489d6b095ab9d289fe11af0219a9ff00fe87c7c5/nixGL.nix#L225C14-L225C72
+    nixgl = {
+      url = "github:guibou/nixGL";
+      # Per the readme, nixgl needs to use the same nixpkgs as the program it's wrapping:
+      # https://github.com/nix-community/nixGL?tab=readme-ov-file#directly-run-nixgl
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # nix
     ########################################
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    nixpkgs-for-wezterm.url = "github:nixos/nixpkgs?rev=ff0a5a776b56e0ca32d47a4a47695452ec7f7d80";
     nix-index-database = {
       url = "github:Mic92/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";

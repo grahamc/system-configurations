@@ -9,6 +9,7 @@
   inherit (specialArgs.flakeInputs) self;
   inherit (lib.attrsets) optionalAttrs;
   inherit (pkgs.stdenv) isLinux;
+  updateFlags = "${self.lib.updateFlags.homeManager}${lib.strings.optionalString isLinux " ${self.lib.updateFlags.portableHomeLinux}"}";
 
   # Scripts for switching generations and upgrading flake inputs.
   hostctl-switch = pkgs.writeShellApplication {
@@ -40,7 +41,7 @@
       name = "hostctl-upgrade";
       text = ''
         cd "${config.repository.directory}"
-        home-manager switch --flake "${config.repository.directory}#${hostName}" ${self.lib.updateFlags.home} "''$@" |& nom
+        home-manager switch --flake "${config.repository.directory}#${hostName}" ${updateFlags} "''$@" |& nom
         chronic nix-upgrade-profiles
       '';
     };
@@ -52,7 +53,7 @@
 
       oldGenerationPath="$(home-manager generations | head -1 | grep -E --only-matching '/nix.*$')"
 
-      newGenerationPath="$(nix build --no-write-lock-file ${self.lib.updateFlags.home} --no-link --print-out-paths .#homeConfigurations.${hostName}.activationPackage)"
+      newGenerationPath="$(nix build --no-write-lock-file ${updateFlags} --no-link --print-out-paths .#homeConfigurations.${hostName}.activationPackage)"
 
       cyan='\033[1;0m'
       printf "%bPrinting upgrade preview...\n" "$cyan"

@@ -3,7 +3,7 @@ set -o nounset
 set -o pipefail
 
 # verify flake output format and build packages
-nix flake check
+NIXPKGS_ALLOW_UNFREE=1 nix flake check --impure
 
 # build devShells
 nix flake show --json |
@@ -14,7 +14,7 @@ nix flake show --json |
 temp="$(mktemp --directory)"
 trap 'rm -rf $temp' SIGINT SIGTERM ERR EXIT
 nix bundle --out-link "$temp/shell" --bundler .# .#shell
-nix bundle --out-link "$temp/terminal" --bundler .# .#terminal
+NIXPKGS_ALLOW_UNFREE=1 nix bundle --impure --out-link "$temp/terminal" --bundler .# .#terminal
 
 # Do this last to avoid being rate-limited by BitWarden
 just get-secrets

@@ -70,3 +70,4 @@ matchit
 Autocommands
 Enum
 $PATH-like
+nixGL

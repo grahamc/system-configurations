@@ -36,5 +36,5 @@ jobs:
           # This isn't working right now:
           # https://github.com/cachix/cachix-action/issues/169
           useDaemon: false
-      - run: nix run .#nix -- build --show-trace
+      - run: NIXPKGS_ALLOW_UNFREE=1 nix run .#nix -- build --impure --show-trace
         working-directory: './.dotfiles'

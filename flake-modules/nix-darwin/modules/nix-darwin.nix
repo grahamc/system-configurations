@@ -52,7 +52,7 @@
 
       oldGenerationPath="$(readlink --canonicalize ${config.system.profile})"
 
-      darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" ${self.lib.updateFlags.darwin} "$@" |& nom
+      darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" ${self.lib.updateFlags.nixDarwin} "$@" |& nom
       chronic nix-upgrade-profiles
 
       newGenerationPath="$(readlink --canonicalize ${config.system.profile})"
@@ -75,7 +75,7 @@
 
       oldGenerationPath="$(readlink --canonicalize ${config.system.profile})"
 
-      newGenerationPath="$(nix build --no-write-lock-file ${self.lib.updateFlags.darwin} --no-link --print-out-paths .#darwinConfigurations.${hostName}.system)"
+      newGenerationPath="$(nix build --no-write-lock-file ${self.lib.updateFlags.nixDarwin} --no-link --print-out-paths .#darwinConfigurations.${hostName}.system)"
 
       cyan='\033[1;0m'
       printf "%bPrinting upgrade preview...\n" "$cyan"

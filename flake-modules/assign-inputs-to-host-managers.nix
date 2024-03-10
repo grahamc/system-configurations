@@ -13,8 +13,14 @@
           || (lib.strings.hasPrefix "tmux-plugin-" inputName)
       )
       (builtins.attrNames inputs);
+    # TODO: The inputs lists should probably be maps:
+    # - Hosts could override the inclusion of an input by passing `input = false` can't do
+    # that with lists.
+    # - Each map could specify all of its related inputs and I could merge multiple maps without
+    # worrying about duplicates.
+    # - Essentially all the benefits I get from the module system in general.
     inputListsByHostManager = rec {
-      home =
+      homeManager =
         [
           "nixpkgs"
           "flake-utils"
@@ -24,19 +30,23 @@
           "nix-xdg"
           "gomod2nix"
           "neodev-nvim"
-          "wezterm"
+          "wezterm-terminfo"
           "tmux"
           "neovim-nightly-overlay"
+          "wezterm"
         ]
         ++ plugins;
-      darwin =
-        home
+      nixDarwin =
+        homeManager
         ++ [
           "nix-darwin"
           "stackline"
           "spoons"
-          "nixpkgs-for-wezterm"
+          "nixpkgs-for-wezterm-darwin"
         ];
+      portableHomeLinux = [
+        "nixgl"
+      ];
     };
     uniqueAssignments = lib.lists.unique (lib.lists.flatten (builtins.attrValues inputListsByHostManager));
     flakeInputNames = lib.lists.remove "self" (builtins.attrNames inputs);

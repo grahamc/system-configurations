@@ -2,7 +2,6 @@
   imports = [
     ./plugins
     ./xdg.nix
-    ./pinned-versions.nix
     ./missing-packages.nix
     ./meta-packages.nix
     ./partial-packages.nix
@@ -22,7 +21,6 @@
       [
         self.overlays.plugins
         self.overlays.xdg
-        self.overlays.pinnedVersions
         self.overlays.missingPackages
         self.overlays.metaPackages
         self.overlays.partialPackages
