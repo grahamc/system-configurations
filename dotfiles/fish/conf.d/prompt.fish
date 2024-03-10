@@ -122,22 +122,20 @@ function _job_context
 end
 
 function _login_context
-    set container_name (_container_name)
-    if test -n "$container_name"
-        set host $container_name
-        set special_host container
-    else if set --export --query SSH_TTY
-        set host (hostname)
-        set special_host ssh
-    else
-        set host (hostname)
+    set host (hostname)
+
+    if test -n "$(_container_name)"
+        set --append host_attributes $_color_warning_text'container'$_color_normal
+    end
+    if set --export --query SSH_TTY
+        set --append host_attributes $_color_warning_text'ssh'$_color_normal
     end
 
     if fish_is_root_user
         set privilege $_color_warning_text'superuser'$_color_normal
     end
 
-    if set --query special_host
+    if set --query host_attributes
         or set --query privilege
         set user $USER
         if test -z "$user"
@@ -148,8 +146,8 @@ function _login_context
             set user "$user ($privilege)"
         end
 
-        if set --query special_host
-            set host "$host ($special_host)"
+        if set --query host_attributes
+            set host "$host ($(string join -- ',' $host_attributes))"
         end
 
         printf "login: $user on $host"
