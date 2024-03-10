@@ -32,9 +32,9 @@ jobs:
         with:
           name: bigolu
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      - run: nix bundle --show-trace --bundler .# .#shell
-      - run: nix bundle --show-trace --bundler .# .#shellMinimal
-      - run: nix bundle --show-trace --bundler .# .#terminal
+      - run: nix run .#nix -- bundle --show-trace --bundler .# .#shell
+      - run: nix run .#nix -- bundle --show-trace --bundler .# .#shellMinimal
+      - run: nix run .#nix -- bundle --show-trace --bundler .# .#terminal
       # Dereference the symlinks so I can upload the actual executables. The symlinks' names will
       # look like '{shell,terminal}(-minimal)?-x86_64-linux' so I'm using a glob pattern to match
       # them.

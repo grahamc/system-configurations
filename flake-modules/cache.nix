@@ -28,11 +28,11 @@ _: {
       {shell = getAttrFromPath shellOutputPath self';};
 
     shellMinimalPackageByName = let
-      shellOutputPath = ["packages" "shellMinimal"];
+      shellMinimalOutputPath = ["packages" "shellMinimal"];
     in
       optionalAttrs
-      (hasAttrByPath shellOutputPath self')
-      {shell = getAttrFromPath shellOutputPath self';};
+      (hasAttrByPath shellMinimalOutputPath self')
+      {shellMinimal = getAttrFromPath shellMinimalOutputPath self';};
 
     terminalPackageByName = let
       terminalOutputPath = ["packages" "terminal"];
@@ -62,6 +62,13 @@ _: {
       (hasAttrByPath nixDarwinOutputPath self')
       {nixDarwin = getAttrFromPath nixDarwinOutputPath self';};
 
+    nixPackageByName = let
+      nixOutputPath = ["packages" "nix"];
+    in
+      optionalAttrs
+      (hasAttrByPath nixOutputPath self')
+      {nix = getAttrFromPath nixOutputPath self';};
+
     packagesToCacheByName =
       homeManagerPackagesByName
       // nixDarwinPackagesByName
@@ -70,7 +77,8 @@ _: {
       // terminalPackageByName
       // devShellsByName
       // homeManagerPackageByName
-      // nixDarwinPackageByName;
+      // nixDarwinPackageByName
+      // nixPackageByName;
 
     outputs = {
       packages.default = pkgs.linkFarm "packages-to-cache" packagesToCacheByName;

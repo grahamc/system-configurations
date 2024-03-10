@@ -14,6 +14,7 @@
     outputs = optionalAttrs isSupportedSystem {
       packages =
         {
+          inherit (pkgs) nix;
           homeManager = inputs'.home-manager.packages.default;
         }
         // optionalAttrs isDarwin {

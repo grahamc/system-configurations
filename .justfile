@@ -106,12 +106,12 @@ cleanup:
 # Apply the first generation of a home-manager configuration.
 [private]
 init-home-manager host_name: install-git-hooks get-secrets
-    nix run .#homeManager -- switch --flake .#{{ host_name }}
+    nix run .#nix -- run .#homeManager -- switch --flake .#{{ host_name }}
 
 # Apply the first generation of a nix-darwin configuration.
 [private]
 init-nix-darwin host_name: install-git-hooks get-secrets
-    nix run .#nixDarwin -- switch --flake .#{{ host_name }}
+    nix run .#nix -- run .#nixDarwin -- switch --flake .#{{ host_name }}
 
 # Generate the Table of Contents in the README
 [private]

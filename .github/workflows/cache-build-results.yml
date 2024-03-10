@@ -16,8 +16,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # TODO: yabai only builds on macos-11, before this I was using macos-latest, an alias to
-        # macos-12
         os: [ubuntu-latest, macos-latest]
       fail-fast: false
     steps:
@@ -25,6 +23,9 @@ jobs:
         with:
           path: '.dotfiles'
       - uses: DeterminateSystems/nix-installer-action@main
+        # home-manager's `mkOutOfStoreSymlink` doesn't work on nix v2.19 so I'm pinning v2.18:
+        # https://github.com/nix-community/home-manager/issues/4692
+        # https://github.com/NixOS/nix/issues/9579
         with:
           nix-installer-tag: v0.13.1
       - uses: cachix/cachix-action@v14
@@ -34,5 +35,5 @@ jobs:
           # This isn't working right now:
           # https://github.com/cachix/cachix-action/issues/169
           useDaemon: false
-      - run: nix build --show-trace
+      - run: nix run .#nix -- build --show-trace
         working-directory: './.dotfiles'
