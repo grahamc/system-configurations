@@ -98,7 +98,8 @@
       };
     };
     flake-utils.url = "github:numtide/flake-utils";
-    flake-parts.url = "github:hercules-ci/flake-parts";
+    # TODO: I get an 'infinite recursion' error when I upgrade this
+    flake-parts.url = "github:hercules-ci/flake-parts?rev=b253292d9c0a5ead9bc98c4e9a26c6312e27d69f";
 
     # tmux
     ########################################
