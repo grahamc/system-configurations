@@ -15,10 +15,9 @@
         ];
       };
 
-      latestTmux = prev.tmux.overrideAttrs (old: {
+      latestTmux = prev.tmux.overrideAttrs (_old: {
         src = inputs.tmux;
         patches = [];
-        configureFlags = old.configureFlags ++ ["--enable-sixel"];
       });
 
       nightlyNeovimWithDependencies = let
