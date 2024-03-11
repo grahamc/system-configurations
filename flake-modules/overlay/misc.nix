@@ -7,22 +7,13 @@
     overlay = final: prev: let
       inherit (final.stdenv) isLinux;
 
-      ncursesWithWezterm = let
-        weztermTerminfo =
-          final.runCommand "wezterm-terminfo"
-          {nativeBuildInputs = [final.ncurses];}
-          ''
-            mkdir -p $out/share/terminfo
-            tic -x -o $out/share/terminfo ${inputs.wezterm-terminfo}/termwiz/data/wezterm.terminfo
-          '';
-      in
-        final.symlinkJoin {
-          name = "ncursesWithWezterm";
-          paths = [
-            weztermTerminfo
-            final.ncurses
-          ];
-        };
+      ncursesWithWezterm = final.symlinkJoin {
+        name = "ncursesWithWezterm";
+        paths = [
+          final.wezterm.terminfo
+          final.ncurses
+        ];
+      };
 
       latestTmux = prev.tmux.overrideAttrs (old: {
         src = inputs.tmux;

@@ -667,8 +667,7 @@
         "vim-plugin-vim-tmux-navigator": "vim-plugin-vim-tmux-navigator",
         "vim-plugin-virt-column-nvim": "vim-plugin-virt-column-nvim",
         "vim-plugin-which-key-nvim": "vim-plugin-which-key-nvim",
-        "wezterm": "wezterm",
-        "wezterm-terminfo": "wezterm-terminfo"
+        "wezterm": "wezterm"
       }
     },
     "rust-overlay": {
@@ -2138,22 +2137,6 @@
       },
       "original": {
         "dir": "nix",
-        "owner": "wez",
-        "repo": "wezterm",
-        "type": "github"
-      }
-    },
-    "wezterm-terminfo": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1708994725,
-        "narHash": "sha256-t/owVTFmpudRe0kFngQMiVCXmN9DjvqECeoe/sg5zxU=",
-        "owner": "wez",
-        "repo": "wezterm",
-        "rev": "22424c3280cb21af43317cb58ef7bc34a8cbcc91",
-        "type": "github"
-      },
-      "original": {
         "owner": "wez",
         "repo": "wezterm",
         "type": "github"

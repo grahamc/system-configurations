@@ -62,10 +62,6 @@
       url = "github:Hammerspoon/Spoons";
       flake = false;
     };
-    wezterm-terminfo = {
-      url = "github:wez/wezterm";
-      flake = false;
-    };
     wezterm = {
       url = "github:wez/wezterm?dir=nix";
     };

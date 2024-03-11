@@ -30,7 +30,6 @@
           "nix-xdg"
           "gomod2nix"
           "neodev-nvim"
-          "wezterm-terminfo"
           "tmux"
           "neovim-nightly-overlay"
           "wezterm"
