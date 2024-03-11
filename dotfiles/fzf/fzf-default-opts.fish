@@ -68,6 +68,8 @@ end
 
 # Certain actions can cause fzf to leave the help/selected-entries preview.  After executing one of
 # those actions, we need to see the prompt back to the original.
+#
+# TODO: I should also run this on the 'focus' event, but it makes selecting items very slow.
 function _bigolu_fix_prompt
     echo "change-prompt($(_bigolu_remove_preview_indicators $FZF_PROMPT))"
 end
@@ -128,7 +130,6 @@ set flags \
         'ctrl-t:transform(_bigolu_track_toggle)' \
         'ctrl-h:transform(_bigolu_help_toggle)' \
         'ctrl-s:transform(_bigolu_selected_toggle)' \
-        'focus:transform(_bigolu_fix_prompt)' \
         'ctrl-r:refresh-preview+transform(_bigolu_fix_prompt)' \
         'resize:refresh-preview+transform(_bigolu_fix_prompt)' \
         'ctrl-o:change-preview-window(right,60%|bottom,75%)+refresh-preview+transform(_bigolu_fix_prompt)' \

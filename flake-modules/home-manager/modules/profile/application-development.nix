@@ -25,7 +25,7 @@
             fi
           done
 
-          ${pythonWithPackages}/bin/python "''${new_args[@]}"
+          exec ${pythonWithPackages}/bin/python "''${new_args[@]}"
         '';
       };
 
