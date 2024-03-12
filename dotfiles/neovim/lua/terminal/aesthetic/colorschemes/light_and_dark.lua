@@ -71,6 +71,8 @@ local theme = lush(function(injected_functions)
     t_15 { fg = hsl(is_light and "#808080" or "#78849b") },
     -- }}}
 
+    virtual_text { bg = is_light and t_0.fg.da(3) or t_0.fg.li(3), italic = true, bold = true, },
+
     -- modes {{{
     Normal { bg = "NONE", fg = t_7.fg, }, -- Normal text
     NormalNC {}, -- normal text in non-current windows
@@ -97,11 +99,11 @@ local theme = lush(function(injected_functions)
     DiagnosticInfo { t_4, }, -- Used as the base highlight group. Other Diagnostic highlights link to this by default (except Underline)
     DiagnosticHint { t_5 }, -- Used as the base highlight group. Other Diagnostic highlights link to this by default (except Underline)
     DiagnosticOk { t_2 }, -- Used as the base highlight group. Other Diagnostic highlights link to this by default (except Underline)
-    DiagnosticVirtualTextError { ErrorMsg, italic = true, bold = true }, -- Used for "Error" diagnostic virtual text.
-    DiagnosticVirtualTextWarn { WarningMsg, italic = true, bold = true }, -- Used for "Warn" diagnostic virtual text.
-    DiagnosticVirtualTextInfo { DiagnosticInfo, italic = true, bold = true }, -- Used for "Info" diagnostic virtual text.
-    DiagnosticVirtualTextHint { DiagnosticHint, italic = true, bold = true }, -- Used for "Hint" diagnostic virtual text.
-    DiagnosticVirtualTextOk { DiagnosticOk, italic = true, bold = true }, -- Used for "Ok" diagnostic virtual text.
+    DiagnosticVirtualTextError { virtual_text, fg = ErrorMsg.fg, }, -- Used for "Error" diagnostic virtual text.
+    DiagnosticVirtualTextWarn { virtual_text, fg = WarningMsg.fg, }, -- Used for "Warn" diagnostic virtual text.
+    DiagnosticVirtualTextInfo { virtual_text, fg = DiagnosticInfo.fg, }, -- Used for "Info" diagnostic virtual text.
+    DiagnosticVirtualTextHint { virtual_text, fg = DiagnosticHint.fg, }, -- Used for "Hint" diagnostic virtual text.
+    DiagnosticVirtualTextOk { virtual_text, fg = DiagnosticOk.fg, }, -- Used for "Ok" diagnostic virtual text.
     DiagnosticUnderlineError { Error }, -- Used to underline "Error" diagnostics.
     DiagnosticUnderlineWarn { Warning }, -- Used to underline "Warn" diagnostics.
     DiagnosticUnderlineInfo { DiagnosticInfo, undercurl = true }, -- Used to underline "Info" diagnostics.
@@ -239,7 +241,7 @@ local theme = lush(function(injected_functions)
       -- LspReferenceWrite           { } , -- Used for highlighting "write" references
       -- LspSignatureActiveParameter { } , -- Used to highlight the active parameter in the signature help. See |vim.lsp.handlers.signature_help()|.
       LspInfoBorder { FloatBorder },
-      LspInlayHint { bg = is_light and t_0.fg.da(3) or t_0.fg.li(3), fg = is_light and t_0.fg.da(68) or t_0.fg.li(68), italic = true, bold = true, },
+      LspInlayHint { virtual_text, fg = is_light and t_0.fg.da(68) or t_0.fg.li(68), },
       LspCodeLens { LspInlayHint, } , -- Used to color the virtual text of the codelens. See |nvim_buf_set_extmark()|.
       LspCodeLensSeparator { LspCodeLens, fg = t_15.fg, } , -- Used to color the seperator between two or more code lens.
       -- }}}
@@ -266,7 +268,7 @@ local theme = lush(function(injected_functions)
     ColorColumn { WinSeparator },
     WinBar { bold = true, italic = true }, -- Window bar of current window
     WinBarNC { WinBar }, -- Window bar of not-current windows
-    GitBlameVirtualText { t_15, italic = true, bold = true },
+    GitBlameVirtualText { virtual_text, fg = t_15.fg, },
     WhichKeyFloat { NormalFloat },
     WhichKeyBorder { FloatBorder },
     CodeActionSign { t_3 },
@@ -276,8 +278,7 @@ local theme = lush(function(injected_functions)
     Ignore { t_0 }, -- Left blank, hidden |hl-Ignore| (May be invisible here in template)
     Todo { t_3 }, -- Anything that needs extra attention; mostly the keywords TODO FIXME and XXX
     VirtColumn { NonText, },
-    NvimDapVirtualText { LspInlayHint },
-    LuaSnipInlayHint { LspInlayHint, fg = Special.fg },
+    LuaSnipInlayHint { virtual_text, fg = Special.fg },
     QuickfixPreview { Search, nocombine = true },
     AerialLine { bg = is_light and t_0.fg.darken(6) or t_0.fg.lighten(6), },
 

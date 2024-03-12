@@ -4,7 +4,7 @@ end, 0)
 Plug("f-person/git-blame.nvim", {
   on = {},
   config = function()
-    local message_prefix = "    "
+    local message_prefix = " "
     require("gitblame").setup({
       message_template = message_prefix .. "<author>, <date> ∙ <summary>",
       message_when_not_committed = message_prefix .. "Not committed yet",
