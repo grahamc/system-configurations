@@ -52,14 +52,12 @@
       lib.trivial.pipe
       inputs
       [filterRepositoriesForPrefix removePrefixFromRepositories buildPackagesFromRepositories];
-
-    metaOverlay = self.lib.overlay.makeMetaOverlay [
+  in {
+    lib.pluginOverlay = {inherit makePluginPackages;};
+    overlays.plugins = lib.composeManyExtensions [
       self.overlays.vimPlugins
       self.overlays.tmuxPlugins
       self.overlays.fishPlugins
     ];
-  in {
-    lib.pluginOverlay = {inherit makePluginPackages;};
-    overlays.plugins = metaOverlay;
   };
 }

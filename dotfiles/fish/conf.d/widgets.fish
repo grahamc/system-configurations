@@ -88,6 +88,41 @@ function grep-widget --description 'Search by line, recursively, from current di
 end
 mybind --no-focus \cg grep-widget
 
+function grep-all-widget --description 'Text search on text, and certain non-text, files, recursively, from current directory'
+    set dir (__widgets_get_directory_from_current_token)
+
+    set grep_command "rga --files-with-matches --rga-cache-max-blob-len=10M -- {q} $__directory_placeholder"
+    set grep_command (string replace --all $__directory_placeholder (string escape --no-quoted --style script -- $dir) $grep_command)
+
+    set prompt_directory ''
+    if test $dir != '.'
+        set prompt_directory $dir
+        if test "$(string sub --start -1 "$dir")" = /
+            set prompt_directory (string sub --end=-1 $prompt_directory)
+        end
+        set prompt_directory '('(string unescape --style=script $prompt_directory)') '
+    end
+
+    if not set choices ( \
+        FZF_DEFAULT_COMMAND="echo -n ''" \
+        fzf-tmux-zoom \
+            --disabled \
+            # tracking doesn't work when the input list is reloaded so I'm binding it to a no-op.
+            --bind "ctrl-t:execute-silent(:),change:first+reload:sleep 0.1; $grep_command || true" \
+            --bind "start:reload:$(string replace --all -- '{q}' \"''\" $grep_command)" \
+            --prompt $prompt_directory'pattern: ' \
+            --preview 'rga --pretty --context 5 {q} --rga-fzf-path=_{}' \
+    )
+        return
+    end
+
+    __widgets_replace_current_commandline_token $choices
+
+    # this should be done whenever a binding produces output (see: man bind)
+    commandline -f repaint
+end
+mybind --no-focus \eg grep-all-widget
+
 function ast-grep-widget --description 'Search by AST node, recursively, from current directory'
     __grep_widget \
         'AST pattern: ' \

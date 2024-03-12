@@ -13,6 +13,7 @@ in {
     ../fzf.nix
     ../direnv.nix
     ../wezterm.nix
+    ../ripgrep-all.nix
   ];
 
   home.packages = with pkgs;
@@ -47,6 +48,7 @@ in {
       # Though less is on most machines by default, I added it here because I need a relatively recent version (600)
       # since that's when they added support for XDG Base Directories.
       less
+      lesspipe
       # This wasn't in a docker container
       gnused
     ]

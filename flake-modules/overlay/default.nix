@@ -1,4 +1,8 @@
-{self, ...}: {
+{
+  self,
+  lib,
+  ...
+}: {
   imports = [
     ./plugins
     ./xdg.nix
@@ -6,28 +10,21 @@
     ./meta-packages.nix
     ./partial-packages.nix
     ./misc.nix
+    ./gl-wrappers.nix
   ];
 
-  flake = let
-    makeMetaOverlay = overlays: final: prev: let
-      callOverlay = overlay: overlay final prev;
-      overlayResults = builtins.map callOverlay overlays;
-      mergedOverlayResults = self.lib.recursiveMerge overlayResults;
-    in
-      mergedOverlayResults;
+  flake = {
+    overlays.default = lib.composeManyExtensions [
+      self.overlays.plugins
+      self.overlays.xdg
+      self.overlays.missingPackages
+      self.overlays.metaPackages
+      self.overlays.partialPackages
+      self.overlays.misc
 
-    metaOverlay =
-      makeMetaOverlay
-      [
-        self.overlays.plugins
-        self.overlays.xdg
-        self.overlays.missingPackages
-        self.overlays.metaPackages
-        self.overlays.partialPackages
-        self.overlays.misc
-      ];
-  in {
-    lib.overlay = {inherit makeMetaOverlay;};
-    overlays.default = metaOverlay;
+      # WARNING: This needs to go last since it may be wrapping programs that were altered in other
+      # overlays
+      self.overlays.glWrappers
+    ];
   };
 }

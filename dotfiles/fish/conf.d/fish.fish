@@ -169,12 +169,24 @@ function _insert_entries_into_commandline
     else
         set expanded_entry "$entry"
     end
-    if test -d (string unescape -- "$expanded_entry")
+    # eval to expand environment variables
+    if test -d (eval echo (string unescape -- "$expanded_entry"))
         and test (string sub --start -1 -- "$expanded_entry") = /
         set space ''
     end
 
-    commandline --replace --current-token -- "$entry$space"
+    # retain the part of the token after the cursor. use case: autocompleting inside quotes
+    # (bar is cursor) `echo "$HOME|"`
+    set token_after_cursor "$(string sub --start (math (string length -- "$(commandline --current-token --cut-at-cursor)") + 1) -- "$(commandline --current-token)")"
+    set replacement "$entry$space$token_after_cursor"
+
+    # if it ends in `""` or `" "` (when we add a space), remove one quote.
+    # use case: autocompleting a file inside quotes (bar is cursor) `echo "/|"`
+    set replacement (string replace --regex -- '"'$space'"$' $space'"' "$replacement")
+    or set replacement (string replace --regex -- "'$space'\$" $space"'" "$replacement")
+
+    commandline --replace --current-token -- "$replacement"
+    commandline --cursor --current-token -- (math (string length -- "$replacement") - (string length -- "$token_after_cursor"))
 end
 function _fzf_complete
     set candidates (complete --escape --do-complete -- "$(commandline --cut-at-cursor)")
@@ -186,7 +198,7 @@ function _fzf_complete
     if test $candidate_count -eq 1
         _insert_entries_into_commandline $candidates
     else if test $candidate_count -gt 1
-        set current_token (commandline --current-token)
+        set current_token (commandline --current-token --cut-at-cursor)
         if set entries ( \
             printf %s\n $candidates \
             # Use a different color for the completion item description

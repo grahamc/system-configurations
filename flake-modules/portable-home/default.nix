@@ -13,7 +13,6 @@
     supportedSystems = with inputs.flake-utils.lib.system; [x86_64-linux x86_64-darwin];
     isSupportedSystem = builtins.elem system supportedSystems;
     makeShell = import ./make-shell;
-    inherit (pkgs.stdenv) isLinux;
 
     portableHomeOutputs = let
       shellBootstrap = makeShell {
@@ -37,10 +36,22 @@
         ];
         overlays = [
           (_final: _prev: {
-            # to remove perl dependency
             moreutils = makeEmptyPackage "moreutils";
-
             ast-grep = makeEmptyPackage "ast-grep";
+            ripgrep-all = makeEmptyPackage "ripgrep-all";
+            lesspipe = makeEmptyPackage "lesspipe";
+
+            # I don't want to override fzf in the full shell because that would cause ripgrep-all to rebuild
+            fzf = let
+              fzfNoPerl = pkgs.fzf.override {
+                perl = makeEmptyPackage "perl";
+              };
+            in
+              pkgs.buildEnv {
+                name = "fzf-without-shell-config";
+                paths = [fzfNoPerl];
+                pathsToLink = ["/bin" "/share/man"];
+              };
           })
         ];
       };
@@ -50,10 +61,6 @@
           isGui = true;
           inherit pkgs self;
         };
-        nixgl =
-          if isLinux
-          then " ${pkgs.nixgl.auto.nixGLDefault}/bin/nixGL"
-          else "";
       in
         pkgs.writeScriptBin
         terminalBootstrapScriptName
@@ -64,7 +71,7 @@
           set -o nounset
           set -o pipefail
 
-          exec ${GUIShellBootstrap}/bin/shell -c 'exec${nixgl} wezterm --config "font_locator=[[ConfigDirsOnly]]" --config "font_dirs={[[${pkgs.myFonts}]]}" --config "default_prog={[[$SHELL]]}" --config "set_environment_variables={SHELL=[[$SHELL]]}"'
+          exec ${GUIShellBootstrap}/bin/shell -c 'exec wezterm --config "font_locator=[[ConfigDirsOnly]]" --config "font_dirs={[[${pkgs.myFonts}]]}" --config "default_prog={[[$SHELL]]}" --config "set_environment_variables={SHELL=[[$SHELL]]}"'
         '';
     in {
       apps = {

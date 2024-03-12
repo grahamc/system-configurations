@@ -1,0 +1,54 @@
+{
+  // TODO: rga should autogenerate this and publish to the schema store
+  "$schema": "./config.schema.json",
+
+  "custom_adapters": [
+    {
+      "name": "xlsx2csv",
+      "version": 1,
+      "description": "Uses adaption of xlsx2csv (the Python package) to convert XLSX from STDIN to CSV files",
+      "extensions": ["xlsx"],
+      "mimetypes": ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
+      "binary": "xlsx2csv",
+      "args": [ "--all", "-"],
+      "disabled_by_default": false,
+      "match_only_by_mime": false
+    },
+    {
+      "args": [],
+      "binary": "fastgron",
+      "description": "Transform JSON into discrete JS assignments",
+      "disabled_by_default": false,
+      "extensions": ["json"],
+      "match_only_by_mime": false,
+      "mimetypes": ["application/json"],
+      "name": "fastgron",
+      "version": 1
+    },
+    {
+      "name": "tesseract",
+      "version": 1,
+      "description": "Uses Tesseract OCR to recognize text in image files",
+      "extensions": ["jpg", "jpeg", "jpe", "png", "webp", "gif", "tif", "tiff", "jp2", "j2k", "jpf", "jpm", "jpg2", "jpg2000", "jpeg2000", "j2c", "jpc", "jpx", "bmp", "pnm"],
+      "mimetypes": ["image/jpeg", "image/png", "image/webp", "image/gif", "image/tiff", "image/jp2", "image/jpx", "image/jpm", "image/bmp", "image/x-portable-anymap"],
+      "binary": "tesseract",
+      "args": ["--psm", "1", "-", "-"],
+      "disabled_by_default": false,
+      "match_only_by_mime": false
+    },
+    {
+      "name": "djvutorga",
+      "version": 2,
+      "description": "Uses djvused to extract plain text from DJVU files",
+
+      "extensions": ["djvu"],
+      "mimetypes": ["image/vnd.djvu"],
+
+      "binary": "djvutorga",
+      "args": ["$input_virtual_path"],
+      "output_path_hint": "${input_virtual_path}.txt.asciipagebreaks",
+      "disabled_by_default": false,
+      "match_only_by_mime": false
+    }
+  ]
+}

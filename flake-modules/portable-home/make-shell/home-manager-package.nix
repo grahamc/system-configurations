@@ -7,8 +7,6 @@
   overlays ? [],
 }: let
   inherit (pkgs) system;
-  # inherit (lib.attrsets) optionalAttrs;
-  # inherit (lib.lists) optionals;
   inherit (pkgs.stdenv) isLinux;
   hostName = "guest-host";
   makeEmptyPackage = packageName: pkgs.runCommand packageName {} ''mkdir -p $out/bin'';
@@ -23,18 +21,6 @@
         prev.vimPlugins
         // {
           markdown-preview-nvim = makeEmptyPackage "markdown-preview-nvim";
-        };
-
-      # To remove the perl dependency
-      fzf = let
-        fzfNoPerl = pkgs.fzf.override {
-          perl = makeEmptyPackage "perl";
-        };
-      in
-        pkgs.buildEnv {
-          name = "fzf-without-shell-config";
-          paths = [fzfNoPerl];
-          pathsToLink = ["/bin" "/share/man"];
         };
     }
     // prev.lib.attrsets.optionalAttrs isLinux {

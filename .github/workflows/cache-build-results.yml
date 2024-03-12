@@ -24,7 +24,7 @@ jobs:
         with:
           path: '.dotfiles'
       - uses: DeterminateSystems/nix-installer-action@main
-        # home-manager's `mkOutOfStoreSymlink` doesn't work on nix v2.19 so I'm pinning v2.18:
+        # TODO: home-manager's `mkOutOfStoreSymlink` doesn't work on nix v2.19 so I'm pinning v2.18:
         # https://github.com/nix-community/home-manager/issues/4692
         # https://github.com/NixOS/nix/issues/9579
         with:
@@ -33,8 +33,8 @@ jobs:
         with:
           name: bigolu
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-          # This isn't working right now:
+          # TODO: This isn't working right now:
           # https://github.com/cachix/cachix-action/issues/169
           useDaemon: false
-      - run: NIXPKGS_ALLOW_UNFREE=1 nix run .#nix -- build --impure --show-trace
+      - run: NIXPKGS_ALLOW_UNFREE=1 nix run --show-trace .#nix -- build --impure --show-trace
         working-directory: './.dotfiles'

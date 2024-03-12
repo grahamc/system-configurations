@@ -1,6 +1,6 @@
 {
   inputs,
-  self,
+  lib,
   ...
 }: {
   flake = let
@@ -60,11 +60,32 @@
               --set PARINIT 'rTbgqR B=.\,?'"'"'_A_a_@ Q=_s>|'
           '';
         };
+
+      ripgrepAllWithDependencies = let
+        dependencies = final.symlinkJoin {
+          name = "ripgrep-all-dependencies";
+          paths = with final; [
+            xlsx2csv
+            fastgron
+            tesseract
+            djvulibre
+          ];
+        };
+      in
+        final.symlinkJoin {
+          inherit (prev.ripgrep-all) name;
+          paths = [prev.ripgrep-all];
+          buildInputs = [final.makeWrapper];
+          postBuild = ''
+            wrapProgram $out/bin/rga --prefix PATH : '${dependencies}/bin'
+          '';
+        };
     in {
       tmux = latestTmux;
       # I'm renaming ncurses to avoid rebuilds.
       inherit ncursesWithWezterm;
       neovim = nightlyNeovimWithDependencies;
+      ripgrep-all = ripgrepAllWithDependencies;
       # TODO: The wezterm flake doesn't work for macOS. When I try it I get an error because the
       # attribute 'UserNotifications' does not exist. The only mention of a similar issue is here:
       # https://github.com/wez/wezterm/issues/2021
@@ -74,14 +95,14 @@
       # https://discourse.nixos.org/t/nix-macos-monthly/12330
       wezterm =
         if isLinux
-        then inputs.wezterm.packages.${final.system}.default
+        # TODO: get upstream to set meta.mainProgram
+        then inputs.wezterm.packages.${final.system}.default // {meta.mainProgram = "wezterm";}
         else (import inputs.nixpkgs-for-wezterm-darwin {inherit (final) system;}).wezterm;
     };
-
-    metaOverlay = self.lib.overlay.makeMetaOverlay [
+  in {
+    overlays.misc = lib.composeManyExtensions [
       inputs.neovim-nightly-overlay.overlay
-      inputs.nixgl.overlay
       overlay
     ];
-  in {overlays.misc = metaOverlay;};
+  };
 }
