@@ -135,7 +135,25 @@ function variable-widget --description 'Search shell/environment variables'
         set --append chosen_names $name
     end
 
-    echo $chosen_names
+    if not set choice ( \
+        printf %s'\n' name value \
+        | fzf \
+            --prompt 'output type: ' \
+            --no-preview
+    )
+        return
+    end
+
+    set to_insert
+    for chosen_name in $chosen_names
+        if test $choice = value
+            set --append to_insert $$chosen_name
+        else
+            set --append to_insert $chosen_name
+        end
+    end
+
+    echo $to_insert
 end
 abbr --add --global vw variable-widget
 

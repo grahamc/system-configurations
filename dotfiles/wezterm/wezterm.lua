@@ -70,7 +70,7 @@ config.font_size = 11.3
 if is_mac then
   config.font_size = 14
 end
-config.line_height = 1.5
+config.line_height = 1.6
 config.underline_thickness = "150%"
 
 -- SYNC: terminal-color-palettes

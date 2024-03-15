@@ -18,6 +18,8 @@ Plug("f-person/git-blame.nvim", {
         -- so it goes last
         priority = 9000,
       },
+      schedule_event = "CursorHold",
+      clear_event = "CursorHoldI",
     })
     vim.keymap.set("n", [[\b]], vim.cmd.GitBlameToggle, { desc = "Toggle git blame" })
   end,

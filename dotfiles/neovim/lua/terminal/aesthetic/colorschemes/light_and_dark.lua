@@ -387,7 +387,7 @@ local theme = lush(function(injected_functions)
     MiniJump2dSpotAhead { MiniJump2dSpot },
     MiniJump2dDim { t_15 },
     Clear { },
-    MiniCursorword { bg = is_light and t_0.fg.darken(6) or t_0.fg.lighten(6) },
+    MiniCursorword { underline = true, bold = true, },
     -- }}}
 
     QuickFixLine { }, -- Current |quickfix| item in the quickfix window. Combined with |hl-CursorLine| when the cursor is there.
@@ -397,7 +397,7 @@ local theme = lush(function(injected_functions)
     qfLineNr { qfFileName, },
     QuickfixBorderNotCurrent { Ignore },
     QuickfixTitleNotCurrent { Normal },
-    MatchParen { bg = MiniCursorword.bg, fg = t_5.fg, }, -- Character under the cursor or just before it, if it is a paired bracket, and its match. |pi_paren.txt|
+    MatchParen { MiniCursorword, fg = t_5.fg, }, -- Character under the cursor or just before it, if it is a paired bracket, and its match. |pi_paren.txt|
 
     -- nvim-telescope {{{
     -- List of telescope highlight groups:

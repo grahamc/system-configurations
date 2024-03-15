@@ -21,6 +21,7 @@ Plug("windwp/nvim-ts-autotag", {
 
 -- Automatically add closing keywords (e.g. function/endfunction in vimscript)
 Plug("RRethy/nvim-treesitter-endwise")
+vim.keymap.set({ "n" }, "o", "A<CR>", { remap = true })
 
 -- TODO: Support bullets in comments
 Plug("bullets-vim/bullets.vim")
@@ -49,7 +50,6 @@ vim.api.nvim_create_autocmd("FileType", {
     end
 
     vim.keymap.set({ "i" }, "<CR>", bullets_newline, { expr = true, buffer = true, remap = true })
-    vim.keymap.set({ "n" }, "o", bullets_newline, { expr = true, buffer = true, remap = true })
     vim.keymap.set(
       { "n", "x" },
       "gN",

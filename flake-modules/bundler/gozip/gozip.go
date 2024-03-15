@@ -279,15 +279,15 @@ func SeekToTar(file os.File) os.File {
 func Unzip(zippath string, destination string) (err error) {
 	NextStep(
 		-1,
-		"Extracting archive",
+		"Calculating archive size",
 		progressbar.OptionSpinnerType(14),
 	)
-
 	files, err := UnzipList(zippath)
 	if err != nil {
 		return err
 	}
 	archiveCount = len(files)
+
 	progressBar := NextStep(
 		archiveCount,
 		"Extracting archive",
@@ -455,14 +455,15 @@ func GetFileCount(path string) int {
 }
 
 func RewritePaths(archiveContentsPath string, oldStorePath string, newStorePath string) error {
-	NextStep(
-		-1,
-		"Rewriting store paths",
-		progressbar.OptionSpinnerType(14),
-	)
 	if archiveCount == 0 {
+		NextStep(
+			-1,
+			"Calculating archive size",
+			progressbar.OptionSpinnerType(14),
+		)
 		archiveCount = GetFileCount(archiveContentsPath)
 	}
+
 	progressBar := NextStep(
 		archiveCount,
 		"Rewriting store paths",
