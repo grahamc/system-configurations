@@ -107,6 +107,17 @@
       path = config.repository.directoryPath + pathStringRelativeToHomeManager;
     in
       path;
+    getFilesRecursive = prefix: dir: let
+      typeByBasename = builtins.readDir dir;
+    in
+      map (basename:
+        if typeByBasename.${basename} == "directory"
+        then getFilesRecursive "${prefix}${basename}/" (dir + "/${basename}")
+        else {
+          name = "${prefix}${basename}";
+          value = typeByBasename.${basename};
+        }) (builtins.attrNames typeByBasename);
+    readDirRecursive = directoryPath: builtins.listToAttrs (lib.lists.flatten (getFilesRecursive "" directoryPath));
     convertFileToHomeManagerSymlink = file: let
       absoluteSource = makePathStringAbsolute file.source;
       symlinkSource =
@@ -119,16 +130,15 @@
       homeManagerSymlink;
     # TODO: I won't need this if Home Manager gets support for recursive symlinks.
     # issue: https://github.com/nix-community/home-manager/issues/3514
-    getHomeManagerSymlinkSetForTopLevelFilesInDirectory = directory: let
+    getHomeManagerSymlinkSetForFilesInDirectory = directory: let
       sourceAbsolutePathString = makePathStringAbsolute directory.source;
       sourcePath = convertAbsolutePathStringToPath sourceAbsolutePathString;
-      files = builtins.readDir sourcePath;
       symlinks =
         lib.attrsets.mapAttrs'
         (
           basename: _ignored:
-          # Now that we are dealing with the individual files in the directory, we need to append the file name
-          # to the target and source.
+          # Now that we are dealing with the individual files in the directory, we need to append
+          # the file name to the target and source.
             lib.attrsets.nameValuePair
             "${directory.target}/${basename}"
             (
@@ -140,7 +150,7 @@
               }
             )
         )
-        files;
+        (readDirRecursive sourcePath);
     in
       symlinks;
     convertToHomeManagerSymlinkSet = fileSet:
@@ -149,7 +159,7 @@
         accumulator: targetPath: file: let
           symlinkSet =
             if (builtins.hasAttr "recursive" file) && file.recursive
-            then (getHomeManagerSymlinkSetForTopLevelFilesInDirectory file)
+            then (getHomeManagerSymlinkSetForFilesInDirectory file)
             else {${targetPath} = convertFileToHomeManagerSymlink file;};
         in
           accumulator // symlinkSet

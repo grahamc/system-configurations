@@ -264,7 +264,14 @@ function _git_context --argument-names max_length
 end
 function _make_hyperlink_to_git_branch --argument-names branch_name
     set hyperlink
-    set remote_url (git remote get-url origin)
+
+    # suppress error text in case there is no origin remote
+    set remote_url (git remote get-url origin 2>/dev/null)
+    if test -z "$remote_url"
+        printf '%s' $branch_name
+        return
+    end
+
     set hosts 'github.com'
     set patterns '^(https://|git@)github\.com[:/](?<owner>.*)/(?<repo>.*)\.git$'
     set replacements 'https://github.com/$owner/$repo/tree/%s'
@@ -281,7 +288,7 @@ function _make_hyperlink_to_git_branch --argument-names branch_name
     if test -n "$hyperlink"
         printf '\e]8;;'$hyperlink'\e\\'$branch_name'\e]8;;\e\\'
     else
-        printf $branch_name
+        printf '%s' $branch_name
     end
 end
 function _git_status

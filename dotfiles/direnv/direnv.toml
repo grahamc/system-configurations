@@ -4,4 +4,4 @@
   strict_env = true
 
 [whitelist]
-prefix = [ "~/.dotfiles", "~/code/bigolu.github.io" ]
+prefix = [ "~/.dotfiles", "~/code/bigolu.github.io", "~/code/practice", ]

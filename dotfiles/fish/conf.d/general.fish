@@ -157,8 +157,10 @@ set --global --export DIRENV_LOG_FORMAT (set_color brwhite)'[direnv] %s'(set_col
 abbr --add --global watch 'watch --no-title --differences --interval 0.5'
 
 # vscode
-# Also clearing the $TMUX variable so that the integrated terminal in vscode won't think it's in TMUX.
-abbr --add --global code 'TMUX= code'
+# Clearing the $TMUX variable so that the integrated terminal in vscode won't think it's in TMUX.
+# Clearing SHELL because my config for the OS default shell only launches fish if the current shell
+# isn't fish.
+abbr --add --global code 'TMUX= SHELL= code'
 
 # ulimit
 #

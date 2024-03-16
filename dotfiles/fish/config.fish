@@ -7,11 +7,16 @@ end
 # Sets the cursor shape to a blinking bar
 printf '\033[5 q'
 
-# Print banner
-if not set --query BANNER_WAS_PRINTED
-    set banner Fish Shell v(string split ' ' (fish --version) | tail -n 1)
-    figlet -W -f smblock $banner
-    set --global --export BANNER_WAS_PRINTED
+# Print banner, unless we're in vscode
+#
+# HACK: vscode doesn't set VSCODE_INJECTION when launching a terminal when debugging so instead
+# I'm looking for any variable that starts with VSCODE. Should probably report this.
+if not env | grep -q -E '^VSCODE'
+    if not set --query BANNER_WAS_PRINTED
+        set banner Fish Shell v(string split ' ' (fish --version) | tail -n 1)
+        figlet -W -f smblock $banner
+        set --global --export BANNER_WAS_PRINTED
+    end
 end
 
 # Ask the user to connect to tmux.

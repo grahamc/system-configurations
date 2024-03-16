@@ -62,3 +62,12 @@ Plug("mhinz/vim-signify", {
 })
 vim.g.signify_priority = 1
 vim.g.signify_sign_show_count = 0
+-- I'm using a powerline symbol because I set the foreground color for the symbols to the terminal
+-- background color so they don't show up, but vscode changes foreground colors to meet WCAG
+-- contrast compliance. However, they don't change the color of powerline symbols:
+-- https://github.com/microsoft/vscode/issues/146406#issuecomment-1084825473
+vim.g.signify_sign_add = ""
+vim.g.signify_sign_delete = vim.g.signify_sign_add
+vim.g.signify_sign_delete_first_line = vim.g.signify_sign_add
+vim.g.signify_sign_change = vim.g.signify_sign_add
+vim.g.signify_sign_change_delete = vim.g.signify_sign_add

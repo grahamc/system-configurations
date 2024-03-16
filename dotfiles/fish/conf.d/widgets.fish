@@ -169,7 +169,7 @@ function process-widget --description 'Manage processes'
     # the environment variable name pattern ([a-zA-Z_]+[a-zA-Z0-9_]*=), `string match` will consider
     # that the start of a new variable. For this reason we shouldn't change the order of the
     # variables e.g. sorting
-    set environment_command 'eval (if test (ps -o user= -p {2}) = root && not fish_is_root_user; echo "sudo "; else; echo; end)"ps '$environment_flag' -o command -ww {2}" | string match --groups-only --all --regex -- " ([a-zA-Z_]+[a-zA-Z0-9_]*)=(.*?) [a-zA-Z_]+[a-zA-Z0-9_]*=" | paste -d "="  - - | sed -e "s/\$/│/" | string replace "=" "=│" | page 0</dev/tty 1>/dev/tty 2>&1'
+    set environment_command 'eval (if test (ps -o user= -p {2}) = root && not fish_is_root_user; echo "sudo "; else; echo; end)"ps '$environment_flag' -o command -ww {2}" | string match --groups-only --all --regex -- \' (?=([a-zA-Z_]+[a-zA-Z0-9_]*)=(.*?)(?: [a-zA-Z_]+[a-zA-Z0-9_]*=|$))\' | paste -d "="  - - | sed -e "s/\$/│/" | string replace "=" "=│" | page 0</dev/tty 1>/dev/tty 2>&1'
 
     if not set choice ( \
         FZF_DEFAULT_COMMAND="$reload_command" \

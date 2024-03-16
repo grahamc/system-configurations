@@ -112,8 +112,8 @@ Plug("stevearc/conform.nvim", {
       if not vim.tbl_contains({ "*", "_" }, filetype) then
         local first = formatters[1]
         if type(first) == "table" then
-          table.insert(first, 0, "dprint")
-          table.insert(first, 0, "treefmt")
+          table.insert(first, 1, "dprint")
+          table.insert(first, 1, "treefmt")
           formatters[1] = first
         else
           formatters[1] = { "treefmt", "dprint", first }

@@ -17,6 +17,11 @@ vim.keymap.set({ "n", "x" }, "<Leader><Leader>", function()
   vim.fn.VSCodeNotify("editor.action.showContextMenu")
 end)
 
+-- vscode-neovim maps this to the formatter configured in vscode, but I'm removing it since I use
+-- conform.nvim
+vim.keymap.del({ "n", "x" }, "=")
+vim.keymap.del({ "n" }, "==")
+
 vim.keymap.set("n", [[\b]], function()
   vim.fn.VSCodeNotify("gitlens.toggleLineBlame")
 end, { desc = "Toggle git blame" })
