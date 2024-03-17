@@ -65,7 +65,7 @@ config.font_rules = {
     font = font_with_icon_fallbacks("Monaspace Krypton"),
   },
 }
-config.underline_position = -9
+config.underline_position = -14
 config.font_size = 11.3
 if is_mac then
   config.font_size = 14
@@ -84,7 +84,7 @@ local my_colors_per_color_scheme = {
     [5] = "#B48EAD",
     [6] = "#88C0D0",
     [7] = "#D8DEE9",
-    [8] = "#78849b",
+    [8] = "#414d64",
     [9] = "#BF616A",
     [10] = "#A3BE8C",
     [11] = "#d08770",
@@ -114,7 +114,7 @@ local my_colors_per_color_scheme = {
     [5] = "#994cc3",
     [6] = "#037A98",
     [7] = "#000000",
-    [8] = "#979893",
+    [8] = "#d1d2cd",
     [9] = "#ee3d3b",
     [10] = "#2AA298",
     [11] = "#c96765",
@@ -162,7 +162,7 @@ local function create_color_schemes(colors_per_color_scheme)
         -- TODO: For `cursor_border` to work, `cursor_bg` needs to be set to the same color
         -- issue: https://github.com/wez/wezterm/issues/1494
         color_scheme["cursor_bg"] = color
-      elseif index == 15 then
+      elseif index == 8 then
         color_scheme["split"] = color
       end
 

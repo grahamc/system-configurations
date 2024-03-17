@@ -61,6 +61,10 @@
       printf "%bPrinting generation diff...\n" "$cyan"
       nix store diff-closures "$oldGenerationPath" "$newGenerationPath"
 
+      # HACK:
+      # https://stackoverflow.com/a/40473139
+      rm -rf "$(brew --prefix)/var/homebrew/locks"
+
       chronic brew update
       brew upgrade --greedy
       chronic brew autoremove
@@ -80,6 +84,11 @@
       cyan='\033[1;0m'
       printf "%bPrinting upgrade preview...\n" "$cyan"
       nix store diff-closures "$oldGenerationPath" "$newGenerationPath"
+
+      # HACK:
+      # https://stackoverflow.com/a/40473139
+      rm -rf "$(brew --prefix)/var/homebrew/locks"
+
       brew outdated --greedy
     '';
   };

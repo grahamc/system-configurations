@@ -195,6 +195,8 @@ function _path_context --argument-names max_length
         set path (prompt_pwd --dir-length $dir_length)
         set dir_length (math $dir_length - 1)
     end
+    # normalize to remove trailing slash
+    set path (path normalize "$path")
 
     # If we're on a local machine, add a hyperlink
     if not set --export --query SSH_TTY

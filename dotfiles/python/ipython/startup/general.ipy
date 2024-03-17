@@ -5,18 +5,18 @@ import sys
 from time import sleep
 
 normal = '\x1b[0m'
-code = '\x1b[48;5;51m\x1b[38;5;5m'
+code = '\x1b[38;5;5m'
 
 # banner
-print(f'Python v{".".join(str(x) for x in sys.version_info[:3])}, IPython v{".".join(str(x) for x in IPython.version_info[:3])}. Type {code} ? {normal} for help.')
+print(f'Python v{".".join(str(x) for x in sys.version_info[:3])}, IPython v{".".join(str(x) for x in IPython.version_info[:3])}. Type `{code}?{normal}` for help.')
 
 # enable verbose exception traces
 %xmode Verbose
-print(f"You can change this with {code} %xmode Plain/Context/Verbose/Minimal {normal}")
+print(f"You can change this with `{code}%xmode Plain/Context/Verbose/Minimal{normal}`")
 
 # enable autoreload
 %autoreload 2
-print(f"Module autoreload is enabled, this may impact performance. You can disable it with {code} %autoreload 0 {normal}")
+print(f"Module autoreload is enabled, this may impact performance. You can disable it with `{code}%autoreload 0{normal}`")
 
 # change cursor shape to a blinking bar
 print('\x1b[5 q', end='')

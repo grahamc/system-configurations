@@ -8,6 +8,17 @@ end
 -- TODO: I have this set in init.lua, but it won't work in vscode unless I set it here.
 vim.g.mapleader = " "
 
+-- TODO: Unlike other extensions, vscode-neovim is not picking up the environment variables set by
+-- direnv-vscode, even after direnv restarts all extensions. I noticed that the parent process for
+-- the vscode-neovim is different than the parent process for all other extensions so maybe that
+-- has something to do with it. In the meantime, I'll use the extension below which applies the
+-- .envrc on VimEnter and DirChanged events. I should report this to direnv-vscode.
+Plug("direnv/direnv.vim")
+
+-- TODO: When this is enabled and I press `jk` in between to parentheses, while in insert mode,
+-- another pair of parens would get added. Other kinds of text would get inserted too.
+vim.g.matchup_matchparen_enabled = 0
+
 -- Windows
 vim.keymap.set({ "n" }, "<Leader><Bar>", "<C-w>v", { remap = true })
 vim.keymap.set({ "n" }, "<Leader>-", "<C-w>s", { remap = true })

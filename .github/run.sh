@@ -48,4 +48,5 @@ fi
 
 download "$release_artifact_url" "$release_artifact_name"
 chmod +x "$release_artifact_name"
-exec "./$release_artifact_name"
+# The command in my README pipes this script into sh so we need to set stdin back to the terminal
+exec "./$release_artifact_name" </dev/tty

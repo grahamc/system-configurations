@@ -16,6 +16,7 @@ cmp-tmux
 conform.nvim
 czs.nvim
 dial.nvim
+direnv.vim
 dressing.nvim
 dropbar.nvim
 fidget.nvim

@@ -28,8 +28,6 @@ vim.keymap.set({ "n" }, "<Esc>", "<Plug>(ExchangeClear)<ESC>")
 -- Formatting {{{
 local utilities = require("base.utilities")
 
--- TODO: If you use direnv to add your formatters to the $PATH, you have to launch vscode
--- from the terminal for it to find the formatters. More on this in my notes.
 Plug("stevearc/conform.nvim", {
   -- So when I use my conform executable, my config will be called before I call format()
   sync = true,

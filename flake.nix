@@ -477,5 +477,9 @@
       url = "github:gabrielpoca/replacer.nvim";
       flake = false;
     };
+    vim-plugin-direnv-vim = {
+      url = "github:direnv/direnv.vim";
+      flake = false;
+    };
   };
 }
