@@ -70,7 +70,8 @@ local theme = lush(function(injected_functions)
 
     -- modes {{{
     Normal { bg = "NONE", fg = t_7.fg, }, -- Normal text
-    NormalNC {}, -- normal text in non-current windows
+    -- tint.nvim needs this in order to work
+    NormalNC { bg = "NONE", fg = t_7.fg, }, -- normal text in non-current windows
     Visual { bg = t_3.fg, fg = t_0.fg }, -- Visual mode selection
     VisualNOS {}, -- Visual mode selection when vim is "Not Owning the Selection".
     -- }}}
@@ -112,8 +113,8 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- float {{{
-    NormalFloat { bg = is_light and hsl("#EEEEEE") or t_0.fg.darken(35) }, -- Normal text in floating windows.
-    FloatBorder { NormalFloat, fg = is_light and NormalFloat.bg.darken(7) or t_0.fg.lighten(2) }, -- Border of floating windows.
+    NormalFloat { }, -- Normal text in floating windows.
+    FloatBorder { NormalFloat, fg = t_15.fg, }, -- Border of floating windows.
     FloatTitle { NormalFloat, fg = t_6.fg }, -- Title of floating windows.
     -- }}}
 
@@ -261,11 +262,12 @@ local theme = lush(function(injected_functions)
     Whitespace { fg = t_0.fg[is_light and 'darken' or 'lighten'](30) }, -- "nbsp", "space", "tab" and "trail" in 'listchars'
     WinSeparator { t_8, }, -- Separator between window splits. Inherts from |hl-VertSplit| by default, which it will replace eventually.
     ColorColumn { WinSeparator },
-    WinBar { bold = true, italic = true }, -- Window bar of current window
-    WinBarNC { WinBar }, -- Window bar of not-current windows
+    WinBar { bold = true, italic = true, bg = "NONE", fg = t_7.fg, }, -- Window bar of current window
+    -- tint.nvim needs this in order to work
+    WinBarNC { bold = true, italic = true, bg = "NONE", fg = t_7.fg, }, -- Window bar of not-current windows
     GitBlameVirtualText { virtual_text, fg = t_15.fg, },
-    WhichKeyFloat { NormalFloat },
-    WhichKeyBorder { fg = WhichKeyFloat.bg, bg = WhichKeyFloat.bg, },
+    WhichKeyFloat { StatusLine, }, -- Normal text in floating windows.
+    WhichKeyBorder { WhichKeyFloat, fg = WhichKeyFloat.bg, }, -- Border of floating windows.
     CodeActionSign { t_3 },
     NullLsInfoBorder { FloatBorder },
     WidgetFill { t_0 },
@@ -320,10 +322,10 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- nvim-cmp {{{
-    CmpNormal { bg = (is_light and NormalFloat.bg.darken or t_0.fg.lighten)(6) },
+    CmpNormal { bg = t_0.fg[is_light and 'darken' or 'lighten'](6) },
     CmpItemKind { fg = CmpNormal.bg[is_light and 'darken' or 'lighten'](55) },
     CmpItemMenu { CmpItemKind },
-    CmpDocumentationNormal { bg = CmpNormal.bg[is_light and 'darken' or 'lighten'](2), },
+    CmpDocumentationNormal { bg = CmpNormal.bg[is_light and 'darken' or 'lighten'](1), },
     CmpDocumentationBorder { CmpDocumentationNormal, fg = CmpDocumentationNormal.bg, },
     CmpItemAbbrMatch { t_6 },
     CmpItemAbbrMatchFuzzy { CmpItemAbbrMatch },
@@ -397,17 +399,17 @@ local theme = lush(function(injected_functions)
     -- nvim-telescope {{{
     -- List of telescope highlight groups:
     -- https://github.com/nvim-telescope/telescope.nvim/blob/master/plugin/telescope.lua
-    TelescopePromptNormal { bg = is_light and hsl("#E9E9E9") or t_0.fg.lighten(5) },
-    TelescopePromptBorder { TelescopePromptNormal, fg = TelescopePromptNormal.bg },
-    TelescopePromptTitle { t_6, reverse = true, bold = true },
-    TelescopePromptCounter { TelescopePromptNormal, fg = TelescopePromptNormal.bg[is_light and 'darken' or 'lighten'](40) },
+    TelescopePromptNormal { },
+    TelescopePromptBorder { t_15, },
+    TelescopePromptTitle { t_6, },
+    TelescopePromptCounter { TelescopePromptNormal, fg = t_15.fg, },
     TelescopePromptPrefix { TelescopePromptNormal, fg = FloatTitle.fg },
-    TelescopeResultsNormal { NormalFloat },
-    TelescopeResultsBorder { TelescopeResultsNormal, fg = TelescopeResultsNormal.bg },
-    TelescopePreviewNormal { TelescopeResultsNormal },
-    TelescopePreviewBorder { TelescopePreviewNormal, fg = TelescopePromptNormal.bg },
+    TelescopeResultsNormal { TelescopePromptNormal },
+    TelescopeResultsBorder { TelescopePromptBorder, },
+    TelescopePreviewNormal { TelescopePromptNormal },
+    TelescopePreviewBorder { TelescopePromptBorder, },
     TelescopeMatching { fg = FloatTitle.fg },
-    TelescopeSelection { bg = is_light and TelescopeResultsNormal.bg.da(10) or TelescopeResultsNormal.bg.li(10) },
+    TelescopeSelection { CmpNormal },
     TelescopeSelectionCaret { TelescopeSelection },
     -- }}}
 

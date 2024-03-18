@@ -651,6 +651,7 @@
         "vim-plugin-telescope-nvim": "vim-plugin-telescope-nvim",
         "vim-plugin-telescope-sg": "vim-plugin-telescope-sg",
         "vim-plugin-telescope-smart-history-nvim": "vim-plugin-telescope-smart-history-nvim",
+        "vim-plugin-tint-nvim": "vim-plugin-tint-nvim",
         "vim-plugin-traces-vim": "vim-plugin-traces-vim",
         "vim-plugin-tree-sitter-just": "vim-plugin-tree-sitter-just",
         "vim-plugin-treesj": "vim-plugin-treesj",
@@ -1858,6 +1859,22 @@
       "original": {
         "owner": "nvim-telescope",
         "repo": "telescope-smart-history.nvim",
+        "type": "github"
+      }
+    },
+    "vim-plugin-tint-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1693240840,
+        "narHash": "sha256-epKJsF1PILgk8ff/QNhXBI7m8soiTY2EC5BXGJP/AFQ=",
+        "owner": "levouh",
+        "repo": "tint.nvim",
+        "rev": "862835626941d263466754b9c8e2ce2cb004f5ac",
+        "type": "github"
+      },
+      "original": {
+        "owner": "levouh",
+        "repo": "tint.nvim",
         "type": "github"
       }
     },

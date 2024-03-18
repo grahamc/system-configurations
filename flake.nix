@@ -481,5 +481,9 @@
       url = "github:direnv/direnv.vim";
       flake = false;
     };
+    vim-plugin-tint-nvim = {
+      url = "github:levouh/tint.nvim";
+      flake = false;
+    };
   };
 }

@@ -268,6 +268,9 @@ function StatusLine()
       )
 
       icon = "%#FileTypeIcon#" .. icon .. " "
+
+      -- TODO: To fix icon highlight
+      require("tint").refresh()
     else
       icon = ""
     end

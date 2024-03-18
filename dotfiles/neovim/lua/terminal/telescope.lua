@@ -38,7 +38,33 @@ Plug("nvim-telescope/telescope.nvim", {
               actions.smart_send_to_qflist(...)
               actions.open_qflist(...)
             end,
+            ["<C-o>"] = require("telescope.actions.layout").cycle_layout_next,
           },
+        },
+        cycle_layout_list = {
+          {
+            layout_strategy = "horizontal",
+            layout_config = {
+              mirror = false,
+              preview_cutoff = 20,
+              prompt_position = "top",
+              preview_width = 0.60,
+            },
+          },
+          {
+            layout_strategy = "vertical",
+            layout_config = {
+              mirror = true,
+              preview_cutoff = 20,
+              prompt_position = "top",
+            },
+          },
+        },
+        layout_strategy = "vertical",
+        layout_config = {
+          mirror = true,
+          preview_cutoff = 20,
+          prompt_position = "top",
         },
         prompt_prefix = "   ",
         sorting_strategy = "ascending",
@@ -51,13 +77,6 @@ Plug("nvim-telescope/telescope.nvim", {
           path = vim.fn.stdpath("data") .. "/telescope_history.sqlite3",
           limit = 100,
         },
-        layout_strategy = "vertical",
-        layout_config = {
-          mirror = true,
-          preview_cutoff = 20,
-          prompt_position = "top",
-        },
-        borderchars = { "━", "", " ", " ", "━", "━", " ", " " },
       },
       pickers = {
         find_files = {
@@ -69,7 +88,6 @@ Plug("nvim-telescope/telescope.nvim", {
             },
           },
           disable_devicons = true,
-          preview_title = "",
         },
         live_grep = {
           additional_args = {
@@ -82,7 +100,6 @@ Plug("nvim-telescope/telescope.nvim", {
           },
           prompt_title = "Live Grep (Press <c-g> to fuzzy filter)",
           disable_devicons = true,
-          preview_title = "",
         },
         help_tags = {
           mappings = {
@@ -94,15 +111,7 @@ Plug("nvim-telescope/telescope.nvim", {
               end,
             },
           },
-          preview_title = "",
         },
-        current_buffer_fuzzy_find = { preview_title = "" },
-        jumplist = { preview_title = "" },
-        highlights = { preview_title = "" },
-        diagnostics = { preview_title = "" },
-        lsp_dynamic_workspace_symbols = { preview_title = "" },
-        autocommands = { preview_title = "" },
-        filter_notifications = { preview_title = "" },
         command_history = {
           mappings = {
             i = {
@@ -125,7 +134,6 @@ Plug("nvim-telescope/telescope.nvim", {
         },
         ast_grep = {
           grep_open_files = false,
-          preview_title = "",
           disable_devicons = true,
         },
       },

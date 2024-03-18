@@ -31,7 +31,7 @@ Plug("folke/which-key.nvim", {
         align = "center",
       },
       window = {
-        border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
+        border = { " ", " ", " ", " ", " ", " ", " ", " " },
         margin = { 1, 0.05, 2, 0.05 },
       },
       icons = {

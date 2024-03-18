@@ -101,6 +101,13 @@ if IsRunningInTerminal then
         vim.cmd.TSContextToggle,
         { desc = "Toggle sticky scroll [context]" }
       )
+
+      -- TODO: tint.nvim dims the context on startup, but this fixes it
+      vim.defer_fn(function()
+        -- Fix treesitter context
+        vim.cmd.TSContextToggle()
+        vim.cmd.TSContextToggle()
+      end, 800)
     end,
   })
 end

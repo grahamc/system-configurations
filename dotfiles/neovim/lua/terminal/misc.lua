@@ -425,7 +425,7 @@ Plug("stevearc/dressing.nvim", {
         enabled = true,
         default_prompt = "Input:",
         trim_prompt = false,
-        border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
+        border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
         relative = "editor",
         prefer_width = 0.5,
         width = 0.5,

@@ -12,7 +12,7 @@ vim.diagnostic.config({
   float = {
     source = true,
     focusable = true,
-    border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
+    border = { " ", " ", " ", " ", " ", " ", " ", " " },
     format = function(diagnostic)
       local result = diagnostic.message
 
@@ -32,6 +32,12 @@ vim.diagnostic.open_float = function(...)
   if winid == nil then
     return
   end
+
+  vim.api.nvim_set_option_value(
+    "winhighlight",
+    "NormalFloat:CmpDocumentationNormal,FloatBorder:CmpDocumentationBorder",
+    { win = winid }
+  )
 
   IsDiagnosticFloatOpen = true
   vim.cmd.redrawstatus()
@@ -122,7 +128,7 @@ Plug("nvimtools/none-ls.nvim", {
     -- null_ls.register(require("none-ls-shellcheck.code_actions"))
     local builtins = null_ls.builtins
     null_ls.setup({
-      border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
+      border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
       sources = {
         builtins.code_actions.shellcheck.with({
           filetypes = { "sh", "bash" },
@@ -139,9 +145,8 @@ Plug("aznhe21/actions-preview.nvim", {
   config = function()
     local actions_preview = require("actions-preview")
     actions_preview.setup({
-      telescope = {
-        preview_title = "",
-      },
+      -- so it uses my telescope defaults
+      telescope = {},
     })
     vim.keymap.set({ "n", "v" }, "ga", actions_preview.code_actions, { desc = "Code actions" })
   end,
@@ -150,7 +155,7 @@ Plug("aznhe21/actions-preview.nvim", {
 Plug("neovim/nvim-lspconfig", {
   config = function()
     require("lspconfig.ui.windows").default_options.border =
-      { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" }
+      { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }
     vim.api.nvim_create_user_command("LspServerConfigurations", function()
       vim.cmd.Help("lspconfig-all")
     end, {})
@@ -396,7 +401,7 @@ Plug("williamboman/mason-lspconfig.nvim", {
               max_height = math.floor(vim.o.lines * 0.35),
               max_width = math.floor(vim.o.columns * 0.65),
               focusable = true,
-              border = { "🭽", "▔", "🭾", "▕", "🭿", "▁", "🭼", "▏" },
+              border = { " ", " ", " ", " ", " ", " ", " ", " " },
             })
           )
           if not bufnr or not win_id then
@@ -404,6 +409,11 @@ Plug("williamboman/mason-lspconfig.nvim", {
           end
 
           vim.api.nvim_set_option_value("concealcursor", "nvic", { win = win_id })
+          vim.api.nvim_set_option_value(
+            "winhighlight",
+            "NormalFloat:CmpDocumentationNormal,FloatBorder:CmpDocumentationBorder",
+            { win = win_id }
+          )
 
           on_open()
           vim.api.nvim_create_autocmd("WinClosed", {

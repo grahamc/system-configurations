@@ -60,6 +60,7 @@ telescope-menufacture
 telescope.nvim
 telescope-sg
 telescope-smart-history.nvim
+tint.nvim
 traces.vim
 tree-sitter-just
 treesj
