@@ -384,7 +384,7 @@ local theme = lush(function(injected_functions)
     MiniJump2dSpotAhead { MiniJump2dSpot },
     MiniJump2dDim { t_15 },
     Clear { },
-    MiniCursorword { underline = true, bold = true, },
+    MiniCursorword { CursorLine, bold = true, },
     -- }}}
 
     QuickFixLine { }, -- Current |quickfix| item in the quickfix window. Combined with |hl-CursorLine| when the cursor is there.

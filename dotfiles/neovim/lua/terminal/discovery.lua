@@ -48,14 +48,28 @@ Plug("mrjones2014/legendary.nvim", {
     local legendary = require("legendary")
 
     legendary.setup({
-      select_prompt = "Command/Keymap Palette",
+      select_prompt = "Command Palette",
       include_legendary_cmds = false,
-      icons = {
-        keymap = " ",
-        command = " ",
-        fn = "󰡱 ",
-        itemgroup = " ",
-      },
+      default_item_formatter = function(item)
+        local Toolbox = require("legendary.toolbox")
+        local function truncate(s)
+          return string.sub(s, 1, math.max(25, math.floor(vim.o.columns * 0.15)))
+        end
+        if Toolbox.is_keymap(item) then
+          return { truncate(item.keys), item.description }
+        elseif Toolbox.is_command(item) then
+          return { truncate(item.cmd), item.description }
+        elseif Toolbox.is_autocmd(item) then
+          return { truncate("<autocmd>"), item.description }
+        elseif Toolbox.is_function(item) then
+          return { truncate("<function>"), item.description }
+        elseif Toolbox.is_itemgroup(item) then
+          return { truncate(item.name), item.description or "Expand to select an item..." }
+        else
+          -- unreachable
+          return { "", vim.inspect(item) }
+        end
+      end,
     })
 
     local function make_unique_filter(key_extractor)
