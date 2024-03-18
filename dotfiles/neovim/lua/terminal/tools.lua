@@ -1,6 +1,11 @@
 Plug("williamboman/mason.nvim", {
   config = function()
     require("mason").setup({
+      -- TODO: ast-grep only supports the latest glibc which my system doesn't have because popOS
+      -- system libraries are frozen until the release of their COSMIC DE. By appending to the path,
+      -- the ast-grep from Nix will take precedence over mason's.
+      PATH = vim.uv.os_uname().sysname == "Linux" and "append" or "prepend",
+
       ui = {
         width = 1,
         -- Ideally I'd use a function here so I could set it to '<screen_height> - 1', but this

@@ -41,8 +41,9 @@
             gawk
             coreutils-full
 
-            # for mason.nvim
-            myPython
+            # for mason.nvim. need to specify `final` here because otherwise it will resolve to the
+            # attribute inside `let` and overlays won't be able to override it
+            final.myPython
 
             # for telescope-sg
             ast-grep
@@ -133,7 +134,7 @@
           '';
       in
         final.symlinkJoin {
-          name = "python-copy-venvs";
+          name = "myPython";
           paths = [
             python3CopyVenvsByDefaultPackage
             pythonWithPackages

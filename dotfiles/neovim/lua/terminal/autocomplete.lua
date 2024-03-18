@@ -113,11 +113,11 @@ Plug("uga-rosa/cmp-dictionary", {
       max_number_items = 1000,
       first_case_insensitive = true,
       external = {
-        enable = true,
+        enable = vim.fn.executable("look") == 1,
         command = { "look", "${prefix}", "${path}" },
       },
       document = {
-        enable = true,
+        enable = vim.fn.executable("wn") == 1,
         command = { "wn", "${label}", "-over" },
       },
     })
