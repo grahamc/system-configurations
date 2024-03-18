@@ -32,6 +32,9 @@ jobs:
         with:
           name: bigolu
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+          # TODO: This isn't working right now:
+          # https://github.com/cachix/cachix-action/issues/169
+          useDaemon: false
       - run: nix run --show-trace .#nix -- bundle --show-trace --bundler .# .#shell
       - run: nix run --show-trace .#nix -- bundle --show-trace --bundler .# .#shellMinimal
       - run: NIXPKGS_ALLOW_UNFREE=1 nix run --show-trace .#nix -- bundle --impure --show-trace --bundler .# .#terminal

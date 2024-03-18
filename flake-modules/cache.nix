@@ -20,27 +20,6 @@ _: {
     in
       mapAttrs (_hostName: output: output.system) nixDarwinOutputsByHostName;
 
-    shellPackageByName = let
-      shellOutputPath = ["packages" "shell"];
-    in
-      optionalAttrs
-      (hasAttrByPath shellOutputPath self')
-      {shell = getAttrFromPath shellOutputPath self';};
-
-    shellMinimalPackageByName = let
-      shellMinimalOutputPath = ["packages" "shellMinimal"];
-    in
-      optionalAttrs
-      (hasAttrByPath shellMinimalOutputPath self')
-      {shellMinimal = getAttrFromPath shellMinimalOutputPath self';};
-
-    terminalPackageByName = let
-      terminalOutputPath = ["packages" "terminal"];
-    in
-      optionalAttrs
-      (hasAttrByPath terminalOutputPath self')
-      {terminal = getAttrFromPath terminalOutputPath self';};
-
     devShellsByName = let
       devShellOutputsKey = "devShells";
     in
@@ -72,9 +51,6 @@ _: {
     packagesToCacheByName =
       homeManagerPackagesByName
       // nixDarwinPackagesByName
-      // shellPackageByName
-      // shellMinimalPackageByName
-      // terminalPackageByName
       // devShellsByName
       // homeManagerPackageByName
       // nixDarwinPackageByName
