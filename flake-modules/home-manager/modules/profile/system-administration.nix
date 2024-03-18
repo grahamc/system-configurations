@@ -33,8 +33,8 @@ in {
       chase
       gnugrep
       broot
-      yash
       hyperfine
+      timg
       gzip
       wget
       which
@@ -42,7 +42,6 @@ in {
       partialPackages.xargs
       partialPackages.ps
       ast-grep
-      watchexec
       # Useful for commands that don't work quite the same way between macOS and Linux
       coreutils-full
       # Though less is on most machines by default, I added it here because I need a relatively recent version (600)

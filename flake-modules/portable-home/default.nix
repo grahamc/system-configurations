@@ -38,6 +38,7 @@
           (_final: _prev: {
             moreutils = makeEmptyPackage "moreutils";
             ast-grep = makeEmptyPackage "ast-grep";
+            myPython = makeEmptyPackage "myPython";
             ripgrep-all = makeEmptyPackage "ripgrep-all";
             lesspipe = makeEmptyPackage "lesspipe";
 

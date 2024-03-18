@@ -249,7 +249,11 @@ function watch --wraps watch
 end
 
 function sh --wraps yash
-    yash $argv
+    if type --query yash
+        yash $argv
+    else
+        command sh $argv
+    end
 end
 
 abbr --add --global chase 'chase --verbose'

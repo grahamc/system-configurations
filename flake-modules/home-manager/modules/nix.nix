@@ -52,7 +52,6 @@ in {
     nix-melt
     comma
     nix-daemon-reload
-    nil
     nix-output-monitor
   ];
 

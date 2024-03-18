@@ -81,34 +81,53 @@ in {
     profile = pkgs.symlinkJoin {
       name = "tools";
       paths = with pkgs; [
-        just
-        lefthook
-        fzf
+        # languages
         bashInteractive
-        coreutils-full
-        moreutils
-        findutils
         nodejs
+        go
+        yash
+        nix
+
+        # to build nonicons
         yarn
+
+        # formatters
+        black
+        usort
         deadnix
+        statix
         treefmt
         nodePackages.prettier
         shfmt
         alejandra
         stylua
-        go
-        black
-        usort
-        fish
-        statix
-        ast-grep
-        jq
+        fish # for fish_indent
+
+        # version control
         git
-        nix
+        lefthook
+
+        # for the Nix IDE vscode extension
+        nil
+
+        # to use an interactive `just` picker
+        fzf
+
+        # various shell script dependencies
+        coreutils-full
+        moreutils
+        findutils
+        jq
         which
+
+        # misc.
+        just
       ];
+      # TODO: Nix should be able to link in prettier, I think it doesn't work because the `prettier`
+      # is a symlink
       postBuild = ''
         rm $out/share/nvim/site/plugin/fzf.vim
+
         cd $out/bin
         ln -s ${pkgs.nodePackages.prettier}/bin/prettier ./prettier
       '';
