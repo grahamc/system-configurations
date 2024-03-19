@@ -20,6 +20,18 @@
         patches = [];
       });
 
+      masonNvimDependencies = final.symlinkJoin {
+        name = "mason-nvim-dependencies";
+        paths = with final; [
+          # need to specify `final` here because otherwise it will resolve to the
+          # attribute inside `let` and overlays won't be able to override it
+          final.myPython
+          cargo
+          nodejs
+          go
+        ];
+      };
+
       nightlyNeovimWithDependencies = let
         dependencies = final.symlinkJoin {
           name = "neovim-dependencies";
@@ -41,9 +53,9 @@
             gawk
             coreutils-full
 
-            # for mason.nvim. need to specify `final` here because otherwise it will resolve to the
+            # need to specify `final` here because otherwise it will resolve to the
             # attribute inside `let` and overlays won't be able to override it
-            final.myPython
+            final.masonNvimDependencies
 
             # for telescope-sg
             ast-grep
@@ -65,8 +77,13 @@
             #
             # PARINIT: Not sure what it means, but the par man page said to use it and it seems to
             # work
+            #
+            # I'm adding to the end of the $PATH so languages included in a project will have
+            # precedence. Except for java because the system one shadows it and mason.nvim had a
+            # problem with it.
             wrapProgram $out/bin/nvim \
-              --prefix PATH : '${dependencies}/bin' \
+              --suffix PATH : '${dependencies}/bin' \
+              --prefix PATH : '${final.jdk}/bin' \
               --set TERMINFO_DIRS '${ncursesWithWezterm}/share/terminfo' \
               --set PARINIT 'rTbgqR B=.\,?'"'"'_A_a_@ Q=_s>|'
           '';
@@ -142,8 +159,9 @@
         };
     in {
       tmux = latestTmux;
-      # I'm renaming ncurses and python to avoid rebuilds.
-      inherit ncursesWithWezterm myPython;
+      # I'm renaming these to avoid rebuilds. I'm putting masonNvimDependencies in the overlay so I
+      # can empty out the package in portable-home.
+      inherit ncursesWithWezterm myPython masonNvimDependencies;
       neovim = nightlyNeovimWithDependencies;
       ripgrep-all = ripgrepAllWithDependencies;
       # TODO: The wezterm flake doesn't work for macOS. When I try to build it I get an error

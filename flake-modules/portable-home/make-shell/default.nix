@@ -45,6 +45,6 @@
     };
   shellBootstrapScript = import ./shell-bootstrap-script.nix shellBootstrapScriptDependencies;
 
-  shellBootstrap = pkgs.writeScriptBin name shellBootstrapScript;
+  shellBootstrap = pkgs.writeScriptBin name shellBootstrapScript // {meta.mainProgram = name;};
 in
   shellBootstrap

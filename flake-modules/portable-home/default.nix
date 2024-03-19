@@ -13,18 +13,10 @@
     supportedSystems = with inputs.flake-utils.lib.system; [x86_64-linux x86_64-darwin];
     isSupportedSystem = builtins.elem system supportedSystems;
     makeShell = import ./make-shell;
-
-    portableHomeOutputs = let
-      shellBootstrap = makeShell {
-        isGui = false;
-        inherit pkgs self;
-      };
-      makeEmptyPackage = packageName: pkgs.runCommand packageName {} ''mkdir -p $out/bin'';
-      shellMinimalName = "shell-minimal";
-      shellMinimalBootstrap = makeShell {
-        name = shellMinimalName;
-        isGui = false;
-        inherit pkgs self;
+    makeEmptyPackage = packageName: pkgs.runCommand packageName {} ''mkdir -p $out/bin'';
+    makeMinimalShell = {isGui ? false}:
+      makeShell {
+        inherit pkgs self isGui;
         modules = [
           {
             xdg = {
@@ -47,7 +39,6 @@
           (_final: _prev: {
             moreutils = makeEmptyPackage "moreutils";
             ast-grep = makeEmptyPackage "ast-grep";
-            myPython = makeEmptyPackage "myPython";
             timg = makeEmptyPackage "timg";
             ripgrep-all = makeEmptyPackage "ripgrep-all";
             lesspipe = makeEmptyPackage "lesspipe";
@@ -69,44 +60,39 @@
           })
         ];
       };
-      terminalBootstrapScriptName = "terminal";
-      terminalBootstrap = let
-        GUIShellBootstrap = makeShell {
-          isGui = true;
-          inherit pkgs self;
-        };
-      in
-        pkgs.writeScriptBin
-        terminalBootstrapScriptName
-        ''
-          #!${pkgs.bash}/bin/bash
+    makeTerminal = {isMinimal ? false}: let
+      GUIShellBootstrap = (
+        if isMinimal
+        then makeMinimalShell
+        else makeShell
+      ) {isGui = true;};
+    in
+      pkgs.writeScriptBin
+      "terminal"
+      ''
+        #!${pkgs.bash}/bin/bash
 
-          set -o errexit
-          set -o nounset
-          set -o pipefail
+              set -o errexit
+              set -o nounset
+              set -o pipefail
 
-          exec ${GUIShellBootstrap}/bin/shell -c 'exec wezterm --config "font_locator=[[ConfigDirsOnly]]" --config "font_dirs={[[${pkgs.myFonts}]]}" --config "default_prog={[[$SHELL]]}" --config "set_environment_variables={SHELL=[[$SHELL]]}"'
-        '';
-    in {
-      apps = {
-        shell = {
-          type = "app";
-          program = "${shellBootstrap}/bin/shell";
-        };
-        shellMinimal = {
-          type = "app";
-          program = "${shellMinimalBootstrap}/bin/${shellMinimalName}";
-        };
-        terminal = {
-          type = "app";
-          program = "${terminalBootstrap}/bin/${terminalBootstrapScriptName}";
-        };
+              exec ${lib.getExe GUIShellBootstrap} -c 'exec wezterm --config "font_locator=[[ConfigDirsOnly]]" --config "font_dirs={[[${pkgs.myFonts}]]}" --config "default_prog={[[$SHELL]]}" --config "set_environment_variables={SHELL=[[$SHELL]]}"'
+      '';
+
+    portableHomeOutputs = let
+      shellBootstrap = makeShell {
+        isGui = false;
+        inherit pkgs self;
       };
-
+      shellMinimalBootstrap = makeMinimalShell {};
+      terminalBootstrap = makeTerminal {};
+      terminalMinimalBootstrap = makeTerminal {isMinimal = true;};
+    in {
       packages = {
         shell = shellBootstrap;
         shellMinimal = shellMinimalBootstrap;
         terminal = terminalBootstrap;
+        terminalMinimal = terminalMinimalBootstrap;
       };
     };
   in

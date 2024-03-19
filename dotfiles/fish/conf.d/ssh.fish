@@ -68,4 +68,4 @@ function ssh
     end
 end
 
-complete --command ssh --long-option bootstrap --description 'set up terminfo and/or shell on remote' --no-files --require-parameter --arguments '(printf %s\n "small"\t"only terminfo" "medium"\t"a few CLIs" "large"\t"all CLIs")'
+complete --command ssh --long-option bootstrap --description 'set up terminfo and/or shell on remote' --no-files --require-parameter --arguments '(printf %s\n "small"\t"only terminfo" "big"\t"terminfo and shell")'

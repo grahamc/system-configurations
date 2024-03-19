@@ -72,7 +72,7 @@ fi
 if [ -z "$BIGOLU_BOOTSTRAP_SIZE" ]; then
   abort 'No bootstrap size was specified'
 fi
-if [ "$BIGOLU_BOOTSTRAP_SIZE" != 'small' ] && [ "$BIGOLU_BOOTSTRAP_SIZE" != 'medium' ] && [ "$BIGOLU_BOOTSTRAP_SIZE" != 'large' ]; then
+if [ "$BIGOLU_BOOTSTRAP_SIZE" != 'small' ] && [ "$BIGOLU_BOOTSTRAP_SIZE" != 'big' ]; then
   abort "Invalid bootstrap size: $BIGOLU_BOOTSTRAP_SIZE"
 fi
 [ -z "$BIGOLU_TERMINFO" ] && abort 'No terminfo was provided'
@@ -149,9 +149,8 @@ install_terminfo
 
 shell=''
 install_shell() {
-  shell_size="$([ "$1" = minimal ] && printf '%s' '-minimal')"
   platform="$(uname -m)-$(uname -s | tr '[:upper:]' '[:lower:]')"
-  release_artifact_name="shell$shell_size-$platform"
+  release_artifact_name="shell-$platform"
   release_artifact_url="https://github.com/bigolu/dotfiles/releases/download/master/$release_artifact_name"
   if ! file_exists "$release_artifact_url"; then
     abort "Your platform isn't supported: $platform"
@@ -177,14 +176,9 @@ install_shell() {
   fi
   shell="$shell_path"
 }
-case "$BIGOLU_BOOTSTRAP_SIZE" in
-  medium)
-    install_shell minimal
-    ;;
-  large)
-    install_shell full
-    ;;
-esac
+if [ "$BIGOLU_BOOTSTRAP_SIZE" = 'big' ]; then
+  install_shell
+fi
 
 export BIGOLU_BOOTSTRAP_PREFIX="$prefix"
 
