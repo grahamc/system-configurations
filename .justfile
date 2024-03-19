@@ -9,14 +9,17 @@ help:
     @just --list --justfile {{ justfile() }} --unsorted
 
 # Reload direnv
+#
+# So I can call reload from the smart plug directory and have it read the .firstaide.toml in there
+[no-cd]
 reload:
     #!/usr/bin/env bash
     set -o errexit
     set -o nounset
     set -o pipefail
 
-    direnv reload
-    nix-direnv-reload
+    firstaide clean
+    firstaide build
 
 # Switch to a new generation
 switch:

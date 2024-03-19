@@ -77,6 +77,10 @@
       # https://github.com/nix-community/nixGL?tab=readme-ov-file#directly-run-nixgl
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    firstaide = {
+      url = "github:NoRedInk/firstaide";
+      flake = false;
+    };
 
     # nix
     ########################################

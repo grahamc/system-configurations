@@ -27,34 +27,31 @@ _: {
       (builtins.hasAttr devShellOutputsKey self')
       (builtins.getAttr devShellOutputsKey self');
 
-    homeManagerPackageByName = let
-      homeManagerOutputPath = ["packages" "homeManager"];
-    in
-      optionalAttrs
-      (hasAttrByPath homeManagerOutputPath self')
-      {homeManager = getAttrFromPath homeManagerOutputPath self';};
-
-    nixDarwinPackageByName = let
-      nixDarwinOutputPath = ["packages" "nixDarwin"];
-    in
-      optionalAttrs
-      (hasAttrByPath nixDarwinOutputPath self')
-      {nixDarwin = getAttrFromPath nixDarwinOutputPath self';};
-
-    nixPackageByName = let
-      nixOutputPath = ["packages" "nix"];
-    in
-      optionalAttrs
-      (hasAttrByPath nixOutputPath self')
-      {nix = getAttrFromPath nixOutputPath self';};
+    # Where simple means a package exposed in this flake that supports every system the flake
+    # supports.
+    simplePackages =
+      builtins.foldl'
+      (
+        acc: name: let
+          outputPath = ["packages" name];
+        in
+          acc
+          // optionalAttrs
+          (hasAttrByPath outputPath self')
+          {"${name}" = getAttrFromPath outputPath self';}
+      )
+      {}
+      [
+        "homeManager"
+        "nixDarwin"
+        "nix"
+      ];
 
     packagesToCacheByName =
       homeManagerPackagesByName
       // nixDarwinPackagesByName
       // devShellsByName
-      // homeManagerPackageByName
-      // nixDarwinPackageByName
-      // nixPackageByName;
+      // simplePackages;
 
     outputs = {
       packages.default = pkgs.linkFarm "packages-to-cache" packagesToCacheByName;

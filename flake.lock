@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "firstaide": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1694183744,
+        "narHash": "sha256-d2W857vWtqNZ+OxIqr/aeW9nR3qTaVbdeNtUgCYhyB0=",
+        "owner": "NoRedInk",
+        "repo": "firstaide",
+        "rev": "c81122fe516a7ceac987a434720028477e7718df",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NoRedInk",
+        "repo": "firstaide",
+        "type": "github"
+      }
+    },
     "fish-plugin-async-prompt": {
       "flake": false,
       "locked": {
@@ -566,6 +582,7 @@
     },
     "root": {
       "inputs": {
+        "firstaide": "firstaide",
         "fish-plugin-async-prompt": "fish-plugin-async-prompt",
         "fish-plugin-autopair-fish": "fish-plugin-autopair-fish",
         "fish-plugin-completion-sync": "fish-plugin-completion-sync",

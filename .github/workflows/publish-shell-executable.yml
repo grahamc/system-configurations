@@ -38,13 +38,15 @@ jobs:
       - run: nix run --show-trace .#nix -- bundle --show-trace --bundler .# .#shell
       - run: nix run --show-trace .#nix -- bundle --show-trace --bundler .# .#shellMinimal
       - run: NIXPKGS_ALLOW_UNFREE=1 nix run --show-trace .#nix -- bundle --impure --show-trace --bundler .# .#terminal
+      - run: nix run --show-trace .#nix -- bundle --show-trace --bundler .# .#firstaide
       # Dereference the symlinks so I can upload the actual executables. The symlinks' names will
-      # look like '{shell,terminal}(-minimal)?-x86_64-linux' so I'm using a glob pattern to match
+      # look like '<name>-x86_64-linux' so I'm using a glob pattern to match
       # them.
       - run: |
           mkdir tmp
           cp -L shell-* ./tmp/
           cp -L terminal-* ./tmp/
+          cp -L firstaide-* ./tmp/
       - run: |
           size="$(du -m ./tmp/shell-minimal-* | cut -f1)"
           if (( "$size" > 250 )); then

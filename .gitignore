@@ -7,3 +7,4 @@ secrets/**
 !secrets/.gitkeep
 .git-hook-assets/actions/**
 !.git-hook-assets/actions/.gitkeep
+**/.firstaide/cache
