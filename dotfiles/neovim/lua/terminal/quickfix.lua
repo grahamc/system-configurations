@@ -508,6 +508,8 @@ local function on_list(options)
       ---@diagnostic disable-next-line: param-type-mismatch
       vim.api.nvim_win_set_buf(0, bufnr)
       vim.api.nvim_win_set_cursor(0, { start_pos.line + 1, start_pos.character })
+      -- so it shows up in the tabline
+      vim.bo.buflisted = true
     end)()
   else
     vim.fn.setqflist({}, " ", options)
