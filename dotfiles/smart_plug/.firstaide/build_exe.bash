@@ -15,7 +15,8 @@ layout_dir=$(direnv_layout_dir)
 if [[ ! -d "$layout_dir/bin" ]]; then
   mkdir -p "$layout_dir/bin"
 fi
-ln -s "$firstaide_path" "$layout_dir/bin/firstaide"
+cp -f "$firstaide_path" "$layout_dir/bin/firstaide"
+
 PATH_rm "$layout_dir/bin"
 PATH_add "$layout_dir/bin"
 

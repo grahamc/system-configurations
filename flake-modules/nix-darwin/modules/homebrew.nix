@@ -10,6 +10,7 @@
       "visual-studio-code"
       "gitkraken"
       "firefox-developer-edition"
+      "google-chrome"
       "finicky"
       "docker"
       "unnaturalscrollwheels"

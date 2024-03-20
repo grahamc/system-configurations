@@ -15,7 +15,7 @@ layout_dir=$(direnv_layout_dir)
 if [[ ! -d "$layout_dir/bin" ]]; then
   mkdir -p "$layout_dir/bin"
 fi
-ln -s "$firstaide_path" "$layout_dir/bin/firstaide"
+cp -f "$firstaide_path" "$layout_dir/bin/firstaide"
 PATH_rm "$layout_dir/bin"
 PATH_add "$layout_dir/bin"
 
@@ -45,12 +45,10 @@ function get_secret {
   fi
 }
 if github="$(get_secret 'github.txt')"; then
-  NIX_CONFIG="access-tokens = github.com=$github"
-  export NIX_CONFIG
+  export NIX_CONFIG="access-tokens = github.com=$github"
 fi
 if bws="$(get_secret 'bws.txt')"; then
-  BWS_ACCESS_TOKEN="$bws"
-  export BWS_ACCESS_TOKEN
+  export BWS_ACCESS_TOKEN="$bws"
 fi
 
 # call firstaide
