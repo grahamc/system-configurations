@@ -37,7 +37,6 @@ jobs:
           useDaemon: false
       - run: nix run --show-trace .#nix -- bundle --show-trace --bundler .# .#shellMinimal
       - run: NIXPKGS_ALLOW_UNFREE=1 nix run --show-trace .#nix -- bundle --impure --show-trace --bundler .# .#terminalMinimal
-      - run: nix run --show-trace .#nix -- bundle --show-trace --bundler .# .#firstaide
       # Dereference the symlinks so I can upload the actual executables. The symlinks' names will
       # look like '<name>-x86_64-linux' so I'm using a glob pattern to match
       # them.
@@ -45,7 +44,6 @@ jobs:
           mkdir tmp
           cp -L shell-* ./tmp/
           cp -L terminal-* ./tmp/
-          cp -L firstaide-* ./tmp/
       - run: |
           size="$(du -m ./tmp/shell-* | cut -f1)"
           max_size='250'
