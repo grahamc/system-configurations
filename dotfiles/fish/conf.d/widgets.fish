@@ -155,11 +155,11 @@ function process-widget --description 'Manage processes'
     # would mess up the grep regex.
     if test (uname) = Linux
         set reload_command 'ps -e --format user,pid,ppid,nice=NICE,start_time,etime,command --sort=-start_time'
-        set preview_command 'ps --pid {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) "$(ps --format user,pid,ppid,nice=NICE,start_time,etime,command --pid {2})" (set_color normal); pstree --hide-threads --long --show-pids --unicode --show-parents --arguments {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp "[^└|─]+,$(echo {2})( .*|\$)" --regexp "^"'
+        set preview_command 'ps --pid {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree --hide-threads --long --show-pids --unicode --show-parents --arguments {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp "[^└|─]+,$(echo {2})( .*|\$)" --regexp "^"'
         set environment_flag e
     else
         set reload_command 'ps -e -o user,pid,ppid,nice=NICE,start,etime,command'
-        set preview_command 'ps -p {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) "$(ps -o user,pid,ppid,nice=NICE,start,etime,command -p {2})" (set_color normal); pstree -w -g 3 -p {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp " 0*$(echo {2}) $(echo {1}) .*" --regexp "^"'
+        set preview_command 'ps -p {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree -w -g 3 -p {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp " 0*$(echo {2}) $(echo {1}) .*" --regexp "^"'
         set environment_flag -E
     end
     # TODO: I have to add `|| echo` because if the command substitution doesn't print anything, even
@@ -170,13 +170,6 @@ function process-widget --description 'Manage processes'
     # that the start of a new variable. For this reason we shouldn't change the order of the
     # variables e.g. sorting
     set environment_command 'eval (if test (ps -o user= -p {2}) = root && not fish_is_root_user; echo "sudo "; else; echo; end)"ps '$environment_flag' -o command -ww {2}" | string match --groups-only --all --regex -- \' (?=([a-zA-Z_]+[a-zA-Z0-9_]*)=(.*?)(?: [a-zA-Z_]+[a-zA-Z0-9_]*=|$))\' | paste -d "="  - - | sed -e "s/\$/│/" | string replace "=" "=│" | page 0</dev/tty 1>/dev/tty 2>&1'
-
-    # TODO: Properly find an unused port
-    set port (random 7000 15000)
-    # workaround for backgrounding commands:
-    # https://github.com/fish-shell/fish-shell/issues/238
-    fish -c "while true; sleep 1; curl -XPOST localhost:$port -d 'refresh-preview'; end" &
-    set refresher_pid (jobs --last --pid)
 
     if not set choice ( \
         FZF_DEFAULT_COMMAND="$reload_command" \
@@ -191,12 +184,9 @@ function process-widget --description 'Manage processes'
             --tiebreak=chunk,begin,end \
             --no-hscroll \
             --preview-window 'nowrap,75%' \
-            --listen $port \
     )
-        kill $refresher_pid
         return
     end
-    kill $refresher_pid
 
     set process_ids (printf %s\n $choice | awk '{print $2}')
     set process_command_names (printf %s\n $choice | awk '{print $7}')
