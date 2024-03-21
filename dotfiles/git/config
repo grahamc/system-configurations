@@ -26,6 +26,7 @@
   some = add -u
   undocommit = reset "HEAD^"
   co = checkout
+  ui = "!gitui"
   gui = "!gitkraken --path \"$(git rev-parse --show-toplevel)\" --log-file /dev/null --show-splash-screen false"
   l = log
   mt = mergetool
