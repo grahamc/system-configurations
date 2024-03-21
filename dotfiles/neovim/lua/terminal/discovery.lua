@@ -5,13 +5,12 @@ Plug("folke/which-key.nvim", {
     vim.o.timeoutlen = 500
 
     require("which-key").setup({
+      ignore_missing = false,
       popup_mappings = {
         scroll_down = "<c-j>",
         scroll_up = "<c-k>",
       },
       -- hide mapping boilerplate
-      -- This is the correct type.
-      ---@diagnostic disable-next-line: assign-type-mismatch
       hidden = {
         "<silent>",
         "<cmd>",

@@ -2,7 +2,7 @@ if not status is-interactive
     exit
 end
 
-abbr --add --global ta tmux attach-session
+abbr --add --global ta tmux-attach
 
 function tmux-server-reload --description 'Reload tmux server'
     function is_tmux_running
@@ -29,7 +29,9 @@ function tmux-server-reload --description 'Reload tmux server'
         else
             set profile "$HOME/.nix-profile"
         end
-        $profile/share/tmux-plugins/resurrect/scripts/save.sh quiet
+        # I'm suppressing stderr because resurrect will print a bunch of errors regarding pane
+        # contents that it can't find
+        $profile/share/tmux-plugins/resurrect/scripts/save.sh quiet 2>/dev/null
 
         # The tmux server is not actually shut down by the time 'kill-server' returns. This causes a problem:
         #
@@ -48,7 +50,26 @@ function tmux-server-reload --description 'Reload tmux server'
         end
     end
 
-    command tmux attach-session
+    tmux-attach
+end
+
+function tmux-attach
+    # Since the portable home deletes its prefix when it exits the $PATH and $SHELL environment
+    # variables in TMUX will become invalid so we have to reload the server.
+    if set --export --query BIGOLU_IN_PORTABLE_HOME
+        echo (set_color yellow)'WARNING:'(set_color normal)' Reattaching to TMUX through a portable shell will not work properly. Reloading the server instead...' >&2
+        tmux-server-reload
+        return
+    end
+
+    # We can't attach while tmux-resurrect is resurrecting so we'll keep trying to connect in a loop
+    echo 'Attaching... (This may take a while since we need to wait for tmux-resurrect to finish)'
+    set max_poll_attempts 10
+    while not tmux attach-session
+        and test $max_poll_attempts -gt 0
+        sleep 2
+        set max_poll_attempts (math $max_poll_attempts - 1)
+    end
 end
 
 function __fish_prompt_post --on-event fish_prompt
@@ -58,9 +79,9 @@ function __fish_prompt_post --on-event fish_prompt
     function fish_prompt
         set prompt "$(__tmux_integration_old_fish_prompt)"
 
-        # If the original prompt function didn't print anything we shouldn't either since not printing anything
-        # will cause the shell to redraw the prompt in place, but if we add the spaces the prompt won't redraw
-        # in place.
+        # If the original prompt function didn't print anything we shouldn't either since not
+        # printing anything will cause the shell to redraw the prompt in place, but if we add the
+        # spaces the prompt won't redraw in place.
         if test "$(string length --visible -- "$prompt")" = 0
             return
         end
@@ -69,17 +90,3 @@ function __fish_prompt_post --on-event fish_prompt
     end
 end
 mybind --no-focus \co 'tmux-last-command-output; commandline -f repaint'
-
-function tmux --wraps tmux
-    if contains attach $argv || contains attach-session $argv || contains at $argv || contains a $argv
-        # Since the portable home deletes its prefix when it exits the $PATH and $SHELL environment
-        # variables in TMUX will become invalid so we have to reload the server.
-        if set --export --query BIGOLU_IN_PORTABLE_HOME
-            echo (set_color yellow)'WARNING:'(set_color normal)' Reattaching to TMUX through a portable shell will not work properly. Reloading the server instead...' >&2
-            tmux-server-reload
-            return
-        end
-    end
-
-    command tmux $argv
-end

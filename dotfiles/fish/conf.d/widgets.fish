@@ -162,14 +162,11 @@ function process-widget --description 'Manage processes'
         set preview_command 'ps -p {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree -w -g 3 -p {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp " 0*$(echo {2}) $(echo {1}) .*" --regexp "^"'
         set environment_flag -E
     end
-    # TODO: I have to add `|| echo` because if the command substitution doesn't print anything, even
-    # the quoted string next to it won't print
-    #
     # TODO: The `string match` isn't perfect: if a variable's value includes something that matches
     # the environment variable name pattern ([a-zA-Z_]+[a-zA-Z0-9_]*=), `string match` will consider
     # that the start of a new variable. For this reason we shouldn't change the order of the
     # variables e.g. sorting
-    set environment_command 'eval (if test (ps -o user= -p {2}) = root && not fish_is_root_user; echo "sudo "; else; echo; end)"ps '$environment_flag' -o command -ww {2}" | string match --groups-only --all --regex -- \' (?=([a-zA-Z_]+[a-zA-Z0-9_]*)=(.*?)(?: [a-zA-Z_]+[a-zA-Z0-9_]*=|$))\' | paste -d "="  - - | sed -e "s/\$/│/" | string replace "=" "=│" | page 0</dev/tty 1>/dev/tty 2>&1'
+    set environment_command 'eval "$(if test (ps -o user= -p {2}) = root && not fish_is_root_user; echo "sudo "; end)""ps '$environment_flag' -o command -ww {2}" | string match --groups-only --all --regex -- \' (?=([a-zA-Z_]+[a-zA-Z0-9_]*)=(.*?)(?: [a-zA-Z_]+[a-zA-Z0-9_]*=|$))\' | paste -d "="  - - | sed -e "s/\$/│/" | string replace "=" "=│" | page 0</dev/tty 1>/dev/tty 2>&1'
 
     if not set choice ( \
         FZF_DEFAULT_COMMAND="$reload_command" \

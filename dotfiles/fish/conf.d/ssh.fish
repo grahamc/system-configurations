@@ -14,13 +14,6 @@ function ssh
         set --erase argv[$index]
         set --erase argv[$index]
 
-        # TODO
-        if set --export --query TMUX
-            printf '%s\n%s\n%s\n' 'Bootstrapping is not supported in TMUX due to an upstream bug:' 'https://github.com/tmux/tmux/issues/3839' 'Executing ssh without bootstrapping...'
-            ssh $argv
-            return
-        end
-
         set xdg_config "$HOME/.config"
         # Don't check if it's exported, it won't be in portable home
         if set --query XDG_CONFIG_HOME

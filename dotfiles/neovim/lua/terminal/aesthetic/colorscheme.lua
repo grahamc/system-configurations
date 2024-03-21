@@ -4,6 +4,8 @@ local function set_colorscheme()
   else
     vim.cmd.colorscheme("my_light_theme")
   end
+  -- sometimes the tabline wouldn't update
+  vim.cmd([[redraw!]])
 end
 
 -- My color scheme depends on this so I need to wait for it to load before I try loading my

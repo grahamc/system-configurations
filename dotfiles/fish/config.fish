@@ -41,7 +41,7 @@ function tmux_attach
     end
     read --prompt-str "Hey$user, would you like to connect to tmux? ($accent""y$normal/$accent""n$normal): " --nchars 1 response
     if test $response = y
-        tmux attach-session
+        tmux-attach
     end
 end
 if test -z "$TMUX"

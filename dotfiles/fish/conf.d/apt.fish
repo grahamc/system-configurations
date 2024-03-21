@@ -36,7 +36,13 @@ function apt-install-widget --description 'Install packages with apt'
         return
     end
 
-    echo "Running command 'sudo apt-get install $choices'..."
+    set sudo ''
+    if not fish_is_root_user
+        set sudo 'sudo '
+    end
+
+    echo "Running command '""$sudo""apt-get install $choices'..."
+
     sudo apt-get install --assume-yes $choices
 end
 
@@ -52,6 +58,11 @@ function apt-remove-widget --description 'Remove packages with apt'
         return
     end
 
-    echo "Running command 'sudo apt-get remove $choices'..."
+    set sudo ''
+    if not fish_is_root_user
+        set sudo 'sudo '
+    end
+
+    echo "Running command '""$sudo""apt-get remove $choices'..."
     sudo apt-get remove --assume-yes $choices
 end
