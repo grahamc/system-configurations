@@ -678,6 +678,7 @@
         "vim-plugin-vim-indentwise": "vim-plugin-vim-indentwise",
         "vim-plugin-vim-just": "vim-plugin-vim-just",
         "vim-plugin-vim-matchup": "vim-plugin-vim-matchup",
+        "vim-plugin-vim-nix": "vim-plugin-vim-nix",
         "vim-plugin-vim-plug": "vim-plugin-vim-plug",
         "vim-plugin-vim-repeat": "vim-plugin-vim-repeat",
         "vim-plugin-vim-signify": "vim-plugin-vim-signify",
@@ -2035,6 +2036,22 @@
       "original": {
         "owner": "andymass",
         "repo": "vim-matchup",
+        "type": "github"
+      }
+    },
+    "vim-plugin-vim-nix": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1708772165,
+        "narHash": "sha256-2/9eyU+uUbcKiNcBDdgdxCBp1vNSP51U/0LTHihEYJY=",
+        "owner": "LnL7",
+        "repo": "vim-nix",
+        "rev": "e25cd0f2e5922f1f4d3cd969f92e35a9a327ffb0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "LnL7",
+        "repo": "vim-nix",
         "type": "github"
       }
     },

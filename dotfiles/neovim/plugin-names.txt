@@ -70,6 +70,7 @@ vim-fish
 vim-indentwise
 vim-just
 vim-matchup
+vim-nix
 vim-plug
 vim-repeat
 vim-signify

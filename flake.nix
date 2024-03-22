@@ -485,5 +485,9 @@
       url = "github:levouh/tint.nvim";
       flake = false;
     };
+    vim-plugin-vim-nix = {
+      url = "github:LnL7/vim-nix";
+      flake = false;
+    };
   };
 }

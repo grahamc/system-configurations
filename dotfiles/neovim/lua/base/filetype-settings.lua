@@ -15,16 +15,11 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
   end,
 })
 
-vim.api.nvim_create_autocmd({ "Filetype" }, {
-  pattern = "nix",
-  callback = function()
-    vim.bo.commentstring = "# %s"
-  end,
-  group = vim.api.nvim_create_augroup("Nix commentstring", {}),
-})
-
 -- For filetype detection
 Plug("NoahTheDuke/vim-just")
+
+-- For indentexpr
+Plug("LnL7/vim-nix")
 
 -- Tweak iskeyword {{{
 local extend_is_keyword_group_id = vim.api.nvim_create_augroup("ExtendIskeyword", {})
