@@ -357,7 +357,12 @@ function StatusLine()
   end
 
   local function is_pattern_in_buffer(pattern)
-    return vim.fn.search(pattern, "nw", 0, 500) > 0
+    -- PERF
+    if vim.fn.line("$") < 300 then
+      return vim.fn.search(pattern, "nw", 0, 50) > 0
+    else
+      return false
+    end
   end
 
   local mixed_indentation_indicator = nil

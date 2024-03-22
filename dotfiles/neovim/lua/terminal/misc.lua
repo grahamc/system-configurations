@@ -162,23 +162,46 @@ Plug("lukas-reineke/virt-column.nvim", {
   end,
 })
 
-Plug("m4xshen/smartcolumn.nvim", {
-  config = function()
-    require("smartcolumn").setup({
-      scope = "window",
-      custom_colorcolumn = function()
-        return tostring(require("base.utilities").get_max_line_length() + 1)
-      end,
-      disable_filetypes = {
-        "qf",
-        "help",
-        "text",
-        "NvimTree",
-        "lspinfo",
-        "mason",
-      },
-    })
+local colorcolumn_group_id = vim.api.nvim_create_augroup("ColorColumn", {})
+vim.api.nvim_create_autocmd("OptionSet", {
+  pattern = "readonly",
+  callback = function()
+    if vim.v.option_new then
+      vim.wo.colorcolumn = ""
+    end
   end,
+  group = colorcolumn_group_id,
+})
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "qf", "help" },
+  callback = function()
+    vim.wo.colorcolumn = ""
+  end,
+  group = colorcolumn_group_id,
+})
+vim.api.nvim_create_autocmd("WinLeave", {
+  pattern = "*",
+  callback = function()
+    vim.w.old_colorcolumn = vim.wo.colorcolumn
+    vim.wo.colorcolumn = ""
+  end,
+  group = colorcolumn_group_id,
+})
+vim.api.nvim_create_autocmd("WinEnter", {
+  pattern = "*",
+  callback = function()
+    if vim.w.old_colorcolumn then
+      vim.wo.colorcolumn = vim.w.old_colorcolumn
+    end
+  end,
+  group = colorcolumn_group_id,
+})
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  callback = function()
+    vim.wo.colorcolumn = tostring(require("base.utilities").get_max_line_length() + 1)
+    vim.w.old_colorcolumn = vim.wo.colorcolumn
+  end,
+  group = colorcolumn_group_id,
 })
 -- }}}
 

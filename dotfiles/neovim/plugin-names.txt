@@ -52,7 +52,6 @@ plenary.nvim
 replacer.nvim
 reticle.nvim
 SchemaStore.nvim
-smartcolumn.nvim
 splitjoin.vim
 sqlite.lua
 telescope-fzf-native.nvim

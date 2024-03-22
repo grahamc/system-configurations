@@ -660,7 +660,6 @@
         "vim-plugin-plenary-nvim": "vim-plugin-plenary-nvim",
         "vim-plugin-replacer-nvim": "vim-plugin-replacer-nvim",
         "vim-plugin-reticle-nvim": "vim-plugin-reticle-nvim",
-        "vim-plugin-smartcolumn-nvim": "vim-plugin-smartcolumn-nvim",
         "vim-plugin-splitjoin-vim": "vim-plugin-splitjoin-vim",
         "vim-plugin-sqlite-lua": "vim-plugin-sqlite-lua",
         "vim-plugin-telescope-fzf-native": "vim-plugin-telescope-fzf-native",
@@ -1748,22 +1747,6 @@
       "original": {
         "owner": "Tummetott",
         "repo": "reticle.nvim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-smartcolumn-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1710067624,
-        "narHash": "sha256-DHIeDNUF9n9s14GVeojIwc5QUPwJMYYl3gRvhvO/rdE=",
-        "owner": "m4xshen",
-        "repo": "smartcolumn.nvim",
-        "rev": "cefb17be095ad5526030a21bb2a80553cae09127",
-        "type": "github"
-      },
-      "original": {
-        "owner": "m4xshen",
-        "repo": "smartcolumn.nvim",
         "type": "github"
       }
     },
