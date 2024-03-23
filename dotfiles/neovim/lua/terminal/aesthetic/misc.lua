@@ -49,7 +49,8 @@ Plug("levouh/tint.nvim", {
     vim.api.nvim_create_autocmd({ "WinEnter" }, {
       callback = function()
         local floating = vim.api.nvim_win_get_config(vim.api.nvim_get_current_win()).relative ~= ""
-        if floating then
+        -- This assumes that only floats without a winhighlight for NormalFloat are transparent
+        if floating and not vim.wo.winhighlight:find("NormalFloat") then
           vim.iter(vim.fn.getwininfo() or {}):each(function(w)
             if vim.api.nvim_win_get_config(w.winid).relative == "" then
               require("tint").tint(w.winid)

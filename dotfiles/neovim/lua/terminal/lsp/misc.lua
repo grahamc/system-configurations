@@ -35,7 +35,7 @@ vim.diagnostic.open_float = function(...)
 
   vim.api.nvim_set_option_value(
     "winhighlight",
-    "NormalFloat:CmpDocumentationNormal,FloatBorder:CmpDocumentationBorder",
+    "NormalFloat:CmpDocumentationNormal,FloatBorder:CmpDocumentationBorder,CursorLine:NormalFloat",
     { win = winid }
   )
 
@@ -411,7 +411,7 @@ Plug("williamboman/mason-lspconfig.nvim", {
           vim.api.nvim_set_option_value("concealcursor", "nvic", { win = win_id })
           vim.api.nvim_set_option_value(
             "winhighlight",
-            "NormalFloat:CmpDocumentationNormal,FloatBorder:CmpDocumentationBorder",
+            "NormalFloat:CmpDocumentationNormal,FloatBorder:CmpDocumentationBorder,CursorLine:NormalFloat",
             { win = win_id }
           )
 

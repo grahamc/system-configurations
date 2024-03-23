@@ -262,9 +262,9 @@ local theme = lush(function(injected_functions)
     Whitespace { fg = t_0.fg[is_light and 'darken' or 'lighten'](30) }, -- "nbsp", "space", "tab" and "trail" in 'listchars'
     WinSeparator { t_8, }, -- Separator between window splits. Inherts from |hl-VertSplit| by default, which it will replace eventually.
     ColorColumn { WinSeparator },
-    WinBar { bold = true, italic = true, bg = "NONE", fg = t_7.fg, }, -- Window bar of current window
+    WinBar { virtual_text, bg = "NONE", fg = t_7.fg, }, -- Window bar of current window
     -- tint.nvim needs this in order to work
-    WinBarNC { bold = true, italic = true, bg = "NONE", fg = t_7.fg, }, -- Window bar of not-current windows
+    WinBarNC { virtual_text, bg = "NONE", fg = t_7.fg, }, -- Window bar of not-current windows
     GitBlameVirtualText { virtual_text, fg = t_15.fg, },
     WhichKeyFloat { StatusLine, }, -- Normal text in floating windows.
     WhichKeyBorder { WhichKeyFloat, fg = WhichKeyFloat.bg, }, -- Border of floating windows.
@@ -357,7 +357,7 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- fidget.nvim {{{
-    FidgetNormal { t_15, italic = true, bold = true },
+    FidgetNormal { virtual_text, bg = "NONE", fg = t_15.fg, },
     FidgetAccent { FidgetNormal, fg = Normal.fg },
     FidgetIcon { FidgetNormal, fg = t_5.fg },
     -- }}}

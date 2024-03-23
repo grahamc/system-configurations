@@ -57,7 +57,7 @@ config.font_rules = {
   {
     intensity = "Normal",
     italic = true,
-    font = font_with_icon_fallbacks("Monaspace Radon Light"),
+    font = font_with_icon_fallbacks("Monaspace Radon"),
   },
   {
     intensity = "Bold",
@@ -65,7 +65,7 @@ config.font_rules = {
     font = font_with_icon_fallbacks("Monaspace Krypton"),
   },
 }
-config.underline_position = -14
+config.underline_position = "700%"
 config.font_size = 11.3
 if is_mac then
   config.font_size = 14
@@ -152,12 +152,10 @@ local function create_color_schemes(colors_per_color_scheme)
         color_scheme["background"] = color
         color_scheme["cursor_fg"] = color_scheme["background"]
         color_scheme["selection_fg"] = color
-      elseif index == 3 then
-        color_scheme["selection_bg"] = color
-      elseif index == 5 then
-        color_scheme["scrollbar_thumb"] = color
       elseif index == 7 then
         color_scheme["foreground"] = color
+        color_scheme["selection_bg"] = color
+        color_scheme["scrollbar_thumb"] = color
         color_scheme["cursor_border"] = color
         -- TODO: For `cursor_border` to work, `cursor_bg` needs to be set to the same color
         -- issue: https://github.com/wez/wezterm/issues/1494
