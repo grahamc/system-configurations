@@ -62,7 +62,7 @@ config.font_rules = {
   {
     intensity = "Bold",
     italic = true,
-    font = font_with_icon_fallbacks("Monaspace Krypton"),
+    font = font_with_icon_fallbacks({ family = "Monaspace Radon", weight = "Bold" }),
   },
 }
 config.underline_position = "700%"

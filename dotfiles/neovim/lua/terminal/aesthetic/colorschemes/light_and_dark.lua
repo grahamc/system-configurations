@@ -66,7 +66,7 @@ local theme = lush(function(injected_functions)
     t_15 { fg = hsl(is_light and "#808080" or "#78849b") },
     -- }}}
 
-    virtual_text { bg = is_light and t_0.fg.da(3) or t_0.fg.li(3), italic = true, bold = true, },
+    virtual_text { bg = is_light and t_0.fg.da(3) or t_0.fg.li(3), bold = true, },
 
     -- modes {{{
     Normal { bg = "NONE", fg = t_7.fg, }, -- Normal text
