@@ -17,9 +17,6 @@ if [[ ! -d "$layout_dir/bin" ]]; then
 fi
 cp -f "$firstaide_path" "$layout_dir/bin/firstaide"
 
-PATH_rm "$layout_dir/bin"
-PATH_add "$layout_dir/bin"
-
 # load devShell from flake and make it a GC root
 if ! has nix_direnv_version || ! nix_direnv_version 3.0.4; then
   source_url \
@@ -27,6 +24,11 @@ if ! has nix_direnv_version || ! nix_direnv_version 3.0.4; then
     "sha256-DzlYZ33mWF/Gs8DDeyjr8mnVmQGx7ASYqA5WlxwvBG4="
 fi
 use flake '../../#smartPlug'
+
+# Put this towards the bottom so if 3rd party scripts add this bin to the PATH, we won't duplicate
+# it
+PATH_rm "$layout_dir/bin"
+PATH_add "$layout_dir/bin"
 
 # So debugpy can find the right python to use. The 2 dirnames remove '/bin/python' so we end up with
 # the python installation folder.
