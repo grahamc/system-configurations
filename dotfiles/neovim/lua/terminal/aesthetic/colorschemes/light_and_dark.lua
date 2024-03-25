@@ -273,7 +273,7 @@ local theme = lush(function(injected_functions)
     WidgetFill { t_0 },
     Underlined { t_4, underline = true, }, -- Text that stands out, HTML links
     Ignore { t_0 }, -- Left blank, hidden |hl-Ignore| (May be invisible here in template)
-    Todo { t_3 }, -- Anything that needs extra attention; mostly the keywords TODO FIXME and XXX
+    Todo { t_3, bold = true, }, -- Anything that needs extra attention; mostly the keywords TODO FIXME and XXX
     VirtColumn { NonText, },
     LuaSnipInlayHint { virtual_text, fg = Special.fg },
     QuickfixPreview { Search, nocombine = true },
@@ -297,7 +297,7 @@ local theme = lush(function(injected_functions)
     MyBufferLineModifiedVisible { fg = MyBufferLineBackground.bg },
     MyBufferLineModifiedSelected { MyBufferLineBufferSelected },
     MyBufferLineTab { MyBufferLineBufferSelected, fg = t_15.fg },
-    MyBufferLineTabSelected { MyBufferLineTab, fg = t_6.fg, underline = true },
+    MyBufferLineTabSelected { MyBufferLineTab, fg = 'fg', underline = true, sp = t_6.fg, },
     MyBufferLineTabSeparator { MyBufferLineTab, fg = MyBufferLineTab.bg },
     MyBufferLineTabSeparatorSelected { MyBufferLineTab, fg = MyBufferLineTab.bg },
     MyBufferLineTabClose { MyBufferLineTab, fg = "NONE", bold = true },
@@ -532,10 +532,10 @@ local theme = lush(function(injected_functions)
 
     sym"@attribute" { Statement }, -- attribute annotations (e.g. Python decorators)
     sym"@comment.documentation" { Comment },
-    sym"@comment.error" { Comment, fg = Error.fg, },
-    sym"@comment.note" { Comment, fg = DiagnosticInfo.fg, },
-    sym"@comment.todo" { Comment, fg = Todo.fg, },
-    sym"@comment.warning" { Comment, fg = Warning.fg, },
+    sym"@comment.error" { Comment, fg = Error.fg, bold = true, },
+    sym"@comment.note" { Comment, fg = DiagnosticInfo.fg, bold = true, },
+    sym"@comment.todo" { Comment, fg = Todo.fg, bold = true, },
+    sym"@comment.warning" { Comment, fg = Warning.fg, bold = true, },
     sym"@diff.delta" { DiffChange },
     sym"@diff.minus" { DiffDelete },
     sym"@diff.plus" { DiffAdd },

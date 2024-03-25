@@ -83,13 +83,15 @@ in {
       paths = with pkgs; [
         # languages
         bashInteractive
-        nodejs
         go
         yash
         nix
 
         # to build nonicons
         yarn
+
+        # for markdown-toc
+        nodejs
 
         # formatters
         black

@@ -14,8 +14,9 @@
   ];
 
   home.packages = with pkgs; [
-    # for my `/usr/bin/env bash/python` shebang scripts
+    # for my shebang scripts
     bashInteractive
     myPython
+    fish
   ];
 }

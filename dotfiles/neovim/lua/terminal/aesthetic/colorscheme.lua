@@ -17,7 +17,15 @@ Plug("rktjmp/lush.nvim", {
     set_colorscheme()
     vim.api.nvim_create_autocmd("OptionSet", {
       pattern = "background",
-      callback = set_colorscheme,
+      callback = function()
+        set_colorscheme()
+        -- If certain windows are open, like the autocomplete window, not all the UI elements update
+        -- when I switch color schemes so I'm forcing a redraw. I'm intentionally not doing the
+        -- redraw in `set_colorscheme()` because it makes the UI look weird on startup.
+        vim.cmd([[
+          redraw!
+        ]])
+      end,
       nested = true,
       group = vim.api.nvim_create_augroup("SetColorscheme", {}),
     })

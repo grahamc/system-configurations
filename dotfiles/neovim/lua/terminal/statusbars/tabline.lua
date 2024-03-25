@@ -166,6 +166,7 @@ Plug("akinsho/bufferline.nvim", {
         result = "%=" .. result
       end
 
+      -- tab section tweaks
       if is_tab_section_visible then
         -- left border
         result = string.gsub(
@@ -246,69 +247,42 @@ Plug("akinsho/bufferline.nvim", {
     -- colors defined in my color schemes. This way when the color scheme changes, bufferline will
     -- update too.
     local function set_highlights()
-      vim.api.nvim_set_hl(0, "BufferLineBackground", { link = "MyBufferLineBackground" })
-      vim.api.nvim_set_hl(0, "BufferLineFill", { link = "MyBufferLineFill" })
-      vim.api.nvim_set_hl(0, "BufferLineBufferVisible", { link = "MyBufferLineBufferVisible" })
-      vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { link = "MyBufferLineBufferSelected" })
-      vim.api.nvim_set_hl(0, "BufferLineDuplicate", { link = "MyBufferLineDuplicate" })
-      vim.api.nvim_set_hl(
-        0,
-        "BufferLineDuplicateSelected",
-        { link = "MyBufferLineDuplicateSelected" }
-      )
-      vim.api.nvim_set_hl(
-        0,
-        "BufferLineDuplicateVisible",
-        { link = "MyBufferLineDuplicateVisible" }
-      )
-      vim.api.nvim_set_hl(0, "BufferLineNumbers", { link = "MyBufferLineNumbers" })
-      vim.api.nvim_set_hl(0, "BufferLineNumbersVisible", { link = "MyBufferLineNumbersVisible" })
-      vim.api.nvim_set_hl(0, "BufferLineNumbersSelected", { link = "MyBufferLineNumbersSelected" })
-      vim.api.nvim_set_hl(0, "BufferLineCloseButton", { link = "MyBufferLineCloseButton" })
-      vim.api.nvim_set_hl(
-        0,
-        "BufferLineCloseButtonSelected",
-        { link = "MyBufferLineCloseButtonSelected" }
-      )
-      vim.api.nvim_set_hl(
-        0,
-        "BufferLineCloseButtonVisible",
-        { link = "MyBufferLineCloseButtonVisible" }
-      )
-      vim.api.nvim_set_hl(0, "BufferLineModified", { link = "MyBufferLineModified" })
-      vim.api.nvim_set_hl(0, "BufferLineModifiedVisible", { link = "MyBufferLineModifiedVisible" })
-      vim.api.nvim_set_hl(
-        0,
-        "BufferLineModifiedSelected",
-        { link = "MyBufferLineModifiedSelected" }
-      )
-      vim.api.nvim_set_hl(0, "BufferLineTab", { link = "MyBufferLineTab" })
-      vim.api.nvim_set_hl(0, "BufferLineTabSelected", { link = "MyBufferLineTabSelected" })
-      vim.api.nvim_set_hl(0, "BufferLineTabSeparator", { link = "MyBufferLineTabSeparator" })
-      vim.api.nvim_set_hl(
-        0,
-        "BufferLineTabSeparatorSelected",
-        { link = "MyBufferLineTabSeparatorSelected" }
-      )
-      vim.api.nvim_set_hl(0, "BufferLineTabClose", { link = "MyBufferLineTabClose" })
-      vim.api.nvim_set_hl(0, "BufferLineOffsetSeparator", { link = "MyBufferLineOffsetSeparator" })
-      vim.api.nvim_set_hl(
-        0,
-        "BufferLineIndicatorSelected",
-        { link = "MyBufferLineIndicatorSelected" }
-      )
-      vim.api.nvim_set_hl(
-        0,
-        "BufferLineIndicatorVisible",
-        { link = "MyBufferLineIndicatorVisible" }
-      )
-      vim.api.nvim_set_hl(0, "BufferLineTruncMarker", { link = "MyBufferLineTruncMarker" })
+      vim
+        .iter({
+          "BufferLineBackground",
+          "BufferLineFill",
+          "BufferLineBufferVisible",
+          "BufferLineBufferSelected",
+          "BufferLineDuplicate",
+          "BufferLineDuplicateSelected",
+          "BufferLineDuplicateVisible",
+          "BufferLineNumbers",
+          "BufferLineNumbersVisible",
+          "BufferLineNumbersSelected",
+          "BufferLineCloseButton",
+          "BufferLineCloseButtonSelected",
+          "BufferLineCloseButtonVisible",
+          "BufferLineModified",
+          "BufferLineModifiedVisible",
+          "BufferLineModifiedSelected",
+          "BufferLineTab",
+          "BufferLineTabSelected",
+          "BufferLineTabSeparator",
+          "BufferLineTabSeparatorSelected",
+          "BufferLineTabClose",
+          "BufferLineOffsetSeparator",
+          "BufferLineIndicatorSelected",
+          "BufferLineIndicatorVisible",
+          "BufferLineTruncMarker",
+        })
+        :each(function(group)
+          vim.api.nvim_set_hl(0, group, { link = "My" .. group })
+        end)
     end
     set_highlights()
     vim.api.nvim_create_autocmd("ColorScheme", {
       pattern = { "my_light_theme", "my_dark_theme" },
       callback = set_highlights,
-      group = vim.api.nvim_create_augroup("MyBufferLine", {}),
     })
   end,
 })
