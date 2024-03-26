@@ -71,7 +71,7 @@ local theme = lush(function(injected_functions)
     -- modes {{{
     Normal { bg = "NONE", fg = t_7.fg, }, -- Normal text
     -- tint.nvim needs this in order to work
-    NormalNC { bg = "NONE", fg = t_7.fg, }, -- normal text in non-current windows
+    NormalNC { Normal, }, -- normal text in non-current windows
     Visual { bg = t_3.fg, fg = t_0.fg }, -- Visual mode selection
     VisualNOS {}, -- Visual mode selection when vim is "Not Owning the Selection".
     -- }}}
@@ -264,7 +264,7 @@ local theme = lush(function(injected_functions)
     ColorColumn { WinSeparator },
     WinBar { virtual_text, bg = "NONE", fg = t_7.fg, }, -- Window bar of current window
     -- tint.nvim needs this in order to work
-    WinBarNC { virtual_text, bg = "NONE", fg = t_7.fg, }, -- Window bar of not-current windows
+    WinBarNC { WinBar, }, -- Window bar of not-current windows
     GitBlameVirtualText { virtual_text, fg = t_15.fg, },
     WhichKeyFloat { StatusLine, }, -- Normal text in floating windows.
     WhichKeyBorder { WhichKeyFloat, fg = WhichKeyFloat.bg, }, -- Border of floating windows.
