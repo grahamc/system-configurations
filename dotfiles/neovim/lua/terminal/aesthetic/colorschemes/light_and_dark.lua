@@ -277,7 +277,6 @@ local theme = lush(function(injected_functions)
     VirtColumn { NonText, },
     LuaSnipInlayHint { virtual_text, fg = Special.fg },
     QuickfixPreview { Search, nocombine = true },
-    AerialLine { bg = t_0.fg[is_light and 'darken' or 'lighten'](6), },
 
     -- bufferline.nvim {{{
     MyBufferLineBackground { bg = t_0.fg, },

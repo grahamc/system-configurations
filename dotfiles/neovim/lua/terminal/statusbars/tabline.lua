@@ -41,8 +41,6 @@ Plug("akinsho/bufferline.nvim", {
     local close_icon = " "
     local explorer_icon = " "
     local explorer_title = explorer_icon .. " FILE EXPLORER"
-    local outline_icon = " "
-    local outline_title = outline_icon .. " OUTLINE"
     require("bufferline").setup({
       options = {
         numbers = function(context)
@@ -60,13 +58,6 @@ Plug("akinsho/bufferline.nvim", {
           {
             filetype = "NvimTree",
             text = explorer_title,
-            text_align = "center",
-            separator = true,
-            highlight = "WidgetFill",
-          },
-          {
-            filetype = "aerial",
-            text = outline_title,
             text_align = "center",
             separator = true,
             highlight = "WidgetFill",
@@ -122,7 +113,6 @@ Plug("akinsho/bufferline.nvim", {
       local escape_percent = require("base.utilities").escape_percent
       local result = original
       local is_explorer_open = string.find(original, explorer_icon)
-      local is_outline_open = string.find(original, outline_icon)
       local tab_highlight_escaped = "%%#BufferLineTab"
       local tab_highlight_and_aligner_escaped = "%%=" .. tab_highlight_escaped
       local is_tab_section_visible = string.find(original, tab_highlight_and_aligner_escaped)
@@ -182,44 +172,16 @@ Plug("akinsho/bufferline.nvim", {
         )
 
         -- right border
-        if is_outline_open then
-          result = string.gsub(
-            result,
-            -- I use '.*' so I can get the last bar character, in case the explorer is also open
-            "(.*)(│)",
-            "%1"
-              .. escape_percent(right_border_with_selected_highlight)
-              .. "%%#BufferLineOffsetSeparator#%2",
-            1
-          )
-        else
-          result = string.gsub(
-            result,
-            -- I use '.*' so I can get the last close icon, not the one for the current buffer.
-            "(.*)"
-              .. close_icon
-              .. " ",
-            "%1" .. close_icon .. escape_percent(right_border_with_selected_highlight),
-            1
-          )
-        end
+        result = string.gsub(
+          result,
+          -- I use '.*' so I can get the last close icon, not the one for the current buffer.
+          "(.*)"
+            .. close_icon
+            .. " ",
+          "%1" .. close_icon .. escape_percent(right_border_with_selected_highlight),
+          1
+        )
       end
-
-      local outline_border_highlight_escaped = "%%#OutlineBorder#"
-      result = string.gsub(
-        result,
-        string.rep(" ", left_border_with_padding_length)
-          .. outline_title
-          .. string.rep(" ", right_border_with_padding_length),
-        outline_border_highlight_escaped
-          .. left_border_with_padding
-          .. "%%#OutlineTitle#"
-          .. outline_title
-          .. outline_border_highlight_escaped
-          .. right_border_with_padding
-          .. "%%#WidgetFill#",
-        1
-      )
 
       local explorer_border_highlight_escaped = "%%#ExplorerBorder#"
       result = string.gsub(
