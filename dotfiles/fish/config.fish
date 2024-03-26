@@ -41,10 +41,12 @@ function tmux_attach
     end
     read --prompt-str "Hey$user, would you like to connect to tmux? ($accent""y$normal/$accent""n$normal): " --nchars 1 response
     if test $response = y
-        tmux-attach
+        tmux-attach-or-reload
     end
 end
-if test -z "$TMUX"
+set xdg_data (test -n "$XDG_DATA_HOME" && echo "$XDG_DATA_HOME" || echo "$HOME/.local/share")
+set resurrect_dir "$xdg_data/tmux/resurrect"
+if test -z "$TMUX" -a -d "$resurrect_dir"
     # HACK: vscode doesn't set VSCODE_INJECTION when launching a terminal when debugging so instead
     # I'm looking for any variable that starts with VSCODE. Should probably report this.
     if env | grep -q -E '^VSCODE'

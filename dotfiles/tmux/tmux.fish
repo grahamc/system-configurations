@@ -2,7 +2,7 @@ if not status is-interactive
     exit
 end
 
-abbr --add --global ta tmux-attach
+abbr --add --global ta tmux-attach-or-reload
 
 function tmux-server-reload --description 'Reload tmux server'
     function is_tmux_running
@@ -50,10 +50,10 @@ function tmux-server-reload --description 'Reload tmux server'
         end
     end
 
-    tmux-attach
+    tmux attach-session
 end
 
-function tmux-attach
+function tmux-attach-or-reload
     # Since the portable home deletes its prefix when it exits the $PATH and $SHELL environment
     # variables in TMUX will become invalid so we have to reload the server.
     if set --export --query BIGOLU_IN_PORTABLE_HOME
@@ -62,14 +62,7 @@ function tmux-attach
         return
     end
 
-    # We can't attach while tmux-resurrect is resurrecting so we'll keep trying to connect in a loop
-    echo 'Attaching... (This may take a while since we need to wait for tmux-resurrect to finish)'
-    set max_poll_attempts 10
-    while not tmux attach-session
-        and test $max_poll_attempts -gt 0
-        sleep 2
-        set max_poll_attempts (math $max_poll_attempts - 1)
-    end
+    tmux attach-session
 end
 
 function __fish_prompt_post --on-event fish_prompt
