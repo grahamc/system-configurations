@@ -7,6 +7,9 @@ schema = 3
   [mod."github.com/klauspost/compress"]
     version = "v1.17.7"
     hash = "sha256-UkW+tAFEZYj067z9gXDQjQx0dCF8noCn5OSw/APh4oo="
+  [mod."github.com/mattn/go-isatty"]
+    version = "v0.0.20"
+    hash = "sha256-qhw9hWtU5wnyFyuMbKx+7RB8ckQaFQ8D+8GKPkN3HHQ="
   [mod."github.com/mitchellh/colorstring"]
     version = "v0.0.0-20190213212951-d06e56a500db"
     hash = "sha256-dg5havre+NkxU85tbWXgdhjVtVnkNfTVa999HX+JVbQ="

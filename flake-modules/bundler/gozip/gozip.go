@@ -22,6 +22,7 @@ import (
 
 	"github.com/deepakjois/gousbdrivedetector"
 	"github.com/klauspost/compress/zstd"
+	"github.com/mattn/go-isatty"
 	"github.com/schollz/progressbar/v3"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
@@ -30,7 +31,14 @@ import (
 
 var currentBar *progressbar.ProgressBar = nil
 
-var writer = os.Stderr
+var writer = func() io.Writer {
+	writer := os.Stderr
+	if isatty.IsTerminal(writer.Fd()) && len(os.Getenv("NIX_ROOTLESS_BUNDLER_QUIET")) == 0 {
+		return writer
+	}
+
+	return io.Discard
+}()
 
 var stopTicker chan struct{} = nil
 
@@ -41,8 +49,6 @@ var archiveCount int = 0
 // the spinner only updates when the state of the bar changes so we'll keep setting the
 // description on an interval:
 // https://github.com/schollz/progressbar/issues/166
-//
-// TODO: If the script fails, I don't think the ticker will be stopped.
 func MakeTicker(bar *progressbar.ProgressBar) chan struct{} {
 	ticker := time.NewTicker(time.Second / 30)
 	quit := make(chan struct{})
@@ -61,7 +67,6 @@ func MakeTicker(bar *progressbar.ProgressBar) chan struct{} {
 	return quit
 }
 
-// TODO: only show a progress bar if we're connected to a terminal
 func NextStep(count int, name string, options ...progressbar.Option) *progressbar.ProgressBar {
 	EndProgress()
 	description := fmt.Sprintf("[cyan]%s[reset]...", name)

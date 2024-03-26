@@ -50,7 +50,7 @@
         buildInputs = [gozip];
         installPhase = ''
           mkdir deps
-          cp --recursive $(cat ${pkgs.writeReferencesToFile derivation}) ./deps/
+          cp --recursive $(cat ${pkgs.writeClosure derivation}) ./deps/
           chmod -R 777 ./deps
           cd ./flake-modules/bundler/gozip
           cp --dereference "$(${pkgs.which}/bin/which gozip)" $out
