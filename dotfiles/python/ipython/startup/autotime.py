@@ -70,12 +70,13 @@ class LineWatcher:
     __slots__ = ["start_time"]
 
     def __init__(self):
+        super().__init__()
         self.start_time = None
 
-    def start(self):
+    def start(self, _info):
         self.start_time = time.monotonic()
 
-    def stop(self):
+    def stop(self, _result):
         delta = time.monotonic() - self.start_time
         if delta < 1:
             return
