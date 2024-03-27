@@ -30,10 +30,5 @@ use flake '../../#smartPlug'
 PATH_rm "$layout_dir/bin"
 PATH_add "$layout_dir/bin"
 
-# So debugpy can find the right python to use. The 2 dirnames remove '/bin/python' so we end up with
-# the python installation folder.
-VIRTUAL_ENV="$(dirname "$( dirname "$(realpath --canonicalize-existing "$(which python)")" )")"
-export VIRTUAL_ENV
-
 # call firstaide
 eval "$(printf '%q ' "$@")"

@@ -40,6 +40,12 @@ config.use_ime = false
 config.enable_kitty_keyboard = true
 config.enable_kitty_graphics = true
 config.automatically_reload_config = false
+config.window_padding = {
+  left = "0.5cell",
+  right = "0.5cell",
+  top = "0.5cell",
+  bottom = "0.5cell",
+}
 
 -- TODO: wezterm can't find the right terminfo when it's running through flatpak. this should work
 -- for now

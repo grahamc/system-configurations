@@ -147,6 +147,9 @@ Plug("aznhe21/actions-preview.nvim", {
     actions_preview.setup({
       -- so it uses my telescope defaults
       telescope = {},
+      highlight_command = {
+        require("actions-preview.highlight").delta([[delta --file-style omit --paging always]]),
+      },
     })
     vim.keymap.set({ "n", "v" }, "ga", actions_preview.code_actions, { desc = "Code actions" })
   end,
