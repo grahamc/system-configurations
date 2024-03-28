@@ -79,6 +79,8 @@ function __fish_prompt_post --on-event fish_prompt
             return
         end
 
+        # TODO: See if I could use an empty hyperlink as the marker since that won't take up visible
+        # space.
         echo \u00A0"$prompt"\u00A0
     end
 end

@@ -27,19 +27,10 @@
         vimPluginRepositoryPrefix
         vimPluginBuilder;
 
-      treesitter-parsers = let
-        just-grammar = final.tree-sitter.buildGrammar {
-          language = "just";
-          version = inputs.vim-plugin-tree-sitter-just.rev;
-          src = inputs.vim-plugin-tree-sitter-just;
-        };
-        updatedGrammars = newVimPlugins.nvim-treesitter.allGrammars ++ [just-grammar];
-        package = newVimPlugins.nvim-treesitter.withPlugins (_: updatedGrammars);
-      in
-        final.symlinkJoin {
-          name = "treesitter-parsers";
-          paths = package.dependencies;
-        };
+      treesitter-parsers = final.symlinkJoin {
+        name = "treesitter-parsers";
+        paths = newVimPlugins.nvim-treesitter.withAllGrammars.dependencies;
+      };
 
       nvim-nonicons =
         vimPluginBuilder

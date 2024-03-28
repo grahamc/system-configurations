@@ -180,21 +180,17 @@ function _insert_entries_into_commandline
     end
 
     # Don't add a space if the item is a directory and ends in a slash.
-    # expand tilde
-    set first_char (string sub --length 1 -- "$entry")
-    if test "$first_char" = '~'
-        set expanded_entry "$HOME"(string sub --start 2 -- "$entry")
-    else
-        set expanded_entry "$entry"
-    end
-    # eval to expand environment variables
-    if test -d (eval echo (string unescape -- "$expanded_entry"))
-        and test (string sub --start -1 -- "$expanded_entry") = /
+    #
+    # Use eval so expansions are done e.g. environment variables, tildes.  I pass $entry through
+    # unescape for scenarios like (bar is cursor) `echo "$HOME/|"` where the autocomplete entry
+    # will include the left quote, but not the right quote, which will cause an 'unbalanced quotes'
+    # error.
+    if eval test -d (string unescape -- $entry) && test (string sub --start -1 -- "$entry") = /
         set space ''
     end
 
     # retain the part of the token after the cursor. use case: autocompleting inside quotes
-    # (bar is cursor) `echo "$HOME|"`
+    # (bar is cursor) `echo "$HOME/|"`
     set token_after_cursor "$(string sub --start (math (string length -- "$(commandline --current-token --cut-at-cursor)") + 1) -- "$(commandline --current-token)")"
     set replacement "$entry$space$token_after_cursor"
 
@@ -224,7 +220,7 @@ function _fzf_complete
                 '(?<prefix>^'(string escape --style regex -- "$current_token")')(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' \
                 (set_color cyan)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
             | fzf \
-                --height '~35%' \
+                --height (math "max(6,min(10,$(math "floor($(math .35 \* $LINES))")))") \
                 --min-height 8 \
                 --preview-window '2,border-left,right,60%' \
                 --no-header \
@@ -273,16 +269,8 @@ function _reload_fish --on-variable _fish_reload_indicator
         commandline -f repaint
         return
     end
-
     # Taken from fish's ctrl+l keybinding
     echo -n (clear | string replace \e\[3J "")
-
-    echo "$(set_color --reverse --bold brwhite) INFO $(set_color normal) Reloading the shell...$(set_color normal)"
-
-    # TODO: Sleep for a random amount of time between 0 and 1 second so all the shells don't all
-    # reload at the exact same time. Doing so was causing crashes.
-    sleep (math (random 1 100) / 100)
-
     exec fish
 end
 

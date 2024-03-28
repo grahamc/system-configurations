@@ -388,7 +388,7 @@ local theme = lush(function(injected_functions)
 
     QuickFixLine { }, -- Current |quickfix| item in the quickfix window. Combined with |hl-CursorLine| when the cursor is there.
     QuickFixEntryUnderline { underline = true, sp = MiniCursorword.bg, nocombine = true, },
-    QuickfixFold { QuickFixEntryUnderline, bold = true, },
+    QuickfixFold { bold = true, },
     qfFileName { Normal, },
     qfLineNr { qfFileName, },
     QuickfixBorderNotCurrent { Ignore },

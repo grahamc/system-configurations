@@ -133,7 +133,7 @@ end
 
 # zoxide
 if not set --query BIGOLU_IN_PORTABLE_HOME
-    set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'lsd --color always --hyperlink always {2}' --keep-right"
+    set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'lsd --color always --hyperlink always {2}' --keep-right --tiebreak index"
     # This needs to run after the zoxide.fish config file so I run it when the fish_prompt event fires.
     function __create_cd_function --on-event fish_prompt
         # I only want this to run once so delete the function.

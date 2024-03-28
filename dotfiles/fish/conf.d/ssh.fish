@@ -41,7 +41,7 @@ function ssh
             # https://invisible-island.net/ncurses/man/ncurses.3x.html#h3-TERMINFO
             #
             # infocmp uses -_ as the 62nd and 63rd characters, but base64 uses +/ so we'll change it
-            set terminfo "$(infocmp -0 -Q2 -q | tr _- /+)"
+            set BIGOLU_TERMINFO "$(infocmp -0 -Q2 -q | tr _- /+)"
             # For machines that don't support terminfo.
             #
             # WARNING: The -T flag removes the restriction on the output length. This may break some
@@ -52,10 +52,9 @@ function ssh
             # don't have to escape any characters in it.
             #
             # Using quotes to preserve newlines
-            set termcap "$(infocmp -Cr0Tq | base64)"
-
-            set remote_command "BIGOLU_TERMCAP='$termcap' BIGOLU_TERMINFO='$terminfo' $remote_command"
+            set BIGOLU_TERMCAP "$(infocmp -Cr0Tq | base64)"
         end
+        set remote_command "BIGOLU_TERMCAP='$BIGOLU_TERMCAP' BIGOLU_TERMINFO='$BIGOLU_TERMINFO' $remote_command"
 
         ssh -o RequestTTY=yes $argv "$remote_command"
     end

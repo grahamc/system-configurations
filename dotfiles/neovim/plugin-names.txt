@@ -61,7 +61,6 @@ telescope-sg
 telescope-smart-history.nvim
 tint.nvim
 traces.vim
-tree-sitter-just
 treesj
 vim-abolish
 vim-caser

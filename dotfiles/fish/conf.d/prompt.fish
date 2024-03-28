@@ -26,7 +26,7 @@ function fish_prompt --description 'Print the prompt'
     # transient prompt
     if set --query TRANSIENT
         set --erase TRANSIENT
-        printf $separator\n$_color_border'['(date)']'(_arrows)$_color_normal
+        printf $separator\n(set_color --reverse brwhite)' '(date +'%T')' '$_color_normal
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY
@@ -40,15 +40,15 @@ function fish_prompt --description 'Print the prompt'
     # value is never negative
     set max_length (math max\($COLUMNS - 4, 1\))
     set contexts \
-        (_status_context $last_status $last_pipestatus) \
-        (_login_context) \
-        (_path_context $max_length) \
-        (_git_context $max_length) \
-        (_job_context) \
-        (_python_context) \
-        (_nix_context) \
+        (_broot_context) \
         (_direnv_context) \
-        (_broot_context)
+        (_nix_context) \
+        (_python_context) \
+        (_job_context) \
+        (_git_context $max_length) \
+        (_path_context $max_length) \
+        (_login_context) \
+        (_status_context $last_status $last_pipestatus)
 
     set new_contexts $contexts
     set contexts
@@ -64,16 +64,16 @@ function fish_prompt --description 'Print the prompt'
 
         set context (format_context $context)
 
-        if not set --query contexts[1]
-            set --append contexts $context
-            # I take the minimum of the number of columns and 120 to prevent the prompt from going
-            # past 120 chars The `+ 1` accounts for the character that gets prepended to a line by
-            # `make_line`
-        else if test (math (string length --visible $contexts[-1]$context) + 1) -le (math "min(120, $COLUMNS)")
-            set contexts[-1] $contexts[-1]$context
-        else
-            set --append contexts $context
-        end
+        # if not set --query contexts[1]
+        #     set --append contexts $context
+        #     # I take the minimum of the number of columns and 120 to prevent the prompt from going
+        #     # past 120 chars The `+ 1` accounts for the character that gets prepended to a line by
+        #     # `make_line`
+        # else if test (math (string length --visible $contexts[-1]$context) + 1) -le (math "min(120, $COLUMNS)")
+        #     set contexts[-1] $contexts[-1]$context
+        # else
+        set --append contexts $context
+        # end
     end
 
     set prompt_lines
@@ -227,7 +227,7 @@ function _path_context --argument-names max_length
 
     # If we're on a local machine, add a hyperlink
     if not set --export --query SSH_TTY
-        set path '\e]8;;file://'(pwd)'\e\\'$path'\e]8;;\e\\'
+        set path '\e]8;;'"file://$(pwd)"'\u0007'"$path"'\e]8;;\u0007'
     end
 
     printf $context_prefix$path
@@ -316,7 +316,7 @@ function _make_hyperlink_to_git_branch --argument-names branch_name
     end
 
     if test -n "$hyperlink"
-        printf '\e]8;;'$hyperlink'\e\\'$branch_name'\e]8;;\e\\'
+        printf %s '\e]8;;'"$hyperlink"'\u0007'"$branch_name"'\e]8;;\u0007'
     else
         printf '%s' $branch_name
     end

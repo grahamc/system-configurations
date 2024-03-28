@@ -24,9 +24,11 @@
     "tweaked-plug.vim"
     {}
     ''
-      sed -e "s@len(s:glob(s:rtp(a:plug), 'plugin'))@v:true@" \
-        <${pkgs.vimPlugins.vim-plug}/plug.vim \
-        >$out
+      vim_plug=${lib.strings.escapeShellArgs ["${pkgs.vimPlugins.vim-plug}/plug.vim"]}
+      target="len(s:glob(s:rtp(a:plug), 'plugin'))"
+      # First grep so the build will error out if the string isn't present
+      grep -q "$target" "$vim_plug"
+      sed -e "s@$target@v:true@" <"$vim_plug" >"$out"
     '';
 in {
   options.vimPlug = {

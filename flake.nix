@@ -437,10 +437,6 @@
       url = "github:molecule-man/telescope-menufacture";
       flake = false;
     };
-    vim-plugin-tree-sitter-just = {
-      url = "github:IndianBoy42/tree-sitter-just";
-      flake = false;
-    };
     vim-plugin-cmp-dictionary = {
       url = "github:uga-rosa/cmp-dictionary";
       flake = false;

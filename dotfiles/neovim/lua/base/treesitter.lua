@@ -51,8 +51,6 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-Plug("IndianBoy42/tree-sitter-just")
-
 if IsRunningInTerminal then
   local filetypes_with_syntax_support = vim.fn.getcompletion("", "syntax") or {}
   local function should_enable_syntax()
