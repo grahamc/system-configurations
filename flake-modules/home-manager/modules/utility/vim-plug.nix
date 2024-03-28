@@ -17,6 +17,17 @@
   ...
 }: let
   inherit (lib) types;
+  # TODO: Workaround for this issue:
+  # https://github.com/junegunn/vim-plug/issues/1135
+  tweakedVimPlug =
+    pkgs.runCommand
+    "tweaked-plug.vim"
+    {}
+    ''
+      sed -e "s@len(s:glob(s:rtp(a:plug), 'plugin'))@v:true@" \
+        <${pkgs.vimPlugins.vim-plug}/plug.vim \
+        >$out
+    '';
 in {
   options.vimPlug = {
     pluginFile = lib.mkOption {
@@ -55,7 +66,7 @@ in {
     pluginDirectory = "${config.xdg.dataHome}/${pluginDirectoryRelativeToXdgDataHome}";
   in {
     xdg.dataFile = {
-      "nvim/site/autoload/plug.vim".source = "${pkgs.vimPlugins.vim-plug}/plug.vim";
+      "nvim/site/autoload/plug.vim".source = "${tweakedVimPlug}";
       "${pluginDirectoryRelativeToXdgDataHome}" = {
         source = "${pluginBundlePackage}/pack/${pluginBundleName}/start";
         recursive = true;
