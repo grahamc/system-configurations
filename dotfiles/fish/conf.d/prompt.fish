@@ -9,8 +9,8 @@ set _color_normal (set_color normal)
 set _color_border (set_color brwhite)
 
 function fish_prompt --description 'Print the prompt'
-    # I want the value of $status and $pipestatus for the last command executed on the command line so I will store
-    # their values now before executing any commands.
+    # I want the value of $status and $pipestatus for the last command executed on the command line
+    # so I will store their values now before executing any commands.
     set last_status $status
     set last_pipestatus $pipestatus
 
@@ -19,36 +19,40 @@ function fish_prompt --description 'Print the prompt'
     # issue: https://github.com/fish-shell/fish-shell/issues/8418
     printf \e\[0J
 
-    # This is what I want to display on the line that separates my prompt from the output of the last command.
+    # This is what I want to display on the line that separates my prompt from the output of the
+    # last command.
     set separator ''
 
     # transient prompt
     if set --query TRANSIENT
         set --erase TRANSIENT
-        printf $separator\n$_color_border(_arrows)$_color_normal
+        printf $separator\n$_color_border'['(date)']'(_arrows)$_color_normal
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY
-        # Return without printing anything. This results in the prompt being refreshed in-place since it erases the
-        # old prompt, prints nothing, and then draws the prompt again.
+        # Return without printing anything. This results in the prompt being refreshed in-place
+        # since it erases the old prompt, prints nothing, and then draws the prompt again.
         return
     end
 
-    # The max number of screen columns a context can use and still fit on one line. The 4 accounts for the 4
-    # characters that make up the border, see `_make_line`. The max() is there so the value is never negative
+    # The max number of screen columns a context can use and still fit on one line. The 4 accounts
+    # for the 4 characters that make up the border, see `_make_line`. The max() is there so the
+    # value is never negative
     set max_length (math max\($COLUMNS - 4, 1\))
     set contexts \
-        (_broot_context) \
-        (_direnv_context) \
-        (_nix_context) \
-        (_python_context) \
-        (_job_context) \
-        (_git_context $max_length) \
-        (_path_context $max_length) \
+        (_status_context $last_status $last_pipestatus) \
         (_login_context) \
-        (_status_context $last_status $last_pipestatus)
-    set prompt_lines
-    for context in $contexts
+        (_path_context $max_length) \
+        (_git_context $max_length) \
+        (_job_context) \
+        (_python_context) \
+        (_nix_context) \
+        (_direnv_context) \
+        (_broot_context)
+
+    set new_contexts $contexts
+    set contexts
+    for context in $new_contexts
         if test -z $context
             continue
         end
@@ -56,6 +60,26 @@ function fish_prompt --description 'Print the prompt'
         # Truncate any contexts that wouldn't fit on one line.
         if test (string length --visible $context) -gt $max_length
             set context (string shorten --max $max_length $context)
+        end
+
+        set context (format_context $context)
+
+        if not set --query contexts[1]
+            set --append contexts $context
+            # I take the minimum of the number of columns and 120 to prevent the prompt from going
+            # past 120 chars The `+ 1` accounts for the character that gets prepended to a line by
+            # `make_line`
+        else if test (math (string length --visible $contexts[-1]$context) + 1) -le (math "min(120, $COLUMNS)")
+            set contexts[-1] $contexts[-1]$context
+        else
+            set --append contexts $context
+        end
+    end
+
+    set prompt_lines
+    for context in $contexts
+        if test -z $context
+            continue
         end
 
         if not set --query prompt_lines[1]
@@ -69,16 +93,19 @@ function fish_prompt --description 'Print the prompt'
     printf (string join '\n' $prompt_lines)
 end
 
-function _make_line --argument-names position context
+function format_context --argument-names context
     set left_border $_color_border'╼['$_color_normal
     set right_border $_color_border']'$_color_normal
+    printf %s $left_border$context$right_border
+end
 
+function _make_line --argument-names position context
     if test $position = first
         set line_connector $_color_border'┌'$_color_normal
-        printf $line_connector$left_border$context$right_border
+        printf $line_connector$context
     else if test $position = middle
         set line_connector $_color_border'├'$_color_normal
-        printf $line_connector$left_border$context$right_border
+        printf $line_connector$context
     else if test $position = last
         set line_connector $_color_border'└'$_color_normal
         set arrows (set_color cyan)(_arrows)$_color_normal
@@ -238,7 +265,8 @@ function _git_context --argument-names max_length
         return
     end
 
-    # remove parentheses and leading space e.g. ' (<branch>,dirty,untracked)' -> '<branch>,dirty,untracked'
+    # remove parentheses and leading space e.g. ' (<branch>,dirty,untracked)' ->
+    # '<branch>,dirty,untracked'
     set --local formatted_status (string sub --start=3 --end=-1 $git_status)
     # replace first comma with ' (' e.g. ',<branch>,dirty,untracked' -> ' (<branch> dirty,untracked'
     set --local formatted_status (string replace ',' ' (' $formatted_status)
@@ -332,8 +360,8 @@ function _status_context
     set last_status $argv[1]
     set last_pipestatus $argv[2..]
 
-    # If there aren't any non-zero exit codes in the last $pipestatus and the last $status is 0, then that means
-    # everything succeeded and I won't print anything
+    # If there aren't any non-zero exit codes in the last $pipestatus and the last $status is 0,
+    # then that means everything succeeded and I won't print anything
     if not string match --quiet --invert 0 $last_pipestatus
         and test $last_status -eq 0
         return
@@ -388,8 +416,8 @@ function _nix_context
     set packages ( \
         # Each package is separated by a space.
         string split --no-empty ' ' "$ANY_NIX_SHELL_PKGS" \
-        # Packages may have dots, e.g. 'vimPlugins.vim-abolish', in which case I take the segment after the last
-        # dot, 'vim-abolish'.
+        # Packages may have dots, e.g. 'vimPlugins.vim-abolish', in which case I take the segment
+        # after the last dot, 'vim-abolish'.
         | xargs -I PACKAGE fish -c "string split --fields (count (string split '.' 'PACKAGE')) '.' 'PACKAGE'" \
     )
     if test -n "$packages"
