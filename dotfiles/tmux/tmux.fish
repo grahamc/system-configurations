@@ -84,4 +84,4 @@ function __fish_prompt_post --on-event fish_prompt
         echo \u00A0"$prompt"\u00A0
     end
 end
-mybind --no-focus \co 'tmux-last-command-output; commandline -f repaint'
+mybind --no-focus \co 'tmux-last-command-output; commandline -f repaint; emit bigolu_post_widget'

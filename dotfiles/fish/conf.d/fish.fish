@@ -239,6 +239,7 @@ function _fzf_complete
             _insert_entries_into_commandline $entries
         end
         commandline -f repaint
+        emit bigolu_post_widget
     end
 end
 # Set the binding on fish_prompt since something else was overriding it during shell startup.
