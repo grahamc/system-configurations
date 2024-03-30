@@ -144,10 +144,7 @@ pull:
         return
     end
 
-    # Show the new commits that would be pulled
-    echo 'Commits made since last pull:'
-    git log ..@{u}
-    echo
+    echo "$(echo 'Commits made since last pull:'\n; git log '..@{u}')" | less
 
     # if there are changes, warn the user in the prompt
     set status_output "$(git status --porcelain)"

@@ -221,7 +221,6 @@ function _fzf_complete
                 (set_color cyan)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
             | fzf \
                 --height (math "max(6,min(10,$(math "floor($(math .35 \* $LINES))")))") \
-                --min-height 8 \
                 --preview-window '2,border-left,right,60%' \
                 --no-header \
                 --bind 'backward-eof:abort,start:toggle-preview,ctrl-o:change-preview-window(bottom,75%,border-top|right,60%,border-left)+refresh-preview' \

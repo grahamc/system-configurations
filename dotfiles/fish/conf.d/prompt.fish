@@ -254,6 +254,13 @@ function _direnv_context
 end
 
 function _git_context --argument-names max_length
+    # This way we don't print the git section and possibly remove it later because the directory
+    # wasn't in a git repo. Plus, adding and removing this section causes issues with prompt pinning
+    # since the amount of lines in the prompt changes.
+    if not git rev-parse --is-inside-work-tree >/dev/null 2>&1
+        return
+    end
+
     set context_prefix 'git: '
 
     set git_status (_git_status)
