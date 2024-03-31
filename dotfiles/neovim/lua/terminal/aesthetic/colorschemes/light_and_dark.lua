@@ -56,7 +56,7 @@ local theme = lush(function(injected_functions)
     t_5 { fg = hsl(is_light and "#994cc3" or "#B48EAD") },
     t_6 { fg = hsl(is_light and "#037A98" or "#88C0D0") },
     t_7 { fg = hsl(is_light and "#000000" or "#D8DEE9") },
-    t_8 { fg = hsl(is_light and "#d1d2cd" or "#414d64") },
+    t_8 { fg = hsl(is_light and "#808080" or "#78849b") },
     t_9 { fg = hsl(is_light and "#ee3d3b" or "#BF616A") },
     t_10 { fg = hsl(is_light and "#2AA298" or "#A3BE8C") },
     t_11 { fg = hsl(is_light and "#c96765" or "#d08770") },
@@ -114,7 +114,7 @@ local theme = lush(function(injected_functions)
 
     -- float {{{
     NormalFloat { }, -- Normal text in floating windows.
-    FloatBorder { NormalFloat, fg = t_15.fg, }, -- Border of floating windows.
+    FloatBorder { NormalFloat, fg = t_8.fg, }, -- Border of floating windows.
     FloatTitle { NormalFloat, fg = t_6.fg }, -- Title of floating windows.
     -- }}}
 
@@ -127,7 +127,7 @@ local theme = lush(function(injected_functions)
     --
     -- Uncomment and edit if you want more specific syntax highlighting.
 
-    Comment { fg = t_15.fg, italic = true }, -- Any comment
+    Comment { fg = t_8.fg, italic = true }, -- Any comment
 
     Statement { t_4 }, -- (*) Any statement
     Conditional    { Statement, }, --   if, then, else, endif, switch, etc.
@@ -178,7 +178,7 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- line numbers {{{
-    LineNr { fg = t_15.fg }, -- Line number for ":number" and ":#" commands, and when 'number' or 'relativenumber' option is set.
+    LineNr { fg = t_8.fg }, -- Line number for ":number" and ":#" commands, and when 'number' or 'relativenumber' option is set.
     LineNrAbove { LineNr }, -- Line number for when the 'relativenumber' option is set, above the cursor line
     LineNrBelow { LineNrAbove }, -- Line number for when the 'relativenumber' option is set, below the cursor line
     -- }}}
@@ -213,7 +213,7 @@ local theme = lush(function(injected_functions)
     StatusLineModeVisual { StatusLine, fg = Visual.bg, },
     StatusLineModeInsert { StatusLine, fg = t_6.fg, },
     StatusLineModeTerminal { StatusLine, fg = t_2.fg, },
-    StatusLineModeOther { StatusLine, fg = t_15.fg, },
+    StatusLineModeOther { StatusLine, fg = t_8.fg, },
     -- }}}
 
     -- tabline {{{
@@ -239,14 +239,14 @@ local theme = lush(function(injected_functions)
       LspInfoBorder { FloatBorder },
       LspInlayHint { virtual_text, fg = t_0.fg[is_light and 'darken' or 'lighten'](68), },
       LspCodeLens { LspInlayHint, } , -- Used to color the virtual text of the codelens. See |nvim_buf_set_extmark()|.
-      LspCodeLensSeparator { LspCodeLens, fg = t_15.fg, } , -- Used to color the seperator between two or more code lens.
+      LspCodeLensSeparator { LspCodeLens, fg = t_8.fg, } , -- Used to color the seperator between two or more code lens.
       -- }}}
 
-    Conceal { t_15 }, -- Placeholder characters substituted for concealed text (see 'conceallevel')
+    Conceal { t_8 }, -- Placeholder characters substituted for concealed text (see 'conceallevel')
     Directory { t_4 }, -- Directory names (and other special names in listings)
     EndOfBuffer {}, -- Filler lines (~) after the end of the buffer. By default, this is highlighted like |hl-NonText|.
     Folded { bg = t_0.fg[is_light and 'darken' or 'lighten'](3) }, -- Line used for closed folds
-    FoldColumn { fg = t_15.fg }, -- 'foldcolumn'
+    FoldColumn { fg = t_8.fg }, -- 'foldcolumn'
     TreesitterContext { bg = is_light and t_0.fg.darken(3) or t_0.fg.lighten(2) }, -- Line used for closed folds
     SignColumn {}, -- Column where |signs| are displayed
     Substitute { Search }, -- |:substitute| replacement text highlighting
@@ -265,7 +265,7 @@ local theme = lush(function(injected_functions)
     WinBar { virtual_text, bg = "NONE", fg = t_7.fg, }, -- Window bar of current window
     -- tint.nvim needs this in order to work
     WinBarNC { WinBar, }, -- Window bar of not-current windows
-    GitBlameVirtualText { virtual_text, fg = t_15.fg, },
+    GitBlameVirtualText { virtual_text, fg = t_8.fg, },
     WhichKeyFloat { StatusLine, }, -- Normal text in floating windows.
     WhichKeyBorder { WhichKeyFloat, fg = WhichKeyFloat.bg, }, -- Border of floating windows.
     CodeActionSign { t_3 },
@@ -286,7 +286,7 @@ local theme = lush(function(injected_functions)
     MyBufferLineDuplicate { MyBufferLineBufferVisible },
     MyBufferLineDuplicateSelected { MyBufferLineBufferSelected },
     MyBufferLineDuplicateVisible { MyBufferLineBufferVisible },
-    MyBufferLineNumbers { t_15 },
+    MyBufferLineNumbers { t_8 },
     MyBufferLineNumbersVisible { MyBufferLineNumbers },
     MyBufferLineNumbersSelected { MyBufferLineBufferSelected, fg = t_6.fg },
     MyBufferLineCloseButton { MyBufferLineFill },
@@ -295,7 +295,7 @@ local theme = lush(function(injected_functions)
     MyBufferLineModified { fg = MyBufferLineBackground.bg },
     MyBufferLineModifiedVisible { fg = MyBufferLineBackground.bg },
     MyBufferLineModifiedSelected { MyBufferLineBufferSelected },
-    MyBufferLineTab { MyBufferLineBufferSelected, fg = t_15.fg },
+    MyBufferLineTab { MyBufferLineBufferSelected, fg = t_8.fg },
     MyBufferLineTabSelected { MyBufferLineTab, fg = 'fg', underline = true, sp = t_6.fg, },
     MyBufferLineTabSeparator { MyBufferLineTab, fg = MyBufferLineTab.bg },
     MyBufferLineTabSeparatorSelected { MyBufferLineTab, fg = MyBufferLineTab.bg },
@@ -309,7 +309,7 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- nvim-tree {{{
-    NvimTreeIndentMarker { t_15 },
+    NvimTreeIndentMarker { t_8 },
     NvimTreeRootFolder { Normal },
     NvimTreeModified { Normal },
     NvimTreeOpenedHL { Normal },
@@ -348,7 +348,7 @@ local theme = lush(function(injected_functions)
     MasonHighlight { t_6 },
     MasonHighlightBlockBold { MasonHighlight, bold = true, reverse = true },
     MasonHighlightBlock { MasonHighlightBlockBold },
-    MasonMuted { t_15, },
+    MasonMuted { t_8, },
     MasonMutedBlock { fg = t_0.fg[is_light and 'darken' or 'lighten'](40), reverse = true },
     MasonMutedBlockBold { MasonMutedBlock },
     MasonError { ErrorMsg },
@@ -356,7 +356,7 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- fidget.nvim {{{
-    FidgetNormal { virtual_text, bg = "NONE", fg = t_15.fg, },
+    FidgetNormal { virtual_text, bg = "NONE", fg = t_8.fg, },
     FidgetAccent { FidgetNormal, fg = Normal.fg },
     FidgetIcon { FidgetNormal, fg = t_5.fg },
     -- }}}
@@ -377,11 +377,11 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- mini.nvim {{{
-    MiniIndentscopeSymbol { t_15 },
+    MiniIndentscopeSymbol { t_8 },
     MiniJump2dSpot { t_3 },
     MiniJump2dSpotUnique { MiniJump2dSpot },
     MiniJump2dSpotAhead { MiniJump2dSpot },
-    MiniJump2dDim { t_15 },
+    MiniJump2dDim { t_8 },
     Clear { },
     MiniCursorword { CursorLine, bold = true, },
     -- }}}
@@ -399,9 +399,9 @@ local theme = lush(function(injected_functions)
     -- List of telescope highlight groups:
     -- https://github.com/nvim-telescope/telescope.nvim/blob/master/plugin/telescope.lua
     TelescopePromptNormal { },
-    TelescopePromptBorder { t_15, },
+    TelescopePromptBorder { t_8, },
     TelescopePromptTitle { t_6, },
-    TelescopePromptCounter { TelescopePromptNormal, fg = t_15.fg, },
+    TelescopePromptCounter { TelescopePromptNormal, fg = t_8.fg, },
     TelescopePromptPrefix { TelescopePromptNormal, fg = FloatTitle.fg },
     TelescopeResultsNormal { TelescopePromptNormal },
     TelescopeResultsBorder { TelescopePromptBorder, },
@@ -425,7 +425,7 @@ local theme = lush(function(injected_functions)
     NotifyINFOTitle { fg = DiagnosticInfo.fg },
     NotifyINFOBorder { NotifyINFOTitle },
     NotifyINFOIcon { NotifyINFOTitle },
-    NotifyDEBUGTitle { fg = t_15.fg },
+    NotifyDEBUGTitle { fg = t_8.fg },
     NotifyDEBUGBorder { NotifyDEBUGTitle },
     NotifyDEBUGIcon { NotifyDEBUGTitle },
     NotifyTRACETitle { fg = t_5.fg },
@@ -444,7 +444,7 @@ local theme = lush(function(injected_functions)
     DropBarMenuNormalFloat { CmpNormal },
     DropBarMenuCursor { DropBarMenuNormalFloat, fg = DropBarMenuNormalFloat.bg, blend = 100, },
     DropBarPreview { MiniCursorword },
-    DropBarIconUISeparator { t_15 },
+    DropBarIconUISeparator { t_8 },
     DropBarIconUISeparatorMenu { CmpItemKind },
     DropBarIconKindArray { Identifier },
     DropBarIconKindBoolean { DropBarIconKindArray },

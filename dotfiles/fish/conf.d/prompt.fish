@@ -6,7 +6,7 @@ set _color_warning_text (set_color yellow)
 set _color_error_text (set_color red)
 set _color_success_text (set_color green)
 set _color_normal (set_color normal)
-set _color_border (set_color brwhite)
+set _color_border (set_color brblack)
 
 function fish_prompt --description 'Print the prompt'
     # I want the value of $status and $pipestatus for the last command executed on the command line
@@ -26,7 +26,7 @@ function fish_prompt --description 'Print the prompt'
     # transient prompt
     if set --query TRANSIENT
         set --erase TRANSIENT
-        printf $separator\n(set_color --reverse brwhite)' '(date +'%T')' '$_color_normal
+        printf $separator\n(set_color --reverse brblack)' '(date +'%T')' '$_color_normal
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY

@@ -17,7 +17,7 @@ set --global fish_color_end $fish_color_keyword
 set --global fish_color_error red
 set --global fish_color_param $fish_color_normal
 set --global fish_color_option $fish_color_normal
-set --global fish_color_comment brwhite
+set --global fish_color_comment brblack
 set --global fish_color_match
 set --global fish_color_search_match --background=brblack
 # TODO: I want to remove the default bolding, but currently only the background is configurable.
@@ -26,7 +26,7 @@ set --global fish_pager_color_selected_background --background=brblack
 set --global fish_color_operator $fish_color_keyword
 set --global fish_color_escape $fish_color_redirection
 set --global fish_color_cwd
-set --global fish_color_autosuggestion brwhite --bold
+set --global fish_color_autosuggestion brblack --bold
 set --global fish_color_user
 set --global fish_color_host
 set --global fish_pager_color_prefix cyan
@@ -221,7 +221,7 @@ function _fzf_complete
                 # Use a different color for the completion item description
                 | string replace --ignore-case --regex -- \
                     '(?<prefix>^'(string escape --style regex -- "$current_token")')(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' \
-                    (set_color cyan)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
+                    (set_color cyan)'$prefix'(set_color normal)'$item'(set_color brblack)'$whitespace$description' \
                 | fzf \
                     --height $widget_height \
                     --preview-window '2,border-left,right,60%' \

@@ -153,7 +153,7 @@ if not set --query BIGOLU_IN_PORTABLE_HOME
 end
 
 # direnv
-set --global --export DIRENV_LOG_FORMAT (set_color brwhite)'[direnv] %s'(set_color normal)
+set --global --export DIRENV_LOG_FORMAT (set_color brblack)'[direnv] %s'(set_color normal)
 
 # watch
 abbr --add --global watch 'watch --no-title --differences --interval 0.5'

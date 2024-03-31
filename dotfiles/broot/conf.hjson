@@ -68,33 +68,33 @@ verbs: [
 ]
 
 skin: {
-    default: None None / ansi(15) None
-    tree: ansi(15) None
-    parent: None None / ansi(15) None
-    file: None None / ansi(15) None
-    directory: ansi(4) None / ansi(15) None
-    exe: ansi(2) None / ansi(15) None
-    link: None None / ansi(15) None
-    pruning: ansi(15) None Italic
-    perm__: ansi(15) None
-    perm_r: ansi(15) None
-    perm_w: ansi(15) None
-    perm_x: ansi(15) None
-    owner: None None / ansi(15) None
-    group: ansi(15) None
-    dates: None None / ansi(15) None
-    selected_line: None ansi(51) / None ansi(0)
+    default: None None / ansi(8) None
+    tree: ansi(8) None
+    parent: None None / ansi(8) None
+    file: None None / ansi(8) None
+    directory: ansi(4) None / ansi(8) None
+    exe: ansi(2) None / ansi(8) None
+    link: None None / ansi(8) None
+    pruning: ansi(8) None Italic
+    perm__: ansi(8) None
+    perm_r: ansi(8) None
+    perm_w: ansi(8) None
+    perm_x: ansi(8) None
+    owner: None None / ansi(8) None
+    group: ansi(8) None
+    dates: None None / ansi(8) None
+    selected_line: None ansi(239) / None ansi(0)
     char_match: ansi(3) None
     input: None None
-    status_error: ansi(1) ansi(51)
-    status_job: ansi(1) ansi(51)
-    status_normal: None ansi(51) / ansi(15) ansi(51)
-    status_italic: ansi(6) ansi(51) / ansi(15) ansi(51)
-    status_bold: None ansi(51) Bold / None ansi(51) Bold
-    status_code: ansi(6) ansi(51) / ansi(15) ansi(51)
-    status_ellipsis: None ansi(51) / ansi(15) ansi(51)
-    scrollbar_track: ansi(51) None / ansi(51) None
-    scrollbar_thumb: ansi(7) None / ansi(15) None
+    status_error: ansi(1) ansi(239)
+    status_job: ansi(1) ansi(239)
+    status_normal: None ansi(239) / ansi(8) ansi(239)
+    status_italic: ansi(6) ansi(239) / ansi(8) ansi(239)
+    status_bold: None ansi(239) Bold / None ansi(239) Bold
+    status_code: ansi(6) ansi(239) / ansi(8) ansi(239)
+    status_ellipsis: None ansi(239) / ansi(8) ansi(239)
+    scrollbar_track: ansi(239) None / ansi(239) None
+    scrollbar_thumb: ansi(7) None / ansi(8) None
     help_paragraph: None None
     help_bold: None None Bold
     help_italic: ansi(6) None
@@ -102,9 +102,9 @@ skin: {
     help_headers: None None Underlined
     help_table_border: ansi(239) None
     preview_title: None None
-    preview: ansi(7) ansi(0) / ansi(15) ansi(0)
+    preview: ansi(7) ansi(0) / ansi(8) ansi(0)
     preview_line_number: ansi(0) ansi(0) / ansi(0) ansi(0)
-    preview_match: ansi(3) ansi(51)
+    preview_match: ansi(3) ansi(239)
     good_to_bad_0: ansi(2)
     good_to_bad_1: ansi(2)
     good_to_bad_2: ansi(2)
@@ -122,7 +122,7 @@ skin: {
     hex_ascii_whitespace: ansi(1) None
     hex_ascii_other: ansi(1) None
     hex_non_ascii: ansi(1) None
-    staging_area_title: ansi(1) None / ansi(15) None
+    staging_area_title: ansi(1) None / ansi(8) None
     mode_command_mark: ansi(0) None
     sparse: ansi(1) None
     content_extract: ansi(3) None

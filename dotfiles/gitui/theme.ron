@@ -1,7 +1,7 @@
 (
     selected_tab: Some(Reset),
     command_fg: Some(Reset),
-    selection_bg: Some(Indexed(51)),
+    selection_bg: Some(Indexed(239)),
     selection_fg: Some(Reset),
     cmdbar_bg: Some(Reset),
     cmdbar_extra_lines_bg: Some(Reset),

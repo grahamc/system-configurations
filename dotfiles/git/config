@@ -51,7 +51,7 @@
   hyperlinks = true
   syntax-theme = ansi
   tabs = 2
-  blame-palette = 0 51
+  blame-palette = 0 239
   pager = "less -+F"
   file-decoration-style = "bright-white ul"
   file-style = "normal"

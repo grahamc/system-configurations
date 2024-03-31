@@ -101,18 +101,18 @@ set flags \
         '16' \
         'fg+:-1:regular:underline' \
         'bg+:-1' \
-        'info:15' \
+        'info:8' \
         'gutter:-1' \
         'pointer:6:bold' \
         'prompt:6:regular' \
-        'border:15' \
+        'border:8' \
         'query:-1:regular' \
         'marker:6:bold' \
-        'header:15' \
+        'header:8' \
         'spinner:yellow' \
         'hl:cyan' \
         'hl+:regular:cyan:underline' \
-        'scrollbar:15:dim' \
+        'scrollbar:8:dim' \
     ) \
     (__flag 'bind' \
         'tab:down' \

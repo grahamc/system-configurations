@@ -108,7 +108,7 @@ local my_colors_per_color_scheme = {
     [21] = "#60405a",
     [22] = "#306a7b",
     -- highlight color
-    [51] = "#292e39",
+    [239] = "#292e39",
   },
 
   ["Biggs Light Owl"] = {
@@ -138,7 +138,7 @@ local my_colors_per_color_scheme = {
     [21] = "#e99ac0",
     [22] = "#85dfd8",
     -- highlight color
-    [51] = "#F0F0F0",
+    [239] = "#F0F0F0",
   },
 }
 

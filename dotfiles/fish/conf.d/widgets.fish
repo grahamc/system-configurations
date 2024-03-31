@@ -155,11 +155,11 @@ function process-widget --description 'Manage processes'
     # would mess up the grep regex.
     if test (uname) = Linux
         set reload_command 'ps -e --format user,pid,ppid,nice=NICE,start_time,etime,command --sort=-start_time'
-        set preview_command 'ps --pid {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree --hide-threads --long --show-pids --unicode --show-parents --arguments {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp "[^└|─]+,$(echo {2})( .*|\$)" --regexp "^"'
+        set preview_command 'ps --pid {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brblack) {} (set_color normal); pstree --hide-threads --long --show-pids --unicode --show-parents --arguments {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp "[^└|─]+,$(echo {2})( .*|\$)" --regexp "^"'
         set environment_flag e
     else
         set reload_command 'ps -e -o user,pid,ppid,nice=NICE,start,etime,command'
-        set preview_command 'ps -p {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brwhite) {} (set_color normal); pstree -w -g 3 -p {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp " 0*$(echo {2}) $(echo {1}) .*" --regexp "^"'
+        set preview_command 'ps -p {2} >/dev/null; or begin; echo "There is no running process with this ID."; exit; end; echo -s (set_color brblack) {} (set_color normal); pstree -w -g 3 -p {2} | GREP_COLORS="ms=00;36" grep --color=always --extended-regexp --regexp " 0*$(echo {2}) $(echo {1}) .*" --regexp "^"'
         set environment_flag -E
     end
     # TODO: The `string match` isn't perfect: if a variable's value includes something that matches
@@ -262,7 +262,7 @@ function directory-widget --description 'Seach directories'
         FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' $dir; fd \$_args --follow --hidden --type directory --type symlink" \
         fzf-tmux-zoom \
             --prompt "$prompt" \
-            --preview 'echo -s {} \n (set_color brwhite)(string repeat --count $FZF_PREVIEW_COLUMNS ─); lsd --color always --hyperlink always {}' \
+            --preview 'echo -s {} \n (set_color brblack)(string repeat --count $FZF_PREVIEW_COLUMNS ─); lsd --color always --hyperlink always {}' \
             --preview-window '75%,~2' \
             --keep-right \
     )
