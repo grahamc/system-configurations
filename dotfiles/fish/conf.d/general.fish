@@ -154,6 +154,7 @@ end
 
 # direnv
 set --global --export DIRENV_LOG_FORMAT (set_color brblack)'[direnv] %s'(set_color normal)
+set -g direnv_fish_mode disable_arrow # trigger direnv at prompt only
 
 # watch
 abbr --add --global watch 'watch --no-title --differences --interval 0.5'

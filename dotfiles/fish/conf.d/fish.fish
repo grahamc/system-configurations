@@ -181,11 +181,15 @@ function _insert_entries_into_commandline
 
     # Don't add a space if the item is a directory and ends in a slash.
     #
-    # Use eval so expansions are done e.g. environment variables, tildes.  I pass $entry through
-    # unescape for scenarios like (bar is cursor) `echo "$HOME/|"` where the autocomplete entry
-    # will include the left quote, but not the right quote, which will cause an 'unbalanced quotes'
-    # error.
-    if eval test -d (string unescape -- $entry) && test (string sub --start -1 -- "$entry") = /
+    # Use eval so expansions are done e.g. environment variables, tildes. For scenarios like (bar is
+    # cursor) `echo "$HOME/|"` where the autocomplete entry will include the left quote, but not the
+    # right quote. I remove the left quote so `test -d` works.
+    if test (string sub --length 1 --start 1 "$entry") = '"' -a (string sub --start -1 "$entry") != '"'
+        set balanced_quote_entry (string sub --start 2 "$entry")
+    else
+        set balanced_quote_entry "$entry"
+    end
+    if eval test -d "$balanced_quote_entry" && test (string sub --start -1 -- "$entry") = /
         set space ''
     end
 
