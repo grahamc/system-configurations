@@ -212,33 +212,38 @@ function _fzf_complete
     if test $candidate_count -eq 1
         _insert_entries_into_commandline $candidates
     else if test $candidate_count -gt 1
-        set current_token (commandline --current-token --cut-at-cursor)
-        if set entries ( \
-            printf %s\n $candidates \
-            # Use a different color for the completion item description
-            | string replace --ignore-case --regex -- \
-                '(?<prefix>^'(string escape --style regex -- "$current_token")')(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' \
-                (set_color cyan)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
-            | fzf \
-                --height (math "max(6,min(10,$(math "floor($(math .35 \* $LINES))")))") \
-                --preview-window '2,border-left,right,60%' \
-                --no-header \
-                --bind 'backward-eof:abort,start:toggle-preview,ctrl-o:change-preview-window(bottom,75%,border-top|right,60%,border-left)+refresh-preview' \
-                --no-hscroll \
-                --tiebreak=begin,chunk \
-                # I set the current token as the delimiter so I can exclude from what gets searched.
-                # Since the current token is in the beginning of the string, it will be the first
-                # field index so I'll start searching from 2.
-                --delimiter '^'(string escape --style regex -- $current_token) \
-                --nth '2..' \
-                --border rounded \
-                --margin 0,2,0,2 \
-                --prompt $current_token \
-        )
-            _insert_entries_into_commandline $entries
+        set widget_height (math "max(6,min(10,$(math "floor($(math .35 \* $LINES))")))")
+
+        function _fzf_complete_widget --inherit-variable widget_height --inherit-variable candidates
+            set current_token (commandline --current-token --cut-at-cursor)
+            if set entries ( \
+                printf %s\n $candidates \
+                # Use a different color for the completion item description
+                | string replace --ignore-case --regex -- \
+                    '(?<prefix>^'(string escape --style regex -- "$current_token")')(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' \
+                    (set_color cyan)'$prefix'(set_color normal)'$item'(set_color brwhite)'$whitespace$description' \
+                | fzf \
+                    --height $widget_height \
+                    --preview-window '2,border-left,right,60%' \
+                    --no-header \
+                    --bind 'backward-eof:abort,start:toggle-preview,ctrl-o:change-preview-window(bottom,75%,border-top|right,60%,border-left)+refresh-preview' \
+                    --no-hscroll \
+                    --tiebreak=begin,chunk \
+                    # I set the current token as the delimiter so I can exclude from what gets searched.
+                    # Since the current token is in the beginning of the string, it will be the first
+                    # field index so I'll start searching from 2.
+                    --delimiter '^'(string escape --style regex -- $current_token) \
+                    --nth '2..' \
+                    --border rounded \
+                    --margin 0,2,0,2 \
+                    --prompt $current_token \
+            )
+                _insert_entries_into_commandline $entries
+            end
+            commandline -f repaint
         end
-        commandline -f repaint
-        emit bigolu_post_widget
+
+        _bigolu_pinned_prompt_open_widget _fzf_complete_widget $widget_height
     end
 end
 # Set the binding on fish_prompt since something else was overriding it during shell startup.

@@ -30,32 +30,11 @@ function _bigolu_pinned_prompt_set_line_count --on-event fish_prompt
     end
 end
 
-# TODO: Would be nice if I could avoid the blank lines that get added to the scrollback. zsh4humans
-# gets around this by moving the cursor up, for example with `tput cuu1`, by the height of the
-# widget, saving the contents of the lines that will now get overwritten by the widget with `tmux
-# capture-pane`, and restoring the contents when the widget closes:
-#
-# save screen: https://github.com/romkatv/zsh4humans/blob/5fd088565ca494ca8b8564ad4dc81fdaf13e2e9d/fn/-z4h-save-screen
-# restore screen: https://github.com/romkatv/zsh4humans/blob/5fd088565ca494ca8b8564ad4dc81fdaf13e2e9d/fn/-z4h-restore-screen
-function _bigolu_pinned_prompt_pin_after_widget_closes --on-event bigolu_post_widget
-    # TODO: This could be a little simpler if fish let `commandline -f` run synchronously. In that
-    # case I could do repaint and make the prompt empty, then move to the bottom of the screen and
-    # repaint again:
-    # https://github.com/fish-shell/fish-shell/issues/3031
-    _bigolu_clear_prompt
-    tput cup $LINES 0
-end
-
 function _bigolu_pinned_prompt_pin_after_window_resize --on-signal WINCH
-    # TODO: This doesn't work properly outside of TMUX, specifically in wezterm
-    if not set --export --query TMUX
-        return
-    end
-
     set --global total_lines (tput lines)
     # https://stackoverflow.com/questions/8343250/how-can-i-get-position-of-cursor-in-terminal
     echo -ne "\033[6n"
-    set --global current_line (string match --regex --groups-only -- '\[([0-9]+)\;' (read_until 'R'))
+    set --global current_line (string match --regex --groups-only -- '\[([0-9]+)\;' (_bigolu_pinned_prompt_read_until 'R'))
 
     if test $current_line -lt $total_lines
         _bigolu_clear_prompt
@@ -63,7 +42,37 @@ function _bigolu_pinned_prompt_pin_after_window_resize --on-signal WINCH
     end
 end
 
-function read_until --argument-names target
+function _bigolu_pinned_prompt_open_widget --argument-names widget_opener height
+    if set --export --query TMUX
+        set visible_pane (tmux capture-pane -e -p -S 0 -E -)
+        set prompt $visible_pane[(math $LINES - $bigolu_prompt_lines)..]
+        set end (math $LINES - \( 1 + $bigolu_prompt_lines \) + (math $bigolu_prompt_lines - 1))
+        set start (math $end - \( $height - 0 \) - (math $bigolu_prompt_lines - 1) + 1)
+        set lines_to_restore $visible_pane[$start..(math $end + 1)]
+        tput cuu (math $bigolu_prompt_lines + $height)
+        echo -ne "\r"
+        tput ed
+        string join -- \n $prompt
+    end
+
+    eval $widget_opener
+
+    if set --export --query TMUX
+        tput cuu (math $bigolu_prompt_lines + 1)
+        echo -ne "\r"
+        tput ed
+        string join -- \n $lines_to_restore
+    else
+        # TODO: This could be a little simpler if fish let `commandline -f` run synchronously. In that
+        # case I could do repaint and make the prompt empty, then move to the bottom of the screen and
+        # repaint again:
+        # https://github.com/fish-shell/fish-shell/issues/3031
+        _bigolu_clear_prompt
+        tput cup $LINES 0
+    end
+end
+
+function _bigolu_pinned_prompt_read_until --argument-names target
     set buffer
     set char
     while test "$char" != "$target"'.'
@@ -76,5 +85,6 @@ end
 
 function _bigolu_clear_prompt
     tput cuu (math $bigolu_prompt_lines - 1)
-    string repeat --count $bigolu_prompt_lines (string repeat --count $COLUMNS ' ')
+    echo -ne "\r"
+    tput ed
 end
