@@ -96,6 +96,7 @@ in {
           "ripgrep/ripgreprc".source = "ripgrep/ripgreprc";
           "ssh/bootstrap.sh".source = "ssh/bootstrap.sh";
           "broot/conf.hjson".source = "broot/conf.hjson";
+          "broot/explorer-conf.hjson".source = "broot/explorer-conf.hjson";
         }
         // optionalAttrs isLinux {
           "pipr/pipr.toml".source = "pipr/pipr.toml";

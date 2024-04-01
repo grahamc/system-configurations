@@ -1,5 +1,8 @@
 {pkgs, ...}: {
   system = {
+    # TODO: This option is marked internal
+    nvram.variables."AutoBoot" = "%00";
+
     keyboard = {
       enableKeyMapping = true;
       remapCapsLockToControl = true;

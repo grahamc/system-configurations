@@ -9,6 +9,7 @@
     resurrect
     mode-indicator
     tmux-suspend
+    sidebar
 
     # continuum must be the last plugin listed:
     # https://github.com/tmux-plugins/tmux-continuum#known-issues

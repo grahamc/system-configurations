@@ -160,37 +160,40 @@ abbr --add --global vw variable-widget
 # Use tab to select an autocomplete entry with fzf
 function _insert_entries_into_commandline
     # Remove the tab and description, leaving only the completion items.
-    set entries "$(string split -f1 -- \t $argv)"
+    set entries $(string split -f1 -- \t $argv)
     set entry (string join -- ' ' $entries)
 
     set space ' '
 
-    # Don't add a space if the entry is an abbreviation.
-    #
-    # TODO: This assumes that an abbreviation can only be expanded if it's the first token in
-    # the commandline.  However, with the flag '--position anywhere', abbreviations can be
-    # expanded anywhere in the commandline so I should check for that flag.
-    #
-    # We determine if the entry will be the first token by checking for an empty commandline.
-    # We trim spaces because spaces don't count as tokens.
-    set trimmed_commandline (string trim "$(commandline)")
-    if abbr --query -- "$entry"
-        and test -z "$trimmed_commandline"
-        set space ''
-    end
+    # None of this applies if there are mutiple entries
+    if test (count $entries) -eq 1
+        # Don't add a space if the entry is an abbreviation.
+        #
+        # TODO: This assumes that an abbreviation can only be expanded if it's the first token in
+        # the commandline.  However, with the flag '--position anywhere', abbreviations can be
+        # expanded anywhere in the commandline so I should check for that flag.
+        #
+        # We determine if the entry will be the first token by checking for an empty commandline.
+        # We trim spaces because spaces don't count as tokens.
+        set trimmed_commandline (string trim "$(commandline)")
+        if abbr --query -- "$entry"
+            and test -z "$trimmed_commandline"
+            set space ''
+        end
 
-    # Don't add a space if the item is a directory and ends in a slash.
-    #
-    # Use eval so expansions are done e.g. environment variables, tildes. For scenarios like (bar is
-    # cursor) `echo "$HOME/|"` where the autocomplete entry will include the left quote, but not the
-    # right quote. I remove the left quote so `test -d` works.
-    if test (string sub --length 1 --start 1 "$entry") = '"' -a (string sub --start -1 "$entry") != '"'
-        set balanced_quote_entry (string sub --start 2 "$entry")
-    else
-        set balanced_quote_entry "$entry"
-    end
-    if eval test -d "$balanced_quote_entry" && test (string sub --start -1 -- "$entry") = /
-        set space ''
+        # Don't add a space if the item is a directory and ends in a slash.
+        #
+        # Use eval so expansions are done e.g. environment variables, tildes. For scenarios like (bar is
+        # cursor) `echo "$HOME/|"` where the autocomplete entry will include the left quote, but not the
+        # right quote. I remove the left quote so `test -d` works.
+        if test (string sub --length 1 --start 1 -- "$entry") = '"' -a (string sub --start -1 -- "$entry") != '"'
+            set balanced_quote_entry (string sub --start 2 -- "$entry")
+        else
+            set balanced_quote_entry "$entry"
+        end
+        if eval test -d "$balanced_quote_entry" && test (string sub --start -1 -- "$entry") = /
+            set space ''
+        end
     end
 
     # retain the part of the token after the cursor. use case: autocompleting inside quotes
@@ -241,6 +244,8 @@ function _fzf_complete
                     --border rounded \
                     --margin 0,2,0,2 \
                     --prompt $current_token \
+                    --border-label " $(set_color magenta)ctrl+h$(set_color normal) toggle help " \
+                    --border-label-pos '-3:bottom' \
             )
                 _insert_entries_into_commandline $entries
             end
@@ -260,15 +265,54 @@ end
 mybind -k btab complete
 
 function _ls-after-directory-change --on-variable PWD
-    # These directories have too many files to always call ls on
-    #
-    # normalize to remove trailing slash
-    set blacklist /nix/store /tmp (path normalize "$TMPDIR")
-    if contains "$PWD" $blacklist
+    # Nix store freezes broot
+    if test "$PWD" = /nix/store
         return
     end
+    # TODO: broot only exits with a non-zero code if the server socket doesn't exist, but I would
+    # like it to also exit with a non-zero code if the socket exists and nothing is listening on the
+    # other end. It does however, print an error message in both cases so instead I'm checking if
+    # anything was written to stderr.
+    if test -n "$(br --send "$TMUX_PANE" 2>&1 1>/dev/null)"
+        # These directories have too many files to always call ls on
+        #
+        # normalize to remove trailing slash
+        set blacklist /nix/store /tmp (path normalize "$TMPDIR")
+        if contains "$PWD" $blacklist
+            return
+        end
 
-    ls
+        ls
+    else
+        set xdg_data (test -n "$XDG_DATA_HOME" && echo "$XDG_DATA_HOME" || echo "$HOME/.local/share")
+        set size (grep "^$PWD"\t "$xdg_data/tmux/sidebar/directory_widths.txt" | cut -f2)
+        if test -n "$size"
+            set value (tmux show-option -gvq -t "$TMUX_PANE" '@-sidebar-registered-pane-#{pane_id}')
+            if test -n "$value"
+                set pane (string match --regex --groups-only -- '^(%[0-9]+)' "$value")
+                if tmux display-message -p -t "$pane" >/dev/null
+                    set --global _bigolu_no_winch
+                    tmux resize-pane -t "$pane" -x "$size"
+                end
+            end
+        end
+    end
+end
+function _bigolu_on_broot_dir_change --on-variable _broot_dir
+    # When we change the directory in broot, broot will be the active pane so we need to explictly
+    # set the target pane to that of this fish process. We set `-q` so tmux doesn't consider it an
+    # error if the option can't be found.
+    set value (tmux show-option -gvq -t "$TMUX_PANE" '@-sidebar-registered-pane-#{pane_id}')
+    if test -n "$value"
+        set pane (string match --regex --groups-only -- '^(%[0-9]+)' "$value")
+        if tmux display-message -p -t "$pane" >/dev/null
+            set parts (string split ':' "$_broot_dir")
+            if test "$pane" = "$parts[1]"
+                cd "$parts[2]"
+                commandline -f repaint
+            end
+        end
+    end
 end
 
 # Reload all fish instances
@@ -403,7 +447,7 @@ function __edit_commandline
     commandline "$(cat $temp)"
     commandline --cursor "$(cat $cursor_file)"
 end
-mybind \ee __edit_commandline
+mybind \eE __edit_commandline
 
 # fish loads builtin configs after user configs so I have to wait for the builtin binds to be
 # defined. This may change though:

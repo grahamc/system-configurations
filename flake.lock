@@ -606,6 +606,7 @@
         "tmux-plugin-continuum": "tmux-plugin-continuum",
         "tmux-plugin-mode-indicator": "tmux-plugin-mode-indicator",
         "tmux-plugin-resurrect": "tmux-plugin-resurrect",
+        "tmux-plugin-sidebar": "tmux-plugin-sidebar",
         "tmux-plugin-tmux-suspend": "tmux-plugin-tmux-suspend",
         "vim-plugin-CamelCaseMotion": "vim-plugin-CamelCaseMotion",
         "vim-plugin-LuaSnip": "vim-plugin-LuaSnip",
@@ -882,6 +883,22 @@
       "original": {
         "owner": "tmux-plugins",
         "repo": "tmux-resurrect",
+        "type": "github"
+      }
+    },
+    "tmux-plugin-sidebar": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1670489908,
+        "narHash": "sha256-5+ISvoXXYDDfzSoPBO6v6Wt7IWsRVb9DcPgnO02rYd4=",
+        "owner": "tmux-plugins",
+        "repo": "tmux-sidebar",
+        "rev": "a41d72c019093fd6a1216b044e111dd300684f1a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tmux-plugins",
+        "repo": "tmux-sidebar",
         "type": "github"
       }
     },

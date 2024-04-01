@@ -100,7 +100,10 @@ in {
       lib.hm.dag.entryAfter
       ["writeBoundary"]
       ''
-        ${pkgs.neovim}/bin/nvim --clean --headless -c 'lua vim.loader.reset()' -c 'quit'
+        # TODO: This isn't working anymore
+        # ${pkgs.neovim}/bin/nvim --clean --headless -c 'lua vim.loader.reset()' -c 'quit'
+        dir="$HOME/.cache/nvim/luac"
+        [ -d "$dir" ] && rm -f "$dir"/*
       '';
 
     file = {

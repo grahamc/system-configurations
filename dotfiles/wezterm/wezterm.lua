@@ -46,9 +46,6 @@ config.window_padding = {
   top = "0.5cell",
   bottom = "0.5cell",
 }
-
--- TODO: wezterm can't find the right terminfo when it's running through flatpak. this should work
--- for now
 config.term = "wezterm"
 
 -- font
@@ -71,12 +68,12 @@ config.font_rules = {
     font = font_with_icon_fallbacks({ family = "Monaspace Radon", weight = "Bold" }),
   },
 }
-config.underline_position = "700%"
+config.underline_position = "600%"
 config.font_size = 11.3
 if is_mac then
   config.font_size = 14
 end
-config.line_height = 1.5
+config.line_height = 1.4
 config.underline_thickness = "150%"
 
 -- SYNC: terminal-color-palettes

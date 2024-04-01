@@ -141,6 +141,10 @@
       url = "github:tmux-plugins/tmux-continuum";
       flake = false;
     };
+    tmux-plugin-sidebar = {
+      url = "github:tmux-plugins/tmux-sidebar";
+      flake = false;
+    };
 
     # fish
     ########################################

@@ -1,0 +1,12 @@
+# TODO: Need to map double-click too:
+# https://github.com/Canop/broot/issues/857
+verbs: [
+    {
+        key: enter
+        external: fish -c "set --universal _broot_dir "$TMUX_PANE:$PWD""
+        set_working_dir: true
+        invocation: select
+        leave_broot: false
+        switch_terminal: false
+    }
+]

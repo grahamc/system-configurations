@@ -1,5 +1,5 @@
-# Show hidden files
-default_flags: h
+# Show hidden and git-ignored files
+default_flags: hi
 
 # Mark the selected line with a triangle
 show_selection_mark: true
@@ -19,6 +19,14 @@ modal: true
 "search-modes": {
     /: fuzzy path
     r/: regex path
+}
+
+special_paths: {
+  "*/.direnv": { "list": "never" }
+  "*/.mypy_cache": { "list": "never" }
+  "*/.git": { "show": "never" }
+  # Nix store freezes broot
+  "/nix/store": { "list": "never" }
 }
 
 verbs: [
@@ -93,8 +101,8 @@ skin: {
     status_bold: None ansi(239) Bold / None ansi(239) Bold
     status_code: ansi(6) ansi(239) / ansi(8) ansi(239)
     status_ellipsis: None ansi(239) / ansi(8) ansi(239)
-    scrollbar_track: ansi(239) None / ansi(239) None
-    scrollbar_thumb: ansi(7) None / ansi(8) None
+    scrollbar_track: ansi(0) None / ansi(0) None
+    scrollbar_thumb: ansi(8) None / ansi(239) None
     help_paragraph: None None
     help_bold: None None Bold
     help_italic: ansi(6) None
