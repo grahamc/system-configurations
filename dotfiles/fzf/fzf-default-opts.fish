@@ -18,9 +18,9 @@ set --global _bigolu_help_preview_indicator $_bigolu_preview_indicators[1]
 set --global _bigolu_selected_preview_indicator $_bigolu_preview_indicators[2]
 function _bigolu_remove_preview_indicators --argument-names str
     for indicator in $_bigolu_preview_indicators
-        set str (string replace -- $indicator "" $str)
+        set str (string replace -- "$indicator" "" "$str")
     end
-    echo -n $str
+    echo -n "$str"
 end
 
 # TODO: I use the indicator to tell which state we are in, but if fzf adds a variable for the
@@ -28,11 +28,11 @@ end
 # tracking.
 function _bigolu_track_toggle
     set indicator "  "
-    set new $FZF_PROMPT
-    if set new (string replace -- $indicator "" $new)
+    set new "$FZF_PROMPT"
+    if set new (string replace -- "$indicator" "" "$new")
         set bind "rebind(change)"
     else
-        set new $indicator$FZF_PROMPT
+        set new "$indicator$FZF_PROMPT"
         set bind "unbind(change)"
     end
     echo "toggle-track+change-prompt($new)+$bind"
@@ -41,12 +41,12 @@ end
 # TODO: I use the indicator to tell which state we are in, but if fzf adds a variable for the
 # content of the preview label, I could just use that.
 function _bigolu_help_toggle
-    set new $FZF_PROMPT
-    if set new (string replace -- $_bigolu_help_preview_indicator "" $new)
+    set new "$FZF_PROMPT"
+    if set new (string replace -- "$_bigolu_help_preview_indicator" "" "$new")
         set action refresh-preview
     else
-        set new (_bigolu_remove_preview_indicators $new)
-        set new $_bigolu_help_preview_indicator$new
+        set new (_bigolu_remove_preview_indicators "$new")
+        set new "$_bigolu_help_preview_indicator$new"
         set action "preview(fzf-help-preview)+preview-top"
     end
     echo "$action+change-prompt($new)"
@@ -55,12 +55,12 @@ end
 # TODO: I use the indicator to tell which state we are in, but if fzf adds a variable for the
 # content of the preview label, I could just use that.
 function _bigolu_selected_toggle
-    set new $FZF_PROMPT
-    if set new (string replace -- $_bigolu_selected_preview_indicator "" $new)
+    set new "$FZF_PROMPT"
+    if set new (string replace -- "$_bigolu_selected_preview_indicator" "" "$new")
         set action refresh-preview
     else
-        set new (_bigolu_remove_preview_indicators $new)
-        set new $_bigolu_selected_preview_indicator$new
+        set new (_bigolu_remove_preview_indicators "$new")
+        set new "$_bigolu_selected_preview_indicator$new"
         set action "preview(printf %s\n {+})+preview-top"
     end
     echo "$action+change-prompt($new)"

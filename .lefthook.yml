@@ -14,24 +14,24 @@ pre-commit:
     codegen-readme:
       priority: 1
       glob: "README.md"
-      run: direnv exec "$PWD" just codegen-readme
+      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just codegen-readme
     codegen-neovim:
       priority: 1
       glob: "*neovim/lua/*.lua"
-      run: direnv exec "$PWD" just codegen-neovim
+      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just codegen-neovim
     format:
       priority: 2
-      run: direnv exec "$PWD" just format
+      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just format
 
 post-merge:
   scripts:
     "post-merge.bash":
-      runner: direnv exec "$PWD" bash
+      runner: DIRENV_LOG_FORMAT='' direnv exec "$PWD" bash
       interactive: true
 
 post-rewrite:
   scripts:
     "post-rewrite.bash":
-      runner: direnv exec "$PWD" bash
+      runner: DIRENV_LOG_FORMAT='' direnv exec "$PWD" bash
       interactive: true
 

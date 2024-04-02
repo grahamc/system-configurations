@@ -89,4 +89,4 @@ function _bigolu_tmux_command_output_widget
     tmux-last-command-output
     commandline -f repaint
 end
-mybind --no-focus \co '_bigolu_pinned_prompt_open_widget _bigolu_tmux_command_output_widget 7'
+mybind --no-focus \co _bigolu_tmux_command_output_widget

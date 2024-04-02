@@ -369,10 +369,6 @@
       url = "github:f-person/git-blame.nvim";
       flake = false;
     };
-    vim-plugin-vim-just = {
-      url = "github:NoahTheDuke/vim-just";
-      flake = false;
-    };
     vim-plugin-telescope-smart-history-nvim = {
       url = "github:nvim-telescope/telescope-smart-history.nvim";
       flake = false;

@@ -41,20 +41,12 @@ preview-switch:
 preview-upgrade:
     hostctl-preview-upgrade
 
-# Format, lint, and fix all source code
-format:
-    treefmt
-
 # Rerun the on change actions that run after a git merge or rebase
 run-on-change-actions:
     bash ./.git-hook-assets/on-change.bash
 
-# Install git hooks
-install-git-hooks:
-    lefthook install --force
-
-# Run all tests
-test:
+# Run everything that would be run in CI
+ci:
     nix develop --ignore-environment --keep BWS_ACCESS_TOKEN --keep HOME .# --command bash -- ./tests.bash
 
 get-secrets:
@@ -101,7 +93,18 @@ get-secrets:
 gomod2nix:
     cd ./flake-modules/bundler/gozip && nix develop github:nix-community/gomod2nix --command gomod2nix generate
 
+# Format, lint, and fix all source code
+[private]
+format:
+    treefmt
+
+# Install git hooks
+[private]
+install-git-hooks:
+    lefthook install --force
+
 # TODO: Automate this with rsyslog
+[private]
 cleanup:
     rm -f ~/.local/state/nvim/*.log
     rm -f ~/.local/state/nvim/undo/*
@@ -153,7 +156,7 @@ pull:
     else
         set warning ''
     end
-    read --prompt-str "Would you like to update$warning? (y/n): " --nchars 1 response
+    read --prompt-str "Would you like to pull$warning? (y/n): " --nchars 1 response
     if test $response = 'y'
         git pull
     end

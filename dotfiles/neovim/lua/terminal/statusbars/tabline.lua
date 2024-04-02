@@ -28,10 +28,20 @@ Plug("akinsho/bufferline.nvim", {
       local is_last_window = window_count == 1
         or (window_count == 2 and require("nvim-tree.api").tree.is_visible())
       if tab_count == 1 and is_last_window and buffer_count == 1 then
+        local is_linked_to_file = #vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()) > 0
         -- Using `quitall` instead of quit so if nvim-tree is open it closes both windows.
-        vim.cmd([[
-          confirm qall
-        ]])
+        --
+        -- Only `confirm` if the buffer is linked to a file
+        if is_linked_to_file then
+          vim.cmd([[
+            confirm qall
+          ]])
+        else
+          -- add '!' to ignore unsaved changes
+          vim.cmd([[
+            qall!
+          ]])
+        end
         return
       end
 

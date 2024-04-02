@@ -80,7 +80,7 @@ class LineWatcher:
         delta = time.monotonic() - self.start_time
         if delta < 1:
             return
-        print(_italicize(_dim(f" {_format_timespan(delta)}")))
+        print(_italicize(_dim(f"  {_format_timespan(delta)}")))
 
 
 def register_hook():

@@ -17,16 +17,19 @@ pane_contents=$(tmux capture-pane -e -p -S '-' -J)
 prompt_pattern="$(printf '\u00A0')"
 last_command_output=$(echo "$pane_contents" | tac | sed -e "0,/$prompt_pattern/d" | sed -e "0,/$prompt_pattern/d" | sed "/$prompt_pattern/,\$d" | tac)
 
-if ! choice="$(printf "%s\n" fzf nvim | fzf --prompt 'command output viewer: ' --no-preview --min-height 2 --height 2 --margin 0,2,0,2 --border rounded)"; then
+if ! choice="$(printf "%s\n" 'fuzzy search' page edit | fzf --prompt 'command output viewer: ' --no-preview --min-height 2 --height 2 --margin 0,2,0,2 --border rounded)"; then
   exit
 fi
 
 case "$choice" in
-fzf)
+'fuzzy search')
   echo "$last_command_output" | fzf --preview-window 35%
   ;;
-nvim)
+page)
   echo "$last_command_output" | page
+  ;;
+edit)
+  echo "$last_command_output" | sed 's/'$'\e''\[\(;*[0-9][0-9]*\)*[fhlmpsuABCDEFGHJKST]//g' | nvim -
   ;;
 *)
   echo 'Error: unknown choice' 1>&2

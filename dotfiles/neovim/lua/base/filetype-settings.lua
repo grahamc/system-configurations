@@ -15,9 +15,6 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
   end,
 })
 
--- For filetype detection
-Plug("NoahTheDuke/vim-just")
-
 -- For indentexpr
 Plug("LnL7/vim-nix")
 
