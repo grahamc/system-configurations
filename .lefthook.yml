@@ -8,6 +8,8 @@ colors:
   red: 1
   yellow: 3
 
+output: false
+
 pre-commit:
   piped: true
   commands:

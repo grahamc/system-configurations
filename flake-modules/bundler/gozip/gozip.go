@@ -696,10 +696,13 @@ func HasFilepathPrefix(path, prefix string) bool {
 }
 
 func IsRunningOnUsb() bool {
-	// The go module 'gousbdrivedetector' needs the `udevadm` CLI
-	path, err := exec.LookPath("udevadm")
-	if err != nil || path == "" {
-		return false
+	if runtime.GOOS == "linux" {
+		// On Linux, the go module 'gousbdrivedetector' needs the `udevadm` CLI and it may not be there
+		// so we'll check first.
+		path, err := exec.LookPath("udevadm")
+		if err != nil || path == "" {
+			return false
+		}
 	}
 
 	usbDevicePaths, err := usbdrivedetector.Detect()
