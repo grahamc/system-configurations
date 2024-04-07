@@ -13,13 +13,7 @@ help:
 # So I can call reload from the smart plug directory and have it read the .firstaide.toml in there
 [no-cd]
 reload:
-    #!/usr/bin/env bash
-    set -o errexit
-    set -o nounset
-    set -o pipefail
-
-    firstaide clean
-    firstaide build
+    nix-direnv-reload
 
 # Switch to a new generation
 switch:
