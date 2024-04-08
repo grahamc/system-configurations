@@ -78,14 +78,13 @@ set flags \
     (__flag 'prompt' '  ') \
     (__flag 'tabstop' '2') \
     (__flag 'info' 'inline-right') \
-    (__flag 'separator' '━') \
+    (__flag 'separator' '─') \
     (__flag 'pointer' '>') \
     (__flag 'marker' '+') \
     (__flag 'history' "$xdg_data/fzf/fzf-history.txt") \
     (__flag 'preview' 'printf %s\n {+}') \
     (__flag 'preview-window' 'wrap' 'bottom' '40%') \
     (__flag 'multi') \
-    (__flag 'no-separator') \
     (__flag 'scrollbar' '🮉') \
     (__flag 'preview-label' "$_bigolu_fzf_help_text") \
     (__flag 'preview-label-pos' '-3:bottom') \
@@ -119,7 +118,7 @@ set flags \
         'alt-enter:toggle' \
         'f7:prev-history' \
         'f8:next-history' \
-        'ctrl-p:toggle-preview' \
+        'ctrl-p:toggle-preview+transform(_bigolu_fix_label)' \
         'alt-a:toggle-all' \
         'ctrl-t:transform(_bigolu_track_toggle)' \
         'ctrl-h:transform(_bigolu_help_toggle)' \

@@ -227,7 +227,7 @@ function _fzf_complete
                 '(?<prefix>^'(string escape --style regex -- "$current_token")')(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' \
                 (set_color cyan)'$prefix'(set_color normal)'$item'(set_color brblack)'$whitespace$description' \
             | fzf \
-                --height (math "max(6,min(10,$(math "floor($(math .35 \* $LINES))")))") \
+                --height '~'(math "max(6,min(10,$(math "floor($(math .35 \* $LINES))")))") \
                 --preview-window '2,border-left,right,60%' \
                 --no-header \
                 --bind 'backward-eof:abort,start:toggle-preview' \
@@ -243,6 +243,7 @@ function _fzf_complete
                 --prompt $current_token \
                 --border-label " $(set_color magenta)ctrl+h$(set_color normal) toggle help " \
                 --border-label-pos '-3:bottom' \
+                --no-separator \
         )
             _insert_entries_into_commandline $entries
         end

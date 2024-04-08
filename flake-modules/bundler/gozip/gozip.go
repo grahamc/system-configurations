@@ -75,10 +75,14 @@ func NextStep(count int, name string, options ...progressbar.Option) *progressba
 		progressbar.OptionSetWidth(20),
 		progressbar.OptionSetRenderBlankState(true),
 		progressbar.OptionSetWriter(writer),
+		progressbar.OptionSetDescription(description),
 		// the progress bar was flickering a lot when this wasn't set:
 		// https://github.com/schollz/progressbar/issues/87
 		progressbar.OptionUseANSICodes(true),
-		progressbar.OptionSetDescription(description),
+		// Since the ANSI way of clearing the line isn't working, if the progress bar gets larger
+		// and then smaller, the larger part won't get cleared. This can happen when predicting time
+		// remaining since the estimate can get smaller so I'm disabling this.
+		progressbar.OptionSetPredictTime(false),
 	}
 	currentBar = progressbar.NewOptions(count, append(defaultOptions, options...)...)
 
@@ -90,7 +94,7 @@ func NextStep(count int, name string, options ...progressbar.Option) *progressba
 }
 
 // For my progress bars I set the option 'UseANSICodes' so it doesn't flicker, but the ANSI way
-// opf clearing the line doesn't seem to be working so below is the code used to clear the line if
+// of clearing the line doesn't seem to be working so below is the code used to clear the line if
 // 'UseANSICodes' isn't enabled:
 // https://github.com/schollz/progressbar/blob/304f5f42a0a10315cae471d8530e13b6c1bdc4fe/progressbar.go#L1007
 func writeString(w io.Writer, str string) {

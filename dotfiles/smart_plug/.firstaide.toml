@@ -1,3 +1,0 @@
-cache_dir = "./.firstaide/cache"
-build_exe = "./.firstaide/build_exe.bash"
-watch_exe = "./.firstaide/watch_exe.bash"
