@@ -3,6 +3,8 @@
 
 set --local xdg_data (test -n "$XDG_DATA_HOME" && echo "$XDG_DATA_HOME" || echo "$HOME/.local/share")
 
+set _bigolu_fzf_help_text " $(set_color magenta)ctrl+h$(set_color normal) toggle help "
+
 function __flag
     set name $argv[1]
     set values $argv[2..]
@@ -11,16 +13,6 @@ function __flag
     else
         printf '--%s' $name
     end
-end
-
-set --global _bigolu_preview_indicators "  " "+  "
-set --global _bigolu_help_preview_indicator $_bigolu_preview_indicators[1]
-set --global _bigolu_selected_preview_indicator $_bigolu_preview_indicators[2]
-function _bigolu_remove_preview_indicators --argument-names str
-    for indicator in $_bigolu_preview_indicators
-        set str (string replace -- "$indicator" "" "$str")
-    end
-    echo -n "$str"
 end
 
 # TODO: I use the indicator to tell which state we are in, but if fzf adds a variable for the
@@ -38,40 +30,41 @@ function _bigolu_track_toggle
     echo "toggle-track+change-prompt($new)+$bind"
 end
 
-# TODO: I use the indicator to tell which state we are in, but if fzf adds a variable for the
-# content of the preview label, I could just use that.
-function _bigolu_help_toggle
-    set new "$FZF_PROMPT"
-    if set new (string replace -- "$_bigolu_help_preview_indicator" "" "$new")
-        set action refresh-preview
+function _bigolu_fzf_preview_toggle --argument-names name keybind preview
+    if test -n "$FZF_BORDER_LABEL"
+        set label "$FZF_BORDER_LABEL"
+        set action change-border-label
     else
-        set new (_bigolu_remove_preview_indicators "$new")
-        set new "$_bigolu_help_preview_indicator$new"
-        set action "preview(fzf-help-preview)+preview-top"
+        set label "$FZF_PREVIEW_LABEL"
+        set action change-preview-label
     end
-    echo "$action+change-prompt($new)"
+
+    if not string match --quiet --regex -- ".*$name.*" "$label"
+        echo "preview($preview)+preview-top+$action@ $name ($(set_color magenta)$keybind$(set_color normal) to go back) @"
+    else
+        echo "refresh-preview+$action@$_bigolu_fzf_help_text@"
+    end
 end
 
-# TODO: I use the indicator to tell which state we are in, but if fzf adds a variable for the
-# content of the preview label, I could just use that.
 function _bigolu_selected_toggle
-    set new "$FZF_PROMPT"
-    if set new (string replace -- "$_bigolu_selected_preview_indicator" "" "$new")
-        set action refresh-preview
-    else
-        set new (_bigolu_remove_preview_indicators "$new")
-        set new "$_bigolu_selected_preview_indicator$new"
-        set action "preview(printf %s\n {+})+preview-top"
-    end
-    echo "$action+change-prompt($new)"
+    _bigolu_fzf_preview_toggle 'selected items' 'ctrl+s' 'printf %s\n {+}'
+end
+
+function _bigolu_help_toggle
+    _bigolu_fzf_preview_toggle 'help page' 'ctrl+h' fzf-help-preview
 end
 
 # Certain actions can cause fzf to leave the help/selected-entries preview.  After executing one of
-# those actions, we need to see the prompt back to the original.
+# those actions, we need to see the label back to the original.
 #
 # TODO: I should also run this on the 'focus' event, but it makes selecting items very slow.
-function _bigolu_fix_prompt
-    echo "change-prompt($(_bigolu_remove_preview_indicators $FZF_PROMPT))"
+function _bigolu_fix_label
+    if test -n "$FZF_BORDER_LABEL"
+        set action change-border-label
+    else
+        set action change-preview-label
+    end
+    echo "$action($_bigolu_fzf_help_text)"
 end
 
 set flags \
@@ -84,7 +77,8 @@ set flags \
     (__flag 'min-height' '4') \
     (__flag 'prompt' '  ') \
     (__flag 'tabstop' '2') \
-    (__flag 'info' 'inline') \
+    (__flag 'info' 'inline-right') \
+    (__flag 'separator' '━') \
     (__flag 'pointer' '>') \
     (__flag 'marker' '+') \
     (__flag 'history' "$xdg_data/fzf/fzf-history.txt") \
@@ -93,7 +87,7 @@ set flags \
     (__flag 'multi') \
     (__flag 'no-separator') \
     (__flag 'scrollbar' '🮉') \
-    (__flag 'preview-label' " $(set_color magenta)ctrl+h$(set_color normal) toggle help ") \
+    (__flag 'preview-label' "$_bigolu_fzf_help_text") \
     (__flag 'preview-label-pos' '-3:bottom') \
     (__flag 'ansi') \
     (__flag 'tabstop' '2') \
@@ -130,9 +124,9 @@ set flags \
         'ctrl-t:transform(_bigolu_track_toggle)' \
         'ctrl-h:transform(_bigolu_help_toggle)' \
         'ctrl-s:transform(_bigolu_selected_toggle)' \
-        'ctrl-r:refresh-preview+transform(_bigolu_fix_prompt)' \
-        'resize:refresh-preview+transform(_bigolu_fix_prompt)' \
-        'ctrl-o:change-preview-window(right,60%|bottom,75%)+refresh-preview+transform(_bigolu_fix_prompt)' \
+        'ctrl-r:refresh-preview+transform(_bigolu_fix_label)' \
+        'resize:refresh-preview+transform(_bigolu_fix_label)' \
+        'ctrl-o:change-preview-window(right,60%|bottom,75%)+refresh-preview+transform(_bigolu_fix_label)' \
     )
 
 set --export FZF_DEFAULT_OPTS (string join -- ' ' $flags)
