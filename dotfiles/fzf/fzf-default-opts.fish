@@ -3,7 +3,7 @@
 
 set --local xdg_data (test -n "$XDG_DATA_HOME" && echo "$XDG_DATA_HOME" || echo "$HOME/.local/share")
 
-set _bigolu_fzf_help_text " $(set_color magenta)ctrl+h$(set_color normal) toggle help "
+set _bigolu_fzf_help_text " $(set_color magenta)ctrl+h$(set_color normal) show help page "
 
 function __flag
     set name $argv[1]
@@ -39,7 +39,7 @@ function _bigolu_fzf_preview_toggle --argument-names name keybind preview
         set action change-preview-label
     end
 
-    if not string match --quiet --regex -- ".*$name.*" "$label"
+    if not string match --quiet --regex -- ".*$name.*go back.*" "$label"
         echo "preview($preview)+preview-top+$action@ $name ($(set_color magenta)$keybind$(set_color normal) to go back) @"
     else
         echo "refresh-preview+$action@$_bigolu_fzf_help_text@"

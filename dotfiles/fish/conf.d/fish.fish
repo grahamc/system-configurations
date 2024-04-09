@@ -241,7 +241,7 @@ function _fzf_complete
                 --border rounded \
                 --margin 0,2,0,2 \
                 --prompt $current_token \
-                --border-label " $(set_color magenta)ctrl+h$(set_color normal) toggle help " \
+                --border-label " $(set_color magenta)ctrl+h$(set_color normal) show help page " \
                 --border-label-pos '-3:bottom' \
                 --no-separator \
         )
