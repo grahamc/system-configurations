@@ -14,6 +14,7 @@ vim.g.mapleader = " "
 -- has something to do with it. In the meantime, I'll use the extension below which applies the
 -- .envrc on VimEnter and DirChanged events. I should report this to direnv-vscode.
 Plug("direnv/direnv.vim")
+vim.g.direnv_silent_load = 1
 
 -- TODO: When this is enabled and I press `jk` in between to parentheses, while in insert mode,
 -- another pair of parens would get added. Other kinds of text would get inserted too.
