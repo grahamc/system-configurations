@@ -199,4 +199,7 @@ end)
 vim.keymap.set({ "n" }, "ght", function()
   vim.fn.VSCodeNotify("references-view.showTypeHierarchy")
 end)
+vim.keymap.set({ "n" }, "gl", function()
+  vim.fn.VSCodeNotify("codelens.showLensesInCurrentLine")
+end)
 -- }}}

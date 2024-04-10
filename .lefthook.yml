@@ -21,6 +21,10 @@ pre-commit:
       priority: 1
       glob: "*neovim/lua/*.lua"
       run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just codegen-neovim
+    go-mod-tidy:
+      priority: 1
+      glob: "*gozip/*"
+      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just go-mod-tidy
     format:
       priority: 2
       run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just format

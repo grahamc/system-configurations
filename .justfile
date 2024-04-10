@@ -87,6 +87,10 @@ get-secrets:
 gomod2nix:
     cd ./flake-modules/bundler/gozip && nix develop github:nix-community/gomod2nix --command gomod2nix generate
 
+[private]
+go-mod-tidy:
+    cd ./flake-modules/bundler/gozip && go mod tidy
+
 # Format, lint, and fix all source code
 [private]
 format:
