@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://json.schemastore.org/lefthook.json
+
 # By default lefthook uses true colors (e.g. #FFFFFF), but they may not be readable depending on
 # the terminal background color. Instead I'm using ANSI colors since they come from the terminal's
 # color palette.

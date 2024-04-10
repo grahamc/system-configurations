@@ -58,3 +58,4 @@ jobs:
           file_glob: true
           overwrite: true
           repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: v0.0.1

@@ -5,6 +5,14 @@ if vim.g.vscode == nil then
   return
 end
 
+vim.o.hlsearch = false
+vim.keymap.set(
+  "n",
+  [[\/]],
+  "<Cmd>set hlsearch!<CR>",
+  { silent = true, desc = "Toggle search highlight" }
+)
+
 -- TODO: I have this set in init.lua, but it won't work in vscode unless I set it here.
 vim.g.mapleader = " "
 
