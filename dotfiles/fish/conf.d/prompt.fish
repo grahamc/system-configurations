@@ -26,7 +26,7 @@ function fish_prompt --description 'Print the prompt'
     # transient prompt
     if set --query TRANSIENT
         set --erase TRANSIENT
-        printf $separator\n(set_color brblack)''(set_color --reverse brblack)' '(path basename (prompt_pwd))'  '(date +"%T")'  '$_color_normal
+        printf $separator\n(set_color brblack)''(set_color --reverse brblack)' '(path basename (prompt_pwd))'  '(date +"%T")' '$_color_normal
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY

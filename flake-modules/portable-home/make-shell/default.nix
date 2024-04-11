@@ -13,8 +13,8 @@
     usePython = false;
   };
 
-  # "C.UTF-8/UTF-8" is the locacle the perl said wasn't supported so I added it here.
-  # "en_US.UTF-8/UTF-8" was the default locacle so I'm keeping it just in case.
+  # "C.UTF-8/UTF-8" is the locale that perl said wasn't supported so I added it here.
+  # "en_US.UTF-8/UTF-8" is the default locale so I'm keeping it just in case.
   minimalLocales = pkgs.glibcLocales.override {
     allLocales = false;
     locales = ["en_US.UTF-8/UTF-8" "C.UTF-8/UTF-8"];

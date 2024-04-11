@@ -25,13 +25,6 @@
                   source = makeEmptyPackage "parsers";
                 };
               };
-              configFile = {
-                # Since I'm removing zoxide I have to remove the generation of its config or else
-                # I'll get an error.
-                "fish/conf.d/zoxide.fish" = lib.mkForce {
-                  text = "";
-                };
-              };
             };
           }
         ];
@@ -43,20 +36,6 @@
             ripgrep-all = makeEmptyPackage "ripgrep-all";
             lesspipe = makeEmptyPackage "lesspipe";
             wordnet = makeEmptyPackage "wordnet";
-
-            # I don't want to override fzf in the full shell because that would cause ripgrep-all to rebuild
-            fzf = let
-              fzfNoPerl = pkgs.fzf.override {
-                perl = makeEmptyPackage "perl";
-              };
-            in
-              pkgs.buildEnv {
-                name = "fzf-without-shell-config";
-                paths = [fzfNoPerl];
-                pathsToLink = ["/bin" "/share/man"];
-              };
-            # remove zoxide too since it depends on fzf and takes a while to build
-            zoxide = makeEmptyPackage "zoxide";
           })
         ];
       };
