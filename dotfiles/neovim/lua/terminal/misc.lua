@@ -244,20 +244,14 @@ timer:start(
       -- autosave was causing them to automatically close.
       vim
         .iter(vim.api.nvim_list_bufs())
-        :filter(vim.api.nvim_buf_is_loaded)
-        :filter(function(buf)
-          return vim.bo[buf].buftype == ""
-        end)
         :filter(function(buf)
           -- TODO: Considering also checking filereadable, but not sure if that would cause
           -- excessive disk reads
-          return #vim.api.nvim_buf_get_name(buf) > 0
-        end)
-        :filter(function(buf)
-          return not vim.bo[buf].readonly
-        end)
-        :filter(function(buf)
-          return vim.bo[buf].modified
+          return vim.api.nvim_buf_is_loaded(buf)
+            and not vim.bo[buf].readonly
+            and vim.bo[buf].modified
+            and (vim.bo[buf].buftype == "")
+            and (#vim.api.nvim_buf_get_name(buf) > 0)
         end)
         :each(function(buf)
           vim.api.nvim_buf_call(buf, function()
