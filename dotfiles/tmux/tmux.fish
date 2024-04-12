@@ -4,11 +4,11 @@ end
 
 abbr --add --global ta tmux-attach-or-reload
 
-function tmux-server-reload --description 'Reload tmux server'
-    function is_tmux_running
-        tmux list-sessions &>/dev/null
-    end
+function _is_tmux_running
+    command tmux list-sessions &>/dev/null
+end
 
+function tmux-server-reload --description 'Reload tmux server'
     # Not sure how to restart the tmux server and reconnect to it
     # from a tmux-managed shell.
     if test -n "$TMUX"
@@ -19,7 +19,7 @@ function tmux-server-reload --description 'Reload tmux server'
         return 1
     end
 
-    if is_tmux_running
+    if _is_tmux_running
         # detach all clients from all sessions. We suppress stderr because tmux prints out
         # error text if we try to detach all clients on a session that has no clients
         tmux list-sessions -F '#{session_name}' | xargs -I SESSION tmux detach-client -s SESSION 2>/dev/null
@@ -43,7 +43,7 @@ function tmux-server-reload --description 'Reload tmux server'
         # a response.
         tmux kill-server
         set max_poll_attempts 5
-        while is_tmux_running
+        while _is_tmux_running
             and test $max_poll_attempts -gt 0
             sleep 1
             set max_poll_attempts (math $max_poll_attempts - 1)
@@ -55,9 +55,9 @@ end
 
 function tmux-attach-or-reload
     # Since the portable home deletes its prefix when it exits the $PATH and $SHELL environment
-    # variables in TMUX will become invalid so we have to reload the server.
+    # variables in tmux will become invalid so we have to reload the server.
     if set --export --query BIGOLU_IN_PORTABLE_HOME
-        echo (set_color yellow)'WARNING:'(set_color normal)' Reattaching to TMUX through a portable shell will not work properly. Reloading the server instead...' >&2
+        echo (set_color yellow)'WARNING:'(set_color normal)' Reattaching to tmux through a portable shell will not work properly. Reloading the server instead...' >&2
         tmux-server-reload
         return
     end
@@ -79,7 +79,7 @@ function __fish_prompt_post --on-event fish_prompt
             return
         end
 
-        # TODO: See if I could use an empty hyperlink as the marker since that won't take up visible
+        # TODO: See if I can use an empty hyperlink as the marker since it won't take up any visible
         # space.
         echo \u00A0"$prompt"\u00A0
     end
@@ -90,3 +90,28 @@ function _bigolu_tmux_command_output_widget
     commandline -f repaint
 end
 mybind --no-focus \co _bigolu_tmux_command_output_widget
+
+# TODO: This is a workaround for an issue caused by launching tmux from inside a direnv environment
+# [1].  If I try to launch tmux from a direnv environment, I instead print a warning telling me to
+# leave the environment and try again.
+#
+# [1] https://github.com/direnv/direnv/issues/106
+function tmux
+    function _is_launching_tmux
+        not _is_tmux_running && begin
+            test (count $argv) -eq 0 || contains -- attach-session $argv
+        end
+    end
+
+    function _in_direnv_environment
+        set --query DIRENV_DIR
+    end
+
+    if _is_launching_tmux && _in_direnv_environment
+        # If this is true I assume I'm trying to launch tmux
+        echo -s (set_color yellow) 'WARNING:' (set_color normal) ' Launching tmux from a direnv environment can cause issues. Try again from outside a direnv environment.' \n 'Issue: https://github.com/direnv/direnv/issues/106' >&2
+        return
+    end
+
+    command tmux $argv
+end
