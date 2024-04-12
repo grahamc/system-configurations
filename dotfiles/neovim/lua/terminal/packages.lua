@@ -1,5 +1,11 @@
 Plug("williamboman/mason.nvim", {
   config = function()
+    local function get_mason_height()
+      -- subtract the height of the statusline and command window so we don't cover them
+      local statusline_height = 1
+      return vim.o.lines - (statusline_height + vim.o.cmdheight)
+    end
+
     require("mason").setup({
       -- TODO: ast-grep only supports the latest glibc which my system doesn't have because popOS
       -- system libraries are frozen until the release of their COSMIC DE. By appending to the path,
@@ -8,9 +14,7 @@ Plug("williamboman/mason.nvim", {
 
       ui = {
         width = 1,
-        -- Ideally I'd use a function here so I could set it to '<screen_height> - 1', but this
-        -- field doesn't support functions.
-        height = 0.96,
+        height = get_mason_height(),
         icons = {
           package_installed = "󰄳  ",
           package_pending = "  ",
@@ -34,6 +38,15 @@ Plug("williamboman/mason.nvim", {
     vim.api.nvim_create_user_command("Packages", function()
       vim.cmd.Mason()
     end, { desc = "Manage external tooling like language servers" })
+    vim.api.nvim_create_autocmd("VimResized", {
+      callback = function()
+        require("mason").setup({
+          ui = {
+            height = get_mason_height(),
+          },
+        })
+      end,
+    })
 
     -- Store the number of packages that have an update available so I can put it in my statusline.
     --

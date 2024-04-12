@@ -204,6 +204,28 @@ Plug("hrsh7th/nvim-cmp", {
         cmdline_history,
       },
     }
+    local snippet_kind = require("cmp.types").lsp.CompletionItemKind.Snippet
+    local function fix_kind_for_emmet_lsp(entry)
+      if
+        entry.source.name == "nvim_lsp" and entry.completion_item.detail == "Emmet Abbreviation"
+      then
+        entry.completion_item.kind = snippet_kind
+      end
+    end
+    -- Adjust the rankings so the new rankings will be:
+    -- 1. Everything else
+    -- 2. Text
+    -- 3. Text from dictionary
+    local text_kind = require("cmp.types").lsp.CompletionItemKind.Text
+    local function get_adjusted_ranking(entry)
+      if entry.source.name == "dictionary" then
+        return 3
+      elseif entry:get_kind() == text_kind then
+        return 2
+      else
+        return 1
+      end
+    end
 
     cmp.setup({
       enabled = function()
@@ -321,20 +343,10 @@ Plug("hrsh7th/nvim-cmp", {
           -- Sort by the item kind enum, lower ordinal values are ranked higher. Enum is defined here:
           -- https://github.com/hrsh7th/nvim-cmp/blob/5dce1b778b85c717f6614e3f4da45e9f19f54435/lua/cmp/types/lsp.lua#L177
           function(entry1, entry2)
-            local text_kind = require("cmp.types").lsp.CompletionItemKind.Text
-            -- Adjust the rankings so the new rankings will be:
-            -- 1. Everything else
-            -- 2. Text
-            -- 3. Text from dictionary
-            local function get_adjusted_ranking(entry)
-              if entry.source.name == "dictionary" then
-                return 3
-              elseif entry:get_kind() == text_kind then
-                return 2
-              else
-                return 1
-              end
-            end
+            -- TODO: emmet LSP should be using snippet as its `kind` not text
+            fix_kind_for_emmet_lsp(entry1)
+            fix_kind_for_emmet_lsp(entry2)
+
             local kind1 = get_adjusted_ranking(entry1)
             local kind2 = get_adjusted_ranking(entry2)
 

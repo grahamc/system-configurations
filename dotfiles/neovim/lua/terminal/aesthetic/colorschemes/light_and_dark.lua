@@ -115,7 +115,7 @@ local theme = lush(function(injected_functions)
     -- float {{{
     NormalFloat { }, -- Normal text in floating windows.
     FloatBorder { NormalFloat, fg = t_8.fg, }, -- Border of floating windows.
-    FloatTitle { NormalFloat, fg = t_6.fg }, -- Title of floating windows.
+    FloatTitle { NormalFloat, fg = t_6.fg, bold = true, }, -- Title of floating windows.
     -- }}}
 
     -- syntax groups {{{
@@ -262,7 +262,9 @@ local theme = lush(function(injected_functions)
     Whitespace { fg = t_0.fg[is_light and 'darken' or 'lighten'](30) }, -- "nbsp", "space", "tab" and "trail" in 'listchars'
     WinSeparator { t_8, }, -- Separator between window splits. Inherts from |hl-VertSplit| by default, which it will replace eventually.
     ColorColumn { WinSeparator },
-    WinBar { }, -- Window bar of current window
+    -- If I leave it empty, tint.nvim won't tint it, but tinting works if I explicitly set the
+    -- foreground color
+    WinBar { fg = 'fg', }, -- Window bar of current window
     -- tint.nvim needs this in order to work
     WinBarNC { WinBar, }, -- Window bar of not-current windows
     GitBlameVirtualText { virtual_text, fg = t_8.fg, },
@@ -279,7 +281,7 @@ local theme = lush(function(injected_functions)
     QuickfixPreview { Search, nocombine = true },
 
     -- bufferline.nvim {{{
-    MyBufferLineBackground { bg = t_0.fg, },
+    MyBufferLineBackground { bg = 'NONE', },
     MyBufferLineFill { fg = MyBufferLineBackground.bg },
     MyBufferLineBufferVisible { },
     MyBufferLineBufferSelected { StatusLine },
@@ -295,7 +297,7 @@ local theme = lush(function(injected_functions)
     MyBufferLineModified { fg = MyBufferLineBackground.bg },
     MyBufferLineModifiedVisible { fg = MyBufferLineBackground.bg },
     MyBufferLineModifiedSelected { MyBufferLineBufferSelected },
-    MyBufferLineTab { MyBufferLineBufferSelected, fg = t_8.fg },
+    MyBufferLineTab { MyBufferLineBufferSelected, fg = t_8.fg, bold = true, },
     MyBufferLineTabSelected { MyBufferLineTab, fg = 'fg', underline = true, sp = t_6.fg, },
     MyBufferLineTabSeparator { MyBufferLineTab, fg = MyBufferLineTab.bg },
     MyBufferLineTabSeparatorSelected { MyBufferLineTab, fg = MyBufferLineTab.bg },
@@ -383,7 +385,7 @@ local theme = lush(function(injected_functions)
     MiniJump2dSpotAhead { MiniJump2dSpot },
     MiniJump2dDim { t_8 },
     Clear { },
-    MiniCursorword { CursorLine, bold = true, },
+    MiniCursorword { bold = true, },
     -- }}}
 
     QuickFixLine { }, -- Current |quickfix| item in the quickfix window. Combined with |hl-CursorLine| when the cursor is there.
@@ -400,12 +402,13 @@ local theme = lush(function(injected_functions)
     -- https://github.com/nvim-telescope/telescope.nvim/blob/master/plugin/telescope.lua
     TelescopePromptNormal { },
     TelescopePromptBorder { t_8, },
-    TelescopePromptTitle { t_6, },
+    TelescopePromptTitle { t_6, bold = true, },
     TelescopePromptCounter { TelescopePromptNormal, fg = t_8.fg, },
     TelescopePromptPrefix { TelescopePromptNormal, fg = FloatTitle.fg },
     TelescopeResultsNormal { TelescopePromptNormal },
     TelescopeResultsBorder { TelescopePromptBorder, },
     TelescopePreviewNormal { TelescopePromptNormal },
+    TelescopePreviewTitle { t_8, bold = true, },
     TelescopePreviewBorder { TelescopePromptBorder, },
     TelescopeMatching { fg = FloatTitle.fg },
     TelescopeSelection { CmpNormal },

@@ -68,12 +68,12 @@ config.font_rules = {
     font = font_with_icon_fallbacks({ family = "Monaspace Radon", weight = "Bold" }),
   },
 }
-config.underline_position = "450%"
+config.underline_position = "400%"
 config.font_size = 11.3
 if is_mac then
   config.font_size = 13.5
 end
-config.line_height = 1.6
+config.line_height = 1.5
 config.underline_thickness = "150%"
 
 -- SYNC: terminal-color-palettes

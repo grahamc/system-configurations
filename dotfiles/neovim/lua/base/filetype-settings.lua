@@ -38,6 +38,14 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+  pattern = "sh",
+  callback = function()
+    vim.opt_local.iskeyword:append("-")
+  end,
+  group = extend_is_keyword_group_id,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
   pattern = {
     "css",
     "scss",

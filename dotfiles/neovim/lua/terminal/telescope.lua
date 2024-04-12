@@ -175,9 +175,14 @@ Plug("nvim-telescope/telescope.nvim", {
     )
     -- TODO: I need to fix the previewer so it works with `page`. This way I get I get a live
     -- preview when I search manpages.
-    vim.keymap.set("n", "<Leader>b", telescope_builtins.current_buffer_fuzzy_find, {
-      desc = "Search buffer",
-    })
+    vim.keymap.set(
+      { "n", "v" },
+      "<Leader>b",
+      with_visual_selection(telescope_builtins.current_buffer_fuzzy_find),
+      {
+        desc = "Search buffer",
+      }
+    )
     vim.keymap.set(
       { "n", "v" },
       "<Leader>k",
