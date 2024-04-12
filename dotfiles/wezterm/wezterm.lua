@@ -52,10 +52,10 @@ config.term = "wezterm"
 local function font_with_icon_fallbacks(font)
   return wezterm.font_with_fallback({ font, "nonicons", "SymbolsNerdFontMono" })
 end
--- I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for my system,
--- but Flatpak apps can't access my font configuration file from their sandbox so for now I'll
--- hardcode a font. issue: https://github.com/flatpak/flatpak/issues/1563
-config.font = font_with_icon_fallbacks("Iosevka Comfy Fixed")
+-- For Linux, I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for
+-- my system, but Flatpak apps can't access my font configuration file from their sandbox so for now
+-- I'll hardcode a font. issue: https://github.com/flatpak/flatpak/issues/1563
+config.font = font_with_icon_fallbacks("Hack")
 config.font_rules = {
   {
     intensity = "Normal",
@@ -68,12 +68,12 @@ config.font_rules = {
     font = font_with_icon_fallbacks({ family = "Monaspace Radon", weight = "Bold" }),
   },
 }
-config.underline_position = "600%"
+config.underline_position = "450%"
 config.font_size = 11.3
 if is_mac then
-  config.font_size = 14
+  config.font_size = 13.5
 end
-config.line_height = 1.4
+config.line_height = 1.6
 config.underline_thickness = "150%"
 
 -- SYNC: terminal-color-palettes

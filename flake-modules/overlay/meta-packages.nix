@@ -4,7 +4,7 @@ _: {
       myFonts = final.symlinkJoin {
         name = "my-fonts";
         paths = with final; [
-          iosevka-comfy.comfy-fixed
+          hack-font
           monaspace
           (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"];})
           nonicons
