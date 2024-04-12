@@ -9,9 +9,6 @@ help:
     @just --list --justfile {{ justfile() }} --unsorted
 
 # Reload direnv
-#
-# So I can call reload from the smart plug directory and have it read the .firstaide.toml in there
-[no-cd]
 reload:
     nix-direnv-reload
 

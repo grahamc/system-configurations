@@ -33,7 +33,6 @@
           "tmux"
           "neovim-nightly-overlay"
           "wezterm"
-          "firstaide"
         ]
         ++ plugins;
       nixDarwin =
