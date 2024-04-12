@@ -66,6 +66,7 @@
   plus-emph-style = "syntax 26"
   zero-style = "syntax normal"
   map-styles = normal 21 => syntax 21, normal 22 => syntax 22
+  commit-style = "blue"
 [mergetool "vscode"]
   cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
 [difftool "vscode"]
