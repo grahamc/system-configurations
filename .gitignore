@@ -1,3 +1,4 @@
+.git
 .venv/
 .direnv/
 .mypy_cache

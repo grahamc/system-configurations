@@ -82,26 +82,18 @@ in {
     };
   };
 
-  repository.symlink = {
-    home.file = {
-      ".ignore".source = "search/ignore";
+  repository.symlink.xdg.configFile =
+    {
+      "lsd".source = "lsd";
+      "viddy.toml".source = "viddy/viddy.toml";
+      "lesskey".source = "less/lesskey";
+      "ripgrep/ripgreprc".source = "ripgrep/ripgreprc";
+      "ssh/bootstrap.sh".source = "ssh/bootstrap.sh";
+      "broot/conf.hjson".source = "broot/conf.hjson";
+      "broot/explorer-conf.hjson".source = "broot/explorer-conf.hjson";
+    }
+    // optionalAttrs isLinux {
+      "pipr/pipr.toml".source = "pipr/pipr.toml";
+      "fish/conf.d/pipr.fish".source = "pipr/pipr.fish";
     };
-
-    xdg = {
-      configFile =
-        {
-          "lsd".source = "lsd";
-          "viddy.toml".source = "viddy/viddy.toml";
-          "lesskey".source = "less/lesskey";
-          "ripgrep/ripgreprc".source = "ripgrep/ripgreprc";
-          "ssh/bootstrap.sh".source = "ssh/bootstrap.sh";
-          "broot/conf.hjson".source = "broot/conf.hjson";
-          "broot/explorer-conf.hjson".source = "broot/explorer-conf.hjson";
-        }
-        // optionalAttrs isLinux {
-          "pipr/pipr.toml".source = "pipr/pipr.toml";
-          "fish/conf.d/pipr.fish".source = "pipr/pipr.fish";
-        };
-    };
-  };
 }
