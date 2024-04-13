@@ -207,7 +207,6 @@ function _insert_entries_into_commandline
     or set replacement (string replace --regex -- "'$space'\$" $space"'" "$replacement")
 
     commandline --replace --current-token -- "$replacement"
-    commandline --cursor --current-token -- (math (string length -- "$replacement") - (string length -- "$token_after_cursor"))
 end
 function _fzf_complete
     set candidates (complete --escape --do-complete -- "$(commandline --cut-at-cursor)")
@@ -259,7 +258,7 @@ end
 # Keep normal tab complete on shift+tab to expand wildcards.
 mybind -k btab complete
 
-function _ls-after-directory-change --on-variable PWD
+function _ls_after_directory_change --on-variable PWD
     # Nix store freezes broot
     if test "$PWD" = /nix/store
         return
@@ -269,15 +268,15 @@ function _ls-after-directory-change --on-variable PWD
     # other end. It does however, print an error message in both cases so instead I'm checking if
     # anything was written to stderr.
     if test -n "$(br --send "$TMUX_PANE" 2>&1 1>/dev/null)"
-        # These directories have too many files to always call ls on
-        #
-        # normalize to remove trailing slash
-        set blacklist /nix/store /tmp (path normalize "$TMPDIR")
-        if contains "$PWD" $blacklist
-            return
-        end
+        # # These directories have too many files to always call ls on
+        # #
+        # # normalize to remove trailing slash
+        # set blacklist /nix/store /tmp (path normalize "$TMPDIR")
+        # if contains "$PWD" $blacklist
+        #     return
+        # end
 
-        ls
+        # ls
     end
 end
 function _bigolu_on_broot_dir_change --on-variable _broot_dir

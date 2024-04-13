@@ -78,19 +78,21 @@ local function plug_end()
 
   apply_configs(configs_by_type.sync)
 
-  -- Apply the asynchronous configurations after everything else that is currently on the event
-  -- loop. Now configs are applied after any files specified on the commandline are opened and after
-  -- sessions are restored. This way, neovim shows me the first file "instantly" and by the time
-  -- I've looked at the file and decided on my first key press, the plugin configs have already been
-  -- applied.
+  -- Apply the asynchronous configurations after everything else that
+  -- is currently on the event loop. Now configs are applied after any
+  -- files specified on the commandline are opened and after sessions are
+  -- restored. This way, neovim shows me the first file "instantly" and by the
+  -- time I've looked at the file and decided on my first key press, the plugin
+  -- configs have already been applied.
   local function ApplyAsyncConfigs()
     apply_configs(configs_by_type.async)
   end
   vim.defer_fn(ApplyAsyncConfigs, 0)
 end
 
--- vim-plugs enables syntax highlighting if it isn't already enabled, but I don't want it since I
--- use treesitter.  This will make vim-plug think it's already on so it won't enable it.
+-- vim-plugs enables syntax highlighting if it isn't already enabled, but I
+-- don't want it since I use treesitter.  This will make vim-plug think it's
+-- already on so it won't enable it.
 local function run_with_faked_syntax_on(fn)
   vim.cmd.syntax("off")
   vim.g.syntax_on = true
