@@ -192,7 +192,8 @@ local function make_statusline(left_items, right_items, left_sep, right_sep)
     end)
     :fold({}, make_table)
 
-  local left_side = mode_indicator .. table.concat(left_items, "%#StatusLineSeparator#" .. left_sep)
+  local left_side = mode_indicator
+    .. table.concat(left_items, "%#StatusLineSeparator#" .. left_sep)
 
   local right_side = table.concat(right_items, right_sep)
 
@@ -254,7 +255,8 @@ function StatusLine()
 
   local fileencoding = nil
   if #vim.o.fileencoding > 0 and vim.o.fileencoding ~= "utf-8" then
-    fileencoding = "%#StatusLineStandoutText#" .. string.upper(vim.o.fileencoding)
+    fileencoding = "%#StatusLineStandoutText#"
+      .. string.upper(vim.o.fileencoding)
   end
 
   local filetype = nil
@@ -293,7 +295,8 @@ function StatusLine()
   local reg_recording = nil
   local recording_register = vim.fn.reg_recording()
   if recording_register ~= "" then
-    reg_recording = "%#StatusLineRecordingIndicator# %#StatusLine#REC@" .. recording_register
+    reg_recording = "%#StatusLineRecordingIndicator# %#StatusLine#REC@"
+      .. recording_register
   end
 
   local search_info = nil
@@ -301,7 +304,8 @@ function StatusLine()
   if ok then
     if czs.display_results() then
       local _, current, count = czs.output()
-      search_info = "%#StatusLine# " .. string.format("%s/%s", current, count)
+      search_info = "%#StatusLine# "
+        .. string.format("%s/%s", current, count)
     end
   end
 
@@ -319,14 +323,22 @@ function StatusLine()
   end
 
   local diagnostic_count = {
-    warning = vim.diagnostic.count(nil, { severity = vim.diagnostic.severity.WARN })[vim.diagnostic.severity.WARN]
-      or 0,
-    error = vim.diagnostic.count(nil, { severity = vim.diagnostic.severity.ERROR })[vim.diagnostic.severity.ERROR]
-      or 0,
-    info = vim.diagnostic.count(nil, { severity = vim.diagnostic.severity.INFO })[vim.diagnostic.severity.INFO]
-      or 0,
-    hint = vim.diagnostic.count(nil, { severity = vim.diagnostic.severity.HINT })[vim.diagnostic.severity.HINT]
-      or 0,
+    warning = vim.diagnostic.count(
+      nil,
+      { severity = vim.diagnostic.severity.WARN }
+    )[vim.diagnostic.severity.WARN] or 0,
+    error = vim.diagnostic.count(
+      nil,
+      { severity = vim.diagnostic.severity.ERROR }
+    )[vim.diagnostic.severity.ERROR] or 0,
+    info = vim.diagnostic.count(
+      nil,
+      { severity = vim.diagnostic.severity.INFO }
+    )[vim.diagnostic.severity.INFO] or 0,
+    hint = vim.diagnostic.count(
+      nil,
+      { severity = vim.diagnostic.severity.HINT }
+    )[vim.diagnostic.severity.HINT] or 0,
   }
   local diagnostic_list = {}
   local error_count = diagnostic_count.error
@@ -353,7 +365,9 @@ function StatusLine()
     local hint = "%#StatusLineHintText#" .. icon .. hint_count
     table.insert(diagnostic_list, hint)
   end
-  if _G.mason_update_available_count and _G.mason_update_available_count > 0 then
+  if
+    _G.mason_update_available_count and _G.mason_update_available_count > 0
+  then
     local mason_update_indicator = "%#StatusLineMasonUpdateIndicator# "
       .. _G.mason_update_available_count
     table.insert(diagnostic_list, mason_update_indicator)
@@ -487,7 +501,10 @@ function TelescopeStatusLine(is_menufacture_open)
     { mods = { "C" }, key = "j/k", description = "Scroll preview" },
   }
   if is_menufacture_open then
-    table.insert(mappings, { mods = { "C" }, key = "f", description = "Filter" })
+    table.insert(
+      mappings,
+      { mods = { "C" }, key = "f", description = "Filter" }
+    )
   end
   return make_mapping_statusline(mappings)
 end

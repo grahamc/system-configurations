@@ -17,7 +17,11 @@ terminal_utilities.set_up_live_preview({
     vim.cmd([[
       normal! <CR>
     ]])
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "n", false)
+    vim.api.nvim_feedkeys(
+      vim.api.nvim_replace_termcodes("<CR>", true, false, true),
+      "n",
+      false
+    )
   end,
   on_exit = clear_last_highlighted_buffer,
   get_bufnr = function()
@@ -33,7 +37,11 @@ terminal_utilities.set_up_live_preview({
       return
     end
 
-    vim.api.nvim_set_option_value("winhighlight", "MiniCursorword:Clear", { win = last_winid })
+    vim.api.nvim_set_option_value(
+      "winhighlight",
+      "MiniCursorword:Clear",
+      { win = last_winid }
+    )
     local end_line = item.end_lnum == 0 and item.lnum or item.end_lnum
     clear_last_highlighted_buffer()
     for cur = item.lnum, end_line do
@@ -77,10 +85,17 @@ local function get_width()
 end
 local function trim_path(path, any_has_text)
   local fn = vim.fn
-  local max_filename_length = math.floor(get_width() * (any_has_text and 0.4 or 0.8))
+  local max_filename_length =
+    math.floor(get_width() * (any_has_text and 0.4 or 0.8))
   local len = fn.strchars(path)
   if len > max_filename_length then
-    path = "…" .. fn.strpart(path, len - max_filename_length, max_filename_length, vim.v["true"])
+    path = "…"
+      .. fn.strpart(
+        path,
+        len - max_filename_length,
+        max_filename_length,
+        vim.v["true"]
+      )
   end
   return path
 end
@@ -88,12 +103,21 @@ local function list_items(info)
   if info.quickfix == 1 then
     return vim.fn.getqflist({ id = info.id, items = 1, qfbufnr = 1 })
   else
-    return vim.fn.getloclist(info.winid, { id = info.id, items = 1, qfbufnr = 1 })
+    return vim.fn.getloclist(
+      info.winid,
+      { id = info.id, items = 1, qfbufnr = 1 }
+    )
   end
 end
 local function apply_highlights(bufnr, highlights)
   for _, hl in ipairs(highlights) do
-    vim.highlight.range(bufnr, namespace, hl.group, { hl.line, hl.col }, { hl.line, hl.end_col })
+    vim.highlight.range(
+      bufnr,
+      namespace,
+      hl.group,
+      { hl.line, hl.col },
+      { hl.line, hl.end_col }
+    )
   end
 end
 function QFTextFunc(info)
@@ -152,8 +176,10 @@ function QFTextFunc(info)
         }
 
       if raw.bufnr > 0 then
-        item.location =
-          trim_path(vim.fn.fnamemodify(vim.fn.bufname(raw.bufnr), ":~:."), any_has_text)
+        item.location = trim_path(
+          vim.fn.fnamemodify(vim.fn.bufname(raw.bufnr), ":~:."),
+          any_has_text
+        )
         item.path_size = #item.location
       end
       if true then
@@ -346,17 +372,19 @@ vim.api.nvim_create_autocmd("QuickfixCmdPost", {
     local qflist = vim.fn.getqflist({ title = true, items = true })
 
     local any_has_multiple = false
-    local items_by_filename = vim.iter(qflist.items):fold({}, function(acc, item)
-      local filename = vim.api.nvim_buf_get_name(item.bufnr)
-      if acc[filename] == nil then
-        acc[filename] = {}
-      end
-      table.insert(acc[filename], item)
-      if #acc[filename] > 1 then
-        any_has_multiple = true
-      end
-      return acc
-    end)
+    local items_by_filename = vim
+      .iter(qflist.items)
+      :fold({}, function(acc, item)
+        local filename = vim.api.nvim_buf_get_name(item.bufnr)
+        if acc[filename] == nil then
+          acc[filename] = {}
+        end
+        table.insert(acc[filename], item)
+        if #acc[filename] > 1 then
+          any_has_multiple = true
+        end
+        return acc
+      end)
     local filenames = vim.tbl_keys(items_by_filename)
     table.sort(filenames)
     local new_items = vim
@@ -369,7 +397,9 @@ vim.api.nvim_create_autocmd("QuickfixCmdPost", {
           count = #items,
         }
 
-        return any_has_multiple and base_utilities.table_concat({ heading }, items) or items
+        return any_has_multiple
+            and base_utilities.table_concat({ heading }, items)
+          or items
       end)
       :fold({}, base_utilities.table_concat)
 
@@ -400,7 +430,12 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.b.minicursorword_disable_permanent = true
     vim.b.minianimate_disable = true
 
-    vim.keymap.set("n", "q", vim.cmd.cclose, { buffer = true, desc = "Close quickfix window" })
+    vim.keymap.set(
+      "n",
+      "q",
+      vim.cmd.cclose,
+      { buffer = true, desc = "Close quickfix window" }
+    )
     vim.keymap.set("n", "<F7>", function()
       move("last")
     end, { buffer = true, desc = "Last list [previous]" })
@@ -423,7 +458,10 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
       end
       local _, err = vim.ui.open(path)
       if err ~= nil then
-        vim.notify(string.format("Failed to open path '%s'\n%s", path, err), vim.log.levels.ERROR)
+        vim.notify(
+          string.format("Failed to open path '%s'\n%s", path, err),
+          vim.log.levels.ERROR
+        )
       end
     end, { buffer = true, desc = "Remove list [close,delete]" })
     vim.keymap.set("n", "L", function()
@@ -460,7 +498,12 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
       QFRemove(vim.fn.line("'<"), vim.fn.line("'>"))
       vim.cmd(tostring(vim.fn.line("'<")))
     end
-    vim.keymap.set("x", "d", "<Esc>:lua QFRemoveVisual()<CR>", { buffer = true })
+    vim.keymap.set(
+      "x",
+      "d",
+      "<Esc>:lua QFRemoveVisual()<CR>",
+      { buffer = true }
+    )
   end,
 })
 
@@ -507,7 +550,10 @@ local function on_list(options)
     terminal_utilities.set_jump_before(function()
       ---@diagnostic disable-next-line: param-type-mismatch
       vim.api.nvim_win_set_buf(0, bufnr)
-      vim.api.nvim_win_set_cursor(0, { start_pos.line + 1, start_pos.character })
+      vim.api.nvim_win_set_cursor(
+        0,
+        { start_pos.line + 1, start_pos.character }
+      )
       -- so it shows up in the tabline
       vim.bo.buflisted = true
     end)()

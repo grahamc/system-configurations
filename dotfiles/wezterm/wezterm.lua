@@ -24,7 +24,8 @@ local CustomEvent = {
   ThemeToggleRequested = "theme-toggled",
   SystemAppearanceChanged = "system-appearance-changed",
 }
-local state_directory = os.getenv("XDG_STATE_HOME") or (os.getenv("HOME") .. "/.local/state")
+local state_directory = os.getenv("XDG_STATE_HOME")
+  or (os.getenv("HOME") .. "/.local/state")
 local nvim_wezterm_runtime_directory = state_directory .. "/nvim-wezterm"
 
 -- general
@@ -65,7 +66,10 @@ config.font_rules = {
   {
     intensity = "Bold",
     italic = true,
-    font = font_with_icon_fallbacks({ family = "Monaspace Radon", weight = "Bold" }),
+    font = font_with_icon_fallbacks({
+      family = "Monaspace Radon",
+      weight = "Bold",
+    }),
   },
 }
 config.underline_position = "400%"
@@ -267,7 +271,11 @@ wezterm.on("window-config-reloaded", function(window)
   local new_system_appearance = wezterm.gui.get_appearance()
   if current_system_appearance ~= new_system_appearance then
     current_system_appearance = new_system_appearance
-    wezterm.emit(CustomEvent.SystemAppearanceChanged, window, current_system_appearance)
+    wezterm.emit(
+      CustomEvent.SystemAppearanceChanged,
+      window,
+      current_system_appearance
+    )
   end
 end)
 wezterm.on(CustomEvent.SystemAppearanceChanged, function(window, new_appearance)
@@ -282,7 +290,8 @@ end)
 -- Sync theme with neovim
 local function fire_theme_event_in_neovim(theme)
   local pipe_directory = nvim_wezterm_runtime_directory .. "/pipes"
-  local event_name = theme == Theme.Dark and "ColorSchemeDark" or "ColorSchemeLight"
+  local event_name = theme == Theme.Dark and "ColorSchemeDark"
+    or "ColorSchemeLight"
   if os.execute(string.format([[test -d %s]], pipe_directory)) then
     os.execute(
       string.format(

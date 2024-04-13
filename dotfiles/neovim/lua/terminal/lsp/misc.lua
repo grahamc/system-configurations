@@ -81,7 +81,12 @@ vim.keymap.set(
   vim.diagnostic.goto_prev,
   { desc = "Previous diagnostic [last,lint,problem]" }
 )
-vim.keymap.set("n", "]l", vim.diagnostic.goto_next, { desc = "Next diagnostic [lint,problem]" })
+vim.keymap.set(
+  "n",
+  "]l",
+  vim.diagnostic.goto_next,
+  { desc = "Next diagnostic [lint,problem]" }
+)
 vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Declaration" })
 vim.keymap.set("n", "gn", vim.lsp.buf.rename, { desc = "Rename variable" })
 
@@ -148,10 +153,17 @@ Plug("aznhe21/actions-preview.nvim", {
       -- so it uses my telescope defaults
       telescope = {},
       highlight_command = {
-        require("actions-preview.highlight").delta([[delta --file-style omit --paging always]]),
+        require("actions-preview.highlight").delta(
+          [[delta --file-style omit --paging always]]
+        ),
       },
     })
-    vim.keymap.set({ "n", "v" }, "ga", actions_preview.code_actions, { desc = "Code actions" })
+    vim.keymap.set(
+      { "n", "v" },
+      "ga",
+      actions_preview.code_actions,
+      { desc = "Code actions" }
+    )
   end,
 })
 
@@ -194,11 +206,19 @@ Plug("williamboman/mason-lspconfig.nvim", {
 
         local keymap_opts = { silent = true, buffer = buffer_number }
         local function buffer_keymap(mode, lhs, rhs, opts)
-          vim.keymap.set(mode, lhs, rhs, vim.tbl_deep_extend("force", keymap_opts, opts or {}))
+          vim.keymap.set(
+            mode,
+            lhs,
+            rhs,
+            vim.tbl_deep_extend("force", keymap_opts, opts or {})
+          )
         end
 
         local isKeywordprgOverridable = vim.bo[buffer_number].filetype ~= "vim"
-        if client.supports_method(methods.textDocument_hover) and isKeywordprgOverridable then
+        if
+          client.supports_method(methods.textDocument_hover)
+          and isKeywordprgOverridable
+        then
           buffer_keymap("n", "K", function()
             vim.lsp.buf.hover()
           end)
@@ -209,7 +229,12 @@ Plug("williamboman/mason-lspconfig.nvim", {
           local function toggle_inlay_hints()
             vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())
           end
-          buffer_keymap("n", [[\i]], toggle_inlay_hints, { desc = "Toggle inlay hints" })
+          buffer_keymap(
+            "n",
+            [[\i]],
+            toggle_inlay_hints,
+            { desc = "Toggle inlay hints" }
+          )
         end
 
         if client.supports_method(methods.textDocument_signatureHelp) then
@@ -220,7 +245,8 @@ Plug("williamboman/mason-lspconfig.nvim", {
 
         if client.supports_method(methods.textDocument_codeLens) then
           local function create_refresh_autocmd()
-            local refresh_autocmd_id = code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
+            local refresh_autocmd_id =
+              code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
             if refresh_autocmd_id ~= -1 then
               vim.notify(
                 "Not creating another code lens refresh autocmd since it doesn't look like the old one was removed. The id of the old one is: "
@@ -242,7 +268,8 @@ Plug("williamboman/mason-lspconfig.nvim", {
           end
 
           local function delete_refresh_autocmd()
-            local refresh_autocmd_id = code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
+            local refresh_autocmd_id =
+              code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
             if refresh_autocmd_id == -1 then
               vim.notify(
                 "Unable to to remove the code lens refresh autocmd because it's id was not found",
@@ -259,9 +286,15 @@ Plug("williamboman/mason-lspconfig.nvim", {
             create_refresh_autocmd()
           end
 
-          buffer_keymap("n", "gl", vim.lsp.codelens.run, { desc = "Run code lens" })
+          buffer_keymap(
+            "n",
+            "gl",
+            vim.lsp.codelens.run,
+            { desc = "Run code lens" }
+          )
           buffer_keymap("n", [[\l]], function()
-            local refresh_autocmd_id = code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
+            local refresh_autocmd_id =
+              code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
             local is_refresh_autocmd_active = refresh_autocmd_id ~= -1
             if is_refresh_autocmd_active then
               delete_refresh_autocmd()
@@ -282,7 +315,10 @@ Plug("williamboman/mason-lspconfig.nvim", {
         if is_buffer_outside_workspace then
           vim.diagnostic.reset(nil, buffer_number)
           table.insert(BufsToDisableDiagnosticOnDiagnostic, buffer_number)
-          table.insert(BufsToDisableDiagnosticOnPublishDiagnostic, buffer_number)
+          table.insert(
+            BufsToDisableDiagnosticOnPublishDiagnostic,
+            buffer_number
+          )
         end
 
         -- Quick way to disable diagnostic for a buffer
@@ -307,7 +343,8 @@ Plug("williamboman/mason-lspconfig.nvim", {
         return unpack(toreturn)
       end
       BufsToDisableDiagnosticOnDiagnostic = {}
-      local original_diagnostic_handler = vim.lsp.handlers[methods.textDocument_diagnostic]
+      local original_diagnostic_handler =
+        vim.lsp.handlers[methods.textDocument_diagnostic]
       vim.lsp.handlers[methods.textDocument_diagnostic] = function(...)
         local toreturn = { original_diagnostic_handler(...) }
 
@@ -321,15 +358,23 @@ Plug("williamboman/mason-lspconfig.nvim", {
 
       -- When a server registers a capability dynamically, call on_attach again for the buffers
       -- attached to it.
-      local original_register_capability = vim.lsp.handlers[methods.client_registerCapability]
-      vim.lsp.handlers[methods.client_registerCapability] = function(err, res, ctx)
-        local original_return_value = { original_register_capability(err, res, ctx) }
+      local original_register_capability =
+        vim.lsp.handlers[methods.client_registerCapability]
+      vim.lsp.handlers[methods.client_registerCapability] = function(
+        err,
+        res,
+        ctx
+      )
+        local original_return_value =
+          { original_register_capability(err, res, ctx) }
 
         local client = vim.lsp.get_client_by_id(ctx.client_id)
         if client then
-          vim.iter(vim.lsp.get_buffers_by_client_id(client.id)):each(function(buf)
-            on_attach(client, buf)
-          end)
+          vim
+            .iter(vim.lsp.get_buffers_by_client_id(client.id))
+            :each(function(buf)
+              on_attach(client, buf)
+            end)
         end
 
         return unpack(original_return_value)
@@ -345,7 +390,8 @@ Plug("williamboman/mason-lspconfig.nvim", {
           local client = vim.lsp.get_client_by_id(client_id)
           if client == nil then
             vim.notify(
-              "[In LspAttach autocmd] Unable to find client with id: " .. client_id,
+              "[In LspAttach autocmd] Unable to find client with id: "
+                .. client_id,
               vim.log.levels.ERROR
             )
             return
@@ -382,11 +428,16 @@ Plug("williamboman/mason-lspconfig.nvim", {
         lspconfig[server_name].setup(default_server_config)
       end
       -- server-specific handlers
-      local server_specific_configs = require("terminal.lsp.server-settings").get(on_attach)
+      local server_specific_configs =
+        require("terminal.lsp.server-settings").get(on_attach)
       for server_name, server_specific_config in pairs(server_specific_configs) do
         server_config_handlers[server_name] = function()
           lspconfig[server_name].setup(
-            vim.tbl_deep_extend("force", default_server_config, server_specific_config)
+            vim.tbl_deep_extend(
+              "force",
+              default_server_config,
+              server_specific_config
+            )
           )
         end
       end
@@ -411,7 +462,11 @@ Plug("williamboman/mason-lspconfig.nvim", {
             return
           end
 
-          vim.api.nvim_set_option_value("concealcursor", "nvic", { win = win_id })
+          vim.api.nvim_set_option_value(
+            "concealcursor",
+            "nvic",
+            { win = win_id }
+          )
           vim.api.nvim_set_option_value(
             "winhighlight",
             "NormalFloat:CmpDocumentationNormal,FloatBorder:CmpDocumentationBorder,CursorLine:NormalFloat",

@@ -170,7 +170,9 @@ Plug("hrsh7th/nvim-cmp", {
       name = "path",
       option = {
         label_trailing_slash = false,
-        get_cwd = (#(os.getenv("BIGOLU_EDITING_FISH_BUFFER") or "") > 0) and vim.loop.cwd or nil,
+        get_cwd = (#(os.getenv("BIGOLU_EDITING_FISH_BUFFER") or "") > 0)
+            and vim.loop.cwd
+          or nil,
       },
     }
     local tmux = {
@@ -194,7 +196,10 @@ Plug("hrsh7th/nvim-cmp", {
     local is_cursor_preceded_by_nonblank_character = function()
       local line, col = unpack(vim.api.nvim_win_get_cursor(0))
       return col ~= 0
-        and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s")
+        and vim.api
+            .nvim_buf_get_lines(0, line - 1, line, true)[1]
+            :sub(col, col)
+            :match("%s")
           == nil
     end
     local cmdline_search_config = {
@@ -207,7 +212,8 @@ Plug("hrsh7th/nvim-cmp", {
     local snippet_kind = require("cmp.types").lsp.CompletionItemKind.Snippet
     local function fix_kind_for_emmet_lsp(entry)
       if
-        entry.source.name == "nvim_lsp" and entry.completion_item.detail == "Emmet Abbreviation"
+        entry.source.name == "nvim_lsp"
+        and entry.completion_item.detail == "Emmet Abbreviation"
       then
         entry.completion_item.kind = snippet_kind
       end
@@ -268,7 +274,8 @@ Plug("hrsh7th/nvim-cmp", {
           if
             not cmp.visible()
             or not cmp.get_selected_entry()
-            or cmp.get_selected_entry().source.name == "nvim_lsp_signature_help"
+            or cmp.get_selected_entry().source.name
+              == "nvim_lsp_signature_help"
           then
             fallback()
           else
@@ -439,7 +446,8 @@ Plug("hrsh7th/nvim-cmp", {
       ---@diagnostic disable-next-line: duplicate-set-field
       utils_window.open = function(...)
         local style = select(2, ...)
-        local has_expected_argument_shape = type(style) == "table" and style.border ~= nil
+        local has_expected_argument_shape = type(style) == "table"
+          and style.border ~= nil
         if not has_expected_argument_shape then
           vim.notify(
             "nvim-cmp documentation wrapper is not receiving the expected argument shape",
@@ -466,8 +474,9 @@ Plug("hrsh7th/nvim-cmp", {
         group = autocmd_group,
         callback = function()
           if
-            vim.bo[vim.api.nvim_win_get_buf(tonumber(vim.fn.expand("<amatch>")) or 0)].filetype
-            == "cmp_docs"
+            vim.bo[vim.api.nvim_win_get_buf(
+              tonumber(vim.fn.expand("<amatch>")) or 0
+            )].filetype == "cmp_docs"
           then
             IsCmpDocsOpen = false
           end

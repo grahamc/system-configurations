@@ -21,7 +21,10 @@ vim.api.nvim_create_autocmd("CursorHold", {
 local function open(path)
   local _, err = vim.ui.open(path)
   if err ~= nil then
-    vim.notify(string.format("Failed to open path '%s'\n%s", path, err), vim.log.levels.ERROR)
+    vim.notify(
+      string.format("Failed to open path '%s'\n%s", path, err),
+      vim.log.levels.ERROR
+    )
   end
 end
 local function get_url_under_cursor()
@@ -41,7 +44,9 @@ function OpenUrlUnderCursor(is_mouse_click)
   -- wrap in function so I can return early
   (function()
     -- Vim help links.
-    local vim_help_tag = (vim.fn.expand("<cWORD>") --[[@as string]]):match("|(%S-)|")
+    local vim_help_tag = (vim.fn.expand("<cWORD>") --[[@as string]]):match(
+      "|(%S-)|"
+    )
     if vim_help_tag then
       vim.cmd.Help(vim_help_tag)
       return
@@ -49,7 +54,8 @@ function OpenUrlUnderCursor(is_mouse_click)
 
     -- Markdown links.
     local col = vim.api.nvim_win_get_cursor(0)[2] + 1
-    local from, to, url = vim.api.nvim_get_current_line():find("%[.-%]%((%S-)%)")
+    local from, to, url =
+      vim.api.nvim_get_current_line():find("%[.-%]%((%S-)%)")
     if from and col >= from and col <= to then
       open(url)
       return
@@ -70,7 +76,11 @@ function OpenUrlUnderCursor(is_mouse_click)
   end
 end
 vim.keymap.set("n", "U", OpenUrlUnderCursor, { desc = "Open link [url]" })
-vim.keymap.set("n", "<C-LeftMouse>", "<LeftMouse><Cmd>lua OpenUrlUnderCursor(true)<CR>")
+vim.keymap.set(
+  "n",
+  "<C-LeftMouse>",
+  "<LeftMouse><Cmd>lua OpenUrlUnderCursor(true)<CR>"
+)
 -- }}}
 
 -- persist undo history to disk
@@ -198,7 +208,8 @@ vim.api.nvim_create_autocmd("WinEnter", {
 })
 vim.api.nvim_create_autocmd("BufWinEnter", {
   callback = function()
-    vim.wo.colorcolumn = tostring(require("base.utilities").get_max_line_length() + 1)
+    vim.wo.colorcolumn =
+      tostring(require("base.utilities").get_max_line_length() + 1)
     vim.w.old_colorcolumn = vim.wo.colorcolumn
   end,
   group = colorcolumn_group_id,
@@ -259,7 +270,10 @@ timer:start(
             local was_successful = pcall(vim.cmd, "silent write")
             if not was_successful then
               vim.notify(
-                string.format("Failed to write buffer #%s, disabling autosave...", buf),
+                string.format(
+                  "Failed to write buffer #%s, disabling autosave...",
+                  buf
+                ),
                 vim.log.levels.ERROR
               )
               timer:stop()
@@ -293,7 +307,12 @@ vim.keymap.set(
   vim.cmd.tabprevious,
   { silent = true, desc = "Previous tab" }
 )
-vim.keymap.set({ "n", "i" }, "<C-M-]>", vim.cmd.tabnext, { silent = true, desc = "Next tab" })
+vim.keymap.set(
+  { "n", "i" },
+  "<C-M-]>",
+  vim.cmd.tabnext,
+  { silent = true, desc = "Next tab" }
+)
 vim.keymap.set({ "n" }, "<C-t>", function()
   local cursor_position = vim.api.nvim_win_get_cursor(0)
   vim.cmd.tabnew("%")

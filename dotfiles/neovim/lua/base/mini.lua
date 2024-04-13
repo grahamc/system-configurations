@@ -31,7 +31,10 @@ Plug("echasnovski/mini.nvim", {
         f = spec_treesitter({ a = "@call.outer", i = "@call.inner" }),
         -- TODO: @parameter.outer should include the space after the parameter delimiter
         a = spec_treesitter({ a = "@parameter.outer", i = "@parameter.inner" }),
-        C = spec_treesitter({ a = "@conditional.outer", i = "@conditional.inner" }),
+        C = spec_treesitter({
+          a = "@conditional.outer",
+          i = "@conditional.inner",
+        }),
         -- TODO: would be great if this worked on key/value pairs as well
         s = spec_treesitter({ a = "@assignment.lhs", i = "@assignment.rhs" }),
 
@@ -68,13 +71,16 @@ Plug("echasnovski/mini.nvim", {
     local function move_like_curly_brace(id, direction)
       local old_position = vim.api.nvim_win_get_cursor(0)
       MiniAi.move_cursor(direction, "a", id, {
-        search_method = (direction == "left") and "cover_or_prev" or "cover_or_next",
+        search_method = (direction == "left") and "cover_or_prev"
+          or "cover_or_next",
       })
       local new_position = vim.api.nvim_win_get_cursor(0)
       local has_cursor_moved = old_position[0] ~= new_position[0]
         or old_position[1] ~= new_position[1]
       if has_cursor_moved then
-        vim.cmd(string.format([[normal! %s]], direction == "left" and "k" or "j"))
+        vim.cmd(
+          string.format([[normal! %s]], direction == "left" and "k" or "j")
+        )
       end
     end
 
@@ -125,7 +131,8 @@ Plug("echasnovski/mini.nvim", {
     local function run_without_indent_at_cursor(fn)
       local old_opts = vim.b.miniindentscope_config
       if old_opts ~= nil then
-        vim.b.miniindentscope_config = vim.tbl_deep_extend("force", old_opts, new_opts)
+        vim.b.miniindentscope_config =
+          vim.tbl_deep_extend("force", old_opts, new_opts)
       else
         vim.b.miniindentscope_config = new_opts
       end
@@ -238,7 +245,9 @@ Plug("echasnovski/mini.nvim", {
             if braces == nil then
               return nil
             end
-            return { string.rep(braces[1], 2) .. "().-()" .. string.rep(braces[2], 2) }
+            return {
+              string.rep(braces[1], 2) .. "().-()" .. string.rep(braces[2], 2),
+            }
           end,
           output = function()
             local char = utilities.get_char()
@@ -285,7 +294,8 @@ Plug("echasnovski/mini.nvim", {
 
           -- Set cursor in original window to that of the maximized window.
           -- TODO: I should upstream this
-          local maximized_window_cursor_position = vim.api.nvim_win_get_cursor(0)
+          local maximized_window_cursor_position =
+            vim.api.nvim_win_get_cursor(0)
           vim.api.nvim_create_autocmd("WinEnter", {
             once = true,
             group = mini_group_id,

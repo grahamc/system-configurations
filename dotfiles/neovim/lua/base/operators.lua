@@ -36,8 +36,10 @@ Plug("stevearc/conform.nvim", {
     local conform = require("conform")
 
     local function format_region(start_mark, end_mark)
-      local enter_key = vim.api.nvim_replace_termcodes("<CR>", true, false, true)
-      local escape_key = vim.api.nvim_replace_termcodes("<ESC>", true, false, true)
+      local enter_key =
+        vim.api.nvim_replace_termcodes("<CR>", true, false, true)
+      local escape_key =
+        vim.api.nvim_replace_termcodes("<ESC>", true, false, true)
       local command = string.format(
         [[%s:silent %s,%s!conform %s %s%s]],
         escape_key,
@@ -53,7 +55,8 @@ Plug("stevearc/conform.nvim", {
     if IsRunningInTerminal then
       vim.keymap.set("x", "gf", function()
         conform.format()
-        local escape_key = vim.api.nvim_replace_termcodes("<ESC>", true, false, true)
+        local escape_key =
+          vim.api.nvim_replace_termcodes("<ESC>", true, false, true)
         vim.api.nvim_feedkeys(escape_key, "n", true)
       end, { desc = "Format code" })
 
@@ -105,22 +108,24 @@ Plug("stevearc/conform.nvim", {
       html = prettier,
       scss = prettier,
     }
-    formatters_by_ft = vim.iter(formatters_by_ft):fold({}, function(acc, filetype, formatters)
-      formatters = vim.deepcopy(formatters)
-      if not vim.tbl_contains({ "*", "_" }, filetype) then
-        local first = formatters[1]
-        if type(first) == "table" then
-          table.insert(first, 1, "dprint")
-          table.insert(first, 1, "treefmt")
-          formatters[1] = first
-        else
-          formatters[1] = { "treefmt", "dprint", first }
+    formatters_by_ft = vim
+      .iter(formatters_by_ft)
+      :fold({}, function(acc, filetype, formatters)
+        formatters = vim.deepcopy(formatters)
+        if not vim.tbl_contains({ "*", "_" }, filetype) then
+          local first = formatters[1]
+          if type(first) == "table" then
+            table.insert(first, 1, "dprint")
+            table.insert(first, 1, "treefmt")
+            formatters[1] = first
+          else
+            formatters[1] = { "treefmt", "dprint", first }
+          end
         end
-      end
-      acc[filetype] = formatters
+        acc[filetype] = formatters
 
-      return acc
-    end)
+        return acc
+      end)
 
     local util = require("conform.util")
     conform.setup({
@@ -182,7 +187,8 @@ end
 local function set_formatprg(text)
   local formatprg = string.format(
     "par -w%d",
-    vim.bo.textwidth == 0 and utilities.get_max_line_length() or vim.bo.textwidth
+    vim.bo.textwidth == 0 and utilities.get_max_line_length()
+      or vim.bo.textwidth
   )
 
   local _, newline_count = string.gsub(text, "\n", "")
@@ -193,15 +199,19 @@ local function set_formatprg(text)
     table.sort(commentstrings, function(a, b)
       return #a < #b
     end)
-    local longest_matching_commentstring = vim.iter(commentstrings):find(function(commentstring)
-      -- TODO: can only be preceded by spaces
-      local start, _ = text:find(commentstring, 1, true)
-      return start ~= nil
-    end)
+    local longest_matching_commentstring = vim
+      .iter(commentstrings)
+      :find(function(commentstring)
+        -- TODO: can only be preceded by spaces
+        local start, _ = text:find(commentstring, 1, true)
+        return start ~= nil
+      end)
 
     if longest_matching_commentstring ~= nil then
-      local start_index_of_commentstring = text:find(longest_matching_commentstring, 1, true)
-      local prefix = start_index_of_commentstring + #longest_matching_commentstring
+      local start_index_of_commentstring =
+        text:find(longest_matching_commentstring, 1, true)
+      local prefix = start_index_of_commentstring
+        + #longest_matching_commentstring
       formatprg = formatprg .. string.format(" -p%d", prefix)
     else
       vim.notify(
@@ -321,7 +331,9 @@ Plug("monaqa/dial.nvim", {
       )
     end
 
-    require("dial.config").augends:register_group({ default = vim.tbl_values(defaults) })
+    require("dial.config").augends:register_group({
+      default = vim.tbl_values(defaults),
+    })
 
     local augends_for_js_based_languages = extend_defaults({
       add = {
@@ -413,12 +425,25 @@ Plug("Wansmer/treesj", {
             { desc = "Toggle split/join", buffer = true }
           )
           vim.keymap.set("n", "sS", function()
-            require("treesj").toggle({ join = { recursive = true }, split = { recursive = true } })
+            require("treesj").toggle({
+              join = { recursive = true },
+              split = { recursive = true },
+            })
           end, { desc = "Toggle recursive split/join", buffer = true })
         else
-          vim.keymap.set("n", "ss", vim.cmd.SplitjoinSplit, { desc = "Split", buffer = true })
+          vim.keymap.set(
+            "n",
+            "ss",
+            vim.cmd.SplitjoinSplit,
+            { desc = "Split", buffer = true }
+          )
           -- Must be used on the first line of the split
-          vim.keymap.set("n", "sj", vim.cmd.SplitjoinJoin, { desc = "Join", buffer = true })
+          vim.keymap.set(
+            "n",
+            "sj",
+            vim.cmd.SplitjoinJoin,
+            { desc = "Join", buffer = true }
+          )
         end
       end,
     })

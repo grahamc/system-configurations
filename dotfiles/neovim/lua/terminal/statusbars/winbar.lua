@@ -14,7 +14,8 @@ Plug("Bekaboo/dropbar.nvim", {
         -- I copied the default function and added a check for dapui
         enable = function(buf, win, _)
           local filetype = vim.bo[buf].filetype
-          local is_dapui_buffer = vim.startswith(filetype, "dapui_") or filetype == "dap-repl"
+          local is_dapui_buffer = vim.startswith(filetype, "dapui_")
+            or filetype == "dap-repl"
           return not vim.api.nvim_win_get_config(win).zindex
             and (vim.bo[buf].buftype == "" or vim.bo[buf].buftype == "terminal")
             and vim.api.nvim_buf_get_name(buf) ~= ""

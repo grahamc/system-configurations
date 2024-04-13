@@ -106,7 +106,11 @@ function MyPaste(was_in_visual_mode, is_capital_p)
   local set_lazy_redraw = ":set lazyredraw" .. enter_key
   local unset_lazy_redraw = ":set nolazyredraw" .. enter_key
   local indent = is_multi_line_paste
-      and string.format([[:%d,%dnormal! ==]] .. enter_key, LastPasteStartLine, LastPasteEndLine)
+      and string.format(
+        [[:%d,%dnormal! ==]] .. enter_key,
+        LastPasteStartLine,
+        LastPasteEndLine
+      )
     or ""
   local go_back_to_visual = was_in_visual_mode and "gv" or ""
   local delete_into_blackhole = was_in_visual_mode and '"_d' or ""
@@ -120,7 +124,9 @@ function MyPaste(was_in_visual_mode, is_capital_p)
 (
             was_in_visual_mode
             and not is_multi_line_paste
-            and (vim.fn.col("'>") == (vim.fn.col({ LastPasteEndLine, "$" }) - 1))
+            and (
+              vim.fn.col("'>") == (vim.fn.col({ LastPasteEndLine, "$" }) - 1)
+            )
           )
           or (
             was_in_visual_mode
@@ -192,7 +198,8 @@ vim.g.loaded_perl_provider = 0
 -- need to be registered after filetype detection is enabled. File type detection is turned on in
 -- plug_end() so this function gets called at `PlugEndPost`, which is right after plug_end() is
 -- called.
-local vim_default_overrides_group_id = vim.api.nvim_create_augroup("VimDefaultOverrides", {})
+local vim_default_overrides_group_id =
+  vim.api.nvim_create_augroup("VimDefaultOverrides", {})
 vim.api.nvim_create_autocmd("User", {
   pattern = "PlugEndPost",
   group = vim_default_overrides_group_id,
@@ -236,7 +243,9 @@ Plug("tpope/vim-abolish", {
 -- commandline so if my autocommand has a substitute command it will use `smagic`.
 vim.keymap.set({ "ca" }, "s", function()
   local cmdline = vim.fn.getcmdline()
-  if vim.fn.getcmdtype() == ":" and (cmdline == "s" or cmdline == [['<,'>s]]) then
+  if
+    vim.fn.getcmdtype() == ":" and (cmdline == "s" or cmdline == [['<,'>s]])
+  then
     return "smagic"
   else
     return "s"

@@ -33,7 +33,9 @@ vim.g.bullets_checkbox_markers = " X"
 vim.g.bullets_set_mappings = 0
 local function bullets_newline()
   -- my markdown linter says there should be a blank line in between list items
-  vim.g.bullets_line_spacing = vim.tbl_contains({ "markdown" }, vim.bo.filetype) and 2 or 1
+  vim.g.bullets_line_spacing = vim.tbl_contains({ "markdown" }, vim.bo.filetype)
+      and 2
+    or 1
   return "<Plug>(bullets-newline)"
 end
 -- When I creating the keymaps outside of an autocommand it didn't work so now I'm creating it the
@@ -49,7 +51,12 @@ vim.api.nvim_create_autocmd("FileType", {
       return
     end
 
-    vim.keymap.set({ "i" }, "<CR>", bullets_newline, { expr = true, buffer = true, remap = true })
+    vim.keymap.set(
+      { "i" },
+      "<CR>",
+      bullets_newline,
+      { expr = true, buffer = true, remap = true }
+    )
     vim.keymap.set(
       { "n", "x" },
       "gN",
@@ -79,8 +86,18 @@ vim.api.nvim_create_autocmd("FileType", {
       return [[<Plug>(bullets-promote)]]
     end, { expr = true, buffer = true, remap = true })
 
-    vim.keymap.set({ "i" }, "<C-k>", "<Plug>(bullets-demote)", { buffer = true, remap = true })
-    vim.keymap.set({ "i" }, "<C-j>", "<Plug>(bullets-promote)", { buffer = true, remap = true })
+    vim.keymap.set(
+      { "i" },
+      "<C-k>",
+      "<Plug>(bullets-demote)",
+      { buffer = true, remap = true }
+    )
+    vim.keymap.set(
+      { "i" },
+      "<C-j>",
+      "<Plug>(bullets-promote)",
+      { buffer = true, remap = true }
+    )
     vim.keymap.set(
       { "n" },
       "<<",

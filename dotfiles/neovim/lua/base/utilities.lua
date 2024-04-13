@@ -9,13 +9,15 @@ function M.get_max_line_length()
   return ({
     -- default for black
     python = 88,
-  })[vim.bo.filetype] or 100
+  })[vim.bo.filetype] or 80
 end
 
 function M.get_visual_selection()
   local mode_char = vim.fn.mode()
   -- "\x16" is the code for ctrl+v i.e. visual-block mode
-  local in_visual_mode = mode_char == "v" or mode_char == "V" or mode_char == "\x16"
+  local in_visual_mode = mode_char == "v"
+    or mode_char == "V"
+    or mode_char == "\x16"
   if not in_visual_mode then
     return ""
   end

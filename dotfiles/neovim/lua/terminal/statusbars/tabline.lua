@@ -10,7 +10,10 @@ Plug("akinsho/bufferline.nvim", {
       -- If the buffer is open in another window, don't close it.
       local buffer_window_count = #vim.fn.win_findbuf(buffer)
       if buffer_window_count > 1 then
-        vim.notify("Can't close buffer, it's open in another window", vim.log.levels.INFO)
+        vim.notify(
+          "Can't close buffer, it's open in another window",
+          vim.log.levels.INFO
+        )
         return
       end
 
@@ -20,7 +23,8 @@ Plug("akinsho/bufferline.nvim", {
       local function is_not_float(window)
         return vim.api.nvim_win_get_config(window).relative == ""
       end
-      local window_count = #vim.tbl_filter(is_not_float, vim.api.nvim_list_wins())
+      local window_count =
+        #vim.tbl_filter(is_not_float, vim.api.nvim_list_wins())
 
       -- If this is the last tab, window, and buffer, exit vim
       --
@@ -28,7 +32,9 @@ Plug("akinsho/bufferline.nvim", {
       local is_last_window = window_count == 1
         or (window_count == 2 and require("nvim-tree.api").tree.is_visible())
       if tab_count == 1 and is_last_window and buffer_count == 1 then
-        local is_linked_to_file = #vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()) > 0
+        local is_linked_to_file = #vim.api.nvim_buf_get_name(
+          vim.api.nvim_get_current_buf()
+        ) > 0
         -- Using `quitall` instead of quit so if nvim-tree is open it closes both windows.
         --
         -- Only `confirm` if the buffer is linked to a file
@@ -125,7 +131,8 @@ Plug("akinsho/bufferline.nvim", {
       local is_explorer_open = string.find(original, explorer_icon)
       local tab_highlight_escaped = "%%#BufferLineTab"
       local tab_highlight_and_aligner_escaped = "%%=" .. tab_highlight_escaped
-      local is_tab_section_visible = string.find(original, tab_highlight_and_aligner_escaped)
+      local is_tab_section_visible =
+        string.find(original, tab_highlight_and_aligner_escaped)
       local left_border = ""
       local right_border = ""
       local left_border_with_padding = left_border .. "█"
@@ -135,9 +142,13 @@ Plug("akinsho/bufferline.nvim", {
       local left_border_with_padding_length = 2
       local right_border_with_padding_length = 2
       local selected_border_highlight = "%#BufferLineIndicatorSelected#"
-      local right_border_with_selected_highlight = selected_border_highlight .. right_border
+      local right_border_with_selected_highlight = selected_border_highlight
+        .. right_border
 
-      local function inject_right_border_for_selected_buffer(pattern_left, pattern_right)
+      local function inject_right_border_for_selected_buffer(
+        pattern_left,
+        pattern_right
+      )
         result = string.gsub(
           result,
           pattern_left
@@ -156,8 +167,14 @@ Plug("akinsho/bufferline.nvim", {
           1
         )
       end
-      inject_right_border_for_selected_buffer("BufferLineCloseButtonSelected", close_icon .. "%%X")
-      inject_right_border_for_selected_buffer("BufferLineModifiedSelected", close_icon)
+      inject_right_border_for_selected_buffer(
+        "BufferLineCloseButtonSelected",
+        close_icon .. "%%X"
+      )
+      inject_right_border_for_selected_buffer(
+        "BufferLineModifiedSelected",
+        close_icon
+      )
 
       -- left centerer for buffer list
       if is_explorer_open then
@@ -188,7 +205,9 @@ Plug("akinsho/bufferline.nvim", {
           "(.*)"
             .. close_icon
             .. " ",
-          "%1" .. close_icon .. escape_percent(right_border_with_selected_highlight),
+          "%1"
+            .. close_icon
+            .. escape_percent(right_border_with_selected_highlight),
           1
         )
       end

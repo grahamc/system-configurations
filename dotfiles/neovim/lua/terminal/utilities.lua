@@ -22,7 +22,8 @@ function M.set_persistent_highlights(key, highlights)
   if id_map[key] ~= nil then
     vim.api.nvim_del_autocmd(id_map[key])
   end
-  id_map[key] = vim.api.nvim_create_autocmd("ColorScheme", { callback = helper })
+  id_map[key] =
+    vim.api.nvim_create_autocmd("ColorScheme", { callback = helper })
 end
 
 -- Set the filetype of all the currently open buffers to trigger a 'FileType' event for each
@@ -53,8 +54,10 @@ function M.set_up_live_preview(opts)
 
   vim.api.nvim_create_autocmd("WinLeave", {
     callback = function()
-      local is_normal_editor_window = not vim.tbl_contains({ "qf", "NvimTree" }, vim.bo.filetype)
-        and vim.bo.buftype == ""
+      local is_normal_editor_window = not vim.tbl_contains(
+        { "qf", "NvimTree" },
+        vim.bo.filetype
+      ) and vim.bo.buftype == ""
       if is_normal_editor_window then
         context.position = vim.api.nvim_win_get_cursor(0)
         context.buffer = vim.api.nvim_get_current_buf()

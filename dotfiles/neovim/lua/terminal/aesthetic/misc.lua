@@ -33,12 +33,15 @@ Plug("levouh/tint.nvim", {
           -- source:
           -- https://learn.microsoft.com/en-us/answers/questions/1497116/how-to-find-if-a-given-color-is-dark-or-light
           local is_light = ((0.2126 * r) + (0.7152 * g) + (0.0722 * b)) > 128
-          local has_bg_or_fg_matches_terminal_bg = string.find(info.hl_group_name, "Virtual")
-            or (vim.api.nvim_get_hl(0, { name = info.hl_group_name }).fg == decimal)
+          local has_bg_or_fg_matches_terminal_bg = string.find(
+            info.hl_group_name,
+            "Virtual"
+          ) or (vim.api.nvim_get_hl(0, { name = info.hl_group_name }).fg == decimal)
           return unpack(vim
             .iter({ r, g, b })
             :map(function(v)
-              return has_bg_or_fg_matches_terminal_bg and v or (is_light and (v - 10) or (v + 5))
+              return has_bg_or_fg_matches_terminal_bg and v
+                or (is_light and (v - 10) or (v + 5))
             end)
             :totable())
         end,
@@ -48,7 +51,9 @@ Plug("levouh/tint.nvim", {
     -- I only want inactive windows dimmed when we're in a float.
     vim.api.nvim_create_autocmd({ "WinEnter" }, {
       callback = function()
-        local floating = vim.api.nvim_win_get_config(vim.api.nvim_get_current_win()).relative ~= ""
+        local floating = vim.api.nvim_win_get_config(
+          vim.api.nvim_get_current_win()
+        ).relative ~= ""
         -- This assumes that only floats without a winhighlight for NormalFloat are transparent
         if floating and not vim.wo.winhighlight:find("NormalFloat") then
           vim.iter(vim.fn.getwininfo() or {}):each(function(w)

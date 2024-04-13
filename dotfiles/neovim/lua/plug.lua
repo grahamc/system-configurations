@@ -32,7 +32,8 @@ local function plug(repo, options)
     return
   end
 
-  local original_plug_options = vim.tbl_deep_extend("force", options, { config = nil, sync = nil })
+  local original_plug_options =
+    vim.tbl_deep_extend("force", options, { config = nil, sync = nil })
   original_plug(repo, original_plug_options)
 
   local config = options.config
@@ -134,7 +135,12 @@ vim.api.nvim_create_autocmd("User", {
     )
     local should_install = vim.fn.confirm(install_prompt, "yes\nno") == 1
     if should_install then
-      vim.cmd(string.format("PlugInstall --sync %s", table.concat(missing_plugin_names, " ")))
+      vim.cmd(
+        string.format(
+          "PlugInstall --sync %s",
+          table.concat(missing_plugin_names, " ")
+        )
+      )
     end
   end,
   group = vim.api.nvim_create_augroup("InstallMissingPlugins", {}),

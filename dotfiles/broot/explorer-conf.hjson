@@ -1,5 +1,7 @@
 # TODO: Need to map double-click too:
 # https://github.com/Canop/broot/issues/857
+# Also escape. Maybe instead there should be a way to run a command whenever the current directory
+# changes.
 verbs: [
     {
         key: enter

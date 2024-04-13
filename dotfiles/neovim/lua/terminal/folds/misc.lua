@@ -56,7 +56,10 @@ local function maybe_set_treesitter_foldmethod()
   local is_foldmethod_overridable =
     not vim.tbl_contains({ "marker", "diff", "expr" }, vim.wo.foldmethod)
 
-  if require("nvim-treesitter.parsers").has_parser() and is_foldmethod_overridable then
+  if
+    require("nvim-treesitter.parsers").has_parser()
+    and is_foldmethod_overridable
+  then
     vim.wo.foldmethod = "expr"
     vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
   end

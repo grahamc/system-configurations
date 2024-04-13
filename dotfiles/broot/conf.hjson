@@ -16,6 +16,8 @@ syntax_theme: EightiesDark
 
 modal: true
 
+icon_theme: nerdfont
+
 "search-modes": {
     /: fuzzy path
     r/: regex path
@@ -77,11 +79,11 @@ verbs: [
 
 skin: {
     default: None None / ansi(8) None
-    tree: ansi(8) None
+    tree: ansi(0) None
     parent: None None / ansi(8) None
     file: None None / ansi(8) None
     directory: ansi(4) None / ansi(8) None
-    exe: ansi(2) None / ansi(8) None
+    exe: ansi(5) None / ansi(8) None
     link: None None / ansi(8) None
     pruning: ansi(8) None Italic
     perm__: ansi(8) None

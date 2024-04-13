@@ -29,7 +29,10 @@ function M.get_supported_clients_for_buffer(buf)
   return vim
     .iter(lsp.get_clients({ bufnr = buf }))
     :filter(function(client)
-      return client.supports_method(lsp.protocol.Methods.textDocument_foldingRange, { bufnr = buf })
+      return client.supports_method(
+        lsp.protocol.Methods.textDocument_foldingRange,
+        { bufnr = buf }
+      )
     end)
     :totable()
 end

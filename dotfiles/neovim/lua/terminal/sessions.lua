@@ -68,7 +68,10 @@ local function delete_current_session()
 
   local has_active_session = string.len(session) > 0
   if not has_active_session then
-    vim.notify([[Unable to delete session, no session is currently active.]], vim.log.levels.ERROR)
+    vim.notify(
+      [[Unable to delete session, no session is currently active.]],
+      vim.log.levels.ERROR
+    )
     return
   end
 
@@ -89,7 +92,10 @@ local function delete_all_sessions()
 
   if not vim.fn.isdirectory(session_dir) then
     vim.notify(
-      string.format([[Unable to delete all sessions, '%s' is not a directory.]], session_dir),
+      string.format(
+        [[Unable to delete all sessions, '%s' is not a directory.]],
+        session_dir
+      ),
       vim.log.levels.ERROR
     )
     return

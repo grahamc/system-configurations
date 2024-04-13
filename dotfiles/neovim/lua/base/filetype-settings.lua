@@ -19,7 +19,8 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 Plug("LnL7/vim-nix")
 
 -- Tweak iskeyword {{{
-local extend_is_keyword_group_id = vim.api.nvim_create_augroup("ExtendIskeyword", {})
+local extend_is_keyword_group_id =
+  vim.api.nvim_create_augroup("ExtendIskeyword", {})
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "txt",

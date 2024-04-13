@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=https://json.schemastore.org/lefthook.json
 
-# By default lefthook uses true colors (e.g. #FFFFFF), but they may not be readable depending on
-# the terminal background color. Instead I'm using ANSI colors since they come from the terminal's
-# color palette.
+# By default lefthook uses true colors (e.g. #FFFFFF), but they may not be
+# readable depending on the terminal background color. Instead I'm using ANSI
+# colors since they come from the terminal's color palette.
 colors:
   cyan: 6
   gray: 8
@@ -30,6 +30,10 @@ pre-commit:
     format:
       priority: 2
       run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just format
+    format-no-cache:
+      priority: 3
+      glob: "{.stylua.toml,.editorconfig,treefmt.toml}"
+      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just format-no-cache
 
 post-merge:
   scripts:

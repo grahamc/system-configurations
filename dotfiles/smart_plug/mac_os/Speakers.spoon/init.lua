@@ -41,7 +41,8 @@ local function make_menubar_item(speakerctl_path)
     -- TODO: Show a loading state initially and update the menu asynchronously. I'll be able to do
     -- that when this issue is resolved:
     -- https://github.com/Hammerspoon/hammerspoon/issues/1923
-    local exit_code = execute(speakerctl_path, {}):waitUntilExit():terminationStatus()
+    local exit_code =
+      execute(speakerctl_path, {}):waitUntilExit():terminationStatus()
 
     local menu_item = {
       title = "Disconnected from speakers",

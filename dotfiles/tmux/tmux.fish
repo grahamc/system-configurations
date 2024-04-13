@@ -79,8 +79,8 @@ function __fish_prompt_post --on-event fish_prompt
             return
         end
 
-        # TODO: See if I can use an empty hyperlink as the marker since it won't take up any visible
-        # space.
+        # TODO: tmux supports OSC 133 so I should open an issue for adding something to the tmux CLI
+        # for getting the last command output, maybe by adding a flag to `capture-pane`.
         echo \u00A0"$prompt"\u00A0
     end
 end

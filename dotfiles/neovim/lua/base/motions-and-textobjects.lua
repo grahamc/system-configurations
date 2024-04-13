@@ -16,7 +16,10 @@ vim.keymap.set({ "n" }, "gp", function()
     LastPasteEndCol,
     {}
   )
-  return string.format("`y%s`z", (LastPasteStartLine == LastPasteEndLine) and "v" or "V")
+  return string.format(
+    "`y%s`z",
+    (LastPasteStartLine == LastPasteEndLine) and "v" or "V"
+  )
 end, {
   desc = "Last pasted text",
   expr = true,
@@ -80,8 +83,18 @@ vim.keymap.set({ "n" }, "}", [[<Cmd>keepjumps normal! }<CR>]], {
 vim.keymap.set({ "n" }, "{", [[<Cmd>keepjumps normal! {<CR>]], {
   desc = "Start of paragraph",
 })
-vim.keymap.set({ "n", "x" }, "]p", "}", { remap = true, desc = "End of paragraph" })
-vim.keymap.set({ "n", "x" }, "[p", "{", { remap = true, desc = "Start of paragraph" })
+vim.keymap.set(
+  { "n", "x" },
+  "]p",
+  "}",
+  { remap = true, desc = "End of paragraph" }
+)
+vim.keymap.set(
+  { "n", "x" },
+  "[p",
+  "{",
+  { remap = true, desc = "Start of paragraph" }
+)
 
 -- Move to beginning and end of line
 vim.keymap.set({ "n" }, "<C-a>", "^", {

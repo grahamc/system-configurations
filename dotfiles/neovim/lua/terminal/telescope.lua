@@ -5,7 +5,9 @@ Plug("nvim-telescope/telescope.nvim", {
 
     local select_one_or_multiple_files = function(prompt_buffer_number)
       local current_picker =
-        require("telescope.actions.state").get_current_picker(prompt_buffer_number)
+        require("telescope.actions.state").get_current_picker(
+          prompt_buffer_number
+        )
       local multi_selections = current_picker:get_multi_selection()
       if not vim.tbl_isempty(multi_selections) then
         actions.close(prompt_buffer_number)
@@ -105,7 +107,8 @@ Plug("nvim-telescope/telescope.nvim", {
           mappings = {
             i = {
               ["<CR>"] = function(prompt_bufnr)
-                local selection = require("telescope.actions.state").get_selected_entry().value
+                local selection =
+                  require("telescope.actions.state").get_selected_entry().value
                 actions.close(prompt_bufnr)
                 vim.cmd("Help " .. selection)
               end,
@@ -116,10 +119,12 @@ Plug("nvim-telescope/telescope.nvim", {
           mappings = {
             i = {
               ["<CR>"] = function(prompt_bufnr)
-                local selection = require("telescope.actions.state").get_selected_entry().value
+                local selection =
+                  require("telescope.actions.state").get_selected_entry().value
                 actions.close(prompt_bufnr)
                 -- If you just use `vim.cmd` the output won't show so I'm using feedkeys instead
-                local enter_key = vim.api.nvim_replace_termcodes("<CR>", true, false, true)
+                local enter_key =
+                  vim.api.nvim_replace_termcodes("<CR>", true, false, true)
                 vim.api.nvim_feedkeys(":" .. selection .. enter_key, "n", false)
               end,
             },
@@ -157,9 +162,14 @@ Plug("nvim-telescope/telescope.nvim", {
         -- some pickers, like ast_grep require you pass a table, even if it's empty
         opts = opts or {}
 
-        local visual_selection = require("base.utilities").get_visual_selection()
+        local visual_selection =
+          require("base.utilities").get_visual_selection()
         if #visual_selection > 0 then
-          opts = vim.tbl_deep_extend("error", opts, { default_text = visual_selection })
+          opts = vim.tbl_deep_extend(
+            "error",
+            opts,
+            { default_text = visual_selection }
+          )
         end
 
         picker(opts)
@@ -193,7 +203,9 @@ Plug("nvim-telescope/telescope.nvim", {
       { "n", "v" },
       "<Leader>g",
       require("terminal.utilities").set_jump_before(
-        with_visual_selection(with_menufacture_mappings_displayed(telescope_menufacture.live_grep))
+        with_visual_selection(
+          with_menufacture_mappings_displayed(telescope_menufacture.live_grep)
+        )
       ),
       { desc = "Search in files [grep]" }
     )
@@ -228,8 +240,16 @@ Plug("nvim-telescope/telescope.nvim", {
     vim.keymap.set("n", "<Leader>o", telescope_builtins.vim_options, {
       desc = "Vim options",
     })
-    vim.api.nvim_create_user_command("Highlights", telescope_builtins.highlights, {})
-    vim.api.nvim_create_user_command("Autocommands", telescope_builtins.autocommands, {})
+    vim.api.nvim_create_user_command(
+      "Highlights",
+      telescope_builtins.highlights,
+      {}
+    )
+    vim.api.nvim_create_user_command(
+      "Autocommands",
+      telescope_builtins.autocommands,
+      {}
+    )
     vim.api.nvim_create_user_command("Mappings", telescope_builtins.keymaps, {})
   end,
 })

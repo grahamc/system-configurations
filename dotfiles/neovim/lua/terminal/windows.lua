@@ -56,7 +56,11 @@ Plug("Tummetott/reticle.nvim", {
       },
       disable_in_insert = false,
       never = {
-        cursorline = { "TelescopeResults", "dropbar_menu", "neotest-output-panel" },
+        cursorline = {
+          "TelescopeResults",
+          "dropbar_menu",
+          "neotest-output-panel",
+        },
       },
       always = {
         cursorline = { "neotest-summary" },

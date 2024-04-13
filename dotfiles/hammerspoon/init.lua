@@ -54,19 +54,30 @@ local function execute(executable, arguments, callback)
 end
 
 local function toggle_stack_icon_style()
-  execute("/usr/local/bin/hs", { "-c", [[stackline.config:toggle("appearance.showIcons")]] })
+  execute(
+    "/usr/local/bin/hs",
+    { "-c", [[stackline.config:toggle("appearance.showIcons")]] }
+  )
 end
 
 local function toggle_tiling_mode()
-  execute("/usr/local/bin/yabai", { "-m", "config", "layout" }, function(_, stdout, _)
-    local layout = "bsp"
-    if stdout == "bsp\n" then
-      layout = "float"
+  execute(
+    "/usr/local/bin/yabai",
+    { "-m", "config", "layout" },
+    function(_, stdout, _)
+      local layout = "bsp"
+      if stdout == "bsp\n" then
+        layout = "float"
+      end
+      execute(
+        "/usr/local/bin/yabai",
+        { "-m", "config", "layout", layout },
+        function()
+          menubar_item:setIcon(icons[layout])
+        end
+      )
     end
-    execute("/usr/local/bin/yabai", { "-m", "config", "layout", layout }, function()
-      menubar_item:setIcon(icons[layout])
-    end)
-  end)
+  )
 end
 
 local function getShortcutsHtml()

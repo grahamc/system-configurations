@@ -21,7 +21,12 @@ Plug("f-person/git-blame.nvim", {
       schedule_event = "CursorHold",
       clear_event = "CursorHoldI",
     })
-    vim.keymap.set("n", [[\b]], vim.cmd.GitBlameToggle, { desc = "Toggle git blame" })
+    vim.keymap.set(
+      "n",
+      [[\b]],
+      vim.cmd.GitBlameToggle,
+      { desc = "Toggle git blame" }
+    )
   end,
 })
 

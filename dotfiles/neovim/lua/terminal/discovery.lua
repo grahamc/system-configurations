@@ -52,7 +52,11 @@ Plug("mrjones2014/legendary.nvim", {
       default_item_formatter = function(item)
         local Toolbox = require("legendary.toolbox")
         local function truncate(s)
-          return string.sub(s, 1, math.max(25, math.floor(vim.o.columns * 0.15)))
+          return string.sub(
+            s,
+            1,
+            math.max(25, math.floor(vim.o.columns * 0.15))
+          )
         end
         if Toolbox.is_keymap(item) then
           return { truncate(item.keys), item.description }
@@ -63,7 +67,10 @@ Plug("mrjones2014/legendary.nvim", {
         elseif Toolbox.is_function(item) then
           return { truncate("<function>"), item.description }
         elseif Toolbox.is_itemgroup(item) then
-          return { truncate(item.name), item.description or "Expand to select an item..." }
+          return {
+            truncate(item.name),
+            item.description or "Expand to select an item...",
+          }
         else
           -- unreachable
           return { "", vim.inspect(item) }
@@ -137,9 +144,11 @@ Plug("mrjones2014/legendary.nvim", {
       end
     end
 
-    local filter_unique_keymaps_across_invocations = make_unique_filter(function(keymap)
-      return { keymap.buffer, keymap.lhs, keymap.mode }
-    end)
+    local filter_unique_keymaps_across_invocations = make_unique_filter(
+      function(keymap)
+        return { keymap.buffer, keymap.lhs, keymap.mode }
+      end
+    )
     local function load_keymaps()
       local max_lhs_length = math.floor(vim.o.columns / 4)
       local function to_legendary_keymap(keymap)
@@ -150,15 +159,22 @@ Plug("mrjones2014/legendary.nvim", {
 
         local description = get_description(keymap, { "desc", "rhs" })
 
-        local formatted_lhs =
-          string.sub(keymap.lhs, 1, max_lhs_length):gsub(vim.g.mapleader, "<leader>")
+        local formatted_lhs = string
+          .sub(keymap.lhs, 1, max_lhs_length)
+          :gsub(vim.g.mapleader, "<leader>")
 
         -- Remaps done by wezterm
-        formatted_lhs = string.sub(formatted_lhs, 1, max_lhs_length):gsub("<F6>", "<C-m>")
-        formatted_lhs = string.sub(formatted_lhs, 1, max_lhs_length):gsub("<F7>", "<C-[>")
-        formatted_lhs = string.sub(formatted_lhs, 1, max_lhs_length):gsub("<F8>", "<C-]>")
-        formatted_lhs = string.sub(formatted_lhs, 1, max_lhs_length):gsub("<F9>", "<C-i>")
-        formatted_lhs = string.sub(formatted_lhs, 1, max_lhs_length):gsub("<leader>(%d)", "<C-%1>")
+        formatted_lhs =
+          string.sub(formatted_lhs, 1, max_lhs_length):gsub("<F6>", "<C-m>")
+        formatted_lhs =
+          string.sub(formatted_lhs, 1, max_lhs_length):gsub("<F7>", "<C-[>")
+        formatted_lhs =
+          string.sub(formatted_lhs, 1, max_lhs_length):gsub("<F8>", "<C-]>")
+        formatted_lhs =
+          string.sub(formatted_lhs, 1, max_lhs_length):gsub("<F9>", "<C-i>")
+        formatted_lhs = string
+          .sub(formatted_lhs, 1, max_lhs_length)
+          :gsub("<leader>(%d)", "<C-%1>")
 
         return {
           formatted_lhs,
@@ -180,11 +196,13 @@ Plug("mrjones2014/legendary.nvim", {
         :flatten()
         :totable()
 
-      local global_keymaps = vim.iter(modes):map(vim.api.nvim_get_keymap):flatten():totable()
+      local global_keymaps =
+        vim.iter(modes):map(vim.api.nvim_get_keymap):flatten():totable()
 
       -- I put buffer maps first so buffer maps will take priority over global maps when we
       -- filter.
-      local all_keymaps = require("base.utilities").table_concat(buffer_keymaps, global_keymaps)
+      local all_keymaps =
+        require("base.utilities").table_concat(buffer_keymaps, global_keymaps)
 
       vim
         .iter(all_keymaps)
@@ -200,9 +218,11 @@ Plug("mrjones2014/legendary.nvim", {
         :each(legendary.keymap)
     end
 
-    local filter_unique_commands_across_invocations = make_unique_filter(function(name, _, buf)
-      return { buf, name }
-    end)
+    local filter_unique_commands_across_invocations = make_unique_filter(
+      function(name, _, buf)
+        return { buf, name }
+      end
+    )
     local function load_commands()
       local function to_legendary_command(command_name, info, buf)
         local filters = {}

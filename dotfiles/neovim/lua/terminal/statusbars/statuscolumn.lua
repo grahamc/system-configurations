@@ -30,7 +30,8 @@ ffi.cdef([[
   int win_col_off(win_T *wp);
 ]])
 local function get_fold_section()
-  local wp = ffi.C.find_window_by_handle(vim.g.statusline_winid, ffi.new("Error"))
+  local wp =
+    ffi.C.find_window_by_handle(vim.g.statusline_winid, ffi.new("Error"))
   local foldinfo = ffi.C.fold_info(wp, vim.v.lnum)
   local string = "%#FoldColumn#"
   local level = foldinfo.level
@@ -66,7 +67,10 @@ function StatusColumn()
     SignifyChange = "SignifyChange",
   }
   -- There will be one item at most in this list since I supplied a buffer number.
-  local signsPerBuffer = vim.fn.sign_getplaced(buffer, { lnum = vim.v.lnum, group = "" }) or {}
+  local signsPerBuffer = vim.fn.sign_getplaced(
+    buffer,
+    { lnum = vim.v.lnum, group = "" }
+  ) or {}
   if next(signsPerBuffer) ~= nil then
     for _, sign in ipairs(signsPerBuffer[1].signs) do
       local name = sign.name
