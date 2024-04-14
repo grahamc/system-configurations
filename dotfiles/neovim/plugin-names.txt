@@ -74,5 +74,4 @@ vim-repeat
 vim-signify
 vim-sleuth
 vim-tmux-navigator
-virt-column.nvim
 which-key.nvim

@@ -34,8 +34,9 @@ config.audible_bell = "Disabled"
 config.default_cursor_style = "BlinkingBar"
 config.bold_brightens_ansi_colors = false
 config.disable_default_key_bindings = true
--- I had an issue where WezTerm would sometimes freeze when I input a key and I would have to input
--- another key to fix it, but setting this to false seems to fix that. Solution came from here:
+-- I had an issue where WezTerm would sometimes freeze when I input a key and I
+-- would have to input another key to fix it, but setting this to false seems to
+-- fix that. Solution came from here:
 -- https://www.reddit.com/r/commandline/comments/1621suy/help_issue_with_wezterm_and_vim_key_repeat/
 config.use_ime = false
 config.enable_kitty_keyboard = true
@@ -53,9 +54,11 @@ config.term = "wezterm"
 local function font_with_icon_fallbacks(font)
   return wezterm.font_with_fallback({ font, "nonicons", "SymbolsNerdFontMono" })
 end
--- For Linux, I'd like to put 'monospace' here so Wezterm can use the monospace font that I set for
--- my system, but Flatpak apps can't access my font configuration file from their sandbox so for now
--- I'll hardcode a font. issue: https://github.com/flatpak/flatpak/issues/1563
+-- For Linux, I'd like to put 'monospace' here so Wezterm can use the monospace
+-- font that I set for my system, but Flatpak apps can't access my font
+-- configuration file from their sandbox so for now I'll hardcode a font.
+--
+-- issue: https://github.com/flatpak/flatpak/issues/1563
 config.font = font_with_icon_fallbacks("Hack")
 config.font_rules = {
   {
@@ -99,13 +102,16 @@ local my_colors_per_color_scheme = {
     [13] = "#B48EAD",
     [14] = "#8FBCBB",
     [15] = "#78849b",
-    -- Background color for the non-emphasized and emphasized part of a removed line in a git diff
+    -- Background color for the non-emphasized and emphasized part of a removed
+    -- line in a git diff
     [17] = "#301a1f",
     [25] = "#803030",
-    -- Background color for the non-emphasized and emphasized part of an added line in a git diff
+    -- Background color for the non-emphasized and emphasized part of an added
+    -- line in a git diff
     [18] = "#12261e",
     [26] = "#1d572c",
-    -- Background color for the source and destination of a moved line in a git diff
+    -- Background color for the source and destination of a moved line in a git
+    -- diff
     [21] = "#60405a",
     [22] = "#306a7b",
     -- highlight color
@@ -129,13 +135,16 @@ local my_colors_per_color_scheme = {
     [13] = "#d6438a",
     [14] = "#2AA298",
     [15] = "#808080",
-    -- Background color for the non-emphasized and emphasized part of a removed line in a git diff
+    -- Background color for the non-emphasized and emphasized part of a removed
+    -- line in a git diff
     [17] = "#FFD7D7",
     [25] = "#FFAFAF",
-    -- Background color for the non-emphasized and emphasized part of an added line in a git diff
+    -- Background color for the non-emphasized and emphasized part of an added
+    -- line in a git diff
     [18] = "#D7FFD7",
     [26] = "#96D596",
-    -- Background color for the source and destination of a moved line in a git diff
+    -- Background color for the source and destination of a moved line in a git
+    -- diff
     [21] = "#e99ac0",
     [22] = "#85dfd8",
     -- highlight color
@@ -164,7 +173,8 @@ local function create_color_schemes(colors_per_color_scheme)
         color_scheme["selection_bg"] = color
         color_scheme["scrollbar_thumb"] = color
         color_scheme["cursor_border"] = color
-        -- TODO: For `cursor_border` to work, `cursor_bg` needs to be set to the same color
+        -- TODO: For `cursor_border` to work, `cursor_bg` needs to be set to the
+        -- same color
         -- issue: https://github.com/wez/wezterm/issues/1494
         color_scheme["cursor_bg"] = color
       elseif index == 8 then
@@ -263,9 +273,10 @@ end
 
 -- Change theme automatically when the system theme changes
 --
--- There is no event for when the system appearance changes. Instead, when the appearance changes,
--- the 'window-config-reloaded' event is fired. To get around this, I keep track of the current
--- system appearance fire my own event when I detect a change.
+-- There is no event for when the system appearance changes. Instead, when the
+-- appearance changes, the 'window-config-reloaded' event is fired. To get
+-- around this, I keep track of the current system appearance fire my own event
+-- when I detect a change.
 local current_system_appearance = nil
 wezterm.on("window-config-reloaded", function(window)
   local new_system_appearance = wezterm.gui.get_appearance()
@@ -293,9 +304,13 @@ local function fire_theme_event_in_neovim(theme)
   local event_name = theme == Theme.Dark and "ColorSchemeDark"
     or "ColorSchemeLight"
   if os.execute(string.format([[test -d %s]], pipe_directory)) then
+    -- I'm executing the neovim remote commands in the background so this way if
+    -- a neovim instance is blocked (e.g. A 'Press enter to continue prompt' is
+    -- being shown like when you execute `:mess`), preventing it from handling
+    -- the remote message immediately, wezterm will not be blocked.
     os.execute(
       string.format(
-        [[find '%s' -type s -o -type p | xargs -I PIPE '%s' --server PIPE --remote-expr 'v:lua.vim.api.nvim_exec_autocmds("User", {"pattern": "%s"})']],
+        [=[find '%s' \( -type s -o -type p \) -exec sh -c '"%s" --server {} --remote-expr '"'"'v:lua.vim.api.nvim_exec_autocmds("User", {"pattern": "%s"})'"'"' &' \;]=],
         pipe_directory,
         nvim_wezterm_runtime_directory .. "/nvim",
         event_name

@@ -3,9 +3,9 @@
 <plist version="1.0">
     <dict>
         <!--
-        This is a copy of the base16-256 theme that comes with bat, but with a few changes.  It
-        needs to named ansi because bat only applies an underline for highlighted lines when the
-        theme is named ansi:
+        This is a copy of the base16-256 theme that comes with bat, but with
+        a few changes.  It needs to named ansi because bat only applies an
+        underline for highlighted lines when the theme is named ansi:
         https://github.com/sharkdp/bat/pull/1985
         -->
         <!--

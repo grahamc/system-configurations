@@ -1,0 +1,36 @@
+[style.description]
+foreground = "blue"
+underline = false
+bold = false
+italic = false
+
+[style.command_name]
+foreground = "magenta"
+underline = false
+bold = false
+italic = false
+
+[style.example_text]
+underline = false
+bold = false
+italic = false
+
+[style.example_code]
+foreground = "magenta"
+underline = false
+bold = false
+italic = false
+
+[style.example_variable]
+foreground = "magenta"
+underline = false
+bold = false
+italic = false
+
+[display]
+compact = false
+use_pager = true
+
+[updates]
+auto_update = true
+auto_update_interval_hours = 720

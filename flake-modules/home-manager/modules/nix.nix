@@ -6,7 +6,8 @@
 }: let
   inherit (specialArgs) flakeInputs;
   inherit (lib.attrsets) optionalAttrs;
-  inherit (pkgs.stdenv) isDarwin;
+  inherit (pkgs.stdenv) isDarwin isLinux;
+  inherit (lib.lists) optionals;
   nix-daemon-reload =
     pkgs.writeShellApplication
     {
@@ -46,14 +47,21 @@ in {
     in ''${anyNixShellFishConfig}'';
   };
 
-  home.packages = with pkgs; [
-    any-nix-shell
-    nix-tree
-    nix-melt
-    comma
-    nix-daemon-reload
-    nix-output-monitor
-  ];
+  home.packages = with pkgs;
+    [
+      any-nix-shell
+      nix-tree
+      nix-melt
+      comma
+      nix-daemon-reload
+      nix-output-monitor
+      nix-diff
+    ]
+    ++ optionals isLinux [
+      # for breakpointHook:
+      # https://nixos.org/manual/nixpkgs/stable/#breakpointhook
+      cntr
+    ];
 
   repository = {
     symlink.xdg = {

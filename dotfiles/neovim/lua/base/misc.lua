@@ -18,8 +18,9 @@ vim.o.joinspaces = false
 vim.keymap.set({ "n" }, "<Enter>", "o<ESC>", {
   desc = "Insert newline above",
 })
--- TODO: This won't work until tmux can differentiate between enter and shift+enter.
--- tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
+-- TODO: This won't work until tmux can differentiate between enter and
+-- shift+enter. tmux issue:
+-- https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
 vim.keymap.set({ "n" }, "<S-Enter>", "O<ESC>", {
   desc = "Insert newline below",
 })
@@ -35,8 +36,8 @@ vim.keymap.set({ "x" }, "y", "ygv<Esc>", { silent = true })
 -- * re-indent the pasted text which will also move me to the end of the text.
 -- * set markers for the start and end of the pasted text so I can reselect it.
 -- * when pasting from visual mode, it won't overwrite the clipboard.
--- * if the register has multiple lines it, make sure it ends in a newline so we get vim's
--- visual-line yank behavior even with text copied outside of vim.
+-- * if the register has multiple lines it, make sure it ends in a newline so we
+--   get vim's visual-line yank behavior even with text copied outside of vim.
 -- * set lazyredraw while mapping is running for speed
 function MyPaste(was_in_visual_mode, is_capital_p)
   ---@diagnostic disable-next-line: undefined-global
@@ -46,15 +47,18 @@ function MyPaste(was_in_visual_mode, is_capital_p)
   local count = was_in_visual_mode and LastCount or vim.v.count1
   local is_multi_line_paste = register_contents:find("\n")
 
-  -- set globals with the region of the pasted text so I can select it with 'gp' (above).
-  -- People usually use `[ and `] for this, but that gives you the region of the last changed
-  -- text and since I use autosave, it will always be the entire buffer.
+  -- set globals with the region of the pasted text so I can select it with 'gp'
+  -- (above).  People usually use `[ and `] for this, but that gives you the
+  -- region of the last changed text and since I use autosave, it will always be
+  -- the entire buffer.
   --
-  -- TODO: I should post this somewhere since I know I've seen this question asked.
+  -- TODO: I should post this somewhere since I know I've seen this question
+  -- asked.
   if is_multi_line_paste then
-    -- When you yank multiple lines in vim it always appends a newline to the end so the lines don't
-    -- interleave with the text where you paste. I'm doing that here as well to account for text
-    -- that is copied outside of vim.
+    -- When you yank multiple lines in vim it always appends a newline to the
+    -- end so the lines don't interleave with the text where you paste. I'm
+    -- doing that here as well to account for text that is copied outside of
+    -- vim.
     if register_contents:sub(-1) ~= "\n" then
       register_contents = register_contents .. "\n"
       ---@diagnostic disable-next-line: param-type-mismatch
@@ -90,8 +94,8 @@ function MyPaste(was_in_visual_mode, is_capital_p)
       if is_capital_p then
         LastPasteStartCol = vim.fn.col(".") - 1 or 0
       else
-        -- whether the line is is empty or has one char, col() return 1 so we need to use 0 if the
-        -- line is empty.
+        -- whether the line is is empty or has one char, col() return 1 so we
+        -- need to use 0 if the line is empty.
         LastPasteStartCol = (#vim.fn.getline(".") == 0) and 0 or vim.fn.col(".")
       end
     end
@@ -151,13 +155,14 @@ end
 vim.keymap.set({ "n" }, "p", function()
   MyPaste(false, false)
 end, { silent = true })
--- In visual mode p should behave like P, unless the paste is at the end of the document/line, but
--- that gets handled in the paste function.
+-- In visual mode p should behave like P, unless the paste is at the end of the
+-- document/line, but that gets handled in the paste function.
 vim.keymap.set({ "x" }, "p", "P", { silent = true, remap = true })
 vim.keymap.set({ "n" }, "P", function()
   MyPaste(false, true)
 end, { silent = true })
--- Leave visual mode so '< and '> get set, but save the current register beforehand
+-- Leave visual mode so '< and '> get set, but save the current register
+-- beforehand
 vim.keymap.set(
   { "x" },
   "P",
@@ -183,9 +188,10 @@ for _, plugin in pairs(plugins_to_disable) do
   vim.g["loaded_" .. plugin] = 1
 end
 
--- Disable language providers. Feels like a lot of trouble to install neovim bindings for all these
--- languages so I'll just avoid plugins that require them. By disabling the providers, I won't get a
--- warning about missing bindings when I run `:checkhealth`.
+-- Disable language providers. Feels like a lot of trouble to install neovim
+-- bindings for all these languages so I'll just avoid plugins that require
+-- them. By disabling the providers, I won't get a warning about missing
+-- bindings when I run `:checkhealth`.
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_node_provider = 0
@@ -193,11 +199,12 @@ vim.g.loaded_perl_provider = 0
 -- }}}
 
 -- Option overrides {{{
--- Vim's default filetype plugins get run when filetype detection is enabled (i.e. ':filetype plugin
--- on'). So in order to override settings from vim's filetype plugins, these FileType autocommands
--- need to be registered after filetype detection is enabled. File type detection is turned on in
--- plug_end() so this function gets called at `PlugEndPost`, which is right after plug_end() is
--- called.
+-- Vim's default filetype plugins get run when filetype detection is enabled
+-- (i.e. ':filetype plugin on'). So in order to override settings from vim's
+-- filetype plugins, these FileType autocommands need to be registered after
+-- filetype detection is enabled. File type detection is turned on in plug_end()
+-- so this function gets called at `PlugEndPost`, which is right after
+-- plug_end() is called.
 local vim_default_overrides_group_id =
   vim.api.nvim_create_augroup("VimDefaultOverrides", {})
 vim.api.nvim_create_autocmd("User", {
@@ -208,10 +215,12 @@ vim.api.nvim_create_autocmd("User", {
       callback = function()
         -- Don't automatically hard-wrap text
         vim.bo.wrapmargin = 0
-        -- r: Automatically insert the current comment leader after hitting <Enter> in Insert
-        -- mode.
-        -- o: Automatically insert the current comment leader after hitting o/O in normal mode.
-        -- /: Don't auto insert a comment leader if the comment is next to a statemnt.
+        -- r: Automatically insert the current comment leader after hitting
+        --   <Enter> in Insert mode.
+        -- o: Automatically insert the current comment leader after hitting o/O
+        --   in normal mode.
+        -- /: Don't auto insert a comment leader if the comment is next to a
+        --   statemnt.
         -- j: Remove comment leader when joining lines
         vim.bo.formatoptions = "ro/j"
       end,
@@ -233,14 +242,16 @@ vim.api.nvim_create_autocmd("User", {
 -- }}}
 
 -- Substitutions {{{
--- Commands/mappings for working with variants of words. In particular I use its 'S' command for
--- performing substitutions. It has more features than vim's built-in :substitution
+-- Commands/mappings for working with variants of words. In particular I use its
+-- 'S' command for performing substitutions. It has more features than vim's
+-- built-in :substitution
 Plug("tpope/vim-abolish", {
   on = "S",
 })
 
--- Autocommands get executed without `smagic` so I make sure that I explicitly specify it on the
--- commandline so if my autocommand has a substitute command it will use `smagic`.
+-- Autocommands get executed without `smagic` so I make sure that I explicitly
+-- specify it on the commandline so if my autocommand has a substitute command
+-- it will use `smagic`.
 vim.keymap.set({ "ca" }, "s", function()
   local cmdline = vim.fn.getcmdline()
   if

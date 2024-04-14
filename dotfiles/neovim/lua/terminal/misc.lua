@@ -10,7 +10,7 @@ vim.g.netrw_silent = 1
 -- TODO: Avoid weird flickering issue, should report this
 vim.api.nvim_create_autocmd("CursorHold", {
   callback = function()
-    vim.o.scrolloff = vim.fn.line(".") == 1 and 0 or 999
+    vim.o.scrolloff = vim.fn.line(".") == 1 and 0 or 100
   end,
 })
 
@@ -165,57 +165,6 @@ vim.o.shortmess = "ltToOFs"
 -- TODO: tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
 vim.keymap.set({ "n" }, "<F9>", "<C-i>")
 
--- colorcolumn {{{
-Plug("lukas-reineke/virt-column.nvim", {
-  config = function()
-    require("virt-column").setup({ char = "┊" })
-  end,
-})
-
-local colorcolumn_group_id = vim.api.nvim_create_augroup("ColorColumn", {})
-vim.api.nvim_create_autocmd("OptionSet", {
-  pattern = "readonly",
-  callback = function()
-    if vim.v.option_new then
-      vim.wo.colorcolumn = ""
-    end
-  end,
-  group = colorcolumn_group_id,
-})
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "qf", "help" },
-  callback = function()
-    vim.wo.colorcolumn = ""
-  end,
-  group = colorcolumn_group_id,
-})
-vim.api.nvim_create_autocmd("WinLeave", {
-  pattern = "*",
-  callback = function()
-    vim.w.old_colorcolumn = vim.wo.colorcolumn
-    vim.wo.colorcolumn = ""
-  end,
-  group = colorcolumn_group_id,
-})
-vim.api.nvim_create_autocmd("WinEnter", {
-  pattern = "*",
-  callback = function()
-    if vim.w.old_colorcolumn then
-      vim.wo.colorcolumn = vim.w.old_colorcolumn
-    end
-  end,
-  group = colorcolumn_group_id,
-})
-vim.api.nvim_create_autocmd("BufWinEnter", {
-  callback = function()
-    vim.wo.colorcolumn =
-      tostring(require("base.utilities").get_max_line_length() + 1)
-    vim.w.old_colorcolumn = vim.wo.colorcolumn
-  end,
-  group = colorcolumn_group_id,
-})
--- }}}
-
 -- Autosave {{{
 --
 -- TODO: These issues may affect how I want to do this:
@@ -359,20 +308,36 @@ end, { expr = true })
 -- }}}
 
 vim.o.hlsearch = false
-
--- toggle search highlighting and whitespace indicators
 vim.keymap.set(
   "n",
   [[\/]],
   "<Cmd>set hlsearch!<CR>",
   { silent = true, desc = "Toggle search highlight" }
 )
+vim.api.nvim_create_autocmd("CmdlineEnter", {
+  pattern = [=[[/\?]]=],
+  callback = function()
+    vim.o.hlsearch = true
+  end,
+})
+vim.api.nvim_create_autocmd("CmdlineLeave", {
+  pattern = [=[[/\?]]=],
+  callback = function()
+    vim.o.hlsearch = false
+  end,
+})
+
 vim.keymap.set(
   "n",
   [[\ ]],
   "<Cmd>set list!<CR>",
   { silent = true, desc = "Toggle whitespace indicator" }
 )
+vim.keymap.set("n", [[\n]], function()
+  ShowLineNumbers = not ShowLineNumbers
+  -- So the statuscolumn redraws
+  vim.o.statuscolumn = vim.o.statuscolumn
+end, { silent = true, desc = "Toggle line numbers" })
 
 -- Terminal {{{
 vim.keymap.set("t", "jk", [[<C-\><C-n>]])

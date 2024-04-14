@@ -65,18 +65,6 @@
     wezterm = {
       url = "github:wez/wezterm?dir=nix";
     };
-    nixpkgs-for-wezterm-darwin.url = "github:nixos/nixpkgs?rev=ff0a5a776b56e0ca32d47a4a47695452ec7f7d80";
-    # UNFREE
-    # IMPURE
-    # TODO: I think I can make its auto-detection pure by having the nixGL executable be a script
-    # that reads /proc/driver at runtime, instead of at buildtime:
-    # https://github.com/nix-community/nixGL/blob/489d6b095ab9d289fe11af0219a9ff00fe87c7c5/nixGL.nix#L225C14-L225C72
-    nixgl = {
-      url = "github:guibou/nixGL";
-      # Per the readme, nixgl needs to use the same nixpkgs as the program it's wrapping:
-      # https://github.com/nix-community/nixGL?tab=readme-ov-file#directly-run-nixgl
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     # nix
     ########################################
@@ -108,8 +96,22 @@
       };
     };
     flake-utils.url = "github:numtide/flake-utils";
-    # TODO: I get an 'infinite recursion' error when I upgrade this
+    # TODO: I get an error when I try to upgrade this
     flake-parts.url = "github:hercules-ci/flake-parts?rev=b253292d9c0a5ead9bc98c4e9a26c6312e27d69f";
+    nixpkgs-for-wezterm-darwin.url = "github:nixos/nixpkgs?rev=ff0a5a776b56e0ca32d47a4a47695452ec7f7d80";
+    # UNFREE
+    # IMPURE
+    # TODO: I think I can make its auto-detection pure by having the nixGL
+    # executable be a script that reads /proc/driver at runtime, instead of at
+    # buildtime:
+    # https://github.com/nix-community/nixGL/blob/489d6b095ab9d289fe11af0219a9ff00fe87c7c5/nixGL.nix#L225C14-L225C72
+    nixgl = {
+      url = "github:guibou/nixGL";
+      # Per the readme, nixgl needs to use the same nixpkgs as the program it's
+      # wrapping:
+      # https://github.com/nix-community/nixGL?tab=readme-ov-file#directly-run-nixgl
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # tmux
     ########################################
@@ -222,10 +224,6 @@
       url = "github:RRethy/nvim-treesitter-endwise";
       flake = false;
     };
-    vim-plugin-virt-column-nvim = {
-      url = "github:lukas-reineke/virt-column.nvim";
-      flake = false;
-    };
     vim-plugin-plenary-nvim = {
       url = "github:nvim-lua/plenary.nvim";
       flake = false;
@@ -330,11 +328,8 @@
       url = "github:b0o/SchemaStore.nvim";
       flake = false;
     };
-    # Can go back to latest when they completely remove the deprecated sources. This is the commit
-    # before they added the deprecation notice.
-    # https://github.com/nvimtools/none-ls.nvim/issues/58
     vim-plugin-none-ls-nvim = {
-      url = "github:nvimtools/none-ls.nvim?rev=bb680d752cec37949faca7a1f509e2fe67ab418a";
+      url = "github:nvimtools/none-ls.nvim";
       flake = false;
     };
     vim-plugin-vim-caser = {

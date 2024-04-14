@@ -6,15 +6,6 @@ abbr --add --global g git
 set --global --export PAGER less
 abbr --add --global x 'chmod +x'
 abbr --add --global du 'du --dereference --human-readable --summarize --apparent-size'
-# Fix terminfo. This is needed for neovim which sets TERM to xterm-256color regardless of the
-# terminal I'm using and that causes issues sometimes
-if test "$TERM" != tmux-256color -a "$TERM" != wezterm
-    if test -n "$TMUX"
-        set --global --export TERM tmux-256color
-    else
-        set --global --export TERM wezterm
-    end
-end
 if test (uname) = Linux
     abbr --add --global initramfs-reload 'sudo update-initramfs -u -k all'
     abbr --add --global logout-all 'sudo killall -u $USER'
@@ -29,8 +20,8 @@ if test (uname) = Linux
     end
     abbr --add --global open xdg-open
     abbr --add --position anywhere --global pbpaste fish_clipboard_paste
-    # autocomplete doesn't work unless "put" is used, even though just 'trash' is an alias for
-    # 'trash put'
+    # autocomplete doesn't work unless "put" is used, even though just 'trash'
+    # is an alias for 'trash put'
     abbr --add --position anywhere --global trash 'trash put'
 end
 
@@ -40,7 +31,7 @@ function timg --wraps timg
     # timg doesn't detect Wezterm or TMUX so I'll do it here
     if set --query TMUX
         set pixelation_options -p sixel
-    else if test "$TERM_PROGRAM" = WezTerm
+    else if test "$TERM" = wezterm
         set pixelation_options -p kitty
     end
 
@@ -50,25 +41,26 @@ end
 # man
 # Per the man manpage, spaces in $MANOPT must be escaped with a backslash
 set --global --export MANOPT --no-hyphenation
-# There's an environment variable you can set to change man's pager (MANPAGER), but I'm not using it
-# because I only want to change the pager in interactive mode. I'm also not using an alias because
-# that wouldn't work with `command man ...`.
+# There's an environment variable you can set to change man's pager (MANPAGER),
+# but I'm not using it because I only want to change the pager in interactive
+# mode. I'm also not using an alias because that wouldn't work with `command man
+# ...`.
 abbr --add --global --position anywhere -- man 'man -P "page -t man"'
 
 # Set preferred editor.
 #
 # BACKGROUND: Historically, EDITOR referred to a line editor (e.g. ed) and
-# VISUAL referred to a fullscreen editor (e.g. vi), the latter requiring a more advanced
-# terminal. Programs could then attempt to run the VISUAL editor, and if it wasn't supported,
-# fall back to EDITOR. However, since practically all terminals today support a fullscreen (VISUAL)
-# editor, this distinction is no longer necessary.
+# VISUAL referred to a fullscreen editor (e.g. vi), the latter requiring a more
+# advanced terminal. Programs could then attempt to run the VISUAL editor, and
+# if it wasn't supported, fall back to EDITOR. However, since practically all
+# terminals today support a fullscreen (VISUAL) editor, this distinction is no
+# longer necessary.
 #
-# Since some programs just use the value in EDITOR without checking VISUAL, and vice-versa,
-# I set both to the same editor.
-# For more info: https://unix.stackexchange.com/questions/4859/visual-vs-editor-what-s-the-difference/302391#302391
+# Since some programs just use the value in EDITOR without checking VISUAL, and
+# vice-versa, I set both to the same editor.  For more info:
+# https://unix.stackexchange.com/questions/4859/visual-vs-editor-what-s-the-difference/302391#302391
 set --global --export VISUAL (command -v edit)
 set --global --export EDITOR $VISUAL
-abbr --add --global -- e edit
 abbr --add --global -- vim nvim
 
 # Change the color grep uses for highlighting matches to magenta
@@ -77,12 +69,13 @@ set --global --export GREP_COLORS 'ms=00;35'
 # ls
 # use the long format
 abbr --add --position anywhere --global ll 'ls -l'
-# Add colors for files types that aren't already given an icon by `ls --classify` e.g. broken
-# symlinks.
+# Add colors for files types that aren't already given an icon by `ls
+# --classify` e.g. broken symlinks.
 #
-# TODO: I added color for some types that are already given icons by `ls --classify`. The colors let
-# me distinguish between the file name and the icon added by `--classify`. I'll remove these colors
-# when `lsd` allows for more configurable icons. see my `lsd` config for details.
+# TODO: I added color for some types that are already given icons by `ls
+# --classify`. The colors let me distinguish between the file name and the icon
+# added by `--classify`. I'll remove these colors when `lsd` allows for more
+# configurable icons. see my `lsd` config for details.
 #
 # File types:
 # [bd]="block device"
@@ -112,8 +105,8 @@ set --global --export LS_COLORS 'di=0:ln=35:so=35:pi=35:ex=35:bd=35:cd=35:su=35:
 abbr --add --global -- - 'cd -'
 
 # python
-# Don't add the name of the virtual environment to my prompt. This way, I can add it myself
-# using the same formatting as the rest of my prompt.
+# Don't add the name of the virtual environment to my prompt. This way, I can
+# add it myself using the same formatting as the rest of my prompt.
 set --global --export VIRTUAL_ENV_DISABLE_PROMPT 1
 function python --wraps python
     # Check if python is being run interactively
@@ -121,8 +114,8 @@ function python --wraps python
         or contains -- -i $argv
         # Check if python has the ipython package installed
         #
-        # If I pipe the output of python to grep, python will raise a BrokenPipeError. To avoid this, I use echo to pipe
-        # the output.
+        # If I pipe the output of python to grep, python will raise a
+        # BrokenPipeError. To avoid this, I use echo to pipe the output.
         if echo (command python -m pip list) | grep -q ipython
             python -m IPython
             return
@@ -134,7 +127,8 @@ end
 # zoxide
 if not set --query BIGOLU_IN_PORTABLE_HOME
     set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'lsd --color always --hyperlink always {2}' --keep-right --tiebreak index"
-    # This needs to run after the zoxide.fish config file so I run it when the fish_prompt event fires.
+    # This needs to run after the zoxide.fish config file so I run it when the
+    # fish_prompt event fires.
     function __create_cd_function --on-event fish_prompt
         # I only want this to run once so delete the function.
         functions -e (status current-function)
@@ -160,15 +154,15 @@ set -g direnv_fish_mode disable_arrow # trigger direnv at prompt only
 abbr --add --global watch 'watch --no-title --differences --interval 0.5'
 
 # vscode
-# Clearing the $TMUX variable so that the integrated terminal in vscode won't think it's in TMUX.
-# Clearing SHELL because my config for the OS default shell only launches fish if the current shell
-# isn't fish.
+# Clearing the $TMUX variable so that the integrated terminal in vscode won't
+# think it's in TMUX.  Clearing SHELL because my config for the OS default shell
+# only launches fish if the current shell isn't fish.
 abbr --add --global code 'TMUX= SHELL= code'
 
 # ulimit
 #
-# Increase maxixmum number of open file descriptors that a single process can have. This applies to the current
-# process and its descendents.
+# Increase maxixmum number of open file descriptors that a single process can
+# have. This applies to the current process and its descendents.
 ulimit -Sn 10000
 
 # comma
@@ -189,14 +183,15 @@ function touchp --description 'Create file and make parent directories' --argume
     touch $filepath
 end
 
-# Launch a program and detach from it. Meaning it will be disowned and its output will be suppressed
-# TODO: Have it wrap sudo so it autocompletes program names.
-# I should write my own completion script though since this will
-# also autocomplete sudo flags.
+# Launch a program and detach from it. Meaning it will be disowned and its
+# output will be suppressed
+#
+# TODO: Have it wrap sudo so it autocompletes program names.  I should write my
+# own completion script though since this will also autocomplete sudo flags.
 function detach --wraps sudo
-    # Redirecting the i/o files on the command itself still resulted in some output being sent to the
-    # terminal, but putting the command in a block and redirecting the i/o files of the block does
-    # the trick.
+    # Redirecting the i/o files on the command itself still resulted in some
+    # output being sent to the terminal, but putting the command in a block and
+    # redirecting the i/o files of the block does the trick.
     begin
         $argv & disown
     end >/dev/null 2>/dev/null </dev/null
@@ -265,3 +260,9 @@ function dui --wraps broot --description 'Check disk usage interactively'
     br -w $argv
 end
 abbr --add --global tree broot
+
+# less
+#
+# TODO: lesspipe requires this to be set to enable syntax highlighting. I should
+# open an issue to have it read lesskey
+set --global --export LESS -R

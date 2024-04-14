@@ -20,13 +20,14 @@
 
 -- Tips for defining colors: {{{
 --
--- An empty definition `{}` will clear all styling, leaving elements looking like the 'Normal'
--- group.  To be able to link to a group, it must already be defined, so you may have to reorder
--- items as you go.
+-- An empty definition `{}` will clear all styling, leaving elements looking
+-- like the 'Normal' group.  To be able to link to a group, it must already be
+-- defined, so you may have to reorder items as you go.
 --
--- Avoid properties that resolve at runtime like 'link' and 'reverse' because lush won't be able
--- to access what the eventual value will be. For example, if you use link for highlight Foo
--- then try to access Foo.fg it won't work since lush can't determine what Foo.fg will be.
+-- Avoid properties that resolve at runtime like 'link' and 'reverse' because
+-- lush won't be able to access what the eventual value will be. For example, if
+-- you use link for highlight Foo then try to access Foo.fg it won't work since
+-- lush can't determine what Foo.fg will be.
 -- }}}
 
 local is_light = vim.g.colors_name == "my_light_theme"

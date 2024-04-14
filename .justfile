@@ -18,10 +18,10 @@ switch:
 
 # Update flake inputs and switch to a new generation
 upgrade: cleanup pull && commit
-    # We pull first because otherwise tools might try to perform upgrades
-    # that have already been performed on another machine and just need to be pulled in.
-    # And if upgrading a tool results in a dotfile being changed, (e.g. Nix flake.lock)
-    # then pulling dotfiles afterwards might cause a merge conflict.
+    # We pull first because otherwise tools might try to perform upgrades that
+    # have already been performed on another machine and just need to be pulled
+    # in.  And if upgrading a tool results in a dotfile being changed, (e.g. Nix
+    # flake.lock) then pulling dotfiles afterwards might cause a merge conflict.
     hostctl-upgrade
 
 # Preview changes from switching
@@ -75,7 +75,8 @@ get-secrets:
         secrets_to_commit["$temp_filename"]="$destination"
     done
 
-    # Writing secrets now to ensure we only write secrets if we succeed in getting all of them
+    # Writing secrets now to ensure we only write secrets if we succeed in
+    # getting all of them
     for temp_filename in "${!secrets_to_commit[@]}"; do
         destination="${secrets_to_commit[$temp_filename]}"
         mv "$temp_filename" "$destination"
@@ -93,7 +94,8 @@ go-mod-tidy:
 format:
     treefmt
 
-# Same as format except all files will be formatted regardless of their modified-date
+# Same as format except all files will be formatted regardless of their
+# modified-date
 [private]
 format-no-cache:
     treefmt --no-cache

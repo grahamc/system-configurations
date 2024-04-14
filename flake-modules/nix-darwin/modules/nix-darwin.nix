@@ -69,6 +69,8 @@
       brew upgrade --greedy
       chronic brew autoremove
       chronic brew cleanup
+
+      ${import ./git-kraken-remove-min-window-width.nix pkgs}
     '';
   };
 

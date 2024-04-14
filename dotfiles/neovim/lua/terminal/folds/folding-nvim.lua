@@ -9,6 +9,19 @@ local api = vim.api
 local AUTOCMD_GROUP_ID = vim.api.nvim_create_augroup("FoldingNvim", {})
 local START_LINE = "startLine"
 local END_LINE = "endLine"
+-- TODO: Some servers claim to have fold support when they really don't. Some
+-- possibilities for why they do so are mentioned in an issue[1]. I should
+-- report this to the servers.
+-- [1]: https://github.com/neovim/neovim/issues/18939
+local CLIENTS_THAT_FALSELY_CLAIM_TO_HAVE_FOLDING_SUPPORT = {
+  "nixd",
+  "bashls",
+  "ast_grep",
+  "basedpyright",
+  "nil_ls",
+  "ltex",
+  "marksman",
+}
 
 local M = {}
 
@@ -24,10 +37,15 @@ M.capabilities = {
   },
 }
 
--- TODO: cache, but revaldate after dynamic registration. maybe also revalidate when servers exit.
 function M.get_supported_clients_for_buffer(buf)
   return vim
     .iter(lsp.get_clients({ bufnr = buf }))
+    :filter(function(client)
+      return not vim.tbl_contains(
+        CLIENTS_THAT_FALSELY_CLAIM_TO_HAVE_FOLDING_SUPPORT,
+        client.name
+      )
+    end)
     :filter(function(client)
       return client.supports_method(
         lsp.protocol.Methods.textDocument_foldingRange,
@@ -84,14 +102,22 @@ end
 
 function M.fold_handler(err, result, ctx, _)
   local current_bufnr = api.nvim_get_current_buf()
-  -- Discard the folding result if buffer focus has changed since the request was
-  -- done.
+  -- Discard the folding result if buffer focus has changed since the request
+  -- was done.
   if current_bufnr ~= ctx.bufnr then
     return
   end
 
   if err ~= nil then
-    vim.notify(err.message, vim.log.levels.DEBUG)
+    vim.notify(
+      string.format(
+        [[LSP folding error (client=%s,buffer=%s): %s]],
+        vim.lsp.get_client_by_id(ctx.client_id).name,
+        ctx.bufnr,
+        err.message
+      ),
+      vim.log.levels.ERROR
+    )
     return
   end
 
@@ -111,7 +137,8 @@ function M.fold_handler(err, result, ctx, _)
   end)
   M.current_buf_folds = result
 
-  -- We need to check the foldmethod again since it may have changed since we launched the request.
+  -- We need to check the foldmethod again since it may have changed since we
+  -- launched the request.
   if not M.is_foldmethod_overridable() then
     return
   end

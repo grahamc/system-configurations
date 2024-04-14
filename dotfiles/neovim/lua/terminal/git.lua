@@ -12,8 +12,9 @@ Plug("f-person/git-blame.nvim", {
       use_blame_commit_file_urls = true,
       highlight_group = "GitBlameVirtualText",
       set_extmark_options = {
-        -- TODO: Workaround for a bug in neovim where virtual text highlight is being combined with
-        -- the cursorline highlight. issue: https://github.com/neovim/neovim/issues/15485
+        -- TODO: Workaround for a bug in neovim where virtual text highlight
+        -- is being combined with the cursorline highlight. issue:
+        -- https://github.com/neovim/neovim/issues/15485
         hl_mode = "combine",
         -- so it goes last
         priority = 9000,
@@ -30,8 +31,8 @@ Plug("f-person/git-blame.nvim", {
   end,
 })
 
--- Add icons to the gutter to represent version control changes (e.g. new lines, modified lines,
--- etc.)
+-- Add icons to the gutter to represent version control changes (e.g. new lines,
+-- modified lines, etc.)
 Plug("mhinz/vim-signify", {
   config = function()
     -- Make `[c` and `]c` wrap around. Taken from here:
@@ -67,12 +68,3 @@ Plug("mhinz/vim-signify", {
 })
 vim.g.signify_priority = 1
 vim.g.signify_sign_show_count = 0
--- I'm using a powerline symbol because I set the foreground color for the symbols to the terminal
--- background color so they don't show up, but vscode changes foreground colors to meet WCAG
--- contrast compliance. However, they don't change the color of powerline symbols:
--- https://github.com/microsoft/vscode/issues/146406#issuecomment-1084825473
-vim.g.signify_sign_add = ""
-vim.g.signify_sign_delete = vim.g.signify_sign_add
-vim.g.signify_sign_delete_first_line = vim.g.signify_sign_add
-vim.g.signify_sign_change = vim.g.signify_sign_add
-vim.g.signify_sign_change_delete = vim.g.signify_sign_add

@@ -1,7 +1,7 @@
 local function is_current_buffer_too_big_to_highlight()
   local max_filesize = 100 * 1024 -- 100 KB
-  -- I make sure to use something that gets the size of the buffer and not file because I
-  -- may be editing a file that isn't stored locally e.g. `nvim <url>`
+  -- I make sure to use something that gets the size of the buffer and not file
+  -- because I may be editing a file that isn't stored locally e.g. `nvim <url>`
   return vim.fn.wordcount().bytes > max_filesize
 end
 
@@ -42,9 +42,9 @@ Plug("nvim-treesitter/nvim-treesitter", {
   end,
 })
 
--- Disable TS parsers bundled with neovim since they won't respect my rules for enabling
--- TS highlighting that I set in nvim-treesitter. Plus I already have the bundled parsers so these
--- are redundant.
+-- Disable TS parsers bundled with neovim since they won't respect my rules for
+-- enabling TS highlighting that I set in nvim-treesitter. Plus I already have
+-- the bundled parsers so these are redundant.
 vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     vim.treesitter.stop()
@@ -69,8 +69,9 @@ if IsRunningInTerminal then
     end,
   })
 
-  -- TODO: The above doesn't work on the first opened file, but this does. May have to do with
-  -- the fact that nvim-treesitter sets syntax off when the first filetype is detected.
+  -- TODO: The above doesn't work on the first opened file, but this does. May
+  -- have to do with the fact that nvim-treesitter sets syntax off when the
+  -- first filetype is detected.
   vim.api.nvim_create_autocmd("FileType", {
     once = true,
     callback = function()

@@ -1,9 +1,16 @@
 -- vim:foldmethod=marker
 
--- Exit if we are not running inside vscode
-if vim.g.vscode == nil then
+if not vim.g.vscode then
   return
 end
+
+local vscode = require("vscode-neovim")
+
+vim.g.clipboard = vim.g.vscode_clipboard
+
+-- I use `gq` to format my comments so I'm removing this so nvim won't wait to
+-- see if I'll press another 'q'.
+vim.keymap.del({ "n" }, "gqq")
 
 vim.o.hlsearch = false
 vim.keymap.set(
@@ -13,19 +20,31 @@ vim.keymap.set(
   { silent = true, desc = "Toggle search highlight" }
 )
 
--- TODO: I have this set in init.lua, but it won't work in vscode unless I set it here.
-vim.g.mapleader = " "
-
--- TODO: Unlike other extensions, vscode-neovim is not picking up the environment variables set by
--- direnv-vscode, even after direnv restarts all extensions. I noticed that the parent process for
--- the vscode-neovim is different than the parent process for all other extensions so maybe that
--- has something to do with it. In the meantime, I'll use the extension below which applies the
--- .envrc on VimEnter and DirChanged events. I should report this to direnv-vscode.
+-- TODO: Unlike other extensions, vscode-neovim is not picking up the
+-- environment variables set by direnv-vscode, even after direnv restarts
+-- all extensions. Based on my testing, it seems that this because I set an
+-- `affinity` for it in my vscode settings. I need to open an issue with vscode
+-- to see why setting an `affinity` on an extension would prevent it from
+-- inheriting environment variables that other extensions are inheriting. In the
+-- meantime, I'll use the extension below which applies the .envrc on VimEnter
+-- and DirChanged events.
 Plug("direnv/direnv.vim")
 vim.g.direnv_silent_load = 1
 
--- TODO: When this is enabled and I press `jk` in between to parentheses, while in insert mode,
--- another pair of parens would get added. Other kinds of text would get inserted too.
+-- There are three reasons why I'm disabling this:
+--
+-- 1. The readme for the vscode-neovim extension [1] recommends disabling any
+-- plugins that render decorators very often, such as bracker highlighters, so
+-- when I'm running in vscode I'll disable highlights for matching symbols.
+--
+-- 2. When this is enabled and I press `jk` in between to parentheses, while
+-- in insert mode, another pair of parens would get added. Other kinds of text
+-- would get inserted too.
+--
+-- 3. It's unnecessary since vscode does its own highlighting for matching
+-- symbols.
+--
+-- [1]: https://marketplace.visualstudio.com/items?itemName=asvetliakov.vscode-neovim#performance
 vim.g.matchup_matchparen_enabled = 0
 
 -- Windows
@@ -34,80 +53,79 @@ vim.keymap.set({ "n" }, "<Leader>-", "<C-w>s", { remap = true })
 
 -- right click
 vim.keymap.set({ "n", "x" }, "<Leader><Leader>", function()
-  vim.fn.VSCodeNotify("editor.action.showContextMenu")
+  vscode.call("editor.action.showContextMenu")
 end)
 
--- vscode-neovim maps this to the formatter configured in vscode, but I'm removing it since I use
--- conform.nvim
+-- vscode-neovim maps this to the formatter configured in vscode, but I'm
+-- removing it since I use conform.nvim
 vim.keymap.del({ "n", "x" }, "=")
 vim.keymap.del({ "n" }, "==")
 
+-- Toggle visual elements {{{
 vim.keymap.set("n", [[\b]], function()
-  vim.fn.VSCodeNotify("gitlens.toggleLineBlame")
+  vscode.call("gitlens.toggleLineBlame")
 end, { desc = "Toggle git blame" })
 vim.keymap.set("n", [[\i]], function()
-  vim.fn.VSCodeNotify("settings.cycle.toggleInlayHints")
+  vscode.call("settings.cycle.toggleInlayHints")
 end, { desc = "Toggle inlay hints" })
 vim.keymap.set("n", [[\|]], function()
-  vim.fn.VSCodeNotify("settings.cycle.toggleIndentGuide")
+  vscode.call("settings.cycle.toggleIndentGuide")
 end, { desc = "Toggle indent guide" })
 vim.keymap.set("n", [[\s]], function()
-  vim.fn.VSCodeNotify("settings.cycle.toggleStickyScroll")
+  vscode.call("settings.cycle.toggleStickyScroll")
 end, { desc = "Toggle sticky scroll [context]" })
 vim.keymap.set("n", [[\ ]], function()
-  vim.fn.VSCodeNotify("editor.action.toggleRenderWhitespace")
+  vscode.call("editor.action.toggleRenderWhitespace")
 end, { desc = "Toggle whitespace" })
 vim.keymap.set("n", [[\n]], function()
-  vim.fn.VSCodeNotify("editor.action.toggleLineNumbers")
+  vscode.call("editor.action.toggleLineNumbers")
 end, { desc = "Toggle line numbers" })
+-- }}}
 
 -- version control {{{
-vim.keymap.set({ "n" }, "zv", function()
-  vim.fn.VSCodeNotify("editor.action.dirtydiff.next")
-end)
 vim.keymap.set({ "n" }, "]c", function()
-  vim.fn.VSCodeNotify("workbench.action.editor.nextChange")
+  vscode.call("workbench.action.editor.nextChange")
 end)
 vim.keymap.set({ "n" }, "[c", function()
-  vim.fn.VSCodeNotify("workbench.action.editor.previousChange")
+  vscode.call("workbench.action.editor.previousChange")
 end)
 -- }}}
 
 -- search {{{
 vim.keymap.set({ "n" }, "<Leader>f", function()
-  vim.fn.VSCodeNotify("find-it-faster.findFiles")
+  vscode.call("find-it-faster.findFiles")
 end, { silent = true })
 vim.keymap.set({ "n" }, "<Leader>F", function()
-  vim.fn.VSCodeNotify("find-it-faster.findFilesWithType")
+  vscode.call("find-it-faster.findFilesWithType")
 end, { silent = true })
 vim.keymap.set({ "n", "v" }, "<Leader>g", function()
-  vim.fn.VSCodeNotify("find-it-faster.findWithinFiles")
+  vscode.call("find-it-faster.findWithinFiles")
 end, { silent = true })
 vim.keymap.set({ "n", "v" }, "<Leader>G", function()
-  vim.fn.VSCodeNotify("find-it-faster.findWithinFilesWithType")
+  vscode.call("find-it-faster.findWithinFilesWithType")
 end, { silent = true })
 vim.keymap.set({ "n", "v" }, "<Leader>s", function()
-  vim.fn.VSCodeNotify("workbench.action.showAllSymbols")
+  vscode.call("workbench.action.showAllSymbols")
 end, { silent = true })
 vim.keymap.set({ "n", "x" }, "<Leader>b", function()
-  vim.fn.VSCodeNotify("fuzzySearch.activeTextEditorWithCurrentSelection")
+  vscode.call("fuzzySearch.activeTextEditorWithCurrentSelection")
 end, { silent = true })
 vim.keymap.set({ "n", "x" }, "<Leader>a", function()
-  vim.fn.VSCodeNotify("ast-grep.search.input.focus")
+  vscode.call("ast-grep.search.input.focus")
 end, { silent = true })
 -- }}}
 
 -- Folds {{{
 vim.keymap.set({ "n" }, "<Tab>", function()
-  vim.fn.VSCodeNotify("editor.toggleFold")
+  vscode.call("editor.toggleFold")
 end, { silent = true })
 
 local function fold_toggle()
   if vim.b.is_folded == nil or vim.b.is_folded == false then
-    vim.fn.VSCodeNotify("editor.foldAll")
+    vscode.call("editor.foldAll")
     vim.b.is_folded = true
   else
-    vim.fn.VSCodeNotify("editor.unfoldAll")
+    vscode.call("editor.unfoldAll")
     vim.b.is_folded = false
   end
 end
@@ -115,99 +133,100 @@ end
 vim.keymap.set({ "n" }, "<S-Tab>", fold_toggle, { silent = true })
 
 vim.keymap.set({ "n", "x" }, "[<Tab>", function()
-  vim.fn.VSCodeNotify("editor.gotoPreviousFold")
+  vscode.call("editor.gotoPreviousFold")
 end)
 
 vim.keymap.set({ "n", "x" }, "]<Tab>", function()
-  vim.fn.VSCodeNotify("editor.gotoNextFold")
+  vscode.call("editor.gotoNextFold")
 end)
 -- }}}
 
 -- move cursor {{{
-local function moveCursor(line_count)
-  local is_count_provided = false
+-- I'd use nvim's g{j,k}, but since nvim isn't aware of the folds in vscode, it
+-- doesn't work properly.
+local function moveCursorVertically(line_count)
   if vim.v.count > 0 then
-    is_count_provided = true
     line_count = line_count * vim.v.count
   end
 
-  -- Move by screen line if the count is 1 or -1 and no count is provided
-  if line_count == 1 and not is_count_provided then
-    vim.fn.VSCodeCall("cursorDown")
-  elseif line_count == -1 and not is_count_provided then
-    vim.fn.VSCodeCall("cursorUp")
+  local direction = nil
+  if line_count > 0 then
+    direction = "down"
   else
-    local current_line = vim.api.nvim_win_get_cursor(0)[1]
-
-    local target_line = current_line + line_count
-    target_line = math.max(0, target_line)
-    target_line = math.min(vim.fn.line("$") or target_line, target_line)
-
-    vim.cmd(tostring(target_line))
+    direction = "up"
   end
 
-  -- center the current line
-  vim.fn.feedkeys("zz")
+  vscode.call("cursorMove", {
+    args = {
+      to = direction,
+      by = "wrappedLine",
+      value = math.abs(line_count),
+    },
+  })
+
+  -- TODO: Center the current line. Ideally I'd use the
+  -- `editor.cursorSurroundingLines` setting in vscode, but there seems to be a
+  -- bug in it where if you try to move by display line (e.g. gj) you may
+  -- get stuck on a wrapped line. I should open an issue with vscode.
+  vscode.call("revealLine", {
+    args = {
+      lineNumber = vim.fn.line("."),
+      at = "center",
+    },
+  })
 end
-vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function()
-    -- TODO: These mappings should override the ones in base.lua since I `require()` this file after base.lua, but
-    -- they arent so instead I define them at `VimEnter`.
-    vim.keymap.set({ "n" }, "j", function()
-      moveCursor(1)
-    end)
-    vim.keymap.set({ "n" }, "k", function()
-      moveCursor(-1)
-    end)
-    vim.keymap.set({ "n" }, "<C-j>", function()
-      moveCursor(6)
-    end)
-    vim.keymap.set({ "n" }, "<C-k>", function()
-      moveCursor(-6)
-    end)
-  end,
-  group = vim.api.nvim_create_augroup("CursorMovement", {}),
-})
+vim.keymap.set({ "n" }, "j", function()
+  moveCursorVertically(1)
+end)
+vim.keymap.set({ "n" }, "k", function()
+  moveCursorVertically(-1)
+end)
+vim.keymap.set({ "n" }, "<C-j>", function()
+  moveCursorVertically(6)
+end)
+vim.keymap.set({ "n" }, "<C-k>", function()
+  moveCursorVertically(-6)
+end)
 -- }}}
 
 -- language server {{{
 vim.keymap.set({ "n" }, "[l", function()
-  vim.fn.VSCodeNotify("editor.action.marker.prev")
+  vscode.call("editor.action.marker.prev")
 end)
 vim.keymap.set({ "n" }, "]l", function()
-  vim.fn.VSCodeNotify("editor.action.marker.next")
+  vscode.call("editor.action.marker.next")
 end)
--- Since vscode only has one hover action to show docs and lints I'll have my lint keybind also
--- trigger hover
+-- Since vscode only has one hover action to show docs and lints I'll have my
+-- lint keybind also trigger hover
 vim.keymap.set({ "n" }, "<S-l>", "<S-k>", { remap = true })
 vim.keymap.set({ "n" }, "ga", function()
-  vim.fn.VSCodeNotify("editor.action.quickFix")
+  vscode.call("editor.action.quickFix")
 end)
 vim.keymap.set({ "n" }, "gi", function()
-  vim.fn.VSCodeNotify("editor.action.goToImplementation")
+  vscode.call("editor.action.goToImplementation")
 end)
 vim.keymap.set({ "n" }, "gr", function()
-  vim.fn.VSCodeNotify("editor.action.goToReferences")
+  vscode.call("editor.action.goToReferences")
 end)
 vim.keymap.set({ "n" }, "gn", function()
-  vim.fn.VSCodeNotify("editor.action.rename")
+  vscode.call("editor.action.rename")
 end)
 vim.keymap.set({ "n" }, "gt", function()
-  vim.fn.VSCodeNotify("editor.action.goToTypeDefinition")
+  vscode.call("editor.action.goToTypeDefinition")
 end)
 vim.keymap.set({ "n" }, "gd", function()
-  vim.fn.VSCodeNotify("editor.action.revealDefinition")
+  vscode.call("editor.action.revealDefinition")
 end)
 vim.keymap.set({ "n" }, "gD", function()
-  vim.fn.VSCodeNotify("editor.action.revealDeclaration")
+  vscode.call("editor.action.revealDeclaration")
 end)
 vim.keymap.set({ "n" }, "gh", function()
-  vim.fn.VSCodeNotify("references-view.showCallHierarchy")
+  vscode.call("references-view.showCallHierarchy")
 end)
 vim.keymap.set({ "n" }, "ght", function()
-  vim.fn.VSCodeNotify("references-view.showTypeHierarchy")
+  vscode.call("references-view.showTypeHierarchy")
 end)
 vim.keymap.set({ "n" }, "gl", function()
-  vim.fn.VSCodeNotify("codelens.showLensesInCurrentLine")
+  vscode.call("codelens.showLensesInCurrentLine")
 end)
 -- }}}

@@ -43,7 +43,8 @@
         // newVimPlugins
         // {
           inherit treesitter-parsers nvim-nonicons;
-          # remove treesitter parser plugins because they were ending up in my 'plugged' directory
+          # remove treesitter parser plugins because they were ending up in my
+          # 'plugged' directory
           nvim-treesitter = newVimPlugins.nvim-treesitter.withPlugins (_: []);
         };
     in {inherit vimPlugins;};

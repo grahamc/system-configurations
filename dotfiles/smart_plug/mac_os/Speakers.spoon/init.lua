@@ -76,7 +76,7 @@ end
 ---@diagnostic disable-next-line: unused-local
 execute(
   os.getenv("SHELL"),
-  { "-i", "-l", "-c", [[printf "$(command -v speakerctl)"]] },
+  { "-i", "-l", "-c", [[printf %s "$(command -v speakerctl)"]] },
   function(_, stdout, _)
     make_menubar_item(stdout)
   end

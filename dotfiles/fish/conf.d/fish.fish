@@ -1,5 +1,5 @@
-# I'm defining this before the interactivity check so I can call this from non-interactive
-# shells. This way I can reload my shells from a script.
+# I'm defining this before the interactivity check so I can call this from
+# non-interactive shells. This way I can reload my shells from a script.
 function fish-reload
     set --universal _fish_reload_indicator (random)
 end
@@ -20,7 +20,8 @@ set --global fish_color_option $fish_color_normal
 set --global fish_color_comment brblack
 set --global fish_color_match
 set --global fish_color_search_match --background=brblack
-# TODO: I want to remove the default bolding, but currently only the background is configurable.
+# TODO: I want to remove the default bolding, but currently only the background
+# is configurable.
 # Issue: https://github.com/fish-shell/fish-shell/issues/2442
 set --global fish_pager_color_selected_background --background=brblack
 set --global fish_color_operator $fish_color_keyword
@@ -68,7 +69,8 @@ function _resume_job
 
     set choice \
         ( \
-            # I'm using the NUL character to delimit entries since they may span multiple lines.
+            # I'm using the NUL character to delimit entries since they may span
+            # multiple lines.
             printf %s'\0' $entries \
                 | fzf  \
                     --read0 \
@@ -115,7 +117,8 @@ function variable-widget --description 'Search shell/environment variables'
         set --append entries $entry
     end
 
-    # I'm using the NUL character to delimit entries since they may span multiple lines.
+    # I'm using the NUL character to delimit entries since they may span
+    # multiple lines.
     if not set choices ( \
         printf %s'\0' $entries \
             | fzf \
@@ -169,12 +172,14 @@ function _insert_entries_into_commandline
     if test (count $entries) -eq 1
         # Don't add a space if the entry is an abbreviation.
         #
-        # TODO: This assumes that an abbreviation can only be expanded if it's the first token in
-        # the commandline.  However, with the flag '--position anywhere', abbreviations can be
-        # expanded anywhere in the commandline so I should check for that flag.
+        # TODO: This assumes that an abbreviation can only be expanded if
+        # it's the first token in the commandline.  However, with the flag
+        # '--position anywhere', abbreviations can be expanded anywhere in the
+        # commandline so I should check for that flag.
         #
-        # We determine if the entry will be the first token by checking for an empty commandline.
-        # We trim spaces because spaces don't count as tokens.
+        # We determine if the entry will be the first token by checking for
+        # an empty commandline.  We trim spaces because spaces don't count as
+        # tokens.
         set trimmed_commandline (string trim "$(commandline)")
         if abbr --query -- "$entry"
             and test -z "$trimmed_commandline"
@@ -183,9 +188,10 @@ function _insert_entries_into_commandline
 
         # Don't add a space if the item is a directory and ends in a slash.
         #
-        # Use eval so expansions are done e.g. environment variables, tildes. For scenarios like (bar is
-        # cursor) `echo "$HOME/|"` where the autocomplete entry will include the left quote, but not the
-        # right quote. I remove the left quote so `test -d` works.
+        # Use eval so expansions are done e.g. environment variables,
+        # tildes. For scenarios like (bar is cursor) `echo "$HOME/|"` where the
+        # autocomplete entry will include the left quote, but not the right
+        # quote. I remove the left quote so `test -d` works.
         if test (string sub --length 1 --start 1 -- "$entry") = '"' -a (string sub --start -1 -- "$entry") != '"'
             set balanced_quote_entry (string sub --start 2 -- "$entry")
         else
@@ -196,13 +202,13 @@ function _insert_entries_into_commandline
         end
     end
 
-    # retain the part of the token after the cursor. use case: autocompleting inside quotes
-    # (bar is cursor) `echo "$HOME/|"`
+    # retain the part of the token after the cursor. use case: autocompleting
+    # inside quotes (bar is cursor) `echo "$HOME/|"`
     set token_after_cursor "$(string sub --start (math (string length -- "$(commandline --current-token --cut-at-cursor)") + 1) -- "$(commandline --current-token)")"
     set replacement "$entry$space$token_after_cursor"
 
-    # if it ends in `""` or `" "` (when we add a space), remove one quote.
-    # use case: autocompleting a file inside quotes (bar is cursor) `echo "/|"`
+    # if it ends in `""` or `" "` (when we add a space), remove one quote. use
+    # case: autocompleting a file inside quotes (bar is cursor) `echo "/|"`
     set replacement (string replace --regex -- '"'$space'"$' $space'"' "$replacement")
     or set replacement (string replace --regex -- "'$space'\$" $space"'" "$replacement")
 
@@ -211,10 +217,11 @@ end
 function _fzf_complete
     set candidates (complete --escape --do-complete -- "$(commandline --cut-at-cursor)")
     set candidate_count (count $candidates)
-    # I only want to repaint if fzf is shown, but if I use `fzf --select-1` fzf won't be shown
-    # when there's one candidate and there is no way to tell if that's how fzf exited so instead
-    # I'll check the amount of candidates beforehand an only use fzf is there's more than 1. Same
-    # situation with --exit-0.
+    # I only want to repaint if fzf is shown, but if I use `fzf --select-1` fzf
+    # won't be shown when there's one candidate and there is no way to tell
+    # if that's how fzf exited so instead I'll check the amount of candidates
+    # beforehand an only use fzf is there's more than 1. Same situation with
+    # --exit-0.
     if test $candidate_count -eq 1
         _insert_entries_into_commandline $candidates
     else if test $candidate_count -gt 1
@@ -232,16 +239,15 @@ function _fzf_complete
                 --bind 'backward-eof:abort,start:toggle-preview' \
                 --no-hscroll \
                 --tiebreak=begin,chunk \
-                # I set the current token as the delimiter so I can exclude from what gets searched.
-                # Since the current token is in the beginning of the string, it will be the first
-                # field index so I'll start searching from 2.
+                # I set the current token as the delimiter so I can exclude
+                # from what gets searched.  Since the current token is in the
+                # beginning of the string, it will be the first field index so
+                # I'll start searching from 2.
                 --delimiter '^'(string escape --style regex -- $current_token) \
                 --nth '2..' \
                 --border rounded \
                 --margin 0,2,0,2 \
                 --prompt $current_token \
-                --border-label " $(set_color magenta)ctrl+h$(set_color normal) show help page " \
-                --border-label-pos '-3:bottom' \
                 --no-separator \
         )
             _insert_entries_into_commandline $entries
@@ -249,7 +255,8 @@ function _fzf_complete
         commandline -f repaint
     end
 end
-# Set the binding on fish_prompt since something else was overriding it during shell startup.
+# Set the binding on fish_prompt since something else was overriding it during
+# shell startup.
 function __set_fzf_tab_complete --on-event fish_prompt
     # I only want this to run once so delete the function.
     functions -e (status current-function)
@@ -258,6 +265,7 @@ end
 # Keep normal tab complete on shift+tab to expand wildcards.
 mybind -k btab complete
 
+# File explorer
 function _ls_after_directory_change --on-variable PWD
     # Nix store freezes broot
     if test "$PWD" = /nix/store
@@ -268,21 +276,21 @@ function _ls_after_directory_change --on-variable PWD
     # other end. It does however, print an error message in both cases so instead I'm checking if
     # anything was written to stderr.
     if test -n "$(br --send "$TMUX_PANE" 2>&1 1>/dev/null)"
-        # # These directories have too many files to always call ls on
-        # #
-        # # normalize to remove trailing slash
-        # set blacklist /nix/store /tmp (path normalize "$TMPDIR")
-        # if contains "$PWD" $blacklist
-        #     return
-        # end
+        # These directories have too many files to always call ls on
+        #
+        # normalize to remove trailing slash
+        set blacklist /nix/store /tmp (path normalize "$TMPDIR")
+        if contains "$PWD" $blacklist
+            return
+        end
 
-        # ls
+        ls
     end
 end
 function _bigolu_on_broot_dir_change --on-variable _broot_dir
-    # When we change the directory in broot, broot will be the active pane so we need to explictly
-    # set the target pane to that of this fish process. We set `-q` so tmux doesn't consider it an
-    # error if the option can't be found.
+    # When we change the directory in broot, broot will be the active pane so we
+    # need to explictly set the target pane to that of this fish process. We set
+    # `-q` so tmux doesn't consider it an error if the option can't be found.
     set value (tmux show-option -gvq -t "$TMUX_PANE" '@-sidebar-registered-pane-#{pane_id}')
     if test -n "$value"
         set pane (string match --regex --groups-only -- '^(%[0-9]+)' "$value")
@@ -290,10 +298,19 @@ function _bigolu_on_broot_dir_change --on-variable _broot_dir
             set parts (string split ':' "$_broot_dir")
             if test "$pane" = "$parts[1]"
                 cd "$parts[2]"
+                # TODO: fish isn't emitting fish_prompt before I run `repaint`
+                # so direnv isn't triggering. I should open an issue to see if
+                # this is intended.
+                emit fish_prompt
                 commandline -f repaint
             end
         end
     end
+end
+# TODO: I can remove this when this issue is resolved:
+# https://github.com/Canop/broot/issues/730
+function _bigolu_refresh_broot --on-event fish_postexec
+    br --send "$TMUX_PANE" -c ':refresh;' 2>/dev/null
 end
 
 # Reload all fish instances
@@ -334,9 +351,11 @@ abbr --add bash_style_history_expansion \
     --regex '\!(\!|\^|\$|\-?\d+)' \
     --function _bash_style_history_expansion
 
-# Most of this was taken from fish's __fish_man_page, I just added flag searching.
+# Most of this was taken from fish's __fish_man_page, I just added flag
+# searching.
 function _man_page
-    # Get all commandline tokens not starting with "-", up to and including the cursor's
+    # Get all commandline tokens not starting with "-", up to and including the
+    # cursor's
     set -l args (string match -rv '^-|^$' -- (commandline --cut-at-cursor --tokenize --current-process && commandline --current-token))
 
     # If commandline is empty, exit.
@@ -351,13 +370,15 @@ function _man_page
         set -e args[1]
     end
 
-    # If there are at least two tokens not starting with "-", the second one might be a subcommand.
-    # Try "man first-second" and fall back to "man first" if that doesn't work out.
+    # If there are at least two tokens not starting with "-", the second one
+    # might be a subcommand.  Try "man first-second" and fall back to "man
+    # first" if that doesn't work out.
     set -l maincmd (basename $args[1])
     # HACK: If stderr is not attached to a terminal `less` (the default pager)
-    # wouldn't use the alternate screen.  But since we don't know what pager it is, and because
-    # `man` is totally underspecified, the best we can do is to *try* the man page, and assume that
-    # `man` will return false if it fails.  See #7863.
+    # wouldn't use the alternate screen.  But since we don't know what pager it
+    # is, and because `man` is totally underspecified, the best we can do is to
+    # *try* the man page, and assume that `man` will return false if it fails.
+    # See #7863.
     if set -q args[2]
         and not string match -q -- '*/*' $args[2]
         and man "$maincmd-$args[2]" &>/dev/null
@@ -374,8 +395,8 @@ function _man_page
         set manpage_name $wrapped
     end
 
-    # If the token underneath or right before the cursor starts with a '-' try to search for that
-    # flag
+    # If the token underneath or right before the cursor starts with a '-' try
+    # to search for that flag
     set current_token (commandline --current-token)
     if test -z "$current_token"
         set current_token (commandline --cut-at-cursor --tokenize --current-process)[-1]
@@ -394,7 +415,7 @@ mybind --no-focus \ck _man_page
 mybind --key f7 up-or-search
 mybind --key f8 down-or-search
 
-# It's like the builtin  edit_command_buffer, but it retains the cursor position
+# It's like the builtin edit_command_buffer, but it retains the cursor position
 function __edit_commandline
     set buffer "$(commandline)"
     set index (commandline --cursor)
@@ -428,8 +449,8 @@ function __edit_commandline
 end
 mybind \eE __edit_commandline
 
-# fish loads builtin configs after user configs so I have to wait for the builtin binds to be
-# defined. This may change though:
+# fish loads builtin configs after user configs so I have to wait
+# for the builtin binds to be defined. This may change though:
 # https://github.com/fish-shell/fish-shell/issues/8553
 function __remove_paginate_keybind --on-event fish_prompt
     # I only want this to run once so delete the function.
@@ -439,7 +460,6 @@ end
 
 function fish_title
     set -q argv[1]; or set argv fish
-    # Looks like ~/d/fish: git log
-    # or /e/apt: fish
+    # Looks like '~/d/fish: git log' or '/e/apt: fish'
     echo (fish_prompt_pwd_dir_length=1 prompt_pwd): $argv
 end

@@ -1,14 +1,14 @@
-# type: ignore
-
 import asyncio
 import sys
 from collections.abc import Awaitable
-from typing import Optional
+from typing import TypeVar
+from typing_extensions import cast
 
-from kasa import Discover
+
+from kasa import Discover, SmartDevice
 from kasa import SmartPlug
 from kasa import SmartDeviceException
-from diskcache import Cache
+from diskcache import Cache  # pyright: ignore [reportMissingTypeStubs]
 from platformdirs import user_cache_dir
 import psutil
 
@@ -17,14 +17,19 @@ class SmartPlugController(object):
     _cache = Cache(user_cache_dir("my-speakers"))
 
     def __init__(self, plug_alias: str):
+        super().__init__()
         self._plug_alias = plug_alias
         self._plug = self._get_plug()
 
     def turn_off(self):
-        self._block_until_complete(self._plug.turn_off())
+        self._block_until_complete(
+            self._plug.turn_off()  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+        )
 
     def turn_on(self):
-        self._block_until_complete(self._plug.turn_on())
+        self._block_until_complete(
+            self._plug.turn_on()  # pyright: ignore [reportUnknownArgumentType, reportUnknownMemberType]
+        )
 
     def is_on(self):
         return self._plug.is_on
@@ -42,7 +47,7 @@ class SmartPlugController(object):
 
     def _get_plug_from_cache(self):
         if self._plug_alias in SmartPlugController._cache:
-            ip_address = SmartPlugController._cache[self._plug_alias]
+            ip_address = cast(str, SmartPlugController._cache[self._plug_alias])
             assert isinstance(ip_address, str)
             plug = SmartPlug(ip_address)
             try:
@@ -74,7 +79,7 @@ class SmartPlugController(object):
     # this, I look for the correct broadcast address myself using psutil which gives me
     # all addresses assigned to each NIC on my machine. I then try discovery using all
     # the addresses that are marked as broadcast addresses until I find a Kasa device.
-    def _discover_devices(self):  # -> Any | dict[Any, Any]:
+    def _discover_devices(self) -> dict[str, SmartDevice]:
         # return the first non-empty map of devices
         return next(
             filter(
@@ -84,13 +89,18 @@ class SmartPlugController(object):
                     self._get_broadcast_addresses(),
                 ),
             ),
-            {},
+            cast(dict[str, SmartDevice], {}),
         )
 
-    def _discover_devices_for_broadcast_address(self, broadcast_address):  # -> Any:
+    def _discover_devices_for_broadcast_address(
+        self, broadcast_address: str
+    ) -> dict[str, SmartDevice]:
         # discover() has its own timeout of 5 seconds so I don't need to set a timeout
         return self._block_until_complete(
-            Discover.discover(target=broadcast_address), timeout=None
+            Discover.discover(  # pyright: ignore [reportUnknownMemberType]
+                target=broadcast_address
+            ),
+            timeout=None,
         )
 
     def _get_broadcast_addresses(self) -> set[str]:
@@ -101,12 +111,14 @@ class SmartPlugController(object):
             if address.broadcast is not None
         }
 
-    def _add_plug_address_to_cache(self, ip_address) -> None:
+    def _add_plug_address_to_cache(self, ip_address: str) -> None:
         SmartPlugController._cache[self._plug_alias] = ip_address
 
+    T = TypeVar("T")
+
     def _block_until_complete(
-        self, awaitable: Awaitable, timeout: Optional[int] = 1
-    ):  # -> Any:
+        self, awaitable: Awaitable[T], timeout: int | None = 1
+    ) -> T:
         return asyncio.get_event_loop().run_until_complete(
             asyncio.wait_for(awaitable, timeout=timeout)
         )

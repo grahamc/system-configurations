@@ -1,4 +1,8 @@
-{config, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   homebrew = {
     enable = true;
     onActivation.cleanup = "zap";
@@ -21,7 +25,8 @@
     ];
 
     caskArgs = {
-      # Don't quarantine the casks so macOS doesn't warn me before opening any of them.
+      # Don't quarantine the casks so macOS doesn't warn me before opening any
+      # of them.
       no_quarantine = true;
     };
 
@@ -31,14 +36,18 @@
   };
 
   system.activationScripts.postActivation.text = ''
-    # Homebrew services won't have any of my nix profile /bin directories on their path so below I'm copying
-    # the programs they need into a directory that is on their $PATH.
+    # Homebrew services won't have any of my nix profile /bin directories on
+    # their path so below I'm copying the programs they need into a directory
+    # that is on their $PATH.
     #
     # One of hammerspoon's plugins, stackline, needs yabai.
     test -e /usr/local/bin/yabai && rm /usr/local/bin/yabai
     cp ${config.services.yabai.package}/bin/yabai /usr/local/bin/
 
-    # Disable the Gatekeeper so I can open apps that weren't codesigned without being warned.
+    # Disable the Gatekeeper so I can open apps that weren't codesigned without
+    # being warned.
     sudo spctl --master-disable
+
+    ${import ./git-kraken-remove-min-window-width.nix pkgs}
   '';
 }

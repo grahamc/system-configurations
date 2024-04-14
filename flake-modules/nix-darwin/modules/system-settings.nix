@@ -29,7 +29,8 @@
       };
     };
 
-    # Copied from the nix-darwin option 'security.pam.enableSudoTouchIdAuth' with the addition of pam-reattach so it works with tmux.
+    # Copied from the nix-darwin option 'security.pam.enableSudoTouchIdAuth'
+    # with the addition of pam-reattach so it works with tmux.
     #
     # TODO: I should upstream this
     activationScripts.postActivation.text = let

@@ -22,8 +22,8 @@
       self.overlays.partialPackages
       self.overlays.misc
 
-      # WARNING: This needs to go last since it may be wrapping programs that were altered in other
-      # overlays
+      # WARNING: This needs to go last since it may be wrapping programs that
+      # were altered in other overlays
       self.overlays.glWrappers
     ];
   };

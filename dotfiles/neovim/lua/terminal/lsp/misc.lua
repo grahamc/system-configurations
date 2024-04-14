@@ -125,17 +125,17 @@ end
 -- A language server that acts as a bridge between neovim's language server client and commandline
 -- tools that don't support the language server protocol. It does this by transforming the output of
 -- a commandline tool into the format specified by the language server protocol.
+--
+-- none-ls removed shellcheck, this adds it back
 Plug("gbprod/none-ls-shellcheck.nvim")
 Plug("nvimtools/none-ls.nvim", {
   config = function()
     local null_ls = require("null-ls")
-    -- When none-ls removes this source, this will add it back
-    -- null_ls.register(require("none-ls-shellcheck.code_actions"))
     local builtins = null_ls.builtins
     null_ls.setup({
       border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
       sources = {
-        builtins.code_actions.shellcheck.with({
+        require("none-ls-shellcheck.code_actions").with({
           filetypes = { "sh", "bash" },
         }),
         builtins.diagnostics.fish,
@@ -225,7 +225,6 @@ Plug("williamboman/mason-lspconfig.nvim", {
         end
 
         if client.supports_method(methods.textDocument_inlayHint) then
-          -- vim.lsp.inlay_hint.enable(buffer_number, true)
           local function toggle_inlay_hints()
             vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())
           end

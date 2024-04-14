@@ -16,7 +16,8 @@ Plug("arthurxavierx/vim-caser", {
 })
 
 -- Exchange {{{
--- TODO: Using this instead of the one from mini.operators because the mini doesn't have dot-repeat.
+-- TODO: Using this instead of the one from mini.operators because the mini one
+-- doesn't have dot-repeat.
 Plug("tommcdo/vim-exchange")
 vim.g.exchange_no_mappings = true
 vim.g.exchange_indent = "=="
@@ -29,7 +30,8 @@ vim.keymap.set({ "n" }, "<Esc>", "<Plug>(ExchangeClear)<ESC>")
 local utilities = require("base.utilities")
 
 Plug("stevearc/conform.nvim", {
-  -- So when I use my conform executable, my config will be called before I call format()
+  -- So when I use my conform executable, my config will be called before I call
+  -- format()
   sync = true,
 
   config = function()
@@ -130,9 +132,10 @@ Plug("stevearc/conform.nvim", {
     local util = require("conform.util")
     conform.setup({
       formatters = {
-        -- TODO: Made 2 changes to the default shfmt config that should probably be upstreamed:
-        -- 1. add another '-' to '-filename'. A single dash works, but I don't see it documented
-        -- anywhere
+        -- TODO: Made 2 changes to the default shfmt config that should probably
+        -- be upstreamed:
+        -- 1. add another '-' to '-filename'. A single dash works, but I don't
+        -- see it documented anywhere
         -- 2. set a CWD so shfmt can pick up editor config settings
         shfmt = {
           inherit = false,
@@ -193,7 +196,8 @@ local function set_formatprg(text)
 
   local _, newline_count = string.gsub(text, "\n", "")
   local is_one_line = newline_count == 0
-  -- For single lines `par` can't infer what the commentstring is so I'm explicitly setting it here.
+  -- For single lines `par` can't infer what the commentstring is so I'm
+  -- explicitly setting it here.
   if is_one_line then
     local commentstrings = get_commentstrings()
     table.sort(commentstrings, function(a, b)
@@ -249,8 +253,8 @@ end, { expr = true, remap = true, desc = "Format comment" })
 -- format visual selection
 vim.keymap.set("x", "gq", function()
   set_formatprg(utilities.get_visual_selection())
-  -- This function returns after enqueuing the keys, not processing them. That is why I'm
-  -- leaving the formatprg set.
+  -- This function returns after enqueuing the keys, not processing them. That
+  -- is why I'm leaving the formatprg set.
   vim.fn.feedkeys("gvgq", "n")
 end, {
   desc = "Format comment",
@@ -280,9 +284,10 @@ Plug("monaqa/dial.nvim", {
 
     local defaults = {
       -- color: #ffffff
-      -- If the cursor is over one of the two digits in the red, green, or blue value, it
-      -- only increments that color of the hex. To increment the red, green, and blue portions,
-      -- the cursor must be over the '#'.
+      --
+      -- If the cursor is over one of the two digits in the red, green, or blue
+      -- value, it only increments that color of the hex. To increment the red,
+      -- green, and blue portions, the cursor must be over the '#'.
       hex_rgb = augend.hexcolor.new({}),
       -- time: 14:30:00
       date_hms = augend.date.alias["%H:%M:%S"],

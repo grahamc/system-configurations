@@ -6,13 +6,14 @@ local function is_wrapped_line()
   return vim.v.virtnum > 0
 end
 
--- Fold column calculation was taken from the following files in the plugin statuscol.nvim:
+-- Fold column calculation was taken from the following files in the plugin
+-- statuscol.nvim:
 -- https://github.com/luukvbaal/statuscol.nvim/blob/98d02fc90ebd7c4674ec935074d1d09443d49318/lua/statuscol/ffidef.lua
 -- https://github.com/luukvbaal/statuscol.nvim/blob/98d02fc90ebd7c4674ec935074d1d09443d49318/lua/statuscol/builtin.lua
 local ffi = require("ffi")
--- I moved this call to `cdef` outside the fold function because I was getting the error "table
--- overflow" a few seconds into using neovim. Plus, not calling this during the fold function is
--- faster.
+-- I moved this call to `cdef` outside the fold function because I was getting
+-- the error "table overflow" a few seconds into using neovim. Plus, not calling
+-- this during the fold function is faster.
 ffi.cdef([[
   int next_namespace_id;
   uint64_t display_tick;
@@ -66,7 +67,8 @@ function StatusColumn()
     SignifyDeleteMore = "SignifyDelete",
     SignifyChange = "SignifyChange",
   }
-  -- There will be one item at most in this list since I supplied a buffer number.
+  -- There will be one item at most in this list since I supplied a buffer
+  -- number.
   local signsPerBuffer = vim.fn.sign_getplaced(
     buffer,
     { lnum = vim.v.lnum, group = "" }
@@ -87,11 +89,31 @@ function StatusColumn()
   end
   local border_section = border_highlight .. border_char
 
+  local line_number_section = nil
+  if not ShowLineNumbers then
+    line_number_section = ""
+  else
+    local last_line_digit_count =
+      #tostring(vim.fn.line("$", vim.g.statusline_winid))
+    if is_virtual_line() or is_wrapped_line() then
+      line_number_section = string.rep(" ", last_line_digit_count)
+    else
+      local line_number = tostring(vim.v.lnum)
+      local line_number_padding =
+        string.rep(" ", last_line_digit_count - #line_number)
+      line_number_section = line_number_padding .. line_number
+    end
+  end
+
   local fold_section = get_fold_section()
   local sign_section = "%s"
   local align_right = "%="
 
-  return align_right .. border_section .. sign_section .. fold_section
+  return align_right
+    .. line_number_section
+    .. border_section
+    .. sign_section
+    .. fold_section
 end
 
 vim.o.statuscolumn = "%!v:lua.StatusColumn()"

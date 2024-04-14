@@ -32,8 +32,8 @@ end, {
 })
 
 -- Faster macro execution {{{
--- Execute macros more quickly by enabling `lazyredraw` and disabling events while the macro is
--- running
+-- Execute macros more quickly by enabling `lazyredraw` and disabling events
+-- while the macro is running
 
 vim.keymap.set({ "x", "n" }, "@", function()
   local mode = vim.fn.mode()
@@ -56,8 +56,8 @@ vim.keymap.set({ "x", "n" }, "@", function()
   vim.o.eventignore = "all"
   vim.o.lazyredraw = true
   vim.cmd(string.format(
-    -- Execute silently so I don't get prompted to press enter if an error is thrown. For example, when I use
-    -- substitute and there is no match.
+    -- Execute silently so I don't get prompted to press enter if an error is
+    -- thrown. For example, when I use substitute and there is no match.
     [[silent! %snormal! %s@%s]],
     range,
     count,

@@ -71,3 +71,4 @@ Autocommands
 Enum
 $PATH-like
 nixGL
+readme

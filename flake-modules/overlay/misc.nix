@@ -23,8 +23,8 @@
       masonNvimDependencies = final.symlinkJoin {
         name = "mason-nvim-dependencies";
         paths = with final; [
-          # need to specify `final` here because otherwise it will resolve to the
-          # attribute inside `let` and overlays won't be able to override it
+          # need to specify `final` here because otherwise it will resolve to
+          # the attribute inside `let` and overlays won't be able to override it
           final.myPython
           cargo
           nodejs
@@ -48,13 +48,14 @@
             partialPackages.look
             wordnet
 
-            # For the conform.nvim formatters 'trim_whitespace' and 'squeeze_blanks' which require awk and
-            # cat respectively
+            # For the conform.nvim formatters 'trim_whitespace' and
+            # 'squeeze_blanks' which require awk and cat respectively
             gawk
             coreutils-full
 
-            # need to specify `final` here because otherwise it will resolve to the
-            # attribute inside `let` and overlays won't be able to override it
+            # need to specify `final` here because otherwise it will resolve to
+            # the attribute inside `let` and overlays won't be able to override
+            # it
             final.masonNvimDependencies
 
             # for telescope-sg
@@ -71,16 +72,17 @@
           paths = [final.neovim-nightly];
           buildInputs = [final.makeWrapper];
           postBuild = ''
-            # TERMINFO: Neovim uses unibilium to discover term info entries which is a problem for
-            # me because unibilium sets its terminfo search path at build time so I'm setting the
-            # search path here.
+            # TERMINFO: Neovim uses unibilium to discover term info entries
+            # which is a problem for me because unibilium sets its terminfo
+            # search path at build time so I'm setting the search path here.
             #
-            # PARINIT: Not sure what it means, but the par man page said to use it and it seems to
-            # work
+            # PARINIT: The par manpage recommends using this value if you want
+            # to start using par, but aren't familiar with how par works so
+            # until I learn more, I'll use this value.
             #
-            # I'm adding to the end of the $PATH so languages included in a project will have
-            # precedence. Except for java because the system one shadows it and mason.nvim had a
-            # problem with it.
+            # I'm adding to the end of the $PATH so languages included in a
+            # project will have precedence. Except for java because the system
+            # one shadows it and mason.nvim had a problem with it.
             wrapProgram $out/bin/nvim \
               --suffix PATH : '${dependencies}/bin' \
               --prefix PATH : '${final.jdk}/bin' \
@@ -109,10 +111,11 @@
           '';
         };
 
-      # TODO: Python virtualenvs use the canonical path of the base python. This is an issue for Nix
-      # because when I update my system and the old python gets garbage collected, it breaks any
-      # virtualenvs made against it. So I made a wrapper that injects the --copies flag whenever a
-      # virtualenv is being made.
+      # TODO: Python virtualenvs use the canonical path of the base python. This
+      # is an issue for Nix because when I update my system and the old python
+      # gets garbage collected, it breaks any virtualenvs made against it. So I
+      # made a wrapper that injects the --copies flag whenever a virtualenv is
+      # being made.
       myPython = let
         pythonWithPackages = final.python3.withPackages (ps: with ps; [pip mypy ipython]);
         python3CopyVenvsByDefault =
@@ -159,17 +162,18 @@
         };
     in {
       tmux = latestTmux;
-      # I'm renaming these to avoid rebuilds. I'm putting masonNvimDependencies in the overlay so I
-      # can empty out the package in portable-home.
+      # I'm renaming these to avoid rebuilds. I'm putting masonNvimDependencies
+      # in the overlay so I can empty out the package in portable-home.
       inherit ncursesWithWezterm myPython masonNvimDependencies;
       neovim = nightlyNeovimWithDependencies;
       ripgrep-all = ripgrepAllWithDependencies;
-      # TODO: The wezterm flake doesn't work for macOS. When I try to build it I get an error
-      # because the attribute 'UserNotifications' does not exist. The only mention of a similar
-      # issue is here:
+      # TODO: The wezterm flake doesn't work for macOS. When I try to build
+      # it I get an error because the attribute 'UserNotifications' does not
+      # exist. The only mention of a similar issue is here:
       # https://github.com/wez/wezterm/issues/2021
-      # Based on the above issue, it seems like the problem is due to Nix's outdated Apple SDK. The
-      # The following issues/discussions track the status of Apple SDKs in Nix:
+      # Based on the issue above, it seems like the problem is due to Nix's
+      # outdated Apple SDK. The The following issues/discussions track the
+      # status of Apple SDKs in Nix:
       # https://github.com/NixOS/nixpkgs/issues/116341
       # https://discourse.nixos.org/t/nix-macos-monthly/12330
       wezterm =

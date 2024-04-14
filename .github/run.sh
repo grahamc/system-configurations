@@ -40,7 +40,7 @@ esac
 
 platform="$(uname -m)-$(uname -s | tr '[:upper:]' '[:lower:]')"
 release_artifact_name="$1-$platform"
-release_artifact_url="https://github.com/bigolu/dotfiles/releases/download/master/$release_artifact_name"
+release_artifact_url="https://github.com/bigolu/dotfiles/releases/download/v0.0.1/$release_artifact_name"
 
 if ! file_exists "$release_artifact_url"; then
   abort "Your platform isn't supported: $platform"

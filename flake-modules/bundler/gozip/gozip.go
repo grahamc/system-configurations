@@ -42,12 +42,12 @@ var writer = func() io.Writer {
 
 var stopTicker chan struct{} = nil
 
-// since both the rewrite and extract steps need the total file count I'll store it here so I don't
-// have to get it twice
+// since both the rewrite and extract steps need the total file count I'll store
+// it here so I don't have to get it twice
 var archiveCount int = 0
 
-// the spinner only updates when the state of the bar changes so we'll keep setting the
-// description on an interval:
+// the spinner only updates when the state of the bar changes
+// so we'll keep setting the description on an interval:
 // https://github.com/schollz/progressbar/issues/166
 func MakeTicker(bar *progressbar.ProgressBar) chan struct{} {
 	ticker := time.NewTicker(time.Second / 30)
@@ -79,9 +79,11 @@ func NextStep(count int, name string, options ...progressbar.Option) *progressba
 		// the progress bar was flickering a lot when this wasn't set:
 		// https://github.com/schollz/progressbar/issues/87
 		progressbar.OptionUseANSICodes(true),
-		// Since the ANSI way of clearing the line isn't working, if the progress bar gets larger
-		// and then smaller, the larger part won't get cleared. This can happen when predicting time
-		// remaining since the estimate can get smaller so I'm disabling this.
+		// Since the ANSI way of clearing the line isn't working, if
+		// the progress bar gets larger and then smaller, the larger
+		// part won't get cleared. This can happen when predicting time
+		// remaining since the estimate can get smaller so I'm disabling
+		// this.
 		progressbar.OptionSetPredictTime(false),
 	}
 	currentBar = progressbar.NewOptions(count, append(defaultOptions, options...)...)
@@ -93,9 +95,9 @@ func NextStep(count int, name string, options ...progressbar.Option) *progressba
 	return currentBar
 }
 
-// For my progress bars I set the option 'UseANSICodes' so it doesn't flicker, but the ANSI way
-// of clearing the line doesn't seem to be working so below is the code used to clear the line if
-// 'UseANSICodes' isn't enabled:
+// For my progress bars I set the option 'UseANSICodes' so it doesn't flicker,
+// but the ANSI way of clearing the line doesn't seem to be working so below is
+// the code used to clear the line if 'UseANSICodes' isn't enabled:
 // https://github.com/schollz/progressbar/blob/304f5f42a0a10315cae471d8530e13b6c1bdc4fe/progressbar.go#L1007
 func writeString(w io.Writer, str string) {
 	if _, err := io.WriteString(w, str); err != nil {
@@ -103,9 +105,8 @@ func writeString(w io.Writer, str string) {
 	}
 
 	if f, ok := w.(*os.File); ok {
-		// ignore any errors in Sync(), as stdout
-		// can't be synced on some operating systems
-		// like Debian 9 (Stretch)
+		// ignore any errors in Sync(), as stdout can't be synced on
+		// some operating systems like Debian 9 (Stretch)
 		f.Sync()
 	}
 }
@@ -141,9 +142,11 @@ func Zip(destinationPath string, filesToZip []string) (err error) {
 	}
 	defer destinationFile.Close()
 
-	// To make a self extracting archive, the `destinationPath` can be the executable that does the extraction.
-	// For this reason, we set the `startoffset` to `io.SeekEnd`. This way we append the contents of the archive
-	// after the executable. Check the README for an example of making a self-extracting archive.
+	// To make a self extracting archive, the `destinationPath` can be the
+	// executable that does the extraction.  For this reason, we set the
+	// `startoffset` to `io.SeekEnd`. This way we append the contents of
+	// the archive after the executable. Check the README for an example of
+	// making a self-extracting archive.
 	_, err = destinationFile.Seek(0, io.SeekEnd)
 	if err != nil {
 		return err
@@ -484,22 +487,26 @@ func RewritePaths(archiveContentsPath string, oldStorePath string, newStorePath 
 	}
 	defer archiveContents.Close()
 
-	// The top level files in the archive are the directories of the Nix packages so we can use those directory names
-	// to get a list of all the package paths that need to be rewritten in the binaries.
+	// The top level files in the archive are the directories of the Nix
+	// packages so we can use those directory names to get a list of all the
+	// package paths that need to be rewritten in the binaries.
 	//
-	// The 0 means return all files in the directory, as opposed to setting a max.
+	// The 0 means return all files in the directory, as opposed to setting
+	// a max.
 	topLevelFilesInArchive, err := archiveContents.Readdir(0)
 	if err != nil {
 		return err
 	}
 	var oldAndNewPackagePaths []string
 	extraSlashesCount := len(oldStorePath) - len(newStorePath)
-	// The new store path must be the same length as the old one or it messes up the binary.
+	// The new store path must be the same length as the old one or it
+	// messes up the binary.
 	newStorePathWithPadding := strings.Replace(newStorePath, "/", strings.Repeat("/", extraSlashesCount+1), 1)
 	for _, file := range topLevelFilesInArchive {
 		name := file.Name()
 		oldPackagePath := filepath.Join(oldStorePath, name)
-		// I'm intentionally not using `filepath.Join` here since it normalizes the path which would remove the padding.
+		// I'm intentionally not using `filepath.Join` here since it
+		// normalizes the path which would remove the padding.
 		newPackagePath := newStorePathWithPadding + "/" + name
 		oldAndNewPackagePaths = append(oldAndNewPackagePaths, oldPackagePath, newPackagePath)
 	}
@@ -572,7 +579,8 @@ func GetNewStorePath() (prefix string, err error) {
 	for i := 1; i <= 1000; i++ {
 		candidatePrefix = "/tmp/"
 
-		// needs to be <= 5 since it will be appended to '/tmp/' and needs to be <= '/nix/store'
+		// needs to be <= 5 since it will be appended to '/tmp/' and
+		// needs to be <= '/nix/store'
 		stringLength := 5
 		for i := 1; i <= stringLength; i++ {
 			candidatePrefix = candidatePrefix + string(charset[random.Intn(len(charset))])
@@ -648,8 +656,8 @@ func isCaseSensitiveFilesystem(dir string) bool {
 	return !os.SameFile(dInfo, aInfo)
 }
 
-// The logic for this function, and all the functions it calls, was copied from here:
-// https://github.com/golang/dep/pull/395/files
+// The logic for this function, and all the functions it calls, was copied from
+// here: https://github.com/golang/dep/pull/395/files
 func HasFilepathPrefix(path, prefix string) bool {
 	if filepath.VolumeName(path) != filepath.VolumeName(prefix) {
 		return false
@@ -701,8 +709,8 @@ func HasFilepathPrefix(path, prefix string) bool {
 
 func IsRunningOnUsb() bool {
 	if runtime.GOOS == "linux" {
-		// On Linux, the go module 'gousbdrivedetector' needs the `udevadm` CLI and it may not be there
-		// so we'll check first.
+		// On Linux, the go module 'gousbdrivedetector' needs the
+		// `udevadm` CLI and it may not be there so we'll check first.
 		path, err := exec.LookPath("udevadm")
 		if err != nil || path == "" {
 			return false
@@ -727,8 +735,8 @@ func IsRunningOnUsb() bool {
 	return false
 }
 
-// If we are running on a usb device, store the cache there, for stronger isolation. Otherwise use a temporary
-// directory.
+// If we are running on a usb device, store the cache there, for stronger
+// isolation. Otherwise use a temporary directory.
 func GetCacheDirectory() (cacheDirectory string) {
 	if IsRunningOnUsb() {
 		executablePath, err := os.Executable()
@@ -748,8 +756,8 @@ func ExtractArchiveAndRewritePaths() (extractedArchivePath string, executableCac
 		progressbar.OptionSpinnerType(14),
 	)
 
-	// TODO: if the cache directory is not on a USB, I should use mktemp to ensure the name is
-	// available
+	// TODO: if the cache directory is not on a USB, I should use mktemp to
+	// ensure the name is available
 	cachePath := filepath.Join(GetCacheDirectory(), "nix-rootless-bundler")
 	err = CreateDirectoryIfNotExists(cachePath)
 	if err != nil {
@@ -829,7 +837,8 @@ func ExtractArchiveAndRewritePaths() (extractedArchivePath string, executableCac
 		if err != nil {
 			return "", "", err
 		}
-		// TODO: Should I worry about other programs making a file with the same name?
+		// TODO: Should I worry about other programs making a file with
+		// the same name?
 		if doesCurrentStorePathExist {
 			currentStorePathTarget, _ := os.Readlink(currentStorePath)
 			if currentStorePathTarget != archiveContentsPath {
@@ -909,8 +918,9 @@ func SelfExtractAndRunNixEntrypoint() (exitCode int, err error) {
 	cmd.Stderr = os.Stderr
 	err = cmd.Run()
 	if err != nil {
-		// I don't want to report an error if the command exited with a non-zero exit code. Instead I'll
-		// exit this process with that same exit code.
+		// I don't want to report an error if the command exited with a
+		// non-zero exit code. Instead I'll exit this process with that
+		// same exit code.
 		_, isExitError := err.(*exec.ExitError)
 		if !isExitError {
 			return -1, err
