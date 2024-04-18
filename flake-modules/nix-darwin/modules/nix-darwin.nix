@@ -47,7 +47,8 @@
     text = ''
       cd "${repositoryDirectory}"
 
-      # Get sudo authentication now so I don't have to wait for it to ask me later
+      # Get sudo authentication now so I don't have to wait for it to ask me
+      # later
       sudo --validate
 
       oldGenerationPath="$(readlink --canonicalize ${config.system.profile})"
@@ -109,9 +110,9 @@ in {
   };
 
   system = {
-    # With Nix's new `auto-allocate-uids` feature, build users get created on demand. This means this check
-    # will always fail since the build users won't be present until the build actually starts so I'm disabling
-    # the check.
+    # With Nix's new `auto-allocate-uids` feature, build users get created on
+    # demand. This means this check will always fail since the build users won't
+    # be present until the build actually starts so I'm disabling the check.
     checks.verifyBuildUsers = false;
   };
 }

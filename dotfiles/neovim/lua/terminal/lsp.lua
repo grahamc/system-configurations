@@ -255,338 +255,340 @@ Plug("neovim/nvim-lspconfig", {
   end,
 })
 
-Plug("dundalek/lazy-lsp.nvim", {
-  config = function()
-    local folding_nvim = require("terminal.folds.folding-nvim")
-    local code_lens_refresh_autocmd_ids_by_buffer = {}
+if vim.fn.executable('nix') == 1 then
+  Plug("dundalek/lazy-lsp.nvim", {
+    config = function()
+      local folding_nvim = require("terminal.folds.folding-nvim")
+      local code_lens_refresh_autocmd_ids_by_buffer = {}
 
-    -- Should be idempotent since it may be called mutiple times for the same buffer. For example,
-    -- it could get called again if a server registers another capability dynamically.
-    local on_attach = function(client, buffer_number)
-      folding_nvim.on_attach()
+      -- Should be idempotent since it may be called mutiple times for the same buffer. For example,
+      -- it could get called again if a server registers another capability dynamically.
+      local on_attach = function(client, buffer_number)
+        folding_nvim.on_attach()
 
-      local keymap_opts = { silent = true, buffer = buffer_number }
-      local function buffer_keymap(mode, lhs, rhs, opts)
-        vim.keymap.set(
-          mode,
-          lhs,
-          rhs,
-          vim.tbl_deep_extend("force", keymap_opts, opts or {})
-        )
-      end
-
-      local isKeywordprgOverridable = vim.bo[buffer_number].filetype ~= "vim"
-      if
-        client.supports_method(methods.textDocument_hover)
-        and isKeywordprgOverridable
-      then
-        buffer_keymap("n", "K", function()
-          vim.lsp.buf.hover()
-        end)
-      end
-
-      if client.supports_method(methods.textDocument_inlayHint) then
-        local function toggle_inlay_hints()
-          vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())
-        end
-        buffer_keymap(
-          "n",
-          [[\i]],
-          toggle_inlay_hints,
-          { desc = "Toggle inlay hints" }
-        )
-      end
-
-      if client.supports_method(methods.textDocument_signatureHelp) then
-        buffer_keymap("i", "<C-k>", function()
-          vim.lsp.buf.signature_help()
-        end, { desc = "Signature help" })
-      end
-
-      if client.supports_method(methods.textDocument_codeLens) then
-        local function create_refresh_autocmd()
-          local refresh_autocmd_id =
-            code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
-          if refresh_autocmd_id ~= -1 then
-            vim.notify(
-              "Not creating another code lens refresh autocmd since it doesn't look like the old one was removed. The id of the old one is: "
-                .. refresh_autocmd_id,
-              vim.log.levels.ERROR
-            )
-            return
-          end
-          code_lens_refresh_autocmd_ids_by_buffer[buffer_number] = vim.api.nvim_create_autocmd(
-            { "CursorHold", "InsertLeave" },
-            {
-              desc = "code lens refresh",
-              callback = function()
-                vim.lsp.codelens.refresh({ bufnr = buffer_number })
-              end,
-              buffer = buffer_number,
-            }
+        local keymap_opts = { silent = true, buffer = buffer_number }
+        local function buffer_keymap(mode, lhs, rhs, opts)
+          vim.keymap.set(
+            mode,
+            lhs,
+            rhs,
+            vim.tbl_deep_extend("force", keymap_opts, opts or {})
           )
         end
 
-        local function delete_refresh_autocmd()
-          local refresh_autocmd_id =
-            code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
-          if refresh_autocmd_id == -1 then
-            vim.notify(
-              "Unable to to remove the code lens refresh autocmd because it's id was not found",
-              vim.log.levels.ERROR
-            )
-            return
+        local isKeywordprgOverridable = vim.bo[buffer_number].filetype ~= "vim"
+        if
+          client.supports_method(methods.textDocument_hover)
+          and isKeywordprgOverridable
+        then
+          buffer_keymap("n", "K", function()
+            vim.lsp.buf.hover()
+          end)
+        end
+
+        if client.supports_method(methods.textDocument_inlayHint) then
+          local function toggle_inlay_hints()
+            vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())
           end
-          vim.api.nvim_del_autocmd(refresh_autocmd_id)
-          code_lens_refresh_autocmd_ids_by_buffer[buffer_number] = -1
+          buffer_keymap(
+            "n",
+            [[\i]],
+            toggle_inlay_hints,
+            { desc = "Toggle inlay hints" }
+          )
         end
 
-        if code_lens_refresh_autocmd_ids_by_buffer[buffer_number] == nil then
-          code_lens_refresh_autocmd_ids_by_buffer[buffer_number] = -1
-          create_refresh_autocmd()
+        if client.supports_method(methods.textDocument_signatureHelp) then
+          buffer_keymap("i", "<C-k>", function()
+            vim.lsp.buf.signature_help()
+          end, { desc = "Signature help" })
         end
 
-        buffer_keymap(
-          "n",
-          "gl",
-          vim.lsp.codelens.run,
-          { desc = "Run code lens" }
-        )
-        buffer_keymap("n", [[\l]], function()
-          local refresh_autocmd_id =
-            code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
-          local is_refresh_autocmd_active = refresh_autocmd_id ~= -1
-          if is_refresh_autocmd_active then
-            delete_refresh_autocmd()
-            vim.lsp.codelens.clear(client.id, buffer_number)
-          else
+        if client.supports_method(methods.textDocument_codeLens) then
+          local function create_refresh_autocmd()
+            local refresh_autocmd_id =
+              code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
+            if refresh_autocmd_id ~= -1 then
+              vim.notify(
+                "Not creating another code lens refresh autocmd since it doesn't look like the old one was removed. The id of the old one is: "
+                  .. refresh_autocmd_id,
+                vim.log.levels.ERROR
+              )
+              return
+            end
+            code_lens_refresh_autocmd_ids_by_buffer[buffer_number] = vim.api.nvim_create_autocmd(
+              { "CursorHold", "InsertLeave" },
+              {
+                desc = "code lens refresh",
+                callback = function()
+                  vim.lsp.codelens.refresh({ bufnr = buffer_number })
+                end,
+                buffer = buffer_number,
+              }
+            )
+          end
+
+          local function delete_refresh_autocmd()
+            local refresh_autocmd_id =
+              code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
+            if refresh_autocmd_id == -1 then
+              vim.notify(
+                "Unable to to remove the code lens refresh autocmd because it's id was not found",
+                vim.log.levels.ERROR
+              )
+              return
+            end
+            vim.api.nvim_del_autocmd(refresh_autocmd_id)
+            code_lens_refresh_autocmd_ids_by_buffer[buffer_number] = -1
+          end
+
+          if code_lens_refresh_autocmd_ids_by_buffer[buffer_number] == nil then
+            code_lens_refresh_autocmd_ids_by_buffer[buffer_number] = -1
             create_refresh_autocmd()
           end
-        end, { desc = "Toggle code lenses" })
+
+          buffer_keymap(
+            "n",
+            "gl",
+            vim.lsp.codelens.run,
+            { desc = "Run code lens" }
+          )
+          buffer_keymap("n", [[\l]], function()
+            local refresh_autocmd_id =
+              code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
+            local is_refresh_autocmd_active = refresh_autocmd_id ~= -1
+            if is_refresh_autocmd_active then
+              delete_refresh_autocmd()
+              vim.lsp.codelens.clear(client.id, buffer_number)
+            else
+              create_refresh_autocmd()
+            end
+          end, { desc = "Toggle code lenses" })
+        end
+
+        -- TODO: I try just calling diagnostic.reset in here, but it didn't work. It has to be
+        -- called after the handler for textDocument_(publishD|d)iagnostic runs so in here we just
+        -- queue up the bufs to disable.
+        local is_buffer_outside_workspace = not vim.startswith(
+          vim.api.nvim_buf_get_name(buffer_number),
+          client.config.root_dir or vim.loop.cwd() or ""
+        )
+        if is_buffer_outside_workspace then
+          vim.diagnostic.reset(nil, buffer_number)
+          table.insert(BufsToDisableDiagnosticOnDiagnostic, buffer_number)
+          table.insert(BufsToDisableDiagnosticOnPublishDiagnostic, buffer_number)
+        end
+
+        -- Quick way to disable diagnostic for a buffer
+        buffer_keymap("n", [[\d]], function()
+          vim.diagnostic.reset(nil, buffer_number)
+        end, { desc = "Toggle diagnostics for buffer" })
       end
 
-      -- TODO: I try just calling diagnostic.reset in here, but it didn't work. It has to be
-      -- called after the handler for textDocument_(publishD|d)iagnostic runs so in here we just
-      -- queue up the bufs to disable.
-      local is_buffer_outside_workspace = not vim.startswith(
-        vim.api.nvim_buf_get_name(buffer_number),
-        client.config.root_dir or vim.loop.cwd() or ""
-      )
-      if is_buffer_outside_workspace then
-        vim.diagnostic.reset(nil, buffer_number)
-        table.insert(BufsToDisableDiagnosticOnDiagnostic, buffer_number)
-        table.insert(BufsToDisableDiagnosticOnPublishDiagnostic, buffer_number)
-      end
-
-      -- Quick way to disable diagnostic for a buffer
-      buffer_keymap("n", [[\d]], function()
-        vim.diagnostic.reset(nil, buffer_number)
-      end, { desc = "Toggle diagnostics for buffer" })
-    end
-
-    -- TODO: Would be better if I could get the buffer the these diagnostics were for from the
-    -- context, but it's not in there.
-    BufsToDisableDiagnosticOnPublishDiagnostic = {}
-    local original_publish_diagnostics_handler =
-      vim.lsp.handlers[methods.textDocument_publishDiagnostics]
-    vim.lsp.handlers[methods.textDocument_publishDiagnostics] = function(...)
-      local toreturn = { original_publish_diagnostics_handler(...) }
-
-      vim.iter(BufsToDisableDiagnosticOnPublishDiagnostic):each(function(b)
-        vim.diagnostic.reset(nil, b)
-      end)
+      -- TODO: Would be better if I could get the buffer the these diagnostics were for from the
+      -- context, but it's not in there.
       BufsToDisableDiagnosticOnPublishDiagnostic = {}
+      local original_publish_diagnostics_handler =
+        vim.lsp.handlers[methods.textDocument_publishDiagnostics]
+      vim.lsp.handlers[methods.textDocument_publishDiagnostics] = function(...)
+        local toreturn = { original_publish_diagnostics_handler(...) }
 
-      return unpack(toreturn)
-    end
-    BufsToDisableDiagnosticOnDiagnostic = {}
-    local original_diagnostic_handler =
-      vim.lsp.handlers[methods.textDocument_diagnostic]
-    vim.lsp.handlers[methods.textDocument_diagnostic] = function(...)
-      local toreturn = { original_diagnostic_handler(...) }
-
-      vim.iter(BufsToDisableDiagnosticOnDiagnostic):each(function(b)
-        vim.diagnostic.reset(nil, b)
-      end)
-      BufsToDisableDiagnosticOnDiagnostic = {}
-
-      return unpack(toreturn)
-    end
-
-    -- When a server registers a capability dynamically, call on_attach again for the buffers
-    -- attached to it.
-    local original_register_capability =
-      vim.lsp.handlers[methods.client_registerCapability]
-    vim.lsp.handlers[methods.client_registerCapability] = function(
-      err,
-      res,
-      ctx
-    )
-      local original_return_value =
-        { original_register_capability(err, res, ctx) }
-
-      local client = vim.lsp.get_client_by_id(ctx.client_id)
-      if client then
-        vim.iter(vim.lsp.get_buffers_by_client_id(client.id)):each(function(buf)
-          on_attach(client, buf)
+        vim.iter(BufsToDisableDiagnosticOnPublishDiagnostic):each(function(b)
+          vim.diagnostic.reset(nil, b)
         end)
+        BufsToDisableDiagnosticOnPublishDiagnostic = {}
+
+        return unpack(toreturn)
+      end
+      BufsToDisableDiagnosticOnDiagnostic = {}
+      local original_diagnostic_handler =
+        vim.lsp.handlers[methods.textDocument_diagnostic]
+      vim.lsp.handlers[methods.textDocument_diagnostic] = function(...)
+        local toreturn = { original_diagnostic_handler(...) }
+
+        vim.iter(BufsToDisableDiagnosticOnDiagnostic):each(function(b)
+          vim.diagnostic.reset(nil, b)
+        end)
+        BufsToDisableDiagnosticOnDiagnostic = {}
+
+        return unpack(toreturn)
       end
 
-      return unpack(original_return_value)
-    end
+      -- When a server registers a capability dynamically, call on_attach again for the buffers
+      -- attached to it.
+      local original_register_capability =
+        vim.lsp.handlers[methods.client_registerCapability]
+      vim.lsp.handlers[methods.client_registerCapability] = function(
+        err,
+        res,
+        ctx
+      )
+        local original_return_value =
+          { original_register_capability(err, res, ctx) }
 
-    local capability_overrides = vim.tbl_deep_extend(
-      "error",
-      folding_nvim.capabilities,
-      require("cmp_nvim_lsp").default_capabilities(),
-      {
-        workspace = {
-          -- TODO: File watcher is too slow, remove this when this issue is fixed:
-          -- https://github.com/neovim/neovim/issues/23291
-          didChangeWatchedFiles = { dynamicRegistration = false },
-        },
-      }
-    )
-    local capabilities = vim.tbl_deep_extend(
-      "force",
-      vim.lsp.protocol.make_client_capabilities(),
-      capability_overrides
-    )
+        local client = vim.lsp.get_client_by_id(ctx.client_id)
+        if client then
+          vim.iter(vim.lsp.get_buffers_by_client_id(client.id)):each(function(buf)
+            on_attach(client, buf)
+          end)
+        end
 
-    local function map_to_lazy_lsp_format(server_list)
-      local filetypes_by_server = vim
-        .iter(server_list)
-        :fold({}, function(acc, server)
-          if server == "efm" then
-            acc[server] = { "markdown" }
-          else
-            acc[server] =
-              require("lspconfig")[server].document_config.default_config.filetypes
-          end
-          return acc
-        end)
+        return unpack(original_return_value)
+      end
 
-      local servers_by_filetype = {}
-      vim.iter(filetypes_by_server):each(function(server, filetypes)
-        vim.iter(filetypes):each(function(filetype)
-          local servers = servers_by_filetype[filetype]
-          if servers == nil then
-            servers = { server }
-          else
-            table.insert(servers, server)
-          end
-          servers_by_filetype[filetype] = servers
-        end)
-      end)
-
-      return servers_by_filetype
-    end
-    -- local catalog = "/etc/xml/catalog"
-    require("lazy-lsp").setup({
-      prefer_local = true,
-      default_config = {
-        capabilities = capabilities,
-        on_attach = on_attach,
-      },
-      -- TODO: missing servers that I use: ast_grep, lemminx, basedpyright,
-      -- emmet-language-server
-      preferred_servers = map_to_lazy_lsp_format({
-        "bashls",
-        "cssls",
-        "efm",
-        "eslint",
-        "gopls",
-        "html",
-        "jdtls",
-        "jsonls",
-        "ltex",
-        "lua_ls",
-        "marksman",
-        "nil_ls",
-        "pyright",
-        "rust_analyzer",
-        "taplo",
-        "tsserver",
-        "vimls",
-        "yamlls",
-      }),
-      -- TODO: consider contributing some these settings to nvim-lspconfig
-      --
-      -- The JSON/YAML configuration came from here:
-      -- https://www.arthurkoziel.com/json-schemas-in-neovim/
-      configs = {
-        jsonls = {
-          settings = {
-            json = {
-              schemas = require("schemastore").json.schemas(),
-              validate = { enable = true },
-            },
+      local capability_overrides = vim.tbl_deep_extend(
+        "error",
+        folding_nvim.capabilities,
+        require("cmp_nvim_lsp").default_capabilities(),
+        {
+          workspace = {
+            -- TODO: File watcher is too slow, remove this when this issue is fixed:
+            -- https://github.com/neovim/neovim/issues/23291
+            didChangeWatchedFiles = { dynamicRegistration = false },
           },
-        },
+        }
+      )
+      local capabilities = vim.tbl_deep_extend(
+        "force",
+        vim.lsp.protocol.make_client_capabilities(),
+        capability_overrides
+      )
 
-        yamlls = {
-          settings = {
-            yaml = {
-              schemas = require("schemastore").yaml.schemas(),
-              -- For why this is needed see:
-              -- https://github.com/b0o/SchemaStore.nvim?tab=readme-ov-file#usage
-              schemaStore = {
-                enable = false,
-                url = "",
+      local function map_to_lazy_lsp_format(server_list)
+        local filetypes_by_server = vim
+          .iter(server_list)
+          :fold({}, function(acc, server)
+            if server == "efm" then
+              acc[server] = { "markdown" }
+            else
+              acc[server] =
+                require("lspconfig")[server].document_config.default_config.filetypes
+            end
+            return acc
+          end)
+
+        local servers_by_filetype = {}
+        vim.iter(filetypes_by_server):each(function(server, filetypes)
+          vim.iter(filetypes):each(function(filetype)
+            local servers = servers_by_filetype[filetype]
+            if servers == nil then
+              servers = { server }
+            else
+              table.insert(servers, server)
+            end
+            servers_by_filetype[filetype] = servers
+          end)
+        end)
+
+        return servers_by_filetype
+      end
+      -- local catalog = "/etc/xml/catalog"
+      require("lazy-lsp").setup({
+        prefer_local = true,
+        default_config = {
+          capabilities = capabilities,
+          on_attach = on_attach,
+        },
+        -- TODO: missing servers that I use: ast_grep, lemminx, basedpyright,
+        -- emmet-language-server
+        preferred_servers = map_to_lazy_lsp_format({
+          "bashls",
+          "cssls",
+          "efm",
+          "eslint",
+          "gopls",
+          "html",
+          "jdtls",
+          "jsonls",
+          "ltex",
+          "lua_ls",
+          "marksman",
+          "nil_ls",
+          "pyright",
+          "rust_analyzer",
+          "taplo",
+          "tsserver",
+          "vimls",
+          "yamlls",
+        }),
+        -- TODO: consider contributing some these settings to nvim-lspconfig
+        --
+        -- The JSON/YAML configuration came from here:
+        -- https://www.arthurkoziel.com/json-schemas-in-neovim/
+        configs = {
+          jsonls = {
+            settings = {
+              json = {
+                schemas = require("schemastore").json.schemas(),
+                validate = { enable = true },
               },
             },
           },
-        },
 
-        -- TODO: Can't use this until lazy-lsp gets support for lemminx
-        -- It won't be on macOS
-        -- lemminx = (vim.fn.filereadable(catalog) == 0) and {} or {
-        --   settings = {
-        --     xml = {
-        --       catalogs = {
-        --         catalog,
-        --       },
-        --     },
-        --   },
-        -- },
-
-        ltex = {
-          on_attach = function(client, buffer_number)
-            on_attach(client, buffer_number)
-            require("ltex_extra").setup({
-              load_langs = { "en-US" },
-              -- For compatibility with the vscode extension
-              path = ".vscode",
-            })
-          end,
-        },
-
-        efm = {
-          settings = {
-            languages = {
-              markdown = {
-                {
-                  lintCommand = "markdownlint --stdin",
-                  lintFormats = { "%f:%l:%c %m", "%f:%l %m", "%f: %l: %m" },
-                  lintIgnoreExitCode = true,
-                  lintSource = "markdownlint",
-                  lintStdin = true,
+          yamlls = {
+            settings = {
+              yaml = {
+                schemas = require("schemastore").yaml.schemas(),
+                -- For why this is needed see:
+                -- https://github.com/b0o/SchemaStore.nvim?tab=readme-ov-file#usage
+                schemaStore = {
+                  enable = false,
+                  url = "",
                 },
               },
             },
           },
-          on_new_config = function(new_config)
-            local nix_pkgs = { "efm-langserver", "markdownlint-cli" }
-            new_config.cmd =
-              require("lazy-lsp").in_shell(nix_pkgs, new_config.cmd)
-          end,
-        },
-      },
-    })
 
-    -- re-trigger lsp attach so nvim-lsp-config has a chance to attach to any
-    -- buffers that were opened before it was configured. This way I can load
-    -- nvim-lsp-config asynchronously.
-    require("terminal.utilities").trigger_lsp_attach()
-  end,
-})
+          -- TODO: Can't use this until lazy-lsp gets support for lemminx
+          -- It won't be on macOS
+          -- lemminx = (vim.fn.filereadable(catalog) == 0) and {} or {
+          --   settings = {
+          --     xml = {
+          --       catalogs = {
+          --         catalog,
+          --       },
+          --     },
+          --   },
+          -- },
+
+          ltex = {
+            on_attach = function(client, buffer_number)
+              on_attach(client, buffer_number)
+              require("ltex_extra").setup({
+                load_langs = { "en-US" },
+                -- For compatibility with the vscode extension
+                path = ".vscode",
+              })
+            end,
+          },
+
+          efm = {
+            settings = {
+              languages = {
+                markdown = {
+                  {
+                    lintCommand = "markdownlint --stdin",
+                    lintFormats = { "%f:%l:%c %m", "%f:%l %m", "%f: %l: %m" },
+                    lintIgnoreExitCode = true,
+                    lintSource = "markdownlint",
+                    lintStdin = true,
+                  },
+                },
+              },
+            },
+            on_new_config = function(new_config)
+              local nix_pkgs = { "efm-langserver", "markdownlint-cli" }
+              new_config.cmd =
+                require("lazy-lsp").in_shell(nix_pkgs, new_config.cmd)
+            end,
+          },
+        },
+      })
+
+      -- re-trigger lsp attach so nvim-lsp-config has a chance to attach to any
+      -- buffers that were opened before it was configured. This way I can load
+      -- nvim-lsp-config asynchronously.
+      require("terminal.utilities").trigger_lsp_attach()
+    end,
+  })
+end
