@@ -20,18 +20,6 @@
         patches = [];
       });
 
-      masonNvimDependencies = final.symlinkJoin {
-        name = "mason-nvim-dependencies";
-        paths = with final; [
-          # need to specify `final` here because otherwise it will resolve to
-          # the attribute inside `let` and overlays won't be able to override it
-          final.myPython
-          cargo
-          nodejs
-          go
-        ];
-      };
-
       nightlyNeovimWithDependencies = let
         dependencies = final.symlinkJoin {
           name = "neovim-dependencies";
@@ -52,11 +40,6 @@
             # 'squeeze_blanks' which require awk and cat respectively
             gawk
             coreutils-full
-
-            # need to specify `final` here because otherwise it will resolve to
-            # the attribute inside `let` and overlays won't be able to override
-            # it
-            final.masonNvimDependencies
 
             # for telescope-sg
             ast-grep
@@ -81,11 +64,9 @@
             # until I learn more, I'll use this value.
             #
             # I'm adding to the end of the $PATH so languages included in a
-            # project will have precedence. Except for java because the system
-            # one shadows it and mason.nvim had a problem with it.
+            # project will have precedence.
             wrapProgram $out/bin/nvim \
               --suffix PATH : '${dependencies}/bin' \
-              --prefix PATH : '${final.jdk}/bin' \
               --set TERMINFO_DIRS '${ncursesWithWezterm}/share/terminfo' \
               --set PARINIT 'rTbgqR B=.\,?'"'"'_A_a_@ Q=_s>|'
           '';
@@ -162,9 +143,8 @@
         };
     in {
       tmux = latestTmux;
-      # I'm renaming these to avoid rebuilds. I'm putting masonNvimDependencies
-      # in the overlay so I can empty out the package in portable-home.
-      inherit ncursesWithWezterm myPython masonNvimDependencies;
+      # I'm renaming these to avoid rebuilds.
+      inherit ncursesWithWezterm myPython;
       neovim = nightlyNeovimWithDependencies;
       ripgrep-all = ripgrepAllWithDependencies;
       # TODO: The wezterm flake doesn't work for macOS. When I try to build

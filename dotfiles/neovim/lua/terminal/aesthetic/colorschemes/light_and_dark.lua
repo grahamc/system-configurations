@@ -205,7 +205,6 @@ local theme = lush(function(injected_functions)
     StatusLineNC { StatusLine }, -- Status lines of not-current windows. Note: If this is equal to "StatusLine" Vim will use "^^^" in the status line of the current window.
     StatusLineRecordingIndicator { StatusLine, fg = ErrorMsg.fg },
     StatusLineShowcmd { StatusLine, fg = t_6.fg },
-    StatusLineMasonUpdateIndicator { StatusLine, fg = t_2.fg },
     StatusLineDebugIndicator { StatusLine, fg = t_2.fg },
     ---@diagnostic disable-next-line: undefined-field
     StatusLinePowerlineOuter { fg = StatusLine.bg },
@@ -343,19 +342,6 @@ local theme = lush(function(injected_functions)
     PmenuExtraSel { PmenuKindSel }, -- Popup menu: Selected item "extra text"
     PmenuSbar { Pmenu }, -- Popup menu: Scrollbar.
     PmenuThumb { bg = PmenuSbar.bg[is_light and 'darken' or 'lighten'](30) }, -- Popup menu: Thumb of the scrollbar.
-    -- }}}
-
-    -- mason.nvim {{{
-    MasonHeader { t_6, bold = true, reverse = true },
-    MasonHeaderSecondary { MasonHeader },
-    MasonHighlight { t_6 },
-    MasonHighlightBlockBold { MasonHighlight, bold = true, reverse = true },
-    MasonHighlightBlock { MasonHighlightBlockBold },
-    MasonMuted { t_8, },
-    MasonMutedBlock { fg = t_0.fg[is_light and 'darken' or 'lighten'](40), reverse = true },
-    MasonMutedBlockBold { MasonMutedBlock },
-    MasonError { ErrorMsg },
-    MasonNormal { bg = "NONE", nocombine = true },
     -- }}}
 
     -- fidget.nvim {{{

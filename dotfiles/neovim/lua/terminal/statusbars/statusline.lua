@@ -32,13 +32,6 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     end
   end,
 })
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  group = statusline_group,
-  pattern = "mason",
-  callback = function()
-    vim.opt_local.statusline = "%!v:lua.MasonStatusLine()"
-  end,
-})
 -- }}}
 
 -- statusline helpers {{{
@@ -365,13 +358,6 @@ function StatusLine()
     local hint = "%#StatusLineHintText#" .. icon .. hint_count
     table.insert(diagnostic_list, hint)
   end
-  if
-    _G.mason_update_available_count and _G.mason_update_available_count > 0
-  then
-    local mason_update_indicator = "%#StatusLineMasonUpdateIndicator# "
-      .. _G.mason_update_available_count
-    table.insert(diagnostic_list, mason_update_indicator)
-  end
   local diagnostics = nil
   if #diagnostic_list > 0 then
     diagnostics = table.concat(diagnostic_list, " ")
@@ -507,18 +493,5 @@ function TelescopeStatusLine(is_menufacture_open)
     )
   end
   return make_mapping_statusline(mappings)
-end
--- }}}
-
--- mason statusline {{{
-function MasonStatusLine()
-  return make_mapping_statusline({
-    { key = "g?", description = "help" },
-    { key = "<Tab>", description = "expand/collapse" },
-    { key = "i", description = "install" },
-    { key = "X", description = "remove" },
-    { key = "u", description = "update" },
-    { key = "<C-c>", description = "cancel installation" },
-  })
 end
 -- }}}

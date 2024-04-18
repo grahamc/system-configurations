@@ -14,13 +14,15 @@ local END_LINE = "endLine"
 -- report this to the servers.
 -- [1]: https://github.com/neovim/neovim/issues/18939
 local CLIENTS_THAT_FALSELY_CLAIM_TO_HAVE_FOLDING_SUPPORT = {
-  "nixd",
-  "bashls",
   "ast_grep",
   "basedpyright",
-  "nil_ls",
+  "bashls",
+  "efm",
   "ltex",
   "marksman",
+  "nil_ls",
+  "nixd",
+  "pyright",
 }
 
 local M = {}

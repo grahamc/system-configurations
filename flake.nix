@@ -312,12 +312,8 @@
       url = "github:hrsh7th/nvim-cmp";
       flake = false;
     };
-    vim-plugin-mason-nvim = {
-      url = "github:williamboman/mason.nvim";
-      flake = false;
-    };
-    vim-plugin-mason-lspconfig-nvim = {
-      url = "github:williamboman/mason-lspconfig.nvim";
+    vim-plugin-lazy-lsp-nvim = {
+      url = "github:dundalek/lazy-lsp.nvim";
       flake = false;
     };
     vim-plugin-nvim-lspconfig = {
@@ -326,10 +322,6 @@
     };
     vim-plugin-SchemaStore-nvim = {
       url = "github:b0o/SchemaStore.nvim";
-      flake = false;
-    };
-    vim-plugin-none-ls-nvim = {
-      url = "github:nvimtools/none-ls.nvim";
       flake = false;
     };
     vim-plugin-vim-caser = {
@@ -454,10 +446,6 @@
     };
     vim-plugin-ltex-extra-nvim = {
       url = "github:barreiroleo/ltex_extra.nvim";
-      flake = false;
-    };
-    vim-plugin-none-ls-shellcheck-nvim = {
-      url = "github:gbprod/none-ls-shellcheck.nvim";
       flake = false;
     };
     vim-plugin-replacer-nvim = {

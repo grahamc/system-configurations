@@ -23,16 +23,13 @@ fidget.nvim
 firenvim
 friendly-snippets
 git-blame.nvim
+lazy-lsp.nvim
 legendary.nvim
 ltex-extra.nvim
 LuaSnip
 lush.nvim
 markdown-preview.nvim
-mason-lspconfig.nvim
-mason.nvim
 mini.nvim
-none-ls.nvim
-none-ls-shellcheck.nvim
 nvim-autopairs
 nvim-cmp
 nvim-colorizer.lua

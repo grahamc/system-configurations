@@ -18,10 +18,6 @@
       gitMinimal = makeEmptyPackage "stub-git";
       myPython = makeEmptyPackage "myPython";
 
-      # mason.nvim dependencies
-      masonNvimDependencies = makeEmptyPackage "mason-nvim-dependencies";
-      jdk = makeEmptyPackage "jdk";
-
       vimPlugins =
         prev.vimPlugins
         // {
