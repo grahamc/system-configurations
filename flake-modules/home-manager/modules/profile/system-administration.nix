@@ -52,6 +52,7 @@ in {
       lesspipe
       # This wasn't in a docker container
       gnused
+      diffoscope
     ]
     ++ optionals isLinux [
       trashy

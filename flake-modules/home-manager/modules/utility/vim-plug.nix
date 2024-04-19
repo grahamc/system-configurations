@@ -28,22 +28,25 @@ in {
   config = let
     pluginNames = builtins.filter (name: name != "") (lib.strings.splitString "\n" (builtins.readFile config.vimPlug.pluginFile));
     replaceDotsWithDashes = builtins.replaceStrings ["."] ["-"];
-    pluginsByName = builtins.listToAttrs
+    pluginsByName =
+      builtins.listToAttrs
       (map
-      (
-        pluginName: let
-          getPackageForPlugin = builtins.getAttr pluginName;
-          formattedPluginName = replaceDotsWithDashes pluginName;
-          package =
-            if builtins.hasAttr pluginName pkgs.vimPlugins
-            then getPackageForPlugin pkgs.vimPlugins
-            else if builtins.hasAttr formattedPluginName pkgs.vimPlugins
-            then (builtins.getAttr "overrideAttrs" (builtins.getAttr formattedPluginName pkgs.vimPlugins)) (_old: {pname = pluginName;})
-            else abort "Failed to find vim plugin: ${pluginName}";
-        in
-        { name = pluginName; value = package; }
-      )
-      pluginNames);
+        (
+          pluginName: let
+            getPackageForPlugin = builtins.getAttr pluginName;
+            formattedPluginName = replaceDotsWithDashes pluginName;
+            package =
+              if builtins.hasAttr pluginName pkgs.vimPlugins
+              then getPackageForPlugin pkgs.vimPlugins
+              else if builtins.hasAttr formattedPluginName pkgs.vimPlugins
+              then (builtins.getAttr "overrideAttrs" (builtins.getAttr formattedPluginName pkgs.vimPlugins)) (_old: {pname = pluginName;})
+              else abort "Failed to find vim plugin: ${pluginName}";
+          in {
+            name = pluginName;
+            value = package;
+          }
+        )
+        pluginNames);
   in {
     xdg.dataFile = {
       "nvim/site/autoload/plug.vim".source = "${tweakedVimPlug}";

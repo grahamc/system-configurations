@@ -6,6 +6,7 @@ abbr --add --global g git
 set --global --export PAGER less
 abbr --add --global x 'chmod +x'
 abbr --add --global du 'du --dereference --human-readable --summarize --apparent-size'
+abbr --add --global diff diffoscope
 if test (uname) = Linux
     abbr --add --global initramfs-reload 'sudo update-initramfs -u -k all'
     abbr --add --global logout-all 'sudo killall -u $USER'

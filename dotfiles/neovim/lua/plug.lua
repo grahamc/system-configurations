@@ -2,8 +2,8 @@
 
 local M = {}
 
-vim.g.plug_window = 'vertical topleft new'
-vim.g.plug_pwindow = 'above 12new'
+vim.g.plug_window = "vertical topleft new"
+vim.g.plug_pwindow = "above 12new"
 
 -- Functions to be called after a plugin is loaded to configure it.
 local configs_by_type = {
@@ -29,7 +29,7 @@ end
 
 local group_id = vim.api.nvim_create_augroup("PlugLua", {})
 local original_plug = vim.fn["plug#"]
-local nix_plugins = require('nix-plugins')
+local nix_plugins = require("nix-plugins")
 local function plug(repo, options)
   local plugin_name = repo:match("^[%w-]+/([%w-_.]+)$")
   if nix_plugins[plugin_name] ~= nil then

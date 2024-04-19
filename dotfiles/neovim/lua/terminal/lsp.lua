@@ -255,7 +255,7 @@ Plug("neovim/nvim-lspconfig", {
   end,
 })
 
-if vim.fn.executable('nix') == 1 then
+if vim.fn.executable("nix") == 1 then
   Plug("dundalek/lazy-lsp.nvim", {
     config = function()
       local folding_nvim = require("terminal.folds.folding-nvim")
@@ -376,7 +376,10 @@ if vim.fn.executable('nix') == 1 then
         if is_buffer_outside_workspace then
           vim.diagnostic.reset(nil, buffer_number)
           table.insert(BufsToDisableDiagnosticOnDiagnostic, buffer_number)
-          table.insert(BufsToDisableDiagnosticOnPublishDiagnostic, buffer_number)
+          table.insert(
+            BufsToDisableDiagnosticOnPublishDiagnostic,
+            buffer_number
+          )
         end
 
         -- Quick way to disable diagnostic for a buffer
@@ -428,9 +431,11 @@ if vim.fn.executable('nix') == 1 then
 
         local client = vim.lsp.get_client_by_id(ctx.client_id)
         if client then
-          vim.iter(vim.lsp.get_buffers_by_client_id(client.id)):each(function(buf)
-            on_attach(client, buf)
-          end)
+          vim
+            .iter(vim.lsp.get_buffers_by_client_id(client.id))
+            :each(function(buf)
+              on_attach(client, buf)
+            end)
         end
 
         return unpack(original_return_value)
