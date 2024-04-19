@@ -10,7 +10,7 @@
   hostName = "guest-host";
   makeEmptyPackage = packageName: pkgs.runCommand packageName {} ''mkdir -p $out/bin'';
 
-  overlay = _final: prev:
+  portableOverlay = _final: prev:
     {
       comma = makeEmptyPackage "stub-comma";
     }
@@ -20,7 +20,7 @@
       };
     };
 
-  shellModule = {lib, ...}: {
+  portableModule = {lib, ...}: {
     # I want a self contained executable so I can't have symlinks that point outside the Nix store.
     repository.symlink.makeCopiesInstead = true;
 
@@ -65,7 +65,7 @@
 
   homeManagerOutput = self.lib.home.makeFlakeOutput system {
     inherit hostName isGui;
-    overlays = [overlay] ++ overlays;
+    overlays = [portableOverlay] ++ overlays;
 
     # I want to remove the systemd dependency, but there is no option for that. Instead, I set the user
     # to root since Home Manager won't include systemd if the user is root.
@@ -75,7 +75,7 @@
     modules =
       [
         "${self.lib.home.moduleBaseDirectory}/profile/system-administration.nix"
-        shellModule
+        portableModule
       ]
       ++ modules;
   };

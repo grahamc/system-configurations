@@ -54,6 +54,7 @@ config.term = "wezterm"
 local function font_with_icon_fallbacks(font)
   return wezterm.font_with_fallback({ font, "nonicons", "SymbolsNerdFontMono" })
 end
+local handwriting_font = "Monaspace Radon"
 -- For Linux, I'd like to put 'monospace' here so Wezterm can use the monospace
 -- font that I set for my system, but Flatpak apps can't access my font
 -- configuration file from their sandbox so for now I'll hardcode a font.
@@ -64,13 +65,13 @@ config.font_rules = {
   {
     intensity = "Normal",
     italic = true,
-    font = font_with_icon_fallbacks("Monaspace Radon"),
+    font = font_with_icon_fallbacks(handwriting_font),
   },
   {
     intensity = "Bold",
     italic = true,
     font = font_with_icon_fallbacks({
-      family = "Monaspace Radon",
+      family = handwriting_font,
       weight = "Bold",
     }),
   },

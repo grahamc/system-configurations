@@ -10,85 +10,50 @@
     ...
   }: let
     inherit (lib.attrsets) optionalAttrs;
-    supportedSystems = with inputs.flake-utils.lib.system; [x86_64-linux x86_64-darwin];
-    isSupportedSystem = builtins.elem system supportedSystems;
-    makeShell = import ./make-shell;
-    makeEmptyPackage = packageName: pkgs.runCommand packageName {} ''mkdir -p $out/bin'';
-    makeMinimalShell = {isGui ? false}:
-      makeShell {
-        inherit pkgs self isGui;
-        modules = [
-          ({lib, ...}: {
-            xdg = {
-              dataFile = {
-                "nvim/site/parser" = lib.mkForce {
-                  source = makeEmptyPackage "parsers";
-                };
-              };
-            };
-            home = {
-              # remove moreutils dependency
-              activation.batSetup = lib.mkForce (lib.hm.dag.entryAfter ["linkGeneration"] "");
-            };
-          })
-        ];
-        overlays = [
-          (_final: prev: {
-            moreutils = makeEmptyPackage "moreutils";
-            ast-grep = makeEmptyPackage "ast-grep";
-            timg = makeEmptyPackage "timg";
-            ripgrep-all = makeEmptyPackage "ripgrep-all";
-            lesspipe = makeEmptyPackage "lesspipe";
-            wordnet = makeEmptyPackage "wordnet";
-            diffoscope = makeEmptyPackage "diffoscope";
-            myPython = makeEmptyPackage "myPython";
-            gitMinimal = makeEmptyPackage "stub-git";
 
-            fish = prev.fish.override {
-              usePython = false;
-            };
-
-            vimPlugins =
-              prev.vimPlugins
-              // {
-                markdown-preview-nvim = makeEmptyPackage "markdown-preview-nvim";
-              };
-          })
-        ];
-      };
-    makeTerminal = {isMinimal ? false}: let
-      GUIShellBootstrap = (
-        if isMinimal
-        then makeMinimalShell
-        else makeShell
-      ) {isGui = true;};
+    isSupportedSystem = let
+      supportedSystems = with inputs.flake-utils.lib.system; [x86_64-linux x86_64-darwin];
     in
-      pkgs.writeScriptBin
-      "terminal"
-      ''
-        #!${pkgs.bash}/bin/bash
-
-              set -o errexit
-              set -o nounset
-              set -o pipefail
-
-              exec ${lib.getExe GUIShellBootstrap} -c 'exec wezterm --config "font_locator=[[ConfigDirsOnly]]" --config "font_dirs={[[${pkgs.myFonts}]]}" --config "default_prog={[[$SHELL]]}" --config "set_environment_variables={SHELL=[[$SHELL]]}"'
-      '';
+      builtins.elem system supportedSystems;
 
     portableHomeOutputs = let
-      shellBootstrap = makeShell {
-        isGui = false;
-        inherit pkgs self;
-      };
-      shellMinimalBootstrap = makeMinimalShell {};
-      terminalBootstrap = makeTerminal {};
-      terminalMinimalBootstrap = makeTerminal {isMinimal = true;};
+      makePortableHome = {
+        isGui,
+        isMinimal,
+      }:
+        import ./make-portable-home {
+          inherit pkgs self isGui isMinimal;
+        };
+
+      makeShell = {isMinimal}:
+        makePortableHome {
+          isGui = false;
+          inherit isMinimal;
+        };
+
+      makeTerminal = {isMinimal}: let
+        portableHome = makePortableHome {
+          isGui = true;
+          inherit isMinimal;
+        };
+      in
+        pkgs.writeScriptBin
+        "terminal"
+        ''
+          #!${pkgs.bash}/bin/bash
+
+          set -o errexit
+          set -o nounset
+          set -o pipefail
+
+          exec ${lib.getExe portableHome} -c 'exec wezterm --config "font_locator=[[ConfigDirsOnly]]" --config "font_dirs={[[${pkgs.myFonts}]]}" --config "default_prog={[[$SHELL]]}" --config "set_environment_variables={SHELL=[[$SHELL]]}"'
+        '';
     in {
       packages = {
-        shell = shellBootstrap;
-        shellMinimal = shellMinimalBootstrap;
-        terminal = terminalBootstrap;
-        terminalMinimal = terminalMinimalBootstrap;
+        shell = makeShell {isMinimal = false;};
+        shellMinimal = makeShell {isMinimal = true;};
+        terminal = makeTerminal {isMinimal = false;};
+        terminalMinimal = makeTerminal {isMinimal = true;};
       };
     };
   in

@@ -2,6 +2,8 @@
   // TODO: rga should autogenerate this and publish to the schema store
   "$schema": "./config.schema.json",
 
+  "accurate": true,
+
   "custom_adapters": [
     {
       "name": "xlsx2csv",
@@ -49,6 +51,18 @@
       "output_path_hint": "${input_virtual_path}.txt.asciipagebreaks",
       "disabled_by_default": false,
       "match_only_by_mime": false
+    },
+    // TODO: Add to the community wiki
+    {
+      "name": "binary-strings",
+      "version": 1,
+      "description": "Uses `strings` to extract plain text from binary files",
+      "match_only_by_mime": true,
+      "mimetypes": ["application/octet-stream", "application/x-mach-binary", "application/x-elf", "application/x-binary"],
+      "extensions": [],
+      "binary": "strings",
+      "args": ["$input_virtual_path"],
+      "disabled_by_default": false
     }
   ]
 }
