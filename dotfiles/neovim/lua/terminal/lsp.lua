@@ -485,10 +485,12 @@ if vim.fn.executable('nix') == 1 then
       -- local catalog = "/etc/xml/catalog"
       require("lazy-lsp").setup({
         prefer_local = true,
+
         default_config = {
           capabilities = capabilities,
           on_attach = on_attach,
         },
+
         -- TODO: missing servers that I use: ast_grep, lemminx, basedpyright,
         -- emmet-language-server
         preferred_servers = map_to_lazy_lsp_format({
@@ -511,6 +513,7 @@ if vim.fn.executable('nix') == 1 then
           "vimls",
           "yamlls",
         }),
+
         -- TODO: consider contributing some these settings to nvim-lspconfig
         --
         -- The JSON/YAML configuration came from here:

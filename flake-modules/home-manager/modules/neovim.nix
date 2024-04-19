@@ -65,8 +65,7 @@
     pkgs.runCommand "jsregexp"
     {}
     ''
-      mkdir -p $out/lua
-      ln --symbolic ${pkgs.luajitPackages.jsregexp}/lib/lua/5.1/jsregexp/core.so $out/lua/jsregexp.so
+      ln --symbolic ${pkgs.luajitPackages.jsregexp}/lib/lua/5.1/jsregexp/core.so $out
     '';
 in {
   home = {
@@ -118,7 +117,7 @@ in {
 
   xdg.dataFile = {
     # For LuaSnip
-    "nvim/plugged/jsregexp".source = jsregexp;
+    "nvim/site/lua/jsregexp.so".source = jsregexp;
   };
 
   repository.symlink.xdg.configFile = {
