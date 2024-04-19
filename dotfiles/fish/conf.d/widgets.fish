@@ -224,8 +224,6 @@ function file-widget --description 'Search files'
   if file --brief --mime-type {} | grep -q -i image
     if set --query TMUX
       timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" -p sixel {}
-    else if test "$TERM" = wezterm
-      timg -p kitty --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
     else
       timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
     end

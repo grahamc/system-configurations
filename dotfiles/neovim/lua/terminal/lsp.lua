@@ -517,6 +517,7 @@ if vim.fn.executable("nix") == 1 then
           "tsserver",
           "vimls",
           "yamlls",
+          "zls",
         }),
 
         -- TODO: consider contributing some these settings to nvim-lspconfig

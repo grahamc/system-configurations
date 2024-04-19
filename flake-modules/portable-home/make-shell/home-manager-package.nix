@@ -1,7 +1,6 @@
 {
   pkgs,
   self,
-  minimalFish,
   isGui,
   modules ? [],
   overlays ? [],
@@ -11,18 +10,9 @@
   hostName = "guest-host";
   makeEmptyPackage = packageName: pkgs.runCommand packageName {} ''mkdir -p $out/bin'';
 
-  minimalOverlay = _final: prev:
+  overlay = _final: prev:
     {
-      fish = minimalFish;
       comma = makeEmptyPackage "stub-comma";
-      gitMinimal = makeEmptyPackage "stub-git";
-      myPython = makeEmptyPackage "myPython";
-
-      vimPlugins =
-        prev.vimPlugins
-        // {
-          markdown-preview-nvim = makeEmptyPackage "markdown-preview-nvim";
-        };
     }
     // prev.lib.attrsets.optionalAttrs isLinux {
       tmux = prev.tmux.override {
@@ -59,9 +49,6 @@
       };
 
       packages = lib.lists.optionals isGui [pkgs.wezterm];
-
-      # remove moreutils dependency
-      activation.batSetup = lib.mkForce (lib.hm.dag.entryAfter ["linkGeneration"] "");
     };
 
     xdg = {
@@ -78,7 +65,7 @@
 
   homeManagerOutput = self.lib.home.makeFlakeOutput system {
     inherit hostName isGui;
-    overlays = [minimalOverlay] ++ overlays;
+    overlays = [overlay] ++ overlays;
 
     # I want to remove the systemd dependency, but there is no option for that. Instead, I set the user
     # to root since Home Manager won't include systemd if the user is root.

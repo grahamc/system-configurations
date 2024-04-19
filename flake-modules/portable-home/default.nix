@@ -18,7 +18,7 @@
       makeShell {
         inherit pkgs self isGui;
         modules = [
-          {
+          ({lib, ...}: {
             xdg = {
               dataFile = {
                 "nvim/site/parser" = lib.mkForce {
@@ -26,16 +26,33 @@
                 };
               };
             };
-          }
+            home = {
+              # remove moreutils dependency
+              activation.batSetup = lib.mkForce (lib.hm.dag.entryAfter ["linkGeneration"] "");
+            };
+          })
         ];
         overlays = [
-          (_final: _prev: {
+          (_final: prev: {
             moreutils = makeEmptyPackage "moreutils";
             ast-grep = makeEmptyPackage "ast-grep";
             timg = makeEmptyPackage "timg";
             ripgrep-all = makeEmptyPackage "ripgrep-all";
             lesspipe = makeEmptyPackage "lesspipe";
             wordnet = makeEmptyPackage "wordnet";
+            diffoscope = makeEmptyPackage "diffoscope";
+            myPython = makeEmptyPackage "myPython";
+            gitMinimal = makeEmptyPackage "stub-git";
+
+            fish = prev.fish.override {
+              usePython = false;
+            };
+
+            vimPlugins =
+              prev.vimPlugins
+              // {
+                markdown-preview-nvim = makeEmptyPackage "markdown-preview-nvim";
+              };
           })
         ];
       };

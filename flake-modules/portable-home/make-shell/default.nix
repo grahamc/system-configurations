@@ -29,7 +29,7 @@
   coreutilsBinaryPath = "${pkgs.coreutils-full}/bin";
   shellBootstrapScriptDependencies =
     {
-      activationPackage = import ./home-manager-package.nix {inherit pkgs self minimalFish isGui modules overlays;};
+      activationPackage = import ./home-manager-package.nix {inherit pkgs self isGui modules overlays;};
       mktemp = "${coreutilsBinaryPath}/mktemp";
       mkdir = "${coreutilsBinaryPath}/mkdir";
       ln = "${coreutilsBinaryPath}/ln";

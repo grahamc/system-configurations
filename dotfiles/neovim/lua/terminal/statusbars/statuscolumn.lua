@@ -83,7 +83,7 @@ function StatusColumn()
       end
     end
   end
-  local border_char = vim.v.virtnum > 0 and "┊" or "│"
+  local border_char = vim.v.virtnum > 0 and "┋" or "┃"
   if border_highlight == "%#NonText#" then
     border_char = " "
   end

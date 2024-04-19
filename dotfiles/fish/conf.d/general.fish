@@ -6,7 +6,6 @@ abbr --add --global g git
 set --global --export PAGER less
 abbr --add --global x 'chmod +x'
 abbr --add --global du 'du --dereference --human-readable --summarize --apparent-size'
-abbr --add --global diff diffoscope
 if test (uname) = Linux
     abbr --add --global initramfs-reload 'sudo update-initramfs -u -k all'
     abbr --add --global logout-all 'sudo killall -u $USER'
@@ -29,11 +28,10 @@ end
 # timg
 function timg --wraps timg
     set pixelation_options
-    # timg doesn't detect Wezterm or TMUX so I'll do it here
+    # TODO: timg doesn't use sixel for TMUX so I'll do it here. I should open an
+    # issue to let them know it supports sixel now
     if set --query TMUX
         set pixelation_options -p sixel
-    else if test "$TERM" = wezterm
-        set pixelation_options -p kitty
     end
 
     command timg --center $pixelation_options $argv
@@ -257,13 +255,27 @@ end
 
 abbr --add --global chase 'chase --verbose'
 
+# broot
 function dui --wraps broot --description 'Check disk usage interactively'
     br -w $argv
 end
 abbr --add --global tree broot
 
-# less
+# lesspipe
 #
 # TODO: lesspipe requires this to be set to enable syntax highlighting. I should
 # open an issue to have it read lesskey
 set --global --export LESS -R
+
+# diffoscope
+function diff-html
+    set temp (mktemp --suffix .html)
+    diffoscope \
+        --html "$temp" \
+        --jquery 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js' \
+        $argv
+    open "$temp"
+end
+function diff
+    diffoscope --text-color always $argv | page
+end
