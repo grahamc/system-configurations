@@ -70,7 +70,7 @@ Plug("levouh/tint.nvim", {
 
     local function is_transparent()
       -- TODO: use a more accurate check for transparency
-      return not vim.wo.winhighlight:find("NormalFloat")
+      return not vim.opt_local.winhighlight:get()["NormalFloat"]
     end
 
     local function should_have_backdrop()
