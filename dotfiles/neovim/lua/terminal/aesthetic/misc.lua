@@ -19,10 +19,7 @@ Plug("yamatsum/nvim-nonicons", {
   end,
 })
 
--- A backdrop for floats
---
--- TODO: If this issue gets resolved, I won't have to do this for telescope:
--- https://github.com/nvim-telescope/telescope.nvim/issues/3020
+-- Using this to make a backdrop for floats
 Plug("levouh/tint.nvim", {
   config = function()
     require("tint").setup({
@@ -68,15 +65,6 @@ Plug("levouh/tint.nvim", {
       return vim.api.nvim_win_get_config(win_id).relative ~= ""
     end
 
-    local function is_transparent()
-      -- TODO: use a more accurate check for transparency
-      return not vim.opt_local.winhighlight:get()["NormalFloat"]
-    end
-
-    local function should_have_backdrop()
-      return is_floating(vim.api.nvim_get_current_win()) and is_transparent()
-    end
-
     local function get_non_floating_windows()
       return vim
         .iter(vim.fn.getwininfo() or {})
@@ -97,40 +85,25 @@ Plug("levouh/tint.nvim", {
       vim.iter(get_non_floating_windows()):each(require("tint").untint)
     end
 
-    vim.api.nvim_create_autocmd({ "WinEnter" }, {
-      callback = function(_winenter_context)
-        if should_have_backdrop() then
-          add_backdrop()
+    local function remove_backdrop_on_win_leave()
+      vim.api.nvim_create_autocmd({ "WinLeave" }, {
+        once = true,
+        callback = function(_context)
+          remove_backdrop()
+        end,
+      })
+    end
 
-          vim.api.nvim_create_autocmd({ "WinLeave" }, {
-            once = true,
-            callback = function(_winleave_context)
-              remove_backdrop()
-            end,
-          })
-        end
-      end,
-    })
-
-    -- dressing.nvim sets `noautocmd` when opening its window so I can't use
-    -- `WinEnter` to enable the tint
-    --
-    -- TODO: If this issue gets resolved, I can remove this:
-    -- https://github.com/stevearc/dressing.nvim/issues/148
     vim.api.nvim_create_autocmd({ "FileType" }, {
-      pattern = "DressingInput",
-      callback = function(_filetype_context)
+      -- TODO: If this issue gets resolved, I won't need a backdrop for dressing:
+      -- https://github.com/stevearc/dressing.nvim/issues/148
+      --
+      -- TODO: If this issue gets resolved, I need a backdrop for telescope:
+      -- https://github.com/nvim-telescope/telescope.nvim/issues/3020
+      pattern = { "DressingInput", "TelescopePrompt" },
+      callback = function(_context)
         add_backdrop()
-
-        -- Apparently `WinEnter` is not firing for the window we return to
-        -- after closing dressing so instead I'll untint on `WinLeave` for the
-        -- dressing window.
-        vim.api.nvim_create_autocmd({ "WinLeave" }, {
-          once = true,
-          callback = function(_winleave_context)
-            remove_backdrop()
-          end,
-        })
+        remove_backdrop_on_win_leave()
       end,
     })
   end,
