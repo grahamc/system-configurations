@@ -52,7 +52,7 @@
 
       jq \
         --null-input \
-        '{"$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json", "workspace": {"library": $ARGS.positional, "checkThirdParty": "Disable"}, "runtime": {"version": "LuaJIT", "path": [ "dotfiles/neovim/lua/?.lua", "dotfiles/neovim/lua/?/init.lua" ]}, "telemetry": {"enable": false}, "hint": {"enable": true}}' \
+        '{"$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json", "diagnostics": {"unusedLocalExclude": ["_*"]}, "workspace": {"library": $ARGS.positional, "checkThirdParty": "Disable"}, "runtime": {"version": "LuaJIT", "path": [ "dotfiles/neovim/lua/?.lua", "dotfiles/neovim/lua/?/init.lua" ]}, "telemetry": {"enable": false}, "hint": {"enable": true}}' \
         --args \
           '${specialArgs.flakeInputs.neodev-nvim}/types/nightly' \
           '${config.xdg.dataHome}/nvim/plugged' \

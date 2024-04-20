@@ -263,13 +263,14 @@ function StatusLine()
       icon, color = devicons.get_icon_color_by_filetype(vim.bo.filetype)
     end
     if icon ~= nil then
+      local icon_highlight_name = "StatusLineFileTypeIcon"
       vim.api.nvim_set_hl(
         0,
-        "FileTypeIcon",
+        icon_highlight_name,
         { fg = color, bg = vim.api.nvim_get_hl(0, { name = "StatusLine" }).bg }
       )
 
-      icon = "%#FileTypeIcon#" .. icon .. " "
+      icon = "%#" .. icon_highlight_name .. "#" .. icon .. " "
 
       -- TODO: To fix icon highlight
       require("tint").refresh()
