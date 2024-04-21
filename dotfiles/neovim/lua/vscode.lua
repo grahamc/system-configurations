@@ -34,11 +34,11 @@ vim.g.direnv_silent_load = 1
 -- There are three reasons why I'm disabling this:
 --
 -- 1. The readme for the vscode-neovim extension [1] recommends disabling any
--- plugins that render decorators very often, such as bracker highlighters, so
+-- plugins that render decorators very often, such as bracket highlighters, so
 -- when I'm running in vscode I'll disable highlights for matching symbols.
 --
--- 2. When this is enabled and I press `jk` in between to parentheses, while
--- in insert mode, another pair of parens would get added. Other kinds of text
+-- 2. When this is enabled and I press `jk` in between two parentheses, while in
+-- insert mode, another pair of parentheses would get added. Other kinds of text
 -- would get inserted too.
 --
 -- 3. It's unnecessary since vscode does its own highlighting for matching
@@ -78,8 +78,11 @@ vim.keymap.set("n", [[\ ]], function()
   vscode.call("editor.action.toggleRenderWhitespace")
 end, { desc = "Toggle whitespace" })
 vim.keymap.set("n", [[\n]], function()
-  vscode.call("editor.action.toggleLineNumbers")
+  vscode.call("settings.cycle.toggleLineNumbers")
 end, { desc = "Toggle line numbers" })
+vim.keymap.set("n", [[\d]], function()
+  vscode.call("errorLens.toggle")
+end, { desc = "Toggle inline diagnostics" })
 -- }}}
 
 -- version control {{{
@@ -197,7 +200,7 @@ vim.keymap.set({ "n" }, "gi", function()
   vscode.call("editor.action.goToImplementation")
 end)
 vim.keymap.set({ "n" }, "gr", function()
-  vscode.call("editor.action.goToReferences")
+  vscode.call("references-view.findReferences")
 end)
 vim.keymap.set({ "n" }, "gn", function()
   vscode.call("editor.action.rename")
@@ -214,7 +217,7 @@ end)
 vim.keymap.set({ "n" }, "gh", function()
   vscode.call("references-view.showCallHierarchy")
 end)
-vim.keymap.set({ "n" }, "ght", function()
+vim.keymap.set({ "n" }, "gH", function()
   vscode.call("references-view.showTypeHierarchy")
 end)
 vim.keymap.set({ "n" }, "gl", function()

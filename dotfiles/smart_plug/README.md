@@ -25,12 +25,12 @@ noise, which
 
 ## Run
 
-- Run `python smart_plug.py [(on|off)]` in this directory. If you don't pass an argument, it
-  exits with `0` if the plug is on, `1` if it's off, and `2` if there's an error.
+- Run `python smart_plug.py on/off` in this directory. If you don't pass an argument, it
+  exits with `0` if the plug is on, `1` if it's off, and `2` if there was an error.
 
 ## Development
 
-- direnv will automatically setup the development environment when you enter this directory
+- direnv will automatically set up the development environment when you enter this directory
   and remove when you leave.
 
 ## Resources

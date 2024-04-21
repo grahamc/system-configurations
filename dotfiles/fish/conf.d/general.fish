@@ -167,7 +167,7 @@ ulimit -Sn 10000
 # comma
 function , --wraps ,
     # The `--with-nth` to remove the '.out' extension from the entries.
-    BIGOLU_FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --margin 1 --height ~100% --preview 'nix-info {}' --preview-window 4 --no-header --delimiter '.' --with-nth '..-5'" COMMA_PICKER=fzf command , $argv
+    FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --separator '' --height ~100% --margin 0,2,0,2 --preview-window 7 --preview 'nix-info {}' --delimiter '.' --with-nth '..-5'" COMMA_PICKER=fzf command , $argv
 end
 
 # touch

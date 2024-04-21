@@ -1,6 +1,6 @@
 # Normally I check if the shell is interactive, but I need to run this even when
-# the shell is non-interactive so when fzf is launched from vscode, it picks up
-# my FZF_DEFAULT_OPTS.
+# the shell is non-interactive so I can call the fish functions defined here
+# from fzf bindings.
 
 set --local xdg_data (test -n "$XDG_DATA_HOME" && echo "$XDG_DATA_HOME" || echo "$HOME/.local/share")
 
@@ -97,6 +97,7 @@ set flags \
         'hl:cyan' \
         'hl+:regular:cyan:underline' \
         'scrollbar:8:dim' \
+        'preview-scrollbar:8:dim' \
     ) \
     (__flag 'bind' \
         'tab:down' \

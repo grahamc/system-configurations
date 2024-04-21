@@ -26,17 +26,12 @@
   tmux =
     pkgs.writeShellScriptBin
     "tmux"
-    # I want the $SHLVL to start from one for any shells launched in TMUX since they
-    # technically aren't children of the shell that I launched TMUX with. I would do this
-    # with TMUX's `default-command`, but that may break tmux-resurrect, as explained in my
-    # tmux.conf.
-    #
     # I am removing $SHELL so tmux will use the OS default shell instead of what it will probably be
     # when I run tmux, fish. This is because the Determinate Systems Nix installer doesn't configure
     # fish properly. When this issue is resolved, I can remove this:
     # https://github.com/DeterminateSystems/nix-installer/issues/576
     ''
-      exec env -u SHLVL -u SHELL ${pkgs.tmux}/bin/tmux "$@"
+      exec env -u SHELL ${pkgs.tmux}/bin/tmux "$@"
     '';
 in {
   home = {
@@ -47,7 +42,7 @@ in {
     #   - So I can keep the plugin settings in my config. Settings need to be defined before the
     # plugin is loaded and programs.tmux loads my configuration _after_ loading plugins so it
     # wouldn't work. Instead I load them my self.
-    packages = [tmux] ++ tmuxPlugins;
+    packages = [tmux pkgs.tmux-xpanes] ++ tmuxPlugins;
 
     # I reload tmux every time I switch generations because tmux-suspend uses the canonical
     # path to its script when making a key mapping and that path may change when I switch

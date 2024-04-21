@@ -16,7 +16,6 @@ in {
   repository.symlink.xdg.executable = {
     "fzf-tmux-zoom".source = "fzf/fzf-tmux-zoom";
     "fzf-help-preview".source = "fzf/fzf-help-preview";
-    "fzf".source = "fzf/fzf-wrapper.fish";
   };
 
   repository.symlink.xdg.configFile = {

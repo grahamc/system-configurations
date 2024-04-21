@@ -18,7 +18,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        # macos-latest uses M1 so I'll just use the most recent version of macOS
+        # that they still on run intel macs
+        os: [ubuntu-latest, macos-13]
       fail-fast: false
     defaults:
       run:

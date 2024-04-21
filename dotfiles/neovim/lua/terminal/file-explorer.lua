@@ -22,7 +22,8 @@ Plug("kyazdani42/nvim-tree.lua", {
           return nil
         end
 
-        -- where background means the file won't be focused and it won't show up in my bufferline
+        -- where background means the file won't be focused and it won't show up
+        -- in my bufferline
         local function open_file_in_background(file)
           vim.cmd.badd(file)
           local buf = vim.fn.bufnr(file)
@@ -80,9 +81,10 @@ Plug("kyazdani42/nvim-tree.lua", {
               arrow_closed = " ",
               arrow_open = " ",
             },
-            -- TODO: Should see if upstream can provide an option to disable symlink icons just like
-            -- `renderer.icons.show.file`. Or maybe this icon shouldn't show if that option is true,
-            -- that seems to be how it works for `renderer.icons.show.folder`: symlink folder icons
+            -- TODO: Should see if upstream can provide an option to disable
+            -- symlink icons just like `renderer.icons.show.file`. Or maybe this
+            -- icon shouldn't show if that option is true, that seems to be how
+            -- it works for `renderer.icons.show.folder`: symlink folder icons
             -- don't show if folder is false.
             symlink = "",
           },

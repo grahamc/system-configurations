@@ -125,8 +125,8 @@ in {
         # misc.
         just
       ];
-      # TODO: Nix should be able to link in prettier, I think it doesn't work because the `prettier`
-      # is a symlink
+      # TODO: Nix should be able to link in prettier, I think it doesn't work
+      # because the `prettier` is a symlink
       postBuild = ''
         rm $out/share/nvim/site/plugin/fzf.vim
 

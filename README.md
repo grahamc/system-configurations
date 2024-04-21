@@ -121,8 +121,6 @@ The next steps depend on the operating system you're using:
 
      - Disable the built-in keyboard shortcut for switching input sources, `ctrl+space`.
 
-     - Disable the built-in keyboard shortcuts for switching workspaces, `ctrl+left` and `ctrl+right`.
-
    - Setup Hammerspoon using the instructions in the [Hammerspoon Getting Started Guide][hammerspoon-guide].
 
    - Open Finicky to set it as the default browser.
@@ -146,9 +144,9 @@ My home config is also available as an executable with no dependencies. The exec
 shell/terminal that will have access to these programs and configs.
 
 - Run the shell with
-  `curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/v0.0.1/.github/run.sh | sh -s -- shell`
+  `curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run.sh | sh -s -- shell`
 - Run the terminal with
-  `curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/v0.0.1/.github/run.sh | sh -s -- terminal`
+  `curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run.sh | sh -s -- terminal`
 
 > NOTE: While the SEA doesn't depend on any programs on your computer, it does require that you have a `/tmp`
 > directory. You can read this [GitHub issue comment regarding a "rootless Nix"][rootless-nix] to see why this is

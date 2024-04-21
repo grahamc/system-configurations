@@ -1,6 +1,3 @@
-vim.o.grepprg = "rg --vimgrep --smart-case --follow"
-vim.opt.grepformat = "%f:%l:%c:%m"
-
 -- searching is only case-sensitive when the query contains an uppercase letter
 vim.o.ignorecase = true
 vim.o.smartcase = true

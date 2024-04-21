@@ -70,6 +70,7 @@ Plug("echasnovski/mini.nvim", {
 
     local function move_like_curly_brace(id, direction)
       local old_position = vim.api.nvim_win_get_cursor(0)
+      ---@diagnostic disable-next-line: undefined-global
       MiniAi.move_cursor(direction, "a", id, {
         search_method = (direction == "left") and "cover_or_prev"
           or "cover_or_next",
@@ -140,12 +141,14 @@ Plug("echasnovski/mini.nvim", {
       vim.b.miniindentscope_config = old_opts
     end
     vim.keymap.set({ "o", "x" }, "ii", function()
+      ---@diagnostic disable-next-line: undefined-global
       run_without_indent_at_cursor(MiniIndentscope.textobject)
     end, {
       desc = "Inside indent of line",
     })
     vim.keymap.set({ "o", "x" }, "ai", function()
       run_without_indent_at_cursor(function()
+        ---@diagnostic disable-next-line: undefined-global
         MiniIndentscope.textobject(true)
       end)
     end, {
@@ -153,6 +156,7 @@ Plug("echasnovski/mini.nvim", {
     })
     vim.keymap.set({ "n", "x" }, "[i", function()
       run_without_indent_at_cursor(function()
+        ---@diagnostic disable-next-line: undefined-global
         MiniIndentscope.move_cursor("top", false)
       end)
     end, {
@@ -160,6 +164,7 @@ Plug("echasnovski/mini.nvim", {
     })
     vim.keymap.set({ "n", "x" }, "]i", function()
       run_without_indent_at_cursor(function()
+        ---@diagnostic disable-next-line: undefined-global
         MiniIndentscope.move_cursor("bottom", false)
       end)
     end, {

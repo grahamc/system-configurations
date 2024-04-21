@@ -1,5 +1,6 @@
-# Switch into this mode if you want a shortcut to pass through without being processed by skhd
-# For example, if you wanted to input "cmd -a" directly and not whatever you have it mapped to, you can do:
+# Switch into this mode if you want a shortcut to pass through without being
+# processed by skhd.  For example, if you wanted to input "cmd -a" directly,
+# instead of whatever you have it mapped to, you can do:
 # `skhd -k "hyper - 0x80"; skhd -k "cmd - a"; skhd -k "hyper - 0x80"`
 :: passthrough
 hyper - 0x80 ; passthrough
@@ -26,17 +27,12 @@ cmd - u : skhd -k "cmd - z"
 cmd + shift - u : skhd -k "cmd + shift - z"
 # cmd + / for spotlight
 cmd - 0x2C : skhd -k "cmd - space"
-# move the cursor to the beginning/end of the line
-cmd - 0x21 [
-  "WezTerm" : skhd -k "ctrl - a"
-  * : skhd -k "cmd - left"
-]
-cmd - 0x1E [
-  "WezTerm" : skhd -k "ctrl - e"
-  * : skhd -k "cmd - right"
-]
+# move one workspace to the left/right. '0x21' is '[' and '0x1E' is ']'
+cmd - 0x21 : skhd -k "ctrl - left"
+cmd - 0x1E : skhd -k "ctrl - right"
 # move the cursor to the beginning/end of the word
-# TODO: fix the WezTerm ones, need to assign action in fish to hyper-something and add here
+# TODO: fix the WezTerm ones, need to assign action in fish to hyper-something
+# and add here
 cmd + shift - 0x21 [
   "WezTerm" : skhd -k "ctrl - a"
   * : skhd -k "alt - left"
@@ -55,7 +51,8 @@ cmd + ctrl - 0x1E [
   * : skhd -k "cmd + shift - right" && skhd -k "backspace"
 ]
 # delete everything to the left/right of the word under the cursor
-# TODO: fix the WezTerm ones, need to assign action in fish to hyper-something and add here
+# TODO: fix the WezTerm ones, need to assign action in fish to hyper-something
+# and add here
 cmd + ctrl + shift - 0x21 [
   "WezTerm" : skhd -k "ctrl - w"
   * : skhd -k "alt + shift - left" && skhd -k "backspace"

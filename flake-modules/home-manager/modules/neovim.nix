@@ -60,13 +60,6 @@
           "''${runtime_dirs[@]}" \
         > $out
     '';
-
-  jsregexp =
-    pkgs.runCommand "jsregexp"
-    {}
-    ''
-      ln --symbolic ${pkgs.luajitPackages.jsregexp}/lib/lua/5.1/jsregexp/core.so $out
-    '';
 in {
   home = {
     packages = with pkgs; [
@@ -113,11 +106,6 @@ in {
       "${firenvimManifestPath}".source = "${firenvimOutput}/${firenvimManifestPath}";
       "${firenvimScriptPath}".source = "${firenvimOutput}/${firenvimScriptPath}";
     };
-  };
-
-  xdg.dataFile = {
-    # For LuaSnip
-    "nvim/site/lua/jsregexp.so".source = jsregexp;
   };
 
   repository.symlink.xdg.configFile = {

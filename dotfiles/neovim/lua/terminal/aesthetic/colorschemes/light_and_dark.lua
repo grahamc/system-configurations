@@ -1,23 +1,5 @@
 -- vim:foldmethod=marker
 
--- lush.nvim Banner {{{
---
--- Built with,
---
---        ,gggg,
---       d8" "8I                         ,dPYb,
---       88  ,dP                         IP'`Yb
---    8888888P"                          I8  8I
---       88                              I8  8'
---       88        gg      gg    ,g,     I8 dPgg,
---  ,aa,_88        I8      8I   ,8'8,    I8dP" "8I
--- dP" "88P        I8,    ,8I  ,8'  Yb   I8P    I8
--- Yb,_,d88b,,_   ,d8b,  ,d8b,,8'_   8) ,d8     I8,
---  "Y8P"  "Y888888P'"Y88P"`Y8P' "YY8P8P88P     `Y8
---
--- https://github.com/rktjmp/lush.nvim
--- }}}
-
 -- Tips for defining colors: {{{
 --
 -- An empty definition `{}` will clear all styling, leaving elements looking
@@ -50,20 +32,20 @@ local theme = lush(function(injected_functions)
     --
     -- If you're in the lush live preview (:Lushify) the color below will be invisible.
     t_0 { fg = hsl(is_light and "#ffffff" or "#1d2129") },
-    t_1 { fg = hsl(is_light and "#ee3d3b" or "#BF616A") },
-    t_2 { fg = hsl(is_light and "#2AA298" or "#A3BE8C") },
+    t_1 { fg = hsl(is_light and "#cf222e" or "#BF616A") },
+    t_2 { fg = hsl(is_light and "#116329" or "#A3BE8C") },
     t_3 { fg = hsl(is_light and "#e9873a" or "#EBCB8B") },
-    t_4 { fg = hsl(is_light and "#288ed7" or "#81A1C1") },
-    t_5 { fg = hsl(is_light and "#994cc3" or "#B48EAD") },
-    t_6 { fg = hsl(is_light and "#037A98" or "#88C0D0") },
-    t_7 { fg = hsl(is_light and "#000000" or "#D8DEE9") },
+    t_4 { fg = hsl(is_light and "#0969da" or "#81A1C1") },
+    t_5 { fg = hsl(is_light and "#8250df" or "#B48EAD") },
+    t_6 { fg = hsl(is_light and "#1b7c83" or "#88C0D0") },
+    t_7 { fg = hsl(is_light and "#1f2328" or "#D8DEE9") },
     t_8 { fg = hsl(is_light and "#808080" or "#78849b") },
-    t_9 { fg = hsl(is_light and "#ee3d3b" or "#BF616A") },
-    t_10 { fg = hsl(is_light and "#2AA298" or "#A3BE8C") },
+    t_9 { fg = hsl(is_light and "#a40e26" or "#BF616A") },
+    t_10 { fg = hsl(is_light and "#1a7f37" or "#A3BE8C") },
     t_11 { fg = hsl(is_light and "#c96765" or "#d08770") },
-    t_12 { fg = hsl(is_light and "#288ed7" or "#81A1C1") },
-    t_13 { fg = hsl(is_light and "#d6438a" or "#B48EAD") },
-    t_14 { fg = hsl(is_light and "#2AA298" or "#8FBCBB") },
+    t_12 { fg = hsl(is_light and "#218bff" or "#81A1C1") },
+    t_13 { fg = hsl(is_light and "#a475f9" or "#B48EAD") },
+    t_14 { fg = hsl(is_light and "#3192aa" or "#8FBCBB") },
     t_15 { fg = hsl(is_light and "#808080" or "#78849b") },
     -- }}}
 
@@ -73,7 +55,7 @@ local theme = lush(function(injected_functions)
     Normal { bg = "NONE", fg = t_7.fg, }, -- Normal text
     -- tint.nvim needs this in order to work
     NormalNC { Normal, }, -- normal text in non-current windows
-    Visual { bg = t_3.fg, fg = t_0.fg }, -- Visual mode selection
+    Visual { bg = is_light and hsl("#add6ff") or t_3.fg, fg = is_light and "NONE" or t_0.fg, }, -- Visual mode selection
     VisualNOS {}, -- Visual mode selection when vim is "Not Owning the Selection".
     -- }}}
 
@@ -193,7 +175,7 @@ local theme = lush(function(injected_functions)
 
     -- statusline {{{
     ---@diagnostic disable-next-line: redundant-parameter
-    StatusLine { bg = t_0.fg[is_light and 'darken' or 'lighten'](6) }, -- Status line of current window
+    StatusLine { bg = is_light and hsl("#eceef1") or t_0.fg.lighten(6) }, -- Status line of current window
     ---@diagnostic disable-next-line: undefined-field
     StatusLineFill { StatusLine, fg = StatusLine.bg },
     StatusLineSeparator { StatusLine, fg = t_0.fg, bold = true },
@@ -210,7 +192,7 @@ local theme = lush(function(injected_functions)
     StatusLinePowerlineOuter { fg = StatusLine.bg },
     StatusLinePowerlineInner { StatusLine, fg = t_0.fg },
     StatusLineModeNormal { StatusLine, },
-    StatusLineModeVisual { StatusLine, fg = Visual.bg, },
+    StatusLineModeVisual { StatusLine, fg = t_4.fg, },
     StatusLineModeInsert { StatusLine, fg = t_6.fg, },
     StatusLineModeTerminal { StatusLine, fg = t_2.fg, },
     StatusLineModeOther { StatusLine, fg = t_8.fg, },

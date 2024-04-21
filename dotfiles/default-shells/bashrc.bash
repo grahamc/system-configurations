@@ -7,9 +7,18 @@ if shopt -q login_shell; then
   fi
 fi
 
-# interactive check
-if [ -n "$PS1" ] || [[ $- == *i* ]]; then
-  # Set color palette for tty. It is the same as the dark theme I use in my regular terminal.
+# Interactive check. The `-t` checks are to make sure that we are at a terminal
+# since some programs launch the shell in interactive mode without allow the
+# shell to be used interactively. For example, vscode launches the shell in
+# interactive mode as part of its "shell resolution" and my call to exec
+# below breaks it.  Alternatively, I could check for the environment variable
+# that vscode sets while doing shell resolution. It is set for scenarios like
+# this. Feature request for setting the variable[1].
+#
+# [1]: https://github.com/microsoft/vscode/issues/163186
+if [[ (-n "$PS1" || $- == *i*) && -t 0 && -t 1 && -t 2 ]]; then
+  # Set color palette for tty. It's the same as the dark theme I use in my
+  # regular terminal.
   if [ "$TERM" = "linux" ]; then
     printf "\e]P0232731"
     printf "\e]P8333745"
@@ -27,18 +36,13 @@ if [ -n "$PS1" ] || [[ $- == *i* ]]; then
     printf "\e]PE8FBCBB"
     printf "\e]P7E5E9F0"
     printf "\e]PF626f89"
-    clear #for background artifacting
+
+    # for background artifacting
+    clear
   fi
 
-  # If the current shell isn't fish, use fish in place of bash for an interactive shell.
-  #
-  # The `-t` checks are to make sure that we are at a terminal because as part of vscode's shell
-  # resolution it launches the shell in interactive mode and then I call `exec` which seems to break
-  # things so my environment variables don't get setup properly. Alternatively, I could check for the
-  # environment variable that vscode sets while doing shell resolution. It is set for scenarios like
-  # this. Feature request for setting the variable:
-  # https://github.com/microsoft/vscode/issues/163186
-  #
-  # WARNING: Keep this line at the bottom of the file since nothing after this line will be executed.
-  [ -t 0 ] && [ -t 1 ] && [ -t 2 ] && [ "$(basename "$SHELL")" != 'fish' ] && command -v fish >/dev/null 2>&1 && SHELL="$(command -v fish)" exec fish
+  # If the current shell isn't fish, exec into fish
+  if [ "$(basename "$SHELL")" != 'fish' ]; then
+    SHELL="$(command -v fish)" exec fish
+  fi
 fi

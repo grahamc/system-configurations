@@ -125,6 +125,7 @@ Plug("akinsho/bufferline.nvim", {
       close(vim.fn.bufnr())
     end, { silent = true, desc = "Close file [tab]" })
     function BufferlineWrapper()
+      ---@diagnostic disable-next-line: undefined-global
       local original = nvim_bufferline()
       local escape_percent = require("base.utilities").escape_percent
       local result = original

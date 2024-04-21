@@ -161,6 +161,7 @@
         # TODO: get upstream to set meta.mainProgram
         then inputs.wezterm.packages.${final.system}.default // {meta.mainProgram = "wezterm";}
         else (import inputs.nixpkgs-for-wezterm-darwin {inherit (final) system;}).wezterm;
+      inherit ((import inputs.nixpkgs-for-diffoscope {inherit (final) system;})) diffoscope;
     };
   in {
     overlays.misc = lib.composeManyExtensions [

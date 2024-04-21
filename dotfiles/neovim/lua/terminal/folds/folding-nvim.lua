@@ -23,6 +23,7 @@ local CLIENTS_THAT_FALSELY_CLAIM_TO_HAVE_FOLDING_SUPPORT = {
   "nil_ls",
   "nixd",
   "pyright",
+  "eslint",
 }
 
 local M = {}

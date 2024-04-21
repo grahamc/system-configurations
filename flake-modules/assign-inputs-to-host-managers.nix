@@ -33,6 +33,7 @@
           "tmux"
           "neovim-nightly-overlay"
           "wezterm"
+          "nixpkgs-for-diffoscope"
         ]
         ++ plugins;
       nixDarwin =

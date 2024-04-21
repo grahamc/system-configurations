@@ -262,8 +262,6 @@ func cleanupAndDie(dir string, v ...interface{}) {
 	log.Fatal(v...)
 }
 
-const keyLength = 16
-
 func SeekToTar(file os.File) os.File {
 	buf, err := os.ReadFile(file.Name())
 	if err != nil {
@@ -535,16 +533,19 @@ func RewritePaths(archiveContentsPath string, oldStorePath string, newStorePath 
 			if info.Mode()&os.ModeSymlink != 0 {
 				str, err := os.Readlink(path)
 				if err != nil {
+					log.Println(err)
 					return err
 				}
 				if strings.HasPrefix(str, oldStorePath) {
 					newTarget := strings.Replace(str, oldStorePath, newStorePath, 1)
 					err = os.Remove(path)
 					if err != nil {
+						log.Println(err)
 						return err
 					}
 					err = os.Symlink(newTarget, path)
 					if err != nil {
+						log.Println(err)
 						return err
 					}
 				}
@@ -553,11 +554,13 @@ func RewritePaths(archiveContentsPath string, oldStorePath string, newStorePath 
 
 			fileContents, err := os.ReadFile(path)
 			if err != nil {
+				log.Println(err)
 				return err
 			}
 			newFileContents := replacer.Replace(string(fileContents))
 			err = os.WriteFile(path, []byte(newFileContents), 0)
 			if err != nil {
+				log.Println(err)
 				return err
 			}
 			return nil
@@ -595,7 +598,7 @@ func GetNewStorePath() (prefix string, err error) {
 		}
 	}
 
-	return "", errors.New("Unable to find a new store prefix")
+	return "", errors.New("unable to find a new store prefix")
 }
 
 func GetTempDir() (tempDir string) {

@@ -100,7 +100,7 @@ Plug("levouh/tint.nvim", {
       --
       -- TODO: If this issue gets resolved, I need a backdrop for telescope:
       -- https://github.com/nvim-telescope/telescope.nvim/issues/3020
-      pattern = { "DressingInput", "TelescopePrompt" },
+      pattern = { "DressingInput", "TelescopePrompt", "lspinfo" },
       callback = function(_context)
         add_backdrop()
         remove_backdrop_on_win_leave()

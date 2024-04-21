@@ -94,8 +94,8 @@ function _resume_job
 end
 mybind --no-focus \cz _resume_job
 
-# use ctrl+right-arrow to accept the next suggested word
-mybind \e\[1\;3C forward-word
+# use shift+right-arrow to accept the next suggested word
+mybind \e\[1\;2C forward-word
 
 # use ctrl+b to jump to beginning of line
 mybind \cb beginning-of-line
@@ -233,7 +233,7 @@ function _fzf_complete
                 '(?<prefix>^'(string escape --style regex -- "$current_token")')(?<item>[^\t]*)((?<whitespace>\t)(?<description>.*))?' \
                 (set_color cyan)'$prefix'(set_color normal)'$item'(set_color brblack)'$whitespace$description' \
             | fzf \
-                --height '~'(math "max(6,min(10,$(math "floor($(math .35 \* $LINES))")))") \
+                --height (math "max(6,min(10,$(math "floor($(math .35 \* $LINES))")))") \
                 --preview-window '2,border-left,right,60%' \
                 --no-header \
                 --bind 'backward-eof:abort,start:toggle-preview' \

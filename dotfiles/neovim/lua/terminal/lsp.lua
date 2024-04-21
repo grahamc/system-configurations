@@ -7,7 +7,8 @@ vim.diagnostic.config({
     prefix = "",
   },
   update_in_insert = true,
-  -- With this enabled, sign priorities will become: hint=11, info=12, warn=13, error=14
+  -- With this enabled, sign priorities will become:
+  -- hint=11, info=12, warn=13, error=14
   severity_sort = true,
   float = {
     source = true,
@@ -128,8 +129,8 @@ local function enhanced_float_handler(handler, on_open, on_close)
       result,
       ctx,
       vim.tbl_deep_extend("force", config or {}, {
-        -- TODO: ask if this option could accept a function instead so it can respond to
-        -- window resizes
+        -- TODO: ask if this option could accept a function instead so it can
+        -- respond to window resizes
         max_height = math.floor(vim.o.lines * 0.35),
         max_width = math.floor(vim.o.columns * 0.65),
         focusable = true,
@@ -255,14 +256,22 @@ Plug("neovim/nvim-lspconfig", {
   end,
 })
 
+-- TODO: Ideally, I could just silence the error that comes up when nix isn't
+-- installed. This way if the language server is available locally, I can still
+-- use it. Maybe I should open an issue for that.
+--
+-- TODO: Maybe take the conform.nvim approach where I expect all LSPs to be
+-- installed and I just specify priorities for each LSP. The fallback for every
+-- file type will be lazy-lsp.
 if vim.fn.executable("nix") == 1 then
   Plug("dundalek/lazy-lsp.nvim", {
     config = function()
       local folding_nvim = require("terminal.folds.folding-nvim")
       local code_lens_refresh_autocmd_ids_by_buffer = {}
 
-      -- Should be idempotent since it may be called mutiple times for the same buffer. For example,
-      -- it could get called again if a server registers another capability dynamically.
+      -- Should be idempotent since it may be called mutiple times for the same
+      -- buffer. For example, it could get called again if a server registers
+      -- another capability dynamically.
       local on_attach = function(client, buffer_number)
         folding_nvim.on_attach()
 
@@ -281,14 +290,15 @@ if vim.fn.executable("nix") == 1 then
           client.supports_method(methods.textDocument_hover)
           and isKeywordprgOverridable
         then
-          buffer_keymap("n", "K", function()
-            vim.lsp.buf.hover()
-          end)
+          buffer_keymap("n", "K", vim.lsp.buf.hover)
         end
 
         if client.supports_method(methods.textDocument_inlayHint) then
           local function toggle_inlay_hints()
-            vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())
+            vim.lsp.inlay_hint.enable(
+              not vim.lsp.inlay_hint.is_enabled(),
+              { bufnr = 0 }
+            )
           end
           buffer_keymap(
             "n",
@@ -299,9 +309,12 @@ if vim.fn.executable("nix") == 1 then
         end
 
         if client.supports_method(methods.textDocument_signatureHelp) then
-          buffer_keymap("i", "<C-k>", function()
-            vim.lsp.buf.signature_help()
-          end, { desc = "Signature help" })
+          buffer_keymap(
+            "i",
+            "<C-k>",
+            vim.lsp.buf.signature_help,
+            { desc = "Signature help" }
+          )
         end
 
         if client.supports_method(methods.textDocument_codeLens) then
@@ -366,9 +379,10 @@ if vim.fn.executable("nix") == 1 then
           end, { desc = "Toggle code lenses" })
         end
 
-        -- TODO: I try just calling diagnostic.reset in here, but it didn't work. It has to be
-        -- called after the handler for textDocument_(publishD|d)iagnostic runs so in here we just
-        -- queue up the bufs to disable.
+        -- TODO: I try just calling diagnostic.reset in here, but it
+        -- didn't work. It has to be called after the handler for
+        -- textDocument_(publishD|d)iagnostic runs so in here we just queue up
+        -- the bufs to disable.
         local is_buffer_outside_workspace = not vim.startswith(
           vim.api.nvim_buf_get_name(buffer_number),
           client.config.root_dir or vim.loop.cwd() or ""
@@ -388,8 +402,8 @@ if vim.fn.executable("nix") == 1 then
         end, { desc = "Toggle diagnostics for buffer" })
       end
 
-      -- TODO: Would be better if I could get the buffer the these diagnostics were for from the
-      -- context, but it's not in there.
+      -- TODO: Would be better if I could get the buffer the these diagnostics
+      -- were for from the context, but it's not in there.
       BufsToDisableDiagnosticOnPublishDiagnostic = {}
       local original_publish_diagnostics_handler =
         vim.lsp.handlers[methods.textDocument_publishDiagnostics]
@@ -417,8 +431,8 @@ if vim.fn.executable("nix") == 1 then
         return unpack(toreturn)
       end
 
-      -- When a server registers a capability dynamically, call on_attach again for the buffers
-      -- attached to it.
+      -- When a server registers a capability dynamically, call on_attach again
+      -- for the buffers attached to it.
       local original_register_capability =
         vim.lsp.handlers[methods.client_registerCapability]
       vim.lsp.handlers[methods.client_registerCapability] = function(
@@ -447,7 +461,8 @@ if vim.fn.executable("nix") == 1 then
         require("cmp_nvim_lsp").default_capabilities(),
         {
           workspace = {
-            -- TODO: File watcher is too slow, remove this when this issue is fixed:
+            -- TODO: File watcher is too slow, remove this when this issue is
+            -- fixed:
             -- https://github.com/neovim/neovim/issues/23291
             didChangeWatchedFiles = { dynamicRegistration = false },
           },
@@ -459,12 +474,32 @@ if vim.fn.executable("nix") == 1 then
         capability_overrides
       )
 
+      -- local catalog = "/etc/xml/catalog"
+      local efm_settings_by_filetype = {
+        markdown = {
+          {
+            lintCommand = "markdownlint --stdin",
+            lintFormats = { "%f:%l:%c %m", "%f:%l %m", "%f: %l: %m" },
+            lintIgnoreExitCode = true,
+            lintSource = "markdownlint",
+            lintStdin = true,
+          },
+        },
+        fish = {
+          {
+            lintCommand = "fish --no-execute '${INPUT}'",
+            lintFormats = { "%.%#(line %l): %m" },
+            lintSource = "fish",
+            lintIgnoreExitCode = true,
+          },
+        },
+      }
       local function map_to_lazy_lsp_format(server_list)
         local filetypes_by_server = vim
           .iter(server_list)
           :fold({}, function(acc, server)
             if server == "efm" then
-              acc[server] = { "markdown" }
+              acc[server] = vim.tbl_keys(efm_settings_by_filetype)
             else
               acc[server] =
                 require("lspconfig")[server].document_config.default_config.filetypes
@@ -487,7 +522,6 @@ if vim.fn.executable("nix") == 1 then
 
         return servers_by_filetype
       end
-      -- local catalog = "/etc/xml/catalog"
       require("lazy-lsp").setup({
         prefer_local = true,
 
@@ -496,7 +530,7 @@ if vim.fn.executable("nix") == 1 then
           on_attach = on_attach,
         },
 
-        -- TODO: missing servers that I use: ast_grep, lemminx, basedpyright,
+        -- TODO: missing servers that I use: ast_grep, lemminx,
         -- emmet-language-server
         preferred_servers = map_to_lazy_lsp_format({
           "bashls",
@@ -573,20 +607,10 @@ if vim.fn.executable("nix") == 1 then
 
           efm = {
             settings = {
-              languages = {
-                markdown = {
-                  {
-                    lintCommand = "markdownlint --stdin",
-                    lintFormats = { "%f:%l:%c %m", "%f:%l %m", "%f: %l: %m" },
-                    lintIgnoreExitCode = true,
-                    lintSource = "markdownlint",
-                    lintStdin = true,
-                  },
-                },
-              },
+              languages = efm_settings_by_filetype,
             },
             on_new_config = function(new_config)
-              local nix_pkgs = { "efm-langserver", "markdownlint-cli" }
+              local nix_pkgs = { "efm-langserver", "markdownlint-cli", "fish" }
               new_config.cmd =
                 require("lazy-lsp").in_shell(nix_pkgs, new_config.cmd)
             end,

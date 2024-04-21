@@ -96,6 +96,8 @@
     # TODO: I get an error when I try to upgrade this
     flake-parts.url = "github:hercules-ci/flake-parts?rev=b253292d9c0a5ead9bc98c4e9a26c6312e27d69f";
     nixpkgs-for-wezterm-darwin.url = "github:nixos/nixpkgs?rev=ff0a5a776b56e0ca32d47a4a47695452ec7f7d80";
+    # TODO: A test fails when I try to upgrade
+    nixpkgs-for-diffoscope.url = "github:nixos/nixpkgs?rev=fd16bb6d3bcca96039b11aa52038fafeb6e4f4be";
     # UNFREE
     # IMPURE
     # TODO: I think I can make its auto-detection pure by having the nixGL
