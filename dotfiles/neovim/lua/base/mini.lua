@@ -1,24 +1,9 @@
 -- vim:foldmethod=marker
 
--- undefined-global is for globals defined by mini.nvim and inject-field is so I can vim.b.*
----@diagnostic disable: inject-field
-
 -- Dependencies: nvim-treesitter-textobjects
 Plug("echasnovski/mini.nvim", {
   config = function()
     local mini_group_id = vim.api.nvim_create_augroup("MyMiniNvim", {})
-
-    -- comment {{{
-    require("mini.comment").setup({
-      options = {
-        ignore_blank_line = true,
-      },
-
-      mappings = {
-        textobject = "ic",
-      },
-    })
-    -- }}}
 
     --- ai {{{
     local ai = require("mini.ai")

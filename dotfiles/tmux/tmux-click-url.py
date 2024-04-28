@@ -69,12 +69,14 @@ def main():
     open_url(potential_url)
 
 
-def open_url(url):
+def open_url(url: str):
     subprocess.run(["open", url], stdout=subprocess.DEVNULL, stdin=subprocess.DEVNULL)
 
 
-def expand(lines, start_x, start_y, left, terminal_width):
-    result = []
+def expand(
+    lines: list[str], start_x: int, start_y: int, left: bool, terminal_width: int
+) -> list[str]:
+    result: list[str] = []
     x = start_x
     y = start_y
     step = -1 if left else 1
@@ -103,11 +105,11 @@ def expand(lines, start_x, start_y, left, terminal_width):
     return result
 
 
-def is_in_bounds(max, num):
+def is_in_bounds(max: int, num: int):
     return num >= 0 and num < max
 
 
-def is_valid_url_char(char):
+def is_valid_url_char(char: str):
     return char in VALID_URL_CHARS
 
 

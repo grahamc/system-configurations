@@ -8,7 +8,7 @@ import sys
 import subprocess
 
 if len(sys.argv) > 1:
-    files = []
+    files: list[str] = []
     for arg in sys.argv[1:]:
         if os.path.exists(arg):
             p = os.path.abspath(arg).replace("\\", "\\\\").replace('"', '\\"')
