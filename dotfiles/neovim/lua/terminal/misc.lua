@@ -126,7 +126,7 @@ vim.api.nvim_create_user_command("Help", function(context)
   end
 
   vim.bo.buflisted = true
-  -- some help pages, like vim-signify, have the filetype "text" so I'll change that
+  -- some help pages have the filetype "text" so I'll change that
   vim.bo.filetype = "help"
 end, {
   complete = "help",
@@ -414,59 +414,6 @@ vim.g.traces_abolish_integration = 1
 
 Plug("nvim-lua/plenary.nvim")
 Plug("kkharji/sqlite.lua")
-
-vim.defer_fn(function()
-  vim.fn["plug#load"]("dressing.nvim")
-end, 0)
-Plug("stevearc/dressing.nvim", {
-  on = {},
-  config = function()
-    require("dressing").setup({
-      input = {
-        enabled = true,
-        default_prompt = "Input:",
-        trim_prompt = false,
-        border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
-        relative = "editor",
-        prefer_width = 0.5,
-        width = 0.5,
-        max_width = 500,
-      },
-      select = {
-        get_config = function(options)
-          if options.kind == "legendary.nvim" then
-            return {
-              telescope = {
-                -- favor entries that I've selected recently
-                sorter = require("telescope.sorters").fuzzy_with_index_bias({}),
-              },
-            }
-          end
-        end,
-      },
-    })
-
-    local dressing_group = vim.api.nvim_create_augroup("MyDressing", {})
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = "DressingInput",
-      group = dressing_group,
-      callback = function()
-        -- After I accept an autocomplete entry from nvim-cmp, buflisted gets set to true so
-        -- this sets it back to false.
-        vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
-          group = dressing_group,
-          buffer = vim.api.nvim_get_current_buf(),
-          callback = function()
-            vim.bo.buflisted = false
-          end,
-        })
-      end,
-    })
-  end,
-})
-
-Plug("iamcco/markdown-preview.nvim")
-vim.g.mkdp_auto_close = 0
 
 -- TODO: I'll keep using this fork until this PR is merged:
 -- https://github.com/NvChad/nvim-colorizer.lua/pull/63

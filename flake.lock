@@ -634,12 +634,10 @@
         "vim-plugin-fidget-nvim": "vim-plugin-fidget-nvim",
         "vim-plugin-firenvim": "vim-plugin-firenvim",
         "vim-plugin-friendly-snippets": "vim-plugin-friendly-snippets",
-        "vim-plugin-git-blame-nvim": "vim-plugin-git-blame-nvim",
         "vim-plugin-lazy-lsp-nvim": "vim-plugin-lazy-lsp-nvim",
         "vim-plugin-legendary-nvim": "vim-plugin-legendary-nvim",
         "vim-plugin-ltex-extra-nvim": "vim-plugin-ltex-extra-nvim",
         "vim-plugin-lush-nvim": "vim-plugin-lush-nvim",
-        "vim-plugin-markdown-preview-nvim": "vim-plugin-markdown-preview-nvim",
         "vim-plugin-mini-nvim": "vim-plugin-mini-nvim",
         "vim-plugin-nvim-autopairs": "vim-plugin-nvim-autopairs",
         "vim-plugin-nvim-cmp": "vim-plugin-nvim-cmp",
@@ -677,7 +675,6 @@
         "vim-plugin-vim-nix": "vim-plugin-vim-nix",
         "vim-plugin-vim-plug": "vim-plugin-vim-plug",
         "vim-plugin-vim-repeat": "vim-plugin-vim-repeat",
-        "vim-plugin-vim-signify": "vim-plugin-vim-signify",
         "vim-plugin-vim-sleuth": "vim-plugin-vim-sleuth",
         "vim-plugin-vim-tmux-navigator": "vim-plugin-vim-tmux-navigator",
         "vim-plugin-which-key-nvim": "vim-plugin-which-key-nvim",
@@ -1329,22 +1326,6 @@
         "type": "github"
       }
     },
-    "vim-plugin-git-blame-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1713039451,
-        "narHash": "sha256-siAywnX95lApcz+2gksmj28GwhSaA6sDrvGibk0iXOk=",
-        "owner": "f-person",
-        "repo": "git-blame.nvim",
-        "rev": "ad1d1365c9189d89797fe8d559677d5f55dc2830",
-        "type": "github"
-      },
-      "original": {
-        "owner": "f-person",
-        "repo": "git-blame.nvim",
-        "type": "github"
-      }
-    },
     "vim-plugin-lazy-lsp-nvim": {
       "flake": false,
       "locked": {
@@ -1406,22 +1387,6 @@
       "original": {
         "owner": "rktjmp",
         "repo": "lush.nvim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-markdown-preview-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1697511247,
-        "narHash": "sha256-TBXdG/Ih5DusAYZJyn37zVqHcMD85VkjrCoLyTo/KBg=",
-        "owner": "iamcco",
-        "repo": "markdown-preview.nvim",
-        "rev": "a923f5fc5ba36a3b17e289dc35dc17f66d0548ee",
-        "type": "github"
-      },
-      "original": {
-        "owner": "iamcco",
-        "repo": "markdown-preview.nvim",
         "type": "github"
       }
     },
@@ -2014,22 +1979,6 @@
       "original": {
         "owner": "tpope",
         "repo": "vim-repeat",
-        "type": "github"
-      }
-    },
-    "vim-plugin-vim-signify": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1712285825,
-        "narHash": "sha256-UJA+AO6yUGK9rP7oP/l52Z04VZym2lkDeY/qAEgr6nI=",
-        "owner": "mhinz",
-        "repo": "vim-signify",
-        "rev": "8670143f9e12ed1cd3c9b2c54f345cdd9a4baac3",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mhinz",
-        "repo": "vim-signify",
         "type": "github"
       }
     },

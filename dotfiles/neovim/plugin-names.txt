@@ -22,13 +22,11 @@ dropbar.nvim
 fidget.nvim
 firenvim
 friendly-snippets
-git-blame.nvim
 lazy-lsp.nvim
 legendary.nvim
 ltex-extra.nvim
 LuaSnip
 lush.nvim
-markdown-preview.nvim
 mini.nvim
 nvim-autopairs
 nvim-cmp
@@ -68,7 +66,6 @@ vim-matchup
 vim-nix
 vim-plug
 vim-repeat
-vim-signify
 vim-sleuth
 vim-tmux-navigator
 which-key.nvim

@@ -68,12 +68,6 @@
         fish = prev.fish.override {
           usePython = false;
         };
-
-        vimPlugins =
-          prev.vimPlugins
-          // {
-            markdown-preview-nvim = makeEmptyPackage "markdown-preview-nvim";
-          };
       })
     ];
 

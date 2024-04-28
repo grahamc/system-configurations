@@ -195,10 +195,6 @@
       url = "github:monaqa/dial.nvim";
       flake = false;
     };
-    vim-plugin-vim-signify = {
-      url = "github:mhinz/vim-signify";
-      flake = false;
-    };
     vim-plugin-nvim-autopairs = {
       url = "github:windwp/nvim-autopairs";
       flake = false;
@@ -347,10 +343,6 @@
       url = "github:rcarriga/nvim-notify";
       flake = false;
     };
-    vim-plugin-git-blame-nvim = {
-      url = "github:f-person/git-blame.nvim";
-      flake = false;
-    };
     vim-plugin-telescope-smart-history-nvim = {
       url = "github:nvim-telescope/telescope-smart-history.nvim";
       flake = false;
@@ -365,10 +357,6 @@
     };
     vim-plugin-telescope-fzf-native = {
       url = "github:nvim-telescope/telescope-fzf-native.nvim";
-      flake = false;
-    };
-    vim-plugin-markdown-preview-nvim = {
-      url = "github:iamcco/markdown-preview.nvim";
       flake = false;
     };
     vim-plugin-actions-preview-nvim = {

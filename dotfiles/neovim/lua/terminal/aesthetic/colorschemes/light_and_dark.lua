@@ -332,21 +332,6 @@ local theme = lush(function(injected_functions)
     FidgetIcon { FidgetNormal, fg = t_5.fg },
     -- }}}
 
-    -- vim-signify {{{
-    SignifyAdd { fg = t_2.fg },
-    SignifyDelete { fg = t_1.fg },
-    SignifyChange { fg = t_3.fg },
-    -- I'm setting all of these so that the signify signs will be added to the sign column, but
-    -- NOT be visible. I don't want them to be visible because I already change the color of my
-    -- statuscolumn border to indicate git changes. I want them to be added to the sign column so I
-    -- know where to color my statuscolumn border.
-    SignifySignAdd { Ignore, },
-    SignifySignChange { Ignore, },
-    SignifySignChangeDelete { Ignore, },
-    SignifySignDelete { Ignore, },
-    SignifySignDeleteFirstLine { Ignore, },
-    -- }}}
-
     -- mini.nvim {{{
     MiniIndentscopeSymbol { t_8 },
     MiniJump2dSpot { t_3 },
