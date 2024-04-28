@@ -3,6 +3,7 @@ if not status is-interactive
 end
 
 if test (uname) != Linux
+    or not type --query apt
     exit
 end
 

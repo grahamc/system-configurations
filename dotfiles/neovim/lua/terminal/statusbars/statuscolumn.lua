@@ -57,38 +57,6 @@ local function get_fold_section()
 end
 
 function StatusColumn()
-  local buffer = vim.api.nvim_win_get_buf(vim.g.statusline_winid)
-
-  local border_highlight = "%#NonText#"
-  local gitHighlights = {
-    SignifyAdd = "SignifyAdd",
-    SignifyRemoveFirstLine = "SignifyDelete",
-    SignifyDelete = "SignifyDelete",
-    SignifyDeleteMore = "SignifyDelete",
-    SignifyChange = "SignifyChange",
-  }
-  -- There will be one item at most in this list since I supplied a buffer
-  -- number.
-  local signsPerBuffer = vim.fn.sign_getplaced(
-    buffer,
-    { lnum = vim.v.lnum, group = "" }
-  ) or {}
-  if next(signsPerBuffer) ~= nil then
-    for _, sign in ipairs(signsPerBuffer[1].signs) do
-      local name = sign.name
-      local highlight = gitHighlights[name]
-      if highlight ~= nil then
-        border_highlight = "%#" .. highlight .. "#"
-        break
-      end
-    end
-  end
-  local border_char = vim.v.virtnum > 0 and "┋" or "┃"
-  if border_highlight == "%#NonText#" then
-    border_char = " "
-  end
-  local border_section = border_highlight .. border_char
-
   local line_number_section = nil
   if not ShowLineNumbers then
     line_number_section = ""
@@ -109,11 +77,7 @@ function StatusColumn()
   local sign_section = "%s"
   local align_right = "%="
 
-  return align_right
-    .. line_number_section
-    .. border_section
-    .. sign_section
-    .. fold_section
+  return align_right .. line_number_section .. sign_section .. fold_section
 end
 
 vim.o.statuscolumn = "%!v:lua.StatusColumn()"

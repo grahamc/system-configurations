@@ -1,10 +1,9 @@
-.git
+.git/
 .venv/
 .direnv/
-.mypy_cache
+.mypy_cache/
 .DS_Store
 .luarc.json
 secrets/**
-!secrets/.gitkeep
 .git-hook-assets/actions/**
-!.git-hook-assets/actions/.gitkeep
+.go-path/

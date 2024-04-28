@@ -247,7 +247,7 @@ _G.FormatCommentOperatorFunc = function()
 end
 vim.keymap.set("n", "gq", function()
   vim.o.operatorfunc = "v:lua.FormatCommentOperatorFunc"
-  return "g@ic"
+  return "g@gc"
 end, { expr = true, remap = true, desc = "Format comment" })
 
 -- format visual selection

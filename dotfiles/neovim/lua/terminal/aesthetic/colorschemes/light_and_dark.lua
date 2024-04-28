@@ -120,12 +120,12 @@ local theme = lush(function(injected_functions)
     Keyword        { Statement, }, --   any other keyword
     Exception      { Statement, }, --   try, catch, throw
 
-    Identifier {}, -- (*) Any variable name
+    Identifier { Normal }, -- (*) Any variable name
     Function       { Identifier, }, --   Function name (also: methods for classes)
 
-    Special { t_5 }, -- (*) Any special symbol
+    Special { Statement }, -- (*) Any special symbol
     SpecialChar    { Special, }, --   Special character in a constant
-    Tag            { t_6, }, --   You can use CTRL-] on this
+    Tag            { Identifier, }, --   You can use CTRL-] on this
     Delimiter      { Identifier, }, --   Character that needs attention
     SpecialComment { Special, }, --   Special things inside a comment (e.g. '\n')
     Debug          { Special, }, --   Debugging statements
@@ -142,8 +142,8 @@ local theme = lush(function(injected_functions)
     Structure      { Type, }, --   struct, union, enum, etc.
     Typedef        { Type, }, --   A typedef
 
-    Constant { Identifier }, -- (*) Any constant
-    String { t_2, }, --   A string constant: "this is a string"
+    Constant { t_2 }, -- (*) Any constant
+    String { Constant }, --   A string constant: "this is a string"
     Character      { String, }, --   A character constant: 'c', '\n'
     Number         { String, }, --   A number constant: 234, 0xff
     Boolean        { String, }, --   A boolean constant: TRUE, false
@@ -192,7 +192,7 @@ local theme = lush(function(injected_functions)
     StatusLinePowerlineOuter { fg = StatusLine.bg },
     StatusLinePowerlineInner { StatusLine, fg = t_0.fg },
     StatusLineModeNormal { StatusLine, },
-    StatusLineModeVisual { StatusLine, fg = t_4.fg, },
+    StatusLineModeVisual { StatusLine, fg = (is_light and t_4 or t_3).fg, },
     StatusLineModeInsert { StatusLine, fg = t_6.fg, },
     StatusLineModeTerminal { StatusLine, fg = t_2.fg, },
     StatusLineModeOther { StatusLine, fg = t_8.fg, },
@@ -255,7 +255,7 @@ local theme = lush(function(injected_functions)
     CodeActionSign { t_3 },
     NullLsInfoBorder { FloatBorder },
     WidgetFill { t_0 },
-    Underlined { t_4, underline = true, }, -- Text that stands out, HTML links
+    Underlined { underline = true, }, -- Text that stands out, HTML links
     Ignore { t_0 }, -- Left blank, hidden |hl-Ignore| (May be invisible here in template)
     Todo { t_3, bold = true, }, -- Anything that needs extra attention; mostly the keywords TODO FIXME and XXX
     VirtColumn { NonText, },
@@ -514,7 +514,7 @@ local theme = lush(function(injected_functions)
     sym"@markup.environment" { Structure },
     sym"@markup.heading" { Title },
     sym"@markup.italic" { italic = true, },
-    sym"@markup.link" { Underlined, },
+    sym"@markup.link" { Underlined, fg = t_4.fg, },
     sym"@markup.link.label" { sym"@markup.link", },
     sym"@markup.link.url" { sym"@markup.link", },
     sym"@markup.list" { },
@@ -534,7 +534,7 @@ local theme = lush(function(injected_functions)
     sym"@punctuation.special" { SpecialChar },
     sym"@comment" { Comment }, -- Comment
     sym"@constant" { Constant }, -- Constant
-    sym"@constant.builtin" { Statement }, -- Special
+    sym"@constant.builtin" { Constant }, -- Special
     sym"@constant.macro" { Define }, -- Define
     sym"@string" { String }, -- String
     sym"@string.documentation" { String },
@@ -551,7 +551,7 @@ local theme = lush(function(injected_functions)
     sym"@number.float" { Number },
     sym"@boolean" { Boolean }, -- Boolean
     sym"@function" { Function }, -- Function
-    sym"@function.builtin" { Statement }, -- Special
+    sym"@function.builtin" { }, -- Special
     sym"@function.macro" { Macro }, -- Macro
     sym"@property" { Identifier }, -- Identifier
     sym"@constructor" { Identifier }, -- Special
@@ -564,9 +564,10 @@ local theme = lush(function(injected_functions)
     sym"@variable.parameter" { sym"@variable" },
     sym"@type" { Type }, -- Type
     sym"@type.definition" { Typedef }, -- Typedef
-    sym"@type.builtin" { Statement },
+    sym"@type.builtin" { },
     sym"@type.qualifier" { Statement },
-    sym"@tag" { Tag }, -- Tag
+    sym"@tag" { Tag },
+    sym"@tag.builtin" { },
     sym"@tag.attribute" { Tag },
     sym"@tag.delimiter" { Delimiter },
     -- }}}
