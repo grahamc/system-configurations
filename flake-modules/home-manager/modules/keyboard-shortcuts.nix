@@ -42,11 +42,6 @@
             "yabai/yabairc".source = "yabai/yabairc";
             "skhd/skhdrc".source = "skhd/skhdrc";
           };
-
-          executable = {
-            "yabai-remove-from-stack".source = "yabai/yabai-remove-from-stack";
-            "yabai-move".source = "yabai/yabai-move.fish";
-          };
         };
 
         home.file = {

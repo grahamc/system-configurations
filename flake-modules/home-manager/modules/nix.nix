@@ -28,6 +28,10 @@ in {
   # Don't make a command_not_found handler
   programs.nix-index.enableFishIntegration = false;
 
+  programs.fish.interactiveShellInit = ''
+    fish_add_path --global --prepend ${lib.escapeShellArg "${flakeInputs.self}/dotfiles/nix/bin"}
+  '';
+
   xdg.configFile = {
     "fish/conf.d/any-nix-shell.fish".source = let
       generateAnyNixShellFishConfig = pkgs.writeShellApplication {
@@ -65,14 +69,6 @@ in {
 
   repository = {
     symlink.xdg = {
-      executable = {
-        "nix-gcroots".source = "nix/nix-gcroots.fish";
-        "nix-info".source = "nix/nix-info.fish";
-        "nix-upgrade-profiles".source = "nix/nix-upgrade-profiles.fish";
-        "pynix".source = "nix/pynix.bash";
-        "nix".source = "nix/nix-wrapper.fish";
-      };
-
       configFile =
         {
           "nix/nix.conf".source = "nix/nix.conf";
@@ -97,7 +93,7 @@ in {
         action = ''
           # If the lock file changed then it's possible that some of the flakes in my registry
           # have changed so I'll upgrade the packages installed from those registries.
-          nix-upgrade-profiles
+          ${flakeInputs.self}/dotfiles/nix/bin/nix-upgrade-profiles
         '';
       }
       {

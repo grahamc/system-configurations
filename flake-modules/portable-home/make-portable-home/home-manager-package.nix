@@ -15,7 +15,7 @@
       comma = makeEmptyPackage "stub-comma";
     }
     // prev.lib.attrsets.optionalAttrs isLinux {
-      tmux = prev.tmux.override {
+      myTmux = prev.myTmux.override {
         withSystemd = false;
       };
     };

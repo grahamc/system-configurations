@@ -26,15 +26,3 @@ nix_darwin_bin='/run/current-system/sw/bin'
 if [ -d "$nix_darwin_bin" ] && uname | grep -q Darwin; then
   export PATH="$nix_darwin_bin:$PATH"
 fi
-
-# This is where user-specific executables should go, per the XDG Base Directory
-# spec [1]. While the OS is responsible for adding this to the PATH, there are
-# two reasons why I'm doing it:
-#
-# 1. macOS is not compliant with the spec
-#
-# 2. I want the executables stored here to be on the PATH before all others
-# since I keep wrappers for other programs in here.
-#
-# [1]: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-PATH="$HOME/.local/bin:$PATH"

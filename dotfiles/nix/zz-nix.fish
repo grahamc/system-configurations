@@ -1,9 +1,9 @@
+# I prepend zz to the filename so it runs after other configs. This way the nix
+# wrapper won't get overwritten.
+
 if not status is-interactive
     exit
 end
-
-# I prepend zz to the filename so it runs after other configs. This way this wrapper won't get
-# overwritten.
 
 if functions --query nix
     functions --copy nix __any_nix_shell_wrapper

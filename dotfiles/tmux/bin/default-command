@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+# shellcheck shell=sh
+
+# I want the $SHLVL to start from one for any shells launched in TMUX since they
+# technically aren't children of the shell that I launched TMUX with.
+unset SHLVL
+
+default-shell

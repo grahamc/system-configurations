@@ -17,6 +17,18 @@ in {
     };
   };
 
+  programs.fish.interactiveShellInit = ''
+    fish_add_path --global --prepend \
+    ${
+      lib.escapeShellArgs ([
+          "${flakeInputs.self}/dotfiles/general/bin"
+        ]
+        ++ lib.lists.optionals isDarwin [
+          "${flakeInputs.self}/dotfiles/general/bin-macos"
+        ])
+    }
+  '';
+
   # When switching generations, stop obsolete services and start ones that are wanted by active units.
   systemd = optionalAttrs isLinux {
     user.startServices = "sd-switch";
@@ -28,20 +40,6 @@ in {
 
     symlink = {
       baseDirectory = "${repositoryDirectory}/dotfiles";
-
-      xdg.executable =
-        {
-          "edit".source = "general/executables/edit";
-          "pbcopy".source = "general/executables/pbcopy";
-          "process-output".source = "general/executables/process-output";
-          "fish_tokenize".source = "general/executables/fish_tokenize.fish";
-          "conform".source = "general/executables/conform.bash";
-          "default-shell".source = "general/executables/default-shell.sh";
-          "elevate".source = "general/executables/elevate.fish";
-        }
-        // optionalAttrs isDarwin {
-          "trash".source = "general/executables/trash-macos.py";
-        };
     };
 
     git.onChange = [

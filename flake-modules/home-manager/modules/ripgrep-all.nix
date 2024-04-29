@@ -8,10 +8,6 @@
   ];
 
   repository.symlink = {
-    xdg.executable = {
-      "djvutorga".source = "ripgrep/djvutorga.bash";
-    };
-
     # rga stores files according to the XDG Base Directory spec[1] on Linux and
     # the Standard Directories guidelines[2] on macOS:
     #

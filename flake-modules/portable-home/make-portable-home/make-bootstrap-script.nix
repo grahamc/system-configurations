@@ -59,7 +59,7 @@ in ''
     ${ln} --symbolic $data_dir $prefix/data
   end
 
-  for program in ${activationPackage}/home-path/bin/* ${activationPackage}/home-files/.local/bin/*
+  for program in ${activationPackage}/home-path/bin/*
     set base (${basename} $program)
 
     # The hashbangs in the scripts need to be the first two bytes in the file for the kernel to
@@ -87,16 +87,9 @@ in ''
 
     ${chmod} +x $mutable_bin/$base
   end
+  fish_add_path --global --prepend $mutable_bin
 
   ${setLocaleArchive}
-
-  # Though all these programs are inside mutable_bin, I need to have this on the $PATH because my
-  # wrappers only work if they are on the $PATH. This is because of how they find the program they
-  # are wrapping.
-  fish_add_path --global --prepend ${activationPackage}/home-path/bin/
-  fish_add_path --global --prepend ${activationPackage}/home-files/.local/bin
-
-  fish_add_path --global --prepend $mutable_bin
 
   # Set fish as the default shell
   set --global --export SHELL (${which} fish)

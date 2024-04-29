@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  specialArgs,
   ...
 }: let
   fzfWithoutShellConfig = pkgs.buildEnv {
@@ -13,10 +14,9 @@ in {
     fzfWithoutShellConfig
   ];
 
-  repository.symlink.xdg.executable = {
-    "fzf-tmux-zoom".source = "fzf/fzf-tmux-zoom";
-    "fzf-help-preview".source = "fzf/fzf-help-preview";
-  };
+  programs.fish.interactiveShellInit = ''
+    fish_add_path --global --prepend ${lib.escapeShellArg "${specialArgs.flakeInputs.self}/dotfiles/fzf/bin"}
+  '';
 
   repository.symlink.xdg.configFile = {
     "fish/conf.d/fzf-default-opts.fish".source = "fzf/fzf-default-opts.fish";

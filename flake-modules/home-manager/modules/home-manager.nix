@@ -42,7 +42,7 @@
       text = ''
         cd "${config.repository.directory}"
         home-manager switch --flake "${config.repository.directory}#${hostName}" ${updateFlags} "''$@" |& nom
-        chronic nix-upgrade-profiles
+        chronic ${self}/dotfiles/nix/bin/nix-upgrade-profiles
       '';
     };
 

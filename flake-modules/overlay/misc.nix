@@ -5,7 +5,7 @@
 }: {
   flake = let
     overlay = final: prev: let
-      inherit (final.stdenv) isLinux;
+      inherit (final.stdenv) isLinux isDarwin;
 
       ncursesWithWezterm = final.symlinkJoin {
         name = "ncursesWithWezterm";
@@ -23,11 +23,6 @@
       nightlyNeovimWithDependencies = let
         dependencies = final.symlinkJoin {
           name = "neovim-dependencies";
-          postBuild = ''
-            ln -s ${inputs.self}/dotfiles/general/executables/conform.bash $out/bin/conform
-            ln -s ${inputs.self}/dotfiles/general/executables/pbcopy $out/bin/pbcopy
-            ln -s ${inputs.self}/dotfiles/general/executables/trash-macos $out/bin/trash
-          '';
           paths = with final; [
             # to format comments
             par
@@ -63,12 +58,13 @@
             # to start using par, but aren't familiar with how par works so
             # until I learn more, I'll use this value.
             #
-            # I'm adding to the end of the $PATH so languages included in a
-            # project will have precedence.
+            # I'm adding general/bin for: conform, trash, pbcopy
             wrapProgram $out/bin/nvim \
-              --suffix PATH : '${dependencies}/bin' \
               --set TERMINFO_DIRS '${ncursesWithWezterm}/share/terminfo' \
-              --set PARINIT 'rTbgqR B=.\,?'"'"'_A_a_@ Q=_s>|'
+              --set PARINIT 'rTbgqR B=.\,?'"'"'_A_a_@ Q=_s>|' \
+              --prefix PATH : ${lib.escapeShellArg "${dependencies}/bin"} \
+              --prefix PATH : ${lib.escapeShellArg "${inputs.self}/dotfiles/neovim/bin"} \
+              --prefix PATH : ${lib.escapeShellArg "${inputs.self}/dotfiles/general/bin"} ${lib.strings.optionalString isDarwin "--prefix PATH : ${inputs.self}/dotfiles/general/bin-macos"}
           '';
         };
 
@@ -88,9 +84,25 @@
           paths = [prev.ripgrep-all];
           buildInputs = [final.makeWrapper];
           postBuild = ''
-            wrapProgram $out/bin/rga --prefix PATH : '${dependencies}/bin'
+            wrapProgram $out/bin/rga --prefix PATH : ${lib.escapeShellArg "${dependencies}/bin"} --prefix PATH : ${lib.escapeShellArg "${inputs.self}/dotfiles/ripgrep/bin"}
           '';
         };
+
+      myTmux = final.symlinkJoin {
+        name = "my-${latestTmux.name}";
+        paths = [latestTmux];
+        buildInputs = [final.makeWrapper];
+        # I'm removing $SHELL so tmux will use the OS default shell instead
+        # of what it will probably be when I run tmux, fish. This is because
+        # the Determinate Systems Nix installer doesn't configure fish
+        # properly. When this issue is resolved, I can remove this:
+        # https://github.com/DeterminateSystems/nix-installer/issues/576
+        postBuild = ''
+          wrapProgram $out/bin/tmux \
+            --prefix-each PATH : ${lib.escapeShellArg "${inputs.self}/dotfiles/tmux/bin"} \
+            --unset SHELL
+        '';
+      };
 
       # TODO: Python virtualenvs use the canonical path of the base python. This
       # is an issue for Nix because when I update my system and the old python
@@ -142,9 +154,8 @@
           ];
         };
     in {
-      tmux = latestTmux;
       # I'm renaming these to avoid rebuilds.
-      inherit ncursesWithWezterm myPython;
+      inherit ncursesWithWezterm myPython myTmux;
       neovim = nightlyNeovimWithDependencies;
       ripgrep-all = ripgrepAllWithDependencies;
       # TODO: The wezterm flake doesn't work for macOS. When I try to build

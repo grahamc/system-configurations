@@ -277,5 +277,9 @@ function diff-html
     open "$temp"
 end
 function diff
-    diffoscope --text-color always $argv | page
+    if isatty 1
+        diffoscope --text-color always $argv | page
+    else
+        diffoscope --text-color always $argv
+    end
 end

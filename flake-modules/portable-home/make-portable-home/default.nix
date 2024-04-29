@@ -63,7 +63,7 @@
         wordnet = makeEmptyPackage "wordnet";
         diffoscope = makeEmptyPackage "diffoscope";
         myPython = makeEmptyPackage "myPython";
-        gitMinimal = makeEmptyPackage "stub-git";
+        gitMinimal = makeEmptyPackage "gitMinimal";
 
         fish = prev.fish.override {
           usePython = false;

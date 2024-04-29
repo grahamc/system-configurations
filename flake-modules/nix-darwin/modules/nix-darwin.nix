@@ -54,7 +54,7 @@
       oldGenerationPath="$(readlink --canonicalize ${config.system.profile})"
 
       darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" ${self.lib.updateFlags.nixDarwin} "$@" |& nom
-      chronic nix-upgrade-profiles
+      chronic ${self}/dotfiles/nix/bin/nix-upgrade-profiles
 
       newGenerationPath="$(readlink --canonicalize ${config.system.profile})"
 
