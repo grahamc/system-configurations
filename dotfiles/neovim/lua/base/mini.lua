@@ -365,7 +365,7 @@ Plug("echasnovski/mini.nvim", {
           local is_cursorword_keyword = vim
             .iter(vim.treesitter.get_captures_at_cursor())
             :any(function(capture)
-              return capture:find("keyword") or capture:find("builtin")
+              return capture:find("keyword")
             end)
 
           if is_cursorword_keyword then

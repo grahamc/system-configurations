@@ -15,9 +15,23 @@
         ];
       };
 
-      latestTmux = prev.tmux.overrideAttrs (_old: {
+      myTmux = prev.tmux.overrideAttrs (old: {
         src = inputs.tmux;
         patches = [];
+        buildInputs = lib.lists.unique ((old.buildInputs or []) ++ [final.makeWrapper]);
+
+        # I'm removing $SHELL so tmux will use the OS default shell instead
+        # of what it will probably be when I run tmux, fish. This is because
+        # the Determinate Systems Nix installer doesn't configure fish
+        # properly. When this issue is resolved, I can remove this:
+        # https://github.com/DeterminateSystems/nix-installer/issues/576
+        postInstall =
+          (old.postInstall or "")
+          + ''
+            wrapProgram $out/bin/tmux \
+              --prefix-each PATH : ${lib.escapeShellArg "${inputs.self}/dotfiles/tmux/bin"} \
+              --unset SHELL
+          '';
       });
 
       nightlyNeovimWithDependencies = let
@@ -87,22 +101,6 @@
             wrapProgram $out/bin/rga --prefix PATH : ${lib.escapeShellArg "${dependencies}/bin"} --prefix PATH : ${lib.escapeShellArg "${inputs.self}/dotfiles/ripgrep/bin"}
           '';
         };
-
-      myTmux = final.symlinkJoin {
-        name = "my-${latestTmux.name}";
-        paths = [latestTmux];
-        buildInputs = [final.makeWrapper];
-        # I'm removing $SHELL so tmux will use the OS default shell instead
-        # of what it will probably be when I run tmux, fish. This is because
-        # the Determinate Systems Nix installer doesn't configure fish
-        # properly. When this issue is resolved, I can remove this:
-        # https://github.com/DeterminateSystems/nix-installer/issues/576
-        postBuild = ''
-          wrapProgram $out/bin/tmux \
-            --prefix-each PATH : ${lib.escapeShellArg "${inputs.self}/dotfiles/tmux/bin"} \
-            --unset SHELL
-        '';
-      };
 
       # TODO: Python virtualenvs use the canonical path of the base python. This
       # is an issue for Nix because when I update my system and the old python

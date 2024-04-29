@@ -68,8 +68,8 @@ local theme = lush(function(injected_functions)
     -- diagnostics {{{
     ErrorMsg { t_1 }, -- Error messages on the command line
     WarningMsg { t_3 }, -- Warning messages
-    Error { ErrorMsg, undercurl = true }, -- Any erroneous construct
-    Warning { WarningMsg, undercurl = true }, -- (I added this)
+    Error { undercurl = true, sp = ErrorMsg.fg, }, -- Any erroneous construct
+    Warning { undercurl = true, sp = WarningMsg.fg, }, -- (I added this)
     NvimInternalError { ErrorMsg },
     -- See :h diagnostic-highlights, some groups may not be listed, submit a PR fix to lush-template!
     --
@@ -85,9 +85,9 @@ local theme = lush(function(injected_functions)
     DiagnosticVirtualTextOk { virtual_text, fg = DiagnosticOk.fg, }, -- Used for "Ok" diagnostic virtual text.
     DiagnosticUnderlineError { Error }, -- Used to underline "Error" diagnostics.
     DiagnosticUnderlineWarn { Warning }, -- Used to underline "Warn" diagnostics.
-    DiagnosticUnderlineInfo { DiagnosticInfo, undercurl = true }, -- Used to underline "Info" diagnostics.
-    DiagnosticUnderlineHint { DiagnosticHint, undercurl = true }, -- Used to underline "Hint" diagnostics.
-    DiagnosticUnderlineOk { DiagnosticOk, undercurl = true }, -- Used to underline "Ok" diagnostics.
+    DiagnosticUnderlineInfo { sp = DiagnosticInfo.fg, undercurl = true }, -- Used to underline "Info" diagnostics.
+    DiagnosticUnderlineHint { sp = DiagnosticHint.fg, undercurl = true }, -- Used to underline "Hint" diagnostics.
+    DiagnosticUnderlineOk { sp = DiagnosticOk.fg, undercurl = true }, -- Used to underline "Ok" diagnostics.
     DiagnosticFloatingError { DiagnosticError }, -- Used to color "Error" diagnostic messages in diagnostics float. See |vim.diagnostic.open_float()|
     DiagnosticFloatingWarn { DiagnosticWarn }, -- Used to color "Warn" diagnostic messages in diagnostics float.
     DiagnosticFloatingInfo { DiagnosticInfo }, -- Used to color "Info" diagnostic messages in diagnostics float.
@@ -142,12 +142,12 @@ local theme = lush(function(injected_functions)
     Structure      { Type, }, --   struct, union, enum, etc.
     Typedef        { Type, }, --   A typedef
 
-    Constant { t_2 }, -- (*) Any constant
-    String { Constant }, --   A string constant: "this is a string"
+    Constant { Identifier }, -- (*) Any constant
+    String { t_2 }, --   A string constant: "this is a string"
     Character      { String, }, --   A character constant: 'c', '\n'
-    Number         { String, }, --   A number constant: 234, 0xff
-    Boolean        { String, }, --   A boolean constant: TRUE, false
-    Float          { String, }, --   A floating point constant: 2.3e10
+    Number         { Constant, }, --   A number constant: 234, 0xff
+    Boolean        { Constant, }, --   A boolean constant: TRUE, false
+    Float          { Constant, }, --   A floating point constant: 2.3e10
     -- }}}
 
     -- diffs {{{

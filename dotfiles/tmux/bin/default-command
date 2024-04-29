@@ -5,4 +5,4 @@
 # technically aren't children of the shell that I launched TMUX with.
 unset SHLVL
 
-default-shell
+exec default-shell

@@ -320,9 +320,13 @@ function _reload_fish --on-variable _fish_reload_indicator
         commandline -f repaint
         return
     end
-    # TODO: maybe use wezterm's/tmux's respawn
-    clear
-    exec env --ignore-environment TMUX_CONNECT_WAS_RUN="$TMUX_CONNECT_WAS_RUN" BANNER_WAS_PRINTED="$BANNER_WAS_PRINTED" TERM="$TERM" (which default-shell) -li
+
+    if set --export --query TMUX
+        tmux respawn-pane -k -t "$TMUX_PANE"
+    else
+        clear
+        exec fish
+    end
 end
 
 # BASH-style history expansion
