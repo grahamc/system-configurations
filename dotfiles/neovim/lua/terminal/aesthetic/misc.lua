@@ -69,7 +69,63 @@ Plug("stevearc/dressing.nvim", {
   end,
 })
 
--- Using this to make a backdrop for floats
+vim.defer_fn(function()
+  vim.fn["plug#load"]("dressing.nvim")
+end, 0)
+Plug("stevearc/dressing.nvim", {
+  on = {},
+  config = function()
+    require("dressing").setup({
+      input = {
+        enabled = true,
+        default_prompt = "Input:",
+        trim_prompt = false,
+        border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+        relative = "editor",
+        prefer_width = 0.5,
+        width = 0.5,
+        max_width = 500,
+      },
+      select = {
+        get_config = function(options)
+          if options.kind == "legendary.nvim" then
+            return {
+              telescope = {
+                -- favor entries that I've selected recently
+                sorter = require("telescope.sorters").fuzzy_with_index_bias({}),
+              },
+            }
+          end
+        end,
+      },
+    })
+
+    local dressing_group = vim.api.nvim_create_augroup("MyDressing", {})
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "DressingInput",
+      group = dressing_group,
+      callback = function()
+        -- After I accept an autocomplete entry from nvim-cmp, buflisted gets set to true so
+        -- this sets it back to false.
+        vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+          group = dressing_group,
+          buffer = vim.api.nvim_get_current_buf(),
+          callback = function()
+            vim.bo.buflisted = false
+          end,
+        })
+      end,
+    })
+  end,
+})
+
+-- A backdrop for floats
+--
+-- TODO: If this issue gets resolved, I won't need a backdrop for dressing:
+-- https://github.com/stevearc/dressing.nvim/issues/148
+--
+-- TODO: If this issue gets resolved, I need a backdrop for telescope:
+-- https://github.com/nvim-telescope/telescope.nvim/issues/3020
 Plug("levouh/tint.nvim", {
   config = function()
     require("tint").setup({
@@ -115,6 +171,15 @@ Plug("levouh/tint.nvim", {
       return vim.api.nvim_win_get_config(win_id).relative ~= ""
     end
 
+    local function is_transparent()
+      -- TODO: use a more accurate check for transparency
+      return not vim.opt_local.winhighlight:get()["NormalFloat"]
+    end
+
+    local function should_have_backdrop()
+      return is_floating(vim.api.nvim_get_current_win()) and is_transparent()
+    end
+
     local function get_non_floating_windows()
       return vim
         .iter(vim.fn.getwininfo() or {})
@@ -144,16 +209,25 @@ Plug("levouh/tint.nvim", {
       })
     end
 
-    vim.api.nvim_create_autocmd({ "FileType" }, {
-      -- TODO: If this issue gets resolved, I won't need a backdrop for dressing:
-      -- https://github.com/stevearc/dressing.nvim/issues/148
-      --
-      -- TODO: If this issue gets resolved, I need a backdrop for telescope:
-      -- https://github.com/nvim-telescope/telescope.nvim/issues/3020
-      pattern = { "DressingInput", "TelescopePrompt", "lspinfo" },
+    local function backdrop()
+      add_backdrop()
+      remove_backdrop_on_win_leave()
+    end
+
+    vim.api.nvim_create_autocmd({ "WinEnter" }, {
       callback = function(_context)
-        add_backdrop()
-        remove_backdrop_on_win_leave()
+        if should_have_backdrop() then
+          backdrop()
+        end
+      end,
+    })
+
+    -- dressing.nvim sets `noautocmd` when opening its window so I can't use
+    -- `WinEnter` to enable the tint
+    vim.api.nvim_create_autocmd({ "FileType" }, {
+      pattern = "DressingInput",
+      callback = function(_context)
+        backdrop()
       end,
     })
   end,

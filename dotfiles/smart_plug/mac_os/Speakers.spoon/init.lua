@@ -23,7 +23,8 @@ local icon = [[ASCII:
 ]]
 
 local function execute(executable, arguments, callback)
-  -- I'm using hs.task because os.execute was really slow. For more on why os.execute was slow see here:
+  -- I'm using hs.task because os.execute was really slow. For more on why
+  -- os.execute was slow see here:
   -- https://github.com/Hammerspoon/hammerspoon/issues/2570
   return hs.task.new(executable, callback, arguments):start()
 end
@@ -38,8 +39,8 @@ local function make_menubar_item(speakerctl_path)
   end
 
   local function make_menu()
-    -- TODO: Show a loading state initially and update the menu asynchronously. I'll be able to do
-    -- that when this issue is resolved:
+    -- TODO: Show a loading state initially and update the menu
+    -- asynchronously. I'll be able to do that when this issue is resolved:
     -- https://github.com/Hammerspoon/hammerspoon/issues/1923
     local exit_code =
       execute(speakerctl_path, {}):waitUntilExit():terminationStatus()
@@ -70,8 +71,9 @@ local function make_menubar_item(speakerctl_path)
   M.menubar_item = hs.menubar.new():setIcon(icon):setMenu(make_menu)
 end
 
--- Using an interactive-login shell to make sure Nix's vendor config gets sourced so I can find
--- `speakerctl`. I'm using `printf` so there's no trailing newline.
+-- Using an interactive-login shell to make sure Nix's vendor config gets
+-- sourced so I can find `speakerctl`. I'm using `printf` so there's no trailing
+-- newline.
 --
 ---@diagnostic disable-next-line: unused-local
 execute(

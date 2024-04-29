@@ -295,6 +295,8 @@ local theme = lush(function(injected_functions)
     -- nvim-tree {{{
     NvimTreeIndentMarker { t_8 },
     NvimTreeRootFolder { Normal },
+    NvimTreeFolderName { Normal },
+    NvimTreeOpenedFolderName { NvimTreeFolderName },
     NvimTreeModified { Normal },
     NvimTreeOpenedHL { Normal },
     NvimTreeBookmarkIcon { Normal },
