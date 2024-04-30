@@ -55,7 +55,7 @@ Plug("akinsho/bufferline.nvim", {
     end
 
     local close_icon = " "
-    local explorer_icon = " "
+    local explorer_icon = "󰉖 "
     local explorer_title = explorer_icon .. " FILE EXPLORER"
     require("bufferline").setup({
       options = {

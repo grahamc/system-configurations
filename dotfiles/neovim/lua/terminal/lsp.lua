@@ -90,6 +90,12 @@ vim.keymap.set(
 )
 vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Declaration" })
 vim.keymap.set("n", "gn", vim.lsp.buf.rename, { desc = "Rename variable" })
+vim.keymap.set(
+  { "n", "v" },
+  "ga",
+  vim.lsp.buf.code_action,
+  { desc = "Code actions" }
+)
 
 -- Hide all semantic highlights
 vim.api.nvim_create_autocmd("ColorScheme", {
@@ -200,31 +206,7 @@ vim.lsp.handlers[methods.textDocument_signatureHelp] = enhanced_float_handler(
   end
 )
 
-Plug("aznhe21/actions-preview.nvim", {
-  config = function()
-    local actions_preview = require("actions-preview")
-    actions_preview.setup({
-      -- so it uses my telescope defaults
-      telescope = {},
-      highlight_command = {
-        require("actions-preview.highlight").delta(
-          [[delta --file-style omit --paging always]]
-        ),
-      },
-    })
-    vim.keymap.set(
-      { "n", "v" },
-      "ga",
-      actions_preview.code_actions,
-      { desc = "Code actions" }
-    )
-  end,
-})
-
 Plug("b0o/SchemaStore.nvim")
-
--- To read/write config files the way the vscode extension does.
-Plug("barreiroleo/ltex-extra.nvim")
 
 Plug("kosayoda/nvim-lightbulb", {
   config = function()
@@ -266,15 +248,12 @@ Plug("neovim/nvim-lspconfig", {
 if vim.fn.executable("nix") == 1 then
   Plug("dundalek/lazy-lsp.nvim", {
     config = function()
-      local folding_nvim = require("terminal.folds.folding-nvim")
       local code_lens_refresh_autocmd_ids_by_buffer = {}
 
       -- Should be idempotent since it may be called mutiple times for the same
       -- buffer. For example, it could get called again if a server registers
       -- another capability dynamically.
       local on_attach = function(client, buffer_number)
-        folding_nvim.on_attach()
-
         local keymap_opts = { silent = true, buffer = buffer_number }
         local function buffer_keymap(mode, lhs, rhs, opts)
           vim.keymap.set(
@@ -457,7 +436,6 @@ if vim.fn.executable("nix") == 1 then
 
       local capability_overrides = vim.tbl_deep_extend(
         "error",
-        folding_nvim.capabilities,
         require("cmp_nvim_lsp").default_capabilities(),
         {
           workspace = {
@@ -593,17 +571,6 @@ if vim.fn.executable("nix") == 1 then
           --     },
           --   },
           -- },
-
-          ltex = {
-            on_attach = function(client, buffer_number)
-              on_attach(client, buffer_number)
-              require("ltex_extra").setup({
-                load_langs = { "en-US" },
-                -- For compatibility with the vscode extension
-                path = ".vscode",
-              })
-            end,
-          },
 
           efm = {
             settings = {

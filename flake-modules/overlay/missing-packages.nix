@@ -1,4 +1,4 @@
-{inputs, ...}: {
+_: {
   flake = let
     overlay = final: prev: let
       inherit (prev.stdenv) isLinux;
@@ -16,19 +16,8 @@
           cp $src/catp $out/bin/
         '';
       };
-
-      nonicons =
-        final.runCommand "nonicons"
-        {}
-        ''
-          mkdir -p $out/share/fonts/truetype
-          ln --symbolic ${inputs.self}/dotfiles/nonicons/dist/nonicons.ttf $out/share/fonts/truetype/nonicons.ttf
-        '';
     in
-      {
-        inherit nonicons;
-      }
-      // optionalAttrs isLinux {
+      optionalAttrs isLinux {
         inherit catp;
       };
   in {overlays.missingPackages = overlay;};

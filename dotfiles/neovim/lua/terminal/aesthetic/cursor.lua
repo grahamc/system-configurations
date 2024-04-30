@@ -21,20 +21,3 @@ vim.api.nvim_create_autocmd({ "VimResume" }, {
   callback = set_cursor,
   group = cursor_group_id,
 })
-
--- Hide cursor in dropbar
---
--- TODO: Should add this as a tip for dropbar
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "dropbar_menu",
-  callback = function()
-    vim.o.guicursor = "n-v-c:block-DropBarMenuCursor"
-  end,
-})
-vim.api.nvim_create_autocmd("WinLeave", {
-  callback = function()
-    if vim.bo.filetype == "dropbar_menu" then
-      set_cursor()
-    end
-  end,
-})

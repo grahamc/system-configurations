@@ -59,7 +59,7 @@ Plug("L3MON4D3/LuaSnip", {
         },
         [types.choiceNode] = {
           passive = {
-            virt_text = { { "   ", "LuaSnipInlayHint" } },
+            virt_text = { { "   ", "LuaSnipInlayHint" } },
             virt_text_pos = "inline",
           },
         },

@@ -52,7 +52,7 @@ config.term = "wezterm"
 
 -- font
 local function font_with_icon_fallbacks(font)
-  return wezterm.font_with_fallback({ font, "nonicons", "SymbolsNerdFontMono" })
+  return wezterm.font_with_fallback({ font, "SymbolsNerdFontMono" })
 end
 local handwriting_font = "Monaspace Radon"
 -- For Linux, I'd like to put 'monospace' here so Wezterm can use the monospace

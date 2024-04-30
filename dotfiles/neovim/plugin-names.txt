@@ -1,4 +1,3 @@
-actions-preview.nvim
 bufferline.nvim
 bullets.vim
 CamelCaseMotion
@@ -14,17 +13,14 @@ cmp-omni
 cmp-path
 cmp-tmux
 conform.nvim
-czs.nvim
 dial.nvim
 direnv.vim
 dressing.nvim
-dropbar.nvim
 fidget.nvim
 firenvim
 friendly-snippets
 lazy-lsp.nvim
 legendary.nvim
-ltex-extra.nvim
 LuaSnip
 lush.nvim
 mini.nvim
@@ -34,7 +30,6 @@ nvim-colorizer.lua
 nvim-lightbulb
 nvim-lspconfig
 nvim-lsp-file-operations
-nvim-nonicons
 nvim-notify
 nvim-tree.lua
 nvim-treesitter
@@ -42,9 +37,7 @@ nvim-treesitter-context
 nvim-treesitter-endwise
 nvim-treesitter-textobjects
 nvim-ts-autotag
-nvim-web-devicons
 plenary.nvim
-replacer.nvim
 reticle.nvim
 SchemaStore.nvim
 splitjoin.vim

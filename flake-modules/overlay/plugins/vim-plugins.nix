@@ -1,8 +1,4 @@
-{
-  inputs,
-  self,
-  ...
-}: {
+{self, ...}: {
   flake = let
     overlay = final: prev: let
       vimPluginRepositoryPrefix = "vim-plugin-";
@@ -32,17 +28,11 @@
         paths = newVimPlugins.nvim-treesitter.withAllGrammars.dependencies;
       };
 
-      nvim-nonicons =
-        vimPluginBuilder
-        "nvim-nonicons"
-        (final.runCommand "nvim-nonicons" {} ''cp -R --dereference ${inputs.self}/dotfiles/nonicons/nvim $out'')
-        "next";
-
       vimPlugins =
         prev.vimPlugins
         // newVimPlugins
         // {
-          inherit treesitter-parsers nvim-nonicons;
+          inherit treesitter-parsers;
           # remove treesitter parser plugins because they were ending up in my
           # 'plugged' directory
           nvim-treesitter = newVimPlugins.nvim-treesitter.withPlugins (_: []);

@@ -36,23 +36,23 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 
 -- statusline helpers {{{
 local function get_mode_indicator()
-  local normal = " "
-  local operator_pending = "O-PENDING"
-  local visual = " "
-  local visual_line = visual .. " LINE"
-  local visual_block = visual .. " BLOCK"
-  local visual_replace = visual .. " REPLACE"
-  local select = " "
-  local select_line = select .. " LINE"
-  local select_block = select .. " BLOCK"
-  local insert = " "
-  local replace = " "
-  local command = " "
+  local normal = "NORMAL"
+  local operator_pending = "OPERATOR-PENDING"
+  local visual = "VISUAL"
+  local visual_line = visual .. "-LINE"
+  local visual_block = visual .. "-BLOCK"
+  local visual_replace = visual .. "-REPLACE"
+  local select = "SELECT"
+  local select_line = select .. "-LINE"
+  local select_block = select .. "-BLOCK"
+  local insert = "INSERT"
+  local replace = "REPLACE"
+  local command = "COMMAND"
   local ex = "EX"
   local more = "MORE"
   local confirm = "CONFIRM"
   local shell = "SHELL"
-  local terminal = " "
+  local terminal = "TERMINAL"
   local mode_map = {
     ["n"] = normal,
     ["no"] = operator_pending,
@@ -234,7 +234,7 @@ end
 
 -- main statusline {{{
 function StatusLine()
-  local position = "%#StatusLine#" .. " %03l:%03c"
+  local position = "%#StatusLine#" .. "%03l:%03c"
 
   local fileformat = nil
   if vim.o.fileformat == "mac" then
@@ -254,30 +254,7 @@ function StatusLine()
 
   local filetype = nil
   if string.len(vim.o.filetype) > 0 then
-    local buffer_name = vim.api.nvim_buf_get_name(0)
-    local basename = vim.fs.basename(buffer_name)
-    local extension = vim.fn.fnamemodify(basename, ":e")
-    local devicons = require("nvim-web-devicons")
-    local icon, color = devicons.get_icon_color(basename, extension)
-    if icon == nil then
-      icon, color = devicons.get_icon_color_by_filetype(vim.bo.filetype)
-    end
-    if icon ~= nil then
-      local icon_highlight_name = "StatusLineFileTypeIcon"
-      vim.api.nvim_set_hl(
-        0,
-        icon_highlight_name,
-        { fg = color, bg = vim.api.nvim_get_hl(0, { name = "StatusLine" }).bg }
-      )
-
-      icon = "%#" .. icon_highlight_name .. "#" .. icon .. " "
-
-      -- TODO: To fix icon highlight
-      require("tint").refresh()
-    else
-      icon = ""
-    end
-    filetype = icon .. "%#StatusLine#" .. vim.o.filetype
+    filetype = "%#StatusLine#" .. vim.o.filetype
   end
 
   local readonly = nil
@@ -293,16 +270,6 @@ function StatusLine()
       .. recording_register
   end
 
-  local search_info = nil
-  local ok, czs = pcall(require, "czs")
-  if ok then
-    if czs.display_results() then
-      local _, current, count = czs.output()
-      search_info = "%#StatusLine# "
-        .. string.format("%s/%s", current, count)
-    end
-  end
-
   local lsp_info = nil
   local language_server_count_for_current_buffer =
     #vim.lsp.get_clients({ bufnr = vim.api.nvim_get_current_buf() })
@@ -312,7 +279,7 @@ function StatusLine()
 
   local maximized = nil
   if IsMaximized then
-    local indicator = " "
+    local indicator = " "
     maximized = "%#StatusLineStandoutText#" .. indicator
   end
 
@@ -337,25 +304,25 @@ function StatusLine()
   local diagnostic_list = {}
   local error_count = diagnostic_count.error
   if error_count > 0 then
-    local icon = " "
+    local icon = " "
     local error = "%#StatusLineErrorText#" .. icon .. error_count
     table.insert(diagnostic_list, error)
   end
   local warning_count = diagnostic_count.warning
   if warning_count > 0 then
-    local icon = " "
+    local icon = " "
     local warning = "%#StatusLineWarningText#" .. icon .. warning_count
     table.insert(diagnostic_list, warning)
   end
   local info_count = diagnostic_count.info
   if info_count > 0 then
-    local icon = " "
+    local icon = " "
     local info = "%#StatusLineInfoText#" .. icon .. info_count
     table.insert(diagnostic_list, info)
   end
   local hint_count = diagnostic_count.hint
   if hint_count > 0 then
-    local icon = " "
+    local icon = " "
     local hint = "%#StatusLineHintText#" .. icon .. hint_count
     table.insert(diagnostic_list, hint)
   end
@@ -425,12 +392,7 @@ function StatusLine()
   elseif vim.bo.filetype == "qf" then
     return make_mapping_statusline({
       { key = "gf", description = "find & replace" },
-      { key = "gr", description = "activate replacer" },
       { key = "q", description = "close" },
-    })
-  elseif vim.bo.filetype == "replacer" then
-    return make_mapping_statusline({
-      { key = "gc", description = "commit changes" },
     })
   else
     return make_statusline({
@@ -440,7 +402,6 @@ function StatusLine()
       reg_recording,
     }, {
       maximized,
-      search_info,
       lsp_info,
       readonly,
       filetype,
@@ -450,26 +411,6 @@ function StatusLine()
     })
   end
 end
-
-Plug("oncomouse/czs.nvim", {
-  config = function()
-    -- 'n' always searches forwards, 'N' always searches backwards I have this set in base.lua, but
-    -- since I need to use these czs mappings I had to redefine them.
-    vim.keymap.set(
-      { "n" },
-      "n",
-      "['<Plug>(czs-move-N)', '<Plug>(czs-move-n)'][v:searchforward]",
-      { expr = true, replace_keycodes = false }
-    )
-    vim.keymap.set(
-      { "n", "x", "x" },
-      "N",
-      "['<Plug>(czs-move-n)', '<Plug>(czs-move-N)'][v:searchforward]",
-      { expr = true, replace_keycodes = false }
-    )
-  end,
-})
-vim.g.czs_do_not_map = true
 -- }}}
 
 -- file explorer statusline {{{

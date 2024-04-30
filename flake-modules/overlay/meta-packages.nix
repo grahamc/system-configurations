@@ -7,7 +7,6 @@ _: {
           hack-font
           monaspace
           (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"];})
-          nonicons
         ];
       };
     in {inherit myFonts;};

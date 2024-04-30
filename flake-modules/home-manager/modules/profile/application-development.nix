@@ -14,7 +14,6 @@
     home.file = {
       ".yashrc".source = "yash/yashrc";
       ".cloudflared/config.yaml".source = "cloudflared/config.yaml";
-      ".markdownlint.jsonc".source = "markdownlint/markdownlint.jsonc";
     };
 
     xdg.configFile = {

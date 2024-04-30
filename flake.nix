@@ -323,10 +323,6 @@
       url = "github:arthurxavierx/vim-caser";
       flake = false;
     };
-    vim-plugin-czs-nvim = {
-      url = "github:oncomouse/czs.nvim";
-      flake = false;
-    };
     vim-plugin-nvim-tree-lua = {
       url = "github:kyazdani42/nvim-tree.lua";
       flake = false;
@@ -359,14 +355,6 @@
       url = "github:nvim-telescope/telescope-fzf-native.nvim";
       flake = false;
     };
-    vim-plugin-actions-preview-nvim = {
-      url = "github:aznhe21/actions-preview.nvim";
-      flake = false;
-    };
-    vim-plugin-nvim-web-devicons = {
-      url = "github:nvim-tree/nvim-web-devicons";
-      flake = false;
-    };
     vim-plugin-mini-nvim = {
       url = "github:echasnovski/mini.nvim";
       flake = false;
@@ -377,10 +365,6 @@
     };
     vim-plugin-nvim-colorizer-lua = {
       url = "github:mehalter/nvim-colorizer.lua";
-      flake = false;
-    };
-    vim-plugin-dropbar-nvim = {
-      url = "github:Bekaboo/dropbar.nvim";
       flake = false;
     };
     vim-plugin-legendary-nvim = {
@@ -429,14 +413,6 @@
     };
     vim-plugin-bullets-vim = {
       url = "github:bullets-vim/bullets.vim";
-      flake = false;
-    };
-    vim-plugin-ltex-extra-nvim = {
-      url = "github:barreiroleo/ltex_extra.nvim";
-      flake = false;
-    };
-    vim-plugin-replacer-nvim = {
-      url = "github:gabrielpoca/replacer.nvim";
       flake = false;
     };
     vim-plugin-direnv-vim = {

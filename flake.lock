@@ -611,7 +611,6 @@
         "vim-plugin-CamelCaseMotion": "vim-plugin-CamelCaseMotion",
         "vim-plugin-LuaSnip": "vim-plugin-LuaSnip",
         "vim-plugin-SchemaStore-nvim": "vim-plugin-SchemaStore-nvim",
-        "vim-plugin-actions-preview-nvim": "vim-plugin-actions-preview-nvim",
         "vim-plugin-bufferline-nvim": "vim-plugin-bufferline-nvim",
         "vim-plugin-bullets-vim": "vim-plugin-bullets-vim",
         "vim-plugin-cmp-buffer": "vim-plugin-cmp-buffer",
@@ -626,17 +625,14 @@
         "vim-plugin-cmp-tmux": "vim-plugin-cmp-tmux",
         "vim-plugin-cmp_luasnip": "vim-plugin-cmp_luasnip",
         "vim-plugin-conform-nvim": "vim-plugin-conform-nvim",
-        "vim-plugin-czs-nvim": "vim-plugin-czs-nvim",
         "vim-plugin-dial-nvim": "vim-plugin-dial-nvim",
         "vim-plugin-direnv-vim": "vim-plugin-direnv-vim",
         "vim-plugin-dressing-nvim": "vim-plugin-dressing-nvim",
-        "vim-plugin-dropbar-nvim": "vim-plugin-dropbar-nvim",
         "vim-plugin-fidget-nvim": "vim-plugin-fidget-nvim",
         "vim-plugin-firenvim": "vim-plugin-firenvim",
         "vim-plugin-friendly-snippets": "vim-plugin-friendly-snippets",
         "vim-plugin-lazy-lsp-nvim": "vim-plugin-lazy-lsp-nvim",
         "vim-plugin-legendary-nvim": "vim-plugin-legendary-nvim",
-        "vim-plugin-ltex-extra-nvim": "vim-plugin-ltex-extra-nvim",
         "vim-plugin-lush-nvim": "vim-plugin-lush-nvim",
         "vim-plugin-mini-nvim": "vim-plugin-mini-nvim",
         "vim-plugin-nvim-autopairs": "vim-plugin-nvim-autopairs",
@@ -652,7 +648,6 @@
         "vim-plugin-nvim-treesitter-context": "vim-plugin-nvim-treesitter-context",
         "vim-plugin-nvim-treesitter-endwise": "vim-plugin-nvim-treesitter-endwise",
         "vim-plugin-nvim-ts-autotag": "vim-plugin-nvim-ts-autotag",
-        "vim-plugin-nvim-web-devicons": "vim-plugin-nvim-web-devicons",
         "vim-plugin-plenary-nvim": "vim-plugin-plenary-nvim",
         "vim-plugin-replacer-nvim": "vim-plugin-replacer-nvim",
         "vim-plugin-reticle-nvim": "vim-plugin-reticle-nvim",
@@ -958,22 +953,6 @@
         "type": "github"
       }
     },
-    "vim-plugin-actions-preview-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1710009411,
-        "narHash": "sha256-PIzXWOqmTeesPZg82iLkvLpJtOoDDljvwJq8wdvRtqQ=",
-        "owner": "aznhe21",
-        "repo": "actions-preview.nvim",
-        "rev": "5072b1b1065a6b22bdd46b5c21780a91d6a08071",
-        "type": "github"
-      },
-      "original": {
-        "owner": "aznhe21",
-        "repo": "actions-preview.nvim",
-        "type": "github"
-      }
-    },
     "vim-plugin-bufferline-nvim": {
       "flake": false,
       "locked": {
@@ -1198,22 +1177,6 @@
         "type": "github"
       }
     },
-    "vim-plugin-czs-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1673541598,
-        "narHash": "sha256-n6ajxLE9ONnar7fJb0BsqYuCv/3TuUpSKTjAHfWuExE=",
-        "owner": "oncomouse",
-        "repo": "czs.nvim",
-        "rev": "d74dd1fa7b6953055de939267eb0e21eb2147d95",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oncomouse",
-        "repo": "czs.nvim",
-        "type": "github"
-      }
-    },
     "vim-plugin-dial-nvim": {
       "flake": false,
       "locked": {
@@ -1259,22 +1222,6 @@
       "original": {
         "owner": "stevearc",
         "repo": "dressing.nvim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-dropbar-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1714202227,
-        "narHash": "sha256-CvIutu1pDNRLflnYc8vyYsz2NqMYEw5RhZiR/EBo9NQ=",
-        "owner": "Bekaboo",
-        "repo": "dropbar.nvim",
-        "rev": "3dd8edba9f9eeb129db269dd57ef6c0427b7ad9d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Bekaboo",
-        "repo": "dropbar.nvim",
         "type": "github"
       }
     },
@@ -1355,22 +1302,6 @@
       "original": {
         "owner": "mrjones2014",
         "repo": "legendary.nvim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-ltex-extra-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1712981643,
-        "narHash": "sha256-OuMCsDxAH2scyf3RO/h75Gc9fca1jyNs47PpUYs0FB8=",
-        "owner": "barreiroleo",
-        "repo": "ltex_extra.nvim",
-        "rev": "4296c2c7aefbca721d02a011366a1de30598046c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "barreiroleo",
-        "repo": "ltex_extra.nvim",
         "type": "github"
       }
     },
@@ -1611,22 +1542,6 @@
       "original": {
         "owner": "windwp",
         "repo": "nvim-ts-autotag",
-        "type": "github"
-      }
-    },
-    "vim-plugin-nvim-web-devicons": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1714371374,
-        "narHash": "sha256-gc+8GgFSM87dbcYUW8d9If3qY80xJMmy48vnVezNLPk=",
-        "owner": "nvim-tree",
-        "repo": "nvim-web-devicons",
-        "rev": "794bba734ec95eaff9bb82fbd112473be2087283",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nvim-tree",
-        "repo": "nvim-web-devicons",
         "type": "github"
       }
     },

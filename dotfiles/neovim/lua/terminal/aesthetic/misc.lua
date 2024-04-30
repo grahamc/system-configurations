@@ -7,18 +7,6 @@ vim.o.wrap = true
 vim.o.listchars = "tab:¬-,space:·"
 vim.opt.fillchars:append("eob: ")
 
-Plug("nvim-tree/nvim-web-devicons")
-
-Plug("yamatsum/nvim-nonicons", {
-  config = function()
-    require("nvim-nonicons").setup({
-      devicons = {
-        override = false,
-      },
-    })
-  end,
-})
-
 vim.defer_fn(function()
   vim.fn["plug#load"]("dressing.nvim")
 end, 0)
