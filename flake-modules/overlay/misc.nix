@@ -15,24 +15,26 @@
         ];
       };
 
-      myTmux = prev.tmux.overrideAttrs (old: {
+      tmuxMaster = prev.tmux.overrideAttrs (_old: {
         src = inputs.tmux;
         patches = [];
-        buildInputs = lib.lists.unique ((old.buildInputs or []) ++ [final.makeWrapper]);
+      });
 
+      myTmux = final.symlinkJoin {
+        name = "my-${final.tmux.name}";
+        paths = [final.tmux];
+        buildInputs = [final.makeWrapper];
         # I'm removing $SHELL so tmux will use the OS default shell instead
         # of what it will probably be when I run tmux, fish. This is because
         # the Determinate Systems Nix installer doesn't configure fish
         # properly. When this issue is resolved, I can remove this:
         # https://github.com/DeterminateSystems/nix-installer/issues/576
-        postInstall =
-          (old.postInstall or "")
-          + ''
-            wrapProgram $out/bin/tmux \
-              --prefix-each PATH : ${lib.escapeShellArg "${inputs.self}/dotfiles/tmux/bin"} \
-              --unset SHELL
-          '';
-      });
+        postBuild = ''
+          wrapProgram $out/bin/tmux \
+            --prefix-each PATH : ${lib.escapeShellArg "${inputs.self}/dotfiles/tmux/bin"} \
+            --unset SHELL
+        '';
+      };
 
       nightlyNeovimWithDependencies = let
         dependencies = final.symlinkJoin {
@@ -156,6 +158,9 @@
       inherit ncursesWithWezterm myPython myTmux;
       neovim = nightlyNeovimWithDependencies;
       ripgrep-all = ripgrepAllWithDependencies;
+      tmux = tmuxMaster;
+      inherit ((import inputs.nixpkgs-for-diffoscope {inherit (final) system;})) diffoscope;
+
       # TODO: The wezterm flake doesn't work for macOS. When I try to build
       # it I get an error because the attribute 'UserNotifications' does not
       # exist. The only mention of a similar issue is here:
@@ -170,7 +175,6 @@
         # TODO: get upstream to set meta.mainProgram
         then inputs.wezterm.packages.${final.system}.default // {meta.mainProgram = "wezterm";}
         else (import inputs.nixpkgs-for-wezterm-darwin {inherit (final) system;}).wezterm;
-      inherit ((import inputs.nixpkgs-for-diffoscope {inherit (final) system;})) diffoscope;
     };
   in {
     overlays.misc = lib.composeManyExtensions [

@@ -13,7 +13,7 @@
       "hammerspoon"
       "visual-studio-code"
       "gitkraken"
-      "firefox-developer-edition"
+      "firefox@developer-edition"
       "google-chrome"
       "finicky"
       "docker"
