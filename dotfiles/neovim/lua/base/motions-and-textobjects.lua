@@ -58,12 +58,6 @@ local function move_cursor_vertically(direction)
     return direction
   end
 
-  -- TODO: I want to move by wrapped line, but occasionally the cursor gets
-  -- "stuck". I should open an issue with vscode.
-  if vim.g.vscode then
-    return direction
-  end
-
   return "g" .. direction
 end
 vim.keymap.set({ "n", "x" }, "j", function()
