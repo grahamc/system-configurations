@@ -19,3 +19,11 @@ vim.keymap.set(
 -- 'n' always searches forwards, 'N' always searches backwards
 vim.keymap.set({ "n" }, "n", "'Nn'[v:searchforward]", { expr = true })
 vim.keymap.set({ "n" }, "N", "'nN'[v:searchforward]", { expr = true })
+
+vim.o.hlsearch = false
+vim.keymap.set(
+  "n",
+  [[\/]],
+  "<Cmd>set hlsearch!<CR>",
+  { silent = true, desc = "Toggle search highlight" }
+)

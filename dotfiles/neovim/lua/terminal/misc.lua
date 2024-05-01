@@ -307,13 +307,6 @@ vim.keymap.set({ "ca" }, "h", function()
 end, { expr = true })
 -- }}}
 
-vim.o.hlsearch = false
-vim.keymap.set(
-  "n",
-  [[\/]],
-  "<Cmd>set hlsearch!<CR>",
-  { silent = true, desc = "Toggle search highlight" }
-)
 vim.api.nvim_create_autocmd("CmdlineEnter", {
   pattern = [=[[/\?]]=],
   callback = function()

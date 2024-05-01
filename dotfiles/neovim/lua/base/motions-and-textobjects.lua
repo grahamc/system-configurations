@@ -41,8 +41,7 @@ vim.keymap.set({ "n" }, "]y", "']", {
   desc = "End of last yank",
 })
 
--- Always move by screen line, unless a count was specified or we're in a line-wise mode.
-local function move_by_screen_line(direction)
+local function move_cursor_vertically(direction)
   local mode = vim.fn.mode()
   local is_in_linewise_mode = mode == "V" or mode == ""
   if is_in_linewise_mode then
@@ -53,21 +52,29 @@ local function move_by_screen_line(direction)
     return direction
   end
 
-  -- TODO: When I use 'gk' at the top of the file it messes up the TUI so I'll avoid that.
+  -- TODO: When I use 'gk' at the top of the file it messes up the TUI so I'll
+  -- avoid that.
   if IsRunningInTerminal and vim.fn.line(".") == 1 and direction == "k" then
+    return direction
+  end
+
+  -- TODO: I want to move by wrapped line, but occasionally the cursor gets
+  -- "stuck". I should open an issue with vscode.
+  if vim.g.vscode then
     return direction
   end
 
   return "g" .. direction
 end
 vim.keymap.set({ "n", "x" }, "j", function()
-  return move_by_screen_line("j")
+  return move_cursor_vertically("j")
 end, { expr = true })
 vim.keymap.set({ "n", "x" }, "k", function()
-  return move_by_screen_line("k")
+  return move_cursor_vertically("k")
 end, { expr = true })
 
--- move six lines at a time by holding ctrl and a directional key. Reasoning for using 6 here:
+-- move six lines at a time by holding ctrl and a directional key. Reasoning for
+-- using 6 here:
 -- https://nanotipsforvim.prose.sh/vertical-navigation-%E2%80%93-without-relative-line-numbers
 vim.keymap.set({ "n", "x" }, "<C-j>", "6j")
 vim.keymap.set({ "n", "x" }, "<C-k>", "6k")

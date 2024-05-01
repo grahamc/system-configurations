@@ -12,14 +12,6 @@ vim.g.clipboard = vim.g.vscode_clipboard
 -- see if I'll press another 'q'.
 vim.keymap.del({ "n" }, "gqq")
 
-vim.o.hlsearch = false
-vim.keymap.set(
-  "n",
-  [[\/]],
-  "<Cmd>set hlsearch!<CR>",
-  { silent = true, desc = "Toggle search highlight" }
-)
-
 -- TODO: Unlike other extensions, vscode-neovim is not picking up the
 -- environment variables set by direnv-vscode, even after direnv restarts
 -- all extensions. Based on my testing, it seems that this because I set an
@@ -153,54 +145,6 @@ end)
 
 vim.keymap.set({ "n", "x" }, "]<Tab>", function()
   vscode.call("editor.gotoNextFold")
-end)
--- }}}
-
--- move cursor {{{
--- I'd use nvim's g{j,k}, but since nvim isn't aware of the folds in vscode, it
--- doesn't work properly.
-local function moveCursorVertically(line_count)
-  if vim.v.count > 0 then
-    line_count = line_count * vim.v.count
-  end
-
-  local direction = nil
-  if line_count > 0 then
-    direction = "down"
-  else
-    direction = "up"
-  end
-
-  vscode.call("cursorMove", {
-    args = {
-      to = direction,
-      by = "wrappedLine",
-      value = math.abs(line_count),
-    },
-  })
-
-  -- TODO: Center the current line. Ideally I'd use the
-  -- `editor.cursorSurroundingLines` setting in vscode, but there seems to be a
-  -- bug in it where if you try to move by display line (e.g. gj) you may
-  -- get stuck on a wrapped line. I should open an issue with vscode.
-  vscode.call("revealLine", {
-    args = {
-      lineNumber = vim.fn.line("."),
-      at = "center",
-    },
-  })
-end
-vim.keymap.set({ "n" }, "j", function()
-  moveCursorVertically(1)
-end)
-vim.keymap.set({ "n" }, "k", function()
-  moveCursorVertically(-1)
-end)
-vim.keymap.set({ "n" }, "<C-j>", function()
-  moveCursorVertically(6)
-end)
-vim.keymap.set({ "n" }, "<C-k>", function()
-  moveCursorVertically(-6)
 end)
 -- }}}
 
