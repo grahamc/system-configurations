@@ -351,11 +351,7 @@ vim.api.nvim_create_autocmd("TermOpen", {
 vim.api.nvim_create_autocmd("WinEnter", {
   nested = true,
   callback = function()
-    if
-      vim.bo.buftype == "terminal"
-      and vim.bo.filetype ~= "neotest-output-panel"
-      and vim.bo.filetype ~= "dapui_console"
-    then
+    if vim.bo.buftype == "terminal" then
       vim.cmd.startinsert()
     end
   end,

@@ -62,23 +62,44 @@ vim.keymap.del({ "n", "x" }, "=")
 vim.keymap.del({ "n" }, "==")
 
 -- Toggle visual elements {{{
+local function toggle(values, setting)
+  local current = vscode.get_config(setting)
+
+  local new = nil
+  if values[1] == current then
+    new = values[2]
+  else
+    new = values[1]
+  end
+
+  vscode.update_config(setting, new, "global")
+end
+
+local function on_off_toggle(setting)
+  toggle({ "on", "off" }, setting)
+end
+
+local function boolean_toggle(setting)
+  toggle({ true, false }, setting)
+end
+
 vim.keymap.set("n", [[\b]], function()
   vscode.call("gitlens.toggleLineBlame")
 end, { desc = "Toggle git blame" })
 vim.keymap.set("n", [[\i]], function()
-  vscode.call("settings.cycle.toggleInlayHints")
+  on_off_toggle("editor.inlayHints.enabled")
 end, { desc = "Toggle inlay hints" })
 vim.keymap.set("n", [[\|]], function()
-  vscode.call("settings.cycle.toggleIndentGuide")
+  boolean_toggle("editor.guides.indentation")
 end, { desc = "Toggle indent guide" })
 vim.keymap.set("n", [[\s]], function()
-  vscode.call("settings.cycle.toggleStickyScroll")
+  boolean_toggle("editor.stickyScroll.enabled")
 end, { desc = "Toggle sticky scroll [context]" })
 vim.keymap.set("n", [[\ ]], function()
   vscode.call("editor.action.toggleRenderWhitespace")
 end, { desc = "Toggle whitespace" })
 vim.keymap.set("n", [[\n]], function()
-  vscode.call("settings.cycle.toggleLineNumbers")
+  on_off_toggle("editor.lineNumbers")
 end, { desc = "Toggle line numbers" })
 vim.keymap.set("n", [[\d]], function()
   vscode.call("errorLens.toggle")
@@ -184,11 +205,20 @@ end)
 -- }}}
 
 -- language server {{{
+local function jump_to_problem(direction)
+  -- To avoid a flash of the popup that I close, I try to run the close-popup
+  -- command as soon as possible after running the jump command. To do so, I run
+  -- the jump and close-popup commands asynchronously so I don't have to wait
+  -- for the jump command to finish before queueing up the close-popup command.
+  vscode.action("editor.action.marker." .. direction)
+  -- close popup
+  vscode.action("closeMarkersNavigation")
+end
 vim.keymap.set({ "n" }, "[l", function()
-  vscode.call("editor.action.marker.prev")
+  jump_to_problem("prev")
 end)
 vim.keymap.set({ "n" }, "]l", function()
-  vscode.call("editor.action.marker.next")
+  jump_to_problem("next")
 end)
 -- Since vscode only has one hover action to show docs and lints I'll have my
 -- lint keybind also trigger hover
