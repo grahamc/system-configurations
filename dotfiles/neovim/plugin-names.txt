@@ -16,6 +16,7 @@ conform.nvim
 dial.nvim
 direnv.vim
 dressing.nvim
+dropbar.nvim
 fidget.nvim
 firenvim
 friendly-snippets
@@ -52,13 +53,13 @@ traces.vim
 treesj
 vim-abolish
 vim-caser
-vim-exchange
 vim-fish
 vim-indentwise
 vim-matchup
 vim-nix
 vim-plug
 vim-repeat
+vim-signify
 vim-sleuth
 vim-tmux-navigator
 which-key.nvim

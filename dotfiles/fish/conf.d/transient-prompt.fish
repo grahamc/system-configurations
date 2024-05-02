@@ -1,9 +1,3 @@
-if not status is-interactive
-    exit
-end
-
-# Transient prompt
-#
 # TODO: Ideally I'd do this with a preexec hook, but that won't work for reasons outlined
 # in this issue: https://github.com/fish-shell/fish-shell/issues/7602#issuecomment-831601418
 #

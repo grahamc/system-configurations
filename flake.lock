@@ -628,6 +628,7 @@
         "vim-plugin-dial-nvim": "vim-plugin-dial-nvim",
         "vim-plugin-direnv-vim": "vim-plugin-direnv-vim",
         "vim-plugin-dressing-nvim": "vim-plugin-dressing-nvim",
+        "vim-plugin-dropbar-nvim": "vim-plugin-dropbar-nvim",
         "vim-plugin-fidget-nvim": "vim-plugin-fidget-nvim",
         "vim-plugin-firenvim": "vim-plugin-firenvim",
         "vim-plugin-friendly-snippets": "vim-plugin-friendly-snippets",
@@ -662,13 +663,13 @@
         "vim-plugin-treesj": "vim-plugin-treesj",
         "vim-plugin-vim-abolish": "vim-plugin-vim-abolish",
         "vim-plugin-vim-caser": "vim-plugin-vim-caser",
-        "vim-plugin-vim-exchange": "vim-plugin-vim-exchange",
         "vim-plugin-vim-fish": "vim-plugin-vim-fish",
         "vim-plugin-vim-indentwise": "vim-plugin-vim-indentwise",
         "vim-plugin-vim-matchup": "vim-plugin-vim-matchup",
         "vim-plugin-vim-nix": "vim-plugin-vim-nix",
         "vim-plugin-vim-plug": "vim-plugin-vim-plug",
         "vim-plugin-vim-repeat": "vim-plugin-vim-repeat",
+        "vim-plugin-vim-signify": "vim-plugin-vim-signify",
         "vim-plugin-vim-sleuth": "vim-plugin-vim-sleuth",
         "vim-plugin-vim-tmux-navigator": "vim-plugin-vim-tmux-navigator",
         "vim-plugin-which-key-nvim": "vim-plugin-which-key-nvim",
@@ -1224,6 +1225,22 @@
         "type": "github"
       }
     },
+    "vim-plugin-dropbar-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1714202227,
+        "narHash": "sha256-CvIutu1pDNRLflnYc8vyYsz2NqMYEw5RhZiR/EBo9NQ=",
+        "owner": "Bekaboo",
+        "repo": "dropbar.nvim",
+        "rev": "3dd8edba9f9eeb129db269dd57ef6c0427b7ad9d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Bekaboo",
+        "repo": "dropbar.nvim",
+        "type": "github"
+      }
+    },
     "vim-plugin-fidget-nvim": {
       "flake": false,
       "locked": {
@@ -1768,22 +1785,6 @@
         "type": "github"
       }
     },
-    "vim-plugin-vim-exchange": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1705796903,
-        "narHash": "sha256-rjqahEzXEmTtpOil9jm2xyscjJLiKRmPB0pgwFFBKGc=",
-        "owner": "tommcdo",
-        "repo": "vim-exchange",
-        "rev": "d6c1e9790bcb8df27c483a37167459bbebe0112e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "tommcdo",
-        "repo": "vim-exchange",
-        "type": "github"
-      }
-    },
     "vim-plugin-vim-fish": {
       "flake": false,
       "locked": {
@@ -1877,6 +1878,22 @@
       "original": {
         "owner": "tpope",
         "repo": "vim-repeat",
+        "type": "github"
+      }
+    },
+    "vim-plugin-vim-signify": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1712285825,
+        "narHash": "sha256-UJA+AO6yUGK9rP7oP/l52Z04VZym2lkDeY/qAEgr6nI=",
+        "owner": "mhinz",
+        "repo": "vim-signify",
+        "rev": "8670143f9e12ed1cd3c9b2c54f345cdd9a4baac3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mhinz",
+        "repo": "vim-signify",
         "type": "github"
       }
     },

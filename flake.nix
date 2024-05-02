@@ -407,10 +407,6 @@
       url = "github:nvim-treesitter/nvim-treesitter-context";
       flake = false;
     };
-    vim-plugin-vim-exchange = {
-      url = "github:tommcdo/vim-exchange";
-      flake = false;
-    };
     vim-plugin-bullets-vim = {
       url = "github:bullets-vim/bullets.vim";
       flake = false;
@@ -425,6 +421,14 @@
     };
     vim-plugin-vim-nix = {
       url = "github:LnL7/vim-nix";
+      flake = false;
+    };
+    vim-plugin-vim-signify = {
+      url = "github:mhinz/vim-signify";
+      flake = false;
+    };
+    vim-plugin-dropbar-nvim = {
+      url = "github:Bekaboo/dropbar.nvim";
       flake = false;
     };
   };

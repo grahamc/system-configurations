@@ -99,7 +99,7 @@ mybind --no-focus \co _bigolu_tmux_command_output_widget
 function tmux
     function _is_launching_tmux
         not _is_tmux_running && begin
-            test (count $argv) -eq 0 || contains -- attach-session $argv
+            test (count $argv) -eq 0 || contains -- new-session $argv
         end
     end
 
@@ -114,4 +114,16 @@ function tmux
     end
 
     command tmux $argv
+end
+
+function tmux-attach-to-project
+    # Some characters can't be used in a session name so I'll substitute them the same way tmux would if I were to pass
+    # the original name to `tmux new-session -s <original_name>`.
+    #
+    # Setting `--dir-length` to 0 disables path segment shortening.
+    set session_name (prompt_pwd --dir-length 0 | string replace --all '.' '_')
+
+    if not tmux attach-session -t "$session_name"
+        tmux new-session -s "$session_name"
+    end
 end

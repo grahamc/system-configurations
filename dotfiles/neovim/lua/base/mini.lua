@@ -87,7 +87,7 @@ Plug("echasnovski/mini.nvim", {
       evaluate = { prefix = "" },
       multiply = { prefix = "" },
       replace = { prefix = "" },
-      exchange = { prefix = "" },
+      exchange = { prefix = "gx" },
       sort = { prefix = "so" },
     })
     -- }}}

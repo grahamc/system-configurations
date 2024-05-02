@@ -15,17 +15,6 @@ Plug("arthurxavierx/vim-caser", {
   on = {},
 })
 
--- Exchange {{{
--- TODO: Using this instead of the one from mini.operators because the mini one
--- doesn't have dot-repeat.
-Plug("tommcdo/vim-exchange")
-vim.g.exchange_no_mappings = true
-vim.g.exchange_indent = "=="
-vim.keymap.set({ "n", "x" }, "gx", "<Plug>(Exchange)")
-vim.keymap.set({ "n" }, "gxx", "<Plug>(ExchangeLine)")
-vim.keymap.set({ "n" }, "<Esc>", "<Plug>(ExchangeClear)<ESC>")
--- }}}
-
 -- Formatting {{{
 local utilities = require("base.utilities")
 
