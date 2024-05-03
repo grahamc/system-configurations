@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   specialArgs,
@@ -15,7 +16,7 @@ in {
   ];
 
   programs.fish.interactiveShellInit = ''
-    fish_add_path --global --prepend ${lib.escapeShellArg "${specialArgs.flakeInputs.self}/dotfiles/fzf/bin"}
+    fish_add_path --global --prepend ${lib.escapeShellArg (config.lib.file.mkOutOfStoreSymlink "${specialArgs.repositoryDirectory}/dotfiles/fzf/bin")}
   '';
 
   repository.symlink.xdg.configFile = {

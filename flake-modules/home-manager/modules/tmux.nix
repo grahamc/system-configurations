@@ -16,17 +16,37 @@
     # https://github.com/tmux-plugins/tmux-continuum#known-issues
     continuum
   ];
+
   inherit (lib) types;
+
   getPluginName = p:
     if types.package.check p
     then p.pname
     else p.plugin.pname;
+
   # relative to $XDG_CONFIG_HOME
   myTmuxConfigPath = "tmux/my-tmux.conf";
   tmuxReloadScriptName = "${specialArgs.flakeInputs.self}/dotfiles/tmux/bin/tmux-config-reload";
+  tmuxBinPath = lib.escapeShellArg (config.lib.file.mkOutOfStoreSymlink "${specialArgs.repositoryDirectory}/dotfiles/tmux/bin");
+
+  myTmux = pkgs.symlinkJoin {
+    name = "my-${pkgs.tmux.name}";
+    paths = [pkgs.tmux];
+    buildInputs = [pkgs.makeWrapper];
+    # I'm removing $SHELL so tmux will use the OS default shell instead
+    # of what it will probably be when I run tmux, fish. This is because
+    # the Determinate Systems Nix installer doesn't configure fish
+    # properly. When this issue is resolved, I can remove this:
+    # https://github.com/DeterminateSystems/nix-installer/issues/576
+    postBuild = ''
+      wrapProgram $out/bin/tmux \
+        --prefix-each PATH : ${tmuxBinPath} \
+        --unset SHELL
+    '';
+  };
 in {
   programs.fish.interactiveShellInit = ''
-    fish_add_path --global --prepend ${lib.escapeShellArg "${specialArgs.flakeInputs.self}/dotfiles/tmux/bin"}
+    fish_add_path --global --prepend ${tmuxBinPath}
   '';
 
   home = {

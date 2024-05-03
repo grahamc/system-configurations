@@ -20,22 +20,6 @@
         patches = [];
       });
 
-      myTmux = final.symlinkJoin {
-        name = "my-${final.tmux.name}";
-        paths = [final.tmux];
-        buildInputs = [final.makeWrapper];
-        # I'm removing $SHELL so tmux will use the OS default shell instead
-        # of what it will probably be when I run tmux, fish. This is because
-        # the Determinate Systems Nix installer doesn't configure fish
-        # properly. When this issue is resolved, I can remove this:
-        # https://github.com/DeterminateSystems/nix-installer/issues/576
-        postBuild = ''
-          wrapProgram $out/bin/tmux \
-            --prefix-each PATH : ${lib.escapeShellArg "${inputs.self}/dotfiles/tmux/bin"} \
-            --unset SHELL
-        '';
-      };
-
       nightlyNeovimWithDependencies = let
         dependencies = final.symlinkJoin {
           name = "neovim-dependencies";
@@ -155,7 +139,7 @@
         };
     in {
       # I'm renaming these to avoid rebuilds.
-      inherit ncursesWithWezterm myPython myTmux;
+      inherit ncursesWithWezterm myPython;
       neovim = nightlyNeovimWithDependencies;
       ripgrep-all = ripgrepAllWithDependencies;
       tmux = tmuxMaster;

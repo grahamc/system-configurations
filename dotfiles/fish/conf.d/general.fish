@@ -124,25 +124,23 @@ function python --wraps python
 end
 
 # zoxide
-if not set --query BIGOLU_IN_PORTABLE_HOME
-    set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'lsd --color always --hyperlink always {2}' --keep-right --tiebreak index"
-    # This needs to run after the zoxide.fish config file so I run it when the
-    # fish_prompt event fires.
-    function __create_cd_function --on-event fish_prompt
-        # I only want this to run once so delete the function.
-        functions -e (status current-function)
+set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'lsd --color always --hyperlink always {2}' --keep-right --tiebreak index"
+# This needs to run after the zoxide.fish config file so I run it when the
+# fish_prompt event fires.
+function __create_cd_function --on-event fish_prompt
+    # I only want this to run once so delete the function.
+    functions -e (status current-function)
 
-        function cd --wraps cd
-            # zoxide does not support the '--' argument
-            if set index (contains --index -- '--' $argv)
-                set --erase argv[$index]
-            end
-            __zoxide_z $argv
+    function cd --wraps cd
+        # zoxide does not support the '--' argument
+        if set index (contains --index -- '--' $argv)
+            set --erase argv[$index]
         end
+        __zoxide_z $argv
     end
-    function cdh --wraps=__zoxide_zi --description 'cd history'
-        __zoxide_zi $argv
-    end
+end
+function cdh --wraps=__zoxide_zi --description 'cd history'
+    __zoxide_zi $argv
 end
 
 # direnv

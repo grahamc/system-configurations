@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   lib,
   specialArgs,
@@ -21,10 +22,10 @@ in {
     fish_add_path --global --prepend \
     ${
       lib.escapeShellArgs ([
-          "${flakeInputs.self}/dotfiles/general/bin"
+          (config.lib.file.mkOutOfStoreSymlink "${specialArgs.repositoryDirectory}/dotfiles/general/bin")
         ]
         ++ lib.lists.optionals isDarwin [
-          "${flakeInputs.self}/dotfiles/general/bin-macos"
+          (config.lib.file.mkOutOfStoreSymlink "${specialArgs.repositoryDirectory}/dotfiles/general/bin-macos")
         ])
     }
   '';

@@ -12,14 +12,11 @@ set --global --export HOMEBREW_NO_INSTALL_UPGRADE 1
 set --global --export HOMEBREW_NO_INSTALL_CLEANUP 1
 
 # autocomplete
-#
-# WARNING: This command is slow so avoid running it more than once.
-set homebrew_prefix (brew --prefix)
-if test -d $homebrew_prefix/share/fish/completions
-    set --global --prepend fish_complete_path $homebrew_prefix/share/fish/completions
+if test -d $HOMEBREW_PREFIX/share/fish/completions
+    set --global --prepend fish_complete_path $HOMEBREW_PREFIX/share/fish/completions
 end
-if test -d $homebrew_prefix/share/fish/vendor_completions.d
-    set --global --prepend fish_complete_path $homebrew_prefix/share/fish/vendor_completions.d
+if test -d $HOMEBREW_PREFIX/share/fish/vendor_completions.d
+    set --global --prepend fish_complete_path $HOMEBREW_PREFIX/share/fish/vendor_completions.d
 end
 
 function brew-install-widget --description 'Install packages with brew'

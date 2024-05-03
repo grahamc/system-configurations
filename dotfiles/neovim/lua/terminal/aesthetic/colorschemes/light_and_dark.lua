@@ -123,7 +123,7 @@ local theme = lush(function(injected_functions)
     Identifier { Normal }, -- (*) Any variable name
     Function       { Identifier, }, --   Function name (also: methods for classes)
 
-    Special { Statement }, -- (*) Any special symbol
+    Special { t_3, }, -- (*) Any special symbol
     SpecialChar    { Special, }, --   Special character in a constant
     Tag            { Identifier, }, --   You can use CTRL-] on this
     Delimiter      { Identifier, }, --   Character that needs attention
@@ -487,6 +487,7 @@ local theme = lush(function(injected_functions)
     sym"@variable.builtin" { sym"@variable" },
     sym"@variable.member" { sym"@variable" },
     sym"@variable.parameter" { sym"@variable" },
+    sym"@variable.parameter.builtin" { Statement },
     sym"@type" { Type }, -- Type
     sym"@type.definition" { Typedef }, -- Typedef
     sym"@type.builtin" { },

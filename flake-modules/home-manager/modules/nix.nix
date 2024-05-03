@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   specialArgs,
   lib,
@@ -29,7 +30,7 @@ in {
   programs.nix-index.enableFishIntegration = false;
 
   programs.fish.interactiveShellInit = ''
-    fish_add_path --global --prepend ${lib.escapeShellArg "${flakeInputs.self}/dotfiles/nix/bin"}
+    fish_add_path --global --prepend ${lib.escapeShellArg (config.lib.file.mkOutOfStoreSymlink "${specialArgs.repositoryDirectory}/dotfiles/nix/bin")}
   '';
 
   xdg.configFile = {

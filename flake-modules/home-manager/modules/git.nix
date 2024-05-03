@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   lib,
   specialArgs,
@@ -14,6 +15,6 @@
   };
 
   programs.fish.interactiveShellInit = ''
-    fish_add_path --global --prepend ${lib.escapeShellArg "${specialArgs.flakeInputs.self}/dotfiles/git/bin"}
+    fish_add_path --global --prepend ${lib.escapeShellArg (config.lib.file.mkOutOfStoreSymlink "${specialArgs.repositoryDirectory}/dotfiles/git/bin")}
   '';
 }
