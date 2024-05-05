@@ -59,9 +59,12 @@
       url = "github:Hammerspoon/Spoons";
       flake = false;
     };
+    # TODO: I get an error when i try to build the wezterm flake on darwin so
+    # I'll use the one from nixpkgs
     wezterm = {
       url = "github:wez/wezterm?dir=nix";
     };
+    nixpkgs-for-wezterm-darwin.url = "github:nixos/nixpkgs?rev=ff0a5a776b56e0ca32d47a4a47695452ec7f7d80";
 
     # nix
     ########################################
@@ -95,7 +98,6 @@
     flake-utils.url = "github:numtide/flake-utils";
     # TODO: I get an error when I try to upgrade this
     flake-parts.url = "github:hercules-ci/flake-parts?rev=b253292d9c0a5ead9bc98c4e9a26c6312e27d69f";
-    nixpkgs-for-wezterm-darwin.url = "github:nixos/nixpkgs?rev=ff0a5a776b56e0ca32d47a4a47695452ec7f7d80";
     # TODO: A test fails when I try to upgrade
     nixpkgs-for-diffoscope.url = "github:nixos/nixpkgs?rev=fd16bb6d3bcca96039b11aa52038fafeb6e4f4be";
     # UNFREE

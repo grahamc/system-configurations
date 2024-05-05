@@ -20,7 +20,7 @@ end
 # variable for the content of the 'info' section, I could just use that since
 # they put a '+T' in there when you're tracking.
 function _bigolu_track_toggle
-    set indicator "  "
+    set indicator "  "
     set new "$FZF_PROMPT"
     if set new (string replace -- "$indicator" "" "$new")
         set bind "rebind(change)"

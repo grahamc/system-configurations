@@ -145,15 +145,6 @@
       tmux = tmuxMaster;
       inherit ((import inputs.nixpkgs-for-diffoscope {inherit (final) system;})) diffoscope;
 
-      # TODO: The wezterm flake doesn't work for macOS. When I try to build
-      # it I get an error because the attribute 'UserNotifications' does not
-      # exist. The only mention of a similar issue is here:
-      # https://github.com/wez/wezterm/issues/2021
-      # Based on the issue above, it seems like the problem is due to Nix's
-      # outdated Apple SDK. The The following issues/discussions track the
-      # status of Apple SDKs in Nix:
-      # https://github.com/NixOS/nixpkgs/issues/116341
-      # https://discourse.nixos.org/t/nix-macos-monthly/12330
       wezterm =
         if isLinux
         # TODO: get upstream to set meta.mainProgram
