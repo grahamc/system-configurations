@@ -8,6 +8,9 @@ if not status is-interactive
     exit
 end
 
+# Sets the cursor shape to a blinking bar
+printf '\033[5 q'
+
 set --global fish_color_normal
 set --global fish_color_command $fish_color_normal
 set --global fish_color_keyword blue
@@ -321,12 +324,8 @@ function _reload_fish --on-variable _fish_reload_indicator
         return
     end
 
-    if set --export --query TMUX
-        tmux respawn-pane -k -t "$TMUX_PANE"
-    else
-        clear
-        exec fish
-    end
+    clear
+    exec fish
 end
 
 # BASH-style history expansion

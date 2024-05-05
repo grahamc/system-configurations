@@ -40,7 +40,7 @@ vim.g.direnv_silent_load = 1
 vim.g.matchup_matchparen_enabled = 0
 
 -- Windows
-vim.keymap.set({ "n" }, "<Leader><Bar>", "<C-w>v", { remap = true })
+vim.keymap.set({ "n" }, [[<Leader>\]], "<C-w>v", { remap = true })
 vim.keymap.set({ "n" }, "<Leader>-", "<C-w>s", { remap = true })
 
 -- right click

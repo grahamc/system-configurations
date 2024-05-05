@@ -98,8 +98,6 @@ in ''
   # first.
   set --export BIGOLU_PORTABLE_HOME_SHELL "$SHELL"
 
-  set --export BIGOLU_PORTABLE_HOME_NIX_PROFILE '${activationPackage}/home-path'
-
   # Compile my custom themes for bat.
   # I can't use chronic because I don't include moreutils in minimal shell
   bat cache --build >/dev/null

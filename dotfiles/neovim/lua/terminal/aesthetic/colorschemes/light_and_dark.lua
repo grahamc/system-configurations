@@ -337,7 +337,7 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- mini.nvim {{{
-    MiniIndentscopeSymbol { t_8 },
+    MiniIndentscopeSymbol { fg = t_0.fg[is_light and 'darken' or 'lighten'](23), },
     MiniJump2dSpot { t_3 },
     MiniJump2dSpotUnique { MiniJump2dSpot },
     MiniJump2dSpotAhead { MiniJump2dSpot },

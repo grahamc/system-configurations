@@ -3,14 +3,31 @@ vim.o.splitright = true
 vim.o.splitbelow = true
 vim.o.winminheight = 0
 vim.o.winminwidth = 0
-vim.keymap.set("n", "<Leader><Bar>", "<Cmd>vsplit<CR>", {
+vim.keymap.set("n", [[<Leader>\]], vim.cmd.vsplit, {
   desc = "Vertical split",
 })
-vim.keymap.set("n", "<Leader>-", "<Cmd>split<CR>", {
+vim.keymap.set("n", "<Leader>-", vim.cmd.split, {
   desc = "Horizontal split",
 })
-vim.keymap.set("n", "<C-w>", vim.cmd.close, {
-  desc = "Close window",
+-- making it a buffer map so I can use `nowait`
+local function close_window_mapping(buf)
+  vim.keymap.set("n", "<C-w>", vim.cmd.close, {
+    desc = "Close window",
+    buffer = buf,
+    silent = true,
+    nowait = true,
+  })
+end
+vim.api.nvim_create_autocmd("BufNew", {
+  callback = function(context)
+    close_window_mapping(context.buf)
+  end,
+})
+-- for files specified before vim starts e.g. through the commandline
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function(_context)
+    vim.iter(vim.api.nvim_list_bufs()):each(close_window_mapping)
+  end,
 })
 
 local window_group_id = vim.api.nvim_create_augroup("Window", {})

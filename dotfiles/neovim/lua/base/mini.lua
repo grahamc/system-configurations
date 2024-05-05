@@ -100,7 +100,7 @@ Plug("echasnovski/mini.nvim", {
         goto_top = "[I",
         goto_bottom = "]I",
       },
-      symbol = "┊",
+      symbol = "│",
     })
 
     vim.g.miniindentscope_disable = not IsRunningInTerminal

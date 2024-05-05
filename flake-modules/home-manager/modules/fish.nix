@@ -39,10 +39,6 @@ in {
     ];
   };
 
-  home.packages = [
-    pkgs.xdgWrappers.figlet
-  ];
-
   repository.symlink.xdg = {
     configFile = {
       "fish/conf.d" = {
@@ -50,10 +46,6 @@ in {
         recursive = true;
       };
       ${myFishConfigPath}.source = "fish/config.fish";
-    };
-
-    dataFile = {
-      "figlet/smblock.tlf".source = "fish/figlet/smblock.tlf";
     };
   };
 

@@ -603,9 +603,7 @@
         "stackline": "stackline",
         "tmux": "tmux",
         "tmux-plugin-better-mouse-mode": "tmux-plugin-better-mouse-mode",
-        "tmux-plugin-continuum": "tmux-plugin-continuum",
         "tmux-plugin-mode-indicator": "tmux-plugin-mode-indicator",
-        "tmux-plugin-resurrect": "tmux-plugin-resurrect",
         "tmux-plugin-sidebar": "tmux-plugin-sidebar",
         "tmux-plugin-tmux-suspend": "tmux-plugin-tmux-suspend",
         "vim-plugin-CamelCaseMotion": "vim-plugin-CamelCaseMotion",
@@ -825,22 +823,6 @@
         "type": "github"
       }
     },
-    "tmux-plugin-continuum": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1705754277,
-        "narHash": "sha256-W71QyLwC/MXz3bcLR2aJeWcoXFI/A3itjpcWKAdVFJY=",
-        "owner": "tmux-plugins",
-        "repo": "tmux-continuum",
-        "rev": "0698e8f4b17d6454c71bf5212895ec055c578da0",
-        "type": "github"
-      },
-      "original": {
-        "owner": "tmux-plugins",
-        "repo": "tmux-continuum",
-        "type": "github"
-      }
-    },
     "tmux-plugin-mode-indicator": {
       "flake": false,
       "locked": {
@@ -854,22 +836,6 @@
       "original": {
         "owner": "MunifTanjim",
         "repo": "tmux-mode-indicator",
-        "type": "github"
-      }
-    },
-    "tmux-plugin-resurrect": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1678098022,
-        "narHash": "sha256-FcSjYyWjXM1B+WmiK2bqUNJYtH7sJBUsY2IjSur5TjY=",
-        "owner": "tmux-plugins",
-        "repo": "tmux-resurrect",
-        "rev": "cff343cf9e81983d3da0c8562b01616f12e8d548",
-        "type": "github"
-      },
-      "original": {
-        "owner": "tmux-plugins",
-        "repo": "tmux-resurrect",
         "type": "github"
       }
     },

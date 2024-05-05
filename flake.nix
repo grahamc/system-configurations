@@ -120,10 +120,6 @@
       url = "github:tmux/tmux";
       flake = false;
     };
-    tmux-plugin-resurrect = {
-      url = "github:tmux-plugins/tmux-resurrect";
-      flake = false;
-    };
     tmux-plugin-tmux-suspend = {
       url = "github:MunifTanjim/tmux-suspend";
       flake = false;
@@ -134,10 +130,6 @@
     };
     tmux-plugin-mode-indicator = {
       url = "github:MunifTanjim/tmux-mode-indicator";
-      flake = false;
-    };
-    tmux-plugin-continuum = {
-      url = "github:tmux-plugins/tmux-continuum";
       flake = false;
     };
     tmux-plugin-sidebar = {

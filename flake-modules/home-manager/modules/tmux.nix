@@ -7,14 +7,9 @@
 }: let
   tmuxPlugins = with pkgs.tmuxPlugins; [
     better-mouse-mode
-    resurrect
     mode-indicator
     tmux-suspend
     sidebar
-
-    # continuum must be the last plugin listed:
-    # https://github.com/tmux-plugins/tmux-continuum#known-issues
-    continuum
   ];
 
   inherit (lib) types;
@@ -28,6 +23,7 @@
   myTmuxConfigPath = "tmux/my-tmux.conf";
   tmuxReloadScriptName = "${specialArgs.flakeInputs.self}/dotfiles/tmux/bin/tmux-config-reload";
   tmuxBinPath = lib.escapeShellArg (config.lib.file.mkOutOfStoreSymlink "${specialArgs.repositoryDirectory}/dotfiles/tmux/bin");
+  generalBinPath = lib.escapeShellArg (config.lib.file.mkOutOfStoreSymlink "${specialArgs.repositoryDirectory}/dotfiles/general/bin");
 
   myTmux = pkgs.symlinkJoin {
     name = "my-${pkgs.tmux.name}";
@@ -40,7 +36,8 @@
     # https://github.com/DeterminateSystems/nix-installer/issues/576
     postBuild = ''
       wrapProgram $out/bin/tmux \
-        --prefix-each PATH : ${tmuxBinPath} \
+        --prefix PATH : ${tmuxBinPath} \
+        --prefix PATH : ${generalBinPath} \
         --unset SHELL
     '';
   };
