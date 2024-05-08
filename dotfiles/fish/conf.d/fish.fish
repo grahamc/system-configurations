@@ -452,7 +452,7 @@ function __edit_commandline
     commandline "$(cat $temp)"
     commandline --cursor "$(cat $cursor_file)"
 end
-mybind \eE __edit_commandline
+mybind \ee __edit_commandline
 
 # fish loads builtin configs after user configs so I have to wait
 # for the builtin binds to be defined. This may change though:

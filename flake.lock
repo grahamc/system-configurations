@@ -641,11 +641,11 @@
         "vim-plugin-nvim-lsp-file-operations": "vim-plugin-nvim-lsp-file-operations",
         "vim-plugin-nvim-lspconfig": "vim-plugin-nvim-lspconfig",
         "vim-plugin-nvim-notify": "vim-plugin-nvim-notify",
-        "vim-plugin-nvim-pqf": "vim-plugin-nvim-pqf",
         "vim-plugin-nvim-tree-lua": "vim-plugin-nvim-tree-lua",
         "vim-plugin-nvim-treesitter": "vim-plugin-nvim-treesitter",
         "vim-plugin-nvim-treesitter-context": "vim-plugin-nvim-treesitter-context",
         "vim-plugin-nvim-treesitter-endwise": "vim-plugin-nvim-treesitter-endwise",
+        "vim-plugin-nvim-treesitter-textobjects": "vim-plugin-nvim-treesitter-textobjects",
         "vim-plugin-nvim-ts-autotag": "vim-plugin-nvim-ts-autotag",
         "vim-plugin-plenary-nvim": "vim-plugin-plenary-nvim",
         "vim-plugin-reticle-nvim": "vim-plugin-reticle-nvim",
@@ -1431,22 +1431,6 @@
         "type": "github"
       }
     },
-    "vim-plugin-nvim-pqf": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1700353869,
-        "narHash": "sha256-QTnsbuJ19hYWXkRNValghpRS92skFcOG9Q7lJowNPB0=",
-        "owner": "yorickpeterse",
-        "repo": "nvim-pqf",
-        "rev": "ba0e291cb5c0249838132e197dac082777bdc7d6",
-        "type": "github"
-      },
-      "original": {
-        "owner": "yorickpeterse",
-        "repo": "nvim-pqf",
-        "type": "github"
-      }
-    },
     "vim-plugin-nvim-tree-lua": {
       "flake": false,
       "locked": {
@@ -1508,6 +1492,22 @@
       "original": {
         "owner": "RRethy",
         "repo": "nvim-treesitter-endwise",
+        "type": "github"
+      }
+    },
+    "vim-plugin-nvim-treesitter-textobjects": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1713194292,
+        "narHash": "sha256-mndgAlmvzKZOjd3Z6wZb0ectvcOlYkatTADq8pdNfcs=",
+        "owner": "nvim-treesitter",
+        "repo": "nvim-treesitter-textobjects",
+        "rev": "23b820146956b3b681c19e10d3a8bc0cbd9a1d4c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-treesitter",
+        "repo": "nvim-treesitter-textobjects",
         "type": "github"
       }
     },

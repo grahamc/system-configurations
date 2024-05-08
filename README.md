@@ -26,8 +26,6 @@ Table of Contents
   - [Linux](#linux)
   - [macOS](#macos)
 - [Running the Home Configuration](#running-the-home-configuration)
-  - [Using Nix](#using-nix)
-  - [Using a Standalone Executable](#using-a-standalone-executable)
 - [Troubleshooting](#troubleshooting)
 - [How To](#how-to)
 
@@ -35,8 +33,7 @@ Table of Contents
 
 ## Setting up Nix
 
-To use any configuration, except for when you are
-[running the home config from a standalone executable](#using-a-standalone-executable), you will need
+To [apply a configuration](#applying-the-configuration), you'll need
 [Nix][nix], a package manager. This section will show you how to install Nix and configure it to use this
 repository's binary cache to speed up builds.
 
@@ -119,7 +116,16 @@ The next steps depend on the operating system you're using:
 
      - Set the keyboard input source to 'Others → (No Accent Keys)'.
 
-     - Disable the built-in keyboard shortcut for switching input sources, `ctrl+space`.
+     <!--
+       I can automate shortcuts when this issue gets resolved:
+       https://github.com/LnL7/nix-darwin/issues/185
+     -->
+
+     - Shortcuts:
+
+       - Disable: "Select the previous input source" `ctrl+space`, "Application windows" `ctrl+↓`
+
+       - Change: "Mission Control → Move left/right a space" to `cmd+[` and `cmd+]` respectively, "Mission Control" to `cmd+d`, "Mission Control → Switch to Desktop 1-9" `cmd+[1-9]`
 
    - Setup Hammerspoon using the instructions in the [Hammerspoon Getting Started Guide][hammerspoon-guide].
 
@@ -130,23 +136,9 @@ The next steps depend on the operating system you're using:
 ## Running the Home Configuration
 
 You can also run a shell or terminal with the home configuration already loaded in it. This is helpful when you only
-need to use the configuration temporarily and not apply it, like when using SSH.
-
-### Using Nix
-
-- Run the shell with `nix run github:bigolu/dotfiles#shell`
-- Run the terminal with `nix run --impure github:bigolu/dotfiles#terminal` (`--impure` is needed for [nixGL][nixgl], but only on Linux)
-
-### Using a Standalone Executable
-
-My home config is also available as an executable with no dependencies. The executable is a self-extracting archive
+need to use the configuration temporarily and not apply it, like when you're in a remote host. The executable is a self-extracting archive
 (SEA) that contains all the command-line programs I use, as well as my config files for them. Running it will start a
-shell/terminal that will have access to these programs and configs.
-
-- Run the shell with
-  `curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run.sh | sh -s -- shell`
-- Run the terminal with
-  `curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run.sh | sh -s -- terminal`
+shell/terminal that will have access to these programs and configs. Just run `curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run.sh | sh -s -- <type>` where `<type>` can be `shell` or `terminal`.
 
 > NOTE: While the SEA doesn't depend on any programs on your computer, it does require that you have a `/tmp`
 > directory. You can read this [GitHub issue comment regarding a "rootless Nix"][rootless-nix] to see why this is
@@ -198,4 +190,3 @@ shell/terminal that will have access to these programs and configs.
 [built-with-nix-site]: https://builtwithnix.org
 [built-with-nix-badge]: https://builtwithnix.org/badge.svg
 [nix]: https://nixos.org/learn
-[nixgl]: https://github.com/nix-community/nixGL

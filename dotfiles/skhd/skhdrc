@@ -10,57 +10,8 @@ passthrough < hyper - 0x80 ; default
 ########################################
 # lock screen
 cmd - escape : skhd -k "cmd + ctrl - q"
-# switch to workspace
-cmd - 1 : skhd -k "ctrl - 1"
-cmd - 2 : skhd -k "ctrl - 2"
-cmd - 3 : skhd -k "ctrl - 3"
-cmd - 4 : skhd -k "ctrl - 4"
-cmd - 5 : skhd -k "ctrl - 5"
-cmd - 6 : skhd -k "ctrl - 6"
-cmd - 7 : skhd -k "ctrl - 7"
-cmd - 8 : skhd -k "ctrl - 8"
-cmd - 9 : skhd -k "ctrl - 9"
-# mission control
-cmd - d : skhd -k "ctrl - up"
-# undo/redo
-cmd - u : skhd -k "cmd - z"
-cmd + shift - u : skhd -k "cmd + shift - z"
 # cmd + / for spotlight
 cmd - 0x2C : skhd -k "cmd - space"
-# move one workspace to the left/right. '0x21' is '[' and '0x1E' is ']'
-cmd - 0x21 : skhd -k "ctrl - left"
-cmd - 0x1E : skhd -k "ctrl - right"
-# move the cursor to the beginning/end of the word
-# TODO: fix the WezTerm ones, need to assign action in fish to hyper-something
-# and add here
-cmd + shift - 0x21 [
-  "WezTerm" : skhd -k "ctrl - a"
-  * : skhd -k "alt - left"
-]
-cmd + shift - 0x1E [
-  "WezTerm" : skhd -k "ctrl - e"
-  * : skhd -k "alt - right"
-]
-# delete everything to the left/right of the cursor
-cmd + ctrl - 0x21 [
-  "WezTerm" : skhd -k "ctrl - u"
-  * : skhd -k "cmd + shift - left" && skhd -k "backspace"
-]
-cmd + ctrl - 0x1E [
-  "WezTerm" : skhd -k "ctrl - k"
-  * : skhd -k "cmd + shift - right" && skhd -k "backspace"
-]
-# delete everything to the left/right of the word under the cursor
-# TODO: fix the WezTerm ones, need to assign action in fish to hyper-something
-# and add here
-cmd + ctrl + shift - 0x21 [
-  "WezTerm" : skhd -k "ctrl - w"
-  * : skhd -k "alt + shift - left" && skhd -k "backspace"
-]
-cmd + ctrl + shift - 0x1E [
-  "WezTerm" : skhd -k "ctrl - k"
-  * : skhd -k "alt + shift - right" && skhd -k "backspace"
-]
 
 # Yabai shortcuts
 # TODO: Put these in their own file

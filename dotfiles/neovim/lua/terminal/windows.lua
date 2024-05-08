@@ -85,25 +85,25 @@ Plug("Tummetott/reticle.nvim", {
 -- Resize windows
 vim.keymap.set(
   { "n" },
-  "<Left>",
+  "<C-Left>",
   [[<Cmd>vertical resize +1<CR>]],
   { silent = true, desc = "Resize window left" }
 )
 vim.keymap.set(
   { "n" },
-  "<Right>",
+  "<C-Right>",
   [[<Cmd>vertical resize -1<CR>]],
   { silent = true, desc = "Resize window right" }
 )
 vim.keymap.set(
   { "n" },
-  "<Up>",
+  "<C-Up>",
   [[<Cmd>resize +1<CR>]],
   { silent = true, desc = "Resize window up" }
 )
 vim.keymap.set(
   { "n" },
-  "<Down>",
+  "<C-Down>",
   [[<Cmd>resize -1<CR>]],
   { silent = true, desc = "Resize window down" }
 )

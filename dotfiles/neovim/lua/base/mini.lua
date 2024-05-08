@@ -1,6 +1,5 @@
 -- vim:foldmethod=marker
 
--- Dependencies: nvim-treesitter-textobjects
 Plug("echasnovski/mini.nvim", {
   config = function()
     local mini_group_id = vim.api.nvim_create_augroup("MyMiniNvim", {})

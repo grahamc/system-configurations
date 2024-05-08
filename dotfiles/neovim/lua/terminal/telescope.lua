@@ -256,7 +256,6 @@ Plug("nvim-telescope/telescope.nvim", {
 
 Plug("nvim-telescope/telescope-fzf-native.nvim")
 
--- Dependencies: sqlite.lua
 Plug("nvim-telescope/telescope-smart-history.nvim")
 
 Plug("molecule-man/telescope-menufacture")

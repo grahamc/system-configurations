@@ -260,7 +260,6 @@ end
 
 local function move(d)
   return function()
-    -- 获取当前编辑模式
     local current_mode = vim.api.nvim_get_mode().mode
     -- Only works in charwise visual and visual line mode
     -- if current_mode ~= 'v' and current_mode ~= 'V' then
@@ -286,9 +285,7 @@ local function move(d)
       local end_line = end_pos[1]
       local end_col = end_pos[2]
 
-      -- 获取光标当前列号
       local cursor_col = vim.fn.col(".")
-      -- 获取当前行最大列号
       local line_end_col = vim.fn.col("$")
       -- 获取选区的结束行文本内容
       local selected_end_line_text = vim.fn.getline(end_line)
