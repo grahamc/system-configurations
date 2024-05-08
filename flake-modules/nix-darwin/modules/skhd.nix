@@ -10,16 +10,26 @@ in {
     skhd = {
       enable = true;
 
-      package = pkgs.symlinkJoin {
-        name = "my-${pkgs.skhd.name}";
-        paths = [pkgs.skhd];
-        buildInputs = [pkgs.makeWrapper];
-        # skhd needs itself on the $PATH for any of the shortcuts in my skhdrc
-        # that use the skhd command to send keys.
-        postBuild = ''
-          wrapProgram $out/bin/skhd --prefix PATH : ${lib.escapeShellArg "${pkgs.skhd}/bin"} --prefix PATH : ${lib.escapeShellArg "${flakeInputs.self}/dotfiles/skhd/bin"}
-        '';
-      };
+      package = let
+        # all programs transitively called from my skhdrc
+        dependencies = pkgs.symlinkJoin {
+          name = "skhd-dependencies";
+          paths = with pkgs; [
+            skhd
+            yabai
+            fish
+            jq
+          ];
+        };
+      in
+        pkgs.symlinkJoin {
+          name = "my-${pkgs.skhd.name}";
+          paths = [pkgs.skhd];
+          buildInputs = [pkgs.makeWrapper];
+          postBuild = ''
+            wrapProgram $out/bin/skhd --prefix PATH : ${lib.escapeShellArg "${dependencies}/bin"} --prefix PATH : ${lib.escapeShellArg "${flakeInputs.self}/dotfiles/skhd/bin"}
+          '';
+        };
     };
   };
 }
