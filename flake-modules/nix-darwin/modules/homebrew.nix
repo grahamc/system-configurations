@@ -22,6 +22,7 @@
       "responsively"
       "element"
       "nightfall"
+      "hammerspoon"
     ];
 
     caskArgs = {

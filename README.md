@@ -19,25 +19,25 @@ Table of Contents
 
 <!-- toc -->
 
-- [Setting up Nix](#setting-up-nix)
-  - [Installation](#installation)
+- [Prerequisites](#prerequisites)
+  - [Installing Nix](#installing-nix)
   - [Using the Binary Cache (optional)](#using-the-binary-cache-optional)
-- [Applying the Configuration](#applying-the-configuration)
+- [Applying a Configuration](#applying-a-configuration)
   - [Linux](#linux)
   - [macOS](#macos)
 - [Running the Home Configuration](#running-the-home-configuration)
 - [Troubleshooting](#troubleshooting)
-- [How To](#how-to)
+- [How-tos](#how-tos)
 
 <!-- tocstop -->
 
-## Setting up Nix
+## Prerequisites
 
-To [apply a configuration](#applying-the-configuration), you'll need
+To [apply a configuration](#applying-a-configuration), you'll need
 [Nix][nix], a package manager. This section will show you how to install Nix and configure it to use this
 repository's binary cache to speed up builds.
 
-### Installation
+### Installing Nix
 
 I recommend using the [Determinate Systems installer][determinate-systems-installer] over the
 [official installer][official-installer] for the following reasons:
@@ -74,11 +74,11 @@ the steps below:
    [add yourself to trusted-users](#add-trust).
 
 2. After running one of the `nix` commands from the
-   ["Applying the Configuration" section](#applying-the-configuration) or
+   ["Applying a Configuration" section](#applying-a-configuration) or
    ["Running the Home Configuration" section](#running-the-home-configuration) below, reply yes to the prompts to add
    the cache.
 
-## Applying the Configuration
+## Applying a Configuration
 
 1. Start a shell with the home config. It comes with `direnv`, which we'll need in future steps.
    Check the ["Running the Home Configuration" section](#running-the-home-configuration) for
@@ -100,7 +100,7 @@ The next steps depend on the operating system you're using:
 
 ### macOS
 
-1. Disable System Integrity Protection for `yabai`. Instructions can be found on the [yabai wiki][yabai-wiki].
+1. Partially disable System Integrity Protection for `yabai`. Instructions can be found on the [yabai wiki][yabai-wiki].
 
 2. I install some Homebrew packages through nix-darwin, but nix-darwin doesn't provide brew so you'll have to install
    it yourself. Check the site for instructions: [brew.sh][brew].
@@ -127,18 +127,14 @@ The next steps depend on the operating system you're using:
 
        - Change: "Mission Control → Move left/right a space" to `cmd+[` and `cmd+]` respectively, "Mission Control" to `cmd+d`, "Mission Control → Switch to Desktop 1-9" `cmd+[1-9]`
 
-   - Setup Hammerspoon using the instructions in the [Hammerspoon Getting Started Guide][hammerspoon-guide].
-
-   - Open Finicky to set it as the default browser.
-
-   - Open MonitorControl, UnnaturalScrollWheels, Nightfall, and "Mac Mouse Fix" to configure them.
+   - Open Hammerspoon, Finicky, MonitorControl, UnnaturalScrollWheels, Nightfall, and "Mac Mouse Fix" to configure them.
 
 ## Running the Home Configuration
 
 You can also run a shell or terminal with the home configuration already loaded in it. This is helpful when you only
 need to use the configuration temporarily and not apply it, like when you're in a remote host. The executable is a self-extracting archive
-(SEA) that contains all the command-line programs I use, as well as my config files for them. Running it will start a
-shell/terminal that will have access to these programs and configs. Just run `curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run.sh | sh -s -- <type>` where `<type>` can be `shell` or `terminal`.
+(SEA) that contains all the command-line programs I use, as well as my config files for them.
+Just run `curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run.sh | sh -s -- <type>` where `<type>` can be `shell` or `terminal`.
 
 > NOTE: While the SEA doesn't depend on any programs on your computer, it does require that you have a `/tmp`
 > directory. You can read this [GitHub issue comment regarding a "rootless Nix"][rootless-nix] to see why this is
@@ -147,8 +143,8 @@ shell/terminal that will have access to these programs and configs. Just run `cu
 ## Troubleshooting
 
 - **Cache is being ignored**: First, [check to see if you are a trusted user](#check-trust). If you aren't, then
-  [add yourself to trusted-users](#add-trust). Since I do not know of a way to have nix re-prompt you to add the cache
-  you will have to do it manually. You can do this by adding the lines below to your config in `~/.config/nix/nix.conf`
+  [add yourself to trusted-users](#add-trust). Since I don't know of a way to have Nix re-prompt you to add the cache
+  you'll have to do it manually. You can do this by adding the lines below to your config in `~/.config/nix/nix.conf`
   (If you have a multi-user Nix installation, you'll need to [restart the Nix daemon](#restart-daemon) afterward to apply the changes.):
 
       ``` conf
@@ -157,9 +153,9 @@ shell/terminal that will have access to these programs and configs. Just run `cu
           extra-trusted-public-keys = bigolu.cachix.org-1:AJELdgYsv4CX7rJkuGu5HuVaOHcqlOgR07ZJfihVTIw=
       ```
 
-- **apfs.util isn't working**: Make sure that the `/etc/synthetic.conf` has the permission `0644`.
+- **`apfs.util` isn't working**: Make sure that `/etc/synthetic.conf` has the permission `0644`.
 
-## How To
+## How-tos
 
 - <span id="restart-daemon">Restart the Nix daemon</span>:
 
@@ -185,7 +181,6 @@ shell/terminal that will have access to these programs and configs. Just run `cu
 [nix-darwin]: https://github.com/LnL7/nix-darwin
 [yabai-wiki]: https://github.com/koekeishiya/yabai/wiki/Disabling-System-Integrity-Protection
 [brew]: https://brew.sh/
-[hammerspoon-guide]: https://www.hammerspoon.org/go/
 [rootless-nix]: https://github.com/NixOS/nix/issues/1971#issue-304578884
 [built-with-nix-site]: https://builtwithnix.org
 [built-with-nix-badge]: https://builtwithnix.org/badge.svg

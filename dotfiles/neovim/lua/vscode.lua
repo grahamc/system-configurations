@@ -200,7 +200,11 @@ end)
 -- }}}
 
 -- move cursor {{{
+-- TODO: This can be removed when this issue is resolved:
+-- https://github.com/vscode-neovim/vscode-neovim/issues/58
+--
 -- source: https://github.com/vscode-neovim/vscode-neovim/issues/58#issuecomment-2081304618
+--
 -- vim script 中的 cursorMove 不支持 select 参数
 -- 所以这里通过lua脚本，同样调用 cursorMove，但是可以传递 select 参数
 -- !但仍然存在问题：
