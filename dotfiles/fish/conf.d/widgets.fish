@@ -68,7 +68,7 @@ function __grep_widget --argument-names title grep_command
             #
             # wrap=never is there so the preview window is moved to the corrent
             # line
-            --preview 'bat --wrap=never --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {1} --highlight-line {2}' \
+            --preview 'bat --style=\'header-filename\' --color always --wrap=never --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {1} --highlight-line {2}' \
     )
         return
     end
@@ -228,7 +228,7 @@ function file-widget --description 'Search files'
       timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
     end
   else
-    bat --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {}
+    bat --style=\'header-filename\' --color always --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {}
   end
   '
 

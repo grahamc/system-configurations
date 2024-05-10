@@ -21,6 +21,7 @@
       });
 
       nightlyNeovimWithDependencies = let
+        nightly = inputs.neovim-nightly-overlay.packages.${final.system}.default;
         dependencies = final.symlinkJoin {
           name = "neovim-dependencies";
           paths = with final; [
@@ -46,8 +47,8 @@
         };
       in
         final.symlinkJoin {
-          inherit (final.neovim-nightly) name;
-          paths = [final.neovim-nightly];
+          inherit (nightly) name;
+          paths = [nightly];
           buildInputs = [final.makeWrapper];
           postBuild = ''
             # TERMINFO: Neovim uses unibilium to discover term info entries
@@ -152,9 +153,6 @@
         else (import inputs.nixpkgs-for-wezterm-darwin {inherit (final) system;}).wezterm;
     };
   in {
-    overlays.misc = lib.composeManyExtensions [
-      inputs.neovim-nightly-overlay.overlay
-      overlay
-    ];
+    overlays.misc = overlay;
   };
 }

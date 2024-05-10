@@ -98,10 +98,6 @@ in ''
   # first.
   set --export BIGOLU_PORTABLE_HOME_SHELL "$SHELL"
 
-  # Compile my custom themes for bat.
-  # I can't use chronic because I don't include moreutils in minimal shell
-  bat cache --build >/dev/null
-
   # Clear the message we printed
   if isatty 2
     echo -en "\33[2K\r"

@@ -17,7 +17,6 @@
     };
 
     xdg.configFile = {
-      "pip/pip.conf".source = "python/pip/pip.conf";
       "ipython/profile_default/ipython_config.py".source = "python/ipython/ipython_config.py";
       "ipython/profile_default/startup" = {
         source = "python/ipython/startup";

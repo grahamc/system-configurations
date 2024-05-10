@@ -1,9 +1,1 @@
 --theme="ansi"
-
---map-syntax "vimrc:VimL"
-
---map-syntax "bashrc:Bourne Again Shell (bash)"
-
---color=always
-
---style="header-filename"

@@ -8,7 +8,6 @@
   inherit (lib.attrsets) optionalAttrs;
 in {
   imports = [
-    ../bat.nix
     ../git.nix
     ../fzf.nix
     ../direnv.nix
@@ -42,17 +41,12 @@ in {
       partialPackages.xargs
       partialPackages.ps
       ast-grep
-      # Useful for commands that don't work quite the same way between macOS and
-      # Linux
-      coreutils-full
-      # Though less is on most machines by default, I added it here because I
-      # need a relatively recent version (600) since that's when they added
-      # support for XDG Base Directories.
       less
       lesspipe
-      # This wasn't in a docker container
-      gnused
       diffoscope
+      bat
+      coreutils-full
+      gnused
     ]
     ++ optionals isLinux [
       trashy
@@ -92,12 +86,12 @@ in {
       xdg.configFile =
         {
           "lsd".source = "lsd";
-          "viddy.toml".source = "viddy/viddy.toml";
           "lesskey".source = "less/lesskey";
           "ripgrep/ripgreprc".source = "ripgrep/ripgreprc";
           "ssh/bootstrap.sh".source = "ssh/bootstrap.sh";
           "broot/conf.hjson".source = "broot/conf.hjson";
           "broot/explorer-conf.hjson".source = "broot/explorer-conf.hjson";
+          "bat/config".source = "bat/config";
         }
         // optionalAttrs isLinux {
           "pipr/pipr.toml".source = "pipr/pipr.toml";
@@ -114,6 +108,11 @@ in {
           then ".config"
           else "Library/Application Support"
         }/tealdeer/config.toml".source = "tealdeer/config.toml";
+        "${
+          if pkgs.stdenv.isLinux
+          then ".config"
+          else "Library/Application Support"
+        }/viddy.toml".source = "viddy/viddy.toml";
       };
     };
   };

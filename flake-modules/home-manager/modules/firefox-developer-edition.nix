@@ -25,7 +25,7 @@
     lib.mkIf
     (isGui && isDarwin)
     {
-      repository.symlink.home.file.".finicky.js".source = "finicky/finicky.js";
+      repository.symlink.home.file.".finicky.js".source = "firefox-developer-edition/finicky/finicky.js";
     };
 in
   lib.mkMerge [linux darwin]
