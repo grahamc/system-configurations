@@ -22,6 +22,7 @@ in {
       fd
       gping
       jq
+      ijq
       lsd
       moreutils
       xdgWrappers.ripgrep
