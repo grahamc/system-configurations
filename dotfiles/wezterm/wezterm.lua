@@ -103,18 +103,6 @@ local my_colors_per_color_scheme = {
     [13] = "#B48EAD",
     [14] = "#8FBCBB",
     [15] = "#78849b",
-    -- Background color for the non-emphasized and emphasized part of a removed
-    -- line in a git diff
-    [17] = "#301a1f",
-    [25] = "#803030",
-    -- Background color for the non-emphasized and emphasized part of an added
-    -- line in a git diff
-    [18] = "#12261e",
-    [26] = "#1d572c",
-    -- Background color for the source and destination of a moved line in a git
-    -- diff
-    [21] = "#60405a",
-    [22] = "#306a7b",
   },
 
   ["Biggs Light Owl"] = {
@@ -134,18 +122,6 @@ local my_colors_per_color_scheme = {
     [13] = "#a475f9",
     [14] = "#3192aa",
     [15] = "#808080",
-    -- Background color for the non-emphasized and emphasized part of a removed
-    -- line in a git diff
-    [17] = "#FFD7D7",
-    [25] = "#FFAFAF",
-    -- Background color for the non-emphasized and emphasized part of an added
-    -- line in a git diff
-    [18] = "#D7FFD7",
-    [26] = "#96D596",
-    -- Background color for the source and destination of a moved line in a git
-    -- diff
-    [21] = "#e99ac0",
-    [22] = "#85dfd8",
   },
 }
 
@@ -157,7 +133,6 @@ local function create_color_schemes(colors_per_color_scheme)
     local color_scheme = {
       ["ansi"] = {},
       ["brights"] = {},
-      ["indexed"] = {},
     }
 
     for index, color in pairs(colors) do
@@ -182,8 +157,6 @@ local function create_color_schemes(colors_per_color_scheme)
         color_scheme["ansi"][index + 1] = color
       elseif index >= 8 and index <= 15 then
         color_scheme["brights"][index - 7] = color
-      elseif index >= 16 then
-        color_scheme["indexed"][index] = color
       end
     end
 

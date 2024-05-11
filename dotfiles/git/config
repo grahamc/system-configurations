@@ -54,21 +54,21 @@
   hunk-header-decoration-style = "bright-white box"
   hunk-header-line-number-style = "normal"
   hunk-header-style = "line-number normal"
-  minus-style = "syntax 17"
-  minus-non-emph-style = "syntax 17"
-  minus-emph-style = "syntax 25"
-  plus-style = "syntax 18"
-  plus-non-emph-style = "syntax 18"
-  plus-emph-style = "syntax 26"
+  minus-style = "1 normal ul"
+  minus-non-emph-style = "1 normal ul"
+  minus-emph-style = "1 normal reverse bold"
+  plus-style = "2 normal ul"
+  plus-non-emph-style = "2 normal ul"
+  plus-emph-style = "2 normal reverse bold"
   zero-style = "syntax normal"
-  map-styles = normal 21 => syntax 21, normal 22 => syntax 22
+  map-styles = normal 21 => 5 normal reverse bold, normal 22 => 6 normal reverse bold
   commit-style = "blue"
+[color "diff"]
+  oldMoved = normal 21
+  newMoved = normal 22
 [mergetool "vscode"]
   cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
 [difftool "vscode"]
   cmd = code --wait --diff $LOCAL $REMOTE
-[color "diff"]
-  oldMoved = normal 21
-  newMoved = normal 22
 [status]
   showUntrackedFiles = all
