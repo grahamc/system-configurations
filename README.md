@@ -53,10 +53,10 @@ of trusted users. This is helpful since some actions in Nix require that the use
 binary cache ([explained below](#using-the-binary-cache-optional)). Below is the installation command with the
 extra option:
 
-<pre>
+```bash
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix \
   | sh -s -- install --extra-conf "trusted-users = $(whoami)"
-</pre>
+```
 
 > NOTE: Please confirm that everything in the command provided above, besides the extra option, is up-to-date with
 > what is currently listed on the [Installer Website][determinate-systems-installer].
@@ -157,11 +157,11 @@ Just run `curl -fsSL https://raw.githubusercontent.com/bigolu/system-configurati
   you'll have to do it manually. You can do this by adding the lines below to your config in `~/.config/nix/nix.conf`
   (If you have a multi-user Nix installation, you'll need to [restart the Nix daemon](#restart-daemon) afterward to apply the changes.):
 
-      ``` conf
-          extra-substituters = https://bigolu.cachix.org
-          extra-trusted-substituters = https://bigolu.cachix.org
-          extra-trusted-public-keys = bigolu.cachix.org-1:AJELdgYsv4CX7rJkuGu5HuVaOHcqlOgR07ZJfihVTIw=
-      ```
+  ```properties
+  extra-substituters = https://bigolu.cachix.org
+  extra-trusted-substituters = https://bigolu.cachix.org
+  extra-trusted-public-keys = bigolu.cachix.org-1:AJELdgYsv4CX7rJkuGu5HuVaOHcqlOgR07ZJfihVTIw=
+  ```
 
 - **`apfs.util` isn't working**: Make sure that `/etc/synthetic.conf` has the permission `0644`.
 

@@ -4,18 +4,18 @@ ruleDirs:
 
 customLanguages:
   fish:
-    libraryPath: ../.local/share/nvim/site/parser/fish.so
+    libraryPath: ../../.local/share/nvim/site/parser/fish.so
     extensions: [fish]
     expandoChar: _
   nix:
-    libraryPath: ../.local/share/nvim/site/parser/nix.so
+    libraryPath: ../../.local/share/nvim/site/parser/nix.so
     extensions: [nix]
     expandoChar: _
   yaml:
-    libraryPath: ../.local/share/nvim/site/parser/yaml.so
+    libraryPath: ../../.local/share/nvim/site/parser/yaml.so
     extensions: [yaml, yml]
     expandoChar: _
   toml:
-    libraryPath: ../.local/share/nvim/site/parser/toml.so
+    libraryPath: ../../.local/share/nvim/site/parser/toml.so
     extensions: [toml]
     expandoChar: _

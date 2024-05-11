@@ -204,6 +204,7 @@ end)
 -- https://github.com/vscode-neovim/vscode-neovim/issues/58
 --
 -- source: https://github.com/vscode-neovim/vscode-neovim/issues/58#issuecomment-2081304618
+-- A few changes were made to the original and there are comments that describe them.
 --
 -- vim script 中的 cursorMove 不支持 select 参数
 -- 所以这里通过lua脚本，同样调用 cursorMove，但是可以传递 select 参数
@@ -373,22 +374,26 @@ local function bigMoveCursor(d)
 end
 
 -- 依赖于 gj 和 gk 的定义，所以要放在 gj 和 gk 的后面
-vim.keymap.set("", "k", moveCursor("k"), {
+--
+-- Unlike the original, I only map these in normal mode because it was messing
+-- with visual mode. For example, <C-v><S-i> wasn't working and my visual
+-- selections would always be a few characters off.
+vim.keymap.set("n", "k", moveCursor("k"), {
   expr = true,
   remap = true,
   silent = true,
 })
-vim.keymap.set("", "j", moveCursor("j"), {
+vim.keymap.set("n", "j", moveCursor("j"), {
   expr = true,
   remap = true,
   silent = true,
 })
-vim.keymap.set("", "<C-k>", bigMoveCursor("k"), {
+vim.keymap.set("n", "<C-k>", bigMoveCursor("k"), {
   expr = true,
   remap = true,
   silent = true,
 })
-vim.keymap.set("", "<C-j>", bigMoveCursor("j"), {
+vim.keymap.set("n", "<C-j>", bigMoveCursor("j"), {
   expr = true,
   remap = true,
   silent = true,

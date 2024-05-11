@@ -31,6 +31,12 @@ jobs:
         with:
           path: 'code/system-configurations'
       - uses: DeterminateSystems/nix-installer-action@main
+        # TODO: home-manager's `mkOutOfStoreSymlink` doesn't work on nix v2.19
+        # so I'm pinning v2.18:
+        # https://github.com/nix-community/home-manager/issues/4692
+        # https://github.com/NixOS/nix/issues/9579
+        with:
+          nix-installer-tag: v0.13.1
       - uses: cachix/cachix-action@v14
         with:
           name: bigolu

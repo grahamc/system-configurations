@@ -4,9 +4,6 @@
 [core]
   pager = delta
   fsmonitor = true
-  # more on this feature and what to verify before enabling it:
-  # https://git-scm.com/docs/git-update-index#_untracked_cache
-  untrackedCache = true
 [push]
   default = current
 [pull]
@@ -50,7 +47,7 @@
   hyperlinks = true
   syntax-theme = ansi
   tabs = 2
-  blame-palette = 0 239
+  blame-palette = 0
   pager = "less -+F"
   file-decoration-style = "bright-white ul"
   file-style = "normal"

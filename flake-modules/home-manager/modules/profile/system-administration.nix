@@ -89,8 +89,10 @@ in {
           "lesskey".source = "less/lesskey";
           "ripgrep/ripgreprc".source = "ripgrep/ripgreprc";
           "ssh/bootstrap.sh".source = "ssh/bootstrap.sh";
-          "broot/conf.hjson".source = "broot/conf.hjson";
-          "broot/explorer-conf.hjson".source = "broot/explorer-conf.hjson";
+          "broot" = {
+            source = "broot";
+            recursive = true;
+          };
           "bat/config".source = "bat/config";
         }
         // optionalAttrs isLinux {
