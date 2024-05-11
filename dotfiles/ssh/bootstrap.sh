@@ -151,7 +151,7 @@ shell=''
 install_shell() {
   platform="$(uname -m)-$(uname -s | tr '[:upper:]' '[:lower:]')"
   release_artifact_name="shell-$platform"
-  release_artifact_url="https://github.com/bigolu/dotfiles/releases/download/master/$release_artifact_name"
+  release_artifact_url="https://github.com/bigolu/system-configurations/releases/download/master/$release_artifact_name"
   if ! file_exists "$release_artifact_url"; then
     abort "Your platform isn't supported: $platform"
   fi

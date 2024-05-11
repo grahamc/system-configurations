@@ -10,21 +10,26 @@ on:
     branches:
       - master
 env:
+  # The checkout action clones the repository relative to github.workspace. I
+  # set $HOME to github.workspace so that the directory structure matches that
+  # of the machine I tested this on.
   HOME: ${{ github.workspace }}
 jobs:
   add-to-cachix:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # TODO: yabai won't build with macos-latest, which is currently an alias to macos-12
+        # TODO: yabai won't build with macos-latest, which is currently an alias
+        # to macos-12
         os: [ubuntu-latest, macos-11]
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
         with:
-          path: '.dotfiles'
+          path: 'code/system-configurations'
       - uses: DeterminateSystems/nix-installer-action@main
-        # TODO: home-manager's `mkOutOfStoreSymlink` doesn't work on nix v2.19 so I'm pinning v2.18:
+        # TODO: home-manager's `mkOutOfStoreSymlink` doesn't work on nix v2.19
+        # so I'm pinning v2.18:
         # https://github.com/nix-community/home-manager/issues/4692
         # https://github.com/NixOS/nix/issues/9579
         with:
@@ -37,4 +42,4 @@ jobs:
           # https://github.com/cachix/cachix-action/issues/169
           useDaemon: false
       - run: NIXPKGS_ALLOW_UNFREE=1 nix run --show-trace .#nix -- build --impure --show-trace
-        working-directory: './.dotfiles'
+        working-directory: 'code/system-configurations'

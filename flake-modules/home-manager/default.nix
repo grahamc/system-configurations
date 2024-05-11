@@ -62,7 +62,7 @@
     repositoryDirectory =
       if builtins.hasAttr "repositoryDirectory" args
       then args.repositoryDirectory
-      else "${homeDirectory}/.dotfiles";
+      else "${homeDirectory}/code/system-configurations";
     extraSpecialArgs = {
       # SYNC: EXTRA-SPECIAL-ARGS
       inherit hostName isGui username homeDirectory repositoryDirectory;

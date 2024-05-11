@@ -1,13 +1,13 @@
-# System Config
+# System Configurations
 
 [![built with nix][built-with-nix-badge]][built-with-nix-site]
 
-The configuration for my development environment on Linux and macOS. Uses
-[Home Manager][home-manager] and [nix-darwin][nix-darwin]. I don't expect anyone else to use this,
-but I figured I'd leave the repository public as a resource for people who want to manage
+This repository holds the [Home Manager][home-manager] and [nix-darwin][nix-darwin] configurations for my machines.
+I don't expect anyone else to use this,
+but I figured I'd leave the repo public as a resource for people who want to manage
 their systems similarly.
 
-Table of Contents
+## Table of Contents
 
 <!--
   DO NOT EDIT THE TABLE OF CONTENTS MANUALLY.
@@ -87,7 +87,7 @@ the steps below:
    config.
 
 2. Clone the repository and go into its directory by running
-   `git clone https://github.com/bigolu/dotfiles.git ~/.dotfiles && cd ~/.dotfiles`
+   `git clone https://github.com/bigolu/system-configurations.git ~/code/system-configurations && cd ~/code/system-configurations`
 
 3. Run `direnv allow` to set up the development environment.
 
@@ -97,6 +97,16 @@ The next steps depend on the operating system you're using:
 
 1. Apply the Home Manager configuration by running `just init-home-manager <host_name>`
    where `<host_name>` is one of the hosts defined in the [Home Manager flake module](flake-modules/home-manager/default.nix).
+
+2. Additional Setup
+
+   - Run the following commands from the root of the repository. These commands run scripts that require root privileges and therefore can't be done in Home Manager:
+
+     - `./dotfiles/nix/nix-fix/install-nix-fix.bash`
+
+     - `./dotfiles/nix/systemd-garbage-collection/install.bash`
+
+     - `./dotfiles/smart_plug/linux/install.bash`
 
 ### macOS
 
@@ -134,7 +144,7 @@ The next steps depend on the operating system you're using:
 You can also run a shell or terminal with the home configuration already loaded in it. This is helpful when you only
 need to use the configuration temporarily and not apply it, like when you're in a remote host. The executable is a self-extracting archive
 (SEA) that contains all the command-line programs I use, as well as my config files for them.
-Just run `curl -fsSL https://raw.githubusercontent.com/bigolu/dotfiles/master/.github/run.sh | sh -s -- <type>` where `<type>` can be `shell` or `terminal`.
+Just run `curl -fsSL https://raw.githubusercontent.com/bigolu/system-configurations/master/.github/run.sh | sh -s -- <type>` where `<type>` can be `shell` or `terminal`.
 
 > NOTE: While the SEA doesn't depend on any programs on your computer, it does require that you have a `/tmp`
 > directory. You can read this [GitHub issue comment regarding a "rootless Nix"][rootless-nix] to see why this is

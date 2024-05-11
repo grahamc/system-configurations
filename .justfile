@@ -20,8 +20,8 @@ switch:
 upgrade: cleanup pull && commit
     # We pull first because otherwise tools might try to perform upgrades that
     # have already been performed on another machine and just need to be pulled
-    # in.  And if upgrading a tool results in a dotfile being changed, (e.g. Nix
-    # flake.lock) then pulling dotfiles afterwards might cause a merge conflict.
+    # in. And if upgrading a tool results in a file being changed,
+    # (e.g. flake.lock) then pulling afterwards might cause a merge conflict.
     hostctl-upgrade
 
 # Preview changes from switching
@@ -171,7 +171,7 @@ commit:
     set status_output "$(git status --porcelain)"
     if test -n "$status_output"
         git status
-        read --prompt-str "Do you want to make a commit to your dotfiles? (y/n): " --nchars 1 response
+        read --prompt-str "Do you want to commit the changes? (y/n): " --nchars 1 response
         if test $response = 'y'
             git add --all
             git commit --message 'chore: upgrade tools'

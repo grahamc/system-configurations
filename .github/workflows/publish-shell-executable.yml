@@ -10,8 +10,9 @@ on:
     branches:
       - master
 env:
-  # The checkout action clones the repository into github.workspace. I set $HOME to github.workspace so that the
-  # directory structure matches that of the machine I tested this on, where the repository is in $HOME/.dotfiles.
+  # The checkout action clones the repository relative to github.workspace. I
+  # set $HOME to github.workspace so that the directory structure matches that
+  # of the machine I tested this on.
   HOME: ${{ github.workspace }}
 jobs:
   publish-executable:
@@ -24,11 +25,11 @@ jobs:
       fail-fast: false
     defaults:
       run:
-        working-directory: './.dotfiles'
+        working-directory: 'code/system-configurations'
     steps:
       - uses: actions/checkout@v4
         with:
-          path: '.dotfiles'
+          path: 'code/system-configurations'
       - uses: DeterminateSystems/nix-installer-action@main
       - uses: cachix/cachix-action@v14
         with:
@@ -56,7 +57,7 @@ jobs:
       - name: Upload executable
         uses: svenstaro/upload-release-action@v2
         with:
-          file: '${{ env.HOME }}/.dotfiles/tmp/*'
+          file: '${{ env.HOME }}/code/system-configurations/tmp/*'
           file_glob: true
           overwrite: true
           repo_token: ${{ secrets.GITHUB_TOKEN }}

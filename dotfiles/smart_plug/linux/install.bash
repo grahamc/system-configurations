@@ -3,8 +3,15 @@
 # exit the script if any command returns a non-zero exit code
 set -e
 
-sudo install --compare --owner=root --group=root --mode='u=rwx,g=r,o=r' -D --verbose --no-target-directory ./turn-off-speakers /etc/NetworkManager/dispatcher.d/pre-down.d/turn-off-speakers
-sudo install --compare --owner=root --group=root --mode='u=rwx,g=r,o=r' -D --verbose --no-target-directory ./smart-plug-daemon.service /etc/systemd/system/smart-plug-daemon.service
+# source:
+# https://stackoverflow.com/questions/4774054/reliable-way-for-a-bash-script-to-get-the-full-path-to-itself
+script_directory="$(
+  cd -- "$(dirname "$0")" >/dev/null 2>&1
+  pwd -P
+)"
+
+sudo install --compare --owner=root --group=root --mode='u=rwx,g=r,o=r' -D --verbose --no-target-directory "$script_directory/turn-off-speakers" /etc/NetworkManager/dispatcher.d/pre-down.d/turn-off-speakers
+sudo install --compare --owner=root --group=root --mode='u=rwx,g=r,o=r' -D --verbose --no-target-directory "$script_directory/smart-plug-daemon.service" /etc/systemd/system/smart-plug-daemon.service
 speaker_path='/opt/speaker'
 sudo mkdir -p "$speaker_path"
 speakerctl_name='speakerctl'

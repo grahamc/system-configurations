@@ -1,5 +1,4 @@
 flake.lock
-dotfiles/fish/figlet/smblock.tlf
 dotfiles/fontconfig/10-nerd-font-symbols.conf
 dotfiles/keyboard/US\ keyboard\ -\ no\ accent\ keys.bundle
 **/.gitkeep

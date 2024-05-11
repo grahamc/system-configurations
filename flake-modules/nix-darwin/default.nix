@@ -14,7 +14,7 @@
       homeModules,
       username ? "biggs",
       homeDirectory ? "/Users/${username}",
-      repositoryDirectory ? "${homeDirectory}/.dotfiles",
+      repositoryDirectory ? "${homeDirectory}/code/system-configurations",
     }: let
       homeManagerSubmodules =
         self.lib.home.makeDarwinModules
