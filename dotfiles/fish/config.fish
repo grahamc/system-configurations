@@ -7,7 +7,7 @@ end
 if test -z "$TMUX"
     # HACK: vscode doesn't set VSCODE_INJECTION when launching a terminal when debugging so instead
     # I'm looking for any variable that starts with VSCODE. Should probably report this.
-    if env | grep -q -E '^VSCODE'
+    if env | string match --regex --quiet '^VSCODE'
         tmux-attach-to-project
     else
         if test -n "$TMUX_CONNECT_WAS_RUN"

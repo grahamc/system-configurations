@@ -15,7 +15,7 @@ if test (uname) = Linux
     abbr --add --global ruhroh 'sudo truncate -s 0 /var/log/syslog'
     abbr --add --global font-reload 'fc-cache -vr'
     if type --query flatpak
-        and flatpak list --app | grep -q 'org.wezfurlong.wezterm'
+        and flatpak list --app | string match --quiet --regex 'org\.wezfurlong\.wezterm'
         alias wezterm 'flatpak run org.wezfurlong.wezterm'
     end
     abbr --add --global open xdg-open
@@ -115,7 +115,7 @@ function python --wraps python
         #
         # If I pipe the output of python to grep, python will raise a
         # BrokenPipeError. To avoid this, I use echo to pipe the output.
-        if echo (command python -m pip list) | grep -q ipython
+        if echo (command python -m pip list) | string match --quiet --regex ipython
             python -m IPython
             return
         end
