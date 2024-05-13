@@ -1,5 +1,4 @@
 {
-  config,
   pkgs,
   lib,
   specialArgs,
@@ -18,18 +17,6 @@ in {
     };
   };
 
-  programs.fish.interactiveShellInit = ''
-    fish_add_path --global --prepend \
-    ${
-      lib.escapeShellArgs ([
-          (config.lib.file.mkOutOfStoreSymlink "${specialArgs.repositoryDirectory}/dotfiles/general/bin")
-        ]
-        ++ lib.lists.optionals isDarwin [
-          (config.lib.file.mkOutOfStoreSymlink "${specialArgs.repositoryDirectory}/dotfiles/general/bin-macos")
-        ])
-    }
-  '';
-
   # When switching generations, stop obsolete services and start ones that are wanted by active units.
   systemd = optionalAttrs isLinux {
     user.startServices = "sd-switch";
@@ -41,6 +28,22 @@ in {
 
     symlink = {
       baseDirectory = "${repositoryDirectory}/dotfiles";
+
+      xdg = {
+        executable =
+          {
+            "general" = {
+              source = "general/bin";
+              recursive = true;
+            };
+          }
+          // lib.optionalAttrs isDarwin {
+            "general macOS" = {
+              source = "general/bin-macos";
+              recursive = true;
+            };
+          };
+      };
     };
 
     git.onChange = [

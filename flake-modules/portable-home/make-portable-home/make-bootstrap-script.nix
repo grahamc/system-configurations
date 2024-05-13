@@ -59,7 +59,7 @@ in ''
     ${ln} --symbolic $data_dir $prefix/data
   end
 
-  for program in ${activationPackage}/home-path/bin/*
+  for program in ${activationPackage}/home-path/bin/* ${activationPackage}/home-files/.local/bin/*
     set base (${basename} $program)
 
     # The hashbangs in the scripts need to be the first two bytes in the file for the kernel to

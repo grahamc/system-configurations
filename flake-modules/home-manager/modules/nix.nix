@@ -1,5 +1,4 @@
 {
-  config,
   pkgs,
   specialArgs,
   lib,
@@ -28,10 +27,6 @@ in {
 
   # Don't make a command_not_found handler
   programs.nix-index.enableFishIntegration = false;
-
-  programs.fish.interactiveShellInit = ''
-    fish_add_path --global --prepend ${lib.escapeShellArg (config.lib.file.mkOutOfStoreSymlink "${specialArgs.repositoryDirectory}/dotfiles/nix/bin")}
-  '';
 
   xdg.configFile = {
     "fish/conf.d/any-nix-shell.fish".source = let
@@ -70,6 +65,11 @@ in {
 
   repository = {
     symlink.xdg = {
+      executable."nix" = {
+        source = "nix/bin";
+        recursive = true;
+      };
+
       configFile =
         {
           "nix/nix.conf".source = "nix/nix.conf";

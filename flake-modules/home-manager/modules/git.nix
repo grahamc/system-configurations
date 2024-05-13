@@ -1,20 +1,17 @@
-{
-  config,
-  pkgs,
-  lib,
-  specialArgs,
-  ...
-}: {
+{pkgs, ...}: {
   home.packages = with pkgs; [
     gitMinimal
     delta
   ];
 
-  repository.symlink.xdg.configFile = {
-    "git/config".source = "git/config";
-  };
+  repository.symlink.xdg = {
+    configFile = {
+      "git/config".source = "git/config";
+    };
 
-  programs.fish.interactiveShellInit = ''
-    fish_add_path --global --prepend ${lib.escapeShellArg (config.lib.file.mkOutOfStoreSymlink "${specialArgs.repositoryDirectory}/dotfiles/git/bin")}
-  '';
+    executable."git" = {
+      source = "git/bin";
+      recursive = true;
+    };
+  };
 }

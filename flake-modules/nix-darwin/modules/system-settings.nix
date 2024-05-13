@@ -29,6 +29,14 @@
       };
     };
 
+    # Apply setting immediately so I don't have to logout/reboot.
+    # source: https://medium.com/@zmre/nix-darwin-quick-tip-activate-your-preferences-f69942a93236
+    # TODO: https://github.com/LnL7/nix-darwin/issues/658
+    activationScripts.postUserActivation.text = ''
+      # Following line should allow us to avoid a logout/login cycle
+      /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+    '';
+
     # Copied from the nix-darwin option 'security.pam.enableSudoTouchIdAuth'
     # with the addition of pam-reattach so it works with tmux.
     #

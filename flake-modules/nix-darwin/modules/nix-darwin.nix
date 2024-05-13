@@ -96,6 +96,8 @@
     '';
   };
 in {
+  configureLoginShellForNixDarwin = true;
+
   users.users.${username} = {
     home = homeDirectory;
   };

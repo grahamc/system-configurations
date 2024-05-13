@@ -7,6 +7,7 @@ _: {
     ../system-settings.nix
     ../skhd.nix
     ../yabai.nix
+    ../utilities.nix
   ];
 
   programs.bash.enable = false;

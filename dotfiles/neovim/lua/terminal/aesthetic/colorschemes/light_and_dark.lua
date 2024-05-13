@@ -145,9 +145,9 @@ local theme = lush(function(injected_functions)
     Constant { Identifier }, -- (*) Any constant
     String { t_2 }, --   A string constant: "this is a string"
     Character      { String, }, --   A character constant: 'c', '\n'
-    Number         { Constant, }, --   A number constant: 234, 0xff
-    Boolean        { Constant, }, --   A boolean constant: TRUE, false
-    Float          { Constant, }, --   A floating point constant: 2.3e10
+    Number         { String, }, --   A number constant: 234, 0xff
+    Boolean        { String, }, --   A boolean constant: TRUE, false
+    Float          { String, }, --   A floating point constant: 2.3e10
     -- }}}
 
     -- diffs {{{
@@ -454,9 +454,8 @@ local theme = lush(function(injected_functions)
     sym"@markup.underline" { Underlined },
     sym"@module" { },
     sym"@module.builtin" { },
-    sym"@punctuation.bracket" { },
-    sym"@punctuation.delimiter" { },
-    sym"@punctuation.special" { SpecialChar },
+    sym"@punctuation" { Statement },
+    sym"@punctuation.special" { Statement },
     sym"@comment" { Comment }, -- Comment
     sym"@constant" { Constant }, -- Constant
     sym"@constant.builtin" { Constant }, -- Special
@@ -464,10 +463,10 @@ local theme = lush(function(injected_functions)
     sym"@string" { String }, -- String
     sym"@string.documentation" { String },
     sym"@string.regexp" { String },
-    sym"@string.escape" { SpecialChar }, -- SpecialChar
-    sym"@string.special" { SpecialChar }, -- SpecialChar
-    sym"@string.special.path" { SpecialChar },
-    sym"@string.special.symbol" { SpecialChar },
+    sym"@string.escape" { Statement }, -- SpecialChar
+    sym"@string.special" { Statement }, -- SpecialChar
+    sym"@string.special.path" { String },
+    sym"@string.special.symbol" { Statement },
     sym"@string.special.url" { Underlined, },
     sym"@string.special.url.comment" { Comment, fg = Underlined.fg, underline = true, },
     sym"@character" { Character }, -- Character
@@ -487,6 +486,7 @@ local theme = lush(function(injected_functions)
     sym"@variable.builtin" { sym"@variable" },
     sym"@variable.member" { sym"@variable" },
     sym"@variable.parameter" { sym"@variable" },
+    sym"@variable.parameter.bash" { String },
     sym"@variable.parameter.builtin" { Statement },
     sym"@type" { Type }, -- Type
     sym"@type.definition" { Typedef }, -- Typedef

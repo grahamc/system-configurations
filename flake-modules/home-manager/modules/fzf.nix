@@ -1,8 +1,6 @@
 {
-  config,
   lib,
   pkgs,
-  specialArgs,
   ...
 }: let
   fzfWithoutShellConfig = pkgs.buildEnv {
@@ -15,12 +13,15 @@ in {
     fzfWithoutShellConfig
   ];
 
-  programs.fish.interactiveShellInit = ''
-    fish_add_path --global --prepend ${lib.escapeShellArg (config.lib.file.mkOutOfStoreSymlink "${specialArgs.repositoryDirectory}/dotfiles/fzf/bin")}
-  '';
+  repository.symlink.xdg = {
+    configFile = {
+      "fish/conf.d/fzf-default-opts.fish".source = "fzf/fzf-default-opts.fish";
+    };
 
-  repository.symlink.xdg.configFile = {
-    "fish/conf.d/fzf-default-opts.fish".source = "fzf/fzf-default-opts.fish";
+    executable."fzf" = {
+      source = "fzf/bin";
+      recursive = true;
+    };
   };
 
   home.activation.fzfSetup =

@@ -22,8 +22,6 @@
   # relative to $XDG_CONFIG_HOME
   myTmuxConfigPath = "tmux/my-tmux.conf";
   tmuxReloadScriptName = "${specialArgs.flakeInputs.self}/dotfiles/tmux/bin/tmux-config-reload";
-  tmuxBinPath = lib.escapeShellArg (config.lib.file.mkOutOfStoreSymlink "${specialArgs.repositoryDirectory}/dotfiles/tmux/bin");
-  generalBinPath = lib.escapeShellArg (config.lib.file.mkOutOfStoreSymlink "${specialArgs.repositoryDirectory}/dotfiles/general/bin");
 
   myTmux = pkgs.symlinkJoin {
     name = "my-${pkgs.tmux.name}";
@@ -35,17 +33,10 @@
     # properly. When this issue is resolved, I can remove this:
     # https://github.com/DeterminateSystems/nix-installer/issues/576
     postBuild = ''
-      wrapProgram $out/bin/tmux \
-        --prefix PATH : ${tmuxBinPath} \
-        --prefix PATH : ${generalBinPath} \
-        --unset SHELL
+      wrapProgram $out/bin/tmux --unset SHELL
     '';
   };
 in {
-  programs.fish.interactiveShellInit = ''
-    fish_add_path --global --prepend ${tmuxBinPath}
-  '';
-
   home = {
     # Installing the plugins into my profile, instead of using programs.tmux.plugins, for two
     # reasons:
@@ -98,6 +89,11 @@ in {
       configFile = {
         "fish/conf.d/tmux.fish".source = "tmux/tmux.fish";
         ${myTmuxConfigPath}.source = "tmux/tmux.conf";
+      };
+
+      executable."tmux" = {
+        source = "tmux/bin";
+        recursive = true;
       };
     };
 

@@ -1,4 +1,9 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: let
   # relative to $XDG_CONFIG_HOME
   myFishConfigPath = "fish/my-config.fish";
 in {
@@ -10,6 +15,8 @@ in {
       # The default behaviour is for config files to only be sourced once.
       set --unexport __HM_SESS_VARS_SOURCED
       set --unexport __fish_home_manager_config_sourced
+
+      fish_add_path --global --prepend --move ${lib.escapeShellArg config.repository.symlink.xdg.executableHome}
 
       set xdg_config "''$HOME/.config"
       if set --query XDG_CONFIG_HOME

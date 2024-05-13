@@ -102,6 +102,8 @@ The next steps depend on the operating system you're using:
 
    - Run the following commands from the root of the repository. These commands run scripts that require root privileges and therefore can't be done in Home Manager:
 
+     - `./dotfiles/nix/set-locale-variable.bash`
+
      - `./dotfiles/nix/nix-fix/install-nix-fix.bash`
 
      - `./dotfiles/nix/systemd-garbage-collection/install.bash`
@@ -118,7 +120,7 @@ The next steps depend on the operating system you're using:
 3. Apply the nix-darwin configuration by running `just init-nix-darwin <host_name>` where
    `<host_name>` is one of the hosts defined in the [nix-darwin flake module](flake-modules/nix-darwin/default.nix).
 
-4. Some settings applied by nix-darwin only take effect after a restart so do a restart now.
+4. [Some settings in nix-darwin only take effect after a logout/restart](https://github.com/LnL7/nix-darwin/issues/658) so restart now.
 
 5. Additional Setup
 
