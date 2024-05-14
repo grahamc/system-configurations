@@ -9,18 +9,19 @@ set _color_normal (set_color normal)
 set _color_border (set_color brblack)
 
 function fish_prompt --description 'Print the prompt'
-    # I want the value of $status and $pipestatus for the last command executed on the command line
-    # so I will store their values now before executing any commands.
+    # I want the value of $status and $pipestatus for the last command executed
+    # on the command line so I will store their values now before executing any
+    # commands.
     set last_status $status
     set last_pipestatus $pipestatus
 
-    # TODO: This clears the text in the terminal after the cursor. If we don't do this, multiline
-    # prompts might not display properly.
+    # TODO: This clears the text in the terminal after the cursor. If we don't
+    # do this, multiline prompts might not display properly.
     # issue: https://github.com/fish-shell/fish-shell/issues/8418
     printf \e\[0J
 
-    # This is what I want to display on the line that separates my prompt from the output of the
-    # last command.
+    # This is what I want to display on the line that separates my prompt from
+    # the output of the last command.
     set separator ''
 
     # transient prompt
@@ -30,14 +31,15 @@ function fish_prompt --description 'Print the prompt'
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY
-        # Return without printing anything. This results in the prompt being refreshed in-place
-        # since it erases the old prompt, prints nothing, and then draws the prompt again.
+        # Return without printing anything. This results in the prompt being
+        # refreshed in-place since it erases the old prompt, prints nothing, and
+        # then draws the prompt again.
         return
     end
 
-    # The max number of screen columns a context can use and still fit on one line. The 4 accounts
-    # for the 4 characters that make up the border, see `_make_line`. The max() is there so the
-    # value is never negative
+    # The max number of screen columns a context can use and still fit on one
+    # line. The 4 accounts for the 4 characters that make up the border, see
+    # `_make_line`. The max() is there so the value is never negative
     set max_length (math max\($COLUMNS - 4, 1\))
     set contexts \
         (_broot_context) \
@@ -128,8 +130,8 @@ function _python_venv_name
     set -l path_segments (string split -- / $VIRTUAL_ENV)
     set -l last_path_segment $path_segments[-1]
 
-    # If the folder containing the virtualenv is named .venv, use the parent folder instead
-    # since that should be more descriptive
+    # If the folder containing the virtualenv is named .venv, use the parent
+    # folder instead since that should be more descriptive
     if test $last_path_segment = '.venv'
         printf $path_segments[-2]
         return
@@ -254,9 +256,13 @@ function _direnv_context
 end
 
 function _git_context --argument-names max_length
-    # This way we don't print the git section and possibly remove it later because the directory
-    # wasn't in a git repo. Plus, adding and removing this section causes issues with prompt pinning
-    # since the amount of lines in the prompt changes.
+    # Won't be in portable home
+    if not type --query git
+        return
+    end
+
+    # This way we don't print the git section and possibly remove it later
+    # because the directory wasn't in a git repo.
     if not git rev-parse --is-inside-work-tree >/dev/null 2>&1
         return
     end
@@ -272,10 +278,11 @@ function _git_context --argument-names max_length
         return
     end
 
-    # remove parentheses and leading space e.g. ' (<branch>,dirty,untracked)' ->
-    # '<branch>,dirty,untracked'
+    # remove parentheses and leading space
+    # e.g. ' (<branch>,dirty,untracked)' -> '<branch>,dirty,untracked'
     set --local formatted_status (string sub --start=3 --end=-1 $git_status)
-    # replace first comma with ' (' e.g. ',<branch>,dirty,untracked' -> ' (<branch> dirty,untracked'
+    # replace first comma with ' ('
+    # e.g. ',<branch>,dirty,untracked' -> ' (<branch> dirty,untracked'
     set --local formatted_status (string replace ',' ' (' $formatted_status)
     # only add the closing parenthese if we added the opening one
     and set formatted_status (string join '' $formatted_status ')')
@@ -286,8 +293,9 @@ function _git_context --argument-names max_length
     end
 
     set branch_name (git branch --show-current)
-    # I could also check that this branch exists on the remote, but that check takes ~500ms whereas
-    # the rest of my prompt take ~100ms to load so I don't think it's worth the wait.
+    # I could also check that this branch exists on the remote, but that check
+    # takes ~500ms whereas the rest of my prompt take ~100ms to load so I don't
+    # think it's worth the wait.
     if test -n "$branch_name"
         set git_branch_hyperlink (_make_hyperlink_to_git_branch "$branch_name")
 
@@ -362,13 +370,14 @@ end
 _add_async_prompt_function _git_status _git_status_loading_indicator
 
 function _status_context
-    # I'd pass these in as two separate arguments, but fish doesn't support list arguments.
-    # issue: https://github.com/fish-shell/fish-shell/issues/3375
+    # I'd pass these in as two separate arguments, but fish doesn't support list
+    # arguments. issue: https://github.com/fish-shell/fish-shell/issues/3375
     set last_status $argv[1]
     set last_pipestatus $argv[2..]
 
-    # If there aren't any non-zero exit codes in the last $pipestatus and the last $status is 0,
-    # then that means everything succeeded and I won't print anything
+    # If there aren't any non-zero exit codes in the last $pipestatus and the
+    # last $status is 0, then that means everything succeeded and I won't print
+    # anything
     if not string match --quiet --invert 0 $last_pipestatus
         and test $last_status -eq 0
         return
@@ -423,8 +432,8 @@ function _nix_context
     set packages ( \
         # Each package is separated by a space.
         string split --no-empty ' ' "$ANY_NIX_SHELL_PKGS" \
-        # Packages may have dots, e.g. 'vimPlugins.vim-abolish', in which case I take the segment
-        # after the last dot, 'vim-abolish'.
+        # Packages may have dots, e.g. 'vimPlugins.vim-abolish', in which case I
+        # take the segment after the last dot, 'vim-abolish'.
         | xargs -I PACKAGE fish -c "string split --fields (count (string split '.' 'PACKAGE')) '.' 'PACKAGE'" \
     )
     if test -n "$packages"

@@ -146,7 +146,13 @@ The next steps depend on the operating system you're using:
 You can also run a shell or terminal with the home configuration already loaded in it. This is helpful when you only
 need to use the configuration temporarily and not apply it, like when you're in a remote host. The executable is a self-extracting archive
 (SEA) that contains all the command-line programs I use, as well as my config files for them.
-Just run `curl -fsSL https://raw.githubusercontent.com/bigolu/system-configurations/master/.github/run.sh | sh -s -- <type>` where `<type>` can be `shell` or `terminal`.
+Just run one of these commands, depending on whether you have `wget` or `curl`:
+
+`curl -fsSL https://raw.githubusercontent.com/bigolu/system-configurations/master/.github/run.sh | sh -s -- <type>`
+
+`wget -qO- https://raw.githubusercontent.com/bigolu/system-configurations/master/.github/run.sh | sh -s -- <type>`
+
+where `<type>` can be `shell` or `terminal`.
 
 > NOTE: While the SEA doesn't depend on any programs on your computer, it does require that you have a `/tmp`
 > directory. You can read this [GitHub issue comment regarding a "rootless Nix"][rootless-nix] to see why this is

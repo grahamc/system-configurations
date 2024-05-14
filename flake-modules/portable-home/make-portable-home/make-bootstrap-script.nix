@@ -36,7 +36,6 @@ in ''
     echo -n $path
   end
 
-  set mutable_bin (make_dir bin)
   set state_dir (make_dir state)
   set runtime_dir (make_dir runtime)
   set cache_dir (make_dir cache)
@@ -59,35 +58,41 @@ in ''
     ${ln} --symbolic $data_dir $prefix/data
   end
 
-  for program in ${activationPackage}/home-path/bin/* ${activationPackage}/home-files/.local/bin/*
-    set base (${basename} $program)
+  function add_dir_to_path --argument-names dir name
+    set mutable_bin (make_dir $name)
+    for program in $dir/*
+      set base (${basename} $program)
 
-    # The hashbangs in the scripts need to be the first two bytes in the file for the kernel to
-    # recognize them so it must come directly after the opening quote of the script.
-    switch "$base"
-      case env
-        # TODO: Wrapping this caused an infinite loop so I'll copy it instead. I guess the interpreter I was using in the shebang was calling env somehow.
-        ${copy} -L $program $mutable_bin/env
-      case fish
-        echo -s >$mutable_bin/$base "#!${sh}
-          # I unexport the XDG Base directories so host programs pick up the host's XDG directories.
-          XDG_CONFIG_HOME=$config_dir XDG_DATA_HOME=$data_dir XDG_STATE_HOME=$state_dir XDG_RUNTIME_DIR=$runtime_dir XDG_CACHE_HOME=$cache_dir BIGOLU_IN_PORTABLE_HOME=1 \
-          exec $program \
-            --init-command 'set --unexport XDG_CONFIG_HOME' \
-            --init-command 'set --unexport XDG_DATA_HOME' \
-            --init-command 'set --unexport XDG_STATE_HOME' \
-            --init-command 'set --unexport XDG_RUNTIME_DIR' \
-            --init-command 'set --unexport XDG_CACHE_HOME' \
-            \"\$@\""
-      case '*'
-        echo -s >$mutable_bin/$base "#!${sh}
-          XDG_CONFIG_HOME=$config_dir XDG_DATA_HOME=$data_dir XDG_STATE_HOME=$state_dir XDG_RUNTIME_DIR=$runtime_dir XDG_CACHE_HOME=$cache_dir BIGOLU_IN_PORTABLE_HOME=1 \
-          exec $program \"\$@\""
+      # The hashbangs in the scripts need to be the first two bytes in the file for the kernel to
+      # recognize them so it must come directly after the opening quote of the script.
+      switch "$base"
+        case env
+          # TODO: Wrapping this caused an infinite loop so I'll copy it instead. I guess the interpreter I was using in the shebang was calling env somehow.
+          ${copy} -L $program $mutable_bin/env
+        case fish
+          echo -s >$mutable_bin/$base "#!${sh}
+            # I unexport the XDG Base directories so host programs pick up the host's XDG directories.
+            XDG_CONFIG_HOME=$config_dir XDG_DATA_HOME=$data_dir XDG_STATE_HOME=$state_dir XDG_RUNTIME_DIR=$runtime_dir XDG_CACHE_HOME=$cache_dir BIGOLU_IN_PORTABLE_HOME=1 \
+            exec $program \
+              --init-command 'set --unexport XDG_CONFIG_HOME' \
+              --init-command 'set --unexport XDG_DATA_HOME' \
+              --init-command 'set --unexport XDG_STATE_HOME' \
+              --init-command 'set --unexport XDG_RUNTIME_DIR' \
+              --init-command 'set --unexport XDG_CACHE_HOME' \
+              \"\$@\""
+        case '*'
+          echo -s >$mutable_bin/$base "#!${sh}
+            XDG_CONFIG_HOME=$config_dir XDG_DATA_HOME=$data_dir XDG_STATE_HOME=$state_dir XDG_RUNTIME_DIR=$runtime_dir XDG_CACHE_HOME=$cache_dir BIGOLU_IN_PORTABLE_HOME=1 \
+            exec $program \"\$@\""
+      end
+
+      ${chmod} +x $mutable_bin/$base
     end
-
-    ${chmod} +x $mutable_bin/$base
+    fish_add_path --global --prepend $mutable_bin
   end
-  fish_add_path --global --prepend $mutable_bin
+
+  add_dir_to_path ${activationPackage}/home-path/bin bin
+  add_dir_to_path ${activationPackage}/home-files/.local/bin bin-local
 
   ${setLocaleArchive}
 
