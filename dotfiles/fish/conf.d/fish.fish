@@ -313,7 +313,10 @@ end
 # TODO: I can remove this when this issue is resolved:
 # https://github.com/Canop/broot/issues/730
 function _bigolu_refresh_broot --on-event fish_postexec
-    br --send "$TMUX_PANE" -c ':refresh;' 2>/dev/null
+    # Suppress stdout because it was printing a '\' when my shell was running
+    # outside of tmux. Suppress stderr so we don't see an error message if broot
+    # isn't open.
+    br --send "$TMUX_PANE" -c ':refresh;' 1>/dev/null 2>/dev/null
 end
 
 # Reload all fish instances

@@ -53,8 +53,11 @@ function ssh
             #
             # Using quotes to preserve newlines
             set BIGOLU_TERMCAP "$(infocmp -Cr0Tq | base64)"
+
+            # TODO: tmux workaround, see tmux.conf
+            set BIGOLU_COLORTERM "$COLORTERM"
         end
-        set remote_command "BIGOLU_TERMCAP='$BIGOLU_TERMCAP' BIGOLU_TERMINFO='$BIGOLU_TERMINFO' $remote_command"
+        set remote_command "BIGOLU_TERMCAP='$BIGOLU_TERMCAP' BIGOLU_TERMINFO='$BIGOLU_TERMINFO' BIGOLU_COLORTERM='$COLORTERM' $remote_command"
 
         ssh -o RequestTTY=yes $argv "$remote_command"
     end

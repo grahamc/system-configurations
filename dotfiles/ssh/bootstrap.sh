@@ -123,6 +123,7 @@ install_terminfo() {
 
   # TODO: I wonder if it's more portable to put a file path in here
   export TERMINFO="$BIGOLU_TERMINFO"
+
   first_letter="$(printf '%.1s' "$TERM")"
   first_letter_as_hex="$(printf '%x' "'$first_letter")"
   char_terminfo_path="$prefix/terminfo/$first_letter"
@@ -133,6 +134,9 @@ install_terminfo() {
   printf '%s' "$TERMINFO" | cut -c 5- | base64_decode >"$char_terminfo_path/$TERM"
   cp "$char_terminfo_path/$TERM" "$hex_terminfo_path/$TERM"
   export TERMINFO_DIRS="$prefix/terminfo"
+
+  # TODO: neovim workaround, see tmux.conf
+  export COLORTERM="$BIGOLU_COLORTERM"
 }
 
 show_free_space() {

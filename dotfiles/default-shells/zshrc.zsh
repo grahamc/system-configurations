@@ -1,13 +1,14 @@
-# Interactive check. The `-t` checks are to make sure that we are at a terminal
-# since some programs launch the shell in interactive mode without allow the
-# shell to be used interactively. For example, vscode launches the shell in
-# interactive mode as part of its "shell resolution" and my call to exec
-# below breaks it.  Alternatively, I could check for the environment variable
-# that vscode sets while doing shell resolution. It is set for scenarios like
-# this. Feature request for setting the variable[1].
+# As part of vscode's "shell resolution"[2] it starts the default shell in
+# interactive-login mode. `exec`ing into fish breaks that so I first check
+# to see if the shell was started for shell resolution using the environment
+# variable that vscode sets to indicate when shell resolution is being done[1].
+#
+# TODO: I don't think vscode should be starting a shell in interactive mode if
+# it won't actually be used interactively so maybe I should open an issue.
 #
 # [1]: https://github.com/microsoft/vscode/issues/163186
-if [[ -o interactive && -t 0 && -t 1 && -t 2 ]]; then
+# [2]: https://code.visualstudio.com/docs/supporting/FAQ#_resolving-shell-environment-fails
+if ! (( ${+VSCODE_RESOLVING_ENVIRONMENT} )); then
   # If the current shell isn't fish, exec into fish
   if [ "$(basename "$SHELL")" != 'fish' ]; then
     SHELL="$(command -v fish)" exec fish

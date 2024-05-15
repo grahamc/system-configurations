@@ -71,14 +71,13 @@ local function make_menubar_item(speakerctl_path)
   M.menubar_item = hs.menubar.new():setIcon(icon):setMenu(make_menu)
 end
 
--- Using an interactive-login shell to make sure Nix's vendor config gets
--- sourced so I can find `speakerctl`. I'm using `printf` so there's no trailing
--- newline.
+-- Using a login shell to make sure Nix's login shell configuration runs so I
+-- can find `speakerctl`. I'm using `printf` so there's no trailing newline.
 --
 ---@diagnostic disable-next-line: unused-local
 execute(
   os.getenv("SHELL"),
-  { "-i", "-l", "-c", [[printf %s "$(command -v speakerctl)"]] },
+  { "-l", "-c", [[printf %s "$(command -v speakerctl)"]] },
   function(_, stdout, _)
     make_menubar_item(stdout)
   end
