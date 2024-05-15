@@ -8,11 +8,11 @@
   inherit (pkgs.stdenv) isDarwin isLinux;
   inherit (specialArgs) repositoryDirectory flakeInputs;
 in {
-  # I'm not symlinking the whole directory because EmmyLua is going to generate
-  # lua-language-server annotations in there.
   home.file = optionalAttrs isDarwin {
     ".hammerspoon/Spoons/EmmyLua.spoon" = {
       source = "${specialArgs.flakeInputs.spoons}/Source/EmmyLua.spoon";
+      # I'm not symlinking the whole directory because EmmyLua is going to generate
+      # lua-language-server annotations in there.
       recursive = true;
     };
   };

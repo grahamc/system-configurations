@@ -92,6 +92,8 @@ in {
           "ssh/bootstrap.sh".source = "ssh/bootstrap.sh";
           "broot" = {
             source = "broot";
+            # I'm recursively linking because I link into this directory in
+            # other places.
             recursive = true;
           };
           "bat/config".source = "bat/config";

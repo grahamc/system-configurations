@@ -54,6 +54,8 @@
       home.file = {
         ".hammerspoon/stackline" = {
           source = stacklineWithoutConfig;
+          # I'm recursively linking because I link into this directory in other
+          # places.
           recursive = true;
         };
       };

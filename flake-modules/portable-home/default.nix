@@ -46,7 +46,7 @@
           set -o nounset
           set -o pipefail
 
-          exec ${lib.getExe portableHome} -c 'exec wezterm --config "font_locator=[[ConfigDirsOnly]]" --config "font_dirs={[[${pkgs.myFonts}]]}" --config "default_prog={[[$SHELL]]}" --config "set_environment_variables={SHELL=[[$SHELL]]}"'
+          exec ${lib.getExe portableHome} -c 'exec wezterm --config "font_locator=[[ConfigDirsOnly]]" --config "font_dirs={[[${pkgs.myFonts}]]}" --config "default_prog={[[$SHELL]]}" --config "set_environment_variables={SHELL=[[$SHELL]], TERMINFO_DIRS=[[${pkgs.myTerminfoDatabase}/share/terminfo]]}"'
         '';
     in {
       packages = {

@@ -7,8 +7,10 @@
     overlay = final: prev: let
       inherit (final.stdenv) isLinux isDarwin;
 
-      ncursesWithWezterm = final.symlinkJoin {
-        name = "ncursesWithWezterm";
+      # ncurses doesn't come with wezterm's terminfo so I need to add it to the
+      # database.
+      myTerminfoDatabase = final.symlinkJoin {
+        name = "my-terminfo-database";
         paths = [
           final.wezterm.terminfo
           final.ncurses
@@ -61,7 +63,7 @@
             #
             # I'm adding general/bin for: conform, trash, pbcopy
             wrapProgram $out/bin/nvim \
-              --set TERMINFO_DIRS '${ncursesWithWezterm}/share/terminfo' \
+              --set TERMINFO_DIRS '${myTerminfoDatabase}/share/terminfo' \
               --set PARINIT 'rTbgqR B=.\,?'"'"'_A_a_@ Q=_s>|' \
               --prefix PATH : ${lib.escapeShellArg "${dependencies}/bin"} \
               --prefix PATH : ${lib.escapeShellArg "${inputs.self}/dotfiles/neovim/bin"} \
@@ -140,7 +142,7 @@
         };
     in {
       # I'm renaming these to avoid rebuilds.
-      inherit ncursesWithWezterm myPython;
+      inherit myTerminfoDatabase myPython;
       neovim = nightlyNeovimWithDependencies;
       ripgrep-all = ripgrepAllWithDependencies;
       tmux = tmuxMaster;

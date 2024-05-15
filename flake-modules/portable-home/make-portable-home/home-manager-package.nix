@@ -10,15 +10,28 @@
   hostName = "guest-host";
   makeEmptyPackage = packageName: pkgs.runCommand packageName {} ''mkdir -p $out/bin'';
 
-  portableOverlay = _final: prev:
-    {
-      comma = makeEmptyPackage "stub-comma";
-    }
-    // prev.lib.attrsets.optionalAttrs isLinux {
-      tmux = prev.tmux.override {
-        withSystemd = false;
+  portableOverlay = final: prev: let
+    tmux = let
+      noSystemd =
+        if isLinux
+        then
+          prev.tmux.override {
+            withSystemd = false;
+          }
+        else prev.tmux;
+    in
+      final.symlinkJoin {
+        inherit (noSystemd) name;
+        paths = [noSystemd];
+        buildInputs = [final.makeWrapper];
+        postBuild = ''
+          wrapProgram $out/bin/tmux --prefix TERMINFO_DIRS : ${final.lib.escapeShellArg "${final.myTerminfoDatabase}/share/terminfo"}
+        '';
       };
-    };
+  in {
+    comma = makeEmptyPackage "stub-comma";
+    inherit tmux;
+  };
 
   portableModule = {lib, ...}: {
     # I want a self contained executable so I can't have symlinks that point outside the Nix store.

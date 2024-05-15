@@ -83,6 +83,8 @@ in {
     # detection algorithm and letting users choose. I timed it and it was ~2% slower so maybe it's
     # feasible.
     #
+    # TODO: This is pretty slow, about 15 seconds which is half of my total `switch` time.
+    #
     # issue where checksum is suggested:
     # https://github.com/lewis6991/impatient.nvim/issues/42
     #
@@ -92,10 +94,10 @@ in {
       lib.hm.dag.entryAfter
       ["writeBoundary"]
       ''
-        # TODO: This isn't working anymore
-        # ${pkgs.neovim}/bin/nvim --clean --headless -c 'lua vim.loader.reset()' -c 'quit'
-        dir="$HOME/.cache/nvim/luac"
-        [ -d "$dir" ] && rm -f "$dir"/*
+        dir="$HOME/.cache/nvim"
+        if [ -d "$dir" ]; then
+          rm -rf "$dir"
+        fi
       '';
 
     file = {
@@ -111,7 +113,6 @@ in {
   repository.symlink.xdg.configFile = {
     "nvim" = {
       source = "neovim";
-      recursive = true;
     };
   };
 
