@@ -86,6 +86,7 @@ in {
         go
         yash
         nix
+        lua
 
         # for markdown-toc
         nodejs

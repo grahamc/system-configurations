@@ -29,6 +29,15 @@ local function execute(executable, arguments, callback)
   return hs.task.new(executable, callback, arguments):start()
 end
 
+local function get_command_output(executable, arguments, callback)
+  execute(executable, arguments, function(_, stdout, _)
+    -- TODO: I think this also trims leading newlines:
+    -- https://stackoverflow.com/a/51181334
+    local trimmed = string.gsub(stdout, "^%s*(.-)%s*$", "%1")
+    callback(trimmed)
+  end)
+end
+
 local function make_menubar_item(speakerctl_path)
   local function turn_on()
     execute(speakerctl_path, { "on" })
@@ -69,18 +78,38 @@ local function make_menubar_item(speakerctl_path)
   -- `setIcon` exists so I'm disabling this lint
   ---@diagnostic disable-next-line: undefined-field
   M.menubar_item = hs.menubar.new():setIcon(icon):setMenu(make_menu)
+
+  -- Assigning the watcher to M so it doesn't get garbage collected.
+  M.watcher = hs.caffeinate.watcher
+    .new(function(event)
+      if event == hs.caffeinate.watcher.screensDidLock then
+        turn_off()
+      elseif event == hs.caffeinate.watcher.screensDidUnlock then
+        -- Checking if an external display is connected is pretty slow so I'll
+        -- only do it when turning the plug on.
+        get_command_output(
+          "/bin/sh",
+          { "-c", [[system_profiler SPDisplaysDataType | grep -c Resolution]] },
+          function(display_count)
+            local is_at_desk = tonumber(display_count) > 1
+            if is_at_desk then
+              turn_on()
+            end
+          end
+        )
+      end
+    end)
+    :start()
 end
 
 -- Using a login shell to make sure Nix's login shell configuration runs so I
--- can find `speakerctl`. I'm using `printf` so there's no trailing newline.
+-- can find `speakerctl`.
 --
 ---@diagnostic disable-next-line: unused-local
-execute(
+get_command_output(
   os.getenv("SHELL"),
-  { "-l", "-c", [[printf %s "$(command -v speakerctl)"]] },
-  function(_, stdout, _)
-    make_menubar_item(stdout)
-  end
+  { "-l", "-c", [[command -v speakerctl]] },
+  make_menubar_item
 )
 
 return M
