@@ -42,23 +42,13 @@ vim.keymap.set({ "n" }, "]y", "']", {
 })
 
 local function move_cursor_vertically(direction)
-  local mode = vim.fn.mode()
-  local is_in_linewise_mode = mode == "V" or mode == ""
-  if is_in_linewise_mode then
-    return direction
-  end
-
-  if vim.v.count > 0 then
-    return direction
-  end
-
   -- TODO: When I use 'gk' at the top of the file it messes up the TUI so I'll
   -- avoid that.
   if IsRunningInTerminal and vim.fn.line(".") == 1 and direction == "k" then
-    return direction
+    return vim.v.count1 .. direction
   end
 
-  return "g" .. direction
+  return vim.v.count1 .. "g" .. direction
 end
 vim.keymap.set({ "n", "x" }, "j", function()
   return move_cursor_vertically("j")
@@ -70,8 +60,8 @@ end, { expr = true })
 -- move six lines at a time by holding ctrl and a directional key. Reasoning for
 -- using 6 here:
 -- https://nanotipsforvim.prose.sh/vertical-navigation-%E2%80%93-without-relative-line-numbers
-vim.keymap.set({ "n", "x" }, "<C-j>", "6j")
-vim.keymap.set({ "n", "x" }, "<C-k>", "6k")
+vim.keymap.set({ "n", "x" }, "<C-j>", "6gj")
+vim.keymap.set({ "n", "x" }, "<C-k>", "6gk")
 
 -- move ten columns at a time by holding ctrl and a directional key
 vim.keymap.set({ "n", "x" }, "<C-h>", "6h")

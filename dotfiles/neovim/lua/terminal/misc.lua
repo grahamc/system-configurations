@@ -328,8 +328,10 @@ vim.keymap.set(
 )
 vim.keymap.set("n", [[\n]], function()
   ShowLineNumbers = not ShowLineNumbers
-  -- So the statuscolumn redraws
-  vim.o.statuscolumn = vim.o.statuscolumn
+  -- So the statuscolumns in all windows redraw
+  vim.cmd([[
+    redraw!
+  ]])
 end, { silent = true, desc = "Toggle line numbers" })
 
 -- Terminal {{{
