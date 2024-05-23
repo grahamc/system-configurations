@@ -112,7 +112,7 @@ local theme = lush(function(injected_functions)
 
     Comment { fg = t_8.fg, italic = true }, -- Any comment
 
-    Statement { t_4 }, -- (*) Any statement
+    Statement { Normal }, -- (*) Any statement
     Conditional    { Statement, }, --   if, then, else, endif, switch, etc.
     Repeat         { Statement, }, --   for, do, while, etc.
     Label          { Statement, }, --   case, default, etc.
@@ -145,9 +145,9 @@ local theme = lush(function(injected_functions)
     Constant { Identifier }, -- (*) Any constant
     String { t_2 }, --   A string constant: "this is a string"
     Character      { String, }, --   A character constant: 'c', '\n'
-    Number         { String, }, --   A number constant: 234, 0xff
-    Boolean        { String, }, --   A boolean constant: TRUE, false
-    Float          { String, }, --   A floating point constant: 2.3e10
+    Number         { Identifier, }, --   A number constant: 234, 0xff
+    Boolean        { Identifier, }, --   A boolean constant: TRUE, false
+    Float          { Identifier, }, --   A floating point constant: 2.3e10
     -- }}}
 
     -- diffs {{{
@@ -353,7 +353,7 @@ local theme = lush(function(injected_functions)
     qfLineNr { qfFileName, },
     QuickfixBorderNotCurrent { Ignore },
     QuickfixTitleNotCurrent { Normal },
-    MatchParen { MiniCursorword, fg = t_5.fg, }, -- Character under the cursor or just before it, if it is a paired bracket, and its match. |pi_paren.txt|
+    MatchParen { MiniCursorword, fg = t_4.fg, }, -- Character under the cursor or just before it, if it is a paired bracket, and its match. |pi_paren.txt|
 
     -- nvim-telescope {{{
     -- List of telescope highlight groups:
