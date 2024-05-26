@@ -1,4 +1,10 @@
 {pkgs, ...}: {
+  # extend sudo timeout to 30 minutes from the default 5 because sometimes it
+  # times out in the middle of a rebuild.
+  security.sudo.extraConfig = ''
+    Defaults        timestamp_timeout=30
+  '';
+
   system = {
     # TODO: This option is marked internal
     nvram.variables."AutoBoot" = "%00";
