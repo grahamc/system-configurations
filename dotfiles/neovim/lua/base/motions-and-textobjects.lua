@@ -45,10 +45,10 @@ local function move_cursor_vertically(direction)
   -- TODO: When I use 'gk' at the top of the file it messes up the TUI so I'll
   -- avoid that.
   if IsRunningInTerminal and vim.fn.line(".") == 1 and direction == "k" then
-    return vim.v.count1 .. direction
+    return direction
   end
 
-  return vim.v.count1 .. "g" .. direction
+  return "g" .. direction
 end
 vim.keymap.set({ "n", "x" }, "j", function()
   return move_cursor_vertically("j")
