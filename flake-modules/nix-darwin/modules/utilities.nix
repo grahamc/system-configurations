@@ -47,7 +47,7 @@ in {
       isEnabled = config.homebrew.configureLoginShell;
       file = "/etc/zprofile";
       marker = "homebrew.configureLoginShell";
-      line = ''eval "$(/usr/local/bin/brew shellenv sh)"'';
+      line = ''eval "$(/usr/local/bin/brew shellenv zsh)"'';
     };
 
     # TODO: Consider upstreaming
