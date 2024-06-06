@@ -12,8 +12,6 @@ Plug("hrsh7th/cmp-cmdline")
 
 Plug("dmitmel/cmp-cmdline-history")
 
-Plug("andersevenrud/cmp-tmux")
-
 Plug("hrsh7th/cmp-buffer")
 
 Plug("hrsh7th/cmp-nvim-lsp")
@@ -21,8 +19,6 @@ Plug("hrsh7th/cmp-nvim-lsp")
 Plug("hrsh7th/cmp-path")
 
 Plug("hrsh7th/cmp-nvim-lsp-signature-help")
-
-Plug("bydlw98/cmp-env")
 
 vim.defer_fn(function()
   vim.fn["plug#load"]("LuaSnip")
@@ -104,26 +100,6 @@ Plug("saadparwaiz1/cmp_luasnip")
 
 Plug("rafamadriz/friendly-snippets")
 
--- TODO: With this I'll be able to enable this source only in comments:
--- https://github.com/hrsh7th/nvim-cmp/pull/1314
--- I also want to enable it selectively for filetypes like markdown.
-Plug("uga-rosa/cmp-dictionary", {
-  config = function()
-    require("cmp_dictionary").setup({
-      max_number_items = 1000,
-      first_case_insensitive = true,
-      external = {
-        enable = vim.fn.executable("look") == 1,
-        command = { "look", "${prefix}", "${path}" },
-      },
-      document = {
-        enable = vim.fn.executable("wn") == 1,
-        command = { "wn", "${label}", "-over" },
-      },
-    })
-  end,
-})
-
 Plug("hrsh7th/nvim-cmp", {
   config = function()
     local cmp = require("cmp")
@@ -175,10 +151,6 @@ Plug("hrsh7th/nvim-cmp", {
           or nil,
       },
     }
-    local tmux = {
-      name = "tmux",
-      option = { all_panes = true, label = "Tmux", capture_history = true },
-    }
     local cmdline = { name = "cmdline", priority = 9 }
     local cmdline_history = {
       name = "cmdline_history",
@@ -189,8 +161,6 @@ Plug("hrsh7th/nvim-cmp", {
       name = "luasnip",
       option = { use_show_condition = false },
     }
-    local env = { name = "env" }
-    local dictionary = { name = "dictionary", keyword_length = 2 }
 
     -- helpers
     local is_cursor_preceded_by_nonblank_character = function()
@@ -221,12 +191,9 @@ Plug("hrsh7th/nvim-cmp", {
     -- Adjust the rankings so the new rankings will be:
     -- 1. Everything else
     -- 2. Text
-    -- 3. Text from dictionary
     local text_kind = require("cmp.types").lsp.CompletionItemKind.Text
     local function get_adjusted_ranking(entry)
-      if entry.source.name == "dictionary" then
-        return 3
-      elseif entry:get_kind() == text_kind then
+      if entry:get_kind() == text_kind then
         return 2
       else
         return 1
@@ -334,10 +301,7 @@ Plug("hrsh7th/nvim-cmp", {
       -- sources above them.
       sources = cmp.config.sources({
         lsp_signature,
-        dictionary,
         buffer,
-        tmux,
-        env,
         luasnip_source,
         omni,
         nvim_lsp,

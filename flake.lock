@@ -654,13 +654,10 @@
         "vim-plugin-cmp-buffer": "vim-plugin-cmp-buffer",
         "vim-plugin-cmp-cmdline": "vim-plugin-cmp-cmdline",
         "vim-plugin-cmp-cmdline-history": "vim-plugin-cmp-cmdline-history",
-        "vim-plugin-cmp-dictionary": "vim-plugin-cmp-dictionary",
-        "vim-plugin-cmp-env": "vim-plugin-cmp-env",
         "vim-plugin-cmp-nvim-lsp": "vim-plugin-cmp-nvim-lsp",
         "vim-plugin-cmp-nvim-lsp-signature-help": "vim-plugin-cmp-nvim-lsp-signature-help",
         "vim-plugin-cmp-omni": "vim-plugin-cmp-omni",
         "vim-plugin-cmp-path": "vim-plugin-cmp-path",
-        "vim-plugin-cmp-tmux": "vim-plugin-cmp-tmux",
         "vim-plugin-cmp_luasnip": "vim-plugin-cmp_luasnip",
         "vim-plugin-conform-nvim": "vim-plugin-conform-nvim",
         "vim-plugin-dial-nvim": "vim-plugin-dial-nvim",
@@ -678,10 +675,8 @@
         "vim-plugin-nvim-cmp": "vim-plugin-nvim-cmp",
         "vim-plugin-nvim-colorizer-lua": "vim-plugin-nvim-colorizer-lua",
         "vim-plugin-nvim-lightbulb": "vim-plugin-nvim-lightbulb",
-        "vim-plugin-nvim-lsp-file-operations": "vim-plugin-nvim-lsp-file-operations",
         "vim-plugin-nvim-lspconfig": "vim-plugin-nvim-lspconfig",
         "vim-plugin-nvim-notify": "vim-plugin-nvim-notify",
-        "vim-plugin-nvim-tree-lua": "vim-plugin-nvim-tree-lua",
         "vim-plugin-nvim-treesitter": "vim-plugin-nvim-treesitter",
         "vim-plugin-nvim-treesitter-context": "vim-plugin-nvim-treesitter-context",
         "vim-plugin-nvim-treesitter-endwise": "vim-plugin-nvim-treesitter-endwise",
@@ -1024,38 +1019,6 @@
         "type": "github"
       }
     },
-    "vim-plugin-cmp-dictionary": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1709438605,
-        "narHash": "sha256-2I4p5V7/UCTIWFW8BJY/X07tgtQ81JNgvMr26cWz3iI=",
-        "owner": "uga-rosa",
-        "repo": "cmp-dictionary",
-        "rev": "3dab73d34a889eafdb57c666c3c2076b4c3e126b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "uga-rosa",
-        "repo": "cmp-dictionary",
-        "type": "github"
-      }
-    },
-    "vim-plugin-cmp-env": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1666605168,
-        "narHash": "sha256-zgxqKYs/l/C6B8gv0iswmdHFl4NuvgX2sYTQxQwvecY=",
-        "owner": "bydlw98",
-        "repo": "cmp-env",
-        "rev": "d27a9579e7846b0d30f247a3d6bc730819e702bb",
-        "type": "github"
-      },
-      "original": {
-        "owner": "bydlw98",
-        "repo": "cmp-env",
-        "type": "github"
-      }
-    },
     "vim-plugin-cmp-nvim-lsp": {
       "flake": false,
       "locked": {
@@ -1117,22 +1080,6 @@
       "original": {
         "owner": "hrsh7th",
         "repo": "cmp-path",
-        "type": "github"
-      }
-    },
-    "vim-plugin-cmp-tmux": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1709227036,
-        "narHash": "sha256-xHnBKOOg/6n06vK7sC3shDw80ci/cl/5xgs7kobd6+s=",
-        "owner": "andersevenrud",
-        "repo": "cmp-tmux",
-        "rev": "95b1b921802e6f60627b3e76afb9380fddd87f9a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "andersevenrud",
-        "repo": "cmp-tmux",
         "type": "github"
       }
     },
@@ -1408,22 +1355,6 @@
         "type": "github"
       }
     },
-    "vim-plugin-nvim-lsp-file-operations": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1706139094,
-        "narHash": "sha256-eXOqhfzDK+Jv5bV1wdWT4IA/wBAdkhWV+75HoNcYaR8=",
-        "owner": "antosha417",
-        "repo": "nvim-lsp-file-operations",
-        "rev": "223aca86b737dc66e9c51ebcda8788a8d9cc6cf2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "antosha417",
-        "repo": "nvim-lsp-file-operations",
-        "type": "github"
-      }
-    },
     "vim-plugin-nvim-lspconfig": {
       "flake": false,
       "locked": {
@@ -1453,22 +1384,6 @@
       "original": {
         "owner": "rcarriga",
         "repo": "nvim-notify",
-        "type": "github"
-      }
-    },
-    "vim-plugin-nvim-tree-lua": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1717219443,
-        "narHash": "sha256-QuUWDbjvF8dNKTPFs7gUbVzPt1+4oI3iQLXPJZiYIVQ=",
-        "owner": "kyazdani42",
-        "repo": "nvim-tree.lua",
-        "rev": "26632f496e7e3c0450d8ecff88f49068cecc8bda",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kyazdani42",
-        "repo": "nvim-tree.lua",
         "type": "github"
       }
     },

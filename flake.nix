@@ -189,14 +189,6 @@
       url = "github:dmitmel/cmp-cmdline-history";
       flake = false;
     };
-    vim-plugin-cmp-dictionary = {
-      url = "github:uga-rosa/cmp-dictionary";
-      flake = false;
-    };
-    vim-plugin-cmp-env = {
-      url = "github:bydlw98/cmp-env";
-      flake = false;
-    };
     vim-plugin-cmp_luasnip = {
       url = "github:saadparwaiz1/cmp_luasnip";
       flake = false;
@@ -215,10 +207,6 @@
     };
     vim-plugin-cmp-path = {
       url = "github:hrsh7th/cmp-path";
-      flake = false;
-    };
-    vim-plugin-cmp-tmux = {
-      url = "github:andersevenrud/cmp-tmux";
       flake = false;
     };
     vim-plugin-conform-nvim = {
@@ -293,16 +281,8 @@
       url = "github:neovim/nvim-lspconfig";
       flake = false;
     };
-    vim-plugin-nvim-lsp-file-operations = {
-      url = "github:antosha417/nvim-lsp-file-operations";
-      flake = false;
-    };
     vim-plugin-nvim-notify = {
       url = "github:rcarriga/nvim-notify";
-      flake = false;
-    };
-    vim-plugin-nvim-tree-lua = {
-      url = "github:kyazdani42/nvim-tree.lua";
       flake = false;
     };
     vim-plugin-nvim-treesitter = {

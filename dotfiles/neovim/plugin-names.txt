@@ -4,14 +4,11 @@ CamelCaseMotion
 cmp-buffer
 cmp-cmdline
 cmp-cmdline-history
-cmp-dictionary
-cmp-env
 cmp_luasnip
 cmp-nvim-lsp
 cmp-nvim-lsp-signature-help
 cmp-omni
 cmp-path
-cmp-tmux
 conform.nvim
 dial.nvim
 direnv.vim
@@ -30,9 +27,7 @@ nvim-cmp
 nvim-colorizer.lua
 nvim-lightbulb
 nvim-lspconfig
-nvim-lsp-file-operations
 nvim-notify
-nvim-tree.lua
 nvim-treesitter
 nvim-treesitter-context
 nvim-treesitter-endwise

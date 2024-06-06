@@ -222,12 +222,6 @@ Plug("kosayoda/nvim-lightbulb", {
   end,
 })
 
-Plug("antosha417/nvim-lsp-file-operations", {
-  config = function()
-    require("lsp-file-operations").setup({})
-  end,
-})
-
 Plug("neovim/nvim-lspconfig", {
   config = function()
     require("lspconfig.ui.windows").default_options.border =
