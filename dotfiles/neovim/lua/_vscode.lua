@@ -1,10 +1,12 @@
 -- vim:foldmethod=marker
 
+-- The '_' in the beginning of the file name is to avoid a collision with vscode-neovim which already has a module named 'vscode'
+
 if not vim.g.vscode then
   return
 end
 
-local vscode = require("vscode-neovim")
+local vscode = require("vscode")
 
 vim.g.clipboard = vim.g.vscode_clipboard
 
@@ -214,7 +216,7 @@ end)
 -- local vim_api = vim.api
 -- 行内移动
 local function moveInLine(d)
-  require("vscode-neovim").action("cursorMove", {
+  require("vscode").action("cursorMove", {
     args = {
       {
         to = d == "end" and "wrappedLineEnd" or "wrappedLineStart",
@@ -233,7 +235,7 @@ end
 -- 行间移动
 local function moveLine(d)
   -- local current_mode = vim.api.nvim_get_mode().mode
-  require("vscode-neovim").action("cursorMove", {
+  require("vscode").action("cursorMove", {
     args = {
       {
         to = d == "j" and "down" or "up",

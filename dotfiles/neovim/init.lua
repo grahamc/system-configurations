@@ -34,6 +34,6 @@ IsRunningInTerminal = has_ttyout or has_ttyin
 require("plug").load_plugins(function()
   require("base")
   require("terminal")
-  require("vscode")
+  require("_vscode")
   require("browser")
 end)
