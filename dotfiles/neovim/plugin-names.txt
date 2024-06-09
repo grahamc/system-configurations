@@ -1,4 +1,3 @@
-bufferline.nvim
 bullets.vim
 CamelCaseMotion
 cmp-buffer
@@ -18,7 +17,6 @@ fidget.nvim
 firenvim
 friendly-snippets
 lazy-lsp.nvim
-legendary.nvim
 LuaSnip
 lush.nvim
 mini.nvim
@@ -37,12 +35,6 @@ plenary.nvim
 reticle.nvim
 SchemaStore.nvim
 splitjoin.vim
-sqlite.lua
-telescope-fzf-native.nvim
-telescope-menufacture
-telescope.nvim
-telescope-sg
-telescope-smart-history.nvim
 tint.nvim
 traces.vim
 treesj

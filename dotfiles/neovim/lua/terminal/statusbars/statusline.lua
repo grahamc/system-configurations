@@ -1,38 +1,7 @@
 -- vim:foldmethod=marker
 
--- settings {{{
 vim.o.laststatus = 3
 vim.o.statusline = "%!v:lua.StatusLine()"
-local statusline_group = vim.api.nvim_create_augroup("Statuslines", {})
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  group = statusline_group,
-  pattern = "qf",
-  callback = function()
-    vim.keymap.set("n", "gf", ":cdo s///e<left><left><left>", { buffer = true })
-    vim.wo.statusline = "%!v:lua.StatusLine()"
-  end,
-})
-vim.api.nvim_create_autocmd({ "BufEnter" }, {
-  group = statusline_group,
-  callback = function()
-    if vim.o.filetype == "NvimTree" then
-      vim.opt_local.statusline = "%!v:lua.FileExplorerStatusLine()"
-    end
-  end,
-})
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  group = statusline_group,
-  pattern = "TelescopePrompt",
-  callback = function()
-    if IsMenufactureOpen then
-      IsMenufactureOpen = false
-      vim.opt_local.statusline = "%!v:lua.TelescopeStatusLine(v:true)"
-    else
-      vim.opt_local.statusline = "%!v:lua.TelescopeStatusLine()"
-    end
-  end,
-})
--- }}}
 
 -- statusline helpers {{{
 local function get_mode_indicator()
@@ -232,7 +201,6 @@ local function make_mapping_statusline(mappings)
 end
 -- }}}
 
--- main statusline {{{
 function StatusLine()
   local position = "%#StatusLine#" .. "%03l:%03c"
 
@@ -389,11 +357,6 @@ function StatusLine()
     return make_mapping_statusline({
       { mods = { "C" }, key = "k", description = "Enter float" },
     })
-  elseif vim.bo.filetype == "qf" then
-    return make_mapping_statusline({
-      { key = "gf", description = "find & replace" },
-      { key = "q", description = "close" },
-    })
   else
     return make_statusline({
       diagnostics,
@@ -411,29 +374,3 @@ function StatusLine()
     })
   end
 end
--- }}}
-
--- file explorer statusline {{{
-function FileExplorerStatusLine()
-  return make_mapping_statusline({
-    { key = "g?", description = "help" },
-  })
-end
--- }}}
-
--- telescope statusline {{{
-function TelescopeStatusLine(is_menufacture_open)
-  local mappings = {
-    { mods = { "C" }, key = "q", description = "Quickfix" },
-    { mods = { "M" }, key = "<CR>", description = "Multi-select" },
-    { mods = { "C" }, key = "j/k", description = "Scroll preview" },
-  }
-  if is_menufacture_open then
-    table.insert(
-      mappings,
-      { mods = { "C" }, key = "f", description = "Filter" }
-    )
-  end
-  return make_mapping_statusline(mappings)
-end
--- }}}

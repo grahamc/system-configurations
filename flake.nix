@@ -245,10 +245,6 @@
       url = "github:dundalek/lazy-lsp.nvim";
       flake = false;
     };
-    vim-plugin-legendary-nvim = {
-      url = "github:mrjones2014/legendary.nvim";
-      flake = false;
-    };
     vim-plugin-LuaSnip = {
       url = "github:L3MON4D3/LuaSnip";
       flake = false;
@@ -319,30 +315,6 @@
     };
     vim-plugin-splitjoin-vim = {
       url = "github:AndrewRadev/splitjoin.vim";
-      flake = false;
-    };
-    vim-plugin-sqlite-lua = {
-      url = "github:kkharji/sqlite.lua";
-      flake = false;
-    };
-    vim-plugin-telescope-fzf-native = {
-      url = "github:nvim-telescope/telescope-fzf-native.nvim";
-      flake = false;
-    };
-    vim-plugin-telescope-menufacture = {
-      url = "github:molecule-man/telescope-menufacture";
-      flake = false;
-    };
-    vim-plugin-telescope-nvim = {
-      url = "github:nvim-telescope/telescope.nvim";
-      flake = false;
-    };
-    vim-plugin-telescope-sg = {
-      url = "github:Marskey/telescope-sg";
-      flake = false;
-    };
-    vim-plugin-telescope-smart-history-nvim = {
-      url = "github:nvim-telescope/telescope-smart-history.nvim";
       flake = false;
     };
     vim-plugin-tint-nvim = {

@@ -570,7 +570,12 @@ if vim.fn.executable("nix") == 1 then
       -- re-trigger lsp attach so nvim-lsp-config has a chance to attach to any
       -- buffers that were opened before it was configured. This way I can load
       -- nvim-lsp-config asynchronously.
-      require("terminal.utilities").trigger_lsp_attach()
+      --
+      -- Set the filetype of all the currently open buffers to trigger a 'FileType' event for each
+      -- buffer. This will trigger lsp attach
+      vim.iter(vim.api.nvim_list_bufs()):each(function(buf)
+        vim.bo[buf].filetype = vim.bo[buf].filetype
+      end)
     end,
   })
 end

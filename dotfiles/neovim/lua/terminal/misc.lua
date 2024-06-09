@@ -404,7 +404,6 @@ Plug("markonm/traces.vim")
 vim.g.traces_abolish_integration = 1
 
 Plug("nvim-lua/plenary.nvim")
-Plug("kkharji/sqlite.lua")
 
 -- TODO: I'll keep using this fork until this PR is merged:
 -- https://github.com/NvChad/nvim-colorizer.lua/pull/63
@@ -451,3 +450,46 @@ if is_ssh_active then
     end,
   })
 end
+
+vim.keymap.set("n", "<C-q>", function()
+  local buffer = vim.fn.bufnr()
+  -- If the buffer is open in another window, don't close it.
+  local buffer_window_count = #vim.fn.win_findbuf(buffer)
+  if buffer_window_count > 1 then
+    vim.notify(
+      "Can't close buffer, it's open in another window",
+      vim.log.levels.INFO
+    )
+    return
+  end
+
+  local buffer_count = #vim.fn.getbufinfo({ buflisted = 1 })
+  local tab_count = vim.fn.tabpagenr("$")
+
+  local function is_not_float(window)
+    return vim.api.nvim_win_get_config(window).relative == ""
+  end
+  local window_count = #vim.tbl_filter(is_not_float, vim.api.nvim_list_wins())
+
+  -- If this is the last tab, window, and buffer, exit vim
+  local is_last_window = window_count == 1
+  if tab_count == 1 and is_last_window and buffer_count == 1 then
+    local is_linked_to_file = #vim.api.nvim_buf_get_name(
+      vim.api.nvim_get_current_buf()
+    ) > 0
+    -- Only `confirm` if the buffer is linked to a file
+    if is_linked_to_file then
+      vim.cmd([[
+        confirm qall
+      ]])
+    else
+      -- add '!' to ignore unsaved changes
+      vim.cmd([[
+        qall!
+      ]])
+    end
+    return
+  end
+
+  require("mini.bufremove").delete(buffer)
+end, { silent = true, desc = "Close file [tab]" })

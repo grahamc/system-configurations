@@ -199,15 +199,6 @@ local theme = lush(function(injected_functions)
     StatusLineModeOther { status_line_mode, fg = t_8.fg, },
     -- }}}
 
-    -- tabline {{{
-    -- The `TabLine*` highlights are the so the tabline looks blank before bufferline populates
-    -- it so it needs the same background color as bufferline. The foreground needs to match the
-    -- background so you can't see the text from the original tabline function.
-    TabLine { fg = t_0.fg }, -- Tab pages line, not active tab page label
-    TabLineFill { TabLine }, -- Tab pages line, where there are no labels
-    TabLineSel { TabLine }, -- Tab pages line, active tab page label
-    -- }}}
-
     -- LSP {{{
       -- These groups are for the native LSP client and diagnostic system. Some
       -- other LSP clients may use these groups, or use their own. Consult your
@@ -264,50 +255,6 @@ local theme = lush(function(injected_functions)
     QuickfixPreview { Search, nocombine = true },
     MiniOperatorsExchangeFrom { Visual },
 
-    -- bufferline.nvim {{{
-    MyBufferLineBackground { bg = 'NONE', },
-    MyBufferLineFill { fg = MyBufferLineBackground.bg },
-    MyBufferLineBufferVisible { },
-    MyBufferLineBufferSelected { StatusLine },
-    MyBufferLineDuplicate { MyBufferLineBufferVisible },
-    MyBufferLineDuplicateSelected { MyBufferLineBufferSelected },
-    MyBufferLineDuplicateVisible { MyBufferLineBufferVisible },
-    MyBufferLineNumbers { t_8 },
-    MyBufferLineNumbersVisible { MyBufferLineNumbers },
-    MyBufferLineNumbersSelected { MyBufferLineBufferSelected, fg = t_6.fg },
-    MyBufferLineCloseButton { MyBufferLineFill },
-    MyBufferLineCloseButtonVisible { MyBufferLineCloseButton },
-    MyBufferLineCloseButtonSelected { MyBufferLineBufferSelected },
-    MyBufferLineModified { fg = MyBufferLineBackground.bg },
-    MyBufferLineModifiedVisible { fg = MyBufferLineBackground.bg },
-    MyBufferLineModifiedSelected { MyBufferLineBufferSelected },
-    MyBufferLineTab { MyBufferLineBufferSelected, fg = t_8.fg, bold = true, },
-    MyBufferLineTabSelected { MyBufferLineTab, fg = 'fg', underline = true, sp = t_6.fg, },
-    MyBufferLineTabSeparator { MyBufferLineTab, fg = MyBufferLineTab.bg },
-    MyBufferLineTabSeparatorSelected { MyBufferLineTab, fg = MyBufferLineTab.bg },
-    MyBufferLineTabClose { MyBufferLineTab, fg = "NONE", bold = true },
-    MyBufferLineOffsetSeparator { WinSeparator },
-    MyBufferLineIndicatorSelected { MyBufferLineBackground, fg = MyBufferLineBufferSelected.bg },
-    MyBufferLineIndicatorVisible { MyBufferLineIndicatorSelected },
-    MyBufferLineTruncMarker { },
-    ---@diagnostic disable-next-line: undefined-field
-    BufferLineTabLeftBorder { fg = MyBufferLineBufferSelected.bg, reverse = true },
-    -- }}}
-
-    -- nvim-tree {{{
-    NvimTreeIndentMarker { t_8 },
-    NvimTreeRootFolder { Normal },
-    NvimTreeFolderName { Normal },
-    NvimTreeOpenedFolderName { NvimTreeFolderName },
-    NvimTreeModified { Normal },
-    NvimTreeOpenedHL { Normal },
-    NvimTreeBookmarkIcon { Normal },
-    NvimTreeExecFile { Normal },
-    NvimTreeImageFile { Normal },
-    NvimTreeSpecialFile { Normal },
-    NvimTreeSymlink { Normal },
-    -- }}}
-
     -- nvim-cmp {{{
     CmpNormal { bg = t_0.fg[is_light and 'darken' or 'lighten'](6) },
     CmpItemKind { fg = CmpNormal.bg[is_light and 'darken' or 'lighten'](55) },
@@ -354,24 +301,6 @@ local theme = lush(function(injected_functions)
     QuickfixBorderNotCurrent { Ignore },
     QuickfixTitleNotCurrent { Normal },
     MatchParen { MiniCursorword, fg = t_4.fg, }, -- Character under the cursor or just before it, if it is a paired bracket, and its match. |pi_paren.txt|
-
-    -- nvim-telescope {{{
-    -- List of telescope highlight groups:
-    -- https://github.com/nvim-telescope/telescope.nvim/blob/master/plugin/telescope.lua
-    TelescopePromptNormal { },
-    TelescopePromptBorder { t_8, },
-    TelescopePromptTitle { t_6, bold = true, },
-    TelescopePromptCounter { TelescopePromptNormal, fg = t_8.fg, },
-    TelescopePromptPrefix { TelescopePromptNormal, fg = FloatTitle.fg },
-    TelescopeResultsNormal { TelescopePromptNormal },
-    TelescopeResultsBorder { TelescopePromptBorder, },
-    TelescopePreviewNormal { TelescopePromptNormal },
-    TelescopePreviewTitle { t_8, bold = true, },
-    TelescopePreviewBorder { TelescopePromptBorder, },
-    TelescopeMatching { fg = FloatTitle.fg },
-    TelescopeSelection { CmpNormal },
-    TelescopeSelectionCaret { TelescopeSelection },
-    -- }}}
 
     -- nvim-notify {{{
     -- nvim-notify requires the bg be a hex value since it's transparency during the fade animation

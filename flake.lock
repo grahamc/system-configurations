@@ -668,7 +668,6 @@
         "vim-plugin-firenvim": "vim-plugin-firenvim",
         "vim-plugin-friendly-snippets": "vim-plugin-friendly-snippets",
         "vim-plugin-lazy-lsp-nvim": "vim-plugin-lazy-lsp-nvim",
-        "vim-plugin-legendary-nvim": "vim-plugin-legendary-nvim",
         "vim-plugin-lush-nvim": "vim-plugin-lush-nvim",
         "vim-plugin-mini-nvim": "vim-plugin-mini-nvim",
         "vim-plugin-nvim-autopairs": "vim-plugin-nvim-autopairs",
@@ -685,12 +684,6 @@
         "vim-plugin-plenary-nvim": "vim-plugin-plenary-nvim",
         "vim-plugin-reticle-nvim": "vim-plugin-reticle-nvim",
         "vim-plugin-splitjoin-vim": "vim-plugin-splitjoin-vim",
-        "vim-plugin-sqlite-lua": "vim-plugin-sqlite-lua",
-        "vim-plugin-telescope-fzf-native": "vim-plugin-telescope-fzf-native",
-        "vim-plugin-telescope-menufacture": "vim-plugin-telescope-menufacture",
-        "vim-plugin-telescope-nvim": "vim-plugin-telescope-nvim",
-        "vim-plugin-telescope-sg": "vim-plugin-telescope-sg",
-        "vim-plugin-telescope-smart-history-nvim": "vim-plugin-telescope-smart-history-nvim",
         "vim-plugin-tint-nvim": "vim-plugin-tint-nvim",
         "vim-plugin-traces-vim": "vim-plugin-traces-vim",
         "vim-plugin-treesj": "vim-plugin-treesj",
@@ -1243,22 +1236,6 @@
         "type": "github"
       }
     },
-    "vim-plugin-legendary-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1717783580,
-        "narHash": "sha256-aCbZ9zm1O0xxD4pEEZNG3wVW+EAOg7xucfc3Nb6rtmw=",
-        "owner": "mrjones2014",
-        "repo": "legendary.nvim",
-        "rev": "280d5ffa73927317ff44d781ac1becdec6415540",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mrjones2014",
-        "repo": "legendary.nvim",
-        "type": "github"
-      }
-    },
     "vim-plugin-lush-nvim": {
       "flake": false,
       "locked": {
@@ -1512,102 +1489,6 @@
       "original": {
         "owner": "AndrewRadev",
         "repo": "splitjoin.vim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-sqlite-lua": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1713684746,
-        "narHash": "sha256-nbvc2hoOscOYoPPFUPnYdnXDwAPh5kiC2vI3lDP2QNo=",
-        "owner": "kkharji",
-        "repo": "sqlite.lua",
-        "rev": "d0ffd703b56d090d213b497ed4eb840495f14a11",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kkharji",
-        "repo": "sqlite.lua",
-        "type": "github"
-      }
-    },
-    "vim-plugin-telescope-fzf-native": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1709647247,
-        "narHash": "sha256-rycebls3g0JCHM2+aG7xlJnX7ZPowqviaLbQrFSdflM=",
-        "owner": "nvim-telescope",
-        "repo": "telescope-fzf-native.nvim",
-        "rev": "9ef21b2e6bb6ebeaf349a0781745549bbb870d27",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nvim-telescope",
-        "repo": "telescope-fzf-native.nvim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-telescope-menufacture": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1717227742,
-        "narHash": "sha256-ofJWh+B7EKgu1pwaJJ0VfKCMCdsL5HY5Z2NG1b29OxU=",
-        "owner": "molecule-man",
-        "repo": "telescope-menufacture",
-        "rev": "8c547e82a703fe90c7f69af04d0b4e47a59cc971",
-        "type": "github"
-      },
-      "original": {
-        "owner": "molecule-man",
-        "repo": "telescope-menufacture",
-        "type": "github"
-      }
-    },
-    "vim-plugin-telescope-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1717813965,
-        "narHash": "sha256-sj74hgs5AJ2DxQzG+ERlvGWHOGX6SSS5NjynG5jZeo8=",
-        "owner": "nvim-telescope",
-        "repo": "telescope.nvim",
-        "rev": "3a743491e5c6be0ed0aa8c31c6905df8f66179ba",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nvim-telescope",
-        "repo": "telescope.nvim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-telescope-sg": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1713749793,
-        "narHash": "sha256-hXJydt4MWc6k/b7AGMoBTZ/GrWqcq9muE9D/k/wmMSo=",
-        "owner": "Marskey",
-        "repo": "telescope-sg",
-        "rev": "caceaa670f26a581fb20ce99576ed8155c3ae96d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Marskey",
-        "repo": "telescope-sg",
-        "type": "github"
-      }
-    },
-    "vim-plugin-telescope-smart-history-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1671132354,
-        "narHash": "sha256-riBl0vSkRtM9Gtw/FNSKodSmqgGUpDnH7d5w+uU4ReQ=",
-        "owner": "nvim-telescope",
-        "repo": "telescope-smart-history.nvim",
-        "rev": "81a4cceaa54d65d5f7c7c26178ee63b634d3e26d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nvim-telescope",
-        "repo": "telescope-smart-history.nvim",
         "type": "github"
       }
     },
