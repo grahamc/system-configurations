@@ -73,6 +73,17 @@ local function make_menubar_item(speakerctl_path)
     return { menu_item }
   end
 
+  local function is_laptop_docked()
+    local exit_code = execute("/bin/sh", {
+        "-c",
+        [[system_profiler SPUSBDataType | grep -q 'OWC Thunderbolt']],
+      })
+      :waitUntilExit()
+      :terminationStatus()
+
+    return exit_code == 0
+  end
+
   -- Assigning the menubar item to M so it doesn't get garbage collected.
   --
   -- `setIcon` exists so I'm disabling this lint
@@ -82,21 +93,14 @@ local function make_menubar_item(speakerctl_path)
   -- Assigning the watcher to M so it doesn't get garbage collected.
   M.watcher = hs.caffeinate.watcher
     .new(function(event)
+      if not is_laptop_docked() then
+        return
+      end
+
       if event == hs.caffeinate.watcher.screensDidLock then
         turn_off()
       elseif event == hs.caffeinate.watcher.screensDidUnlock then
-        -- Checking if an external display is connected is pretty slow so I'll
-        -- only do it when turning the plug on.
-        get_command_output(
-          "/bin/sh",
-          { "-c", [[system_profiler SPDisplaysDataType | grep -c Resolution]] },
-          function(display_count)
-            local is_at_desk = tonumber(display_count) > 1
-            if is_at_desk then
-              turn_on()
-            end
-          end
-        )
+        turn_on()
       end
     end)
     :start()
