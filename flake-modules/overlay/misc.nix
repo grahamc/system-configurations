@@ -30,21 +30,10 @@
             # to format comments
             par
 
-            # for cmp-dictionary
-            partialPackages.look
-            wordnet
-
             # For the conform.nvim formatters 'trim_whitespace' and
             # 'squeeze_blanks' which require awk and cat respectively
             gawk
             coreutils-full
-
-            # for telescope-sg
-            ast-grep
-
-            # for telescope
-            fd
-            xdgWrappers.ripgrep
           ];
         };
       in

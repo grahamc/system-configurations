@@ -41,8 +41,5 @@ Plug("rcarriga/nvim-notify", {
       max_width = math.floor(vim.o.columns * 0.35),
     })
     vim.notify = notify
-    vim.keymap.set("n", "<Leader>n", "<Cmd>Telescope notify<CR>", {
-      desc = "Notifications",
-    })
   end,
 })

@@ -72,11 +72,6 @@ Plug("Tummetott/reticle.nvim", {
         cursorcolumn = false,
       },
       disable_in_insert = false,
-      never = {
-        cursorline = {
-          "TelescopeResults",
-        },
-      },
       always_highlight_number = true,
     })
   end,
