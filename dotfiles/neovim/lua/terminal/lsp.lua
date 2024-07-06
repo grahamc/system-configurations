@@ -454,65 +454,35 @@ if vim.fn.executable("nix") == 1 then
           },
         },
       }
-      local function map_to_lazy_lsp_format(server_list)
-        local filetypes_by_server = vim
-          .iter(server_list)
-          :fold({}, function(acc, server)
-            if server == "efm" then
-              acc[server] = vim.tbl_keys(efm_settings_by_filetype)
-            else
-              acc[server] =
-                require("lspconfig")[server].document_config.default_config.filetypes
-            end
-            return acc
-          end)
-
-        local servers_by_filetype = {}
-        vim.iter(filetypes_by_server):each(function(server, filetypes)
-          vim.iter(filetypes):each(function(filetype)
-            local servers = servers_by_filetype[filetype]
-            if servers == nil then
-              servers = { server }
-            else
-              table.insert(servers, server)
-            end
-            servers_by_filetype[filetype] = servers
-          end)
-        end)
-
-        return servers_by_filetype
-      end
       require("lazy-lsp").setup({
         prefer_local = true,
+
+        excluded_servers = {
+          "pylyzer",
+          "ruff_lsp",
+          "jedi_language_server",
+          "basedpyright",
+          "rnix",
+          "nixd",
+          "quick_lint_js",
+          "denols",
+        },
+
+        preferred_servers = {
+          fish = {
+            "efm",
+          },
+          markdown = {
+            "efm",
+            "marksman",
+            "ltex",
+          },
+        },
 
         default_config = {
           capabilities = capabilities,
           on_attach = on_attach,
         },
-
-        -- TODO: missing servers that I use: ast_grep, lemminx,
-        -- emmet-language-server
-        preferred_servers = map_to_lazy_lsp_format({
-          "bashls",
-          "cssls",
-          "efm",
-          "eslint",
-          "gopls",
-          "html",
-          "jdtls",
-          "jsonls",
-          "ltex",
-          "lua_ls",
-          "marksman",
-          "nil_ls",
-          "pyright",
-          "rust_analyzer",
-          "taplo",
-          "tsserver",
-          "vimls",
-          "yamlls",
-          "zls",
-        }),
 
         -- TODO: consider contributing some these settings to nvim-lspconfig
         --

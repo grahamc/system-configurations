@@ -13,9 +13,9 @@ printf '\033[5 q'
 
 set --global fish_color_normal
 set --global fish_color_command $fish_color_normal
-set --global fish_color_keyword blue
+set --global fish_color_keyword $fish_color_normal
 set --global fish_color_quote green
-set --global fish_color_redirection magenta
+set --global fish_color_redirection blue
 set --global fish_color_end $fish_color_keyword
 set --global fish_color_error red
 set --global fish_color_param $fish_color_normal
