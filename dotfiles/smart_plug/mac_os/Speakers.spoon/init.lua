@@ -90,16 +90,38 @@ local function make_menubar_item(speakerctl_path)
   ---@diagnostic disable-next-line: undefined-field
   M.menubar_item = hs.menubar.new():setIcon(icon):setMenu(make_menu)
 
+  local watcher = hs.caffeinate.watcher
   -- Assigning the watcher to M so it doesn't get garbage collected.
-  M.watcher = hs.caffeinate.watcher
+  M.watcher = watcher
     .new(function(event)
       if not is_laptop_docked() then
         return
       end
 
-      if event == hs.caffeinate.watcher.screensDidLock then
+      if
+        hs.fnutils.contains(
+          {
+            watcher.screensDidLock,
+            watcher.screensaverDidStart,
+            watcher.screensDidSleep,
+            watcher.systemWillPowerOff,
+            watcher.systemWillSleep,
+          },
+          event
+        )
+      then
         turn_off()
-      elseif event == hs.caffeinate.watcher.screensDidUnlock then
+      elseif
+        hs.fnutils.contains(
+          {
+            watcher.screensDidUnlock,
+            watcher.screensaverDidStop,
+            watcher.screensDidWake,
+            watcher.systemDidWake,
+          },
+          event
+        )
+      then
         turn_on()
       end
     end)
