@@ -132,7 +132,8 @@ function __create_cd_function --on-event fish_prompt
     functions -e (status current-function)
 
     function cd --wraps cd
-        # zoxide does not support the '--' argument
+        # zoxide does not support the '--' argument yet:
+        # https://github.com/ajeetdsouza/zoxide/pull/858
         if set index (contains --index -- '--' $argv)
             set --erase argv[$index]
         end
