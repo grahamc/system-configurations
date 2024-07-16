@@ -112,7 +112,7 @@ local theme = lush(function(injected_functions)
 
     Comment { fg = t_8.fg, italic = true }, -- Any comment
 
-    Statement { Normal }, -- (*) Any statement
+    Statement { t_4 }, -- (*) Any statement
     Conditional    { Statement, }, --   if, then, else, endif, switch, etc.
     Repeat         { Statement, }, --   for, do, while, etc.
     Label          { Statement, }, --   case, default, etc.
@@ -300,7 +300,7 @@ local theme = lush(function(injected_functions)
     qfLineNr { qfFileName, },
     QuickfixBorderNotCurrent { Ignore },
     QuickfixTitleNotCurrent { Normal },
-    MatchParen { MiniCursorword, fg = t_4.fg, }, -- Character under the cursor or just before it, if it is a paired bracket, and its match. |pi_paren.txt|
+    MatchParen { MiniCursorword, fg = t_5.fg, }, -- Character under the cursor or just before it, if it is a paired bracket, and its match. |pi_paren.txt|
 
     -- nvim-notify {{{
     -- nvim-notify requires the bg be a hex value since it's transparency during the fade animation
@@ -383,7 +383,9 @@ local theme = lush(function(injected_functions)
     sym"@markup.underline" { Underlined },
     sym"@module" { },
     sym"@module.builtin" { },
-    sym"@punctuation" { Statement },
+    sym"@punctuation" { Normal },
+    sym"@punctuation.bracket.luap" { Statement },
+    sym"@punctuation.delimiter.luap" { Statement },
     sym"@punctuation.special" { Statement },
     sym"@comment" { Comment }, -- Comment
     sym"@constant" { Constant }, -- Constant
