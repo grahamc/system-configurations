@@ -9,7 +9,7 @@
     configureLoginShell = true;
 
     casks = [
-      "wezterm-nightly"
+      "wezterm@nightly"
       "xcodes"
       "hammerspoon"
       "visual-studio-code"

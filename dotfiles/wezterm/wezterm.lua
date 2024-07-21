@@ -51,6 +51,8 @@ config.window_padding = {
 config.term = "wezterm"
 
 -- font
+-- Per the recommendation in the mini.icons readme
+config.allow_square_glyphs_to_overflow_width = "Always"
 local function font_with_icon_fallbacks(font)
   return wezterm.font_with_fallback({ font, "SymbolsNerdFontMono" })
 end

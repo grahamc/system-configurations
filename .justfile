@@ -9,7 +9,7 @@ help:
     @just --list --justfile {{ justfile() }} --unsorted
 
 # Reload direnv
-reload:
+reload-dev-environment:
     nix-direnv-reload
 
 # Switch to a new generation

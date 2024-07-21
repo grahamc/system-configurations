@@ -242,8 +242,8 @@ local theme = lush(function(injected_functions)
     -- tint.nvim needs this in order to work
     WinBarNC { WinBar, }, -- Window bar of not-current windows
     GitBlameVirtualText { virtual_text, fg = t_8.fg, },
-    WhichKeyFloat { StatusLine, }, -- Normal text in floating windows.
-    WhichKeyBorder { WhichKeyFloat, fg = WhichKeyFloat.bg, }, -- Border of floating windows.
+    WhichKeyFloat { Normal, }, -- Normal text in floating windows.
+    WhichKeyBorder { WhichKeyFloat, fg = t_8.fg, }, -- Border of floating windows.
     CodeActionSign { t_3 },
     NullLsInfoBorder { FloatBorder },
     WidgetFill { t_0 },

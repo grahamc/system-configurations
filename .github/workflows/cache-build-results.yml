@@ -2,11 +2,11 @@ name: Cache Build Results
 on:
   push:
     paths:
-      - '.github/workflows/cache-build-results.yml'
-      - 'flake.nix'
-      - 'flake.lock'
-      - 'flake-modules/**'
-      - 'dotfiles/**'
+      - ".github/workflows/cache-build-results.yml"
+      - "flake.nix"
+      - "flake.lock"
+      - "flake-modules/**"
+      - "dotfiles/**"
     branches:
       - master
 env:
@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          path: 'code/system-configurations'
+          path: "code/system-configurations"
       - uses: DeterminateSystems/nix-installer-action@main
         # TODO: home-manager's `mkOutOfStoreSymlink` doesn't work on nix v2.19
         # so I'm pinning v2.18:
@@ -37,9 +37,9 @@ jobs:
       - uses: cachix/cachix-action@v14
         with:
           name: bigolu
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
           # TODO: This isn't working right now:
           # https://github.com/cachix/cachix-action/issues/169
           useDaemon: false
       - run: NIXPKGS_ALLOW_UNFREE=1 nix run --show-trace .#nix -- build --impure --show-trace
-        working-directory: 'code/system-configurations'
+        working-directory: "code/system-configurations"

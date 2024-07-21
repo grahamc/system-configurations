@@ -2,11 +2,11 @@ name: Publish Shell Executable
 on:
   push:
     paths:
-      - '.github/workflows/publish-shell-executable.yml'
-      - 'flake.nix'
-      - 'flake.lock'
-      - 'flake-modules/**'
-      - 'dotfiles/**'
+      - ".github/workflows/publish-shell-executable.yml"
+      - "flake.nix"
+      - "flake.lock"
+      - "flake-modules/**"
+      - "dotfiles/**"
     branches:
       - master
 env:
@@ -25,11 +25,11 @@ jobs:
       fail-fast: false
     defaults:
       run:
-        working-directory: 'code/system-configurations'
+        working-directory: "code/system-configurations"
     steps:
       - uses: actions/checkout@v4
         with:
-          path: 'code/system-configurations'
+          path: "code/system-configurations"
       - uses: DeterminateSystems/nix-installer-action@main
         # TODO: bundle fails with latest so I'm pinning the same version I
         # pinned in the cache workflow
@@ -40,7 +40,7 @@ jobs:
       - uses: cachix/cachix-action@v14
         with:
           name: bigolu
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
           # TODO: This isn't working right now:
           # https://github.com/cachix/cachix-action/issues/169
           useDaemon: false
@@ -63,7 +63,7 @@ jobs:
       - name: Upload executable
         uses: svenstaro/upload-release-action@v2
         with:
-          file: '${{ env.HOME }}/code/system-configurations/tmp/*'
+          file: "${{ env.HOME }}/code/system-configurations/tmp/*"
           file_glob: true
           overwrite: true
           repo_token: ${{ secrets.GITHUB_TOKEN }}

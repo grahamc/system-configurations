@@ -69,8 +69,6 @@ set flags \
     (__flag 'tabstop' '2') \
     (__flag 'info' 'inline-right') \
     (__flag 'separator' '─') \
-    (__flag 'pointer' '>') \
-    (__flag 'marker' '+') \
     (__flag 'history' "$xdg_data/fzf/fzf-history.txt") \
     (__flag 'preview' 'printf %s\n {+}') \
     (__flag 'preview-window' 'wrap' 'bottom' '40%' 'border-top') \
@@ -81,6 +79,7 @@ set flags \
     (__flag 'ansi') \
     (__flag 'tabstop' '2') \
     (__flag 'border' 'rounded') \
+    (__flag 'wrap') \
     (__flag 'color' \
         '16' \
         'fg+:-1:regular:underline' \
@@ -107,6 +106,7 @@ set flags \
         'change:first' \
         'enter:accept' \
         'ctrl-w:toggle-preview-wrap' \
+        'alt-w:toggle-wrap' \
         'alt-enter:toggle' \
         'f7:prev-history' \
         'f8:next-history' \

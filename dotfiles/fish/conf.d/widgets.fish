@@ -54,13 +54,13 @@ function __grep_widget --argument-names title grep_command
 
     if not set choices ( \
         FZF_DEFAULT_COMMAND="echo -n ''" \
-        FZF_HINTS='ctrl+e: edit in neovim' \
+        FZF_HINTS='alt+e: edit in neovim' \
         fzf-tmux-zoom \
             --disabled \
             # We refresh-preview after executing vim in the event that the file
             # gets modified by vim. Tracking doesn't work when the input list is
             # reloaded so I'm binding it to a no-op.
-            --bind "ctrl-t:execute-silent(:),ctrl-e:execute(nvim '+call cursor({2},{3})' {1} < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $grep_command || true" \
+            --bind "ctrl-t:execute-silent(:),alt-e:execute(nvim '+call cursor({2},{3})' {1} < /dev/tty > /dev/tty 2>&1)+refresh-preview,change:first+reload:sleep 0.1; $grep_command || true" \
             --delimiter ':' \
             --prompt $prompt_directory$title \
             --preview-window '+{2}/3,75%,~1' \
@@ -233,13 +233,13 @@ function file-widget --description 'Search files'
   '
 
     if not set choices ( \
-        FZF_HINTS='ctrl+e: edit in neovim' \
+        FZF_HINTS='alt+e: edit in neovim' \
         FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' $dir; fd \$_args --follow --hidden --type file --type symlink" \
         fzf-tmux-zoom \
             --prompt "$prompt" \
             --preview "$preview_command" \
             --preview-window '75%,~1' \
-            --bind "ctrl-e:execute:nvim {1} </dev/tty >/dev/tty 2>&1" \
+            --bind "alt-e:execute:nvim {1} </dev/tty >/dev/tty 2>&1" \
     )
         return
     end

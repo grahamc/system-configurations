@@ -5,36 +5,20 @@ Plug("folke/which-key.nvim", {
     vim.o.timeoutlen = 500
 
     require("which-key").setup({
-      ignore_missing = false,
-      popup_mappings = {
+      keys = {
         scroll_down = "<c-j>",
         scroll_up = "<c-k>",
       },
-      -- hide mapping boilerplate
-      hidden = {
-        "<silent>",
-        "<cmd>",
-        "<Cmd>",
-        "<CR>",
-        "call",
-        "lua",
-        "^:",
-        "^ ",
-        "<Plug>",
-        "<plug>",
-      },
-      layout = {
+      win = {
         height = {
           max = math.floor(vim.o.lines * 0.20),
         },
-        align = "center",
-      },
-      window = {
-        border = { " ", " ", " ", " ", " ", " ", " ", " " },
-        margin = { 1, 0.05, 2, 0.05 },
+        border = { "─", "─", "─", " ", " ", " ", " ", " " },
       },
       icons = {
         separator = " ",
+        mappings = false,
+        colors = false,
       },
     })
   end,

@@ -99,28 +99,22 @@ local function make_menubar_item(speakerctl_path)
       end
 
       if
-        hs.fnutils.contains(
-          {
-            watcher.screensDidLock,
-            watcher.screensaverDidStart,
-            watcher.screensDidSleep,
-            watcher.systemWillPowerOff,
-            watcher.systemWillSleep,
-          },
-          event
-        )
+        hs.fnutils.contains({
+          watcher.screensDidLock,
+          watcher.screensaverDidStart,
+          watcher.screensDidSleep,
+          watcher.systemWillPowerOff,
+          watcher.systemWillSleep,
+        }, event)
       then
         turn_off()
       elseif
-        hs.fnutils.contains(
-          {
-            watcher.screensDidUnlock,
-            watcher.screensaverDidStop,
-            watcher.screensDidWake,
-            watcher.systemDidWake,
-          },
-          event
-        )
+        hs.fnutils.contains({
+          watcher.screensDidUnlock,
+          watcher.screensaverDidStop,
+          watcher.screensDidWake,
+          watcher.systemDidWake,
+        }, event)
       then
         turn_on()
       end

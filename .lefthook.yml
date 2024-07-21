@@ -46,4 +46,3 @@ post-rewrite:
     "post-rewrite.bash":
       runner: DIRENV_LOG_FORMAT='' direnv exec "$PWD" bash
       interactive: true
-
