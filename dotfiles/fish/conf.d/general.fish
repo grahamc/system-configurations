@@ -125,23 +125,14 @@ end
 
 # zoxide
 set --global --export _ZO_FZF_OPTS "$FZF_DEFAULT_OPTS --preview 'lsd --color always --hyperlink always {2}' --keep-right --tiebreak index"
-# This needs to run after the zoxide.fish config file so I run it when the
-# fish_prompt event fires.
+# This needs to run after the zoxide.fish config file or I get an infinite loop
+# so I run it when the fish_prompt event fires.
 function __create_cd_function --on-event fish_prompt
     # I only want this to run once so delete the function.
     functions -e (status current-function)
 
-    function cd --wraps cd
-        # zoxide does not support the '--' argument yet:
-        # https://github.com/ajeetdsouza/zoxide/pull/858
-        if set index (contains --index -- '--' $argv)
-            set --erase argv[$index]
-        end
-        __zoxide_z $argv
-    end
-end
-function cdh --wraps=__zoxide_zi --description 'cd history'
-    __zoxide_zi $argv
+    alias cd __zoxide_z
+    alias cdh __zoxide_zi
 end
 
 # direnv
