@@ -63,19 +63,22 @@ vim.api.nvim_create_autocmd({ "WinNew", "WinClosed" }, {
   group = window_group_id,
 })
 
-Plug("Tummetott/reticle.nvim", {
-  config = function()
-    local reticle = require("reticle")
-    reticle.setup({
-      on_startup = {
-        cursorline = true,
-        cursorcolumn = false,
-      },
-      disable_in_insert = false,
-      always_highlight_number = true,
-    })
-  end,
-})
+-- TODO: I'll add it back when they stop triggering a deprecation notice:
+-- https://github.com/tummetott/reticle.nvim/pull/13
+--
+-- Plug("Tummetott/reticle.nvim", {
+--   config = function()
+--     local reticle = require("reticle")
+--     reticle.setup({
+--       on_startup = {
+--         cursorline = true,
+--         cursorcolumn = false,
+--       },
+--       disable_in_insert = false,
+--       always_highlight_number = true,
+--     })
+--   end,
+-- })
 
 -- Resize windows
 vim.keymap.set(

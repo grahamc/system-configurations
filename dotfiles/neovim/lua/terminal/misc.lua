@@ -405,9 +405,7 @@ vim.g.traces_abolish_integration = 1
 
 Plug("nvim-lua/plenary.nvim")
 
--- TODO: I'll keep using this fork until this PR is merged:
--- https://github.com/NvChad/nvim-colorizer.lua/pull/63
-Plug("mehalter/nvim-colorizer.lua", {
+Plug("NvChad/nvim-colorizer.lua", {
   config = function()
     require("colorizer").setup({
       filetypes = {
@@ -418,8 +416,7 @@ Plug("mehalter/nvim-colorizer.lua", {
         "!go",
       },
       user_default_options = {
-        mode = "inline",
-        virtualtext = "  ",
+        virtualtext_inline = true,
         css = true,
         names = false,
         tailwind = "lsp",

@@ -208,19 +208,24 @@ vim.lsp.handlers[methods.textDocument_signatureHelp] = enhanced_float_handler(
 
 Plug("b0o/SchemaStore.nvim")
 
-Plug("kosayoda/nvim-lightbulb", {
-  config = function()
-    require("nvim-lightbulb").setup({
-      autocmd = { enabled = true },
-      -- Giving it a higher priority than diagnostics
-      sign = {
-        priority = 15,
-        text = "",
-        hl = "CodeActionSign",
-      },
-    })
-  end,
-})
+-- Not using this until it stops triggering a deprecation notice:
+-- https://github.com/kosayoda/nvim-lightbulb/issues/65
+-- https://github.com/kosayoda/nvim-lightbulb/pull/62
+-- https://github.com/kosayoda/nvim-lightbulb/pull/64
+--
+-- Plug("kosayoda/nvim-lightbulb", {
+--   config = function()
+--     require("nvim-lightbulb").setup({
+--       autocmd = { enabled = true },
+--       -- Giving it a higher priority than diagnostics
+--       sign = {
+--         priority = 15,
+--         text = "",
+--         hl = "CodeActionSign",
+--       },
+--     })
+--   end,
+-- })
 
 Plug("neovim/nvim-lspconfig", {
   config = function()
@@ -434,7 +439,6 @@ if vim.fn.executable("nix") == 1 then
         require("cmp_nvim_lsp").default_capabilities()
       )
 
-      -- local catalog = "/etc/xml/catalog"
       local efm_settings_by_filetype = {
         markdown = {
           {
@@ -462,6 +466,7 @@ if vim.fn.executable("nix") == 1 then
           "ruff_lsp",
           "jedi_language_server",
           "basedpyright",
+          "pylsp",
           "rnix",
           "nixd",
           "quick_lint_js",
@@ -511,18 +516,6 @@ if vim.fn.executable("nix") == 1 then
               },
             },
           },
-
-          -- TODO: Can't use this until lazy-lsp gets support for lemminx
-          -- It won't be on macOS
-          -- lemminx = (vim.fn.filereadable(catalog) == 0) and {} or {
-          --   settings = {
-          --     xml = {
-          --       catalogs = {
-          --         catalog,
-          --       },
-          --     },
-          --   },
-          -- },
 
           efm = {
             settings = {

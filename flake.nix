@@ -266,7 +266,7 @@
       flake = false;
     };
     vim-plugin-nvim-colorizer-lua = {
-      url = "github:mehalter/nvim-colorizer.lua";
+      url = "github:NvChad/nvim-colorizer.lua";
       flake = false;
     };
     vim-plugin-nvim-lightbulb = {
