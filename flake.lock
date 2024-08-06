@@ -682,7 +682,6 @@
         "vim-plugin-nvim-treesitter-textobjects": "vim-plugin-nvim-treesitter-textobjects",
         "vim-plugin-nvim-ts-autotag": "vim-plugin-nvim-ts-autotag",
         "vim-plugin-plenary-nvim": "vim-plugin-plenary-nvim",
-        "vim-plugin-reticle-nvim": "vim-plugin-reticle-nvim",
         "vim-plugin-splitjoin-vim": "vim-plugin-splitjoin-vim",
         "vim-plugin-tint-nvim": "vim-plugin-tint-nvim",
         "vim-plugin-traces-vim": "vim-plugin-traces-vim",
@@ -1453,22 +1452,6 @@
       "original": {
         "owner": "nvim-lua",
         "repo": "plenary.nvim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-reticle-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1715615597,
-        "narHash": "sha256-z8h02AEKEJ+vKQwn8c+H3+9nFoGw20JGKYrjhcV6YQw=",
-        "owner": "Tummetott",
-        "repo": "reticle.nvim",
-        "rev": "e90aa929b989c093df1de1780afe25e48553f5ce",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Tummetott",
-        "repo": "reticle.nvim",
         "type": "github"
       }
     },

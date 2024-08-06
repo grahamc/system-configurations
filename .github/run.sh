@@ -20,22 +20,22 @@ get_dependency() {
 
 fetcher="$(get_dependency curl wget)"
 case "$fetcher" in
-  curl)
-    file_exists() {
-      curl --head --silent --fail "$1" 1>/dev/null 2>&1
-    }
-    download() {
-      curl --fail --progress-bar --location "$1" --output "$2"
-    }
-    ;;
-  wget)
-    file_exists() {
-      wget -q --method=HEAD "$1"
-    }
-    download() {
-      wget --output-document "$2" "$1"
-    }
-    ;;
+curl)
+  file_exists() {
+    curl --head --silent --fail "$1" 1>/dev/null 2>&1
+  }
+  download() {
+    curl --fail --progress-bar --location "$1" --output "$2"
+  }
+  ;;
+wget)
+  file_exists() {
+    wget -q --method=HEAD "$1"
+  }
+  download() {
+    wget --output-document "$2" "$1"
+  }
+  ;;
 esac
 
 platform="$(uname -m)-$(uname -s | tr '[:upper:]' '[:lower:]')"

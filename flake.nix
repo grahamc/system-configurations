@@ -305,10 +305,6 @@
       url = "github:nvim-lua/plenary.nvim";
       flake = false;
     };
-    vim-plugin-reticle-nvim = {
-      url = "github:Tummetott/reticle.nvim";
-      flake = false;
-    };
     vim-plugin-SchemaStore-nvim = {
       url = "github:b0o/SchemaStore.nvim";
       flake = false;

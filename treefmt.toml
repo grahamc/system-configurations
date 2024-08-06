@@ -1,7 +1,31 @@
+[global]
+excludes = [
+  "*.gitkeep",
+  "*.lock",
+  "*.jsonc",
+  "*.toml",
+  "*.txt",
+  ".git-hook-assets/actions/*",
+  "dotfiles/*",
+  ".editorconfig",
+  ".gitignore",
+  ".ignore",
+  ".shellcheckrc",
+  "flake-modules/bundler/gozip/go.mod",
+  "flake-modules/bundler/gozip/go.sum",
+]
+
 [formatter.prettier]
 command = "prettier"
 options = ["--write"]
 includes = ["*.js", "*.json", "*.md", "*.yml",]
+
+[formatter.sh]
+command = "shfmt"
+options = ["--write",]
+includes = [
+  ".github/run.sh"
+]
 
 [formatter.bash]
 command = "shfmt"
@@ -13,30 +37,38 @@ command = "fish_indent"
 options = ["--write",]
 includes = ["*.fish",]
 
-[formatter.nix]
+[formatter.nix-deadnix]
+priority = 0
+command = "deadnix"
+options = ["--edit"]
+includes = [ "*.nix" ]
+
+[formatter.nix-statix]
+priority = 1
 command = "bash"
 options = [
     "-euc",
     """
-deadnix --edit "$@"
-
 # statix doesn't support passing multiple files yet:
 # https://github.com/nerdypepper/statix/issues/69
 for file in "$@"; do
   statix fix "$file"
   statix check "$file"
 done
-
-alejandra "$@"
     """,
     "--",
 ]
 includes = [ "*.nix" ]
 
+[formatter.nix-alejandra]
+priority = 2
+command = "alejandra"
+includes = [ "*.nix" ]
+
 [formatter.justfile]
 command = "just"
 options = ["--unstable", "--fmt", "--justfile",]
-includes = ["justfile",]
+includes = [".justfile",]
 
 [formatter.lua]
 command = "stylua"

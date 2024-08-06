@@ -95,6 +95,7 @@ format:
     treefmt
 
 # Same as format except all files will be formatted regardless of their
+
 # modified-date
 [private]
 format-no-cache:

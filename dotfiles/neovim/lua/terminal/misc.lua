@@ -369,29 +369,6 @@ vim.api.nvim_create_autocmd("BufWinLeave", {
     end
   end,
 })
-
--- TODO: see if reticle.nvim can support disabling by buftype
-vim.api.nvim_create_autocmd("TermEnter", {
-  callback = function()
-    if vim.bo.buftype == "terminal" then
-      require("reticle").set_cursorline(false)
-    end
-  end,
-})
-vim.api.nvim_create_autocmd("TermLeave", {
-  callback = function()
-    if vim.bo.buftype == "terminal" then
-      require("reticle").set_cursorline(true)
-    end
-  end,
-})
-vim.api.nvim_create_autocmd("WinLeave", {
-  callback = function()
-    if vim.bo.buftype == "terminal" then
-      require("reticle").set_cursorline(true)
-    end
-  end,
-})
 -- }}}
 
 -- To get the vim help pages for vim-plug itself, you need to add it as a plugin
