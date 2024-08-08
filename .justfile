@@ -134,10 +134,8 @@ codegen-neovim:
     set -euo pipefail
 
     readarray -t config_files < <(find ./dotfiles/neovim/lua -type f -name '*.lua')
-    cat \
-        <(sg --lang lua --pattern "Plug '"'$ARG'"'" --json=compact "${config_files[@]}" | jq --raw-output '.[].metaVariables.single.ARG.text') \
-        <(sg --lang lua --pattern 'Plug "$ARG"' --json=compact "${config_files[@]}" | jq --raw-output '.[].metaVariables.single.ARG.text') \
-    | cut -d'/' -f2 | head -c -1 | sort --ignore-case --dictionary-order --unique > ./dotfiles/neovim/plugin-names.txt
+    sg --lang lua --pattern 'Plug($ARG $$$)' --json=compact "${config_files[@]}" | jq --raw-output '.[].metaVariables.single.ARG.text' \
+    | cut -d'/' -f2 | sed 's/.$//' | sort --ignore-case --dictionary-order --unique > ./dotfiles/neovim/plugin-names.txt
 
 # Pull changes from git remote
 [private]

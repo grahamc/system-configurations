@@ -3,10 +3,7 @@ require("hs.ipc")
 hs.ipc.cliInstall()
 
 -- Create annotations that lua language servers can use to provide documentation, autocomplete, etc.
---
--- TODO: Waiting for a pull request to get merged that will only regenerate annotations when something changes.
--- pull request: https://github.com/Hammerspoon/Spoons/pull/278
--- hs.loadSpoon('EmmyLua', false)
+hs.loadSpoon('EmmyLua', false)
 
 hs.loadSpoon("Speakers")
 
