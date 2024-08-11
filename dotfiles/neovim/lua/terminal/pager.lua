@@ -4,10 +4,6 @@ vim.g.page_icon_pipe = "(reading from pipe)" -- When piped
 vim.g.page_icon_redirect = "(reading from stdin)" -- When exposes pty device
 vim.g.page_icon_instance = "(reading from instance)" -- When `-i, -I` flags provided
 
-local function disable_winbar()
-  vim.o.winbar = ""
-end
-
 local function reset_cursor_position()
   -- TODO: `page` doesn't offer a way to disable the centering of the cursor so I'm using an
   -- autocommand to reset the cursor after it's centered. For more info on why `page` centers the
@@ -37,7 +33,6 @@ end
 vim.api.nvim_create_autocmd("User", {
   pattern = "PageOpen",
   callback = function()
-    disable_winbar()
     reset_cursor_position()
     vim.o.showtabline = 0
     -- disable horizontal scrolling

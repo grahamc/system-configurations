@@ -236,11 +236,6 @@ local theme = lush(function(injected_functions)
     Whitespace { fg = t_0.fg[is_light and 'darken' or 'lighten'](30) }, -- "nbsp", "space", "tab" and "trail" in 'listchars'
     WinSeparator { t_8, }, -- Separator between window splits. Inherts from |hl-VertSplit| by default, which it will replace eventually.
     ColorColumn { WinSeparator },
-    -- If I leave it empty, tint.nvim won't tint it, but tinting works if I explicitly set the
-    -- foreground color
-    WinBar { fg = 'fg', }, -- Window bar of current window
-    -- tint.nvim needs this in order to work
-    WinBarNC { WinBar, }, -- Window bar of not-current windows
     GitBlameVirtualText { virtual_text, fg = t_8.fg, },
     WhichKeyFloat { Normal, }, -- Normal text in floating windows.
     WhichKeyBorder { WhichKeyFloat, fg = t_8.fg, }, -- Border of floating windows.

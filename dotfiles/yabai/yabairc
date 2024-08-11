@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-# Calling this when I'm already in tiling mode might change the order of my windows, which I don't want, so I only
-# set tiling mode if it isn't already set
+# Calling this when I'm already in tiling mode might change the order of my
+# windows, which I don't want, so I only set tiling mode if it isn't already set
 [ "$(yabai -m config layout)" != 'bsp' ] && yabai -m config layout bsp
 
 padding=10
@@ -27,7 +27,8 @@ yabai -m rule --add label=installer app="^Installer$" title=".*" manage=off
 yabai -m rule --add label=finder app="^Finder$" title="^Copy$" manage=off
 yabai -m rule --add label=firefox app="^Firefox$" title="^Log in to your PayPal account$" manage=off
 
-# Hide the stackline stack indicators if the current window is fullscreen or it's maximized and not in a stack.
+# Hide the stackline stack indicators if the current window is fullscreen or
+# it's maximized and not in a stack.
 # shellcheck disable=2016
 # I don't want to expand the variable
 yabai -m signal --add label=hidestackline event=window_resized action='if yabai -m query --windows --window | jq --exit-status '"'"'."is-native-fullscreen" or (."has-fullscreen-zoom" and ."stack-index" == 0)'"'"' 1>/dev/null 2>&1; then alpha=0; else alpha=1; fi; hs -c "if stackline.config:get([[appearance.alpha]]) ~= $alpha then stackline.config:set([[appearance.alpha]], $alpha) end"'

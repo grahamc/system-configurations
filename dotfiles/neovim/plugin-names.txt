@@ -12,7 +12,6 @@ conform.nvim
 dial.nvim
 direnv.vim
 dressing.nvim
-dropbar.nvim
 fidget.nvim
 firenvim
 friendly-snippets
