@@ -79,6 +79,7 @@ get-secrets:
     # getting all of them
     for temp_filename in "${!secrets_to_commit[@]}"; do
         destination="${secrets_to_commit[$temp_filename]}"
+        mkdir -p "$(dirname "$destination")"
         mv "$temp_filename" "$destination"
     done
 
