@@ -34,9 +34,6 @@ cmd - f : skhd -k "fn - f"
 # rotate windows [counter]clockwise
 cmd - o : yabai -m space --rotate 270
 cmd + shift - o : yabai -m space --rotate 90
-# focus workspace
-cmd + ctrl - h : skhd -k "ctrl - left"
-cmd + ctrl - l : skhd -k "ctrl - right"
 # focus display
 cmd + alt - h : yabai -m display --focus west
 cmd + alt - j : yabai -m display --focus south
@@ -49,32 +46,16 @@ cmd - k : yabai-move up
 cmd - l : yabai -m window --focus east || skhd -k "cmd + alt - l"
 cmd + ctrl - backspace : yabai -m space --focus recent
 cmd + alt - backspace : yabai -m display --focus recent
-# enter adjustment mode
-:: adjustment : yabai -m config active_window_opacity .9
-cmd - return ; adjustment
 # move window
-adjustment < h : yabai-remove-from-stack west || yabai -m window --warp west || $(yabai -m window --display west; yabai -m display --focus west)
-adjustment < j : yabai-remove-from-stack south || yabai -m window --warp south || $(yabai -m window --display south; yabai -m display --focus south)
-adjustment < k : yabai-remove-from-stack north || yabai -m window --warp north || $(yabai -m window --display north; yabai -m display --focus north)
-adjustment < l : yabai-remove-from-stack east || yabai -m window --warp east || $(yabai -m window --display east; yabai -m display --focus east)
+cmd + shift - h : yabai-remove-from-stack west || yabai -m window --warp west || $(yabai -m window --display west; yabai -m display --focus west)
+cmd + shift - j : yabai-remove-from-stack south || yabai -m window --warp south || $(yabai -m window --display south; yabai -m display --focus south)
+cmd + shift - k : yabai-remove-from-stack north || yabai -m window --warp north || $(yabai -m window --display north; yabai -m display --focus north)
+cmd + shift - l : yabai-remove-from-stack east || yabai -m window --warp east || $(yabai -m window --display east; yabai -m display --focus east)
 # swap windows
-adjustment < ctrl - h : yabai -m window --swap west
-adjustment < ctrl - j : yabai -m window --swap south
-adjustment < ctrl - k : yabai -m window --swap north
-adjustment < ctrl - l : yabai -m window --swap east
-# grow/shrink window
-adjustment < shift - h : yabai -m window --resize left:40:0 || yabai -m window --resize right:-40:0
-adjustment < shift - j : yabai -m window --resize top:0:40 || yabai -m window --resize bottom:0:-40
-adjustment < shift - k : yabai -m window --resize bottom:0:40 || yabai -m window --resize top:0:-40
-adjustment < shift - l : yabai -m window --resize right:40:0 || yabai -m window --resize left:-40:0
-# stack windows
-adjustment < alt - j  : yabai -m window --swap stack.next && yabai -m window --focus stack.next && hs -c 'hs.reload()'
-adjustment < alt - k  : yabai -m window --swap stack.prev && yabai -m window --focus stack.prev && hs -c 'hs.reload()'
-# exit adjustment mode
-:: default : yabai -m config active_window_opacity 1.0
-adjustment < escape ; default
-adjustment < return ; default
-adjustment < cmd - return ; default
+cmd + ctrl - h : yabai -m window --swap west
+cmd + ctrl - j : yabai -m window --swap south
+cmd + ctrl - k : yabai -m window --swap north
+cmd + ctrl - l : yabai -m window --swap east
 
 # App shortcuts
 ########################################
