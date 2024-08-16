@@ -110,6 +110,8 @@ The next steps depend on the operating system you're using:
 
      - `./dotfiles/smart_plug/linux/install.bash`
 
+     - `./dotfiles/linux/set-keyboard-to-mac-mode.sh`
+
 ### macOS
 
 1. Partially disable System Integrity Protection for `yabai`. Instructions can be found on the [yabai wiki][yabai-wiki].
