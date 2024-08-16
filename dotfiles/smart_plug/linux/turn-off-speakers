@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
-# My service and the network manager listen to the same signal to shut down which results in a race condition.
-# This ensures that my service stops first, which is necessary since I need the network to be on to turn off the speakers.
-sudo systemctl stop smart-plug-daemon.service
+# NetworkManager turns off after receiving a dbus message, outside of systemd's
+# scheduling, so to make sure my speakers are turned off before NetworkManager
+# shuts down, I turn off my speakers here.
+sudo systemctl stop smart-plug.service

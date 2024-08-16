@@ -125,6 +125,8 @@ class SmartPlugController(object):
 
 
 if __name__ == "__main__":
+    asyncio.set_event_loop(asyncio.new_event_loop())
+
     try:
         plug_controller = SmartPlugController(plug_alias="plug")
     except Exception as exception:

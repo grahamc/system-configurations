@@ -1,0 +1,13 @@
+[Unit]
+Description=Smart Plug
+After=default.target sleep.target
+Conflicts=sleep.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/speaker/speakerctl on
+ExecStop=/opt/speaker/speakerctl off
+RemainAfterExit=yes
+
+[Install]
+WantedBy=default.target sleep.target

@@ -29,23 +29,10 @@
         ];
     pythonWithPackages = pkgs.python3.withPackages pythonPackages;
 
-    scriptText = let
-      projectRootDirectory = "${self}/dotfiles/smart_plug";
-    in
-      if isLinux
-      then ''
-        # Not exactly sure why, but the script only works when I'm in this directory. Probably something to do with
-        # how I'm importing smart_plug.py
-        cd ${projectRootDirectory}/linux
-        # I'm using exec so the python process will be the root process in the cgroup for the systemd service
-        # and not this shell. This way it will receive any signals sent by systemd, for example SIGTERM
-        # when I stop the service. Without exec, the SIGTERM listener in the python script wasn't working
-        # properly.
-        exec python smart-plug-daemon.py
-      ''
-      else ''
-        python ${projectRootDirectory}/smart_plug.py "$@"
-      '';
+    scriptText = ''
+      python ${self}/dotfiles/smart_plug/smart_plug.py "$@"
+    '';
+
     cli =
       pkgs.writeShellApplication
       {

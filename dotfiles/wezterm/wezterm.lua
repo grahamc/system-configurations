@@ -78,12 +78,21 @@ config.font_rules = {
     }),
   },
 }
-config.underline_position = "400%"
-config.font_size = 11.3
 if is_mac then
   config.font_size = 13.5
+  config.line_height = 1.5
+  config.underline_position = "400%"
+else
+  config.font_size = 11.3
+
+  -- TODO: I want this to be the same as macOS, but the font gets cut off when I
+  -- try.
+  config.line_height = 1.25
+
+  -- TODO: I want this to be the same as macOS, but the underline doesn't show
+  -- up when I try.
+  config.underline_position = "200%"
 end
-config.line_height = 1.5
 config.underline_thickness = "150%"
 
 -- SYNC: terminal-color-palettes

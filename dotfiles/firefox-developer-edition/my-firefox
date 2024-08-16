@@ -8,14 +8,11 @@ set -o errexit
 # Exit if an unset variable is referenced
 set -o nounset
 
-if ! command -v firefox-developer-edition >/dev/null 2>&1; then
-  firefox "$@"
-  exit
-fi
+devedition_executable_name='firefox-devedition'
+regular_executable_name='firefox'
 
-# The .desktop entry executes the binary in /opt so I have to look for that.
-if pgrep --full '/opt/firefox' >/dev/null 2>&1; then
-  firefox-developer-edition "$@"
+if pgrep --full "$devedition_executable_name" >/dev/null 2>&1; then
+  exec "$devedition_executable_name" "$@"
 else
-  firefox "$@"
+  exec "$regular_executable_name" "$@"
 fi

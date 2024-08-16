@@ -1,8 +1,0 @@
-[Unit]
-Description=Smart Plug Daemon
-
-[Service]
-ExecStart=/opt/speaker/speakerctl
-
-[Install]
-WantedBy=multi-user.target
