@@ -34,7 +34,13 @@
   home.activation.flatpakOverrides =
     lib.hm.dag.entryAfter
     ["writeBoundary"]
-    ''
-      cp --no-preserve=mode --dereference ${lib.escapeShellArg "${specialArgs.flakeInputs.self}/dotfiles/flatpak/overrides/"}* ${lib.escapeShellArg "${config.xdg.dataHome}/flatpak/overrides/"}
-    '';
+    (
+      if (pkgs.stdenv.isLinux && specialArgs.isGui)
+      then ''
+        target=${lib.escapeShellArg "${config.xdg.dataHome}/flatpak/overrides/"}
+        mkdir -p "$target"
+        cp --no-preserve=mode --dereference ${lib.escapeShellArg "${specialArgs.flakeInputs.self}/dotfiles/flatpak/overrides/"}* "$target"
+      ''
+      else ""
+    );
 }
