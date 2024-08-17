@@ -41,5 +41,6 @@ jobs:
           # TODO: This isn't working right now:
           # https://github.com/cachix/cachix-action/issues/169
           useDaemon: false
+      - uses: DeterminateSystems/magic-nix-cache-action@main
       - run: NIXPKGS_ALLOW_UNFREE=1 nix run --show-trace .#nix -- build --impure --show-trace
         working-directory: "code/system-configurations"
