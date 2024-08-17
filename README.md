@@ -201,7 +201,6 @@ where `<type>` can be `shell` or `terminal`.
 [official-installer]: https://nixos.org/download.html
 [home-manager]: https://github.com/nix-community/home-manager
 [nix-darwin]: https://github.com/LnL7/nix-darwin
-[yabai-wiki]: https://github.com/koekeishiya/yabai/wiki/Disabling-System-Integrity-Protection
 [brew]: https://brew.sh/
 [rootless-nix]: https://github.com/NixOS/nix/issues/1971#issue-304578884
 [built-with-nix-site]: https://builtwithnix.org
