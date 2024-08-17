@@ -9,7 +9,7 @@
   inherit (specialArgs.flakeInputs) self;
   inherit (lib.attrsets) optionalAttrs;
   inherit (pkgs.stdenv) isLinux;
-  updateFlags = "${self.lib.updateFlags.homeManager}${lib.strings.optionalString isLinux " ${self.lib.updateFlags.portableHomeLinux}"}";
+  updateFlags = "${self.lib.updateFlags.homeManager}${lib.strings.optionalString isLinux " ${self.lib.updateFlags.portableHomeLinux}"}${lib.strings.optionalString (isLinux && specialArgs.isGui) " ${self.lib.updateFlags.desktopLinux}"}";
 
   # Scripts for switching generations and upgrading flake inputs.
   hostctl-switch = pkgs.writeShellApplication {

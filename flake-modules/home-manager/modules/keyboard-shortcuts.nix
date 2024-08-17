@@ -5,21 +5,7 @@
   ...
 }: let
   inherit (specialArgs) isGui flakeInputs;
-  inherit (pkgs.stdenv) isLinux isDarwin;
-  linux =
-    lib.mkIf
-    (isGui && isLinux)
-    {
-      home.activation.gnomeXkbSetup =
-        lib.hm.dag.entryAfter
-        ["writeBoundary"]
-        ''
-          # Use capslock as ctrl
-          ${pkgs.glib}/bin/gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:nocaps']"
-          # This was bound to alt+`, but I use that for vscode so I'm clearing it.
-          ${pkgs.glib}/bin/gsettings set org.gnome.desktop.wm.keybindings switch-group '[]'
-        '';
-    };
+  inherit (pkgs.stdenv) isDarwin isLinux;
 
   stacklineWithoutConfig = pkgs.stdenv.mkDerivation {
     pname = "mystackline";
@@ -32,6 +18,7 @@
       rm $out/conf.lua
     '';
   };
+
   mac =
     lib.mkIf
     (isGui && isDarwin)
@@ -65,5 +52,19 @@
         "^/" = "noop:";
       };
     };
+
+  linux =
+    lib.mkIf
+    (isGui && isLinux)
+    {
+      repository.symlink = {
+        xdg = {
+          configFile = {
+            # TODO: When COSMIC writes to this file it replaces the symlink with a regular copy :(
+            "cosmic/com.system76.CosmicSettings.Shortcuts/v1/custom".source = "cosmic/v1-shortcuts";
+          };
+        };
+      };
+    };
 in
-  lib.mkMerge [linux mac]
+  lib.mkMerge [mac linux]

@@ -330,18 +330,29 @@ config.show_tab_index_in_tab_bar = false
 -- TODO: I don't know why I need this
 config.colors = {}
 
+local paste_keybind = nil
+if is_mac then
+  paste_keybind = {
+    key = "v",
+    mods = "SUPER",
+    action = wezterm.action.PasteFrom("Clipboard"),
+    
+  }
+else
+  paste_keybind = {
+    key = "Insert",
+    mods = "SHIFT",
+    action = wezterm.action.PasteFrom("Clipboard"),
+  }
+end
+
 local keybinds = {
+  paste_keybind,
   {
     key = "c",
     mods = "ALT",
     action = wezterm.action.EmitEvent(CustomEvent.ThemeToggleRequested),
   },
-  {
-    key = "v",
-    mods = "SUPER",
-    action = wezterm.action.PasteFrom("Clipboard"),
-  },
-
   {
     key = "m",
     mods = "CTRL",

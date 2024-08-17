@@ -12,5 +12,5 @@ script_directory="$(
   pwd -P
 )"
 
-# This script assumes bash is the default shell
-sudo install --compare --backup --suffix=.bak --owner=root --group=root --mode='u=rwx,g=r,o=r' -D --verbose --no-target-directory "$script_directory/bigolu-nix-locale-variable.sh" /etc/profile.d/bigolu-nix-locale-variable.sh
+sudo install --compare --backup --suffix=.bak --owner=root --group=root --mode='u=rwx,g=r,o=r' -D --verbose --no-target-directory "$script_directory/default.conf" /etc/keyd/default.conf
+sudo keyd reload

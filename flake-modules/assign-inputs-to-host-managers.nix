@@ -47,6 +47,9 @@
       portableHomeLinux = [
         "nixgl"
       ];
+      desktopLinux = [
+        "nix-flatpak"
+      ];
     };
     uniqueAssignments = lib.lists.unique (lib.lists.flatten (builtins.attrValues inputListsByHostManager));
     flakeInputNames = lib.lists.remove "self" (builtins.attrNames inputs);

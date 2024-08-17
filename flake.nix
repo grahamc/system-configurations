@@ -65,6 +65,7 @@
       url = "github:wez/wezterm?dir=nix";
     };
     nixpkgs-for-wezterm-darwin.url = "github:nixos/nixpkgs?rev=ff0a5a776b56e0ca32d47a4a47695452ec7f7d80";
+    nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*.tar.gz";
 
     # nix
     ########################################

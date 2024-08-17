@@ -12,6 +12,12 @@ in
       ncurses
     ];
 
+    services.flatpak = lib.attrsets.optionalAttrs (pkgs.stdenv.isLinux && specialArgs.isGui) {
+      packages = [
+        "org.wezfurlong.wezterm"
+      ];
+    };
+
     home.file = {
       # Putting my terminfo database here so it gets picked up[2].
       #
