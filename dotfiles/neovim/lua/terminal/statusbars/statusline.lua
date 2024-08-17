@@ -79,12 +79,13 @@ local function get_mode_indicator()
   end
   local mode_indicator = "%#StatusLinePowerlineOuter#"
     .. ""
+    .. "%#StatusLine# "
     .. mode_highlight
     .. " "
     .. mode
     .. " "
     .. "%#StatusLinePowerlineInner#"
-    .. " "
+    .. "  "
 
   return mode_indicator, 5 + #mode
 end

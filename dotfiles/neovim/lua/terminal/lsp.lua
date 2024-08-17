@@ -13,7 +13,7 @@ vim.diagnostic.config({
   float = {
     source = true,
     focusable = true,
-    border = { " ", " ", " ", " ", " ", " ", " ", " " },
+    border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
     format = function(diagnostic)
       local result = diagnostic.message
 
@@ -140,7 +140,7 @@ local function enhanced_float_handler(handler, on_open, on_close)
         max_height = math.floor(vim.o.lines * 0.35),
         max_width = math.floor(vim.o.columns * 0.65),
         focusable = true,
-        border = { " ", " ", " ", " ", " ", " ", " ", " " },
+        border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
       })
     )
     if not bufnr or not win_id then

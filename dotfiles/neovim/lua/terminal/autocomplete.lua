@@ -221,7 +221,7 @@ Plug("hrsh7th/nvim-cmp", {
       window = {
         documentation = {
           winhighlight = "NormalFloat:CmpDocumentationNormal,FloatBorder:CmpDocumentationBorder",
-          border = { " ", " ", " ", " ", " ", " ", " ", " " },
+          border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
           -- TODO: ask if this option could accept a function instead so it can respond to window
           -- resizes
           max_height = math.floor(vim.o.lines * 0.35),

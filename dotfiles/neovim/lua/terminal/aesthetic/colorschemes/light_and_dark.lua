@@ -49,13 +49,13 @@ local theme = lush(function(injected_functions)
     t_15 { fg = hsl(is_light and "#808080" or "#78849b") },
     -- }}}
 
-    virtual_text { bg = is_light and t_0.fg.da(3) or t_0.fg.li(3), bold = true, },
+    virtual_text { bold = true, italic = true, },
 
     -- modes {{{
     Normal { bg = "NONE", fg = t_7.fg, }, -- Normal text
     -- tint.nvim needs this in order to work
     NormalNC { Normal, }, -- normal text in non-current windows
-    Visual { bg = is_light and hsl("#add6ff") or t_3.fg, fg = is_light and "NONE" or t_0.fg, }, -- Visual mode selection
+    Visual { fg = t_3.fg, reverse = true, }, -- Visual mode selection
     VisualNOS {}, -- Visual mode selection when vim is "Not Owning the Selection".
     -- }}}
 
@@ -151,10 +151,10 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- diffs {{{
-    DiffAdd { bg = t_2.fg[is_light and 'lighten' or 'darken'](60) }, -- Diff mode: Added line |diff.txt|
-    DiffChange { bg = t_3.fg[is_light and 'lighten' or 'darken'](60) }, -- Diff mode: Changed line |diff.txt|
-    DiffDelete { bg = t_1.fg[is_light and 'lighten' or 'darken'](60) }, -- Diff mode: Deleted line |diff.txt|
-    DiffText { bg = t_3.fg[is_light and 'lighten' or 'darken'](50) }, -- Diff mode: Changed text within a changed line |diff.txt|
+    DiffAdd { fg = t_2.fg, reverse = true, }, -- Diff mode: Added line |diff.txt|
+    DiffChange { fg = t_3.fg, reverse = true, }, -- Diff mode: Changed line |diff.txt|
+    DiffDelete { fg = t_1.fg, reverse = true, }, -- Diff mode: Deleted line |diff.txt|
+    DiffText { fg = t_15.fg, reverse = true, }, -- Diff mode: Changed text within a changed line |diff.txt|
     diffAdded { DiffAdd },
     diffRemoved { DiffDelete },
     diffChanged { DiffChange },
@@ -175,7 +175,7 @@ local theme = lush(function(injected_functions)
 
     -- statusline {{{
     ---@diagnostic disable-next-line: redundant-parameter
-    StatusLine { bg = is_light and hsl("#eceef1") or t_0.fg.lighten(6) }, -- Status line of current window
+    StatusLine { fg = t_15.fg, reverse = true, }, -- Status line of current window
     ---@diagnostic disable-next-line: undefined-field
     StatusLineFill { StatusLine, fg = StatusLine.bg },
     StatusLineSeparator { StatusLine, fg = t_0.fg, bold = true },
@@ -189,11 +189,11 @@ local theme = lush(function(injected_functions)
     StatusLineShowcmd { StatusLine, fg = t_6.fg },
     StatusLineDebugIndicator { StatusLine, fg = t_2.fg },
     ---@diagnostic disable-next-line: undefined-field
-    StatusLinePowerlineOuter { fg = StatusLine.bg },
-    StatusLinePowerlineInner { StatusLine, fg = t_0.fg },
+    StatusLinePowerlineOuter { fg = t_15.fg, },
+    StatusLinePowerlineInner { StatusLine, fg = t_15.fg },
     status_line_mode { StatusLine, bold = true },
     StatusLineModeNormal { status_line_mode, },
-    StatusLineModeVisual { status_line_mode, fg = (is_light and t_4 or t_3).fg, },
+    StatusLineModeVisual { status_line_mode, t_3.fg, },
     StatusLineModeInsert { status_line_mode, fg = t_6.fg, },
     StatusLineModeTerminal { status_line_mode, fg = t_2.fg, },
     StatusLineModeOther { status_line_mode, fg = t_8.fg, },
@@ -211,7 +211,7 @@ local theme = lush(function(injected_functions)
       -- LspReferenceWrite           { } , -- Used for highlighting "write" references
       -- LspSignatureActiveParameter { } , -- Used to highlight the active parameter in the signature help. See |vim.lsp.handlers.signature_help()|.
       LspInfoBorder { FloatBorder },
-      LspInlayHint { virtual_text, fg = t_0.fg[is_light and 'darken' or 'lighten'](68), },
+      LspInlayHint { virtual_text, fg = t_15.fg, },
       LspCodeLens { LspInlayHint, } , -- Used to color the virtual text of the codelens. See |nvim_buf_set_extmark()|.
       LspCodeLensSeparator { LspCodeLens, fg = t_8.fg, } , -- Used to color the seperator between two or more code lens.
       -- }}}
@@ -219,21 +219,21 @@ local theme = lush(function(injected_functions)
     Conceal { t_8 }, -- Placeholder characters substituted for concealed text (see 'conceallevel')
     Directory { t_4 }, -- Directory names (and other special names in listings)
     EndOfBuffer {}, -- Filler lines (~) after the end of the buffer. By default, this is highlighted like |hl-NonText|.
-    Folded { bg = t_0.fg[is_light and 'darken' or 'lighten'](3) }, -- Line used for closed folds
+    Folded { bold = true, italic = true, }, -- Line used for closed folds
     FoldColumn { fg = t_8.fg }, -- 'foldcolumn'
-    TreesitterContext { bg = is_light and t_0.fg.darken(3) or t_0.fg.lighten(2) }, -- Line used for closed folds
+    TreesitterContext { bold = true, italic = true, }, -- Line used for closed folds
     SignColumn {}, -- Column where |signs| are displayed
     Substitute { Search }, -- |:substitute| replacement text highlighting
     ModeMsg {}, -- 'showmode' message (e.g., "-- INSERT -- ")
     MsgArea { StatusLine }, -- Area for messages and cmdline
     MsgSeparator {}, -- Separator for scrolled messages, `msgsep` flag of 'display'
     MoreMsg {}, -- |more-prompt|
-    NonText { fg = t_0.fg[is_light and 'darken' or 'lighten'](10) }, -- '@' at the end of the window, characters from 'showbreak' and other characters that do not really exist in the text (e.g., ">" displayed when a double-wide character doesn't fit at the end of the line). See also |hl-EndOfBuffer|.
+    NonText { fg = t_15.fg, }, -- '@' at the end of the window, characters from 'showbreak' and other characters that do not really exist in the text (e.g., ">" displayed when a double-wide character doesn't fit at the end of the line). See also |hl-EndOfBuffer|.
     Question {}, -- |hit-enter| prompt and yes/no questions
     SpellBad { Error }, -- Word that is not recognized by the spellchecker. |spell| Combined with the highlighting used otherwise.
     SpellCap { Warning }, -- Word that should start with a capital. |spell| Combined with the highlighting used otherwise.
     Title { Normal }, -- Titles for output from ":set all", ":autocmd" etc.
-    Whitespace { fg = t_0.fg[is_light and 'darken' or 'lighten'](30) }, -- "nbsp", "space", "tab" and "trail" in 'listchars'
+    Whitespace { fg = t_15.fg, }, -- "nbsp", "space", "tab" and "trail" in 'listchars'
     WinSeparator { t_8, }, -- Separator between window splits. Inherts from |hl-VertSplit| by default, which it will replace eventually.
     ColorColumn { WinSeparator },
     GitBlameVirtualText { virtual_text, fg = t_8.fg, },
@@ -251,14 +251,14 @@ local theme = lush(function(injected_functions)
     MiniOperatorsExchangeFrom { Visual },
 
     -- nvim-cmp {{{
-    CmpNormal { bg = t_0.fg[is_light and 'darken' or 'lighten'](6) },
-    CmpItemKind { fg = CmpNormal.bg[is_light and 'darken' or 'lighten'](55) },
+    CmpNormal { bg = t_15.fg, fg = t_0.fg, },
+    CmpItemKind { CmpNormal, },
     CmpItemMenu { CmpItemKind },
-    CmpDocumentationNormal { bg = CmpNormal.bg[is_light and 'darken' or 'lighten'](1), },
-    CmpDocumentationBorder { CmpDocumentationNormal, fg = CmpDocumentationNormal.bg, },
-    CmpItemAbbrMatch { t_6 },
+    CmpDocumentationNormal { Normal, },
+    CmpDocumentationBorder { CmpDocumentationNormal, fg = t_15.fg },
+    CmpItemAbbrMatch { bold = true, },
     CmpItemAbbrMatchFuzzy { CmpItemAbbrMatch },
-    CmpCursorLine { CmpItemAbbrMatch, reverse = true },
+    CmpCursorLine { bg = t_6.fg, fg = t_0.fg, },
     -- }}}
 
     -- pmenu (autocomplete) {{{
@@ -269,7 +269,7 @@ local theme = lush(function(injected_functions)
     PmenuExtra { PmenuKind }, -- Popup menu: Normal item "extra text"
     PmenuExtraSel { PmenuKindSel }, -- Popup menu: Selected item "extra text"
     PmenuSbar { Pmenu }, -- Popup menu: Scrollbar.
-    PmenuThumb { bg = PmenuSbar.bg[is_light and 'darken' or 'lighten'](30) }, -- Popup menu: Thumb of the scrollbar.
+    PmenuThumb { bg = t_7.fg, }, -- Popup menu: Thumb of the scrollbar.
     -- }}}
 
     -- fidget.nvim {{{
@@ -279,7 +279,7 @@ local theme = lush(function(injected_functions)
     -- }}}
 
     -- mini.nvim {{{
-    MiniIndentscopeSymbol { fg = t_0.fg[is_light and 'darken' or 'lighten'](23), },
+    MiniIndentscopeSymbol { fg = t_15.fg, },
     MiniJump2dSpot { t_3 },
     MiniJump2dSpotUnique { MiniJump2dSpot },
     MiniJump2dSpotAhead { MiniJump2dSpot },
