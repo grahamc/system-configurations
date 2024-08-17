@@ -118,17 +118,15 @@ The next steps depend on the operating system you're using:
 
 ### macOS
 
-1. Partially disable System Integrity Protection for `yabai`. Instructions can be found on the [yabai wiki][yabai-wiki].
-
-2. I install some Homebrew packages through nix-darwin, but nix-darwin doesn't provide brew so you'll have to install
+1. I install some Homebrew packages through nix-darwin, but nix-darwin doesn't provide brew so you'll have to install
    it yourself. Check the site for instructions: [brew.sh][brew].
 
-3. Apply the nix-darwin configuration by running `just init-nix-darwin <host_name>` where
+2. Apply the nix-darwin configuration by running `just init-nix-darwin <host_name>` where
    `<host_name>` is one of the hosts defined in the [nix-darwin flake module](flake-modules/nix-darwin/default.nix).
 
-4. [Some settings in nix-darwin only take effect after a logout/restart](https://github.com/LnL7/nix-darwin/issues/658) so restart now.
+3. [Some settings in nix-darwin only take effect after a logout/restart](https://github.com/LnL7/nix-darwin/issues/658) so restart now.
 
-5. Additional Setup
+4. Additional Setup
 
    - Keyboard:
 
