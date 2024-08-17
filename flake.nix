@@ -1,6 +1,11 @@
 {
   description = "Biggie's host configurations";
 
+  nixConfig = {
+    extra-substituters = "https://bigolu.cachix.org";
+    extra-trusted-public-keys = "bigolu.cachix.org-1:AJELdgYsv4CX7rJkuGu5HuVaOHcqlOgR07ZJfihVTIw=";
+  };
+
   outputs = inputs @ {
     flake-parts,
     flake-utils,
