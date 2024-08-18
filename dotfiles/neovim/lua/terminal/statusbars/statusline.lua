@@ -64,28 +64,14 @@ local function get_mode_indicator()
   if mode == nil then
     mode = "?"
   end
-  local function make_highlight_name(name)
-    return "%#" .. string.format("StatusLineMode%s", name) .. "#"
-  end
-  local mode_highlight = make_highlight_name("Other")
-  if vim.startswith(mode, visual) then
-    mode_highlight = make_highlight_name("Visual")
-  elseif vim.startswith(mode, insert) then
-    mode_highlight = make_highlight_name("Insert")
-  elseif vim.startswith(mode, normal) then
-    mode_highlight = make_highlight_name("Normal")
-  elseif vim.startswith(mode, terminal) then
-    mode_highlight = make_highlight_name("Terminal")
-  end
   local mode_indicator = "%#StatusLinePowerlineOuter#"
     .. ""
-    .. "%#StatusLine# "
-    .. mode_highlight
+    .. "%#status_line_mode#"
     .. " "
     .. mode
     .. " "
     .. "%#StatusLinePowerlineInner#"
-    .. "  "
+    .. " "
 
   return mode_indicator, 5 + #mode
 end
@@ -109,7 +95,7 @@ local function filter_out_nils(list)
 end
 
 local function make_statusline(left_items, right_items, left_sep, right_sep)
-  local showcmd = "%#StatusLineShowcmd#%S"
+  local showcmd = "%#StatusLine#%S"
 
   left_sep = left_sep or " ∙ "
   right_sep = right_sep or "  "

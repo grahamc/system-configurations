@@ -47,7 +47,7 @@
     # with the addition of pam-reattach so it works with tmux.
     #
     # TODO: I can remove this if this PR gets merged
-    # https://github.com/LnL7/nix-darwin/pull/662
+    # https://github.com/LnL7/nix-darwin/issues/985
     activationScripts.postActivation.text = let
       mkSudoTouchIdAuthScript = isEnabled: let
         file = "/etc/pam.d/sudo";

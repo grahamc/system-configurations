@@ -45,7 +45,7 @@ in {
     #   - So I can keep the plugin settings in my config. Settings need to be defined before the
     # plugin is loaded and programs.tmux loads my configuration _after_ loading plugins so it
     # wouldn't work. Instead I load them my self.
-    packages = with pkgs; [myTmux tmux-xpanes] ++ tmuxPlugins;
+    packages = [myTmux] ++ tmuxPlugins;
 
     # I reload tmux every time I switch generations because tmux-suspend uses the canonical
     # path to its script when making a key mapping and that path may change when I switch

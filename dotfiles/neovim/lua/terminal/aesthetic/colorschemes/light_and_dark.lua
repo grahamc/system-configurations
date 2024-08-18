@@ -192,11 +192,6 @@ local theme = lush(function(injected_functions)
     StatusLinePowerlineOuter { fg = t_15.fg, },
     StatusLinePowerlineInner { StatusLine, fg = t_15.fg },
     status_line_mode { StatusLine, bold = true },
-    StatusLineModeNormal { status_line_mode, },
-    StatusLineModeVisual { status_line_mode, t_3.fg, },
-    StatusLineModeInsert { status_line_mode, fg = t_6.fg, },
-    StatusLineModeTerminal { status_line_mode, fg = t_2.fg, },
-    StatusLineModeOther { status_line_mode, fg = t_8.fg, },
     -- }}}
 
     -- LSP {{{

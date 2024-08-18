@@ -80,12 +80,7 @@ the steps below:
 
 ## Applying a Configuration
 
-1. Start a shell with the required programs by first running `nix shell --impure nixpkgs#fish nixpkgs#direnv nixpkgs#git --command fish` and then running `direnv hook fish | source`.
-
-2. Clone the repository and go into its directory by running
-   `git clone https://github.com/bigolu/system-configurations.git ~/code/system-configurations && cd ~/code/system-configurations`
-
-3. Run `direnv allow` to set up the development environment.
+1. Start a shell with the required programs by running `nix shell --impure nixpkgs#fish nixpkgs#direnv nixpkgs#git --command fish --init-command 'direnv hook fish | source; and git clone https://github.com/bigolu/system-configurations.git ~/code/system-configurations; and cd ~/code/system-configurations; and direnv allow; and direnv exec "$PWD" nix-direnv-reload'`.
 
 The next steps depend on the operating system you're using:
 
@@ -98,21 +93,9 @@ The next steps depend on the operating system you're using:
 
    - Install and start [`keyd`][keyd]
 
-   - Run the following commands from the root of the repository. These commands run scripts that require root privileges and therefore can't be done in Home Manager:
+   - Run the following command from the root of the repository. This command run scripts that require root privileges and therefore can't be done in Home Manager:
 
-     - `./dotfiles/nix/set-locale-variable.bash`
-
-     - `./dotfiles/nix/nix-fix/install-nix-fix.bash`
-
-     - `./dotfiles/nix/systemd-garbage-collection/install.bash`
-
-     - `./dotfiles/smart_plug/linux/install.bash`
-
-     - `./dotfiles/linux/set-keyboard-to-mac-mode.sh`
-
-     - `./dotfiles/keyd/install.bash`
-
-     - `./dotfiles/firefox-developer-edition/set-default-browser.sh`
+     - `./dotfiles/nix/set-locale-variable.bash && ./dotfiles/nix/nix-fix/install-nix-fix.bash && ./dotfiles/nix/systemd-garbage-collection/install.bash && ./dotfiles/smart_plug/linux/install.bash && ./dotfiles/linux/set-keyboard-to-mac-mode.sh && ./dotfiles/keyd/install.bash && ./dotfiles/firefox-developer-edition/set-default-browser.sh`
 
    - Apply the Firefox `about:config` changes in `dotfiles/firefox-developer-edition/about-config-changes.txt`
 

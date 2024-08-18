@@ -113,14 +113,23 @@ cleanup:
     rm -f ~/.local/state/nvim/*.log
     rm -f ~/.local/state/nvim/undo/*
 
+# I'm not able to upgrade the nix and cacert that come with the nix installation
+# using `nix profile upgrade '.*'` so here I'm installing them from the nixpkgs
+
+# flake and giving them priority.
+[private]
+base-packages:
+    sudo --set-home nix profile install nixpkgs#nix --priority 4
+    sudo --set-home nix profile install nixpkgs#cacert --priority 4
+
 # Apply the first generation of a home-manager configuration.
 [private]
-init-home-manager host_name: install-git-hooks get-secrets
+init-home-manager host_name: install-git-hooks get-secrets base-packages
     nix run .#nix -- run .#homeManager -- switch --flake .#{{ host_name }}
 
 # Apply the first generation of a nix-darwin configuration.
 [private]
-init-nix-darwin host_name: install-git-hooks get-secrets
+init-nix-darwin host_name: install-git-hooks get-secrets base-packages
     nix run .#nix -- run .#nixDarwin -- switch --flake .#{{ host_name }}
 
 # Generate the Table of Contents in the README
