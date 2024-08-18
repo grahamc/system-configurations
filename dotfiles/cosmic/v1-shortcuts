@@ -2,8 +2,45 @@
     (
         modifiers: [
             Super,
+            Shift,
+        ],
+        key: "s",
+    ): ToggleSticky,
+    (
+        modifiers: [
+            Super,
+        ],
+    ): Disable,
+    (
+        modifiers: [
+            Super,
+        ],
+        key: "bracketleft",
+    ): PreviousWorkspace,
+    (
+        modifiers: [
+            Super,
+        ],
+        key: "bracketright",
+    ): NextWorkspace,
+    (
+        modifiers: [
+            Super,
         ],
         key: "r",
+    ): Disable,
+    (
+        modifiers: [
+            Super,
+            Shift,
+        ],
+        key: "0",
+    ): Disable,
+    (
+        modifiers: [
+            Super,
+        ],
+        key: "a",
     ): Disable,
     (
         modifiers: [
@@ -22,30 +59,6 @@
             Super,
             Shift,
         ],
-        key: "0",
-    ): Disable,
-    (
-        modifiers: [
-            Super,
-        ],
-        key: "bracketright",
-    ): NextWorkspace,
-    (
-        modifiers: [
-            Super,
-            Shift,
-        ],
         key: "r",
-    ): Disable,
-    (
-        modifiers: [
-            Super,
-        ],
-        key: "bracketleft",
-    ): PreviousWorkspace,
-    (
-        modifiers: [
-            Super,
-        ],
     ): Disable,
 }

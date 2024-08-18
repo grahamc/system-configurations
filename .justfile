@@ -119,8 +119,8 @@ cleanup:
 # flake and giving them priority.
 [private]
 base-packages:
-    sudo --set-home nix profile install nixpkgs#nix --priority 4
-    sudo --set-home nix profile install nixpkgs#cacert --priority 4
+    sudo --set-home --preserve-env=PATH env nix profile install nixpkgs#nix --priority 4
+    sudo --set-home --preserve-env=PATH env nix profile install nixpkgs#cacert --priority 4
 
 # Apply the first generation of a home-manager configuration.
 [private]
