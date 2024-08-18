@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{config, ...}: {
   homebrew = {
     enable = true;
     onActivation.cleanup = "zap";
@@ -51,7 +47,5 @@
     # Disable the Gatekeeper so I can open apps that weren't codesigned without
     # being warned.
     sudo spctl --master-disable
-
-    ${import ./git-kraken-remove-min-window-width.nix pkgs}
   '';
 }
