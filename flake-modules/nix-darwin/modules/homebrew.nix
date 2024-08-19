@@ -2,7 +2,6 @@
   homebrew = {
     enable = true;
     onActivation.cleanup = "zap";
-    configureLoginShell = true;
 
     casks = [
       "wezterm@nightly"
