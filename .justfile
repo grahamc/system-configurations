@@ -143,9 +143,23 @@ linux-root-scripts:
 init-home-manager host_name: install-git-hooks get-secrets base-packages && linux-root-scripts
     nix run .#nix -- run .#homeManager -- switch --flake .#{{ host_name }}
 
+[private]
+brew:
+    #!/usr/bin/env bash
+    set -o errexit
+    set -o nounset
+    set -o pipefail
+
+    if [ -x /usr/local/bin/brew ]; then
+        exit
+    fi
+
+    # Install brew. Taken from the brew site: https://brew.sh/
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
 # Apply the first generation of a nix-darwin configuration.
 [private]
-init-nix-darwin host_name: install-git-hooks get-secrets base-packages
+init-nix-darwin host_name: install-git-hooks get-secrets base-packages brew
     nix run .#nix -- run .#nixDarwin -- switch --flake .#{{ host_name }}
 
 # Generate the Table of Contents in the README

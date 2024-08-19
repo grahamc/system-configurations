@@ -30,11 +30,6 @@
   '';
 in {
   options = {
-    homebrew.configureLoginShell = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-    };
-
     configureLoginShellForNixDarwin = lib.mkOption {
       type = lib.types.bool;
       default = false;
@@ -42,14 +37,6 @@ in {
   };
 
   config = let
-    # TODO: Homebrew should be doing this
-    homebrewScript = mkScript {
-      isEnabled = config.homebrew.configureLoginShell;
-      file = "/etc/zprofile";
-      marker = "homebrew.configureLoginShell";
-      line = ''eval "$(/usr/local/bin/brew shellenv zsh)"'';
-    };
-
     # TODO: Consider upstreaming
     nixDarwinScript = mkScript {
       isEnabled = config.configureLoginShellForNixDarwin;
@@ -61,9 +48,6 @@ in {
     inherit (lib.strings) optionalString;
   in {
     system.activationScripts.postActivation.text = ''
-      echo >&2 '[bigolu] Configuring login shell for Homebrew...'
-      ${homebrewScript}
-
       echo >&2 '[bigolu] Configuring login shell for nix-darwin...'
       ${nixDarwinScript}
     '';
@@ -73,7 +57,7 @@ in {
     #
     # Adapted from:
     # https://github.com/LnL7/nix-darwin/blob/230a197063de9287128e2c68a7a4b0cd7d0b50a7/modules/services/activate-system/default.nix#L20
-    launchd.daemons = lib.attrsets.optionalAttrs (config.homebrew.configureLoginShell || config.configureLoginShellForNixDarwin) {
+    launchd.daemons = lib.attrsets.optionalAttrs config.configureLoginShellForNixDarwin {
       restore-profile-changes = {
         serviceConfig.RunAtLoad = true;
         serviceConfig.KeepAlive.SuccessfulExit = false;
@@ -82,8 +66,6 @@ in {
           set -e
           set -o pipefail
           export PATH="${pkgs.gnugrep}/bin:${pkgs.coreutils}/bin:@out@/sw/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-
-          ${optionalString config.homebrew.configureLoginShell homebrewScript}
 
           ${optionalString config.configureLoginShellForNixDarwin nixDarwinScript}
         '';

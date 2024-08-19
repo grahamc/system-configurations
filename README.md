@@ -72,13 +72,10 @@ The next steps depend on the operating system you're using:
 
 ### macOS
 
-1. I install some Homebrew packages through nix-darwin, but nix-darwin doesn't provide brew so you'll have to install
-   it yourself. Check the site for instructions: [brew.sh][brew].
-
-2. Apply the nix-darwin configuration by running `just init-nix-darwin <host_name>` where
+1. Apply the nix-darwin configuration by running `just init-nix-darwin <host_name>` where
    `<host_name>` is one of the hosts defined in the [nix-darwin flake module](flake-modules/nix-darwin/default.nix).
 
-3. Keyboard:
+2. Keyboard:
 
    - Set the keyboard input source to 'Others → (No Accent Keys)'.
 
@@ -93,7 +90,7 @@ The next steps depend on the operating system you're using:
 
      - Change: "Mission Control → Move left/right a space" to `cmd+[` and `cmd+]` respectively, "Mission Control" to `cmd+d`, "Mission Control → Switch to Desktop 1-9" `cmd+[1-9]`
 
-4. Open Hammerspoon, Finicky, MonitorControl, UnnaturalScrollWheels, Nightfall, and "Mac Mouse Fix" to configure them.
+3. Open Hammerspoon, Finicky, MonitorControl, UnnaturalScrollWheels, Nightfall, and "Mac Mouse Fix" to configure them.
 
 ## Running the Home Configuration
 
