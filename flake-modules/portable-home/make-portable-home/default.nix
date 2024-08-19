@@ -8,7 +8,6 @@
   name ? "shell",
 }: let
   inherit (pkgs) lib;
-  inherit (lib.attrsets) optionalAttrs;
   inherit (lib.lists) optionals;
   inherit (pkgs.stdenv) isLinux;
 
@@ -71,40 +70,60 @@
       })
     ];
 
-  coreutilsBinaryPath = "${pkgs.coreutils-full}/bin";
-
-  bootstrapScript = let
-    # Normally, to make a shell script I would use the function
-    # `nixpkgs.writeShellApplication` and specify its dependencies through
-    # the attribute `runtimeInputs`. Then those dependencies would be added
-    # to the $PATH before the script executes. In this case, I don't want the
-    # programs that the script depends on to be in the $PATH because I don't
-    # want them on the $PATH of the shell that gets launched at the end of the
-    # script. Instead, I'll supply the dependencies through the variables listed
-    # below.
-    shellBootstrapScriptDependencies =
-      {
-        activationPackage = import ./home-manager-package.nix {
-          inherit pkgs self isGui;
-          modules = allModules;
-          overlays = allOverlays;
+  portableHome = let
+    bashPath = "${pkgs.bash}/bin/bash";
+    activationPackage = import ./home-manager-package.nix {
+      inherit pkgs self isGui;
+      modules = allModules;
+      overlays = allOverlays;
+    };
+    localeArchive =
+      if isLinux
+      then "export LOCALE_ARCHIVE=${lib.escapeShellArg "${locales}/lib/locale/locale-archive"}"
+      else "";
+    bootstrap = pkgs.resholve.mkDerivation {
+      pname = "bootstrap";
+      version = "0.0.1";
+      src = self;
+      dontConfigure = true;
+      dontBuild = true;
+      installPhase = ''
+        install -D flake-modules/portable-home/make-portable-home/bootstrap.bash $out/bin/bootstrap
+      '';
+      solutions = {
+        default = {
+          scripts = ["bin/bootstrap"];
+          interpreter = "${pkgs.bash}/bin/bash";
+          inputs = with pkgs; [
+            coreutils-full
+            fish
+            which
+          ];
+          execer = [
+            "cannot:${pkgs.coreutils-full}/bin/mktemp"
+            "cannot:${pkgs.coreutils-full}/bin/mkdir"
+            "cannot:${pkgs.coreutils-full}/bin/basename"
+            "cannot:${pkgs.coreutils-full}/bin/ln"
+            "cannot:${pkgs.coreutils-full}/bin/chmod"
+            "cannot:${pkgs.coreutils-full}/bin/cp"
+          ];
+          keep = {
+            "$SHELL" = true;
+          };
         };
-        mktemp = "${coreutilsBinaryPath}/mktemp";
-        mkdir = "${coreutilsBinaryPath}/mkdir";
-        ln = "${coreutilsBinaryPath}/ln";
-        copy = "${coreutilsBinaryPath}/cp";
-        chmod = "${coreutilsBinaryPath}/chmod";
-        basename = "${coreutilsBinaryPath}/basename";
-        fish = "${fish}/bin/fish";
-        sh = "${pkgs.yash}/bin/yash";
-        which = "${pkgs.which}/bin/which";
-      }
-      // optionalAttrs isLinux {
-        localeArchive = "${locales}/lib/locale/locale-archive";
       };
+    };
   in
-    import ./make-bootstrap-script.nix shellBootstrapScriptDependencies;
-
-  portableHome = pkgs.writeScriptBin name bootstrapScript // {meta.mainProgram = name;};
+    (
+      pkgs.writeScriptBin
+      name
+      ''        #!${bashPath}
+                BASH_PATH=${bashPath}
+                ACTIVATION_PACKAGE=${lib.escapeShellArg "${activationPackage}"}
+                ${localeArchive}
+                source ${bootstrap}/bin/bootstrap
+      ''
+    )
+    // {meta.mainProgram = name;};
 in
   portableHome
