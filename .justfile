@@ -122,9 +122,25 @@ base-packages:
     sudo --set-home --preserve-env=PATH env nix profile install nixpkgs#nix --priority 4
     sudo --set-home --preserve-env=PATH env nix profile install nixpkgs#cacert --priority 4
 
+# home-manager can't run these since they require root privileges
+[private]
+linux-root-scripts:
+    #!/usr/bin/env bash
+    set -o errexit
+    set -o nounset
+    set -o pipefail
+
+    ./dotfiles/nix/set-locale-variable.bash
+    ./dotfiles/nix/nix-fix/install-nix-fix.bash
+    ./dotfiles/nix/systemd-garbage-collection/install.bash
+    ./dotfiles/smart_plug/linux/install.bash
+    ./dotfiles/linux/set-keyboard-to-mac-mode.sh
+    ./dotfiles/keyd/install.bash
+    ./dotfiles/firefox-developer-edition/set-default-browser.sh
+
 # Apply the first generation of a home-manager configuration.
 [private]
-init-home-manager host_name: install-git-hooks get-secrets base-packages
+init-home-manager host_name: install-git-hooks get-secrets base-packages && linux-root-scripts
     nix run .#nix -- run .#homeManager -- switch --flake .#{{ host_name }}
 
 # Apply the first generation of a nix-darwin configuration.

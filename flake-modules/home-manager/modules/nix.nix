@@ -8,6 +8,8 @@
   inherit (lib.attrsets) optionalAttrs;
   inherit (pkgs.stdenv) isDarwin isLinux;
   inherit (lib.lists) optionals;
+  # TODO: Won't be needed if the daemon auto-reloads:
+  # https://github.com/NixOS/nix/issues/8939
   nix-daemon-reload =
     pkgs.writeShellApplication
     {

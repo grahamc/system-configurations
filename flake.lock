@@ -683,7 +683,6 @@
         "vim-plugin-firenvim": "vim-plugin-firenvim",
         "vim-plugin-friendly-snippets": "vim-plugin-friendly-snippets",
         "vim-plugin-lazy-lsp-nvim": "vim-plugin-lazy-lsp-nvim",
-        "vim-plugin-lush-nvim": "vim-plugin-lush-nvim",
         "vim-plugin-mini-nvim": "vim-plugin-mini-nvim",
         "vim-plugin-nvim-autopairs": "vim-plugin-nvim-autopairs",
         "vim-plugin-nvim-cmp": "vim-plugin-nvim-cmp",
@@ -698,7 +697,6 @@
         "vim-plugin-nvim-ts-autotag": "vim-plugin-nvim-ts-autotag",
         "vim-plugin-plenary-nvim": "vim-plugin-plenary-nvim",
         "vim-plugin-splitjoin-vim": "vim-plugin-splitjoin-vim",
-        "vim-plugin-tint-nvim": "vim-plugin-tint-nvim",
         "vim-plugin-traces-vim": "vim-plugin-traces-vim",
         "vim-plugin-treesj": "vim-plugin-treesj",
         "vim-plugin-vim-abolish": "vim-plugin-vim-abolish",
@@ -1246,22 +1244,6 @@
         "type": "github"
       }
     },
-    "vim-plugin-lush-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1722001350,
-        "narHash": "sha256-gutr36WJRktDxmRjNo0v5tn030nMsAe8vRWx/vKFa2o=",
-        "owner": "rktjmp",
-        "repo": "lush.nvim",
-        "rev": "6a254139d077ad53be7e4f3602c8da0c84447fd9",
-        "type": "github"
-      },
-      "original": {
-        "owner": "rktjmp",
-        "repo": "lush.nvim",
-        "type": "github"
-      }
-    },
     "vim-plugin-mini-nvim": {
       "flake": false,
       "locked": {
@@ -1483,22 +1465,6 @@
       "original": {
         "owner": "AndrewRadev",
         "repo": "splitjoin.vim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-tint-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1714574002,
-        "narHash": "sha256-b0qDgML4i/xvQ5o594YoX8U5zgQHvS23SAZ2dG6ocCE=",
-        "owner": "levouh",
-        "repo": "tint.nvim",
-        "rev": "02bd0527a315a80e4e25bb2dd7b6994fb0daae01",
-        "type": "github"
-      },
-      "original": {
-        "owner": "levouh",
-        "repo": "tint.nvim",
         "type": "github"
       }
     },

@@ -17,7 +17,6 @@ firenvim
 friendly-snippets
 lazy-lsp.nvim
 LuaSnip
-lush.nvim
 mini.nvim
 nvim-autopairs
 nvim-cmp
@@ -32,7 +31,6 @@ nvim-ts-autotag
 plenary.nvim
 SchemaStore.nvim
 splitjoin.vim
-tint.nvim
 traces.vim
 treesj
 vim-abolish

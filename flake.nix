@@ -250,10 +250,6 @@
       url = "github:L3MON4D3/LuaSnip";
       flake = false;
     };
-    vim-plugin-lush-nvim = {
-      url = "github:rktjmp/lush.nvim";
-      flake = false;
-    };
     vim-plugin-mini-nvim = {
       url = "github:echasnovski/mini.nvim";
       flake = false;
@@ -312,10 +308,6 @@
     };
     vim-plugin-splitjoin-vim = {
       url = "github:AndrewRadev/splitjoin.vim";
-      flake = false;
-    };
-    vim-plugin-tint-nvim = {
-      url = "github:levouh/tint.nvim";
       flake = false;
     };
     vim-plugin-traces-vim = {
