@@ -99,11 +99,17 @@ need to use the configuration temporarily and not apply it, like when you're in 
 (SEA) that contains all the command-line programs I use, as well as my config files for them.
 Just run one of these commands, depending on whether you have `wget` or `curl`:
 
-`curl -fsSL https://raw.githubusercontent.com/bigolu/system-configurations/master/.github/run.sh | sh -s -- <type>`
+```bash
+curl -fsSL https://raw.githubusercontent.com/bigolu/system-configurations/master/.github/run.sh \
+  | sh -s -- <type>
+```
 
-`wget -qO- https://raw.githubusercontent.com/bigolu/system-configurations/master/.github/run.sh | sh -s -- <type>`
+```bash
+wget -qO- https://raw.githubusercontent.com/bigolu/system-configurations/master/.github/run.sh \
+  | sh -s -- <type>
+```
 
-where `<type>` can be `shell` or `terminal`.
+Where `<type>` can be `shell` or `terminal`.
 
 > NOTE: While the SEA doesn't depend on any programs on your computer, it does require that you have a `/tmp`
 > directory. You can read this [GitHub issue comment regarding a "rootless Nix"][rootless-nix] to see why this is
@@ -112,7 +118,6 @@ where `<type>` can be `shell` or `terminal`.
 [determinate-systems-installer]: https://github.com/DeterminateSystems/nix-installer
 [home-manager]: https://github.com/nix-community/home-manager
 [nix-darwin]: https://github.com/LnL7/nix-darwin
-[brew]: https://brew.sh/
 [rootless-nix]: https://github.com/NixOS/nix/issues/1971#issue-304578884
 [built-with-nix-site]: https://builtwithnix.org
 [built-with-nix-badge]: https://builtwithnix.org/badge.svg

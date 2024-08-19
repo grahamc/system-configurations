@@ -50,13 +50,6 @@ local function execute(executable, arguments, callback)
   hs.task.new(executable, callback, arguments):start()
 end
 
-local function toggle_stack_icon_style()
-  execute(
-    "/usr/local/bin/hs",
-    { "-c", [[stackline.config:toggle("appearance.showIcons")]] }
-  )
-end
-
 local function toggle_tiling_mode()
   execute(
     "/usr/local/bin/yabai",
@@ -107,66 +100,21 @@ local function getShortcutsHtml()
           key = direction_key_label,
           description = "Switch focus between windows",
         },
-        {
-          mods = { "cmd", "alt" },
-          key = "k",
-          description = "Switch focus to previous window in a stack",
-        },
-        {
-          mods = { "cmd", "alt" },
-          key = "j",
-          description = "Switch focus to next window in a stack",
-        },
       },
     },
     {
-      title = "Move, resize, and swap windows in adjustment mode",
+      title = "Move windows",
       items = {
         {
-          mods = { "cmd" },
-          key = "enter",
-          description = "Enter adjustment mode",
-        },
-        {
-          mods = {},
+          mods = {"cmd","shift"},
           key = direction_key_label,
           description = "Move window",
         },
         {
-          mods = { "fn" },
-          key = "left mouse button drag",
-          description = "Move window",
-        },
-        {
-          mods = { "shift" },
+          mods = {"cmd","ctrl"},
           key = direction_key_label,
-          description = "Grow/shrink window",
+          description = "Swap window",
         },
-        {
-          mods = { "fn" },
-          key = "right mouse button drag",
-          description = "Grow/shrink window",
-        },
-        {
-          mods = { "ctrl" },
-          key = direction_key_label,
-          description = "Swap Windows",
-        },
-        {
-          mods = { "alt" },
-          key = direction_key_label,
-          description = "Stack Windows",
-        },
-        {
-          mods = {},
-          key = "Esc",
-          description = "Exit adjustment mode",
-        },
-      },
-    },
-    {
-      title = "Window Shortcuts",
-      items = {
         {
           mods = { "cmd" },
           key = "o",
@@ -184,6 +132,16 @@ local function getShortcutsHtml()
         },
         {
           mods = { "cmd" },
+          key = "s",
+          description = "Toggle stacking mode (Next window opened will open on top of the current one)",
+        },
+      },
+    },
+    {
+      title = "Resize Windows",
+      items = {
+        {
+          mods = { "cmd" },
           key = "m",
           description = "Toggle fullscreen zoom",
         },
@@ -196,11 +154,6 @@ local function getShortcutsHtml()
           mods = { "cmd", "shift" },
           key = "0",
           description = "Reset all window sizes so that they share space evenly",
-        },
-        {
-          mods = { "cmd" },
-          key = "s",
-          description = "Toggle stacking mode (Next window opened will open on top of the current one)",
         },
       },
     },
@@ -351,19 +304,15 @@ end
 
 local menu_items = {
   {
-    title = "Show Shortcuts",
+    title = "Show Tiling Mode Shortcuts",
     fn = open_help_page,
-  },
-  {
-    title = "Toggle Stack Icon Style",
-    fn = toggle_stack_icon_style,
   },
   {
     title = "Toggle Tiling Mode",
     fn = toggle_tiling_mode,
   },
   {
-    title = "Refresh",
+    title = "Refresh Hammerspoon",
     fn = hs.reload,
   },
 }
