@@ -35,12 +35,14 @@
       };
     };
 
-    # Apply setting immediately so I don't have to logout/reboot.
-    # source: https://medium.com/@zmre/nix-darwin-quick-tip-activate-your-preferences-f69942a93236
-    # TODO: https://github.com/LnL7/nix-darwin/issues/658
     activationScripts.postUserActivation.text = ''
-      # Following line should allow us to avoid a logout/login cycle
+      # Apply settings immediately so I don't have to logout/reboot.
+      # source: https://medium.com/@zmre/nix-darwin-quick-tip-activate-your-preferences-f69942a93236
       /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+
+      # TODO: Some settings may not apply without doing this:
+      # https://github.com/LnL7/nix-darwin/issues/658#issuecomment-1557604877
+      killall Dock
     '';
 
     # Copied from the nix-darwin option 'security.pam.enableSudoTouchIdAuth'

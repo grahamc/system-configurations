@@ -78,9 +78,7 @@ The next steps depend on the operating system you're using:
 2. Apply the nix-darwin configuration by running `just init-nix-darwin <host_name>` where
    `<host_name>` is one of the hosts defined in the [nix-darwin flake module](flake-modules/nix-darwin/default.nix).
 
-3. [Some settings in nix-darwin only take effect after a logout/restart](https://github.com/LnL7/nix-darwin/issues/658) so restart now.
-
-4. Keyboard:
+3. Keyboard:
 
    - Set the keyboard input source to 'Others → (No Accent Keys)'.
 
@@ -95,7 +93,7 @@ The next steps depend on the operating system you're using:
 
      - Change: "Mission Control → Move left/right a space" to `cmd+[` and `cmd+]` respectively, "Mission Control" to `cmd+d`, "Mission Control → Switch to Desktop 1-9" `cmd+[1-9]`
 
-5. Open Hammerspoon, Finicky, MonitorControl, UnnaturalScrollWheels, Nightfall, and "Mac Mouse Fix" to configure them.
+4. Open Hammerspoon, Finicky, MonitorControl, UnnaturalScrollWheels, Nightfall, and "Mac Mouse Fix" to configure them.
 
 ## Running the Home Configuration
 
