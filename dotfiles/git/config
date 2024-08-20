@@ -48,7 +48,6 @@
   syntax-theme = ansi
   tabs = 2
   blame-palette = 0
-  pager = "less -+F"
   file-decoration-style = "bright-white ul"
   file-style = "normal"
   hunk-header-decoration-style = "bright-white box"

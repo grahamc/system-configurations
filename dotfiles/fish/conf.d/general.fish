@@ -3,9 +3,9 @@ if not status is-interactive
 end
 
 abbr --add --global g git
-set --global --export PAGER less
 abbr --add --global x 'chmod +x'
 abbr --add --global du 'du --dereference --human-readable --summarize --apparent-size'
+set --global --export MANOPT --no-hyphenation
 if test (uname) = Linux
     abbr --add --global initramfs-reload 'sudo update-initramfs -u -k all'
     abbr --add --global logout-all 'sudo killall -u $USER'
@@ -25,6 +25,14 @@ if test (uname) = Linux
     abbr --add --position anywhere --global trash 'trash put'
 end
 
+# page
+# lesspipe needs this set for syntax highlighting
+set --global --export LESSOPEN '|lesspipe.sh %s'
+set --global --export PAGER page
+function page --wraps page
+    less $argv | command page
+end
+
 # timg
 function timg --wraps timg
     set pixelation_options
@@ -37,26 +45,9 @@ function timg --wraps timg
     command timg --center $pixelation_options $argv
 end
 
-# man
-# Per the man manpage, spaces in $MANOPT must be escaped with a backslash
-set --global --export MANOPT --no-hyphenation
-# There's an environment variable you can set to change man's pager (MANPAGER),
-# but I'm not using it because I only want to change the pager in interactive
-# mode. I'm also not using an alias because that wouldn't work with `command man
-# ...`.
-abbr --add --global --position anywhere -- man 'man -P "page -t man"'
-
-# Set preferred editor.
-#
-# BACKGROUND: Historically, EDITOR referred to a line editor (e.g. ed) and
-# VISUAL referred to a fullscreen editor (e.g. vi), the latter requiring a more
-# advanced terminal. Programs could then attempt to run the VISUAL editor, and
-# if it wasn't supported, fall back to EDITOR. However, since practically all
-# terminals today support a fullscreen (VISUAL) editor, this distinction is no
-# longer necessary.
-#
-# Since some programs just use the value in EDITOR without checking VISUAL, and
-# vice-versa, I set both to the same editor.  For more info:
+# Set preferred editor. Programs check either of these variables for the
+# preferred editor so I'll set both.  For more information on the meaning of
+# these variables, see:
 # https://unix.stackexchange.com/questions/4859/visual-vs-editor-what-s-the-difference/302391#302391
 set --global --export VISUAL (command -v edit)
 set --global --export EDITOR $VISUAL
@@ -250,12 +241,6 @@ function dui --wraps broot --description 'Check disk usage interactively'
     br -w $argv
 end
 abbr --add --global tree broot
-
-# lesspipe
-#
-# TODO: lesspipe requires this to be set to enable syntax highlighting. I should
-# open an issue to have it read lesskey
-set --global --export LESS -R
 
 # diffoscope
 function diff-html

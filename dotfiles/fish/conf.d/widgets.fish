@@ -136,11 +136,11 @@ function man-widget --description 'Search manpages'
     set parse_entry_command "string replace --regex -- '(?<name>^.*)\s?\((?<section>.*)\)\s+.*\$' '\$section \$name'"
 
     if not set choice ( \
-        FZF_DEFAULT_COMMAND='man -k . --long' \
+        FZF_DEFAULT_COMMAND='man -P less -k .' \
           fzf-tmux-zoom  \
             --tiebreak=chunk,begin,end \
             --prompt 'manpages: ' \
-            --preview "eval 'MANWIDTH=\$FZF_PREVIEW_COLUMNS man '($parse_entry_command {})" \
+            --preview "eval 'MANWIDTH=\$FZF_PREVIEW_COLUMNS man -P less '($parse_entry_command {})" \
             --preview-window '75%' \
     )
         return
