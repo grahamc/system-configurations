@@ -25,6 +25,7 @@ Plug("j-hui/fidget.nvim", {
           normal_hl = "FidgetNormal",
           winblend = 0,
           zindex = 1,
+          max_width = 40,
         },
       },
     })
