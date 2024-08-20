@@ -284,7 +284,7 @@ function StatusLine()
   local diagnostics = nil
   if #diagnostic_list > 0 then
     diagnostics = table.concat(diagnostic_list, " ")
-  else
+  elseif language_server_count_for_current_buffer > 0 then
     diagnostics = "%#DiagnosticOk# OK"
   end
 
