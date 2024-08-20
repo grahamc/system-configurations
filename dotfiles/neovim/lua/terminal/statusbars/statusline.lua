@@ -71,7 +71,7 @@ local function get_mode_indicator()
     .. mode
     .. " "
     .. "%#StatusLinePowerlineInner#"
-    .. " "
+    .. "%#StatusLinePowerlineOuter# "
 
   return mode_indicator, 5 + #mode
 end
@@ -142,7 +142,7 @@ local function make_statusline(left_items, right_items, left_sep, right_sep)
     :fold({}, make_table)
 
   local left_side = mode_indicator
-    .. table.concat(left_items, "%#StatusLineSeparator#" .. left_sep)
+    .. table.concat(left_items, "%#StatusLineSeparator#" .. left_sep) .. " %#StatusLinePowerlineInner#"
 
   local right_side = table.concat(right_items, right_sep)
 
@@ -175,7 +175,7 @@ local function make_mapping_statusline(mappings)
       key_combination = mods .. key_combination
     end
     return string.format(
-      "%%#StatusLineHintText#%s%%#StatusLine# %s",
+      "%%#StatusLineMappingHintText#%s%%#StatusLine# %s",
       key_combination,
       mapping.description
     )
@@ -221,7 +221,7 @@ function StatusLine()
   local reg_recording = nil
   local recording_register = vim.fn.reg_recording()
   if recording_register ~= "" then
-    reg_recording = "%#StatusLineRecordingIndicator# %#StatusLine#REC@"
+    reg_recording = "%#StatusLineRecordingIndicator# %#Normal#REC@"
       .. recording_register
   end
 
@@ -284,6 +284,8 @@ function StatusLine()
   local diagnostics = nil
   if #diagnostic_list > 0 then
     diagnostics = table.concat(diagnostic_list, " ")
+  else
+    diagnostics = "%#DiagnosticOk# OK"
   end
 
   local function is_pattern_in_buffer(pattern)
@@ -346,6 +348,7 @@ function StatusLine()
     })
   else
     return make_statusline({
+      readonly,
       diagnostics,
       mixed_indentation_indicator,
       mixed_line_endings,
@@ -353,7 +356,6 @@ function StatusLine()
     }, {
       maximized,
       lsp_info,
-      readonly,
       filetype,
       fileformat,
       fileencoding,

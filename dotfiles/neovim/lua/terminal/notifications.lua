@@ -1,6 +1,7 @@
 Plug("j-hui/fidget.nvim", {
   config = function()
-    require("fidget").setup({
+    local fidget = require("fidget")
+    fidget.setup({
       progress = {
         ignore_done_already = true,
         suppress_on_insert = true,
@@ -27,19 +28,6 @@ Plug("j-hui/fidget.nvim", {
         },
       },
     })
-  end,
-})
-
-Plug("rcarriga/nvim-notify", {
-  config = function()
-    local notify = require("notify")
-    ---@diagnostic disable-next-line: undefined-field
-    notify.setup({
-      stages = "fade",
-      timeout = 2000,
-      render = "wrapped-compact",
-      max_width = math.floor(vim.o.columns * 0.35),
-    })
-    vim.notify = notify
+    vim.notify = fidget.notify
   end,
 })

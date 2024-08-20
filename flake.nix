@@ -226,10 +226,6 @@
       url = "github:stevearc/dressing.nvim";
       flake = false;
     };
-    vim-plugin-dropbar-nvim = {
-      url = "github:Bekaboo/dropbar.nvim";
-      flake = false;
-    };
     vim-plugin-fidget-nvim = {
       url = "github:j-hui/fidget.nvim";
       flake = false;
@@ -272,10 +268,6 @@
     };
     vim-plugin-nvim-lspconfig = {
       url = "github:neovim/nvim-lspconfig";
-      flake = false;
-    };
-    vim-plugin-nvim-notify = {
-      url = "github:rcarriga/nvim-notify";
       flake = false;
     };
     vim-plugin-nvim-treesitter = {

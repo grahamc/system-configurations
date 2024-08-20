@@ -678,7 +678,6 @@
         "vim-plugin-dial-nvim": "vim-plugin-dial-nvim",
         "vim-plugin-direnv-vim": "vim-plugin-direnv-vim",
         "vim-plugin-dressing-nvim": "vim-plugin-dressing-nvim",
-        "vim-plugin-dropbar-nvim": "vim-plugin-dropbar-nvim",
         "vim-plugin-fidget-nvim": "vim-plugin-fidget-nvim",
         "vim-plugin-firenvim": "vim-plugin-firenvim",
         "vim-plugin-friendly-snippets": "vim-plugin-friendly-snippets",
@@ -689,7 +688,6 @@
         "vim-plugin-nvim-colorizer-lua": "vim-plugin-nvim-colorizer-lua",
         "vim-plugin-nvim-lightbulb": "vim-plugin-nvim-lightbulb",
         "vim-plugin-nvim-lspconfig": "vim-plugin-nvim-lspconfig",
-        "vim-plugin-nvim-notify": "vim-plugin-nvim-notify",
         "vim-plugin-nvim-treesitter": "vim-plugin-nvim-treesitter",
         "vim-plugin-nvim-treesitter-context": "vim-plugin-nvim-treesitter-context",
         "vim-plugin-nvim-treesitter-endwise": "vim-plugin-nvim-treesitter-endwise",
@@ -1164,22 +1162,6 @@
         "type": "github"
       }
     },
-    "vim-plugin-dropbar-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1721885574,
-        "narHash": "sha256-M5PSMiglIu22FA7Hzr6bhfLyXBFVPyV13PaZbiU+jSs=",
-        "owner": "Bekaboo",
-        "repo": "dropbar.nvim",
-        "rev": "aa4c0ab1ade45ff9a3c5d4c06365c9b119f32d36",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Bekaboo",
-        "repo": "dropbar.nvim",
-        "type": "github"
-      }
-    },
     "vim-plugin-fidget-nvim": {
       "flake": false,
       "locked": {
@@ -1337,22 +1319,6 @@
       "original": {
         "owner": "neovim",
         "repo": "nvim-lspconfig",
-        "type": "github"
-      }
-    },
-    "vim-plugin-nvim-notify": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1715959703,
-        "narHash": "sha256-wxyHwL/uFdp6w32CVHgSOWkzRrIRuFvWh+J2401RAAA=",
-        "owner": "rcarriga",
-        "repo": "nvim-notify",
-        "rev": "d333b6f167900f6d9d42a59005d82919830626bf",
-        "type": "github"
-      },
-      "original": {
-        "owner": "rcarriga",
-        "repo": "nvim-notify",
         "type": "github"
       }
     },

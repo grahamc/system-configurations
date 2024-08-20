@@ -7,6 +7,7 @@ vim.o.wrap = true
 vim.o.listchars = "tab:¬-,space:·"
 vim.opt.fillchars:append("eob: ")
 
+vim.o.termguicolors = false
 vim.cmd.colorscheme('ansi')
 
 -- cursor
