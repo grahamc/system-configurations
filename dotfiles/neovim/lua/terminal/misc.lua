@@ -94,21 +94,6 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
   group = general_group_id,
 })
-vim.api.nvim_create_autocmd(
-  -- I'm using BufEnter as opposed to FileType because if you run `:help something` and the help
-  -- buffer is already open, vim will reset the buffer to not being listed so to get around that I
-  -- set it back every time I enter the buffer.
-  "BufEnter",
-  {
-    callback = function()
-      if vim.o.filetype == "help" then
-        -- so it shows up in the bufferline
-        vim.opt_local.buflisted = true
-      end
-    end,
-    group = general_group_id,
-  }
-)
 -- Get help buffers to open in the current window. Source: https://stackoverflow.com/a/26431632
 --
 -- TODO: comment on the source to add the edge cases I found.
@@ -249,26 +234,6 @@ vim.api.nvim_create_autocmd(
 )
 -- }}}
 
--- Tabs {{{
-vim.keymap.set(
-  { "n", "i" },
-  "<C-M-[>",
-  vim.cmd.tabprevious,
-  { silent = true, desc = "Previous tab" }
-)
-vim.keymap.set(
-  { "n", "i" },
-  "<C-M-]>",
-  vim.cmd.tabnext,
-  { silent = true, desc = "Next tab" }
-)
-vim.keymap.set({ "n" }, "<C-t>", function()
-  local cursor_position = vim.api.nvim_win_get_cursor(0)
-  vim.cmd.tabnew("%")
-  vim.api.nvim_win_set_cursor(0, cursor_position)
-end, { silent = true, desc = "New tab" })
--- }}}
-
 -- Indentation {{{
 vim.o.expandtab = true
 vim.o.autoindent = true
@@ -381,31 +346,6 @@ Plug("markonm/traces.vim")
 vim.g.traces_abolish_integration = 1
 
 Plug("nvim-lua/plenary.nvim")
-
-Plug("NvChad/nvim-colorizer.lua", {
-  config = function()
-    require("colorizer").setup({
-      filetypes = {
-        "*", -- Highlight all files, but customize some others.
-        cmp_docs = { always_update = true },
-        css = { names = true },
-        -- TODO: getting a stack overflow
-        "!go",
-      },
-      user_default_options = {
-        virtualtext_inline = true,
-        css = true,
-        names = false,
-        tailwind = "lsp",
-        sass = { enable = true, parsers = { "css" } },
-      },
-    })
-
-    vim.keymap.set("n", [[\c]], function()
-      vim.cmd.ColorizerToggle()
-    end, { silent = true, desc = "Toggle inlay colors" })
-  end,
-})
 
 -- Use the ANSI OSC52 sequence to copy text to the system clipboard.
 --

@@ -135,7 +135,7 @@ local groups = {
   StatusLineMappingHintText = { ctermfg = 15, reverse = true, bold = true, },
   StatusLineNC = 'StatusLine', -- Status lines of not-current windows. Note: If this is equal to "StatusLine" Vim will use "^^^" in the status line of the current window.
   StatusLineRecordingIndicator = { ctermfg = 1 },
-  StatusLineShowcmd = { ctermfg = 6 },
+  StatusLineShowcmd = 'StatusLine',
   StatusLineDebugIndicator = { ctermfg = 2 },
   ---@diagnostic disable-next-line: undefined-field
   StatusLinePowerlineOuter = { ctermfg = 15, },

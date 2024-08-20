@@ -664,7 +664,6 @@
         "vim-plugin-CamelCaseMotion": "vim-plugin-CamelCaseMotion",
         "vim-plugin-LuaSnip": "vim-plugin-LuaSnip",
         "vim-plugin-SchemaStore-nvim": "vim-plugin-SchemaStore-nvim",
-        "vim-plugin-bufferline-nvim": "vim-plugin-bufferline-nvim",
         "vim-plugin-bullets-vim": "vim-plugin-bullets-vim",
         "vim-plugin-cmp-buffer": "vim-plugin-cmp-buffer",
         "vim-plugin-cmp-cmdline": "vim-plugin-cmp-cmdline",
@@ -685,7 +684,6 @@
         "vim-plugin-mini-nvim": "vim-plugin-mini-nvim",
         "vim-plugin-nvim-autopairs": "vim-plugin-nvim-autopairs",
         "vim-plugin-nvim-cmp": "vim-plugin-nvim-cmp",
-        "vim-plugin-nvim-colorizer-lua": "vim-plugin-nvim-colorizer-lua",
         "vim-plugin-nvim-lightbulb": "vim-plugin-nvim-lightbulb",
         "vim-plugin-nvim-lspconfig": "vim-plugin-nvim-lspconfig",
         "vim-plugin-nvim-treesitter": "vim-plugin-nvim-treesitter",
@@ -935,22 +933,6 @@
       "original": {
         "owner": "b0o",
         "repo": "SchemaStore.nvim",
-        "type": "github"
-      }
-    },
-    "vim-plugin-bufferline-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1721303864,
-        "narHash": "sha256-VjusgJ3nEc+P/3bRjdS93qAErn6PZh7YkAAjxFF6Dxk=",
-        "owner": "akinsho",
-        "repo": "bufferline.nvim",
-        "rev": "0b2fd861eee7595015b6561dade52fb060be10c4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "akinsho",
-        "repo": "bufferline.nvim",
         "type": "github"
       }
     },
@@ -1271,22 +1253,6 @@
       "original": {
         "owner": "hrsh7th",
         "repo": "nvim-cmp",
-        "type": "github"
-      }
-    },
-    "vim-plugin-nvim-colorizer-lua": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1721864885,
-        "narHash": "sha256-Qw7IcfM3N+7ml98ExMPBszDz9FwJPtmrVqrVDa0TJKQ=",
-        "owner": "NvChad",
-        "repo": "nvim-colorizer.lua",
-        "rev": "194ec600488f7c7229668d0e80bd197f3a2b84ff",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NvChad",
-        "repo": "nvim-colorizer.lua",
         "type": "github"
       }
     },

@@ -3,7 +3,7 @@ module.exports = {
   defaultBrowser: "Safari",
   options: {
     hideIcon: true,
-    checkForUpdate: false,
+    checkForUpdate: true,
   },
   handlers: [
     {

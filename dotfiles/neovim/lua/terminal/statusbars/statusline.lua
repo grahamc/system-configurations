@@ -95,7 +95,7 @@ local function filter_out_nils(list)
 end
 
 local function make_statusline(left_items, right_items, left_sep, right_sep)
-  local showcmd = "%#StatusLine#%S"
+  local showcmd = "%#StatusLineShowcmd#%S"
 
   left_sep = left_sep or " ∙ "
   right_sep = right_sep or "  "

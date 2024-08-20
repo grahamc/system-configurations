@@ -166,10 +166,6 @@
     neovim-nightly-overlay = {
       url = "github:nix-community/neovim-nightly-overlay";
     };
-    vim-plugin-bufferline-nvim = {
-      url = "github:akinsho/bufferline.nvim";
-      flake = false;
-    };
     vim-plugin-bullets-vim = {
       url = "github:bullets-vim/bullets.vim";
       flake = false;
@@ -256,10 +252,6 @@
     };
     vim-plugin-nvim-cmp = {
       url = "github:hrsh7th/nvim-cmp";
-      flake = false;
-    };
-    vim-plugin-nvim-colorizer-lua = {
-      url = "github:NvChad/nvim-colorizer.lua";
       flake = false;
     };
     vim-plugin-nvim-lightbulb = {

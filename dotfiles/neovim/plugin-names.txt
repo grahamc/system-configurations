@@ -20,7 +20,6 @@ LuaSnip
 mini.nvim
 nvim-autopairs
 nvim-cmp
-nvim-colorizer.lua
 nvim-lspconfig
 nvim-treesitter
 nvim-treesitter-context
