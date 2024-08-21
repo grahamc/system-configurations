@@ -59,11 +59,14 @@
       url = "github:Hammerspoon/Spoons";
       flake = false;
     };
-    # TODO: I get an error when i try to build the wezterm flake on darwin so
-    # I'll use the one from nixpkgs
     wezterm = {
       url = "github:wez/wezterm?dir=nix";
     };
+    # TODO: I get an error when i try to build the wezterm flake on darwin so
+    # I'll use the one from nixpkgs
+    #
+    # TODO: When this gets resolved, I can remove the revision pin:
+    # https://github.com/NixOS/nixpkgs/issues/239384
     nixpkgs-for-wezterm-darwin.url = "github:nixos/nixpkgs?rev=ff0a5a776b56e0ca32d47a4a47695452ec7f7d80";
     nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*.tar.gz";
 

@@ -42,8 +42,8 @@ their systems similarly.
    # feature wasn't enabled. I'm assuming the flake, or one of its dependencies, set
    # `auto-allocate-uids = true` in the `nixConfig` section of its `flake.nix`.
    curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install \
-     --extra-conf "trusted-users = $(whoami)" \
-     --extra-conf 'experimental-features = auto-allocate-uids'
+     --extra-conf "extra-trusted-users = $(whoami)" \
+     --extra-conf 'extra-experimental-features = auto-allocate-uids'
    ```
 
 2. Start a Nix shell with the other required programs and clone the repository by running:
