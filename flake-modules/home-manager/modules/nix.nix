@@ -95,6 +95,7 @@ in {
           action = ''
             # If the lock file changed then it's possible that some of the flakes in my registry
             # have changed so I'll upgrade the packages installed from those registries.
+            echo 'flake.lock has changed, upgrading profiles...'
             ${flakeInputs.self}/dotfiles/nix/bin/nix-upgrade-profiles
           '';
         }

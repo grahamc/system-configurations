@@ -53,14 +53,14 @@
   hunk-header-decoration-style = "bright-white box"
   hunk-header-line-number-style = "normal"
   hunk-header-style = "line-number normal"
-  minus-style = "1 normal ul"
-  minus-non-emph-style = "1 normal ul"
-  minus-emph-style = "1 normal reverse bold"
-  plus-style = "2 normal ul"
-  plus-non-emph-style = "2 normal ul"
-  plus-emph-style = "2 normal reverse bold"
+  minus-style = "0 1"
+  minus-non-emph-style = "0 1"
+  minus-emph-style = "0 15"
+  plus-style = "0 2"
+  plus-non-emph-style = "0 2"
+  plus-emph-style = "0 15"
   zero-style = "syntax normal"
-  map-styles = normal 21 => 5 normal reverse bold, normal 22 => 6 normal reverse bold
+  map-styles = normal 21 => 0 5, normal 22 => 0 6
   commit-style = "blue"
 [color "diff"]
   oldMoved = normal 21
