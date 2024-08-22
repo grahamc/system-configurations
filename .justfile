@@ -164,12 +164,12 @@ init-nix-darwin host_name: install-git-hooks get-secrets base-packages brew
 
 # Generate the Table of Contents in the README
 [private]
-codegen-readme:
+generate-readme-table-of-contents:
     npm exec --yes --package=markdown-toc -- markdown-toc --bullets '-' -i README.md
 
 # Generate a file with a list of all my neovim plugins
 [private]
-codegen-neovim:
+generate-neovim-plugin-list:
     #!/usr/bin/env bash
     set -euo pipefail
 

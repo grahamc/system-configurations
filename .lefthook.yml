@@ -15,14 +15,14 @@ output: false
 pre-commit:
   piped: true
   commands:
-    codegen-readme:
+    generate-readme-table-of-contents:
       priority: 1
       glob: "README.md"
-      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just codegen-readme
-    codegen-neovim:
+      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just generate-readme-table-of-contents
+    generate-neovim-plugin-list:
       priority: 1
       glob: "*neovim/lua/*.lua"
-      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just codegen-neovim
+      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just generate-neovim-plugin-list
     go-mod-tidy:
       priority: 1
       glob: "*gozip/*"

@@ -185,11 +185,23 @@ function _insert_entries_into_commandline
         # commandline so I should check for that flag.
         #
         # We determine if the entry will be the first token by checking for
-        # an empty commandline.  We trim spaces because spaces don't count as
-        # tokens.
-        set trimmed_commandline (string trim "$(commandline)")
+        # an empty commandline. We trim spaces because spaces don't count as
+        # tokens. We also check for a commandline with a single token where the
+        # character before the cursor isn't a space e.g. `prefix|`.
+        set commandline "$(commandline)"
+        set trimmed_commandline (string trim "$commandline")
+        if test -z "$trimmed_commandline"
+            set is_first 1
+        else
+            set token_count (count (string split --no-empty -- ' ' "$commandline"))
+            set last_char (string sub --start -1 -- "$commandline")
+            if test "$token_count" -eq 1
+            and test "$last_char" != ' '
+                set is_first 1
+            end
+        end
         if abbr --query -- "$entry"
-            and test -z "$trimmed_commandline"
+            and test -n "$is_first"
             set space ''
         end
 

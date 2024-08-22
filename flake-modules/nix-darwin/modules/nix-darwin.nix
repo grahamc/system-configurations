@@ -81,7 +81,7 @@
 
       oldGenerationPath="$(readlink --canonicalize ${config.system.profile})"
 
-      newGenerationPath="$(nix build --no-write-lock-file ${self.lib.updateFlags.nixDarwin} --no-link --print-out-paths .#darwinConfigurations.${hostName}.system)"
+      newGenerationPath="$(nix build --no-write-lock-file --recreate-lock-file --no-link --print-out-paths .#darwinConfigurations.${hostName}.system)"
 
       cyan='\033[1;0m'
       printf "%bPrinting upgrade preview...\n" "$cyan"

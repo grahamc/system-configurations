@@ -9,7 +9,6 @@
   inherit (specialArgs.flakeInputs) self;
   inherit (lib.attrsets) optionalAttrs;
   inherit (pkgs.stdenv) isLinux;
-  updateFlags = "${self.lib.updateFlags.homeManager}${lib.strings.optionalString isLinux " ${self.lib.updateFlags.portableHomeLinux}"}${lib.strings.optionalString (isLinux && specialArgs.isGui) " ${self.lib.updateFlags.desktopLinux}"}";
 
   # Scripts for switching generations and upgrading flake inputs.
   hostctl-switch = pkgs.writeShellApplication {
@@ -54,7 +53,7 @@
 
       oldGenerationPath="$(home-manager generations | head -1 | grep -E --only-matching '/nix.*$')"
 
-      newGenerationPath="$(nix build --no-write-lock-file ${updateFlags} --no-link --print-out-paths .#homeConfigurations.${hostName}.activationPackage)"
+      newGenerationPath="$(nix build --no-write-lock-file --recreate-lock-file --no-link --print-out-paths .#homeConfigurations.${hostName}.activationPackage)"
 
       cyan='\033[1;0m'
       printf "%bPrinting upgrade preview...\n" "$cyan"

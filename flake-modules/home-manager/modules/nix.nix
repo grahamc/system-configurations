@@ -58,6 +58,7 @@ in {
       nix-daemon-reload
       nix-output-monitor
       nix-diff
+      nix-search-cli
     ]
     ++ optionals isLinux [
       # for breakpointHook:
