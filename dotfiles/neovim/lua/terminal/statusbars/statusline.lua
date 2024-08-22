@@ -69,9 +69,6 @@ local function get_mode_indicator()
     .. "%#status_line_mode#"
     .. " "
     .. mode
-    .. " "
-    .. "%#StatusLinePowerlineInner#"
-    .. "%#StatusLinePowerlineOuter# "
 
   return mode_indicator, 5 + #mode
 end
@@ -142,7 +139,8 @@ local function make_statusline(left_items, right_items, left_sep, right_sep)
     :fold({}, make_table)
 
   local left_side = mode_indicator
-    .. table.concat(left_items, "%#StatusLineSeparator#" .. left_sep) .. " %#StatusLinePowerlineInner#"
+    .. (#left_items > 0 and " %#StatusLinePowerlineInner#%#StatusLinePowerlineOuter#" or "")
+    .. table.concat(left_items, "%#StatusLineSeparator#" .. left_sep) .. (#left_items > 0 and "%#StatusLinePowerlineInner#" or " ")
 
   local right_side = table.concat(right_items, right_sep)
 
@@ -284,8 +282,6 @@ function StatusLine()
   local diagnostics = nil
   if #diagnostic_list > 0 then
     diagnostics = table.concat(diagnostic_list, " ")
-  elseif language_server_count_for_current_buffer > 0 then
-    diagnostics = "%#DiagnosticOk# OK"
   end
 
   local function is_pattern_in_buffer(pattern)

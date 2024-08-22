@@ -27,7 +27,7 @@ function fish_prompt --description 'Print the prompt'
     # transient prompt
     if set --query TRANSIENT
         set --erase TRANSIENT
-        printf $separator\n(set_color --reverse brblack)' '(path basename (prompt_pwd))'  '(date +"%T")' '(set_color normal; set_color brblack)''$_color_normal
+        printf $separator\n(set_color --reverse brblack)' '(path basename (prompt_pwd))'  '(date +"%T")' '(set_color normal; set_color brblack)''$_color_normal' '
         return
     else if set --query TRANSIENT_EMPTY
         set --erase TRANSIENT_EMPTY
@@ -111,7 +111,7 @@ function _make_line --argument-names position context
     else if test $position = last
         set line_connector $_color_border'└'$_color_normal
         set arrows (set_color cyan)(_arrows)$_color_normal
-        printf $line_connector$arrows
+        printf $line_connector$arrows' '
     end
 end
 

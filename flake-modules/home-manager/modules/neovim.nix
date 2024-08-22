@@ -63,8 +63,6 @@
 in {
   home = {
     packages = with pkgs; [
-      # TODO: Text will be lost on reflow until this issue is resolved:
-      # https://github.com/neovim/neovim/issues/2514
       page
       neovim
     ];
