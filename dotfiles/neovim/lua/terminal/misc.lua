@@ -366,17 +366,6 @@ if is_ssh_active then
 end
 
 vim.keymap.set("n", "<C-q>", function()
-  local buffer = vim.fn.bufnr()
-  -- If the buffer is open in another window, don't close it.
-  local buffer_window_count = #vim.fn.win_findbuf(buffer)
-  if buffer_window_count > 1 then
-    vim.notify(
-      "Can't close buffer, it's open in another window",
-      vim.log.levels.INFO
-    )
-    return
-  end
-
   local buffer_count = #vim.fn.getbufinfo({ buflisted = 1 })
   local tab_count = vim.fn.tabpagenr("$")
 
@@ -405,5 +394,5 @@ vim.keymap.set("n", "<C-q>", function()
     return
   end
 
-  require("mini.bufremove").delete(buffer)
-end, { silent = true, desc = "Close file [tab]" })
+  vim.cmd.close()
+end, { silent = true, desc = "Close pane [split,window]" })
