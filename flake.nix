@@ -24,7 +24,6 @@
           ./flake-modules/bundler
           ./flake-modules/home-manager
           ./flake-modules/lib.nix
-          ./flake-modules/assign-inputs-to-host-managers.nix
           ./flake-modules/smart-plug.nix
           ./flake-modules/dev-shell.nix
           ./flake-modules/bootstrap.nix

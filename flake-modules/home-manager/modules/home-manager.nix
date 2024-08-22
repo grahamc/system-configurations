@@ -41,7 +41,8 @@
       name = "hostctl-upgrade";
       text = ''
         cd "${config.repository.directory}"
-        home-manager switch --flake "${config.repository.directory}#${hostName}" ${updateFlags} "''$@" |& nom
+        nix flake update
+        home-manager switch --flake '${config.repository.directory}#${hostName}' "$@" |& nom
         chronic ${self}/dotfiles/nix/bin/nix-upgrade-profiles
       '';
     };
