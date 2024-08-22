@@ -3,10 +3,7 @@
   config,
   lib,
   ...
-}: let
-  # relative to $XDG_CONFIG_HOME
-  myFishConfigPath = "fish/my-config.fish";
-in {
+}: {
   # Using this so Home Manager can include it's generated completion scripts
   programs.fish = {
     enable = true;
@@ -17,12 +14,6 @@ in {
       set --unexport __fish_home_manager_config_sourced
 
       fish_add_path --global --prepend --move ${lib.escapeShellArg config.repository.symlink.xdg.executableHome}
-
-      set xdg_config "''$HOME/.config"
-      if set --query XDG_CONFIG_HOME
-        set xdg_config "''$XDG_CONFIG_HOME"
-      end
-      source "''$xdg_config/${myFishConfigPath}"
     '';
     plugins = with pkgs.fishPlugins; [
       {
@@ -54,12 +45,11 @@ in {
         # places.
         recursive = true;
       };
-      ${myFishConfigPath}.source = "fish/config.fish";
     };
 
     git.onChange = [
       {
-        patterns.modified = [''^dotfiles/fish/conf\.d/'' ''^dotfiles/fish/config.fish$''];
+        patterns.modified = [''^dotfiles/fish/conf\.d/''];
         action = ''
           echo "The fish shell configuration has changed. To apply these changes you should restart any running terminals. Press enter to continue"
 

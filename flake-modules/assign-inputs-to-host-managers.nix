@@ -10,7 +10,6 @@
         inputName:
           (lib.strings.hasPrefix "vim-plugin-" inputName)
           || (lib.strings.hasPrefix "fish-plugin-" inputName)
-          || (lib.strings.hasPrefix "tmux-plugin-" inputName)
       )
       (builtins.attrNames inputs);
     # TODO: The inputs lists should probably be maps:
@@ -30,7 +29,6 @@
           "nix-xdg"
           "gomod2nix"
           "neodev-nvim"
-          "tmux"
           "neovim-nightly-overlay"
           "wezterm"
           "nixpkgs-for-diffoscope"

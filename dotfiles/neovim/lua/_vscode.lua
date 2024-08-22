@@ -41,10 +41,6 @@ vim.g.direnv_silent_load = 1
 -- [1]: https://marketplace.visualstudio.com/items?itemName=asvetliakov.vscode-neovim#performance
 vim.g.matchup_matchparen_enabled = 0
 
--- Windows
-vim.keymap.set({ "n" }, [[<Leader>\]], "<C-w>v", { remap = true })
-vim.keymap.set({ "n" }, "<Leader>-", "<C-w>s", { remap = true })
-
 -- right click
 vim.keymap.set({ "n", "x" }, "<Leader><Leader>", function()
   vscode.call("editor.action.showContextMenu")

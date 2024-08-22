@@ -656,13 +656,9 @@
         "nixpkgs-for-wezterm-darwin": "nixpkgs-for-wezterm-darwin",
         "spoons": "spoons",
         "stackline": "stackline",
-        "tmux": "tmux",
-        "tmux-plugin-better-mouse-mode": "tmux-plugin-better-mouse-mode",
-        "tmux-plugin-mode-indicator": "tmux-plugin-mode-indicator",
-        "tmux-plugin-sidebar": "tmux-plugin-sidebar",
-        "tmux-plugin-tmux-suspend": "tmux-plugin-tmux-suspend",
         "vim-plugin-CamelCaseMotion": "vim-plugin-CamelCaseMotion",
         "vim-plugin-LuaSnip": "vim-plugin-LuaSnip",
+        "vim-plugin-Navigator-nvim": "vim-plugin-Navigator-nvim",
         "vim-plugin-SchemaStore-nvim": "vim-plugin-SchemaStore-nvim",
         "vim-plugin-bullets-vim": "vim-plugin-bullets-vim",
         "vim-plugin-cmp-buffer": "vim-plugin-cmp-buffer",
@@ -705,7 +701,6 @@
         "vim-plugin-vim-repeat": "vim-plugin-vim-repeat",
         "vim-plugin-vim-signify": "vim-plugin-vim-signify",
         "vim-plugin-vim-sleuth": "vim-plugin-vim-sleuth",
-        "vim-plugin-vim-tmux-navigator": "vim-plugin-vim-tmux-navigator",
         "vim-plugin-which-key-nvim": "vim-plugin-which-key-nvim",
         "wezterm": "wezterm"
       }
@@ -808,86 +803,6 @@
         "type": "github"
       }
     },
-    "tmux": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1722769269,
-        "narHash": "sha256-qKFKTiwWtJGE/daTCGqsRqxdUXl6v7B5crS2UAmihM8=",
-        "owner": "tmux",
-        "repo": "tmux",
-        "rev": "651891c3bd32ecc4671e8e3e36efc10d48ca0654",
-        "type": "github"
-      },
-      "original": {
-        "owner": "tmux",
-        "repo": "tmux",
-        "type": "github"
-      }
-    },
-    "tmux-plugin-better-mouse-mode": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1508174332,
-        "narHash": "sha256-nPNa3JvDgptGvy2vpo0WSZytyu7kFSEn/Jp/OGA0ZBg=",
-        "owner": "NHDaly",
-        "repo": "tmux-better-mouse-mode",
-        "rev": "aa59077c635ab21b251bd8cb4dc24c415e64a58e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NHDaly",
-        "repo": "tmux-better-mouse-mode",
-        "type": "github"
-      }
-    },
-    "tmux-plugin-mode-indicator": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1679652372,
-        "narHash": "sha256-SAzsn4LoG8Ju5t13/U3/ctlJQPyPgv2FjpPkWSeKbP0=",
-        "owner": "MunifTanjim",
-        "repo": "tmux-mode-indicator",
-        "rev": "7027903adca37c54cb8f5fa99fc113b11c23c2c4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "MunifTanjim",
-        "repo": "tmux-mode-indicator",
-        "type": "github"
-      }
-    },
-    "tmux-plugin-sidebar": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1670489908,
-        "narHash": "sha256-5+ISvoXXYDDfzSoPBO6v6Wt7IWsRVb9DcPgnO02rYd4=",
-        "owner": "tmux-plugins",
-        "repo": "tmux-sidebar",
-        "rev": "a41d72c019093fd6a1216b044e111dd300684f1a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "tmux-plugins",
-        "repo": "tmux-sidebar",
-        "type": "github"
-      }
-    },
-    "tmux-plugin-tmux-suspend": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1673761096,
-        "narHash": "sha256-+1fKkwDmr5iqro0XeL8gkjOGGB/YHBD25NG+w3iW+0g=",
-        "owner": "MunifTanjim",
-        "repo": "tmux-suspend",
-        "rev": "1a2f806666e0bfed37535372279fa00d27d50d14",
-        "type": "github"
-      },
-      "original": {
-        "owner": "MunifTanjim",
-        "repo": "tmux-suspend",
-        "type": "github"
-      }
-    },
     "vim-plugin-CamelCaseMotion": {
       "flake": false,
       "locked": {
@@ -917,6 +832,22 @@
       "original": {
         "owner": "L3MON4D3",
         "repo": "LuaSnip",
+        "type": "github"
+      }
+    },
+    "vim-plugin-Navigator-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1675344172,
+        "narHash": "sha256-Oyuv8mLPiMEsZPRnIgEjBFYJjGEhMzg+gnNhSSRvGoo=",
+        "owner": "numToStr",
+        "repo": "Navigator.nvim",
+        "rev": "91d86506ac2a039504d5205d32a1d4bc7aa57072",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numToStr",
+        "repo": "Navigator.nvim",
         "type": "github"
       }
     },
@@ -1589,22 +1520,6 @@
       "original": {
         "owner": "tpope",
         "repo": "vim-sleuth",
-        "type": "github"
-      }
-    },
-    "vim-plugin-vim-tmux-navigator": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1716740807,
-        "narHash": "sha256-o39bbuD0rqTrvkDfagOBG9FeXPj/2GMS2OKYTaH4mU0=",
-        "owner": "christoomey",
-        "repo": "vim-tmux-navigator",
-        "rev": "5b3c701686fb4e6629c100ed32e827edf8dad01e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "christoomey",
-        "repo": "vim-tmux-navigator",
         "type": "github"
       }
     },

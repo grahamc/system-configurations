@@ -16,16 +16,21 @@
     ../home-manager.nix
     ../fonts.nix
     ../keyboard-shortcuts.nix
-    ../tmux.nix
     specialArgs.flakeInputs.nix-flatpak.homeManagerModules.nix-flatpak
   ];
 
-  home.packages = with pkgs; [
-    # for my shebang scripts
-    bashInteractive
-    myPython
-    fish
-  ];
+  home.packages = with pkgs;
+    [
+      # for my shebang scripts
+      bashInteractive
+      myPython
+      fish
+    ]
+    ++ lib.lists.optionals specialArgs.isGui [
+      # TODO: Only doing this because Pop!_OS doesn't come with it by default, but
+      # I think it should
+      wl-clipboard
+    ];
 
   services.flatpak.enable = pkgs.stdenv.isLinux && specialArgs.isGui;
 

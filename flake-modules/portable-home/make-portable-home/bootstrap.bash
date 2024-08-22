@@ -110,10 +110,6 @@ add_directory_to_path "$ACTIVATION_PACKAGE/home-files/.local/bin" 'bin-local'
 shell="$(which fish)"
 export SHELL="$shell"
 
-# So TMUX can set the right shell. When it executes my default-command it seems
-# to reset $SHELL first.
-export BIGOLU_PORTABLE_HOME_SHELL="$SHELL"
-
 # Clear the message we printed earlier
 if [ -t 2 ]; then
   printf '\33[2K\r'

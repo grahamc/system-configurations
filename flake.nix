@@ -118,29 +118,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # tmux
-    ########################################
-    tmux = {
-      url = "github:tmux/tmux";
-      flake = false;
-    };
-    tmux-plugin-tmux-suspend = {
-      url = "github:MunifTanjim/tmux-suspend";
-      flake = false;
-    };
-    tmux-plugin-better-mouse-mode = {
-      url = "github:NHDaly/tmux-better-mouse-mode";
-      flake = false;
-    };
-    tmux-plugin-mode-indicator = {
-      url = "github:MunifTanjim/tmux-mode-indicator";
-      flake = false;
-    };
-    tmux-plugin-sidebar = {
-      url = "github:tmux-plugins/tmux-sidebar";
-      flake = false;
-    };
-
     # fish
     ########################################
     fish-plugin-autopair-fish = {
@@ -345,12 +322,12 @@
       url = "github:tpope/vim-sleuth";
       flake = false;
     };
-    vim-plugin-vim-tmux-navigator = {
-      url = "github:christoomey/vim-tmux-navigator";
-      flake = false;
-    };
     vim-plugin-which-key-nvim = {
       url = "github:folke/which-key.nvim";
+      flake = false;
+    };
+    vim-plugin-Navigator-nvim = {
+      url = "github:numToStr/Navigator.nvim";
       flake = false;
     };
   };

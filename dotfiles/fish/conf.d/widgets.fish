@@ -55,7 +55,7 @@ function __grep_widget --argument-names title grep_command
     if not set choices ( \
         FZF_DEFAULT_COMMAND="echo -n ''" \
         FZF_HINTS='alt+e: edit in neovim' \
-        fzf-tmux-zoom \
+        fzf-zoom \
             --disabled \
             # We refresh-preview after executing vim in the event that the file
             # gets modified by vim. Tracking doesn't work when the input list is
@@ -104,7 +104,7 @@ function grep-all-widget --description 'Text search on text, and certain non-tex
 
     if not set choices ( \
         FZF_DEFAULT_COMMAND="echo -n ''" \
-        fzf-tmux-zoom \
+        fzf-zoom \
             --disabled \
             # tracking doesn't work when the input list is reloaded so I'm
             # binding it to a no-op.
@@ -137,7 +137,7 @@ function man-widget --description 'Search manpages'
 
     if not set choice ( \
         FZF_DEFAULT_COMMAND='man -P less -k .' \
-          fzf-tmux-zoom  \
+          fzf-zoom  \
             --tiebreak=chunk,begin,end \
             --prompt 'manpages: ' \
             --preview "eval 'MANWIDTH=\$FZF_PREVIEW_COLUMNS man -P less '($parse_entry_command {})" \
@@ -222,10 +222,17 @@ function file-widget --description 'Search files'
 
     set preview_command '
   if file --brief --mime-type {} | grep -q -i image
-    if set --query TMUX
-      timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" -p sixel {}
+    if test "$TERM_PROGRAM" = WezTerm
+        # TODO: timg should use iterm2 image mode for WezTerm
+        #
+        # TODO: switch to kitty when wezterm gets support:
+        # https://github.com/wez/wezterm/issues/986
+        timg -p iterm2 --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
+    else if test -n "$VSCODE_INJECTION"
+        # TODO: timg should use iterm2 image mode for vscode
+        timg -p iterm2 --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
     else
-      timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
+        timg --center -g "$FZF_PREVIEW_COLUMNS"x"$FZF_PREVIEW_LINES" {}
     end
   else
     bat --style=\'header-filename\' --color always --paging=never --terminal-width (math $FZF_PREVIEW_COLUMNS - 2) {}
@@ -235,7 +242,7 @@ function file-widget --description 'Search files'
     if not set choices ( \
         FZF_HINTS='alt+e: edit in neovim' \
         FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' $dir; fd \$_args --follow --hidden --type file --type symlink" \
-        fzf-tmux-zoom \
+        fzf-zoom \
             --prompt "$prompt" \
             --preview "$preview_command" \
             --preview-window '75%,~1' \
@@ -258,7 +265,7 @@ function directory-widget --description 'Seach directories'
 
     if not set choices ( \
         FZF_DEFAULT_COMMAND="test '$dir' = '.' && set _args '--strip-cwd-prefix' || set _args '.' $dir; fd \$_args --follow --hidden --type directory --type symlink" \
-        fzf-tmux-zoom \
+        fzf-zoom \
             --prompt "$prompt" \
             --preview 'echo -s (set_color brblack) "Directory: " {}; lsd --color always --hyperlink always {}' \
             --preview-window '75%,~1' \
@@ -278,7 +285,7 @@ function history-widget --description 'Search history'
     # multiple lines.
     if not set choices ( \
         FZF_DEFAULT_COMMAND="history --null" \
-        fzf-tmux-zoom  \
+        fzf-zoom  \
         --prompt 'history: ' \
         --preview-window "4" \
         --preview='printf %s\n {+} | bat --language fish --style plain --color always' \

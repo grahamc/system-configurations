@@ -6,6 +6,20 @@ abbr --add --global g git
 abbr --add --global x 'chmod +x'
 abbr --add --global du 'du --dereference --human-readable --summarize --apparent-size'
 set --global --export MANOPT --no-hyphenation
+function timg --wraps timg
+    set options
+    if test "$TERM_PROGRAM" = 'WezTerm'
+        # TODO: timg should use iterm2 image mode for WezTerm
+        #
+        # TODO: switch to kitty when wezterm gets support:
+        # https://github.com/wez/wezterm/issues/986
+        set options -p iterm2
+    else if test -n "$VSCODE_INJECTION"
+        # TODO: timg should use iterm2 image mode for vscode
+        set options -p iterm2
+    end
+    command timg --center $options $argv
+end
 if test (uname) = Linux
     abbr --add --global initramfs-reload 'sudo update-initramfs -u -k all'
     abbr --add --global logout-all 'sudo killall -u $USER'
@@ -31,18 +45,6 @@ set --global --export LESSOPEN '|lesspipe.sh %s'
 set --global --export PAGER page
 function page --wraps page
     less $argv | command page
-end
-
-# timg
-function timg --wraps timg
-    set pixelation_options
-    # TODO: timg doesn't use sixel for TMUX so I'll do it here. I should open an
-    # issue to let them know it supports sixel now
-    if set --query TMUX
-        set pixelation_options -p sixel
-    end
-
-    command timg --center $pixelation_options $argv
 end
 
 # Set preferred editor. Programs check either of these variables for the
@@ -134,10 +136,9 @@ set -g direnv_fish_mode disable_arrow # trigger direnv at prompt only
 abbr --add --global watch 'watch --no-title --differences --interval 0.5'
 
 # vscode
-# Clearing the $TMUX variable so that the integrated terminal in vscode won't
-# think it's in TMUX.  Clearing SHELL because my config for the OS default shell
-# only launches fish if the current shell isn't fish.
-abbr --add --global code 'TMUX= SHELL= code'
+# Clearing SHELL because my config for the OS default shell only launches fish
+# if the current shell isn't fish.
+abbr --add --global code 'SHELL= code'
 
 # ulimit
 #

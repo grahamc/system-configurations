@@ -42,7 +42,6 @@ in {
       partialPackages.xargs
       partialPackages.ps
       ast-grep
-      less
       lesspipe
       diffoscope
       bat

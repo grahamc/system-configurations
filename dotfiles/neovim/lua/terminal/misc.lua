@@ -145,10 +145,10 @@ vim.o.smoothscroll = true
 
 vim.o.shortmess = "ltToOFs"
 
--- I have a mapping in my terminal for <C-i> that sends F9 to get around the fact that TMUX
--- considers <C-i> the same as <Tab> right now since TMUX lost support for extended keys.
--- TODO: tmux issue: https://github.com/tmux/tmux/issues/2705#issuecomment-841133549
-vim.keymap.set({ "n" }, "<F9>", "<C-i>")
+-- To have separate mappings for <Tab> and <C-i> you have to map both. Since I
+-- want the default behavior for <C-i> I just map it to itself. Source:
+-- https://neovim.io/doc/user/motion.html#jump-motions
+vim.keymap.set({ "n" }, "<C-i>", "<C-i>")
 
 -- Autosave {{{
 --

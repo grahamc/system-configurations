@@ -17,11 +17,6 @@
         ];
       };
 
-      tmuxMaster = prev.tmux.overrideAttrs (_old: {
-        src = inputs.tmux;
-        patches = [];
-      });
-
       nightlyNeovimWithDependencies = let
         nightly = inputs.neovim-nightly-overlay.packages.${final.system}.default;
         dependencies = final.symlinkJoin {
@@ -56,7 +51,7 @@
               --set PARINIT 'rTbgqR B=.\,?'"'"'_A_a_@ Q=_s>|' \
               --prefix PATH : ${lib.escapeShellArg "${dependencies}/bin"} \
               --prefix PATH : ${lib.escapeShellArg "${inputs.self}/dotfiles/neovim/bin"} \
-              --prefix PATH : ${lib.escapeShellArg "${inputs.self}/dotfiles/general/bin"} ${lib.strings.optionalString isDarwin "--prefix PATH : ${inputs.self}/dotfiles/general/bin-macos"}
+              --prefix PATH : ${lib.escapeShellArg "${inputs.self}/dotfiles/general/bin"} ${lib.strings.optionalString isDarwin "--prefix PATH : ${inputs.self}/dotfiles/general/bin-macos"} ${lib.strings.optionalString isLinux "--prefix PATH : ${inputs.self}/dotfiles/neovim/linux-bin"}
           '';
         };
 
@@ -134,7 +129,6 @@
       inherit myTerminfoDatabase myPython;
       neovim = nightlyNeovimWithDependencies;
       ripgrep-all = ripgrepAllWithDependencies;
-      tmux = tmuxMaster;
       inherit ((import inputs.nixpkgs-for-diffoscope {inherit (final) system;})) diffoscope;
 
       wezterm =

@@ -5,7 +5,6 @@
   ...
 }: {
   imports = [
-    ./tmux-plugins.nix
     ./fish-plugins.nix
     ./vim-plugins.nix
   ];
@@ -56,7 +55,6 @@
     lib.pluginOverlay = {inherit makePluginPackages;};
     overlays.plugins = lib.composeManyExtensions [
       self.overlays.vimPlugins
-      self.overlays.tmuxPlugins
       self.overlays.fishPlugins
     ];
   };

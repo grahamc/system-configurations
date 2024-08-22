@@ -21,7 +21,7 @@ in
     home.file = {
       # Putting my terminfo database here so it gets picked up[2].
       #
-      # Ideally, whatever program sets TERM, e.g. wezterm or tmux, also
+      # Ideally, whatever program sets TERM, e.g. wezterm, also
       # sets TERMINFO to the base64 encoded terminfo[2]. This way we don't need
       # a database at all and SSH can just copy TERMINFO to the remote host.
       #

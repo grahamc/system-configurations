@@ -28,7 +28,7 @@ end
 function apt-install-widget --description 'Install packages with apt'
     if not set choices ( \
         FZF_DEFAULT_COMMAND='apt-cache pkgnames' \
-        fzf-tmux-zoom \
+        fzf-zoom \
             --prompt 'apt install: ' \
             --preview "apt show {} 2>/dev/null | GREP_COLORS='$GREP_COLORS' grep --color=always -E '(^[a-z|A-Z|-]*:|^)' | less" \
             --preview-window '75%' \
@@ -50,7 +50,7 @@ end
 function apt-remove-widget --description 'Remove packages with apt'
     if not set choices ( \
         FZF_DEFAULT_COMMAND='apt list --installed 2>/dev/null | string split --no-empty --fields 1 -- \'/\' | tail -n +2' \
-        fzf-tmux-zoom \
+        fzf-zoom \
             --prompt 'apt remove: ' \
             --preview "echo -e \"\$(apt show {} 2>/dev/null)\n\$(apt-cache rdepends --installed --no-recommends --no-suggests {} | tail -n +2)\" | GREP_COLORS='$GREP_COLORS' grep --color=always -E '(^[a-z|A-Z|-]*:|^.*:\$|^)' | less" \
             --preview-window '75%' \

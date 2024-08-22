@@ -7,7 +7,6 @@
 {"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qdotfiles\\E$"}
 {"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QMiscellaneous {{{\\E$"}
 {"rule":"PCT_SINGULAR_NOUN_PLURAL_VERB_AGREEMENT","sentence":"^\\QGet help buffers to open in the current window by first opening it in a new tab (this is done elsewhere in my config),\nclosing the tab and jumping to the previous buffer, the help buffer.\\E$"}
-{"rule":"CONSECUTIVE_SPACES","sentence":"^\\QI have a mapping in my terminal for  that sends F9 to get around the fact that TMUX considers  the\nsame as  right now since TMUX lost support for extended keys.\\E$"}
 {"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q}}}\\E$"}
 {"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QUtilities {{{\\E$"}
 {"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QAutosave {{{\\E$"}
@@ -37,7 +36,6 @@
 {"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\Q{|}                     {\n|\n}\\E$"}
 {"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QOSC52 is also being upstreamed so I may be able to just use that depending on how they do it:\nhttps://github.com/neovim/neovim/pull/25872 .\\E$"}
 {"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QOSC52 is also being upstreamed so I may be able to just use that depending on how they do it:\nhttps://github.com/neovim/neovim/pull/25872.\\E$"}
-{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QOutside TMUX the above won't work, I have to use , so I just map both.\\E$"}
 {"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\Q\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q closes the window if the buffer is open in one so we have to switch to a different buffer first.\\E$"}
 {"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\Q}}}\\E$"}
 {"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QFile Explorer {{{\\E$"}

@@ -2,8 +2,7 @@
 # ^ Using /bin/sh instead of env for speed
 # shellcheck shell=sh
 
-# If we're in TMUX and we're attached from a vscode terminal, use the vscode instance we are in
-if [ -n "$TMUX" ] && [ "$(tmux show-environment VSCODE_INJECTION)" != '-VSCODE_INJECTION' ]; then
+if [ -n "$VSCODE_INJECTION" ]; then
     exec code --reuse-window --wait "$@"
 else
     exec nvim "$@"

@@ -10,27 +10,8 @@
   hostName = "guest-host";
   makeEmptyPackage = packageName: pkgs.runCommand packageName {} ''mkdir -p $out/bin'';
 
-  portableOverlay = final: prev: let
-    tmux = let
-      noSystemd =
-        if isLinux
-        then
-          prev.tmux.override {
-            withSystemd = false;
-          }
-        else prev.tmux;
-    in
-      final.symlinkJoin {
-        inherit (noSystemd) name;
-        paths = [noSystemd];
-        buildInputs = [final.makeWrapper];
-        postBuild = ''
-          wrapProgram $out/bin/tmux --prefix TERMINFO_DIRS : ${final.lib.escapeShellArg "${final.myTerminfoDatabase}/share/terminfo"}
-        '';
-      };
-  in {
+  portableOverlay = _final: _prev: {
     comma = makeEmptyPackage "stub-comma";
-    inherit tmux;
   };
 
   portableModule = {lib, ...}: {

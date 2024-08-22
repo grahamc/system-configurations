@@ -164,6 +164,10 @@ end
 abbr --add --global vw variable-widget
 
 # Use tab to select an autocomplete entry with fzf
+#
+# TODO: When the builtin fuzzy pager supports selecting multiple items I can
+# probably switch back to it:
+# https://github.com/fish-shell/fish-shell/issues/1898
 function _insert_entries_into_commandline
     # Remove the tab and description, leaving only the completion items.
     set entries $(string split -f1 -- \t $argv)
@@ -267,57 +271,6 @@ function __set_fzf_tab_complete --on-event fish_prompt
 end
 # Keep normal tab complete on shift+tab to expand wildcards.
 mybind -k btab complete
-
-# File explorer
-function _ls_after_directory_change --on-variable PWD
-    # Nix store freezes broot
-    if test "$PWD" = /nix/store
-        return
-    end
-    # TODO: broot only exits with a non-zero code if the server socket doesn't exist, but I would
-    # like it to also exit with a non-zero code if the socket exists and nothing is listening on the
-    # other end. It does however, print an error message in both cases so instead I'm checking if
-    # anything was written to stderr.
-    if test -n "$(br --send "$TMUX_PANE" 2>&1 1>/dev/null)"
-        # These directories have too many files to always call ls on
-        #
-        # normalize to remove trailing slash
-        set blacklist /nix/store /tmp (path normalize "$TMPDIR")
-        if contains "$PWD" $blacklist
-            return
-        end
-
-        ls
-    end
-end
-function _bigolu_on_broot_dir_change --on-variable _broot_dir
-    # When we change the directory in broot, broot will be the active pane so we
-    # need to explictly set the target pane to that of this fish process. We set
-    # `-q` so tmux doesn't consider it an error if the option can't be found.
-    set value (tmux show-option -gvq -t "$TMUX_PANE" '@-sidebar-registered-pane-#{pane_id}')
-    if test -n "$value"
-        set pane (string match --regex --groups-only -- '^(%[0-9]+)' "$value")
-        if tmux display-message -p -t "$pane" >/dev/null
-            set parts (string split ':' "$_broot_dir")
-            if test "$pane" = "$parts[1]"
-                cd "$parts[2]"
-                # TODO: fish isn't emitting fish_prompt before I run `repaint`
-                # so direnv isn't triggering. I should open an issue to see if
-                # this is intended.
-                emit fish_prompt
-                commandline -f repaint
-            end
-        end
-    end
-end
-# TODO: I can remove this when this issue is resolved:
-# https://github.com/Canop/broot/issues/730
-function _bigolu_refresh_broot --on-event fish_postexec
-    # Suppress stdout because it was printing a '\' when my shell was running
-    # outside of tmux. Suppress stderr so we don't see an error message if broot
-    # isn't open.
-    br --send "$TMUX_PANE" -c ':refresh;' 1>/dev/null 2>/dev/null
-end
 
 # Reload all fish instances
 function _reload_fish --on-variable _fish_reload_indicator

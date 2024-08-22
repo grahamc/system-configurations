@@ -3,10 +3,10 @@ vim.o.splitright = true
 vim.o.splitbelow = true
 vim.o.winminheight = 0
 vim.o.winminwidth = 0
-vim.keymap.set("n", [[<Leader>\]], vim.cmd.vsplit, {
+vim.keymap.set("n", '<C-\\>', vim.cmd.vsplit, {
   desc = "Vertical split",
 })
-vim.keymap.set("n", "<Leader>-", vim.cmd.split, {
+vim.keymap.set("n", "<C-->", vim.cmd.split, {
   desc = "Horizontal split",
 })
 -- making it a buffer map so I can use `nowait`
@@ -63,61 +63,12 @@ vim.api.nvim_create_autocmd({ "WinNew", "WinClosed" }, {
   group = window_group_id,
 })
 
--- Resize windows
-vim.keymap.set(
-  { "n" },
-  "<C-Left>",
-  [[<Cmd>vertical resize +1<CR>]],
-  { silent = true, desc = "Resize window left" }
-)
-vim.keymap.set(
-  { "n" },
-  "<C-Right>",
-  [[<Cmd>vertical resize -1<CR>]],
-  { silent = true, desc = "Resize window right" }
-)
-vim.keymap.set(
-  { "n" },
-  "<C-Up>",
-  [[<Cmd>resize +1<CR>]],
-  { silent = true, desc = "Resize window up" }
-)
-vim.keymap.set(
-  { "n" },
-  "<C-Down>",
-  [[<Cmd>resize -1<CR>]],
-  { silent = true, desc = "Resize window down" }
-)
-
--- Seamless movement between vim windows and tmux panes.
-Plug("christoomey/vim-tmux-navigator", {
+Plug("numToStr/Navigator.nvim", {
   config = function()
-    vim.keymap.set(
-      { "n", "i", "t" },
-      "<M-h>",
-      vim.cmd.TmuxNavigateLeft,
-      { silent = true, desc = "Move to west window [left]" }
-    )
-    vim.keymap.set(
-      { "n", "i", "t" },
-      "<M-l>",
-      vim.cmd.TmuxNavigateRight,
-      { silent = true, desc = "Move to east window [right]" }
-    )
-    vim.keymap.set(
-      { "n", "i", "t" },
-      "<M-j>",
-      vim.cmd.TmuxNavigateDown,
-      { silent = true, desc = "Move to south window [down]" }
-    )
-    vim.keymap.set(
-      { "n", "i", "t" },
-      "<M-k>",
-      vim.cmd.TmuxNavigateUp,
-      { silent = true, desc = "Move to north window [up]" }
-    )
+    require("Navigator").setup()
+    vim.keymap.set({'n', 't'}, '<M-h>', '<CMD>NavigatorLeft<CR>')
+    vim.keymap.set({'n', 't'}, '<M-l>', '<CMD>NavigatorRight<CR>')
+    vim.keymap.set({'n', 't'}, '<M-k>', '<CMD>NavigatorUp<CR>')
+    vim.keymap.set({'n', 't'}, '<M-j>', '<CMD>NavigatorDown<CR>')
   end,
 })
-vim.g.tmux_navigator_no_mappings = 1
-vim.g.tmux_navigator_preserve_zoom = 1
-vim.g.tmux_navigator_disable_when_zoomed = 0

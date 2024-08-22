@@ -2,12 +2,6 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 
 -- Utilities
-local function table_concat(t1, t2)
-  for i = 1, #t2 do
-    t1[#t1 + 1] = t2[i]
-  end
-  return t1
-end
 local function merge_to_left(t1, t2)
   for k, v in pairs(t2) do
     if (type(v) == "table") and (type(t1[k] or false) == "table") then
@@ -21,12 +15,10 @@ end
 local is_mac = string.find(wezterm.target_triple, "darwin")
 local CustomEvent = {
   ThemeChanged = "theme-changed",
-  ThemeToggleRequested = "theme-toggled",
   SystemAppearanceChanged = "system-appearance-changed",
 }
 local state_directory = os.getenv("XDG_STATE_HOME")
   or (os.getenv("HOME") .. "/.local/state")
-local nvim_wezterm_runtime_directory = state_directory .. "/nvim-wezterm"
 
 -- general
 config.window_close_confirmation = "NeverPrompt"
@@ -49,6 +41,10 @@ config.window_padding = {
   bottom = "0.5cell",
 }
 config.term = "wezterm"
+config.inactive_pane_hsb = {
+  saturation = 1,
+  brightness = 1,
+}
 
 -- font
 -- Per the recommendation in the mini.icons readme
@@ -136,6 +132,16 @@ local my_colors_per_color_scheme = {
   },
 }
 
+local tab_colors_per_color_scheme = {
+  ["Biggs Nord"] = {
+    background = "#2c3038",
+  },
+
+  ["Biggs Light Owl"] = {
+    background = "#eceef1",
+  },
+}
+
 local function create_color_schemes(colors_per_color_scheme)
   local color_schemes = {}
 
@@ -181,32 +187,36 @@ config.color_schemes = create_color_schemes(my_colors_per_color_scheme)
 local function create_theme_config(color_scheme_name)
   local color_scheme = config.color_schemes[color_scheme_name]
   local background = color_scheme.background
-  -- This way I can hide the tab bar
-  local foreground = background
+  local foreground = color_scheme.foreground
+  local tab_colors = tab_colors_per_color_scheme[color_scheme_name]
   return {
     color_scheme = color_scheme_name,
     window_frame = {
-      active_titlebar_bg = background,
-      inactive_titlebar_bg = background,
+      active_titlebar_bg = tab_colors.background,
+      inactive_titlebar_bg = tab_colors.background,
     },
     colors = {
       tab_bar = {
-        background = background,
+        background = tab_colors.background,
         active_tab = {
           bg_color = background,
           fg_color = foreground,
         },
         inactive_tab = {
-          bg_color = background,
-          fg_color = foreground,
-        },
-        active_tab_hover = {
-          bg_color = background,
+          bg_color = tab_colors.background,
           fg_color = foreground,
         },
         inactive_tab_hover = {
-          bg_color = background,
+          bg_color = tab_colors.background,
+          fg_color = color_scheme.ansi[7],
+        },
+        new_tab = {
+          bg_color = tab_colors.background,
           fg_color = foreground,
+        },
+        new_tab_hover = {
+          bg_color = tab_colors.background,
+          fg_color = color_scheme.ansi[7],
         },
       },
     },
@@ -274,49 +284,6 @@ wezterm.on(CustomEvent.SystemAppearanceChanged, function(window, new_appearance)
   set_theme(window, Theme.for_system_appearance(new_appearance))
 end)
 
--- Toggle the current theme. This event is fired from a keybinding
-wezterm.on(CustomEvent.ThemeToggleRequested, function(window)
-  set_theme(window, Theme.inverse(Theme.from_window(window)))
-end)
-
--- Sync theme with neovim
-local function fire_theme_event_in_neovim(theme)
-  local pipe_directory = nvim_wezterm_runtime_directory .. "/pipes"
-  local event_name = theme == Theme.Dark and "ColorSchemeDark"
-    or "ColorSchemeLight"
-  if os.execute(string.format([[test -d %s]], pipe_directory)) then
-    -- I'm executing the neovim remote commands in the background so this way if
-    -- a neovim instance is blocked (e.g. A 'Press enter to continue prompt' is
-    -- being shown like when you execute `:mess`), preventing it from handling
-    -- the remote message immediately, wezterm will not be blocked.
-    os.execute(
-      string.format(
-        [=[find '%s' \( -type s -o -type p \) -exec sh -c '"%s" --server {} --remote-expr '"'"'v:lua.vim.api.nvim_exec_autocmds("User", {"pattern": "%s"})'"'"' &' \;]=],
-        pipe_directory,
-        nvim_wezterm_runtime_directory .. "/nvim",
-        event_name
-      )
-    )
-  end
-end
-local function set_theme_in_state_file(theme)
-  local theme_file = nvim_wezterm_runtime_directory .. "/current-theme.txt"
-  os.execute(
-    string.format(
-      [[mkdir -p '%s' && echo '%s' > '%s']],
-      nvim_wezterm_runtime_directory,
-      theme.as_string,
-      theme_file
-    )
-  )
-end
----@diagnostic disable-next-line: unused-local
-wezterm.on(CustomEvent.ThemeChanged, function(theme)
-  fire_theme_event_in_neovim(theme)
-  -- This way neovim can get the current wezterm theme on startup
-  set_theme_in_state_file(theme)
-end)
-
 -- Decorations
 local decorations = "INTEGRATED_BUTTONS|RESIZE"
 if is_mac then
@@ -325,8 +292,8 @@ if is_mac then
   decorations = decorations .. "|MACOS_FORCE_DISABLE_SHADOW"
 end
 config.window_decorations = decorations
-config.show_new_tab_button_in_tab_bar = false
-config.show_tab_index_in_tab_bar = false
+config.show_new_tab_button_in_tab_bar = true
+config.show_tab_index_in_tab_bar = true
 -- TODO: I don't know why I need this
 config.colors = {}
 
@@ -336,7 +303,6 @@ if is_mac then
     key = "v",
     mods = "SUPER",
     action = wezterm.action.PasteFrom("Clipboard"),
-    
   }
 else
   paste_keybind = {
@@ -346,20 +312,71 @@ else
   }
 end
 
-local keybinds = {
+config.keys = {
   paste_keybind,
   {
-    key = "c",
-    mods = "ALT",
-    action = wezterm.action.EmitEvent(CustomEvent.ThemeToggleRequested),
+    key = "q",
+    mods = "CMD",
+    action = wezterm.action.QuitApplication,
   },
   {
-    key = "m",
-    mods = "CTRL",
-    action = wezterm.action.SendKey({
-      key = "F6",
-    }),
+    key = "r",
+    mods = "ALT|SHIFT",
+    action = wezterm.action.ReloadConfiguration,
   },
+  {
+    key = "/",
+    mods = "ALT",
+    action = wezterm.action.ActivateCommandPalette,
+  },
+  {
+    key = "-",
+    mods = "ALT",
+    action = wezterm.action.SplitPane({ direction = "Down" }),
+  },
+  {
+    key = "\\",
+    mods = "ALT",
+    action = wezterm.action.SplitPane({ direction = "Right" }),
+  },
+  {
+    key = "q",
+    mods = "ALT",
+    action = wezterm.action.CloseCurrentPane({ confirm = false }),
+  },
+  {
+    key = "q",
+    mods = "ALT|SHIFT",
+    action = wezterm.action.CloseCurrentTab({ confirm = false }),
+  },
+  {
+    key = "Backspace",
+    mods = "ALT",
+    action = wezterm.action.ActivateLastTab,
+  },
+  {
+    key = "t",
+    mods = "ALT",
+    action = wezterm.action.SpawnTab("CurrentPaneDomain"),
+  },
+  {
+    key = "[",
+    mods = "ALT",
+    action = wezterm.action.ActivateTabRelative(-1),
+  },
+  {
+    key = "]",
+    mods = "ALT",
+    action = wezterm.action.ActivateTabRelative(1),
+  },
+
+  -- TODO: fish added support for the kitty keyboard protocol, but it will be part of
+  -- the v4.0 release. Have to use this until then:
+  -- https://github.com/fish-shell/fish-shell/commit/8bf8b10f685d964101f491b9cc3da04117a308b4
+  --
+  -- TODO: fzf doesn't support `ctrl-[`. There's an issue open for supporting
+  -- the kitty keyboard protocol though:
+  -- https://github.com/junegunn/fzf/issues/3208
   {
     key = "[",
     mods = "CTRL",
@@ -374,45 +391,120 @@ local keybinds = {
       key = "F8",
     }),
   },
-  {
-    key = "i",
-    mods = "CTRL",
-    action = wezterm.action.SendKey({
-      key = "F9",
-    }),
-  },
-  {
-    key = "q",
-    mods = "CMD",
-    action = wezterm.action.CloseCurrentTab({ confirm = false }),
-  },
-  {
-    key = "r",
-    mods = "ALT|SHIFT",
-    action = wezterm.action.ReloadConfiguration,
-  },
 }
-
-local function generate_neovim_tab_navigation_keybinds()
-  local result = {}
-  for tab_number = 1, 9 do
-    local tab_number_string = tostring(tab_number)
-
-    local keybind = {
-      key = tab_number_string,
-      mods = "CTRL",
-      action = wezterm.action.Multiple({
-        wezterm.action.SendKey({ key = "Space" }),
-        wezterm.action.SendKey({ key = tab_number_string }),
-      }),
-    }
-
-    table.insert(result, keybind)
-  end
-
-  return result
+for i = 1, 9 do
+  -- CTRL+ALT + number to activate that tab
+  table.insert(config.keys, {
+    key = tostring(i),
+    mods = "ALT",
+    action = wezterm.action.ActivateTab(i - 1),
+  })
 end
 
-config.keys = table_concat(keybinds, generate_neovim_tab_navigation_keybinds())
+-- Source: https://github.com/numToStr/Navigator.nvim/wiki/WezTerm-Integration
+local function isVimRunningInPane(pane)
+  -- get_foreground_process_name On Linux, macOS and Windows,
+  -- the process can be queried to determine this path. Other operating systems
+  -- (notably, FreeBSD and other unix systems) are not currently supported
+  local name = pane:get_foreground_process_name()
+  local pane_name_matches_vim = (name ~= nil and name:find("n?vim") ~= nil)
+    or pane:get_title():find("n?vim") ~= nil
+  if pane_name_matches_vim then
+    return true
+  end
+
+  local tty = pane:get_tty_name()
+  if tty == nil then
+    return false
+  end
+  local success, stdout, stderr = wezterm.run_child_process({
+    "sh",
+    "-c",
+    "ps -o state= -o comm= -t"
+      .. wezterm.shell_quote_arg(tty)
+      .. " | "
+      .. "grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|l?n?vim?x?)(diff)?$'",
+  })
+  if success then
+    return true
+  end
+
+  return false
+end
+local function conditionalActivatePane(
+  window,
+  pane,
+  pane_direction,
+  vim_direction
+)
+  if isVimRunningInPane(pane) then
+    window:perform_action(
+      -- This should match the keybinds you set in Neovim.
+      wezterm.action.SendKey({ key = vim_direction, mods = "ALT" }),
+      pane
+    )
+  else
+    window:perform_action(
+      wezterm.action.ActivatePaneDirection(pane_direction),
+      pane
+    )
+  end
+end
+wezterm.on("ActivatePaneDirection-right", function(window, pane)
+  conditionalActivatePane(window, pane, "Right", "l")
+end)
+wezterm.on("ActivatePaneDirection-left", function(window, pane)
+  conditionalActivatePane(window, pane, "Left", "h")
+end)
+wezterm.on("ActivatePaneDirection-up", function(window, pane)
+  conditionalActivatePane(window, pane, "Up", "k")
+end)
+wezterm.on("ActivatePaneDirection-down", function(window, pane)
+  conditionalActivatePane(window, pane, "Down", "j")
+end)
+table.insert(config.keys, {
+  key = "h",
+  mods = "ALT",
+  action = wezterm.action.EmitEvent("ActivatePaneDirection-left"),
+})
+table.insert(config.keys, {
+  key = "j",
+  mods = "ALT",
+  action = wezterm.action.EmitEvent("ActivatePaneDirection-down"),
+})
+table.insert(config.keys, {
+  key = "k",
+  mods = "ALT",
+  action = wezterm.action.EmitEvent("ActivatePaneDirection-up"),
+})
+table.insert(config.keys, {
+  key = "l",
+  mods = "ALT",
+  action = wezterm.action.EmitEvent("ActivatePaneDirection-right"),
+})
+
+config.mouse_bindings = {
+  -- clear selection on mouse-up
+  {
+    event = { Up = { streak = 1, button = "Left" } },
+    mods = "NONE",
+    action = wezterm.action.Multiple({
+      wezterm.action.CompleteSelectionOrOpenLinkAtMouseCursor("Clipboard"),
+      wezterm.action.ClearSelection,
+    }),
+  },
+
+  -- see last command output in vim
+  {
+    event = { Down = { streak = 2, button = "Left" } },
+    mods = "NONE",
+    action = wezterm.action.Multiple({
+      wezterm.action.SelectTextAtMouseCursor("SemanticZone"),
+      wezterm.action.CopyTo("ClipboardAndPrimarySelection"),
+      wezterm.action.ClearSelection,
+      wezterm.action.SendString("pbpaste | nvim\r"),
+    }),
+  },
+}
 
 return config
