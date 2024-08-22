@@ -17,8 +17,6 @@ local CustomEvent = {
   ThemeChanged = "theme-changed",
   SystemAppearanceChanged = "system-appearance-changed",
 }
-local state_directory = os.getenv("XDG_STATE_HOME")
-  or (os.getenv("HOME") .. "/.local/state")
 
 -- general
 config.window_close_confirmation = "NeverPrompt"
@@ -369,6 +367,11 @@ config.keys = {
     mods = "ALT",
     action = wezterm.action.ActivateTabRelative(1),
   },
+  {
+    key = "m",
+    mods = "ALT",
+    action = wezterm.action.TogglePaneZoomState,
+  },
 
   -- TODO: fish added support for the kitty keyboard protocol, but it will be part of
   -- the v4.0 release. Have to use this until then:
@@ -417,7 +420,7 @@ local function isVimRunningInPane(pane)
   if tty == nil then
     return false
   end
-  local success, stdout, stderr = wezterm.run_child_process({
+  local success, _stdout, _stderr = wezterm.run_child_process({
     "sh",
     "-c",
     "ps -o state= -o comm= -t"
