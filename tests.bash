@@ -15,6 +15,3 @@ temp="$(mktemp --directory)"
 trap 'rm -rf $temp' SIGINT SIGTERM ERR EXIT
 nix bundle --out-link "$temp/shell" --bundler .# .#shell
 NIXPKGS_ALLOW_UNFREE=1 nix bundle --impure --out-link "$temp/terminal" --bundler .# .#terminal
-
-# Do this last to avoid being rate-limited by BitWarden
-just get-secrets

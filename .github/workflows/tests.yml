@@ -1,0 +1,40 @@
+name: Tests
+on:
+  push:
+    branches:
+      - "renovate/**"
+env:
+  # The checkout action clones the repository relative to github.workspace. I
+  # set $HOME to github.workspace so that the directory structure matches that
+  # of the machine I tested this on.
+  HOME: ${{ github.workspace }}
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # macos-latest uses M1 so I'll just use the most recent version of macOS
+        # that they still on run intel macs
+        os: [ubuntu-latest, macos-13]
+    defaults:
+      run:
+        working-directory: "code/system-configurations"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: "code/system-configurations"
+      - uses: DeterminateSystems/nix-installer-action@main
+        # TODO: home-manager's `mkOutOfStoreSymlink` doesn't work on nix v2.19
+        # so I'm pinning v2.18:
+        # https://github.com/nix-community/home-manager/issues/4692
+        # https://github.com/NixOS/nix/issues/9579
+        with:
+          source-tag: v0.13.1
+      - uses: cachix/cachix-action@v14
+        with:
+          name: bigolu
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+          # TODO: This isn't working right now:
+          # https://github.com/cachix/cachix-action/issues/169
+          useDaemon: false
+      - run: nix shell --impure nixpkgs#fish nixpkgs#direnv --command fish --command 'direnv hook fish | source; direnv allow; direnv exec "$PWD" nix-direnv-reload; just test'
