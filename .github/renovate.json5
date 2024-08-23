@@ -1,0 +1,66 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "nix": {
+    "enabled": true
+  },
+  "gomod": {
+    "pinDigests": true,
+  },
+  "postUpdateOptions": [
+    "gomodTidy",
+    "gomodMassage"
+  ],
+  "extends": [
+    "config:best-practices",
+    ":separateMultipleMajorReleases",
+    "schedule:weekends",
+    "schedule:automergeWeekends",
+  ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": [
+      "every weekend",
+    ],
+  },
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      // Don't auto-merge if the major version is 0, in which case a minor/patch
+      // update _can_ be a breaking change.
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true,
+      "automergeType": "branch",
+    },
+    {
+      "matchManagers": ["gomod",],
+      // So I can run `gomod2nix`
+      "additionalBranchPrefix": "golang/",
+    },
+    // By default, indirect Go dependencies aren't updated
+    {
+      "matchManagers": ["gomod"],
+      "matchDepTypes": ["indirect"],
+      "enabled": true
+    },
+  ],
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "labels": ["security"],
+    // Don't automerge, it may be wrong:
+    // https://docs.renovatebot.com/configuration-options/#vulnerabilityalerts
+    "automerge": false,
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "nix-community/nix-direnv",
+      "fileMatch": [
+        "(^|/)\.envrc$",
+      ],
+      "matchStrings": [
+        '[\'"]https:\\\/\\\/raw\\.githubusercontent\\.com\\\/nix-community\\\/nix-direnv\\\/(?<currentValue>.+)\\\/direnvrc[\'"]',
+      ],
+    }
+  ]
+}
