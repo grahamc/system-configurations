@@ -1,3 +1,5 @@
+# TODO: Trick renovate into working: "github:NixOS/nixpkgs/nixpkgs-unstable"
+# Source: https://github.com/renovatebot/renovate/issues/29721
 {
   description = "Biggie's host configurations";
 
