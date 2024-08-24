@@ -436,3 +436,15 @@ function fish_title
     # Looks like '~/d/fish: git log' or '/e/apt: fish'
     echo (fish_prompt_pwd_dir_length=1 prompt_pwd): $argv
 end
+
+function _ls_after_directory_change --on-variable PWD
+        # These directories have too many files to always call ls on
+        #
+        # normalize to remove trailing slash
+        set blacklist /nix/store /tmp (path normalize "$TMPDIR")
+        if contains "$PWD" $blacklist
+            return
+        end
+
+        ls
+end
