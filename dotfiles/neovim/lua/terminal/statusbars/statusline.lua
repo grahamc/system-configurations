@@ -140,7 +140,8 @@ local function make_statusline(left_items, right_items, left_sep, right_sep)
 
   local left_side = mode_indicator
     .. (#left_items > 0 and " %#StatusLinePowerlineInner#%#StatusLinePowerlineOuter#" or "")
-    .. table.concat(left_items, "%#StatusLineSeparator#" .. left_sep) .. (#left_items > 0 and "%#StatusLinePowerlineInner#" or " ")
+    .. table.concat(left_items, "%#StatusLineSeparator#" .. left_sep)
+    .. (#left_items > 0 and "%#StatusLinePowerlineInner#" or " ")
 
   local right_side = table.concat(right_items, right_sep)
 

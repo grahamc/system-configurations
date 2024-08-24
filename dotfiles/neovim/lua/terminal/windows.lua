@@ -3,7 +3,7 @@ vim.o.splitright = true
 vim.o.splitbelow = true
 vim.o.winminheight = 0
 vim.o.winminwidth = 0
-vim.keymap.set("n", '<C-\\>', vim.cmd.vsplit, {
+vim.keymap.set("n", "<C-\\>", vim.cmd.vsplit, {
   desc = "Vertical split",
 })
 vim.keymap.set("n", "<C-->", vim.cmd.split, {
@@ -46,9 +46,9 @@ vim.api.nvim_create_autocmd({ "WinNew", "WinClosed" }, {
 Plug("numToStr/Navigator.nvim", {
   config = function()
     require("Navigator").setup()
-    vim.keymap.set({'n', 't'}, '<M-h>', '<CMD>NavigatorLeft<CR>')
-    vim.keymap.set({'n', 't'}, '<M-l>', '<CMD>NavigatorRight<CR>')
-    vim.keymap.set({'n', 't'}, '<M-k>', '<CMD>NavigatorUp<CR>')
-    vim.keymap.set({'n', 't'}, '<M-j>', '<CMD>NavigatorDown<CR>')
+    vim.keymap.set({ "n", "t" }, "<M-h>", "<CMD>NavigatorLeft<CR>")
+    vim.keymap.set({ "n", "t" }, "<M-l>", "<CMD>NavigatorRight<CR>")
+    vim.keymap.set({ "n", "t" }, "<M-k>", "<CMD>NavigatorUp<CR>")
+    vim.keymap.set({ "n", "t" }, "<M-j>", "<CMD>NavigatorDown<CR>")
   end,
 })

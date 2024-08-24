@@ -196,7 +196,7 @@ function _insert_entries_into_commandline
             set token_count (count (string split --no-empty -- ' ' "$commandline"))
             set last_char (string sub --start -1 -- "$commandline")
             if test "$token_count" -eq 1
-            and test "$last_char" != ' '
+                and test "$last_char" != ' '
                 set is_first 1
             end
         end

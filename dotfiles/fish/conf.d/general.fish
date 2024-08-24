@@ -8,7 +8,7 @@ abbr --add --global du 'du --dereference --human-readable --summarize --apparent
 set --global --export MANOPT --no-hyphenation
 function timg --wraps timg
     set options
-    if test "$TERM_PROGRAM" = 'WezTerm'
+    if test "$TERM_PROGRAM" = WezTerm
         # TODO: timg should use iterm2 image mode for WezTerm
         #
         # TODO: switch to kitty when wezterm gets support:

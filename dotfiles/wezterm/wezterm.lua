@@ -372,8 +372,12 @@ config.keys = {
     mods = "ALT",
     action = wezterm.action.TogglePaneZoomState,
   },
-  { key = '{', mods = 'CTRL|SHIFT', action = wezterm.action.ScrollToPrompt(-1) },
-  { key = '}', mods = 'CTRL|SHIFT', action = wezterm.action.ScrollToPrompt(1) },
+  {
+    key = "{",
+    mods = "CTRL|SHIFT",
+    action = wezterm.action.ScrollToPrompt(-1),
+  },
+  { key = "}", mods = "CTRL|SHIFT", action = wezterm.action.ScrollToPrompt(1) },
 
   -- TODO: fish added support for the kitty keyboard protocol, but it will be part of
   -- the v4.0 release. Have to use this until then:

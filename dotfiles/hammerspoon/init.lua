@@ -3,7 +3,7 @@ require("hs.ipc")
 hs.ipc.cliInstall()
 
 -- Create annotations that lua language servers can use to provide documentation, autocomplete, etc.
-hs.loadSpoon('EmmyLua', false)
+hs.loadSpoon("EmmyLua", false)
 
 hs.loadSpoon("Speakers")
 
@@ -106,12 +106,12 @@ local function getShortcutsHtml()
       title = "Move windows",
       items = {
         {
-          mods = {"cmd","shift"},
+          mods = { "cmd", "shift" },
           key = direction_key_label,
           description = "Move window",
         },
         {
-          mods = {"cmd","ctrl"},
+          mods = { "cmd", "ctrl" },
           key = direction_key_label,
           description = "Swap window",
         },

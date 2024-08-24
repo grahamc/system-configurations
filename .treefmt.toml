@@ -82,3 +82,15 @@ includes = ["*.go"]
 [formatter.python]
 command = "black"
 includes = ["*.py"]
+
+[formatter.renovate]
+command = "renovate-config-validator"
+options = ["--strict"]
+includes = [".github/renovate.json5"]
+
+[formatter.json5]
+# Use a lower priority so renovate can run first
+priority = 1
+command = "formatjson5"
+options = ["--replace"]
+includes = ["*.json5"]

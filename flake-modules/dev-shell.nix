@@ -91,7 +91,7 @@ in {
         # for markdown-toc
         nodejs
 
-        # formatters
+        # formatters and linters
         black
         usort
         deadnix
@@ -102,6 +102,8 @@ in {
         alejandra
         stylua
         fish # for fish_indent
+        renovate # for renovate-config-validator
+        formatjson5
 
         # version control
         git

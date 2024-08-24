@@ -8,7 +8,7 @@ vim.o.listchars = "tab:¬-,space:·"
 vim.opt.fillchars:append("eob: ")
 
 vim.o.termguicolors = false
-vim.cmd.colorscheme('ansi')
+vim.cmd.colorscheme("ansi")
 
 -- cursor
 local function set_cursor()
