@@ -12,10 +12,11 @@
   ],
   "extends": [
     "config:best-practices",
-    ":separateMultipleMajorReleases",
     "schedule:weekends",
     "schedule:automergeWeekends",
   ],
+  separateMajorMinor: true,
+  separateMultipleMajor: true,
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": [
