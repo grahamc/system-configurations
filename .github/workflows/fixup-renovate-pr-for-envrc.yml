@@ -2,7 +2,7 @@ name: Fix-Up Renovate's Pull Request for .envrc
 on:
   push:
     branches:
-      - "renovate/envrc/**"
+      - "renovate/nix-community-nix-direnv-**"
 env:
   # The checkout action clones the repository relative to github.workspace. I
   # set $HOME to github.workspace so that the directory structure matches that
