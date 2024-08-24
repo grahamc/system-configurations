@@ -90,6 +90,15 @@ test:
     bash tests.bash
 
 [private]
+fixup-renovate-pull-request-for-envrc:
+    #!/usr/bin/env fish
+    set original_envrc "$(cat .envrc)"
+    set nix_direnv_url (string match --groups-only --regex --all -- 'source_url [\'"](?<url>https://raw.githubusercontent.com/nix-community/nix-direnv/.*/direnvrc.*)[\'"] [\'"].*[\'"]' "$original_envrc")
+    set nix_direnv_hash (direnv fetchurl "$nix_direnv_url")
+    set new_envrc "$(string replace --regex -- 'source_url [\'"](?<url>https://raw.githubusercontent.com/nix-community/nix-direnv/.*/direnvrc.*)[\'"] [\'"].*[\'"]' "source_url '$nix_direnv_url' '$nix_direnv_hash'" "$original_envrc")"
+    echo "$new_envrc" > .envrc
+
+[private]
 go-mod-tidy:
     cd ./flake-modules/bundler/gozip && go mod tidy
 
