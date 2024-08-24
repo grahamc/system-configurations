@@ -37,3 +37,5 @@ jobs:
           useDaemon: false
       - run: nix shell --impure nixpkgs#fish nixpkgs#direnv --command fish --command 'direnv hook fish | source; direnv allow; direnv exec "$PWD" nix-direnv-reload; direnv exec "$PWD" just fixup-renovate-pull-request-for-envrc'
       - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          repository: "code/system-configurations"
