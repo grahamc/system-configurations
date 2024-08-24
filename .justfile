@@ -1,11 +1,7 @@
 set shell := ["bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
-# Choose a task. Only includes tasks that don't take arguments.
-default:
-    @just --choose --unsorted
-
 # Display a list of all tasks.
-help:
+default:
     @just --list --justfile {{ justfile() }} --unsorted
 
 # Reload direnv
@@ -35,6 +31,9 @@ preview-upgrade:
 # Rerun the on change actions that run after a git merge or rebase
 run-on-change-actions:
     bash ./.git-hook-assets/on-change.bash
+
+test:
+    bash tests.bash
 
 get-secrets:
     #!/usr/bin/env bash
@@ -79,11 +78,9 @@ get-secrets:
         mv "$temp_filename" "$destination"
     done
 
+[private]
 gomod2nix:
     cd ./flake-modules/bundler/gozip && nix develop github:nix-community/gomod2nix --command gomod2nix generate
-
-test:
-    bash tests.bash
 
 [private]
 fixup-renovate-pull-request-for-envrc:
@@ -162,7 +159,7 @@ brew:
         exit
     fi
 
-    # Install brew. Taken from the brew site: https://brew.sh/
+    # Install brew. Source: https://brew.sh/
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Apply the first generation of a nix-darwin configuration.
