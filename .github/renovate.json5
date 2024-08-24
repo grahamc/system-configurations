@@ -28,6 +28,8 @@
             matchUpdateTypes: [
                 "minor",
                 "patch",
+                "pin",
+                "digest",
             ],
 
             // Don't auto-merge if the major version is 0, in which case a minor/patch
