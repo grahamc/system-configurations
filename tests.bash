@@ -13,5 +13,5 @@ nix flake show --json |
 # build bundles
 temp="$(mktemp --directory)"
 trap 'rm -rf $temp' SIGINT SIGTERM ERR EXIT
-nix bundle --out-link "$temp/shell" --bundler .# .#shell
-NIXPKGS_ALLOW_UNFREE=1 nix bundle --impure --out-link "$temp/terminal" --bundler .# .#terminal
+nix bundle --out-link "$temp/shell" --bundler .# .#shellMinimal
+NIXPKGS_ALLOW_UNFREE=1 nix bundle --impure --out-link "$temp/terminal" --bundler .# .#terminalMinimal
