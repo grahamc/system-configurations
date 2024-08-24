@@ -36,10 +36,6 @@ preview-upgrade:
 run-on-change-actions:
     bash ./.git-hook-assets/on-change.bash
 
-# Run everything that would be run in CI
-ci:
-    nix develop --ignore-environment --keep BWS_ACCESS_TOKEN --keep HOME .# --command bash -- ./tests.bash
-
 get-secrets:
     #!/usr/bin/env bash
     set -o errexit
