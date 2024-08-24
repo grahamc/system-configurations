@@ -24,7 +24,7 @@ jobs:
         os: [ubuntu-latest, macos-13]
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
         with:
           path: "code/system-configurations"
       - uses: DeterminateSystems/nix-installer-action@main
@@ -34,7 +34,7 @@ jobs:
         # https://github.com/NixOS/nix/issues/9579
         with:
           source-tag: v0.13.1
-      - uses: cachix/cachix-action@v14
+      - uses: cachix/cachix-action@18cf96c7c98e048e10a83abd92116114cd8504be # v14
         with:
           name: bigolu
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
