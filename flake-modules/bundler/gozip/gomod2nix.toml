@@ -17,14 +17,14 @@ schema = 3
     version = "v0.4.7"
     hash = "sha256-rDcdNYH6ZD8KouyyiZCUEy8JrjOQoAkxHBhugrfHjFo="
   [mod."github.com/schollz/progressbar/v3"]
-    version = "v3.14.2"
-    hash = "sha256-LgnZfRlsCOoTs4s+kgBj4wM93mlUQ7vzH8Jru/lBpyQ="
+    version = "v3.14.6"
+    hash = "sha256-9j04t/v3VTzgmHo8NQfzGiHLQ5obqXEcK5ylXJNfilg="
   [mod."golang.org/x/sync"]
     version = "v0.7.0"
     hash = "sha256-2ETllEu2GDWoOd/yMkOkLC2hWBpKzbVZ8LhjLu0d2A8="
   [mod."golang.org/x/sys"]
-    version = "v0.20.0"
-    hash = "sha256-mowlaoG2k4n1c1rApWef5EMiXd3I77CsUi8jPh6pTYA="
+    version = "v0.22.0"
+    hash = "sha256-RbG0XaXGGlErCsl2agvUxMnrkRwdbJLmriYT1H24FwA="
   [mod."golang.org/x/term"]
-    version = "v0.20.0"
-    hash = "sha256-kU+OVJbYktTIn4ZTAdomsOjL069Vj45sdroEMRKaRDI="
+    version = "v0.22.0"
+    hash = "sha256-tRx/y4ZIZzGAlDJ/8JW3AycC9bRXlNuRqO4V48sAEEc="
