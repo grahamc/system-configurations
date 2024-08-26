@@ -35,6 +35,8 @@ includes = [".envrc", "*.bash",]
 # TODO: Doesn't adhere to the treefmt spec for formatters in that it
 # unconditionally writes to input files, even if everything is formatted
 # correctly.
+#
+# It's fixed on master, but will be part of the release for v4.0
 [formatter.fish]
 command = "fish_indent"
 options = ["--write",]
