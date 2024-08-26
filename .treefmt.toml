@@ -18,7 +18,7 @@ excludes = [
 [formatter.prettier]
 command = "prettier"
 options = ["--write"]
-includes = ["*.js", "*.json", "*.md", "*.yml",]
+includes = ["*.js", "*.json", "*.json5", "*.md", "*.yml",]
 
 [formatter.sh]
 command = "shfmt"
@@ -32,6 +32,9 @@ command = "shfmt"
 options = ["--write",]
 includes = [".envrc", "*.bash",]
 
+# TODO: Doesn't adhere to the treefmt spec for formatters in that it
+# unconditionally writes to input files, even if everything is formatted
+# correctly.
 [formatter.fish]
 command = "fish_indent"
 options = ["--write",]
@@ -53,7 +56,6 @@ options = [
 # https://github.com/nerdypepper/statix/issues/69
 for file in "$@"; do
   statix fix "$file"
-  statix check "$file"
 done
     """,
     "--",
@@ -82,15 +84,3 @@ includes = ["*.go"]
 [formatter.python]
 command = "black"
 includes = ["*.py"]
-
-[formatter.renovate]
-command = "renovate-config-validator"
-options = ["--strict"]
-includes = [".github/renovate.json5"]
-
-[formatter.json5]
-# Use a lower priority so renovate can run first
-priority = 1
-command = "formatjson5"
-options = ["--replace"]
-includes = ["*.json5"]

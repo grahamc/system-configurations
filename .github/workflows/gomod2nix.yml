@@ -35,7 +35,9 @@ jobs:
           # TODO: This isn't working right now:
           # https://github.com/cachix/cachix-action/issues/169
           useDaemon: false
-      - run: nix shell --impure nixpkgs#fish nixpkgs#direnv --command fish --command 'direnv hook fish | source; direnv allow; direnv exec "$PWD" nix-direnv-reload; direnv exec "$PWD" just gomod2nix'
+      - run: |
+          # shellcheck disable=2016
+          nix shell --impure nixpkgs#fish nixpkgs#direnv --command fish --command 'direnv hook fish | source; direnv allow; direnv exec "$PWD" nix-direnv-reload; direnv exec "$PWD" just gomod2nix'
       - uses: stefanzweifel/git-auto-commit-action@8621497c8c39c72f3e2a999a26b4ca1b5058a842 # v5
         with:
           repository: "code/system-configurations"

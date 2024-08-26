@@ -1,5 +1,10 @@
 set shell := ["bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
+# To handle multiple arguments that each could have spaces:
+# https://github.com/casey/just/issues/647#issuecomment-1404056424
+
+set positional-arguments := true
+
 # Display a list of all tasks.
 default:
     @just --list --justfile {{ justfile() }} --unsorted
@@ -95,17 +100,51 @@ fixup-renovate-pull-request-for-envrc:
 go-mod-tidy:
     cd ./flake-modules/bundler/gozip && go mod tidy
 
-# Format, lint, and fix all source code
 [private]
-format:
-    treefmt
+format *FILES:
+    treefmt "$@" --no-cache
 
-# Same as format except all files will be formatted regardless of their
-
-# modified-date
 [private]
-format-no-cache:
-    treefmt --no-cache
+lint *FILES:
+    #!/usr/bin/env fish
+
+    set files $argv
+
+    if test (count $files) -eq 0
+        set lint_everything 1
+    end
+
+    function filter --argument-names pattern
+        string match --all --entire --regex "$pattern" $files
+    end
+
+    if test -n "$lint_everything"
+        renovate-config-validator --strict
+    else
+        set matches (filter 'renovate\.json5$')
+        if test (count $matches) -gt 0
+            renovate-config-validator --strict $matches
+        end
+    end
+
+    if test -n "$lint_everything"
+        statix check ./
+    else
+        # statix doesn't support passing multiple files yet:
+        # https://github.com/nerdypepper/statix/issues/69
+        for file in (filter '.*\.nix$')
+            statix check "$file"
+        end
+    end
+
+    if test -n "$lint_everything"
+        actionlint
+    else
+        set matches (filter '.github/workflows/.*\.yml$')
+        if test (count $matches) -gt 0
+            actionlint $matches
+        end
+    end
 
 # Install git hooks
 [private]

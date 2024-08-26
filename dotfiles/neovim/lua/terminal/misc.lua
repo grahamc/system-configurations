@@ -252,7 +252,7 @@ Plug("tpope/vim-sleuth")
 -- on first wildchar press (<Tab>), show all matches and complete the longest common substring among
 -- on them. subsequent wildchar presses, cycle through matches
 vim.o.wildmode = "longest:full,full"
-vim.o.wildoptions = "pum"
+vim.o.wildoptions = "pum,fuzzy"
 vim.o.cmdheight = 0
 vim.o.showcmdloc = "statusline"
 vim.keymap.set("c", "<C-a>", "<C-b>", { remap = true })

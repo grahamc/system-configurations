@@ -323,10 +323,6 @@ function StatusLine()
       { mods = { "C" }, key = "l", description = "Next node or expand" },
       { mods = { "C" }, key = "c", description = "Select choice" },
     })
-  elseif IsCmpDocsOpen then
-    return make_mapping_statusline({
-      { mods = { "C" }, key = "j/k", description = "Scroll docs down/up" },
-    })
   elseif IsInsideDiagnosticFloat or IsInsideLspHoverOrSignatureHelp then
     return make_mapping_statusline({
       { key = "q", description = "Close float" },

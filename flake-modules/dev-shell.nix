@@ -103,7 +103,7 @@ in {
         stylua
         fish # for fish_indent
         renovate # for renovate-config-validator
-        formatjson5
+        actionlint
 
         # version control
         git
@@ -111,9 +111,6 @@ in {
 
         # for the Nix IDE vscode extension
         nil
-
-        # to use an interactive `just` picker
-        fzf
 
         # various shell script dependencies
         coreutils-full
@@ -124,6 +121,10 @@ in {
 
         # misc.
         just
+
+        # TODO: When I remove this, my devshell fails to build with the error:
+        # rm: cannot remove '/nix/store/nkybkk6pvcrflrsi3879936jh037ka1p-tools/share/nvim/site/plugin/fzf.vim': No such file or directory
+        fzf
       ];
       # TODO: Nix should be able to link in prettier, I think it doesn't work
       # because the `prettier` is a symlink

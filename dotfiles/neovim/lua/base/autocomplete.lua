@@ -8,6 +8,7 @@ Plug("windwp/nvim-autopairs", {
     require("nvim-autopairs").setup({
       -- Don't add bracket pairs after quote.
       enable_afterquote = false,
+      map_cr = false,
     })
   end,
 })

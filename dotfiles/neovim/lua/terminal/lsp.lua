@@ -206,6 +206,180 @@ vim.lsp.handlers[methods.textDocument_signatureHelp] = enhanced_float_handler(
   end
 )
 
+-- Should be idempotent since it may be called mutiple times for the same
+-- buffer. For example, it could get called again if a server registers
+-- another capability dynamically.
+local code_lens_refresh_autocmd_ids_by_buffer = {}
+local on_attach = function(client, buffer_number)
+  local keymap_opts = { silent = true, buffer = buffer_number }
+  local function buffer_keymap(mode, lhs, rhs, opts)
+    vim.keymap.set(
+      mode,
+      lhs,
+      rhs,
+      vim.tbl_deep_extend("force", keymap_opts, opts or {})
+    )
+  end
+
+  local isKeywordprgOverridable = vim.bo[buffer_number].filetype ~= "vim"
+  if
+    client.supports_method(methods.textDocument_hover)
+    and isKeywordprgOverridable
+  then
+    buffer_keymap("n", "K", vim.lsp.buf.hover)
+  end
+
+  if client.supports_method(methods.textDocument_inlayHint) then
+    local function toggle_inlay_hints()
+      vim.lsp.inlay_hint.enable(
+        not vim.lsp.inlay_hint.is_enabled(),
+        { bufnr = 0 }
+      )
+    end
+    buffer_keymap(
+      "n",
+      [[\i]],
+      toggle_inlay_hints,
+      { desc = "Toggle inlay hints" }
+    )
+  end
+
+  if client.supports_method(methods.textDocument_signatureHelp) then
+    buffer_keymap(
+      "i",
+      "<C-k>",
+      vim.lsp.buf.signature_help,
+      { desc = "Signature help" }
+    )
+  end
+
+  if client.supports_method(methods.textDocument_codeLens) then
+    local function create_refresh_autocmd()
+      local refresh_autocmd_id =
+        code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
+      if refresh_autocmd_id ~= -1 then
+        vim.notify(
+          "Not creating another code lens refresh autocmd since it doesn't look like the old one was removed. The id of the old one is: "
+            .. refresh_autocmd_id,
+          vim.log.levels.ERROR
+        )
+        return
+      end
+      code_lens_refresh_autocmd_ids_by_buffer[buffer_number] = vim.api.nvim_create_autocmd(
+        { "CursorHold", "InsertLeave" },
+        {
+          desc = "code lens refresh",
+          callback = function()
+            vim.lsp.codelens.refresh({ bufnr = buffer_number })
+          end,
+          buffer = buffer_number,
+        }
+      )
+    end
+
+    local function delete_refresh_autocmd()
+      local refresh_autocmd_id =
+        code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
+      if refresh_autocmd_id == -1 then
+        vim.notify(
+          "Unable to to remove the code lens refresh autocmd because it's id was not found",
+          vim.log.levels.ERROR
+        )
+        return
+      end
+      vim.api.nvim_del_autocmd(refresh_autocmd_id)
+      code_lens_refresh_autocmd_ids_by_buffer[buffer_number] = -1
+    end
+
+    if code_lens_refresh_autocmd_ids_by_buffer[buffer_number] == nil then
+      code_lens_refresh_autocmd_ids_by_buffer[buffer_number] = -1
+      create_refresh_autocmd()
+    end
+
+    buffer_keymap("n", "gl", vim.lsp.codelens.run, { desc = "Run code lens" })
+    buffer_keymap("n", [[\l]], function()
+      local refresh_autocmd_id =
+        code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
+      local is_refresh_autocmd_active = refresh_autocmd_id ~= -1
+      if is_refresh_autocmd_active then
+        delete_refresh_autocmd()
+        vim.lsp.codelens.clear(client.id, buffer_number)
+      else
+        create_refresh_autocmd()
+      end
+    end, { desc = "Toggle code lenses" })
+  end
+
+  -- TODO: I try just calling diagnostic.reset in here, but it
+  -- didn't work. It has to be called after the handler for
+  -- textDocument_(publishD|d)iagnostic runs so in here we just queue up
+  -- the bufs to disable.
+  local is_buffer_outside_workspace = not vim.startswith(
+    vim.api.nvim_buf_get_name(buffer_number),
+    client.config.root_dir or vim.loop.cwd() or ""
+  )
+  if is_buffer_outside_workspace then
+    vim.diagnostic.reset(nil, buffer_number)
+    table.insert(BufsToDisableDiagnosticOnDiagnostic, buffer_number)
+    table.insert(BufsToDisableDiagnosticOnPublishDiagnostic, buffer_number)
+  end
+
+  -- Quick way to disable diagnostic for a buffer
+  buffer_keymap("n", [[\d]], function()
+    vim.diagnostic.reset(nil, buffer_number)
+  end, { desc = "Toggle diagnostics for buffer" })
+end
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    on_attach(vim.lsp.get_client_by_id(args.data.client_id), args.buf)
+  end,
+})
+-- TODO: Would be better if I could get the buffer the these diagnostics
+-- were for from the context, but it's not in there.
+BufsToDisableDiagnosticOnPublishDiagnostic = {}
+local original_publish_diagnostics_handler =
+  vim.lsp.handlers[methods.textDocument_publishDiagnostics]
+vim.lsp.handlers[methods.textDocument_publishDiagnostics] = function(...)
+  local toreturn = { original_publish_diagnostics_handler(...) }
+
+  vim.iter(BufsToDisableDiagnosticOnPublishDiagnostic):each(function(b)
+    vim.diagnostic.reset(nil, b)
+  end)
+  BufsToDisableDiagnosticOnPublishDiagnostic = {}
+
+  return unpack(toreturn)
+end
+BufsToDisableDiagnosticOnDiagnostic = {}
+local original_diagnostic_handler =
+  vim.lsp.handlers[methods.textDocument_diagnostic]
+vim.lsp.handlers[methods.textDocument_diagnostic] = function(...)
+  local toreturn = { original_diagnostic_handler(...) }
+
+  vim.iter(BufsToDisableDiagnosticOnDiagnostic):each(function(b)
+    vim.diagnostic.reset(nil, b)
+  end)
+  BufsToDisableDiagnosticOnDiagnostic = {}
+
+  return unpack(toreturn)
+end
+
+-- When a server registers a capability dynamically, call on_attach again
+-- for the buffers attached to it.
+local original_register_capability =
+  vim.lsp.handlers[methods.client_registerCapability]
+vim.lsp.handlers[methods.client_registerCapability] = function(err, res, ctx)
+  local original_return_value = { original_register_capability(err, res, ctx) }
+
+  local client = vim.lsp.get_client_by_id(ctx.client_id)
+  if client then
+    vim.iter(vim.lsp.get_buffers_by_client_id(client.id)):each(function(buf)
+      on_attach(client, buf)
+    end)
+  end
+
+  return unpack(original_return_value)
+end
+
 Plug("b0o/SchemaStore.nvim")
 
 -- Not using this until it stops triggering a deprecation notice:
@@ -247,198 +421,6 @@ Plug("neovim/nvim-lspconfig", {
 if vim.fn.executable("nix") == 1 then
   Plug("dundalek/lazy-lsp.nvim", {
     config = function()
-      local code_lens_refresh_autocmd_ids_by_buffer = {}
-
-      -- Should be idempotent since it may be called mutiple times for the same
-      -- buffer. For example, it could get called again if a server registers
-      -- another capability dynamically.
-      local on_attach = function(client, buffer_number)
-        local keymap_opts = { silent = true, buffer = buffer_number }
-        local function buffer_keymap(mode, lhs, rhs, opts)
-          vim.keymap.set(
-            mode,
-            lhs,
-            rhs,
-            vim.tbl_deep_extend("force", keymap_opts, opts or {})
-          )
-        end
-
-        local isKeywordprgOverridable = vim.bo[buffer_number].filetype ~= "vim"
-        if
-          client.supports_method(methods.textDocument_hover)
-          and isKeywordprgOverridable
-        then
-          buffer_keymap("n", "K", vim.lsp.buf.hover)
-        end
-
-        if client.supports_method(methods.textDocument_inlayHint) then
-          local function toggle_inlay_hints()
-            vim.lsp.inlay_hint.enable(
-              not vim.lsp.inlay_hint.is_enabled(),
-              { bufnr = 0 }
-            )
-          end
-          buffer_keymap(
-            "n",
-            [[\i]],
-            toggle_inlay_hints,
-            { desc = "Toggle inlay hints" }
-          )
-        end
-
-        if client.supports_method(methods.textDocument_signatureHelp) then
-          buffer_keymap(
-            "i",
-            "<C-k>",
-            vim.lsp.buf.signature_help,
-            { desc = "Signature help" }
-          )
-        end
-
-        if client.supports_method(methods.textDocument_codeLens) then
-          local function create_refresh_autocmd()
-            local refresh_autocmd_id =
-              code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
-            if refresh_autocmd_id ~= -1 then
-              vim.notify(
-                "Not creating another code lens refresh autocmd since it doesn't look like the old one was removed. The id of the old one is: "
-                  .. refresh_autocmd_id,
-                vim.log.levels.ERROR
-              )
-              return
-            end
-            code_lens_refresh_autocmd_ids_by_buffer[buffer_number] = vim.api.nvim_create_autocmd(
-              { "CursorHold", "InsertLeave" },
-              {
-                desc = "code lens refresh",
-                callback = function()
-                  vim.lsp.codelens.refresh({ bufnr = buffer_number })
-                end,
-                buffer = buffer_number,
-              }
-            )
-          end
-
-          local function delete_refresh_autocmd()
-            local refresh_autocmd_id =
-              code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
-            if refresh_autocmd_id == -1 then
-              vim.notify(
-                "Unable to to remove the code lens refresh autocmd because it's id was not found",
-                vim.log.levels.ERROR
-              )
-              return
-            end
-            vim.api.nvim_del_autocmd(refresh_autocmd_id)
-            code_lens_refresh_autocmd_ids_by_buffer[buffer_number] = -1
-          end
-
-          if code_lens_refresh_autocmd_ids_by_buffer[buffer_number] == nil then
-            code_lens_refresh_autocmd_ids_by_buffer[buffer_number] = -1
-            create_refresh_autocmd()
-          end
-
-          buffer_keymap(
-            "n",
-            "gl",
-            vim.lsp.codelens.run,
-            { desc = "Run code lens" }
-          )
-          buffer_keymap("n", [[\l]], function()
-            local refresh_autocmd_id =
-              code_lens_refresh_autocmd_ids_by_buffer[buffer_number]
-            local is_refresh_autocmd_active = refresh_autocmd_id ~= -1
-            if is_refresh_autocmd_active then
-              delete_refresh_autocmd()
-              vim.lsp.codelens.clear(client.id, buffer_number)
-            else
-              create_refresh_autocmd()
-            end
-          end, { desc = "Toggle code lenses" })
-        end
-
-        -- TODO: I try just calling diagnostic.reset in here, but it
-        -- didn't work. It has to be called after the handler for
-        -- textDocument_(publishD|d)iagnostic runs so in here we just queue up
-        -- the bufs to disable.
-        local is_buffer_outside_workspace = not vim.startswith(
-          vim.api.nvim_buf_get_name(buffer_number),
-          client.config.root_dir or vim.loop.cwd() or ""
-        )
-        if is_buffer_outside_workspace then
-          vim.diagnostic.reset(nil, buffer_number)
-          table.insert(BufsToDisableDiagnosticOnDiagnostic, buffer_number)
-          table.insert(
-            BufsToDisableDiagnosticOnPublishDiagnostic,
-            buffer_number
-          )
-        end
-
-        -- Quick way to disable diagnostic for a buffer
-        buffer_keymap("n", [[\d]], function()
-          vim.diagnostic.reset(nil, buffer_number)
-        end, { desc = "Toggle diagnostics for buffer" })
-      end
-
-      -- TODO: Would be better if I could get the buffer the these diagnostics
-      -- were for from the context, but it's not in there.
-      BufsToDisableDiagnosticOnPublishDiagnostic = {}
-      local original_publish_diagnostics_handler =
-        vim.lsp.handlers[methods.textDocument_publishDiagnostics]
-      vim.lsp.handlers[methods.textDocument_publishDiagnostics] = function(...)
-        local toreturn = { original_publish_diagnostics_handler(...) }
-
-        vim.iter(BufsToDisableDiagnosticOnPublishDiagnostic):each(function(b)
-          vim.diagnostic.reset(nil, b)
-        end)
-        BufsToDisableDiagnosticOnPublishDiagnostic = {}
-
-        return unpack(toreturn)
-      end
-      BufsToDisableDiagnosticOnDiagnostic = {}
-      local original_diagnostic_handler =
-        vim.lsp.handlers[methods.textDocument_diagnostic]
-      vim.lsp.handlers[methods.textDocument_diagnostic] = function(...)
-        local toreturn = { original_diagnostic_handler(...) }
-
-        vim.iter(BufsToDisableDiagnosticOnDiagnostic):each(function(b)
-          vim.diagnostic.reset(nil, b)
-        end)
-        BufsToDisableDiagnosticOnDiagnostic = {}
-
-        return unpack(toreturn)
-      end
-
-      -- When a server registers a capability dynamically, call on_attach again
-      -- for the buffers attached to it.
-      local original_register_capability =
-        vim.lsp.handlers[methods.client_registerCapability]
-      vim.lsp.handlers[methods.client_registerCapability] = function(
-        err,
-        res,
-        ctx
-      )
-        local original_return_value =
-          { original_register_capability(err, res, ctx) }
-
-        local client = vim.lsp.get_client_by_id(ctx.client_id)
-        if client then
-          vim
-            .iter(vim.lsp.get_buffers_by_client_id(client.id))
-            :each(function(buf)
-              on_attach(client, buf)
-            end)
-        end
-
-        return unpack(original_return_value)
-      end
-
-      local capabilities = vim.tbl_deep_extend(
-        "force",
-        vim.lsp.protocol.make_client_capabilities(),
-        require("cmp_nvim_lsp").default_capabilities()
-      )
-
       local efm_settings_by_filetype = {
         markdown = {
           {
@@ -482,11 +464,6 @@ if vim.fn.executable("nix") == 1 then
             "marksman",
             "ltex",
           },
-        },
-
-        default_config = {
-          capabilities = capabilities,
-          on_attach = on_attach,
         },
 
         -- TODO: consider contributing some these settings to nvim-lspconfig

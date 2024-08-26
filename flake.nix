@@ -155,38 +155,6 @@
       url = "github:bkad/CamelCaseMotion";
       flake = false;
     };
-    vim-plugin-cmp-buffer = {
-      url = "github:hrsh7th/cmp-buffer";
-      flake = false;
-    };
-    vim-plugin-cmp-cmdline = {
-      url = "github:hrsh7th/cmp-cmdline";
-      flake = false;
-    };
-    vim-plugin-cmp-cmdline-history = {
-      url = "github:dmitmel/cmp-cmdline-history";
-      flake = false;
-    };
-    vim-plugin-cmp_luasnip = {
-      url = "github:saadparwaiz1/cmp_luasnip";
-      flake = false;
-    };
-    vim-plugin-cmp-nvim-lsp = {
-      url = "github:hrsh7th/cmp-nvim-lsp";
-      flake = false;
-    };
-    vim-plugin-cmp-nvim-lsp-signature-help = {
-      url = "github:hrsh7th/cmp-nvim-lsp-signature-help";
-      flake = false;
-    };
-    vim-plugin-cmp-omni = {
-      url = "github:hrsh7th/cmp-omni";
-      flake = false;
-    };
-    vim-plugin-cmp-path = {
-      url = "github:hrsh7th/cmp-path";
-      flake = false;
-    };
     vim-plugin-conform-nvim = {
       url = "github:stevearc/conform.nvim";
       flake = false;
@@ -211,16 +179,8 @@
       url = "github:glacambre/firenvim";
       flake = false;
     };
-    vim-plugin-friendly-snippets = {
-      url = "github:rafamadriz/friendly-snippets";
-      flake = false;
-    };
     vim-plugin-lazy-lsp-nvim = {
       url = "github:dundalek/lazy-lsp.nvim";
-      flake = false;
-    };
-    vim-plugin-LuaSnip = {
-      url = "github:L3MON4D3/LuaSnip";
       flake = false;
     };
     vim-plugin-mini-nvim = {
@@ -229,10 +189,6 @@
     };
     vim-plugin-nvim-autopairs = {
       url = "github:windwp/nvim-autopairs";
-      flake = false;
-    };
-    vim-plugin-nvim-cmp = {
-      url = "github:hrsh7th/nvim-cmp";
       flake = false;
     };
     vim-plugin-nvim-lightbulb = {
@@ -289,10 +245,6 @@
     };
     vim-plugin-vim-caser = {
       url = "github:arthurxavierx/vim-caser";
-      flake = false;
-    };
-    vim-plugin-vim-fish = {
-      url = "github:blankname/vim-fish";
       flake = false;
     };
     vim-plugin-vim-indentwise = {
