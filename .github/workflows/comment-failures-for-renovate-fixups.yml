@@ -15,16 +15,16 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     steps:
+      # TODO: This is using deprecated APIs:
+      # https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
       - name: Change title
         uses: juliangruber/octokit-action@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           command: pulls.update
           pull_number: ${{ github.event.workflow_run.pull_requests[0].number }}
-          title: "[failure] ${{ github.event.workflow_run.pull_requests[0].title }}"
-      - name: Echo
-        run: |
-          echo '${{ toJSON(github.event.workflow_run.pull_requests[0]) }}'
+          # TODO: I'd like to prefix the original PR title, but the title isn't in the context
+          title: "[failure] ${{ github.event.workflow_run.pull_requests[0].head.ref }}"
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v2
         with:
