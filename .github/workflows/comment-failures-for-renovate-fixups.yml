@@ -22,6 +22,9 @@ jobs:
           command: pulls.update
           pull_number: ${{ github.event.workflow_run.pull_requests[0].number }}
           title: "[failure] ${{ github.event.workflow_run.pull_requests[0].title }}"
+      - name: Echo
+        run: |
+          echo '${{ toJSON(github.event.workflow_run.pull_requests[0]) }}'
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v2
         with:
