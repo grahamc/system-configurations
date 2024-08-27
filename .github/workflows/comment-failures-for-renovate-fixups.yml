@@ -17,5 +17,5 @@ jobs:
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
-            Workflow failed for renovate fixup: ${{ github.event.workflow_run.display_title }}
+            Workflow failed for renovate fixup: ${{ github.event.workflow_run.name}}
           pr_number: ${{ github.event.workflow_run.pull_requests[0].number }}
