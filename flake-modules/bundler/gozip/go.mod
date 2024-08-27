@@ -7,7 +7,7 @@ require (
 	golang.org/x/sync v0.7.0 // direct
 )
 
-require github.com/deepakjois/gousbdrivedetector v0.0.0-20220514003247-ea439de1c459 // direct
+require github.com/deepakjois/gousbdrivedetector v0.0.0-20240702044807-c8f9c0587c5e // direct
 
 require (
 	github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db // indirect

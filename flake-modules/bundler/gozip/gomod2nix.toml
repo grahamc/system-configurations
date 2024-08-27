@@ -2,8 +2,8 @@ schema = 3
 
 [mod]
   [mod."github.com/deepakjois/gousbdrivedetector"]
-    version = "v0.0.0-20220514003247-ea439de1c459"
-    hash = "sha256-jKNFARY6VUnhVIdkw/kMHA9m8KyrtT3Obi9721St5oU="
+    version = "v0.0.0-20240702044807-c8f9c0587c5e"
+    hash = "sha256-c9u+sj5NHZyaw6v7pfCn74tqiml/9YXJD9eiXvie4IU="
   [mod."github.com/klauspost/compress"]
     version = "v1.17.8"
     hash = "sha256-8rgCCfHX29le8m6fyVn6gwFde5TPUHjwQqZqv9JIubs="

@@ -1,8 +1,8 @@
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/deepakjois/gousbdrivedetector v0.0.0-20220514003247-ea439de1c459 h1:gZcBabrda6G8OBWOLr2hRCwtOVr2z2oD8GHlv9wpMSE=
-github.com/deepakjois/gousbdrivedetector v0.0.0-20220514003247-ea439de1c459/go.mod h1:zBq85v4Jn+9KU3tkyNs7IKzmyP/KQcitMLzLkwhxfSk=
+github.com/deepakjois/gousbdrivedetector v0.0.0-20240702044807-c8f9c0587c5e h1:uF9eBZet4Hxazhia0rFv0ohOPvd+j41Zlyg5be0drSc=
+github.com/deepakjois/gousbdrivedetector v0.0.0-20240702044807-c8f9c0587c5e/go.mod h1:zBq85v4Jn+9KU3tkyNs7IKzmyP/KQcitMLzLkwhxfSk=
 github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213/go.mod h1:vNUNkEQ1e29fT/6vq2aBdFsgNPmy8qMdSay1npru+Sw=
 github.com/klauspost/compress v1.17.8 h1:YcnTYrq7MikUT7k0Yb5eceMmALQPYBW/Xltxn0NAMnU=
 github.com/klauspost/compress v1.17.8/go.mod h1:Di0epgTjJY877eYKx5yC51cX2A2Vl2ibi7bDH9ttBbw=
