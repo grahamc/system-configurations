@@ -7,7 +7,7 @@ on:
     # schedule.
     #
     # Make it every 10 minutes for testing.
-    - cron: "*/10 * * * *"
+    - cron: "0 0 * * *"
 env:
   MERGE_METHOD: "squash"
   UPDATE_METHOD: "rebase"
