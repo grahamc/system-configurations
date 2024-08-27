@@ -7,7 +7,6 @@
   gomod: {
     pinDigests: true,
   },
-  commitBody: "test",
   postUpdateOptions: ["gomodTidy", "gomodMassage"],
   extends: [
     "config:best-practices",
@@ -40,17 +39,21 @@
       matchManagers: ["gomod"],
 
       // So I can add commits of my own
-      additionalBranchPrefix: "golang/",
+      // SYNC: RENOVATE_FIXUP_GOLANG RENOVATE_FIXUP
+      additionalBranchPrefix: "fixup/golang/",
+
       automergeType: "pr",
-      commitMessagePrefix: "[RENOVATE_WILL_AMEND]",
+      commitMessageAction: "[RENOVATE_FIXUP] Update",
     },
     {
       matchDepNames: ["nix-community/nix-direnv"],
 
       // So I can add commits of my own
-      additionalBranchPrefix: "envrc/",
+      // SYNC: RENOVATE_FIXUP_ENVRC RENOVATE_FIXUP
+      additionalBranchPrefix: "fixup/envrc/",
+
       automergeType: "pr",
-      commitMessagePrefix: "[RENOVATE_WILL_AMEND]",
+      commitMessageAction: "[RENOVATE_FIXUP] Update",
     },
 
     // By default, indirect Go dependencies aren't updated

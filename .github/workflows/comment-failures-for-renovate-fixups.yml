@@ -1,0 +1,21 @@
+name: comment-failures-for-renovate-fixups
+on:
+  workflow_run:
+    workflows:
+      - "Tests"
+    types:
+      - completed
+    branches:
+      # SYNC: RENOVATE_FIXUP
+      - "renovate/fixup/**"
+jobs:
+  comment-failures-for-renovate-fixups:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            Workflow failed for renovate fixup: ${{ github.event.workflow_run.display_title }}
+          pr_number: ${{ github.event.workflow_run.pull_requests[0].number }}

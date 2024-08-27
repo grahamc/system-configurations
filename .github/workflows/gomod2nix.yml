@@ -2,7 +2,8 @@ name: gomod2nix
 on:
   push:
     branches:
-      - "renovate/golang/**"
+      # SYNC: RENOVATE_FIXUP_GOLANG RENOVATE_FIXUP
+      - "renovate/fixup/golang/**"
 env:
   # The checkout action clones the repository relative to github.workspace. I
   # set $HOME to github.workspace so that the directory structure matches that
@@ -14,7 +15,7 @@ jobs:
     # https://github.com/orgs/community/discussions/39831
     # https://github.com/orgs/community/discussions/54860
     # https://github.com/orgs/community/discussions/26286
-    if: startsWith(github.event.head_commit.message, '[RENOVATE_WILL_AMEND]')
+    if: startsWith(github.event.head_commit.message, '[RENOVATE_FIXUP]')
     runs-on: ubuntu-latest
     defaults:
       run:
