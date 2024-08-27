@@ -38,8 +38,16 @@
     {
       matchManagers: ["gomod"],
 
-      // So I can run `gomod2nix`
+      // So I can add commits of my own
       additionalBranchPrefix: "golang/",
+      automergeType: "pr",
+    },
+    {
+      matchDepNames: ["nix-community/nix-direnv"],
+
+      // So I can add commits of my own
+      additionalBranchPrefix: "envrc/",
+      automergeType: "pr",
     },
 
     // By default, indirect Go dependencies aren't updated

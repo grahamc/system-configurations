@@ -1,0 +1,3 @@
+automerge:
+  # Something that will always match since we always want to add the label.
+  - base-branch: ".*"

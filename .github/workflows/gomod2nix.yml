@@ -1,6 +1,12 @@
 name: gomod2nix
 on:
-  push:
+  pull_request:
+    # Since we are using an app token, instead of the default github action
+    # token, anything done here can trigger other workflows. To prevent an
+    # infinite loop, we only run this when pull request is opened and since this
+    # won't create a pull request there shouldn't be any loops.
+    types:
+      - opened
     branches:
       - "renovate/golang/**"
 env:
@@ -11,16 +17,21 @@ env:
 jobs:
   gomod2nix:
     runs-on: ubuntu-latest
-    permissions:
-      # Needed for git-auto-commit-action
-      contents: write
     defaults:
       run:
         working-directory: "code/system-configurations"
     steps:
+      - uses: actions/create-github-app-token@v1
+        id: bigolu-bot-app-token
+        with:
+          app-id: ${{ vars.BIGOLU_BOT_APP_ID }}
+          private-key: ${{ secrets.BIGOLU_BOT_PRIVATE_KEY }}
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
         with:
           path: "code/system-configurations"
+          # So when we commit, it triggers other workflows:
+          # https://github.com/stefanzweifel/git-auto-commit-action?tab=readme-ov-file#commits-made-by-this-action-do-not-trigger-new-workflow-runs
+          token: ${{ steps.bigolu-bot-app-token.outputs.token }}
       - uses: DeterminateSystems/nix-installer-action@main
         # TODO: home-manager's `mkOutOfStoreSymlink` doesn't work on nix v2.19
         # so I'm pinning v2.18:
@@ -41,3 +52,6 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@8621497c8c39c72f3e2a999a26b4ca1b5058a842 # v5
         with:
           repository: "code/system-configurations"
+      - uses: actions/labeler@v5
+        with:
+          repo-token: ${{ steps.bigolu-bot-app-token.outputs.token }}
