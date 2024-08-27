@@ -10,6 +10,7 @@ on:
     - cron: "*/10 * * * *"
 env:
   MERGE_METHOD: "squash"
+  UPDATE_METHOD: "rebase"
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
