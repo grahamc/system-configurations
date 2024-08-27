@@ -8,6 +8,8 @@ on:
     #
     # Make it every 10 minutes for testing.
     - cron: "*/10 * * * *"
+env:
+  MERGE_METHOD: "squash"
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
