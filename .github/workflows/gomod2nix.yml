@@ -51,6 +51,12 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@8621497c8c39c72f3e2a999a26b4ca1b5058a842 # v5
         with:
           repository: "code/system-configurations"
+      - name: Find Pull Request
+        uses: juliangruber/find-pull-request-action@v1
+        id: find-pull-request
+        with:
+          branch: ${{ github.ref_name }}
       - uses: actions/labeler@v5
         with:
           repo-token: ${{ steps.bigolu-bot-app-token.outputs.token }}
+          pr-number: ${{ steps.find-pull-request.outputs.number }}
