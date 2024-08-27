@@ -1,66 +1,22 @@
-name: gomod2nix
+name: "Renovate Post Upgrade Task: Update gomod2nix.toml"
 on:
   push:
     branches:
       # SYNC: RENOVATE_FIXUP_GOLANG RENOVATE_FIXUP
       - "renovate/fixup/golang/**"
-env:
-  # The checkout action clones the repository relative to github.workspace. I
-  # set $HOME to github.workspace so that the directory structure matches that
-  # of the machine I tested this on.
-  HOME: ${{ github.workspace }}
 jobs:
-  gomod2nix:
-    # TODO: This will result in a bunch of runs that immediately exit if the branch wasn't just created. Ideally the job wouldn't even start if the branch wasn't just created:
-    # https://github.com/orgs/community/discussions/39831
-    # https://github.com/orgs/community/discussions/54860
-    # https://github.com/orgs/community/discussions/26286
-    #
-    # SYNC: RENOVATE_FIXUP
-    if: startsWith(github.event.head_commit.message, '[RENOVATE_FIXUP]')
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: "code/system-configurations"
-    steps:
-      - uses: actions/create-github-app-token@v1
-        id: bigolu-bot-app-token
-        with:
-          app-id: ${{ vars.BIGOLU_BOT_APP_ID }}
-          private-key: ${{ secrets.BIGOLU_BOT_PRIVATE_KEY }}
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
-        with:
-          path: "code/system-configurations"
-          # So when we commit, it triggers other workflows:
-          # https://github.com/stefanzweifel/git-auto-commit-action?tab=readme-ov-file#commits-made-by-this-action-do-not-trigger-new-workflow-runs
-          token: ${{ steps.bigolu-bot-app-token.outputs.token }}
-      - uses: DeterminateSystems/nix-installer-action@main
-        # TODO: home-manager's `mkOutOfStoreSymlink` doesn't work on nix v2.19
-        # so I'm pinning v2.18:
-        # https://github.com/nix-community/home-manager/issues/4692
-        # https://github.com/NixOS/nix/issues/9579
-        with:
-          source-tag: v0.13.1
-      - uses: cachix/cachix-action@ad2ddac53f961de1989924296a1f236fcfbaa4fc # v15
-        with:
-          name: bigolu
-          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
-          # TODO: This isn't working right now:
-          # https://github.com/cachix/cachix-action/issues/169
-          useDaemon: false
-      - run: |
-          # shellcheck disable=2016
-          nix shell --impure nixpkgs#fish nixpkgs#direnv --command fish --command 'direnv hook fish | source; direnv allow; direnv exec "$PWD" nix-direnv-reload; direnv exec "$PWD" just gomod2nix'
-      - uses: stefanzweifel/git-auto-commit-action@8621497c8c39c72f3e2a999a26b4ca1b5058a842 # v5
-        with:
-          repository: "code/system-configurations"
-      - name: Find Pull Request
-        uses: juliangruber/find-pull-request-action@v1
-        id: find-pull-request
-        with:
-          branch: ${{ github.ref_name }}
-      - uses: actions/labeler@v5
-        with:
-          repo-token: ${{ steps.bigolu-bot-app-token.outputs.token }}
-          pr-number: ${{ steps.find-pull-request.outputs.number }}
-          configuration-path: code/system-configurations/.github/labeler.yml
+  fix-envrc:
+    uses: ./.github/workflows/renovate-post-upgrade-task.yml
+    with:
+      command: |
+        # shellcheck disable=2016
+        nix shell --impure nixpkgs#fish nixpkgs#direnv \
+          --command fish --command '
+            direnv hook fish | source
+            direnv allow
+            direnv exec "$PWD" nix-direnv-reload
+            direnv exec "$PWD" just gomod2nix
+          '
+    secrets:
+      BIGOLU_BOT_PRIVATE_KEY: ${{ secrets.BIGOLU_BOT_PRIVATE_KEY }}
+      CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
