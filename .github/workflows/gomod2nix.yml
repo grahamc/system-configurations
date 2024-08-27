@@ -60,3 +60,4 @@ jobs:
         with:
           repo-token: ${{ steps.bigolu-bot-app-token.outputs.token }}
           pr-number: ${{ steps.find-pull-request.outputs.number }}
+          configuration-path: code/system-configurations/.github/labeler.yml
