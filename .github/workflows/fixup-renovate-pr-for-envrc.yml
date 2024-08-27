@@ -11,17 +11,27 @@ env:
   HOME: ${{ github.workspace }}
 jobs:
   fix-envrc:
+    # TODO: This will result in a bunch of runs that immediately exit if the branch wasn't just created. Ideally the job wouldn't even start if the branch wasn't just created:
+    # https://github.com/orgs/community/discussions/39831
+    # https://github.com/orgs/community/discussions/54860
+    # https://github.com/orgs/community/discussions/26286
+    if: startsWith(github.event.head_commit.message, '[RENOVATE_FIXUP]')
     runs-on: ubuntu-latest
-    permissions:
-      # Needed for git-auto-commit-action
-      contents: write
     defaults:
       run:
         working-directory: "code/system-configurations"
     steps:
+      - uses: actions/create-github-app-token@v1
+        id: bigolu-bot-app-token
+        with:
+          app-id: ${{ vars.BIGOLU_BOT_APP_ID }}
+          private-key: ${{ secrets.BIGOLU_BOT_PRIVATE_KEY }}
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
         with:
           path: "code/system-configurations"
+          # So when we commit, it triggers other workflows:
+          # https://github.com/stefanzweifel/git-auto-commit-action?tab=readme-ov-file#commits-made-by-this-action-do-not-trigger-new-workflow-runs
+          token: ${{ steps.bigolu-bot-app-token.outputs.token }}
       - uses: DeterminateSystems/nix-installer-action@main
         # TODO: home-manager's `mkOutOfStoreSymlink` doesn't work on nix v2.19
         # so I'm pinning v2.18:
@@ -42,3 +52,13 @@ jobs:
       - uses: stefanzweifel/git-auto-commit-action@8621497c8c39c72f3e2a999a26b4ca1b5058a842 # v5
         with:
           repository: "code/system-configurations"
+      - name: Find Pull Request
+        uses: juliangruber/find-pull-request-action@v1
+        id: find-pull-request
+        with:
+          branch: ${{ github.ref_name }}
+      - uses: actions/labeler@v5
+        with:
+          repo-token: ${{ steps.bigolu-bot-app-token.outputs.token }}
+          pr-number: ${{ steps.find-pull-request.outputs.number }}
+          configuration-path: code/system-configurations/.github/labeler.yml
