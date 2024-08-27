@@ -16,41 +16,20 @@ pre-commit:
   piped: true
   commands:
     # Code generators
-    generate-readme-table-of-contents:
+    generate-code:
       priority: 1
-      glob: "README.md"
-      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just generate-readme-table-of-contents
-    generate-neovim-plugin-list:
-      priority: 1
-      glob: "*neovim/lua/*.lua"
-      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just generate-neovim-plugin-list
-    go-mod-tidy:
-      priority: 1
-      glob: "*gozip/go.mod"
-      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just go-mod-tidy
-    gomod2nix:
-      priority: 1
-      glob: "*gozip/go.mod"
-      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just gomod2nix
-
+      run: lefthook run generate-code
     # Formatters. Change their priority so we format code after all the code
     # generators have run
     format:
       priority: 2
-      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just format {staged_files}
-      interactive: true
-    format-all:
-      priority: 2
-      glob: "{.stylua.toml,.editorconfig,treefmt.toml}"
-      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just format
-      interactive: true
-
+      run: lefthook run format
     # Linters. Change the priority so we lint the code after all code generation
     # and formatting has run, in the unlikely event that they cause a lint
     # error.
     lint:
       priority: 3
-      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just lint {staged_files}
+      run: lefthook run lint
 
 post-merge:
   scripts:
@@ -63,3 +42,35 @@ post-rewrite:
     "post-rewrite.bash":
       runner: DIRENV_LOG_FORMAT='' direnv exec "$PWD" bash
       interactive: true
+
+# Custom Groups
+########################################
+generate-code:
+  commands:
+    generate-readme-table-of-contents:
+      glob: "README.md"
+      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just generate-readme-table-of-contents
+    generate-neovim-plugin-list:
+      glob: "*neovim/lua/*.lua"
+      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just generate-neovim-plugin-list
+    go-mod-tidy:
+      glob: "*gozip/go.mod"
+      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just go-mod-tidy
+    gomod2nix:
+      glob: "*gozip/go.mod"
+      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just gomod2nix
+format:
+  commands:
+    format-staged:
+      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just format {staged_files}
+      # TODO: treefmt runs very slowly if it can't access a TTY
+      interactive: true
+    format-all:
+      glob: "{.stylua.toml,.editorconfig,treefmt.toml}"
+      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just format
+      # TODO: treefmt runs very slowly if it can't access a TTY
+      interactive: true
+lint:
+  commands:
+    lint:
+      run: DIRENV_LOG_FORMAT='' direnv exec "$PWD" just lint {staged_files}
