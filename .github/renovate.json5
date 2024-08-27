@@ -7,6 +7,7 @@
   gomod: {
     pinDigests: true,
   },
+  commitBody: "test",
   postUpdateOptions: ["gomodTidy", "gomodMassage"],
   extends: [
     "config:best-practices",
