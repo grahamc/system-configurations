@@ -34,7 +34,7 @@ jobs:
         # https://github.com/NixOS/nix/issues/9579
         with:
           source-tag: v0.13.1
-      - uses: cachix/cachix-action@18cf96c7c98e048e10a83abd92116114cd8504be # v14
+      - uses: cachix/cachix-action@ad2ddac53f961de1989924296a1f236fcfbaa4fc # v15
         with:
           name: bigolu
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
