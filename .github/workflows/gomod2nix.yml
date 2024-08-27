@@ -15,6 +15,8 @@ jobs:
     # https://github.com/orgs/community/discussions/39831
     # https://github.com/orgs/community/discussions/54860
     # https://github.com/orgs/community/discussions/26286
+    #
+    # SYNC: RENOVATE_FIXUP
     if: startsWith(github.event.head_commit.message, '[RENOVATE_FIXUP]')
     runs-on: ubuntu-latest
     defaults:

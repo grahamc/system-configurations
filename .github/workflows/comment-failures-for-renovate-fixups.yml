@@ -21,7 +21,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           command: pulls.update
           pull_number: ${{ github.event.workflow_run.pull_requests[0].number }}
-          title: Renovate Fixup [failure]
+          title: "[failure] ${{ github.event.workflow_run.pull_requests[0].title }}"
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v2
         with:

@@ -37,22 +37,24 @@
     },
     {
       matchManagers: ["gomod"],
+      automergeType: "pr",
 
       // So I can add commits of my own
       // SYNC: RENOVATE_FIXUP_GOLANG RENOVATE_FIXUP
       additionalBranchPrefix: "fixup/golang/",
 
-      automergeType: "pr",
+      // SYNC: RENOVATE_FIXUP
       commitMessageAction: "[RENOVATE_FIXUP] Update",
     },
     {
       matchDepNames: ["nix-community/nix-direnv"],
+      automergeType: "pr",
 
       // So I can add commits of my own
       // SYNC: RENOVATE_FIXUP_ENVRC RENOVATE_FIXUP
       additionalBranchPrefix: "fixup/envrc/",
 
-      automergeType: "pr",
+      // SYNC: RENOVATE_FIXUP
       commitMessageAction: "[RENOVATE_FIXUP] Update",
     },
 
