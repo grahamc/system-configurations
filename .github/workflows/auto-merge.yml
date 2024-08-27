@@ -5,8 +5,6 @@ on:
     # token, anything done here can trigger other workflows avoid creating an
     # infinite loop. That shouldn't be a problem here since this runs on a
     # schedule.
-    #
-    # Make it every 10 minutes for testing.
     - cron: "0 0 * * *"
 env:
   MERGE_METHOD: "squash"
