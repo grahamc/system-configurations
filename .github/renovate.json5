@@ -1,6 +1,5 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  dependencyDashboard: false,
   // TODO: I shouldn't have to add this, it should automatically do it because I
   // configured the repository to require branches to be up-to-date.
   rebaseWhen: "behind-base-branch",
