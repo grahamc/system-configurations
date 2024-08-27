@@ -48,6 +48,7 @@
       // So I can add commits of my own
       additionalBranchPrefix: "envrc/",
       automergeType: "pr",
+      commitMessagePrefix: "[RENOVATE_WILL_AMEND]",
     },
 
     // By default, indirect Go dependencies aren't updated

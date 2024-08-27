@@ -1,12 +1,6 @@
 name: gomod2nix
 on:
-  pull_request:
-    # Since we are using an app token, instead of the default github action
-    # token, anything done here can trigger other workflows. To prevent an
-    # infinite loop, we only run this when pull request is opened and since this
-    # won't create a pull request there shouldn't be any loops.
-    types:
-      - opened
+  push:
     branches:
       - "renovate/golang/**"
 env:
@@ -16,6 +10,11 @@ env:
   HOME: ${{ github.workspace }}
 jobs:
   gomod2nix:
+    # TODO: This will result in a bunch of runs that immediately exit if the branch wasn't just created. Ideally the job wouldn't even start if the branch wasn't just created:
+    # https://github.com/orgs/community/discussions/39831
+    # https://github.com/orgs/community/discussions/54860
+    # https://github.com/orgs/community/discussions/26286
+    if: contains(github.event.workflow_run.head_commit.message, '[RENOVATE_WILL_AMEND]')
     runs-on: ubuntu-latest
     defaults:
       run:
