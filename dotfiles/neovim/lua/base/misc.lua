@@ -104,8 +104,11 @@ function MyPaste(was_in_visual_mode, is_capital_p)
   end
 
   local enter_key = vim.api.nvim_replace_termcodes("<CR>", true, false, true)
-  local set_lazy_redraw = ":set lazyredraw" .. enter_key
-  local unset_lazy_redraw = ":set nolazyredraw" .. enter_key
+
+  -- This is flaky in vscode so I'll only use it in the terminal
+  local set_lazy_redraw = IsRunningInTerminal and ":set lazyredraw" .. enter_key or ""
+  local unset_lazy_redraw = IsRunningInTerminal and ":set nolazyredraw" .. enter_key or ""
+
   local indent = is_multi_line_paste
       and string.format(
         [[:%d,%dnormal! ==]] .. enter_key,
