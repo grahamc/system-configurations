@@ -382,19 +382,21 @@ end
 
 Plug("b0o/SchemaStore.nvim")
 
-Plug("kosayoda/nvim-lightbulb", {
-  config = function()
-    require("nvim-lightbulb").setup({
-      autocmd = { enabled = true },
-      -- Giving it a higher priority than diagnostics
-      sign = {
-        priority = 15,
-        text = "",
-        hl = "CodeActionSign",
-      },
-    })
-  end,
-})
+-- It's using deprecated functions so I'll wait till it isn't
+--
+-- Plug("kosayoda/nvim-lightbulb", {
+--   config = function()
+--     require("nvim-lightbulb").setup({
+--       autocmd = { enabled = true },
+--       -- Giving it a higher priority than diagnostics
+--       sign = {
+--         priority = 15,
+--         text = "",
+--         hl = "CodeActionSign",
+--       },
+--     })
+--   end,
+-- })
 
 Plug("neovim/nvim-lspconfig", {
   config = function()

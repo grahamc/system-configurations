@@ -10,7 +10,6 @@ lazy-lsp.nvim
 mini.nvim
 Navigator.nvim
 nvim-autopairs
-nvim-lightbulb
 nvim-lspconfig
 nvim-treesitter
 nvim-treesitter-context
