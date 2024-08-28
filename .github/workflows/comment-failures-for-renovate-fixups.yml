@@ -18,7 +18,7 @@ jobs:
       # TODO: This is using deprecated APIs:
       # https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
       - name: Change title
-        uses: juliangruber/octokit-action@v1
+        uses: juliangruber/octokit-action@e47ba029b2fd259de3a7e9fc371b0eb4a984dd5e # v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           command: pulls.update
@@ -26,7 +26,7 @@ jobs:
           # TODO: I'd like to prefix the original PR title, but the title isn't in the context
           title: "[failure] ${{ github.event.workflow_run.pull_requests[0].head.ref }}"
       - name: Comment PR
-        uses: thollander/actions-comment-pull-request@v2
+        uses: thollander/actions-comment-pull-request@fabd468d3a1a0b97feee5f6b9e499eab0dd903f6 # v2
         with:
           message: |
             Workflow failed for renovate fixup: ${{ github.event.workflow_run.name}}

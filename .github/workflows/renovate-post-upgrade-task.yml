@@ -29,7 +29,7 @@ jobs:
       run:
         working-directory: "code/system-configurations"
     steps:
-      - uses: actions/create-github-app-token@v1
+      - uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1
         id: bigolu-bot-app-token
         with:
           app-id: ${{ vars.BIGOLU_BOT_APP_ID }}
@@ -59,11 +59,11 @@ jobs:
         with:
           repository: "code/system-configurations"
       - name: Find Pull Request
-        uses: juliangruber/find-pull-request-action@v1
+        uses: juliangruber/find-pull-request-action@48b6133aa6c826f267ebd33aa2d29470f9d9e7d0 # v1
         id: find-pull-request
         with:
           branch: ${{ github.ref_name }}
-      - uses: actions/labeler@v5
+      - uses: actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9 # v5
         with:
           repo-token: ${{ steps.bigolu-bot-app-token.outputs.token }}
           pr-number: ${{ steps.find-pull-request.outputs.number }}

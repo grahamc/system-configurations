@@ -13,14 +13,14 @@ jobs:
   auto-merge:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/create-github-app-token@v1
+      - uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1
         id: bigolu-bot-app-token
         with:
           app-id: ${{ vars.BIGOLU_BOT_APP_ID }}
           private-key: ${{ secrets.BIGOLU_BOT_PRIVATE_KEY }}
       - id: automerge
         name: automerge
-        uses: "pascalgn/automerge-action@v0.16.3"
+        uses: "pascalgn/automerge-action@d1203c0bf94a827b991e5de69d662e9163304fa0" # v0.16.3
         env:
           GITHUB_TOKEN: "${{ steps.bigolu-bot-app-token.outputs.token }}"
       - name: feedback
