@@ -5,30 +5,10 @@
   ...
 }: let
   inherit (specialArgs) hostName homeDirectory username repositoryDirectory;
-  inherit (specialArgs.flakeInputs) self;
-
-  hostctl-switch = pkgs.writeShellApplication {
-    name = "hostctl-switch";
-    text = ''
-      cd "${repositoryDirectory}"
-
-      # Get sudo authentication now so I don't have to wait for it to ask me later
-      sudo --validate
-
-      oldGenerationPath="$(readlink --canonicalize ${config.system.profile})"
-
-      darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" "$@" |& nom
-
-      newGenerationPath="$(readlink --canonicalize ${config.system.profile})"
-
-      cyan='\033[1;0m'
-      printf "%bPrinting generation diff...\n" "$cyan"
-      nix store diff-closures "$oldGenerationPath" "$newGenerationPath"
-    '';
-  };
 
   hostctl-preview-switch = pkgs.writeShellApplication {
     name = "hostctl-preview-switch";
+    runtimeInputs = with pkgs; [nix coreutils];
     text = ''
       cd "${repositoryDirectory}"
 
@@ -42,58 +22,85 @@
     '';
   };
 
-  hostctl-upgrade = pkgs.writeShellApplication {
-    name = "hostctl-upgrade";
+  hostctl-switch = pkgs.writeShellApplication {
+    name = "hostctl-switch";
+    runtimeInputs = with pkgs; [nix nix-output-monitor coreutils];
     text = ''
       cd "${repositoryDirectory}"
 
-      # Get sudo authentication now so I don't have to wait for it to ask me
-      # later
+      # Get sudo authentication now so I don't have to wait for it to ask me later
       sudo --validate
 
       oldGenerationPath="$(readlink --canonicalize ${config.system.profile})"
 
-      nix flake update
-      darwin-rebuild switch --flake '${repositoryDirectory}#${hostName}' "$@" |& nom
-      chronic ${self}/dotfiles/nix/bin/nix-upgrade-profiles
+      ${config.system.profile}/sw/bin/darwin-rebuild switch --flake "${repositoryDirectory}#${hostName}" "$@" |& nom
 
       newGenerationPath="$(readlink --canonicalize ${config.system.profile})"
 
       cyan='\033[1;0m'
       printf "%bPrinting generation diff...\n" "$cyan"
       nix store diff-closures "$oldGenerationPath" "$newGenerationPath"
-
-      # HACK:
-      # https://stackoverflow.com/a/40473139
-      rm -rf "$(brew --prefix)/var/homebrew/locks"
-
-      chronic brew update
-      brew upgrade --greedy
-      chronic brew autoremove
-      chronic brew cleanup
     '';
   };
 
-  hostctl-preview-upgrade = pkgs.writeShellApplication {
-    name = "hostctl-preview-upgrade";
+  hostctl-upgrade = pkgs.writeShellApplication {
+    name = "hostctl-upgrade";
+    runtimeInputs = with pkgs; [coreutils gitMinimal less direnv nix];
     text = ''
       cd "${repositoryDirectory}"
 
-      oldGenerationPath="$(readlink --canonicalize ${config.system.profile})"
+      rm -f ~/.local/state/nvim/*.log
+      rm -f ~/.local/state/nvim/undo/*
 
-      newGenerationPath="$(nix build --no-write-lock-file --recreate-lock-file --no-link --print-out-paths .#darwinConfigurations.${hostName}.system)"
+      git fetch
+      if [ -n "$(git log 'HEAD..@{u}' --oneline)" ]; then
+          echo "$(echo 'Commits made since last pull:'$'\n'; git log '..@{u}')" | less
 
-      cyan='\033[1;0m'
-      printf "%bPrinting upgrade preview...\n" "$cyan"
-      nix store diff-closures "$oldGenerationPath" "$newGenerationPath"
+          if [ -n "$(git status --porcelain)" ]; then
+              git stash --include-untracked --message 'Stashed for upgrade'
+          fi
+
+          direnv allow
+          direnv exec "$PWD" nix-direnv-reload
+          direnv exec "$PWD" git pull
+      else
+          # Something probably went wrong so we're trying to upgrade again even
+          # though there's nothing to pull. In which case, just run the hook as
+          # though we did.
+          direnv allow
+          direnv exec "$PWD" nix-direnv-reload
+          direnv exec "$PWD" lefthook run post-rewrite
+      fi
 
       # HACK:
       # https://stackoverflow.com/a/40473139
-      rm -rf "$(brew --prefix)/var/homebrew/locks"
+      rm -rf "$(/usr/local/bin/brew --prefix)/var/homebrew/locks"
 
-      brew outdated --greedy
+      /usr/local/bin/brew update
+      /usr/local/bin/brew upgrade --greedy
+      /usr/local/bin/brew autoremove
+      /usr/local/bin/brew cleanup
     '';
   };
+
+  update-check =
+    pkgs.writeShellApplication
+    {
+      name = "update-check";
+      runtimeInputs = with pkgs; [coreutils gitMinimal terminal-notifier wezterm];
+      text = ''
+        log="$(mktemp --tmpdir 'nix_XXXXX')"
+        exec 2>"$log" 1>"$log"
+        trap 'terminal-notifier -title "Nix Darwin" -message "Update check failed :( Check the logs in $log"' ERR
+
+        cd "${repositoryDirectory}"
+
+        git fetch
+        if [ -n "$(git log 'HEAD..@{u}' --oneline)" ]; then
+          terminal-notifier -title "Nix Darwin" -message "Updates available, click here to update." -execute 'wezterm --config "default_prog={[[${hostctl-upgrade}/bin/hostctl-upgrade]]}" --config "exit_behavior=[[Hold]]"'
+        fi
+      '';
+    };
 in {
   configureLoginShellForNixDarwin = true;
 
@@ -103,10 +110,9 @@ in {
 
   environment = {
     systemPackages = [
+      hostctl-preview-switch
       hostctl-switch
       hostctl-upgrade
-      hostctl-preview-switch
-      hostctl-preview-upgrade
     ];
   };
 
@@ -115,5 +121,16 @@ in {
     # demand. This means this check will always fail since the build users won't
     # be present until the build actually starts so I'm disabling the check.
     checks.verifyBuildUsers = false;
+  };
+
+  launchd.user.agents.nix-darwin-update-check = {
+    serviceConfig.RunAtLoad = false;
+
+    serviceConfig.StartCalendarInterval = [
+      # once a day at 6am
+      {Hour = 6;}
+    ];
+
+    command = ''${update-check}/bin/update-check'';
   };
 }

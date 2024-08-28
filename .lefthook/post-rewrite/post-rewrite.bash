@@ -2,7 +2,10 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-if [ "$1" != 'rebase' ]; then
+# I default to rebase so this way if I try to run the hook manually (e.g.
+# `lefthook run ...`), no argument will be passed, but the script will still
+# run.
+if [ "${1:-rebase}" != 'rebase' ]; then
   exit
 fi
 

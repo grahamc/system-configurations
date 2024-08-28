@@ -118,6 +118,8 @@ in {
         findutils
         jq
         which
+        gnused
+        gnugrep
 
         # misc.
         just

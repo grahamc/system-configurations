@@ -6,25 +6,26 @@
   ...
 }: let
   inherit (specialArgs) hostName username homeDirectory isHomeManagerRunningAsASubmodule;
-  inherit (specialArgs.flakeInputs) self;
   inherit (lib.attrsets) optionalAttrs;
   inherit (pkgs.stdenv) isLinux;
 
   # Scripts for switching generations and upgrading flake inputs.
   hostctl-switch = pkgs.writeShellApplication {
     name = "hostctl-switch";
+    runtimeInputs = with pkgs; [nix-output-monitor];
     text = ''
       cd "${config.repository.directory}"
-      home-manager switch --flake "${config.repository.directory}#${hostName}" "''$@" |& nom
+      ${config.home.profileDirectory}/bin/home-manager switch --flake "${config.repository.directory}#${hostName}" "''$@" |& nom
     '';
   };
 
   hostctl-preview-switch = pkgs.writeShellApplication {
     name = "hostctl-preview-switch";
+    runtimeInputs = with pkgs; [coreutils gnugrep nix];
     text = ''
       cd "${config.repository.directory}"
 
-      oldGenerationPath="$(home-manager generations | head -1 | grep -E --only-matching '/nix.*$')"
+      oldGenerationPath="$(${config.home.profileDirectory}/bin/home-manager generations | head -1 | grep -E --only-matching '/nix.*$')"
 
       newGenerationPath="$(nix build --no-link --print-out-paths .#homeConfigurations.${hostName}.activationPackage)"
 
@@ -34,32 +35,55 @@
     '';
   };
 
-  hostctl-upgrade =
-    pkgs.writeShellApplication
-    {
-      name = "hostctl-upgrade";
-      text = ''
-        cd "${config.repository.directory}"
-        nix flake update
-        home-manager switch --flake '${config.repository.directory}#${hostName}' "$@" |& nom
-        chronic ${self}/dotfiles/nix/bin/nix-upgrade-profiles
-      '';
-    };
-
-  hostctl-preview-upgrade = pkgs.writeShellApplication {
-    name = "hostctl-preview-upgrade";
+  hostctl-upgrade = pkgs.writeShellApplication {
+    name = "hostctl-upgrade";
+    runtimeInputs = with pkgs; [coreutils gitMinimal less direnv nix];
     text = ''
       cd "${config.repository.directory}"
 
-      oldGenerationPath="$(home-manager generations | head -1 | grep -E --only-matching '/nix.*$')"
+      rm -f ~/.local/state/nvim/*.log
+      rm -f ~/.local/state/nvim/undo/*
 
-      newGenerationPath="$(nix build --no-write-lock-file --recreate-lock-file --no-link --print-out-paths .#homeConfigurations.${hostName}.activationPackage)"
+      git fetch
+      if [ -n "$(git log 'HEAD..@{u}' --oneline)" ]; then
+          echo "$(echo 'Commits made since last pull:'$'\n'; git log '..@{u}')" | less
 
-      cyan='\033[1;0m'
-      printf "%bPrinting upgrade preview...\n" "$cyan"
-      nix store diff-closures "''$oldGenerationPath" "''$newGenerationPath"
+          if [ -n "$(git status --porcelain)" ]; then
+              git stash --include-untracked --message 'Stashed for upgrade'
+          fi
+
+          direnv allow
+          direnv exec "$PWD" nix-direnv-reload
+          direnv exec "$PWD" git pull
+      else
+          # Something probably went wrong so we're trying to upgrade again even
+          # though there's nothing to pull. In which case, just run the hook as
+          # though we did.
+          direnv allow
+          direnv exec "$PWD" nix-direnv-reload
+          direnv exec "$PWD" lefthook run post-rewrite
+      fi
     '';
   };
+
+  update-check =
+    pkgs.writeShellApplication
+    {
+      name = "update-check";
+      runtimeInputs = with pkgs; [coreutils gitMinimal libnotify wezterm];
+      text = ''
+        log="$(mktemp --tmpdir 'nix_XXXXX')"
+        exec 2>"$log" 1>"$log"
+        trap 'notify-send -title "Home Manager" -message "Update check failed :( Check the logs in $log"' ERR
+
+        cd "${config.repository.directory}"
+
+        git fetch
+        if [ -n "$(git log 'HEAD..@{u}' --oneline)" ]; then
+          notify-send -title "Home Manager" -message "Updates available, click here to update." -execute 'wezterm --config "default_prog={[[${hostctl-upgrade}/bin/hostctl-upgrade]]}" --config "exit_behavior=[[Hold]]"'
+        fi
+      '';
+    };
 in
   lib.mkMerge [
     {
@@ -95,10 +119,9 @@ in
         inherit username homeDirectory;
 
         packages = [
+          hostctl-preview-switch
           hostctl-switch
           hostctl-upgrade
-          hostctl-preview-switch
-          hostctl-preview-upgrade
         ];
 
         # Show me what changed everytime I switch generations e.g. version updates or added/removed files.
@@ -132,6 +155,15 @@ in
                 ExecStart = "${config.home.profileDirectory}/bin/home-manager expire-generations '-180 days'";
               };
             };
+            home-manager-update-check = {
+              Unit = {
+                Description = "Check for home-manager updates";
+              };
+              Service = {
+                Type = "oneshot";
+                ExecStart = "${update-check}/bin/update-check";
+              };
+            };
           };
 
           timers = {
@@ -141,6 +173,18 @@ in
               };
               Timer = {
                 OnCalendar = "monthly";
+                Persistent = true;
+              };
+              Install = {
+                WantedBy = ["timers.target"];
+              };
+            };
+            home-manager-update-check = {
+              Unit = {
+                Description = "Check for home-manager updates";
+              };
+              Timer = {
+                OnCalendar = "daily";
                 Persistent = true;
               };
               Install = {

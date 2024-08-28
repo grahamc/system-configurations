@@ -18,20 +18,12 @@ switch:
     hostctl-switch
 
 # Update flake inputs and switch to a new generation
-upgrade: cleanup pull && commit
-    # We pull first because otherwise tools might try to perform upgrades that
-    # have already been performed on another machine and just need to be pulled
-    # in. And if upgrading a tool results in a file being changed,
-    # (e.g. flake.lock) then pulling afterwards might cause a merge conflict.
+upgrade:
     hostctl-upgrade
 
 # Preview changes from switching
 preview-switch:
     hostctl-preview-switch
-
-# Preview changes from upgrading
-preview-upgrade:
-    hostctl-preview-upgrade
 
 # Rerun the on change actions that run after a git merge or rebase
 run-on-change-actions:
@@ -161,12 +153,6 @@ lint *FILES:
 install-git-hooks:
     lefthook install --force
 
-# TODO: Automate this with rsyslog
-[private]
-cleanup:
-    rm -f ~/.local/state/nvim/*.log
-    rm -f ~/.local/state/nvim/undo/*
-
 # I'm not able to upgrade the nix and cacert that come with the nix installation
 # using `nix profile upgrade '.*'` so here I'm installing them from the nixpkgs
 
@@ -230,45 +216,3 @@ generate-neovim-plugin-list:
     readarray -t config_files < <(find ./dotfiles/neovim/lua -type f -name '*.lua')
     sg --lang lua --pattern 'Plug($ARG $$$)' --json=compact "${config_files[@]}" | jq --raw-output '.[].metaVariables.single.ARG.text' \
     | cut -d'/' -f2 | sed 's/.$//' | sort --ignore-case --dictionary-order --unique > ./dotfiles/neovim/plugin-names.txt
-
-# Pull changes from git remote
-[private]
-pull:
-    #!/usr/bin/env fish
-    # return if there is nothing to pull
-    chronic git fetch
-    if test -z "$(git log HEAD..@{u} --oneline)"
-        echo 'Nothing to do.'
-        return
-    end
-
-    echo "$(echo 'Commits made since last pull:'\n; git log '..@{u}')" | less
-
-    # if there are changes, warn the user in the prompt
-    set status_output "$(git status --porcelain)"
-    if test -n "$status_output"
-        set warning "$(echo -s (set_color yellow) ' (WARNING: The working directory is not clean)' (set_color normal))"
-    else
-        set warning ''
-    end
-    read --prompt-str "Would you like to pull$warning? (y/n): " --nchars 1 response
-    if test $response = 'y'
-        git pull
-    end
-
-# Commit changes to git remote
-[private]
-commit:
-    #!/usr/bin/env fish
-    # check if there are changes to commit
-    set status_output "$(git status --porcelain)"
-    if test -n "$status_output"
-        git status
-        read --prompt-str "Do you want to commit the changes? (y/n): " --nchars 1 response
-        if test $response = 'y'
-            git add --all
-            git commit --message 'chore: upgrade tools'
-        end
-    else
-        echo 'Nothing to commit.'
-    end

@@ -25,10 +25,6 @@
       # of them.
       no_quarantine = true;
     };
-
-    taps = [
-      "homebrew/cask-versions"
-    ];
   };
 
   # TODO:
