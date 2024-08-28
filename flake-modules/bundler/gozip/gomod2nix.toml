@@ -5,8 +5,8 @@ schema = 3
     version = "v0.0.0-20240702044807-c8f9c0587c5e"
     hash = "sha256-c9u+sj5NHZyaw6v7pfCn74tqiml/9YXJD9eiXvie4IU="
   [mod."github.com/klauspost/compress"]
-    version = "v1.17.8"
-    hash = "sha256-8rgCCfHX29le8m6fyVn6gwFde5TPUHjwQqZqv9JIubs="
+    version = "v1.17.9"
+    hash = "sha256-FxHk4OuwsbiH1OLI+Q0oA4KpcOB786sEfik0G+GNoow="
   [mod."github.com/mattn/go-isatty"]
     version = "v0.0.20"
     hash = "sha256-qhw9hWtU5wnyFyuMbKx+7RB8ckQaFQ8D+8GKPkN3HHQ="
