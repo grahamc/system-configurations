@@ -70,7 +70,7 @@
     pkgs.writeShellApplication
     {
       name = "update-check";
-      runtimeInputs = with pkgs; [coreutils gitMinimal libnotify wezterm];
+      runtimeInputs = with pkgs; [coreutils gitMinimal libnotify];
       text = ''
         log="$(mktemp --tmpdir 'nix_XXXXX')"
         exec 2>"$log" 1>"$log"
@@ -80,7 +80,7 @@
 
         git fetch
         if [ -n "$(git log 'HEAD..@{u}' --oneline)" ]; then
-          notify-send -title "Home Manager" -message "Updates available, click here to update." -execute 'wezterm --config "default_prog={[[${hostctl-upgrade}/bin/hostctl-upgrade]]}" --config "exit_behavior=[[Hold]]"'
+          notify-send -title "Home Manager" -message "Updates available, click here to update." -execute 'flatpak run org.wezfurlong.wezterm --config "default_prog={[[${hostctl-upgrade}/bin/hostctl-upgrade]]}" --config "exit_behavior=[[Hold]]"'
         fi
       '';
     };

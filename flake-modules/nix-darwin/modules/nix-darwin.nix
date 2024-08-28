@@ -87,7 +87,7 @@
     pkgs.writeShellApplication
     {
       name = "update-check";
-      runtimeInputs = with pkgs; [coreutils gitMinimal terminal-notifier wezterm];
+      runtimeInputs = with pkgs; [coreutils gitMinimal terminal-notifier];
       text = ''
         log="$(mktemp --tmpdir 'nix_XXXXX')"
         exec 2>"$log" 1>"$log"
@@ -97,7 +97,7 @@
 
         git fetch
         if [ -n "$(git log 'HEAD..@{u}' --oneline)" ]; then
-          terminal-notifier -title "Nix Darwin" -message "Updates available, click here to update." -execute 'wezterm --config "default_prog={[[${hostctl-upgrade}/bin/hostctl-upgrade]]}" --config "exit_behavior=[[Hold]]"'
+          terminal-notifier -title "Nix Darwin" -message "Updates available, click here to update." -execute '/usr/local/bin/wezterm --config "default_prog={[[${hostctl-upgrade}/bin/hostctl-upgrade]]}" --config "exit_behavior=[[Hold]]"'
         fi
       '';
     };
