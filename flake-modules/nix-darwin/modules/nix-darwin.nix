@@ -47,6 +47,8 @@
     name = "hostctl-upgrade";
     runtimeInputs = with pkgs; [coreutils gitMinimal less direnv nix];
     text = ''
+      # TODO: So `just` has access to `hostctl-switch`, not a great solution
+      PATH="${config.system.profile}/sw/bin:$PATH"
       cd "${repositoryDirectory}"
 
       rm -f ~/.local/state/nvim/*.log
@@ -89,7 +91,7 @@
       name = "update-check";
       runtimeInputs = with pkgs; [coreutils gitMinimal terminal-notifier];
       text = ''
-        log="$(mktemp --tmpdir 'nix_XXXXX')"
+        log="$(mktemp --tmpdir 'nix_darwin_update_XXXXX')"
         exec 2>"$log" 1>"$log"
         trap 'terminal-notifier -title "Nix Darwin" -message "Update check failed :( Check the logs in $log"' ERR
 
@@ -97,7 +99,7 @@
 
         git fetch
         if [ -n "$(git log 'HEAD..@{u}' --oneline)" ]; then
-          terminal-notifier -title "Nix Darwin" -message "Updates available, click here to update." -execute '/usr/local/bin/wezterm --config "default_prog={[[${hostctl-upgrade}/bin/hostctl-upgrade]]}" --config "exit_behavior=[[Hold]]"'
+          terminal-notifier -title "Nix Darwin" -message "Updates are available, click here to update." -execute '/usr/local/bin/wezterm --config "default_prog={[[${hostctl-upgrade}/bin/hostctl-upgrade]]}" --config "exit_behavior=[[Hold]]"'
         fi
       '';
     };

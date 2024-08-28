@@ -39,6 +39,8 @@
     name = "hostctl-upgrade";
     runtimeInputs = with pkgs; [coreutils gitMinimal less direnv nix];
     text = ''
+      # TODO: So `just` has access to `hostctl-switch`, not a great solution
+      PATH="${config.home.profileDirectory}/bin:$PATH"
       cd "${config.repository.directory}"
 
       rm -f ~/.local/state/nvim/*.log
@@ -72,15 +74,31 @@
       name = "update-check";
       runtimeInputs = with pkgs; [coreutils gitMinimal libnotify];
       text = ''
-        log="$(mktemp --tmpdir 'nix_XXXXX')"
+        log="$(mktemp --tmpdir 'home_manager_update_XXXXX')"
         exec 2>"$log" 1>"$log"
-        trap 'notify-send -title "Home Manager" -message "Update check failed :( Check the logs in $log"' ERR
+        trap 'notify-send --app-name "Home Manager" "Update check failed :( Check the logs in $log"' ERR
 
         cd "${config.repository.directory}"
 
         git fetch
-        if [ -n "$(git log 'HEAD..@{u}' --oneline)" ]; then
-          notify-send -title "Home Manager" -message "Updates available, click here to update." -execute 'flatpak run org.wezfurlong.wezterm --config "default_prog={[[${hostctl-upgrade}/bin/hostctl-upgrade]]}" --config "exit_behavior=[[Hold]]"'
+        if [ -z "$(git log 'HEAD..@{u}' --oneline)" ]; then
+          # TODO: I want to use action buttons on the notification, but it isn't
+          # working.
+          #
+          # TODO: With `--wait`, `notify-send` only exits if the x button is
+          # clicked. I assume that I want to upgrade if I click the x button
+          # within one hour. Using `timeout` I can kill `notify-send` once one
+          # hour passes.  This behavior isn't correct based on the `notify-send`
+          # manpage, not sure if the bug is with `notify-send` or my desktop
+          # environment, COSMIC.
+          timeout 1h \
+            notify-send \
+              --wait \
+              --app-name 'Home Manager' \
+              'Updates are available. To update, click the "x" button now or after the notification has been dismissed.'
+          if [ $? -ne 124 ]; then
+            flatpak run org.wezfurlong.wezterm --config 'default_prog={[[${hostctl-upgrade}/bin/hostctl-upgrade]]}' --config 'exit_behavior=[[Hold]]'
+          fi
         fi
       '';
     };
