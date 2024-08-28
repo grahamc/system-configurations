@@ -448,6 +448,7 @@ if vim.fn.executable("nix") == 1 then
           "nixd",
           "quick_lint_js",
           "denols",
+          "als",
         },
 
         preferred_servers = {
