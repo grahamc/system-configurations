@@ -366,7 +366,6 @@ if is_ssh_active then
 end
 
 vim.keymap.set("n", "<C-q>", function()
-  local buffer_count = #vim.fn.getbufinfo({ buflisted = 1 })
   local tab_count = vim.fn.tabpagenr("$")
 
   local function is_not_float(window)
@@ -374,9 +373,9 @@ vim.keymap.set("n", "<C-q>", function()
   end
   local window_count = #vim.tbl_filter(is_not_float, vim.api.nvim_list_wins())
 
-  -- If this is the last tab, window, and buffer, exit vim
+  -- If this is the last tab and window, exit vim
   local is_last_window = window_count == 1
-  if tab_count == 1 and is_last_window and buffer_count == 1 then
+  if tab_count == 1 and is_last_window then
     local is_linked_to_file = #vim.api.nvim_buf_get_name(
       vim.api.nvim_get_current_buf()
     ) > 0
