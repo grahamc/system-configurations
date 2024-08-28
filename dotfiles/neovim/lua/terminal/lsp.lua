@@ -382,24 +382,19 @@ end
 
 Plug("b0o/SchemaStore.nvim")
 
--- Not using this until it stops triggering a deprecation notice:
--- https://github.com/kosayoda/nvim-lightbulb/issues/65
--- https://github.com/kosayoda/nvim-lightbulb/pull/62
--- https://github.com/kosayoda/nvim-lightbulb/pull/64
---
--- Plug("kosayoda/nvim-lightbulb", {
---   config = function()
---     require("nvim-lightbulb").setup({
---       autocmd = { enabled = true },
---       -- Giving it a higher priority than diagnostics
---       sign = {
---         priority = 15,
---         text = "",
---         hl = "CodeActionSign",
---       },
---     })
---   end,
--- })
+Plug("kosayoda/nvim-lightbulb", {
+  config = function()
+    require("nvim-lightbulb").setup({
+      autocmd = { enabled = true },
+      -- Giving it a higher priority than diagnostics
+      sign = {
+        priority = 15,
+        text = "",
+        hl = "CodeActionSign",
+      },
+    })
+  end,
+})
 
 Plug("neovim/nvim-lspconfig", {
   config = function()
