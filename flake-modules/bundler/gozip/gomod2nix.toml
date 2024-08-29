@@ -23,8 +23,8 @@ schema = 3
     version = "v0.7.0"
     hash = "sha256-2ETllEu2GDWoOd/yMkOkLC2hWBpKzbVZ8LhjLu0d2A8="
   [mod."golang.org/x/sys"]
-    version = "v0.20.0"
-    hash = "sha256-mowlaoG2k4n1c1rApWef5EMiXd3I77CsUi8jPh6pTYA="
+    version = "v0.23.0"
+    hash = "sha256-tC6QVLu72bADgINz26FUGdmYqKgsU45bHPg7sa0ZV7w="
   [mod."golang.org/x/term"]
-    version = "v0.20.0"
-    hash = "sha256-kU+OVJbYktTIn4ZTAdomsOjL069Vj45sdroEMRKaRDI="
+    version = "v0.23.0"
+    hash = "sha256-ECmmK3Wc0g/zUy5wAokj7ItRsUi6eoqSe9s9Uhcwu90="
