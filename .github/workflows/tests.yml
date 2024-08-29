@@ -20,6 +20,7 @@ jobs:
       run:
         working-directory: "code/system-configurations"
     steps:
+      - run: exit 1
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
         with:
           path: "code/system-configurations"
