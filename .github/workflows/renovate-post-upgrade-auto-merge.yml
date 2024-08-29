@@ -19,7 +19,7 @@ jobs:
       - run: |
           # debug
           echo "DEBUG"
-          gh pr list --json --repo "$REPO" --label automerge
+          gh pr list --json number,title,mergeable --repo "$REPO" --label automerge
           echo
 
           while IFS= read -r pr_number; do
@@ -49,4 +49,4 @@ jobs:
           done < <(gh pr list --json number --jq '.[].number' --repo "$REPO" --label automerge)
         env:
           GH_TOKEN: "${{ steps.bigolu-bot-app-token.outputs.token }}"
-          REPO: ${{ github.event.repository.name }}
+          REPO: ${{ github.event.repository }}
