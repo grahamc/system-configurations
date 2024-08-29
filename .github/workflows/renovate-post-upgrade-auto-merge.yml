@@ -29,7 +29,7 @@ jobs:
           while IFS= read -r pr_number; do
             echo "Processing PR #$pr_number"
 
-            if gh pr checks "$pr_number" --json bucket --jq '.bucket' --repo "$GITHUB_REPOSITORY" --required \
+            if gh pr checks "$pr_number" --json bucket --jq '.[].bucket' --repo "$GITHUB_REPOSITORY" --required \
             | grep -q fail; then
               echo 'Status checks failed'
               comment_body='A status check failed so auto-merging has been disabled.'
