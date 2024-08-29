@@ -129,8 +129,12 @@ in {
     serviceConfig.RunAtLoad = false;
 
     serviceConfig.StartCalendarInterval = [
-      # once a day at 6am
-      {Hour = 6;}
+      # Since timers that go off when the computer is off never run, I try to
+      # give myself more chances to see the message, 10am, 4pm, and 8pm:
+      # https://superuser.com/a/546353
+      {Hour = 10;}
+      {Hour = 16;}
+      {Hour = 20;}
     ];
 
     command = ''${update-check}/bin/update-check'';
