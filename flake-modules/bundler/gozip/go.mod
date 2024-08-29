@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/klauspost/compress v1.17.9 // direct
-	golang.org/x/sync v0.7.0 // direct
+	golang.org/x/sync v0.8.0 // direct
 )
 
 require github.com/deepakjois/gousbdrivedetector v0.0.0-20240702044807-c8f9c0587c5e // direct
