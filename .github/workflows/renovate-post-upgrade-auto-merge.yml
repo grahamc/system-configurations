@@ -1,0 +1,52 @@
+name: auto-merge
+on:
+  workflow_dispatch:
+  schedule:
+    # Since we are using an app token, instead of the default github action
+    # token, anything done here can trigger other workflows avoid creating an
+    # infinite loop. That shouldn't be a problem here since this runs on a
+    # schedule.
+    - cron: "0 0 * * *"
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1
+        id: bigolu-bot-app-token
+        with:
+          app-id: ${{ vars.BIGOLU_BOT_APP_ID }}
+          private-key: ${{ secrets.BIGOLU_BOT_PRIVATE_KEY }}
+      - run: |
+          # debug
+          echo "DEBUG"
+          gh pr list --json --repo "$REPO" --label automerge
+          echo
+
+          while IFS= read -r pr_number; do
+            echo "Processing PR #$pr_number"
+
+            if gh pr checks --json bucket --jq '.bucket' --repo "$REPO" --required \
+            | grep -q fail; then
+              echo 'Status checks failed'
+              comment_body='A status check failed so auto-merging has been disabled.'
+            elif [ "$(gh pr view "$pr_number" --json mergeable --jq '.mergeable' --repo "$REPO")" = CONFLICTING ]; then
+              echo 'PR is conflicted'
+              comment_body='This PR has a conflict with its base branch so auto-merging has been disabled.'
+            fi
+
+            if [ -n "$comment_body" ] ; then
+              old_title="$(gh pr view "$pr_number" --json title --jq '.title' --repo "$REPO")"
+              gh pr edit "$pr_number" --repo "$REPO" \
+                --remove-label automerge \
+                --add-label automerge-failed \
+                --title "[automerge-failed] $old_title"
+              gh pr comment "$pr_number" --repo "$REPO" \
+                --body "$comment_body"
+            else
+              gh pr update-branch "$pr_number" --repo "$REPO" --rebase
+              gh pr merge "$pr_number" --repo "$REPO" --auto --squash
+            fi
+          done < <(gh pr list --json number --jq '.[].number' --repo "$REPO" --label automerge)
+        env:
+          GH_TOKEN: "${{ steps.bigolu-bot-app-token.outputs.token }}"
+          REPO: ${{ github.event.repository.name }}
