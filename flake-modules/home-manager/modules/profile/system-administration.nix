@@ -17,10 +17,7 @@ in {
 
   home.packages = with pkgs;
     [
-      doggo
-      duf
       fd
-      gping
       jq
       ijq
       lsd

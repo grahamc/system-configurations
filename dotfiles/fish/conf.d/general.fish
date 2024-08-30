@@ -206,18 +206,6 @@ function rust --description 'run the given rust source file' --wraps rustc
     end
 end
 
-function dig --wraps doggo
-    doggo --color=false $argv
-end
-
-function df --wraps duf
-    duf -theme ansi $argv
-end
-
-function ping --wraps gping
-    gping $argv
-end
-
 function ls --wraps lsd
     lsd $argv
 end

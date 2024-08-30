@@ -84,7 +84,6 @@ in {
         # languages
         bashInteractive
         go
-        yash
         nix
         lua
 
