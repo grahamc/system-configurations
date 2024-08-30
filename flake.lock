@@ -1002,15 +1002,15 @@
     "vim-plugin-nvim-lightbulb": {
       "flake": false,
       "locked": {
-        "lastModified": 1723852012,
-        "narHash": "sha256-KfldlEwrYiZJZ0j7du/JWXx+ZOKH1XRT3fDYfaW7xfE=",
-        "owner": "kosayoda",
+        "lastModified": 1723876123,
+        "narHash": "sha256-1OKt0H0hmb7NAcr+l2+uXboKpm8KHdfnfvRG2n7WAfc=",
+        "owner": "lvim-tech",
         "repo": "nvim-lightbulb",
-        "rev": "1cae7b7153ae98dcf1b11173a443ac1b6d8e3d49",
+        "rev": "5545d5c3375a6df4633002ddc1514a06522d1a95",
         "type": "github"
       },
       "original": {
-        "owner": "kosayoda",
+        "owner": "lvim-tech",
         "repo": "nvim-lightbulb",
         "type": "github"
       }

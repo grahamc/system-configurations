@@ -192,7 +192,7 @@
       flake = false;
     };
     vim-plugin-nvim-lightbulb = {
-      url = "github:kosayoda/nvim-lightbulb";
+      url = "github:lvim-tech/nvim-lightbulb";
       flake = false;
     };
     vim-plugin-nvim-lspconfig = {
