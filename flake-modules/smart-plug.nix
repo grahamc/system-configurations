@@ -41,21 +41,17 @@
         text = scriptText;
       };
 
-    profile = pkgs.symlinkJoin {
-      name = "tools";
-      paths = [
-        pythonWithPackages
-      ];
-    };
-
-    devShell = self.lib.devShell.mkNakedShell {
-      name = "devShell";
-      inherit profile pkgs;
-    };
-
     outputs = {
-      devShells.smartPlug = devShell;
       packages.smartPlug = cli;
+
+      # The devShell contains a lot of environment variables that are irrelevant
+      # to our development environment, but Nix is working on a solution to
+      # that: https://github.com/NixOS/nix/issues/7501
+      devShells.smartPlug = pkgs.mkShellNoCC {
+        packages = [
+          pythonWithPackages
+        ];
+      };
     };
 
     supportedSystems = with inputs.flake-utils.lib.system; [x86_64-linux x86_64-darwin];
