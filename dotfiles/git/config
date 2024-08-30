@@ -3,7 +3,6 @@
   email = code@bigo.lu
 [core]
   pager = delta
-  fsmonitor = true
 [push]
   default = current
 [pull]

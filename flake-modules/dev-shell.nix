@@ -87,9 +87,6 @@ in {
         nix
         lua
 
-        # for markdown-toc
-        nodejs
-
         # formatters and linters
         black
         usort
@@ -122,6 +119,7 @@ in {
 
         # misc.
         just
+        doctoc
 
         # TODO: When I remove this, my devshell fails to build with the error:
         # rm: cannot remove '/nix/store/nkybkk6pvcrflrsi3879936jh037ka1p-tools/share/nvim/site/plugin/fzf.vim': No such file or directory
