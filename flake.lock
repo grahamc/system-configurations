@@ -604,11 +604,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1725036679,
-        "narHash": "sha256-Ri79ZOEcZJFLr6+LgS3A0WYyroL/PqEuO+lI7u+G2tE=",
+        "lastModified": 1725067332,
+        "narHash": "sha256-bMi5zhDwR6jdmN5mBHEu9gQQf9CibIEasA/6mc34Iek=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "dac9db29e0e7ff2071ccc47b720aaffc3e74b504",
+        "rev": "192e7407cc66e2eccc3a6c5ad3834dd62fae3800",
         "type": "github"
       },
       "original": {
@@ -1034,11 +1034,11 @@
     "vim-plugin-nvim-treesitter": {
       "flake": false,
       "locked": {
-        "lastModified": 1725026227,
-        "narHash": "sha256-KF9B3RFn0XVc+E8RySSPZNJzBCiDv7TP3MOJVFcArDQ=",
+        "lastModified": 1725086946,
+        "narHash": "sha256-O8N9XkZ/4+3Zsc7d9320Js/k0/o7rSZEAP9vFjyv3Jo=",
         "owner": "nvim-treesitter",
         "repo": "nvim-treesitter",
-        "rev": "fd9663acca289598086b7c5a366be8b2fa5d7960",
+        "rev": "64cc1ef764a0b137a642d05cacdfe1126124fb35",
         "type": "github"
       },
       "original": {
@@ -1322,11 +1322,11 @@
     "vim-plugin-which-key-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1721858377,
-        "narHash": "sha256-nv9s4/ax2BoL9IQdk42uN7mxIVFYiTK+1FVvWDKRnGM=",
+        "lastModified": 1725088492,
+        "narHash": "sha256-FY0KM0F2keMCqB5QhwfGS4w2wQOOeCXgZEa3U7Q1Bek=",
         "owner": "folke",
         "repo": "which-key.nvim",
-        "rev": "6c1584eb76b55629702716995cca4ae2798a9cca",
+        "rev": "bfec3d6bc0a9b0b2cb11644642f78c2c3915eef0",
         "type": "github"
       },
       "original": {
