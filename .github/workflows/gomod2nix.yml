@@ -15,7 +15,7 @@ jobs:
             direnv hook fish | source
             direnv allow
             direnv exec "$PWD" nix-direnv-reload
-            direnv exec "$PWD" just gomod2nix
+            direnv exec "$PWD" just ci gomod2nix
           '
     secrets:
       BIGOLU_BOT_PRIVATE_KEY: ${{ secrets.BIGOLU_BOT_PRIVATE_KEY }}

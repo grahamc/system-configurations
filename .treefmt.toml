@@ -13,6 +13,15 @@ excludes = [
   ".shellcheckrc",
   "flake-modules/bundler/gozip/go.mod",
   "flake-modules/bundler/gozip/go.sum",
+
+  # TODO: just's builtin formatter shifts aroung my comments so I'm not using
+  # it. I should file a report since they may not be aware of this.
+  #
+  # I would just comment out the just formatter, but then treefmt would
+  # warn me that any files that would have been formatted by it have not
+  # formatter. Instead, I'll ignore the files.
+  ".justfile",
+  "ci.just",
 ]
 
 [formatter.prettier]

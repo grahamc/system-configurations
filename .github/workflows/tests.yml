@@ -39,4 +39,4 @@ jobs:
           useDaemon: false
       - run: |
           # shellcheck disable=2016
-          nix shell --impure nixpkgs#fish nixpkgs#direnv --command fish --command 'direnv hook fish | source; direnv allow; direnv exec "$PWD" nix-direnv-reload; direnv exec "$PWD" just test'
+          nix shell --impure nixpkgs#fish nixpkgs#direnv --command fish --command 'direnv hook fish | source; direnv allow; direnv exec "$PWD" nix-direnv-reload; direnv exec "$PWD" just ci test'

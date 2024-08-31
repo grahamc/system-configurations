@@ -15,7 +15,7 @@ jobs:
             direnv hook fish | source
             direnv allow
             direnv exec "$PWD" nix-direnv-reload
-            direnv exec "$PWD" just fixup-renovate-pull-request-for-envrc
+            direnv exec "$PWD" just ci fixup-renovate-pull-request-for-envrc
           '
     secrets:
       BIGOLU_BOT_PRIVATE_KEY: ${{ secrets.BIGOLU_BOT_PRIVATE_KEY }}
