@@ -81,7 +81,7 @@
         cd "${config.repository.directory}"
 
         git fetch
-        if [ -z "$(git log 'HEAD..@{u}' --oneline)" ]; then
+        if [ -n "$(git log 'HEAD..@{u}' --oneline)" ]; then
           # TODO: I want to use action buttons on the notification, but it isn't
           # working.
           #
